@@ -1,0 +1,79 @@
+# Local investigation settings for rpscrape historical results.
+# Copied into scraper/vendor/rpscrape/settings/user_settings.toml by the sample wrapper.
+
+auto_update = false
+gzip_output = false
+betfair_data = false
+
+[fields]
+
+[fields.race_info]
+date = true
+region = true
+course_id = true
+course = true
+course_detail = true
+race_id = true
+off = true
+race_name = true
+type = true
+class = true
+pattern = true
+rating_band = true
+age_band = true
+sex_rest = true
+dist = true
+dist_f = true
+dist_m = true
+dist_y = true
+going = true
+surface = true
+ran = true
+
+[fields.runner_info]
+num = true
+pos = true
+draw = true
+ovr_btn = true
+btn = true
+horse_id = true
+horse = true
+age = true
+sex = true
+wgt = true
+lbs = true
+hg = true
+time = true
+secs = true
+sp = true
+dec = true
+jockey_id = true
+jockey = true
+trainer_id = true
+trainer = true
+prize = true
+or = true
+rpr = true
+ts = false
+sire_id = false
+sire = false
+dam_id = false
+dam = false
+damsire_id = false
+damsire = false
+owner_id = false
+owner = false
+silk_url = false
+comment = true
+
+[fields.betfair]
+bsp = false
+wap = false
+morning_wap = false
+pre_min = false
+pre_max = false
+ip_min = false
+ip_max = false
+morning_vol = false
+pre_vol = false
+ip_vol = false

@@ -1,36 +1,60 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Racing Analysis
 
-## Getting Started
+Personal horse-racing analysis application for importing and studying UK racing data.
 
-First, run the development server:
+The project is intentionally small at this stage. It establishes the application foundation only: Next.js, TypeScript, Tailwind CSS, PostgreSQL schema scaffolding, Drizzle configuration, and a placeholder for the future Python ingestion layer.
+
+## Architecture
+
+- `src/app` contains the Next.js App Router UI.
+- `src/components` is reserved for reusable React components.
+- `src/db` contains Drizzle schema and database access code.
+- `src/lib` contains shared TypeScript utilities.
+- `drizzle` is the Drizzle migrations output directory.
+- `scraper` is reserved for the separate Python scraping and ingestion layer.
+- `scripts` is reserved for project scripts.
+- `data` is reserved for local data files that may be useful during import experiments.
+
+## Next.js and Bun
+
+Use Bun for JavaScript and TypeScript package management and scripts.
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
+bun install
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Run validation with:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+bun run typecheck
+bun run lint
+bun run build
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## PostgreSQL and Drizzle
 
-## Learn More
+Database configuration expects a PostgreSQL connection string:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+DATABASE_URL=postgres://USER:PASSWORD@HOST:PORT/DATABASE
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Copy `.env.example` to `.env.local` when a real local or hosted database has been chosen. Do not commit credentials.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Useful database commands:
 
-## Deploy on Vercel
+```bash
+bun run db:generate
+bun run db:migrate
+bun run db:push
+bun run db:studio
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The initial schema covers courses, horses, trainers, jockeys, races, and race runners/results. Imported entity tables include optional `source` and `source_id` fields because historical racing data may contain repeated or inconsistently formatted names. Display names alone should not be treated as permanent identifiers.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Future Python Ingestion
+
+The scraping and ingestion layer will be Python-based and kept separate from the Next.js application. The open-source `rpscrape` project may be investigated later, but it has not been installed or integrated yet.
+
+Before implementing ingestion, inspect real source output and decide how raw imported records should map into the normalized PostgreSQL tables.
