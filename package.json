@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "test": "bun test",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "db:generate": "drizzle-kit generate",
@@ -14,6 +15,7 @@
     "db:seed": "bun run scripts/seed.ts",
     "rp:import-one": "scraper/.venv/bin/python scraper/scripts/import_one_result.py",
     "rp:import-day": "scraper/.venv/bin/python scraper/scripts/import_results_day.py",
+    "rp:import-range": "scraper/.venv/bin/python scraper/scripts/import_results_range.py",
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {

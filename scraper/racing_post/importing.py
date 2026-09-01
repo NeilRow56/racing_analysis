@@ -408,7 +408,7 @@ def is_favourite(odds: str | None) -> bool | None:
     suffix = odds_suffix(odds)
     if suffix is None:
         return None
-    return suffix in {"F", "JF", "CF", "C"}
+    return suffix in {"F", "J", "JF", "CF", "C"}
 
 
 def odds_suffix(odds: str | None) -> str | None:

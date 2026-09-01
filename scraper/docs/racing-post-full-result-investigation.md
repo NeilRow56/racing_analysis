@@ -183,7 +183,7 @@ For these non-standard outcomes:
 
 Normalized result statuses are intentionally small and source-code based: numeric `outcomeCode` values are `finished`; `F` is `fell`; `PU` is `pulled_up`; `UR` is `unseated_rider`; `BD` is `brought_down`; `DQ`/`DSQ` are `disqualified`; `NR` is `non_runner`; unknown non-numeric codes are `other`.
 
-Starting price normalization keeps the raw `odds` string and adds decimal odds only where the source string is a recognizable fractional price or evens. Favourite status is derived only from raw suffix variants: `F`, `JF`, `CF`, and the observed Racing Post `C` suffix are treated as favourite indicators.
+Starting price normalization keeps the raw `odds` string and adds decimal odds only where the source string is a recognizable fractional price or evens. Favourite status is derived only from raw suffix variants: `F`, observed bare `J`, `JF`, `CF`, and the observed Racing Post `C` suffix are treated as favourite indicators.
 
 No disqualified or dead-heat example was found in this deliberately tiny pass.
 

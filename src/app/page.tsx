@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { and, asc, count, eq, sql } from "drizzle-orm";
 import { createDbConnection } from "@/db";
 import {
@@ -8,10 +9,15 @@ import {
   races,
   trainers,
 } from "@/db/schema";
+import {
+  getTargetRunnerMetricsForDate,
+  type TargetRunnerMetrics,
+} from "@/lib/racing/horse-metrics";
 
 export const dynamic = "force-dynamic";
 
 type RunnerView = {
+  horseId: string;
   saddleclothNumber: number | null;
   finishingPosition: number | null;
   finishingStatus: string | null;
@@ -49,6 +55,7 @@ type PageData =
       runnerCount: number;
       importedRaces: RaceView[];
       smokeRace: RaceView | null;
+      octoberProofRunners: TargetRunnerMetrics[];
     }
   | {
       status: "unavailable";
@@ -73,6 +80,9 @@ async function getPageData(): Promise<PageData> {
         sourceId: "race-fictional-meadow-2026-01-01-1400",
       }),
     ]);
+    const octoberProofRunners = (
+      await getTargetRunnerMetricsForDate(db, "2020-10-01")
+    ).filter((runner) => runner.metrics.priorRuns > 0);
 
     await client.end();
     connection = null;
@@ -83,6 +93,7 @@ async function getPageData(): Promise<PageData> {
       runnerCount: runnerTotal.value,
       importedRaces,
       smokeRace,
+      octoberProofRunners,
     };
   } catch (error) {
     if (connection) {
@@ -139,6 +150,7 @@ async function getRaceWithRunners({
       finishingPosition: raceRunners.finishingPosition,
       finishingStatus: raceRunners.finishingStatus,
       runnerComment: raceRunners.runnerComment,
+      horseId: horses.id,
       horseName: horses.displayName,
       trainerName: trainers.displayName,
       jockeyName: jockeys.displayName,
@@ -258,6 +270,7 @@ function DatabaseConnected({
         heading="Imported Racing Post Races"
         races={data.importedRaces}
       />
+      <OctoberProofSection runners={data.octoberProofRunners} />
       <RaceSection
         emptyMessage="Run bun run db:seed to restore the fictional smoke-test race."
         heading="Synthetic Smoke-Test Race"
@@ -265,6 +278,115 @@ function DatabaseConnected({
       />
     </section>
   );
+}
+
+function OctoberProofSection({ runners }: { runners: TargetRunnerMetrics[] }) {
+  return (
+    <section className="mt-10 border-t border-slate-200 pt-8">
+      <h3 className="text-lg font-semibold">1 October Prior-Form Proof</h3>
+      <p className="mt-3 text-sm leading-6 text-slate-700">
+        {runners.length} runners have prior recorded form before their 1 October
+        race time.
+      </p>
+      {runners.length ? (
+        <div className="mt-5 overflow-x-auto">
+          <table className="w-full min-w-[1120px] text-left text-sm">
+            <thead className="border-b border-slate-200 text-slate-600">
+              <tr>
+                <th className="py-2 pr-4 font-medium">Horse</th>
+                <th className="py-2 pr-4 font-medium">Race</th>
+                <th className="py-2 pr-4 font-medium">Runs</th>
+                <th className="py-2 pr-4 font-medium">Wins</th>
+                <th className="py-2 pr-4 font-medium">Latest RPR</th>
+                <th className="py-2 pr-4 font-medium">Best RPR L3</th>
+                <th className="py-2 pr-4 font-medium">Latest TS</th>
+                <th className="py-2 pr-4 font-medium">Best TS L3</th>
+                <th className="py-2 pr-4 font-medium">Latest OR</th>
+                <th className="py-2 pr-4 font-medium">RPR - OR</th>
+                <th className="py-2 pr-4 font-medium">Days</th>
+                <th className="py-2 pr-4 font-medium">Course</th>
+                <th className="py-2 pr-4 font-medium">Distance</th>
+                <th className="py-2 pr-4 font-medium">Going</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-200">
+              {runners.map(({ target, metrics }) => (
+                <tr key={target.runnerId}>
+                  <td className="py-3 pr-4 font-medium">
+                    <Link
+                      className="text-emerald-800 hover:text-emerald-950 hover:underline"
+                      href={`/horses/${target.horseId}`}
+                    >
+                      {target.horseName}
+                    </Link>
+                  </td>
+                  <td className="py-3 pr-4">
+                    {target.scheduledTime ? `${target.scheduledTime} ` : ""}
+                    {target.courseName}
+                    <span className="block text-xs leading-5 text-slate-500">
+                      {target.raceName ?? "Untitled race"}
+                    </span>
+                  </td>
+                  <td className="py-3 pr-4">{metrics.priorRuns}</td>
+                  <td className="py-3 pr-4">{metrics.priorWins}</td>
+                  <td className="py-3 pr-4">{metrics.latestRpr ?? "-"}</td>
+                  <td className="py-3 pr-4">{metrics.bestRprLast3 ?? "-"}</td>
+                  <td className="py-3 pr-4">{metrics.latestTs ?? "-"}</td>
+                  <td className="py-3 pr-4">{metrics.bestTsLast3 ?? "-"}</td>
+                  <td className="py-3 pr-4">{metrics.latestOr ?? "-"}</td>
+                  <td className="py-3 pr-4">
+                    {formatSigned(metrics.latestRprMinusLatestOr)}
+                  </td>
+                  <td className="py-3 pr-4">
+                    {metrics.daysSinceLastRun ?? "-"}
+                  </td>
+                  <td className="py-3 pr-4">
+                    {formatRecord(
+                      metrics.runsAtCourse,
+                      metrics.winsAtCourse,
+                      metrics.placesAtCourse,
+                    )}
+                  </td>
+                  <td className="py-3 pr-4">
+                    {formatRecord(
+                      metrics.runsAtExactDistance,
+                      metrics.winsAtExactDistance,
+                      metrics.placesAtExactDistance,
+                    )}
+                  </td>
+                  <td className="py-3 pr-4">
+                    {formatRecord(
+                      metrics.runsOnGoing,
+                      metrics.winsOnGoing,
+                      metrics.placesOnGoing,
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : null}
+    </section>
+  );
+}
+
+function formatSigned(value: number | null): string {
+  if (value === null) {
+    return "-";
+  }
+  return value > 0 ? `+${value}` : String(value);
+}
+
+function formatRecord(
+  runs: number | null,
+  wins: number | null,
+  places: number | null,
+): string {
+  if (runs === null || wins === null || places === null) {
+    return "-";
+  }
+  return `${wins}-${places}-${runs}`;
 }
 
 function RaceSection({
@@ -338,7 +460,12 @@ function RaceSection({
                         {runner.saddleclothNumber ?? "-"}
                       </td>
                       <td className="py-3 pr-4 font-medium">
-                        {runner.horseName}
+                        <Link
+                          className="text-emerald-800 hover:text-emerald-950 hover:underline"
+                          href={`/horses/${runner.horseId}`}
+                        >
+                          {runner.horseName}
+                        </Link>
                         {runner.runnerComment ? (
                           <p className="mt-1 max-w-md text-xs font-normal leading-5 text-slate-600">
                             {runner.runnerComment}

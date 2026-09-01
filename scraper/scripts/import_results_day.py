@@ -5,6 +5,7 @@ import argparse
 import os
 import sys
 from collections import Counter, defaultdict
+from dataclasses import dataclass
 from datetime import date
 from pathlib import Path
 from typing import Any
@@ -32,6 +33,18 @@ from racing_post.importing import (  # noqa: E402
 )
 
 
+@dataclass
+class ImportDayResult:
+    race_date: date
+    results_index_import_id: str
+    uk_meetings: int
+    full_results: int
+    raw_files: int
+    skipped_full_results: int
+    totals: Counter[str]
+    observations: "ObservationCollector"
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(
         description="Import one historical UK Racing Post results day.",
@@ -43,6 +56,17 @@ def main() -> None:
         default=DEFAULT_DATE,
         help="Historical date to import, formatted YYYY-MM-DD.",
     )
+    parser.add_argument(
+        "--request-delay-seconds",
+        type=float,
+        default=None,
+        help="Delay between Racing Post HTTP requests. Defaults to RP_REQUEST_DELAY_SECONDS or 0.75.",
+    )
+    parser.add_argument(
+        "--skip-existing-full-results",
+        action="store_true",
+        help="Skip race result payloads already recorded in source_imports.",
+    )
     args = parser.parse_args()
 
     load_dotenv(REPO_ROOT / ".env.local")
@@ -50,17 +74,35 @@ def main() -> None:
     if not database_url:
         raise SystemExit("DATABASE_URL is required.")
 
-    client = RacingPostClient()
-    index = fetch_results_index(args.race_date, client)
+    result = import_results_day(
+        race_date=args.race_date,
+        database_url=database_url,
+        request_delay_seconds=args.request_delay_seconds,
+        skip_existing_full_results=args.skip_existing_full_results,
+    )
+
+    print_import_day_result(result)
+
+
+def import_results_day(
+    *,
+    race_date: date,
+    database_url: str,
+    request_delay_seconds: float | None = None,
+    skip_existing_full_results: bool = False,
+    client: RacingPostClient | None = None,
+) -> ImportDayResult:
+    client = client or RacingPostClient(request_delay_seconds=request_delay_seconds)
+    index = fetch_results_index(race_date, client)
     links = discover_uk_result_links(index)
     if not links:
-        raise SystemExit(f"No UK full-result links found for {args.race_date}")
+        raise RuntimeError(f"No UK full-result links found for {race_date}")
 
     index_file = write_raw_payload(
         raw_dir=RAW_OUTPUT_DIR,
-        race_date=args.race_date.isoformat(),
+        race_date=race_date.isoformat(),
         course_name="results-index",
-        race_id=args.race_date.isoformat(),
+        race_id=race_date.isoformat(),
         payload_type="next-data-route",
         payload=index.payload,
     )
@@ -68,22 +110,30 @@ def main() -> None:
     raw_files: list[Path] = [index_file]
     observations = ObservationCollector()
     totals = Counter()
+    skipped_full_results = 0
 
     with psycopg.connect(database_url) as connection:
         with connection.cursor() as cursor:
             index_import_id = import_results_index(
                 cursor,
-                race_date=args.race_date.isoformat(),
+                race_date=race_date.isoformat(),
                 payload=index.payload,
             )
 
             for link in links:
+                if skip_existing_full_results and full_result_source_import_exists(
+                    cursor,
+                    link.race_id,
+                ):
+                    skipped_full_results += 1
+                    continue
+
                 full_result = fetch_full_result(link.url, client)
                 race = full_result.race_result
                 raw_files.append(
                     write_raw_payload(
                         raw_dir=RAW_OUTPUT_DIR,
-                        race_date=args.race_date.isoformat(),
+                        race_date=race_date.isoformat(),
                         course_name=race["courseName"],
                         race_id=str(race["raceId"]),
                         payload_type="full-result-next-data-route",
@@ -98,17 +148,47 @@ def main() -> None:
 
         connection.commit()
 
-    print(f"DATE={args.race_date.isoformat()}")
-    print(f"RESULTS_INDEX_IMPORT_ID={index_import_id}")
-    print(f"UK_MEETINGS={len({link.course_id for link in links})}")
-    print(f"FULL_RESULTS={len(links)}")
-    print(f"RAW_FILES={len(raw_files)}")
+    return ImportDayResult(
+        race_date=race_date,
+        results_index_import_id=index_import_id,
+        uk_meetings=len({link.course_id for link in links}),
+        full_results=len(links),
+        raw_files=len(raw_files),
+        skipped_full_results=skipped_full_results,
+        totals=totals,
+        observations=observations,
+    )
+
+
+def full_result_source_import_exists(cursor: psycopg.Cursor, race_id: str) -> bool:
+    cursor.execute(
+        """
+        select 1
+        from source_imports
+        where source = 'racing-post'
+          and source_type = 'full-result-next-data'
+          and source_id = %s
+        limit 1
+        """,
+        (race_id,),
+    )
+    return cursor.fetchone() is not None
+
+
+def print_import_day_result(result: ImportDayResult) -> None:
+    print(f"DATE={result.race_date.isoformat()}")
+    print(f"RESULTS_INDEX_IMPORT_ID={result.results_index_import_id}")
+    print(f"UK_MEETINGS={result.uk_meetings}")
+    print(f"FULL_RESULTS={result.full_results}")
+    print(f"SKIPPED_FULL_RESULTS={result.skipped_full_results}")
+    print(f"RAW_FILES={result.raw_files}")
     print(
         "UPSERT_ATTEMPTS "
-        f"courses={totals['courses']} races={totals['races']} horses={totals['horses']} "
-        f"trainers={totals['trainers']} jockeys={totals['jockeys']} runners={totals['runners']}"
+        f"courses={result.totals['courses']} races={result.totals['races']} "
+        f"horses={result.totals['horses']} trainers={result.totals['trainers']} "
+        f"jockeys={result.totals['jockeys']} runners={result.totals['runners']}"
     )
-    print(observations.format_report())
+    print(result.observations.format_report())
 
 
 class ObservationCollector:
