@@ -104,8 +104,6 @@ def import_sporting_life_day(
     client = client or SportingLifeClient(request_delay_seconds=request_delay_seconds)
     index = fetch_results_index(race_date, client)
     links = discover_uk_ire_result_links(index)
-    if not links:
-        raise RuntimeError(f"No UK & Ireland result links found for {race_date}")
 
     index_file = write_raw_payload(
         raw_dir=RAW_OUTPUT_DIR,
@@ -131,6 +129,19 @@ def import_sporting_life_day(
                 payload=index.payload,
             )
         connection.commit()
+
+        if not links:
+            print(f"NO_UK_IRE_RESULTS date={race_date.isoformat()}", flush=True)
+            return ImportDayResult(
+                race_date=race_date,
+                discovered_links=links,
+                imported_links=imported_links,
+                skipped_full_results=skipped_full_results,
+                raw_files=raw_files,
+                totals=totals,
+                observations=observations,
+                elapsed_seconds=time.monotonic() - started_at,
+            )
 
         for link in links:
             with connection.cursor() as cursor:

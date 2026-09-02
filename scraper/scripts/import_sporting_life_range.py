@@ -13,8 +13,7 @@ from dotenv import load_dotenv
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-MIN_DATE = date(2020, 8, 1)
-MAX_DATE = date(2020, 9, 13)
+MIN_DATE = date(2020, 1, 1)
 
 sys.path.insert(0, str(REPO_ROOT / "scraper"))
 sys.path.insert(0, str(REPO_ROOT / "scraper" / "scripts"))
@@ -44,8 +43,10 @@ def main() -> None:
 
     if args.end_date < args.start_date:
         raise SystemExit("end_date must be on or after start_date.")
-    if args.start_date < MIN_DATE or args.end_date > MAX_DATE:
-        raise SystemExit("This controlled range command is limited to 2020-08-01 through 2020-09-13.")
+    if args.start_date < MIN_DATE:
+        raise SystemExit("Sporting Life range imports before 2020-01-01 are not enabled.")
+    if args.end_date > date.today():
+        raise SystemExit("Sporting Life range imports must not include future dates.")
 
     load_dotenv(REPO_ROOT / ".env.local")
     database_url = os.getenv("DATABASE_URL")
@@ -68,9 +69,14 @@ def main() -> None:
         f"SKIP_EXISTING_FULL_RESULTS={not args.refetch_existing_full_results}",
         flush=True,
     )
+    print(
+        f"REQUEST_DELAY_SECONDS={client.request_delay_seconds:.1f}",
+        flush=True,
+    )
 
     for current_date in dates_between(args.start_date, args.end_date):
         try:
+            print(f"DATE_START date={current_date.isoformat()}", flush=True)
             result = import_sporting_life_day(
                 race_date=current_date,
                 database_url=database_url,
@@ -83,6 +89,10 @@ def main() -> None:
             failed_dates.append((current_date, message))
             print(
                 f"DATE_FAILED date={current_date.isoformat()} error={message}",
+                flush=True,
+            )
+            print(
+                "RESUME_HINT rerun the same command later; existing full-result source_imports will be skipped.",
                 flush=True,
             )
             break

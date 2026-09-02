@@ -19,6 +19,7 @@
     "sl:import-race": "scraper/.venv/bin/python scraper/scripts/import_sporting_life_race.py",
     "sl:import-day": "scraper/.venv/bin/python scraper/scripts/import_sporting_life_day.py",
     "sl:import-range": "scraper/.venv/bin/python scraper/scripts/import_sporting_life_range.py",
+    "sl:import-status": "scraper/.venv/bin/python scraper/scripts/sporting_life_import_status.py",
     "sl:speed-research": "bun run scripts/sporting-life-speed-research.ts",
     "db:studio": "drizzle-kit studio"
   },

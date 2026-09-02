@@ -20,6 +20,10 @@ class SportingLifeClient:
         )
         self._last_request_at: float | None = None
 
+    @property
+    def request_delay_seconds(self) -> float:
+        return self._request_delay_seconds
+
     def get_text(self, url: str) -> str:
         self._wait_between_requests()
         request = Request(
