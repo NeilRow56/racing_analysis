@@ -2,7 +2,9 @@ import assert from "node:assert/strict";
 import { describe, test } from "node:test";
 import {
   calculateHorseMetricsAsOf,
+  calculateTargetRunnerMetrics,
   type HistoricalRunInput,
+  type TargetRunnerMetrics,
 } from "./horse-metrics";
 
 const horseId = "horse-1";
@@ -196,6 +198,22 @@ describe("calculateHorseMetricsAsOf", () => {
     assert.equal(metrics.latestRprMinusLatestOr, null);
   });
 
+  test("does not count non-runners as prior runs", () => {
+    const metrics = calculateHorseMetricsAsOf({
+      beforeDateTime: cutoff,
+      runs: [
+        run({
+          raceDateTime: new Date("2020-09-30T15:00:00.000Z"),
+          raceDate: "2020-09-30",
+          resultStatus: "non_runner",
+        }),
+      ],
+    });
+
+    assert.equal(metrics.priorRuns, 0);
+    assert.equal(metrics.latestRunDate, null);
+  });
+
   test("calculates recency relative to the target cutoff", () => {
     const metrics = calculateHorseMetricsAsOf({
       beforeDateTime: cutoff,
@@ -209,5 +227,206 @@ describe("calculateHorseMetricsAsOf", () => {
 
     assert.equal(metrics.latestRunDate, "2020-09-28");
     assert.equal(metrics.daysSinceLastRun, 2);
+  });
+});
+
+function target(
+  overrides: Partial<TargetRunnerMetrics["target"]> & {
+    runnerId: string;
+    horseId: string;
+    raceDateTime: Date;
+  },
+): TargetRunnerMetrics["target"] {
+  const { horseId, raceDateTime, runnerId, ...rest } = overrides;
+  return {
+    source: "sporting_life",
+    runnerId,
+    horseId,
+    horseName: "Target",
+    raceDateTime,
+    raceDate: "2020-09-13",
+    scheduledTime: "12:00:00",
+    courseId: targetCourseId,
+    courseName: "Bath",
+    raceName: "Target race",
+    distanceYards: targetDistanceYards,
+    going: targetGoing,
+    ...rest,
+  };
+}
+
+describe("calculateTargetRunnerMetrics", () => {
+  const targetTime = new Date("2020-09-13T12:00:00.000Z");
+
+  test("returns zero prior runs when a target horse has no earlier run", () => {
+    const [result] = calculateTargetRunnerMetrics({
+      targets: [
+        target({
+          runnerId: "runner-target",
+          horseId: "horse-no-history",
+          raceDateTime: targetTime,
+        }),
+      ],
+      candidateRuns: [
+        run({
+          horseId: "another-horse",
+          source: "sporting_life",
+          raceDateTime: new Date("2020-09-12T12:00:00.000Z"),
+          raceDate: "2020-09-12",
+        }),
+      ],
+    });
+
+    assert.equal(result.metrics.priorRuns, 0);
+  });
+
+  test("counts one genuine earlier run for the same horse and source", () => {
+    const [result] = calculateTargetRunnerMetrics({
+      targets: [
+        target({
+          runnerId: "runner-target",
+          horseId,
+          raceDateTime: targetTime,
+        }),
+      ],
+      candidateRuns: [
+        run({
+          horseId,
+          source: "sporting_life",
+          raceDateTime: new Date("2020-09-12T12:00:00.000Z"),
+          raceDate: "2020-09-12",
+          finishingPosition: 2,
+        }),
+      ],
+    });
+
+    assert.equal(result.metrics.priorRuns, 1);
+    assert.equal(result.metrics.priorPlaces, 1);
+  });
+
+  test("does not let another horse's run leak into target history", () => {
+    const [result] = calculateTargetRunnerMetrics({
+      targets: [
+        target({
+          runnerId: "runner-target",
+          horseId,
+          raceDateTime: targetTime,
+        }),
+      ],
+      candidateRuns: [
+        run({
+          horseId: "another-horse",
+          source: "sporting_life",
+          raceDateTime: new Date("2020-09-12T12:00:00.000Z"),
+          raceDate: "2020-09-12",
+          finishingPosition: 1,
+        }),
+      ],
+    });
+
+    assert.equal(result.metrics.priorRuns, 0);
+    assert.equal(result.metrics.priorWins, 0);
+  });
+
+  test("excludes the target race itself and later races", () => {
+    const [result] = calculateTargetRunnerMetrics({
+      targets: [
+        target({
+          runnerId: "runner-target",
+          horseId,
+          raceDateTime: targetTime,
+        }),
+      ],
+      candidateRuns: [
+        run({
+          horseId,
+          source: "sporting_life",
+          raceDateTime: targetTime,
+          raceDate: "2020-09-13",
+          finishingPosition: 1,
+        }),
+        run({
+          horseId,
+          source: "sporting_life",
+          raceDateTime: new Date("2020-09-14T12:00:00.000Z"),
+          raceDate: "2020-09-14",
+          finishingPosition: 1,
+        }),
+      ],
+    });
+
+    assert.equal(result.metrics.priorRuns, 0);
+  });
+
+  test("does not let Racing Post rows leak into Sporting Life history", () => {
+    const [result] = calculateTargetRunnerMetrics({
+      targets: [
+        target({
+          runnerId: "runner-target",
+          horseId,
+          raceDateTime: targetTime,
+        }),
+      ],
+      candidateRuns: [
+        run({
+          horseId,
+          source: "racing-post",
+          raceDateTime: new Date("2020-09-12T12:00:00.000Z"),
+          raceDate: "2020-09-12",
+          finishingPosition: 1,
+        }),
+      ],
+    });
+
+    assert.equal(result.metrics.priorRuns, 0);
+  });
+
+  test("bulk metrics match the single-horse calculation for sampled horses", () => {
+    const candidateRuns = [
+      run({
+        horseId,
+        source: "sporting_life",
+        raceDateTime: new Date("2020-09-12T12:00:00.000Z"),
+        raceDate: "2020-09-12",
+        finishingPosition: 1,
+      }),
+      run({
+        horseId: "another-horse",
+        source: "sporting_life",
+        raceDateTime: new Date("2020-09-11T12:00:00.000Z"),
+        raceDate: "2020-09-11",
+        finishingPosition: 2,
+      }),
+      run({
+        horseId,
+        source: "sporting_life",
+        raceDateTime: targetTime,
+        raceDate: "2020-09-13",
+        finishingPosition: 4,
+      }),
+    ];
+    const [bulkResult] = calculateTargetRunnerMetrics({
+      targets: [
+        target({
+          runnerId: "runner-target",
+          horseId,
+          raceDateTime: targetTime,
+        }),
+      ],
+      candidateRuns,
+    });
+    const singleHorseMetrics = calculateHorseMetricsAsOf({
+      beforeDateTime: targetTime,
+      targetCourseId,
+      targetDistanceYards,
+      targetGoing,
+      runs: candidateRuns.filter(
+        (candidateRun) =>
+          candidateRun.source === "sporting_life" &&
+          candidateRun.horseId === horseId,
+      ),
+    });
+
+    assert.deepEqual(bulkResult.metrics, singleHorseMetrics);
   });
 });

@@ -21,6 +21,7 @@ type RunnerView = {
   saddleclothNumber: number | null;
   finishingPosition: number | null;
   finishingStatus: string | null;
+  resultStatus: string | null;
   runnerComment: string | null;
   horseName: string;
   trainerName: string | null;
@@ -34,6 +35,7 @@ type RunnerView = {
 };
 
 type RaceView = {
+  source: string | null;
   sourceId: string | null;
   raceName: string | null;
   raceDate: string;
@@ -45,7 +47,21 @@ type RaceView = {
   raceClass: string | null;
   raceTypeCode: string | null;
   actualRunnerCount: number | null;
+  winningTime: string | null;
   runners: RunnerView[];
+};
+
+type RaceSummaryView = {
+  sourceId: string | null;
+  raceDate: string;
+  scheduledTime: string | null;
+  courseName: string;
+  raceName: string | null;
+  distance: string | null;
+  going: string | null;
+  raceClass: string | null;
+  actualRunnerCount: number | null;
+  winningTime: string | null;
 };
 
 type PageData =
@@ -54,6 +70,8 @@ type PageData =
       raceCount: number;
       runnerCount: number;
       importedRaces: RaceView[];
+      sportingLifeWeek: RaceSummaryView[];
+      sportingLifeRaces: RaceView[];
       smokeRace: RaceView | null;
       octoberProofRunners: TargetRunnerMetrics[];
     }
@@ -72,8 +90,11 @@ async function getPageData(): Promise<PageData> {
     const [raceTotal] = await db.select({ value: count() }).from(races);
     const [runnerTotal] = await db.select({ value: count() }).from(raceRunners);
 
-    const [importedRaces, smokeRace] = await Promise.all([
+    const [importedRaces, sportingLifeWeek, sportingLifeRaces, smokeRace] =
+      await Promise.all([
       getRacingPostDayRaces(db, "2020-10-01"),
+      getSportingLifeWeekRaces(db),
+      getSourceDayRaces(db, "sporting_life", "2020-09-13"),
       getRaceWithRunners({
         db,
         source: "smoke-test",
@@ -92,6 +113,8 @@ async function getPageData(): Promise<PageData> {
       raceCount: raceTotal.value,
       runnerCount: runnerTotal.value,
       importedRaces,
+      sportingLifeWeek,
+      sportingLifeRaces,
       smokeRace,
       octoberProofRunners,
     };
@@ -122,6 +145,7 @@ async function getRaceWithRunners({
   const raceRows = await db
     .select({
       id: races.id,
+      source: races.source,
       sourceId: races.sourceId,
       raceName: races.raceName,
       raceDate: races.raceDate,
@@ -133,6 +157,7 @@ async function getRaceWithRunners({
       raceClass: races.raceClass,
       raceTypeCode: races.raceTypeCode,
       actualRunnerCount: races.actualRunnerCount,
+      winningTime: races.winningTime,
     })
     .from(races)
     .innerJoin(courses, eq(races.courseId, courses.id))
@@ -149,6 +174,7 @@ async function getRaceWithRunners({
       saddleclothNumber: raceRunners.saddleclothNumber,
       finishingPosition: raceRunners.finishingPosition,
       finishingStatus: raceRunners.finishingStatus,
+      resultStatus: raceRunners.resultStatus,
       runnerComment: raceRunners.runnerComment,
       horseId: horses.id,
       horseName: horses.displayName,
@@ -178,12 +204,20 @@ async function getRacingPostDayRaces(
   db: ReturnType<typeof createDbConnection>["db"],
   raceDate: string,
 ): Promise<RaceView[]> {
+  return getSourceDayRaces(db, "racing-post", raceDate);
+}
+
+async function getSourceDayRaces(
+  db: ReturnType<typeof createDbConnection>["db"],
+  source: string,
+  raceDate: string,
+): Promise<RaceView[]> {
   const raceRows = await db
     .select({
       sourceId: races.sourceId,
     })
     .from(races)
-    .where(and(eq(races.source, "racing-post"), eq(races.raceDate, raceDate)))
+    .where(and(eq(races.source, source), eq(races.raceDate, raceDate)))
     .orderBy(asc(races.scheduledTime), asc(races.sourceId));
 
   const dayRaces = await Promise.all(
@@ -192,13 +226,40 @@ async function getRacingPostDayRaces(
       .map((race) =>
         getRaceWithRunners({
           db,
-          source: "racing-post",
+          source,
           sourceId: race.sourceId,
         }),
       ),
   );
 
   return dayRaces.filter((race): race is RaceView => race !== null);
+}
+
+async function getSportingLifeWeekRaces(
+  db: ReturnType<typeof createDbConnection>["db"],
+): Promise<RaceSummaryView[]> {
+  return db
+    .select({
+      sourceId: races.sourceId,
+      raceDate: races.raceDate,
+      scheduledTime: races.scheduledTime,
+      courseName: courses.displayName,
+      raceName: races.raceName,
+      distance: races.distance,
+      going: races.going,
+      raceClass: races.raceClass,
+      actualRunnerCount: races.actualRunnerCount,
+      winningTime: races.winningTime,
+    })
+    .from(races)
+    .innerJoin(courses, eq(races.courseId, courses.id))
+    .where(
+      and(
+        eq(races.source, "sporting_life"),
+        sql`${races.raceDate} between '2020-09-07' and '2020-09-13'`,
+      ),
+    )
+    .orderBy(asc(races.raceDate), asc(races.scheduledTime), asc(races.sourceId));
 }
 
 export default async function Home() {
@@ -270,12 +331,62 @@ function DatabaseConnected({
         heading="Imported Racing Post Races"
         races={data.importedRaces}
       />
+      <RaceSection
+        emptyMessage="Run bun run sl:import-day to import the 2020-09-13 Sporting Life proof day."
+        heading="Sporting Life 2020-09-13 Proof Day"
+        races={data.sportingLifeRaces}
+      />
+      <SportingLifeWeekSection races={data.sportingLifeWeek} />
       <OctoberProofSection runners={data.octoberProofRunners} />
       <RaceSection
         emptyMessage="Run bun run db:seed to restore the fictional smoke-test race."
         heading="Synthetic Smoke-Test Race"
         races={data.smokeRace ? [data.smokeRace] : []}
       />
+    </section>
+  );
+}
+
+function SportingLifeWeekSection({ races }: { races: RaceSummaryView[] }) {
+  if (races.length === 0) {
+    return null;
+  }
+
+  return (
+    <section className="mt-10 border-t border-slate-200 pt-8">
+      <h3 className="text-lg font-semibold">Sporting Life Week Summary</h3>
+      <div className="mt-5 overflow-x-auto">
+        <table className="w-full min-w-[1040px] text-left text-sm">
+          <thead className="border-b border-slate-200 text-slate-600">
+            <tr>
+              <th className="py-2 pr-4 font-medium">Date</th>
+              <th className="py-2 pr-4 font-medium">Time</th>
+              <th className="py-2 pr-4 font-medium">Course</th>
+              <th className="py-2 pr-4 font-medium">Race</th>
+              <th className="py-2 pr-4 font-medium">Distance</th>
+              <th className="py-2 pr-4 font-medium">Going</th>
+              <th className="py-2 pr-4 font-medium">Class</th>
+              <th className="py-2 pr-4 font-medium">Runners</th>
+              <th className="py-2 pr-4 font-medium">Winning time</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-200">
+            {races.map((race) => (
+              <tr key={race.sourceId ?? `${race.raceDate}-${race.raceName}`}>
+                <td className="py-3 pr-4">{race.raceDate}</td>
+                <td className="py-3 pr-4">{race.scheduledTime ?? "-"}</td>
+                <td className="py-3 pr-4">{race.courseName}</td>
+                <td className="py-3 pr-4">{race.raceName ?? "Untitled race"}</td>
+                <td className="py-3 pr-4">{race.distance ?? "-"}</td>
+                <td className="py-3 pr-4">{race.going ?? "-"}</td>
+                <td className="py-3 pr-4">{race.raceClass ?? "-"}</td>
+                <td className="py-3 pr-4">{race.actualRunnerCount ?? "-"}</td>
+                <td className="py-3 pr-4">{race.winningTime ?? "-"}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </section>
   );
 }
@@ -389,6 +500,13 @@ function formatRecord(
   return `${wins}-${places}-${runs}`;
 }
 
+function formatSource(source: string): string {
+  return source
+    .split(/[-_]/)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+}
+
 function RaceSection({
   emptyMessage,
   heading,
@@ -422,12 +540,14 @@ function RaceSection({
               {race.courseName}: {race.raceName ?? "Untitled race"}
             </summary>
             <p className="mt-3 text-sm leading-6 text-slate-700">
+              {race.source ? `${formatSource(race.source)} source, ` : ""}
               {race.raceDate}
               {race.offTime ? `, off ${race.offTime}` : ""}
               {race.distance ? `, ${race.distance}` : ""}
               {race.going ? `, ${race.going}` : ""}
               {race.raceClass ? `, class ${race.raceClass}` : ""}
               {race.raceTypeCode ? `, type ${race.raceTypeCode}` : ""}
+              {race.winningTime ? `, winning time ${race.winningTime}` : ""}
               {race.actualRunnerCount ? `, ${race.actualRunnerCount} runners` : ""}
             </p>
 
@@ -436,6 +556,7 @@ function RaceSection({
                 <thead className="border-b border-slate-200 text-slate-600">
                   <tr>
                     <th className="py-2 pr-4 font-medium">Pos</th>
+                    <th className="py-2 pr-4 font-medium">Outcome</th>
                     <th className="py-2 pr-4 font-medium">No</th>
                     <th className="py-2 pr-4 font-medium">Horse</th>
                     <th className="py-2 pr-4 font-medium">Trainer</th>
@@ -455,6 +576,9 @@ function RaceSection({
                         {runner.finishingPosition ??
                           runner.finishingStatus ??
                           "-"}
+                      </td>
+                      <td className="py-3 pr-4">
+                        {runner.resultStatus ?? runner.finishingStatus ?? "-"}
                       </td>
                       <td className="py-3 pr-4">
                         {runner.saddleclothNumber ?? "-"}

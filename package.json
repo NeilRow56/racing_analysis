@@ -16,6 +16,9 @@
     "rp:import-one": "scraper/.venv/bin/python scraper/scripts/import_one_result.py",
     "rp:import-day": "scraper/.venv/bin/python scraper/scripts/import_results_day.py",
     "rp:import-range": "scraper/.venv/bin/python scraper/scripts/import_results_range.py",
+    "sl:import-race": "scraper/.venv/bin/python scraper/scripts/import_sporting_life_race.py",
+    "sl:import-day": "scraper/.venv/bin/python scraper/scripts/import_sporting_life_day.py",
+    "sl:import-range": "scraper/.venv/bin/python scraper/scripts/import_sporting_life_range.py",
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {

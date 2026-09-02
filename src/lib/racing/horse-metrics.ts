@@ -1,10 +1,11 @@
-import { and, asc, desc, eq, inArray, lt, lte } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, isNull, lt, lte, ne, or } from "drizzle-orm";
 import { createDbConnection } from "@/db";
 import { courses, horses, raceRunners, races } from "@/db/schema";
 
 type Db = ReturnType<typeof createDbConnection>["db"];
 
 export type HistoricalRunInput = {
+  source?: string | null;
   horseId: string;
   raceDateTime: Date;
   raceDate: string;
@@ -62,6 +63,7 @@ export type HorseMetricsAsOf = {
 
 export type TargetRunnerMetrics = {
   target: {
+    source?: string | null;
     runnerId: string;
     horseId: string;
     horseName: string;
@@ -120,9 +122,11 @@ export async function getHorseMetricsAsOf({
 export async function getTargetRunnerMetricsForDate(
   db: Db,
   targetDate: string,
+  source = "racing-post",
 ): Promise<TargetRunnerMetrics[]> {
   const targets = await db
     .select({
+      source: raceRunners.source,
       runnerId: raceRunners.id,
       horseId: raceRunners.horseId,
       horseName: horses.displayName,
@@ -139,7 +143,14 @@ export async function getTargetRunnerMetricsForDate(
     .innerJoin(races, eq(raceRunners.raceId, races.id))
     .innerJoin(courses, eq(races.courseId, courses.id))
     .innerJoin(horses, eq(raceRunners.horseId, horses.id))
-    .where(and(eq(races.source, "racing-post"), eq(races.raceDate, targetDate)))
+    .where(
+      and(
+        eq(races.source, source),
+        eq(raceRunners.source, source),
+        eq(races.raceDate, targetDate),
+        isRunnableResultStatus(),
+      ),
+    )
     .orderBy(asc(races.scheduledTime), asc(courses.displayName), asc(horses.displayName));
 
   const horseIds = [...new Set(targets.map((target) => target.horseId))];
@@ -160,6 +171,7 @@ export async function getTargetRunnerMetricsForDate(
 
   const candidateRuns = await db
     .select({
+      source: raceRunners.source,
       horseId: raceRunners.horseId,
       raceDateTime: races.raceDatetime,
       raceDate: races.raceDate,
@@ -179,25 +191,40 @@ export async function getTargetRunnerMetricsForDate(
     .where(
       and(
         inArray(raceRunners.horseId, horseIds),
+        eq(races.source, source),
+        eq(raceRunners.source, source),
+        isRunnableResultStatus(),
         lte(races.raceDatetime, latestTargetDateTime),
       ),
     )
     .orderBy(desc(races.raceDatetime));
 
+  return calculateTargetRunnerMetrics({
+    candidateRuns: candidateRuns.filter(hasRaceDateTime),
+    targets: timedTargets,
+  });
+}
+
+export function calculateTargetRunnerMetrics({
+  candidateRuns,
+  targets,
+}: {
+  candidateRuns: HistoricalRunInput[];
+  targets: TargetRunnerMetrics["target"][];
+}): TargetRunnerMetrics[] {
   const runsByHorse = new Map<string, HistoricalRunInput[]>();
   for (const run of candidateRuns) {
-    if (!run.raceDateTime) {
-      continue;
-    }
     const runs = runsByHorse.get(run.horseId) ?? [];
-    runs.push({ ...run, raceDateTime: run.raceDateTime });
+    runs.push(run);
     runsByHorse.set(run.horseId, runs);
   }
 
-  return timedTargets.map((target) => ({
+  return targets.map((target) => ({
     target,
     metrics: calculateHorseMetricsAsOf({
-      runs: runsByHorse.get(target.horseId) ?? [],
+      runs: runsByHorse
+        .get(target.horseId)
+        ?.filter((run) => run.source === undefined || run.source === target.source) ?? [],
       beforeDateTime: target.raceDateTime,
       targetCourseId: target.courseId,
       targetDistanceYards: target.distanceYards,
@@ -217,7 +244,10 @@ export function calculateHorseMetricsAsOf({
   beforeDateTime: Date;
 } & HorseMetricsContext): HorseMetricsAsOf {
   const priorRuns = runs
-    .filter((run) => run.raceDateTime < beforeDateTime)
+    .filter(
+      (run) =>
+        run.resultStatus !== "non_runner" && run.raceDateTime < beforeDateTime,
+    )
     .sort((a, b) => b.raceDateTime.getTime() - a.raceDateTime.getTime());
   const rprValues = priorRuns
     .map((run) => run.racingPostRating)
@@ -390,4 +420,8 @@ function hasTargetRaceDateTime<T extends { raceDateTime: Date | null }>(
   target: T,
 ): target is T & { raceDateTime: Date } {
   return target.raceDateTime !== null;
+}
+
+function isRunnableResultStatus() {
+  return or(isNull(raceRunners.resultStatus), ne(raceRunners.resultStatus, "non_runner"));
 }
