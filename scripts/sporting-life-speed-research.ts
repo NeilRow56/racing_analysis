@@ -3,19 +3,25 @@ import {
   classifyRaceCategory,
   equivalentFinishingTimeSeconds,
   formatSeconds,
+  leaveOneOutMeetingVariant,
+  leaveOneOutStandardTime,
   mean,
   median,
   parseBeatenDistanceLengths,
   parseWinningTimeSeconds,
+  provisionalSpeedFigure,
   reconstructCumulativeBeatenLengths,
   sampleLabel,
   secondsPerLength,
+  speedFigureConfidence,
   standardDeviation,
+  variantAdjustedTimeSeconds,
   type RaceCategory,
   type SecondsPerLengthModel,
+  type StandardTimeRaceInput,
 } from "@/lib/racing/speed-research";
 
-const START_DATE = "2020-09-07";
+const START_DATE = "2020-08-01";
 const END_DATE = "2020-09-13";
 
 type RacePayload = {
@@ -97,6 +103,7 @@ type RunnerRow = {
   finishing_position: number | null;
   result_status: string | null;
   beaten_distance: string | null;
+  official_rating: number | null;
 };
 
 const CANDIDATE_MODELS: SecondsPerLengthModel[] = [
@@ -105,6 +112,29 @@ const CANDIDATE_MODELS: SecondsPerLengthModel[] = [
   "race_category",
   "speed_based",
 ];
+
+const MINIMUM_STANDARD_SAMPLE_SIZE = 2;
+const MINIMUM_VARIANT_SAMPLE_SIZE = 2;
+
+type ResearchSpeedFigure = {
+  race: ResearchRace;
+  horseName: string;
+  runnerSourceId: string;
+  finishingPosition: number | null;
+  rawMargin: string | null;
+  cumulativeBeatenLengths: number;
+  equivalentTimeSeconds: number;
+  standardSeconds: number;
+  standardSampleSize: number;
+  variantSeconds: number;
+  variantSampleSize: number;
+  adjustedTimeSeconds: number;
+  fixedPointsFigure: number;
+  distanceAwareFigure: number;
+  selectedFigure: number;
+  confidence: string;
+  officialRating: number | null;
+};
 
 async function main() {
   const { client } = createDbConnection();
@@ -142,7 +172,8 @@ async function main() {
         h.display_name as horse_name,
         rr.finishing_position,
         rr.result_status,
-        rr.beaten_distance
+        rr.beaten_distance,
+        rr.official_rating
       from race_runners rr
       join races r on r.id = rr.race_id
       join horses h on h.id = rr.horse_id
@@ -154,6 +185,12 @@ async function main() {
 
     const races = rows.map(toResearchRace);
     const runnersByRace = groupRunnersByRace(runnerRows);
+    const standardInputs = standardTimeInputs(races);
+    const speedFigures = calculateResearchSpeedFigures(
+      races,
+      runnersByRace,
+      standardInputs,
+    );
     const groups = courseDistanceGroups(races);
     const variants = meetingVariants(races, groups);
     const beaten = beatenDistanceSummary(races);
@@ -196,6 +233,10 @@ async function main() {
     printHeader("Repeated Course/Distance Groups");
     const repeated = [...groups.values()].filter((group) => group.validTimes.length > 1);
     console.log(`repeated_valid_groups=${repeated.length}`);
+    console.log(courseDistanceSampleBins(groups));
+    for (const line of namedCourseDistanceExamples(groups)) {
+      console.log(line);
+    }
     for (const group of repeated
       .sort((a, b) => b.validTimes.length - a.validTimes.length || a.courseName.localeCompare(b.courseName))
       .slice(0, 30)) {
@@ -260,6 +301,36 @@ async function main() {
       console.log(line);
     }
 
+    printHeader("PROVISIONAL HORSE SPEED FIGURES");
+    console.log("research_only=true");
+    console.log("formula=standard_time - (winner_time + beaten_lengths_to_seconds - meeting_variant)");
+    console.log("figure_fixed=100 + time_difference_seconds * 5");
+    console.log("figure_distance_aware=100 + time_difference_seconds / speed_based_seconds_per_length");
+    console.log("selected_research_method=distance_aware");
+    console.log(`minimum_standard_sample_size=${MINIMUM_STANDARD_SAMPLE_SIZE}`);
+    console.log(`minimum_variant_sample_size=${MINIMUM_VARIANT_SAMPLE_SIZE}`);
+    console.log(`eligible_races=${new Set(speedFigures.map((figure) => figure.race.race_source_id)).size}`);
+    console.log(`eligible_runner_figures=${speedFigures.length}`);
+    console.log(
+      `completed_timed_runners=${completedTimedRunners(races, runnerRows)} eligible_percentage=${eligiblePercentage(
+        speedFigures,
+        races,
+        runnerRows,
+      )}`,
+    );
+    console.log(`confidence_counts=${JSON.stringify(counterValuesObject(speedFigures.map((figure) => figure.confidence)))}`);
+    console.log(speedFigureDistribution(speedFigures));
+    console.log(orRelationship(speedFigures));
+    for (const line of winnerFiguresByClass(speedFigures)) {
+      console.log(line);
+    }
+    for (const line of selectedFigureExamples(speedFigures)) {
+      console.log(line);
+    }
+    for (const line of speedFigureAnomalies(speedFigures)) {
+      console.log(line);
+    }
+
     printHeader("Implausible Or Problematic Records");
     for (const line of implausible) {
       console.log(line);
@@ -296,10 +367,135 @@ function groupRunnersByRace(runners: RunnerRow[]): Map<string, RunnerRow[]> {
   return grouped;
 }
 
+function standardTimeInputs(races: ResearchRace[]): StandardTimeRaceInput[] {
+  return races.map((race) => ({
+    raceId: race.race_source_id,
+    groupKey: raceGroupKey(race),
+    meetingKey: `${race.race_date} ${race.course_source_id}`,
+    winningTimeSeconds: race.parsedWinningSeconds,
+  }));
+}
+
+function calculateResearchSpeedFigures(
+  races: ResearchRace[],
+  runnersByRace: Map<string, RunnerRow[]>,
+  standardInputs: StandardTimeRaceInput[],
+): ResearchSpeedFigure[] {
+  const figures: ResearchSpeedFigure[] = [];
+
+  for (const race of races) {
+    if (race.parsedWinningSeconds === null) {
+      continue;
+    }
+
+    const standard = leaveOneOutStandardTime(
+      race.race_source_id,
+      standardInputs,
+      MINIMUM_STANDARD_SAMPLE_SIZE,
+    );
+    const variant = leaveOneOutMeetingVariant(
+      race.race_source_id,
+      standardInputs,
+      MINIMUM_STANDARD_SAMPLE_SIZE,
+      MINIMUM_VARIANT_SAMPLE_SIZE,
+    );
+    if (standard.standardSeconds === null || variant.variantSeconds === null) {
+      continue;
+    }
+
+    const sourceRunners = runnersByRace.get(race.race_source_id) ?? [];
+    const sourceRunnerById = new Map(
+      sourceRunners.map((runner) => [runner.runner_source_id, runner]),
+    );
+    const reconstructed = reconstructCumulativeBeatenLengths(
+      sourceRunners.map((runner) => ({
+        id: runner.runner_source_id,
+        finishingPosition: runner.finishing_position,
+        resultStatus: runner.result_status,
+        beatenDistance: runner.beaten_distance,
+      })),
+    );
+
+    for (const runner of reconstructed) {
+      if (
+        runner.cumulativeBeatenLengths === null ||
+        runner.resultStatus !== "finished"
+      ) {
+        continue;
+      }
+      const equivalentTime = equivalentFinishingTimeSeconds(
+        race.parsedWinningSeconds,
+        runner.cumulativeBeatenLengths,
+        "speed_based",
+        {
+          distanceYards: race.distance_yards,
+          raceCategory: race.raceCategory,
+        },
+      );
+      const adjustedTime = variantAdjustedTimeSeconds(
+        equivalentTime,
+        variant.variantSeconds,
+      );
+      const fixedPointsFigure = provisionalSpeedFigure(
+        adjustedTime,
+        standard.standardSeconds,
+        "fixed_points_per_second",
+        {
+          distanceYards: race.distance_yards,
+          winnerTimeSeconds: race.parsedWinningSeconds,
+          raceCategory: race.raceCategory,
+        },
+      );
+      const distanceAwareFigure = provisionalSpeedFigure(
+        adjustedTime,
+        standard.standardSeconds,
+        "distance_aware",
+        {
+          distanceYards: race.distance_yards,
+          winnerTimeSeconds: race.parsedWinningSeconds,
+          raceCategory: race.raceCategory,
+        },
+      );
+
+      if (
+        equivalentTime === null ||
+        adjustedTime === null ||
+        fixedPointsFigure === null ||
+        distanceAwareFigure === null
+      ) {
+        continue;
+      }
+
+      const sourceRunner = sourceRunnerById.get(runner.id);
+      figures.push({
+        race,
+        horseName: sourceRunner?.horse_name ?? runner.id,
+        runnerSourceId: runner.id,
+        finishingPosition: runner.finishingPosition,
+        rawMargin: runner.beatenDistance ?? null,
+        cumulativeBeatenLengths: runner.cumulativeBeatenLengths,
+        equivalentTimeSeconds: equivalentTime,
+        standardSeconds: standard.standardSeconds,
+        standardSampleSize: standard.sampleSize,
+        variantSeconds: variant.variantSeconds,
+        variantSampleSize: variant.sampleSize,
+        adjustedTimeSeconds: adjustedTime,
+        fixedPointsFigure,
+        distanceAwareFigure,
+        selectedFigure: distanceAwareFigure,
+        confidence: speedFigureConfidence(standard.sampleSize, variant.sampleSize, true),
+        officialRating: sourceRunner?.official_rating ?? null,
+      });
+    }
+  }
+
+  return figures;
+}
+
 function courseDistanceGroups(races: ResearchRace[]): Map<string, StandardGroup> {
   const groups = new Map<string, StandardGroup>();
   for (const race of races) {
-    const key = `${race.course_source_id}:${race.distance_yards ?? "unknown"}`;
+    const key = raceGroupKey(race);
     const group =
       groups.get(key) ??
       {
@@ -318,6 +514,63 @@ function courseDistanceGroups(races: ResearchRace[]): Map<string, StandardGroup>
     groups.set(key, group);
   }
   return groups;
+}
+
+function raceGroupKey(race: ResearchRace): string {
+  return `${race.course_source_id}:${race.distance_yards ?? "unknown"}`;
+}
+
+function courseDistanceSampleBins(groups: Map<string, StandardGroup>): string {
+  const bins = {
+    "1": 0,
+    "2-4": 0,
+    "5-9": 0,
+    "10-19": 0,
+    "20+": 0,
+  };
+  let largest = 0;
+  for (const group of groups.values()) {
+    const sampleSize = group.validTimes.length;
+    largest = Math.max(largest, sampleSize);
+    if (sampleSize === 1) {
+      bins["1"] += 1;
+    } else if (sampleSize >= 2 && sampleSize <= 4) {
+      bins["2-4"] += 1;
+    } else if (sampleSize >= 5 && sampleSize <= 9) {
+      bins["5-9"] += 1;
+    } else if (sampleSize >= 10 && sampleSize <= 19) {
+      bins["10-19"] += 1;
+    } else if (sampleSize >= 20) {
+      bins["20+"] += 1;
+    }
+  }
+  return `course_distance_sample_bins=${JSON.stringify(bins)} largest_sample=${largest}`;
+}
+
+function namedCourseDistanceExamples(groups: Map<string, StandardGroup>): string[] {
+  const targets = [
+    ["Doncaster", "7f 6y"],
+    ["Doncaster", "1m"],
+    ["Leicester", "7f"],
+    ["Lingfield", "7f 135y"],
+    ["Wolverhampton", "7f 36y"],
+  ];
+  return targets.map(([course, distance]) => {
+    const group = [...groups.values()].find(
+      (candidate) => candidate.courseName === course && candidate.distance === distance,
+    );
+    if (!group) {
+      return `tracked_example course=${course} distance=${distance} missing`;
+    }
+    return [
+      "tracked_example",
+      `course=${course}`,
+      `distance=${distance}`,
+      `valid_races=${group.validTimes.length}`,
+      `median=${formatSeconds(median(group.validTimes))}`,
+      `sample=${sampleLabel(group.validTimes.length)}`,
+    ].join(" | ");
+  });
 }
 
 function meetingVariants(
@@ -651,6 +904,213 @@ function pickRace(
   );
 }
 
+function speedFigureDistribution(figures: ResearchSpeedFigure[]): string {
+  const values = figures.map((figure) => figure.selectedFigure).sort((a, b) => a - b);
+  return [
+    "distribution",
+    `count=${values.length}`,
+    `mean=${formatNumber(mean(values))}`,
+    `median=${formatNumber(median(values))}`,
+    `min=${formatNumber(values[0] ?? null)}`,
+    `p10=${formatNumber(percentile(values, 0.1))}`,
+    `p90=${formatNumber(percentile(values, 0.9))}`,
+    `max=${formatNumber(values.at(-1) ?? null)}`,
+  ].join(" | ");
+}
+
+function orRelationship(figures: ResearchSpeedFigure[]): string {
+  const paired = figures
+    .filter((figure) => figure.officialRating !== null)
+    .map((figure) => [figure.selectedFigure, figure.officialRating ?? 0] as const);
+  return [
+    "or_relationship",
+    `paired=${paired.length}`,
+    `correlation=${formatNumber(correlation(paired))}`,
+  ].join(" | ");
+}
+
+function winnerFiguresByClass(figures: ResearchSpeedFigure[]): string[] {
+  const grouped = new Map<string, number[]>();
+  for (const figure of figures) {
+    if (figure.finishingPosition !== 1) {
+      continue;
+    }
+    const key = figure.race.race_class ?? "missing";
+    const values = grouped.get(key) ?? [];
+    values.push(figure.selectedFigure);
+    grouped.set(key, values);
+  }
+  return [...grouped.entries()]
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([raceClass, values]) =>
+      [
+        "winner_speed_by_class",
+        `class=${raceClass}`,
+        `winners=${values.length}`,
+        `median=${formatNumber(median(values))}`,
+        `mean=${formatNumber(mean(values))}`,
+      ].join(" | "),
+    );
+}
+
+function selectedFigureExamples(figures: ResearchSpeedFigure[]): string[] {
+  const exampleRaces = [
+    pickFigureRace(figures, (figure) => figure.race.raceCategory !== "jumps" && (figure.race.distance_yards ?? 0) <= 1320),
+    pickFigureRace(figures, (figure) =>
+      figure.race.raceCategory !== "jumps" &&
+      (figure.race.distance_yards ?? 0) > 1320 &&
+      (figure.race.distance_yards ?? 0) <= 2640,
+    ),
+    pickFigureRace(figures, (figure) => figure.race.raceCategory !== "jumps" && (figure.race.distance_yards ?? 0) > 2640),
+    pickFigureRace(figures, (figure) => figure.race.raceCategory === "jumps"),
+  ].filter((raceId): raceId is string => raceId !== null);
+
+  const lines: string[] = [];
+  for (const raceId of exampleRaces) {
+    const raceFigures = figures
+      .filter((figure) => figure.race.race_source_id === raceId)
+      .sort((a, b) => (a.finishingPosition ?? 999) - (b.finishingPosition ?? 999))
+      .slice(0, 6);
+    const race = raceFigures[0]?.race;
+    if (!race) {
+      continue;
+    }
+    lines.push(
+      [
+        `sample_race=${race.race_date} ${race.course_name} ${race.distance}`,
+        `race_id=${race.race_source_id}`,
+        `category=${race.raceCategory}`,
+        `standard=${formatSeconds(raceFigures[0].standardSeconds)}`,
+        `variant=${formatSeconds(raceFigures[0].variantSeconds)}`,
+        `standard_sample=${raceFigures[0].standardSampleSize}`,
+        `variant_sample=${raceFigures[0].variantSampleSize}`,
+      ].join(" | "),
+    );
+    for (const figure of raceFigures) {
+      lines.push(
+        [
+          `  pos=${figure.finishingPosition}`,
+          `horse=${figure.horseName}`,
+          `raw_margin=${figure.rawMargin ?? "-"}`,
+          `cum_lengths=${figure.cumulativeBeatenLengths.toFixed(2)}`,
+          `equiv=${formatSeconds(figure.equivalentTimeSeconds)}`,
+          `adjusted=${formatSeconds(figure.adjustedTimeSeconds)}`,
+          `fixed_fig=${formatNumber(figure.fixedPointsFigure)}`,
+          `distance_fig=${formatNumber(figure.distanceAwareFigure)}`,
+          `confidence=${figure.confidence}`,
+          `OR=${figure.officialRating ?? "-"}`,
+        ].join(" | "),
+      );
+    }
+  }
+  return lines;
+}
+
+function completedTimedRunners(races: ResearchRace[], runners: RunnerRow[]): number {
+  const timedRaceIds = new Set(
+    races
+      .filter((race) => race.parsedWinningSeconds !== null)
+      .map((race) => race.race_source_id),
+  );
+  return runners.filter(
+    (runner) =>
+      timedRaceIds.has(runner.race_source_id) &&
+      runner.result_status === "finished",
+  ).length;
+}
+
+function eligiblePercentage(
+  figures: ResearchSpeedFigure[],
+  races: ResearchRace[],
+  runners: RunnerRow[],
+): string {
+  const denominator = completedTimedRunners(races, runners);
+  if (denominator === 0) {
+    return "-";
+  }
+  return `${((figures.length / denominator) * 100).toFixed(1)}%`;
+}
+
+function speedFigureAnomalies(figures: ResearchSpeedFigure[]): string[] {
+  const grouped = new Map<string, ResearchSpeedFigure[]>();
+  for (const figure of figures) {
+    const rows = grouped.get(figure.race.race_source_id) ?? [];
+    rows.push(figure);
+    grouped.set(figure.race.race_source_id, rows);
+  }
+
+  const anomalies: string[] = [];
+  for (const [raceId, raceFigures] of grouped.entries()) {
+    const sorted = [...raceFigures].sort(
+      (a, b) => (a.finishingPosition ?? 999) - (b.finishingPosition ?? 999),
+    );
+    for (let index = 1; index < sorted.length; index += 1) {
+      if (sorted[index].selectedFigure > sorted[index - 1].selectedFigure + 0.000_001) {
+        anomalies.push(
+          `ordering_anomaly race=${raceId} ahead=${sorted[index - 1].horseName}:${formatNumber(
+            sorted[index - 1].selectedFigure,
+          )} behind=${sorted[index].horseName}:${formatNumber(sorted[index].selectedFigure)}`,
+        );
+      }
+    }
+  }
+
+  if (anomalies.length === 0) {
+    return ["ordering_anomalies=none"];
+  }
+  return anomalies;
+}
+
+function pickFigureRace(
+  figures: ResearchSpeedFigure[],
+  predicate: (figure: ResearchSpeedFigure) => boolean,
+): string | null {
+  return figures.find(predicate)?.race.race_source_id ?? null;
+}
+
+function percentile(sortedValues: number[], fraction: number): number | null {
+  if (sortedValues.length === 0) {
+    return null;
+  }
+  const index = (sortedValues.length - 1) * fraction;
+  const lower = Math.floor(index);
+  const upper = Math.ceil(index);
+  if (lower === upper) {
+    return sortedValues[lower];
+  }
+  const weight = index - lower;
+  return sortedValues[lower] * (1 - weight) + sortedValues[upper] * weight;
+}
+
+function correlation(pairs: readonly (readonly [number, number])[]): number | null {
+  if (pairs.length < 2) {
+    return null;
+  }
+  const xs = pairs.map(([x]) => x);
+  const ys = pairs.map(([, y]) => y);
+  const xMean = mean(xs);
+  const yMean = mean(ys);
+  if (xMean === null || yMean === null) {
+    return null;
+  }
+  let numerator = 0;
+  let xTotal = 0;
+  let yTotal = 0;
+  for (const [x, y] of pairs) {
+    numerator += (x - xMean) * (y - yMean);
+    xTotal += (x - xMean) ** 2;
+    yTotal += (y - yMean) ** 2;
+  }
+  if (xTotal === 0 || yTotal === 0) {
+    return null;
+  }
+  return numerator / Math.sqrt(xTotal * yTotal);
+}
+
+function formatNumber(value: number | null): string {
+  return value === null ? "-" : value.toFixed(2);
+}
+
 function implausibleRecords(races: ResearchRace[]): string[] {
   const lines: string[] = [];
   for (const race of races) {
@@ -687,11 +1147,15 @@ function formatGroup(group: StandardGroup): string {
 }
 
 function counterValues(values: string[]): string {
+  return JSON.stringify(counterValuesObject(values));
+}
+
+function counterValuesObject(values: string[]): Record<string, number> {
   const counts: Record<string, number> = {};
   for (const value of values) {
     increment(counts, value);
   }
-  return JSON.stringify(counts);
+  return counts;
 }
 
 function increment(counts: Record<string, number>, key: string) {

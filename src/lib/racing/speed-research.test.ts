@@ -5,13 +5,18 @@ import {
   beatenLengthsToSeconds,
   classifyRaceCategory,
   equivalentFinishingTimeSeconds,
+  leaveOneOutMeetingVariant,
+  leaveOneOutStandardTime,
   median,
   parseBeatenDistanceLengths,
   parseWinningTimeSeconds,
+  provisionalSpeedFigure,
   reconstructCumulativeBeatenLengths,
   sampleLabel,
   secondsPerLength,
+  timeDifferenceToSpeedPoints,
   standardDeviation,
+  variantAdjustedTimeSeconds,
 } from "./speed-research";
 
 describe("parseWinningTimeSeconds", () => {
@@ -107,6 +112,75 @@ describe("seconds-per-length conversion", () => {
 
   test("estimates equivalent finishing time from winner time and cumulative lengths", () => {
     assert.equal(equivalentFinishingTimeSeconds(72, 3, "fixed"), 72.6);
+  });
+});
+
+describe("provisional speed figures", () => {
+  const standardRaceInputs = [
+    { raceId: "target", groupKey: "course:1100", meetingKey: "day-a", winningTimeSeconds: 60 },
+    { raceId: "peer-a", groupKey: "course:1100", meetingKey: "day-a", winningTimeSeconds: 62 },
+    { raceId: "peer-b", groupKey: "course:1100", meetingKey: "day-a", winningTimeSeconds: 64 },
+    { raceId: "other", groupKey: "course:1320", meetingKey: "day-a", winningTimeSeconds: 75 },
+    { raceId: "other-peer-a", groupKey: "course:1320", meetingKey: "day-b", winningTimeSeconds: 73 },
+    { raceId: "other-peer-b", groupKey: "course:1320", meetingKey: "day-c", winningTimeSeconds: 74 },
+  ];
+
+  test("excludes the target race from its own standard", () => {
+    const standard = leaveOneOutStandardTime("target", standardRaceInputs);
+
+    assert.equal(standard.standardSeconds, 63);
+    assert.equal(standard.sampleSize, 2);
+  });
+
+  test("returns unavailable standard when no comparison races exist", () => {
+    const standard = leaveOneOutStandardTime("solo", [
+      { raceId: "solo", groupKey: "course:1540", meetingKey: "day", winningTimeSeconds: 88 },
+    ]);
+
+    assert.equal(standard.standardSeconds, null);
+    assert.equal(standard.confidence, "insufficient");
+  });
+
+  test("uses the correct meeting-variant sign", () => {
+    const variant = leaveOneOutMeetingVariant(
+      "target",
+      [
+        { raceId: "target", groupKey: "course:1100", meetingKey: "day-a", winningTimeSeconds: 60 },
+        { raceId: "peer-a", groupKey: "course:1320", meetingKey: "day-a", winningTimeSeconds: 75 },
+        { raceId: "peer-a-standard", groupKey: "course:1320", meetingKey: "day-b", winningTimeSeconds: 74 },
+        { raceId: "peer-b", groupKey: "course:1540", meetingKey: "day-a", winningTimeSeconds: 86 },
+        { raceId: "peer-b-standard", groupKey: "course:1540", meetingKey: "day-b", winningTimeSeconds: 85 },
+      ],
+      1,
+      1,
+    );
+
+    assert.equal(variant.variantSeconds, 1);
+  });
+
+  test("uses the correct track-adjustment sign", () => {
+    assert.equal(variantAdjustedTimeSeconds(62, 1), 61);
+    assert.equal(variantAdjustedTimeSeconds(62, -1), 63);
+  });
+
+  test("puts standard, faster, and slower performances on the expected scale", () => {
+    assert.equal(provisionalSpeedFigure(60, 60, "fixed_points_per_second"), 100);
+    assert.equal(provisionalSpeedFigure(59, 60, "fixed_points_per_second"), 105);
+    assert.equal(provisionalSpeedFigure(61, 60, "fixed_points_per_second"), 95);
+  });
+
+  test("supports a distance-aware points conversion", () => {
+    const points = timeDifferenceToSpeedPoints(1, "distance_aware", {
+      distanceYards: 1320,
+      winnerTimeSeconds: 72,
+    });
+
+    assert.equal(points.toFixed(2), "6.88");
+  });
+
+  test("handles missing standard and variant inputs safely", () => {
+    assert.equal(variantAdjustedTimeSeconds(62, null), null);
+    assert.equal(provisionalSpeedFigure(62, null, "fixed_points_per_second"), null);
   });
 });
 

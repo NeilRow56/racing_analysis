@@ -13,7 +13,7 @@ from dotenv import load_dotenv
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-MIN_DATE = date(2020, 9, 7)
+MIN_DATE = date(2020, 8, 1)
 MAX_DATE = date(2020, 9, 13)
 
 sys.path.insert(0, str(REPO_ROOT / "scraper"))
@@ -45,7 +45,7 @@ def main() -> None:
     if args.end_date < args.start_date:
         raise SystemExit("end_date must be on or after start_date.")
     if args.start_date < MIN_DATE or args.end_date > MAX_DATE:
-        raise SystemExit("This controlled range command is limited to 2020-09-07 through 2020-09-13.")
+        raise SystemExit("This controlled range command is limited to 2020-08-01 through 2020-09-13.")
 
     load_dotenv(REPO_ROOT / ".env.local")
     database_url = os.getenv("DATABASE_URL")

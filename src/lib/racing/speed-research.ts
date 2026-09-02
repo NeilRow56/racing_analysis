@@ -29,6 +29,14 @@ export const SECONDS_PER_LENGTH_ASSUMPTIONS = {
   },
 } as const;
 
+export const SPEED_FIGURE_ASSUMPTIONS = {
+  baseFigure: 100,
+  fixedPointsPerSecond: 5,
+  minimumStandardSampleSize: 2,
+  minimumVariantSampleSize: 2,
+  distanceAwarePointsPerLength: 1,
+} as const;
+
 const FRACTION_LENGTHS = {
   "¼": 0.25,
   "½": 0.5,
@@ -61,6 +69,28 @@ export type RunnerCumulativeMargin = RunnerMarginInput & {
   cumulativeBeatenLengths: number | null;
   ambiguous: boolean;
 };
+
+export type StandardTimeRaceInput = {
+  raceId: string;
+  groupKey: string;
+  meetingKey?: string | null;
+  winningTimeSeconds: number | null;
+};
+
+export type LeaveOneOutStandard = {
+  standardSeconds: number | null;
+  sampleSize: number;
+  confidence: string;
+};
+
+export type LeaveOneOutMeetingVariant = {
+  variantSeconds: number | null;
+  sampleSize: number;
+  deviations: number[];
+  confidence: string;
+};
+
+export type SpeedFigurePointsModel = "fixed_points_per_second" | "distance_aware";
 
 export function parseWinningTimeSeconds(value: string | null): number | null {
   if (!value) {
@@ -222,6 +252,164 @@ export function equivalentFinishingTimeSeconds(
     winnerTimeSeconds,
   });
   return beatenSeconds === null ? null : winnerTimeSeconds + beatenSeconds;
+}
+
+export function leaveOneOutStandardTime(
+  targetRaceId: string,
+  races: StandardTimeRaceInput[],
+  minimumSampleSize: number = SPEED_FIGURE_ASSUMPTIONS.minimumStandardSampleSize,
+): LeaveOneOutStandard {
+  const target = races.find((race) => race.raceId === targetRaceId);
+  if (!target) {
+    return { standardSeconds: null, sampleSize: 0, confidence: "insufficient" };
+  }
+
+  const comparisonTimes = races
+    .filter((race) => race.raceId !== targetRaceId)
+    .filter((race) => race.groupKey === target.groupKey)
+    .flatMap((race) =>
+      race.winningTimeSeconds === null ? [] : [race.winningTimeSeconds],
+    );
+
+  if (comparisonTimes.length < minimumSampleSize) {
+    return {
+      standardSeconds: null,
+      sampleSize: comparisonTimes.length,
+      confidence: "insufficient",
+    };
+  }
+
+  return {
+    standardSeconds: median(comparisonTimes),
+    sampleSize: comparisonTimes.length,
+    confidence: speedFigureConfidence(comparisonTimes.length, null, true),
+  };
+}
+
+export function leaveOneOutMeetingVariant(
+  targetRaceId: string,
+  races: StandardTimeRaceInput[],
+  minimumStandardSampleSize: number = SPEED_FIGURE_ASSUMPTIONS.minimumStandardSampleSize,
+  minimumVariantSampleSize: number = SPEED_FIGURE_ASSUMPTIONS.minimumVariantSampleSize,
+): LeaveOneOutMeetingVariant {
+  const target = races.find((race) => race.raceId === targetRaceId);
+  if (!target?.meetingKey) {
+    return {
+      variantSeconds: null,
+      sampleSize: 0,
+      deviations: [],
+      confidence: "insufficient",
+    };
+  }
+
+  const deviations: number[] = [];
+  for (const race of races) {
+    if (
+      race.raceId === targetRaceId ||
+      race.meetingKey !== target.meetingKey ||
+      race.winningTimeSeconds === null
+    ) {
+      continue;
+    }
+
+    const standard = leaveOneOutStandardTime(
+      race.raceId,
+      races.filter((candidate) => candidate.raceId !== targetRaceId),
+      minimumStandardSampleSize,
+    );
+    if (standard.standardSeconds === null) {
+      continue;
+    }
+    deviations.push(race.winningTimeSeconds - standard.standardSeconds);
+  }
+
+  if (deviations.length < minimumVariantSampleSize) {
+    return {
+      variantSeconds: null,
+      sampleSize: deviations.length,
+      deviations,
+      confidence: "insufficient",
+    };
+  }
+
+  return {
+    variantSeconds: median(deviations),
+    sampleSize: deviations.length,
+    deviations,
+    confidence: speedFigureConfidence(null, deviations.length, true),
+  };
+}
+
+export function variantAdjustedTimeSeconds(
+  equivalentTimeSeconds: number | null,
+  variantSeconds: number | null,
+): number | null {
+  if (equivalentTimeSeconds === null || variantSeconds === null) {
+    return null;
+  }
+  // Positive variant means the meeting ran slow, so subtracting it normalizes back toward standard conditions.
+  return equivalentTimeSeconds - variantSeconds;
+}
+
+export function timeDifferenceToSpeedPoints(
+  timeDifferenceSeconds: number,
+  model: SpeedFigurePointsModel,
+  context: LengthConversionContext = {},
+): number {
+  if (model === "fixed_points_per_second") {
+    return timeDifferenceSeconds * SPEED_FIGURE_ASSUMPTIONS.fixedPointsPerSecond;
+  }
+
+  return (
+    (timeDifferenceSeconds / secondsPerLength("speed_based", context)) *
+    SPEED_FIGURE_ASSUMPTIONS.distanceAwarePointsPerLength
+  );
+}
+
+export function provisionalSpeedFigure(
+  adjustedTimeSeconds: number | null,
+  standardSeconds: number | null,
+  model: SpeedFigurePointsModel,
+  context: LengthConversionContext = {},
+): number | null {
+  if (adjustedTimeSeconds === null || standardSeconds === null) {
+    return null;
+  }
+
+  const fasterThanStandardSeconds = standardSeconds - adjustedTimeSeconds;
+  return (
+    SPEED_FIGURE_ASSUMPTIONS.baseFigure +
+    timeDifferenceToSpeedPoints(fasterThanStandardSeconds, model, context)
+  );
+}
+
+export function speedFigureConfidence(
+  standardSampleSize: number | null,
+  variantSampleSize: number | null,
+  hasValidInputs: boolean,
+): string {
+  if (!hasValidInputs) {
+    return "insufficient";
+  }
+  if (
+    standardSampleSize !== null &&
+    standardSampleSize < SPEED_FIGURE_ASSUMPTIONS.minimumStandardSampleSize
+  ) {
+    return "insufficient";
+  }
+  if (
+    variantSampleSize !== null &&
+    variantSampleSize < SPEED_FIGURE_ASSUMPTIONS.minimumVariantSampleSize
+  ) {
+    return "insufficient";
+  }
+  if (
+    (standardSampleSize !== null && standardSampleSize < 5) ||
+    (variantSampleSize !== null && variantSampleSize < 5)
+  ) {
+    return "low";
+  }
+  return "provisional";
 }
 
 export function reconstructCumulativeBeatenLengths(
