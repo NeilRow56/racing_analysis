@@ -1,0 +1,706 @@
+import { createDbConnection } from "@/db";
+import {
+  classifyRaceCategory,
+  equivalentFinishingTimeSeconds,
+  formatSeconds,
+  mean,
+  median,
+  parseBeatenDistanceLengths,
+  parseWinningTimeSeconds,
+  reconstructCumulativeBeatenLengths,
+  sampleLabel,
+  secondsPerLength,
+  standardDeviation,
+  type RaceCategory,
+  type SecondsPerLengthModel,
+} from "@/lib/racing/speed-research";
+
+const START_DATE = "2020-09-07";
+const END_DATE = "2020-09-13";
+
+type RacePayload = {
+  props: {
+    pageProps: {
+      meeting: Array<{
+        meeting_summary: {
+          course: {
+            course_reference: { id?: number | string };
+            name: string;
+          };
+        };
+      }>;
+      race: {
+        race_summary: {
+          race_summary_reference: { id: number | string };
+          course_name: string;
+          course_surface?: { surface?: string };
+          date: string;
+          distance: string | null;
+          going: string | null;
+          name: string;
+          race_class: string | null;
+          time: string | null;
+          winning_time: string | null;
+        };
+        rides: Array<{
+          finish_distance?: string | null;
+          finish_position: number | null;
+          ride_status: string | null;
+        }>;
+      };
+    };
+  };
+};
+
+type RaceRow = {
+  race_source_id: string;
+  race_date: string;
+  scheduled_time: string | null;
+  course_source_id: string;
+  course_name: string;
+  distance: string | null;
+  distance_yards: number | null;
+  going: string | null;
+  race_class: string | null;
+  race_name: string;
+  race_type: string | null;
+  winning_time: string | null;
+  payload: RacePayload;
+};
+
+type ResearchRace = RaceRow & {
+  parsedWinningSeconds: number | null;
+  raceCategory: RaceCategory;
+  surface: string | null;
+};
+
+type StandardGroup = {
+  key: string;
+  courseSourceId: string;
+  courseName: string;
+  distance: string | null;
+  distanceYards: number | null;
+  races: ResearchRace[];
+  validTimes: number[];
+};
+
+type VariantRow = {
+  race: ResearchRace;
+  standardSeconds: number;
+  differenceSeconds: number;
+};
+
+type RunnerRow = {
+  race_source_id: string;
+  runner_source_id: string;
+  horse_name: string;
+  finishing_position: number | null;
+  result_status: string | null;
+  beaten_distance: string | null;
+};
+
+const CANDIDATE_MODELS: SecondsPerLengthModel[] = [
+  "fixed",
+  "distance_band",
+  "race_category",
+  "speed_based",
+];
+
+async function main() {
+  const { client } = createDbConnection();
+  try {
+    const rows = await client<RaceRow[]>`
+      select
+        r.source_id as race_source_id,
+        r.race_date::text as race_date,
+        r.scheduled_time::text as scheduled_time,
+        c.source_id as course_source_id,
+        c.display_name as course_name,
+        r.distance,
+        r.distance_yards,
+        r.going,
+        r.race_class,
+        r.race_name,
+        r.race_type,
+        r.winning_time,
+        si.payload
+      from races r
+      join courses c on c.id = r.course_id
+      join source_imports si
+        on si.source = r.source
+       and si.source_id = r.source_id
+       and si.source_type = 'full-result-next-data'
+      where r.source = 'sporting_life'
+        and r.race_date between ${START_DATE} and ${END_DATE}
+      order by r.race_date, c.display_name, r.scheduled_time, r.source_id
+    `;
+
+    const runnerRows = await client<RunnerRow[]>`
+      select
+        r.source_id as race_source_id,
+        rr.source_id as runner_source_id,
+        h.display_name as horse_name,
+        rr.finishing_position,
+        rr.result_status,
+        rr.beaten_distance
+      from race_runners rr
+      join races r on r.id = rr.race_id
+      join horses h on h.id = rr.horse_id
+      where r.source = 'sporting_life'
+        and rr.source = 'sporting_life'
+        and r.race_date between ${START_DATE} and ${END_DATE}
+      order by r.race_date, r.source_id, rr.finishing_position nulls last, rr.source_id
+    `;
+
+    const races = rows.map(toResearchRace);
+    const runnersByRace = groupRunnersByRace(runnerRows);
+    const groups = courseDistanceGroups(races);
+    const variants = meetingVariants(races, groups);
+    const beaten = beatenDistanceSummary(races);
+    const goingSurface = goingSurfaceSummary(races);
+    const consistency = individualTimeConsistency(races, runnersByRace);
+    const implausible = implausibleRecords(races);
+
+    printHeader("Stored Sporting Life Fields");
+    console.log(`date_range=${START_DATE}..${END_DATE}`);
+    console.log(`races=${races.length}`);
+    console.log("winning_time=races.winning_time text, parsed from source payload format");
+    console.log("distance=races.distance text; distance_yards=races.distance_yards integer");
+    console.log("course=courses.source_id + courses.display_name");
+    console.log("race_datetime=races.race_datetime timestamp, not needed for this aggregate");
+    console.log("going=races.going text");
+    console.log("surface=source_imports.payload.props.pageProps.race.race_summary.course_surface.surface");
+    console.log("runner beaten distance=race_runners.beaten_distance text; raw also in ride.finish_distance");
+    console.log("finish status=race_runners.finishing_position/result_status; raw also in ride_status");
+    console.log("finish_distance_semantics=treated as adjacent margin between consecutive finishers");
+    console.log("cumulative_distance_to_winner=reconstructed in memory for research only");
+
+    printHeader("Parser Coverage");
+    const parsedWinning = races.filter((race) => race.parsedWinningSeconds !== null).length;
+    const beatenWithValue = beaten.total - beaten.nullCount;
+    console.log(`winning_time_parsed=${parsedWinning}/${races.length}`);
+    console.log(`winning_time_missing_or_unrecognized=${races.length - parsedWinning}`);
+    console.log(`beaten_distance_parsed=${beaten.parsed}/${beatenWithValue} non_null_values`);
+    console.log(`beaten_distance_null=${beaten.nullCount}`);
+    console.log(`beaten_distance_unknown=${beaten.unknown}`);
+    console.log(`beaten_distance_notation=${JSON.stringify(beaten.notationCounts)}`);
+    console.log(`beaten_distance_distinct=${JSON.stringify(beaten.distinctValues)}`);
+
+    printHeader("Largest Course/Distance Samples");
+    for (const group of [...groups.values()]
+      .sort((a, b) => b.validTimes.length - a.validTimes.length || a.courseName.localeCompare(b.courseName))
+      .slice(0, 20)) {
+      console.log(formatGroup(group));
+    }
+
+    printHeader("Repeated Course/Distance Groups");
+    const repeated = [...groups.values()].filter((group) => group.validTimes.length > 1);
+    console.log(`repeated_valid_groups=${repeated.length}`);
+    for (const group of repeated
+      .sort((a, b) => b.validTimes.length - a.validTimes.length || a.courseName.localeCompare(b.courseName))
+      .slice(0, 30)) {
+      console.log(formatGroup(group));
+    }
+
+    printHeader("Meeting Track Variant Research");
+    console.log("variant_seconds=actual winning time - provisional median standard time");
+    for (const [meetingKey, rowsForMeeting] of [...variants.entries()].slice(0, 40)) {
+      const differences = rowsForMeeting.map((row) => row.differenceSeconds);
+      const fast = differences.filter((value) => value < 0).length;
+      const slow = differences.filter((value) => value > 0).length;
+      console.log(
+        [
+          meetingKey,
+          `races=${rowsForMeeting.length}`,
+          `median_variant=${formatSeconds(median(differences))}`,
+          `fast=${fast}`,
+          `slow=${slow}`,
+          `diffs=[${differences.map((value) => value.toFixed(2)).join(", ")}]`,
+        ].join(" | "),
+      );
+    }
+
+    printHeader("Going/Surface Observations");
+    console.log(`going=${JSON.stringify(goingSurface.going)}`);
+    console.log(`surface=${JSON.stringify(goingSurface.surface)}`);
+    console.log("course_distance_with_multiple_going_or_surface=");
+    for (const line of goingSurface.mixedCourseDistances.slice(0, 20)) {
+      console.log(line);
+    }
+
+    printHeader("Illustrative Individual Timing");
+    for (const line of illustrativeRunnerTiming(races).slice(0, 12)) {
+      console.log(line);
+    }
+    console.log("fixed_0.2_seconds_per_length is illustrative only.");
+    console.log("A later method may vary seconds-per-length by distance/race type.");
+
+    printHeader("Individual Time Consistency Checks");
+    console.log(`timed_races_checked=${consistency.timedRacesChecked}`);
+    console.log(`finished_runners_checked=${consistency.finishedRunnersChecked}`);
+    console.log(`ambiguous_reconstructions=${consistency.ambiguousReconstructions}`);
+    for (const line of consistency.ambiguousRows.slice(0, 20)) {
+      console.log(line);
+    }
+    console.log(`non_finishers_without_synthetic_time=${consistency.nonFinishersWithoutSyntheticTime}`);
+    console.log(`dead_heat_rows_checked=${consistency.deadHeatRowsChecked}`);
+    console.log(`dead_heat_time_mismatches=${consistency.deadHeatTimeMismatches}`);
+    console.log(`monotonic_violations=${JSON.stringify(consistency.monotonicViolations)}`);
+    console.log(`implausible_time_rows=${consistency.implausibleTimeRows.length}`);
+    for (const line of consistency.implausibleTimeRows.slice(0, 20)) {
+      console.log(line);
+    }
+
+    printHeader("Candidate Seconds Per Length Models");
+    console.log("fixed=0.20s per length for every race");
+    console.log("distance_band=sprint 0.18, mile 0.19, middle 0.20, staying 0.22, jumps 0.25");
+    console.log("race_category=Flat/AW 0.20, jumps 0.25");
+    console.log("speed_based=one 8ft horse length divided by average race yards/second");
+    for (const line of candidateModelExamples(races, runnersByRace)) {
+      console.log(line);
+    }
+
+    printHeader("Implausible Or Problematic Records");
+    for (const line of implausible) {
+      console.log(line);
+    }
+  } finally {
+    await client.end();
+  }
+}
+
+function toResearchRace(row: RaceRow): ResearchRace {
+  const surface =
+    row.payload.props.pageProps.race.race_summary.course_surface?.surface ??
+    null;
+  return {
+    ...row,
+    parsedWinningSeconds: parseWinningTimeSeconds(row.winning_time),
+    raceCategory: classifyRaceCategory({
+      distanceYards: row.distance_yards,
+      raceName: row.race_name,
+      raceType: row.race_type,
+      surface,
+    }),
+    surface,
+  };
+}
+
+function groupRunnersByRace(runners: RunnerRow[]): Map<string, RunnerRow[]> {
+  const grouped = new Map<string, RunnerRow[]>();
+  for (const runner of runners) {
+    const rows = grouped.get(runner.race_source_id) ?? [];
+    rows.push(runner);
+    grouped.set(runner.race_source_id, rows);
+  }
+  return grouped;
+}
+
+function courseDistanceGroups(races: ResearchRace[]): Map<string, StandardGroup> {
+  const groups = new Map<string, StandardGroup>();
+  for (const race of races) {
+    const key = `${race.course_source_id}:${race.distance_yards ?? "unknown"}`;
+    const group =
+      groups.get(key) ??
+      {
+        key,
+        courseSourceId: race.course_source_id,
+        courseName: race.course_name,
+        distance: race.distance,
+        distanceYards: race.distance_yards,
+        races: [],
+        validTimes: [],
+      };
+    group.races.push(race);
+    if (race.parsedWinningSeconds !== null) {
+      group.validTimes.push(race.parsedWinningSeconds);
+    }
+    groups.set(key, group);
+  }
+  return groups;
+}
+
+function meetingVariants(
+  races: ResearchRace[],
+  groups: Map<string, StandardGroup>,
+): Map<string, VariantRow[]> {
+  const variants = new Map<string, VariantRow[]>();
+  for (const race of races) {
+    if (race.parsedWinningSeconds === null) {
+      continue;
+    }
+    const group = groups.get(`${race.course_source_id}:${race.distance_yards ?? "unknown"}`);
+    if (!group || group.validTimes.length < 2) {
+      continue;
+    }
+    const standard = median(group.validTimes);
+    if (standard === null) {
+      continue;
+    }
+    const key = `${race.race_date} ${race.course_name}`;
+    const rows = variants.get(key) ?? [];
+    rows.push({
+      race,
+      standardSeconds: standard,
+      differenceSeconds: race.parsedWinningSeconds - standard,
+    });
+    variants.set(key, rows);
+  }
+  return variants;
+}
+
+function beatenDistanceSummary(races: ResearchRace[]) {
+  const notationCounts: Record<string, number> = {};
+  const distinctValues = new Set<string>();
+  let parsed = 0;
+  let unknown = 0;
+  let nullCount = 0;
+  let total = 0;
+
+  for (const race of races) {
+    for (const ride of race.payload.props.pageProps.race.rides) {
+      total += 1;
+      const value = ride.finish_distance;
+      if (value == null) {
+        nullCount += 1;
+        increment(notationCounts, "null");
+        continue;
+      }
+      distinctValues.add(value);
+      const notation = beatenDistanceNotation(value);
+      increment(notationCounts, notation);
+      if (parseBeatenDistanceLengths(value) === null) {
+        unknown += 1;
+      } else {
+        parsed += 1;
+      }
+    }
+  }
+
+  return {
+    distinctValues: [...distinctValues].sort(),
+    notationCounts,
+    nullCount,
+    parsed,
+    total,
+    unknown,
+  };
+}
+
+function beatenDistanceNotation(value: string): string {
+  if (/^\d+(?:\.\d+)?$/.test(value)) {
+    return "numeric";
+  }
+  if (/^[¼½¾]$/.test(value)) {
+    return "fraction";
+  }
+  if (/^\d+(?:\.\d+)? [¼½¾]$/.test(value)) {
+    return "number+fraction";
+  }
+  if (["nk", "hd", "sh", "nse", "dh"].includes(value)) {
+    return value;
+  }
+  return "unknown";
+}
+
+function goingSurfaceSummary(races: ResearchRace[]) {
+  const going: Record<string, number> = {};
+  const surface: Record<string, number> = {};
+  const mixedCourseDistances: string[] = [];
+  const groups = courseDistanceGroups(races);
+
+  for (const race of races) {
+    increment(going, race.going ?? "missing");
+    increment(surface, race.surface ?? "missing");
+  }
+
+  for (const group of groups.values()) {
+    const goings = new Set(group.races.map((race) => race.going ?? "missing"));
+    const surfaces = new Set(group.races.map((race) => race.surface ?? "missing"));
+    if (goings.size > 1 || surfaces.size > 1) {
+      mixedCourseDistances.push(
+        [
+          `${group.courseName} ${group.distance} (${group.distanceYards}y)`,
+          `races=${group.races.length}`,
+          `going=${[...goings].join(", ")}`,
+          `surface=${[...surfaces].join(", ")}`,
+          `times=${group.validTimes.map((value) => value.toFixed(2)).join(", ")}`,
+        ].join(" | "),
+      );
+    }
+  }
+
+  return { going, mixedCourseDistances, surface };
+}
+
+function illustrativeRunnerTiming(races: ResearchRace[]): string[] {
+  const lines: string[] = [];
+  const sampleRaces = races
+    .filter((race) => race.parsedWinningSeconds !== null)
+    .slice(0, 4);
+  for (const race of sampleRaces) {
+    lines.push(
+      `${race.race_date} ${race.course_name} ${race.distance}: winner_time=${formatSeconds(
+        race.parsedWinningSeconds,
+      )}`,
+    );
+    for (const ride of race.payload.props.pageProps.race.rides
+      .filter((ride) => ride.finish_position !== null && ride.finish_position <= 3)
+      .slice(0, 3)) {
+      const lengths = parseBeatenDistanceLengths(ride.finish_distance ?? null);
+      const fixedTime =
+        race.parsedWinningSeconds !== null && lengths !== null
+          ? race.parsedWinningSeconds + lengths * 0.2
+          : null;
+      lines.push(
+        `  pos=${ride.finish_position} beaten=${ride.finish_distance ?? "winner/null"} lengths=${
+          lengths ?? "-"
+        } illustrative_time=${formatSeconds(fixedTime)}`,
+      );
+    }
+  }
+  return lines;
+}
+
+function candidateModelExamples(
+  races: ResearchRace[],
+  runnersByRace: Map<string, RunnerRow[]>,
+): string[] {
+  const examples = [
+    pickRace(races, (race) => race.raceCategory !== "jumps" && (race.distance_yards ?? 0) <= 1320),
+    pickRace(races, (race) =>
+      race.raceCategory !== "jumps" &&
+      (race.distance_yards ?? 0) > 1760 &&
+      (race.distance_yards ?? 0) <= 2640,
+    ),
+    pickRace(races, (race) => race.raceCategory !== "jumps" && (race.distance_yards ?? 0) > 2640),
+    pickRace(races, (race) => race.raceCategory === "jumps"),
+  ].filter((race): race is ResearchRace => race !== null);
+
+  const lines: string[] = [];
+  for (const race of examples) {
+    const runners = runnersByRace.get(race.race_source_id) ?? [];
+    const reconstructed = reconstructCumulativeBeatenLengths(
+      runners.map((runner) => ({
+        id: runner.runner_source_id,
+        finishingPosition: runner.finishing_position,
+        resultStatus: runner.result_status,
+        beatenDistance: runner.beaten_distance,
+      })),
+    );
+    const runnerById = new Map(runners.map((runner) => [runner.runner_source_id, runner]));
+    const finished = reconstructed
+      .filter((runner) => runner.cumulativeBeatenLengths !== null)
+      .slice(0, 5);
+
+    lines.push(
+      [
+        `${race.race_date} ${race.course_name} ${race.distance}`,
+        `race_id=${race.race_source_id}`,
+        `category=${race.raceCategory}`,
+        `surface=${race.surface ?? "missing"}`,
+        `winner_time=${formatSeconds(race.parsedWinningSeconds)}`,
+      ].join(" | "),
+    );
+
+    const splValues = CANDIDATE_MODELS.map(
+      (model) =>
+        `${model}:${secondsPerLength(model, {
+          distanceYards: race.distance_yards,
+          raceCategory: race.raceCategory,
+          winnerTimeSeconds: race.parsedWinningSeconds,
+        }).toFixed(3)}`,
+    ).join(", ");
+    lines.push(`  seconds_per_length=${splValues}`);
+
+    for (const runner of finished) {
+      const sourceRunner = runnerById.get(runner.id);
+      const modelTimes = CANDIDATE_MODELS.map(
+        (model) =>
+          `${model}:${formatSeconds(
+            equivalentFinishingTimeSeconds(
+              race.parsedWinningSeconds,
+              runner.cumulativeBeatenLengths,
+              model,
+              {
+                distanceYards: race.distance_yards,
+                raceCategory: race.raceCategory,
+              },
+            ),
+          )}`,
+      ).join(", ");
+      lines.push(
+        `  pos=${runner.finishingPosition} horse=${sourceRunner?.horse_name ?? runner.id} raw_margin=${
+          runner.beatenDistance ?? "-"
+        } cumulative_lengths=${runner.cumulativeBeatenLengths?.toFixed(2) ?? "-"} | ${modelTimes}`,
+      );
+    }
+  }
+  return lines;
+}
+
+function individualTimeConsistency(
+  races: ResearchRace[],
+  runnersByRace: Map<string, RunnerRow[]>,
+) {
+  const monotonicViolations = Object.fromEntries(
+    CANDIDATE_MODELS.map((model) => [model, 0]),
+  ) as Record<SecondsPerLengthModel, number>;
+  const implausibleTimeRows: string[] = [];
+  const ambiguousRows: string[] = [];
+  let ambiguousReconstructions = 0;
+  let deadHeatRowsChecked = 0;
+  let deadHeatTimeMismatches = 0;
+  let finishedRunnersChecked = 0;
+  let nonFinishersWithoutSyntheticTime = 0;
+  let timedRacesChecked = 0;
+
+  for (const race of races) {
+    if (race.parsedWinningSeconds === null) {
+      continue;
+    }
+    timedRacesChecked += 1;
+    const runners = runnersByRace.get(race.race_source_id) ?? [];
+    const reconstructed = reconstructCumulativeBeatenLengths(
+      runners.map((runner) => ({
+        id: runner.runner_source_id,
+        finishingPosition: runner.finishing_position,
+        resultStatus: runner.result_status,
+        beatenDistance: runner.beaten_distance,
+      })),
+    );
+
+    finishedRunnersChecked += reconstructed.filter(
+      (runner) => runner.cumulativeBeatenLengths !== null,
+    ).length;
+    for (const runner of reconstructed.filter((row) => row.ambiguous)) {
+      ambiguousReconstructions += 1;
+      ambiguousRows.push(
+        `${race.race_source_id} pos=${runner.finishingPosition ?? "-"} runner=${
+          runner.id
+        } raw_margin=${runner.beatenDistance ?? "-"}`,
+      );
+    }
+    nonFinishersWithoutSyntheticTime += reconstructed.filter(
+      (runner) =>
+        runner.resultStatus !== "finished" &&
+        runner.cumulativeBeatenLengths === null,
+    ).length;
+    deadHeatRowsChecked += reconstructed.filter(
+      (runner) => runner.beatenDistance?.toLowerCase() === "dh",
+    ).length;
+
+    for (const model of CANDIDATE_MODELS) {
+      let previousTime: number | null = null;
+      for (const runner of reconstructed) {
+        const estimated = equivalentFinishingTimeSeconds(
+          race.parsedWinningSeconds,
+          runner.cumulativeBeatenLengths,
+          model,
+          {
+            distanceYards: race.distance_yards,
+            raceCategory: race.raceCategory,
+          },
+        );
+
+        if (estimated === null) {
+          continue;
+        }
+        if (estimated < race.parsedWinningSeconds || !Number.isFinite(estimated)) {
+          implausibleTimeRows.push(
+            `${race.race_source_id} ${model} runner=${runner.id} estimated=${estimated}`,
+          );
+        }
+        if (previousTime !== null && estimated < previousTime) {
+          monotonicViolations[model] += 1;
+        }
+        if (runner.beatenDistance?.toLowerCase() === "dh" && previousTime !== null) {
+          if (Math.abs(estimated - previousTime) > 0.000_001) {
+            deadHeatTimeMismatches += 1;
+          }
+        }
+        previousTime = estimated;
+      }
+    }
+  }
+
+  return {
+    ambiguousReconstructions,
+    ambiguousRows,
+    deadHeatRowsChecked,
+    deadHeatTimeMismatches,
+    finishedRunnersChecked,
+    implausibleTimeRows,
+    monotonicViolations,
+    nonFinishersWithoutSyntheticTime,
+    timedRacesChecked,
+  };
+}
+
+function pickRace(
+  races: ResearchRace[],
+  predicate: (race: ResearchRace) => boolean,
+): ResearchRace | null {
+  return (
+    races.find(
+      (race) =>
+        race.parsedWinningSeconds !== null &&
+        race.distance_yards !== null &&
+        predicate(race),
+    ) ?? null
+  );
+}
+
+function implausibleRecords(races: ResearchRace[]): string[] {
+  const lines: string[] = [];
+  for (const race of races) {
+    if (race.winning_time && race.parsedWinningSeconds === null) {
+      lines.push(`${race.race_source_id} unparsed_winning_time=${race.winning_time}`);
+    }
+    if (!race.winning_time) {
+      lines.push(`${race.race_source_id} missing_winning_time`);
+    }
+    if (race.distance_yards === null) {
+      lines.push(`${race.race_source_id} missing_distance_yards distance=${race.distance}`);
+    }
+  }
+  return lines.length ? lines : ["none"];
+}
+
+function formatGroup(group: StandardGroup): string {
+  const validTimes = group.validTimes;
+  return [
+    `${group.courseName} ${group.distance} (${group.distanceYards}y)`,
+    `course_id=${group.courseSourceId}`,
+    `valid_races=${validTimes.length}`,
+    `sample=${sampleLabel(validTimes.length)}`,
+    `times=[${validTimes.map((value) => value.toFixed(2)).join(", ")}]`,
+    `median=${formatSeconds(median(validTimes))}`,
+    `mean=${formatSeconds(mean(validTimes))}`,
+    `fastest=${formatSeconds(validTimes.length ? Math.min(...validTimes) : null)}`,
+    `slowest=${formatSeconds(validTimes.length ? Math.max(...validTimes) : null)}`,
+    `stdev=${formatSeconds(standardDeviation(validTimes))}`,
+    `going=${counterValues(group.races.map((race) => race.going ?? "missing"))}`,
+    `surface=${counterValues(group.races.map((race) => race.surface ?? "missing"))}`,
+    `class=${counterValues(group.races.map((race) => race.race_class ?? "missing"))}`,
+  ].join(" | ");
+}
+
+function counterValues(values: string[]): string {
+  const counts: Record<string, number> = {};
+  for (const value of values) {
+    increment(counts, value);
+  }
+  return JSON.stringify(counts);
+}
+
+function increment(counts: Record<string, number>, key: string) {
+  counts[key] = (counts[key] ?? 0) + 1;
+}
+
+function printHeader(value: string) {
+  console.log("");
+  console.log(`## ${value}`);
+}
+
+await main();
