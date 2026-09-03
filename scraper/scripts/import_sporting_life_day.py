@@ -34,6 +34,7 @@ from sporting_life.importing import (  # noqa: E402
     decimal_odds,
     distance_yards,
     import_full_result,
+    import_no_race_payload,
     import_results_index,
     result_status,
     starting_price,
@@ -48,6 +49,7 @@ class ImportDayResult:
     discovered_links: list[ResultLink]
     imported_links: list[ResultLink]
     skipped_full_results: int
+    skipped_no_race_payloads: int
     raw_files: int
     totals: Counter[str]
     observations: "ObservationCollector"
@@ -120,6 +122,7 @@ def import_sporting_life_day(
     raw_files = 1
     imported_links: list[ResultLink] = []
     skipped_full_results = 0
+    skipped_no_race_payloads = 0
 
     with psycopg.connect(database_url) as connection:
         with connection.cursor() as cursor:
@@ -137,6 +140,7 @@ def import_sporting_life_day(
                 discovered_links=links,
                 imported_links=imported_links,
                 skipped_full_results=skipped_full_results,
+                skipped_no_race_payloads=skipped_no_race_payloads,
                 raw_files=raw_files,
                 totals=totals,
                 observations=observations,
@@ -163,7 +167,34 @@ def import_sporting_life_day(
                 print(f"REQUEST_FAILED url={link.url}", flush=True)
                 raise
 
-            race = full_result.race
+            race = full_result.race_payload
+            if race is None:
+                write_raw_payload(
+                    raw_dir=RAW_OUTPUT_DIR,
+                    race_date=race_date.isoformat(),
+                    course_name=link.course_name,
+                    race_id=link.race_id,
+                    payload_type="no-race-payload",
+                    payload=full_result.payload,
+                )
+                with connection.cursor() as cursor:
+                    import_no_race_payload(
+                        cursor,
+                        race_id=link.race_id,
+                        payload=full_result.payload,
+                    )
+                connection.commit()
+                raw_files += 1
+                skipped_no_race_payloads += 1
+                print(
+                    "RACE_SKIPPED "
+                    f"reason=no_race_payload course={link.course_name!r} "
+                    f"time={link.race_time} race_id={link.race_id} url={link.url} "
+                    f"page_props_keys={page_props_keys(full_result.payload)}",
+                    flush=True,
+                )
+                continue
+
             race_summary = race["race_summary"]
             write_raw_payload(
                 raw_dir=RAW_OUTPUT_DIR,
@@ -194,6 +225,7 @@ def import_sporting_life_day(
         discovered_links=links,
         imported_links=imported_links,
         skipped_full_results=skipped_full_results,
+        skipped_no_race_payloads=skipped_no_race_payloads,
         raw_files=raw_files,
         totals=totals,
         observations=observations,
@@ -406,6 +438,16 @@ def casualty_label(value: Any) -> str | None:
     return str(value)
 
 
+def page_props_keys(payload: dict[str, Any]) -> list[str]:
+    props = payload.get("props")
+    if not isinstance(props, dict):
+        return []
+    page_props = props.get("pageProps")
+    if not isinstance(page_props, dict):
+        return []
+    return sorted(str(key) for key in page_props)
+
+
 def collect_matching_keys(value: Any, patterns: set[str]) -> set[str]:
     found: set[str] = set()
     if isinstance(value, dict):
@@ -431,6 +473,7 @@ def print_import_day_result(result: ImportDayResult) -> None:
     print(f"DISCOVERED_RACES={len(result.discovered_links)}")
     print(f"IMPORTED_RACES={len(result.imported_links)}")
     print(f"SKIPPED_FULL_RESULTS={result.skipped_full_results}")
+    print(f"SKIPPED_NO_RACE_PAYLOADS={result.skipped_no_race_payloads}")
     print(f"RAW_FILES={result.raw_files}")
     print(
         "UPSERT_ATTEMPTS "

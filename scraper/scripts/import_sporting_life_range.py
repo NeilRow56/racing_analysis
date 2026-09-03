@@ -61,6 +61,7 @@ def main() -> None:
     discovered_races = 0
     imported_races = 0
     skipped_full_results = 0
+    skipped_no_race_payloads = 0
     raw_files = 0
 
     print(f"RANGE_START={args.start_date.isoformat()}", flush=True)
@@ -102,12 +103,14 @@ def main() -> None:
         discovered_races += len(result.discovered_links)
         imported_races += len(result.imported_links)
         skipped_full_results += result.skipped_full_results
+        skipped_no_race_payloads += result.skipped_no_race_payloads
         raw_files += result.raw_files
         print(
             "DATE_IMPORTED "
             f"date={current_date.isoformat()} discovered_races={len(result.discovered_links)} "
             f"imported_races={len(result.imported_links)} "
             f"skipped_full_results={result.skipped_full_results} "
+            f"skipped_no_race_payloads={result.skipped_no_race_payloads} "
             f"upserted_runners={result.totals['runners']}",
             flush=True,
         )
@@ -127,6 +130,7 @@ def main() -> None:
     print(f"DISCOVERED_RACES={discovered_races}", flush=True)
     print(f"IMPORTED_RACES={imported_races}", flush=True)
     print(f"SKIPPED_FULL_RESULTS={skipped_full_results}", flush=True)
+    print(f"SKIPPED_NO_RACE_PAYLOADS={skipped_no_race_payloads}", flush=True)
     print(f"RAW_FILES={raw_files}", flush=True)
     print(
         "UPSERT_ATTEMPTS "

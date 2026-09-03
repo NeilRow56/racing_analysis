@@ -13,6 +13,7 @@ from psycopg.types.json import Jsonb
 SOURCE = "sporting_life"
 FULL_RESULT_SOURCE_TYPE = "full-result-next-data"
 RESULTS_INDEX_SOURCE_TYPE = "results-index-next-data"
+NO_RACE_PAYLOAD_SOURCE_TYPE = "full-result-no-race-payload"
 
 
 def write_raw_payload(
@@ -69,6 +70,20 @@ def import_results_index(
         cursor=cursor,
         source_id=race_date,
         source_type=RESULTS_INDEX_SOURCE_TYPE,
+        payload=payload,
+    )
+
+
+def import_no_race_payload(
+    cursor: psycopg.Cursor,
+    *,
+    race_id: str,
+    payload: dict[str, Any],
+) -> str:
+    return upsert_source_import(
+        cursor=cursor,
+        source_id=race_id,
+        source_type=NO_RACE_PAYLOAD_SOURCE_TYPE,
         payload=payload,
     )
 

@@ -37,6 +37,11 @@ export const SPEED_FIGURE_ASSUMPTIONS = {
   distanceAwarePointsPerLength: 1,
 } as const;
 
+export const WINNING_TIME_SANITY_ASSUMPTIONS = {
+  minAverageSpeedYardsPerSecond: 5,
+  maxAverageSpeedYardsPerSecond: 25,
+} as const;
+
 const FRACTION_LENGTHS = {
   "¼": 0.25,
   "½": 0.5,
@@ -92,6 +97,20 @@ export type LeaveOneOutMeetingVariant = {
 
 export type SpeedFigurePointsModel = "fixed_points_per_second" | "distance_aware";
 
+export type WinningTimeSanityReason =
+  | "ok"
+  | "missing"
+  | "unparseable"
+  | "missing_distance"
+  | "physically_implausible";
+
+export type WinningTimeSanityResult = {
+  parsedSeconds: number | null;
+  usableSeconds: number | null;
+  impliedAverageSpeedYardsPerSecond: number | null;
+  reason: WinningTimeSanityReason;
+};
+
 export function parseWinningTimeSeconds(value: string | null): number | null {
   if (!value) {
     return null;
@@ -109,6 +128,70 @@ export function parseWinningTimeSeconds(value: string | null): number | null {
   }
 
   return Number(minutesAndSeconds[1]) * 60 + Number(minutesAndSeconds[2]);
+}
+
+export function sanityCheckWinningTime(input: {
+  winningTime: string | null;
+  distanceYards: number | null;
+}): WinningTimeSanityResult {
+  if (!input.winningTime) {
+    return {
+      parsedSeconds: null,
+      usableSeconds: null,
+      impliedAverageSpeedYardsPerSecond: null,
+      reason: "missing",
+    };
+  }
+
+  const parsedSeconds = parseWinningTimeSeconds(input.winningTime);
+  if (parsedSeconds === null) {
+    return {
+      parsedSeconds,
+      usableSeconds: null,
+      impliedAverageSpeedYardsPerSecond: null,
+      reason: "unparseable",
+    };
+  }
+
+  if (input.distanceYards === null || input.distanceYards <= 0) {
+    return {
+      parsedSeconds,
+      usableSeconds: null,
+      impliedAverageSpeedYardsPerSecond: null,
+      reason: "missing_distance",
+    };
+  }
+
+  if (parsedSeconds <= 0) {
+    return {
+      parsedSeconds,
+      usableSeconds: null,
+      impliedAverageSpeedYardsPerSecond: null,
+      reason: "physically_implausible",
+    };
+  }
+
+  const impliedAverageSpeedYardsPerSecond = input.distanceYards / parsedSeconds;
+  if (
+    impliedAverageSpeedYardsPerSecond <
+      WINNING_TIME_SANITY_ASSUMPTIONS.minAverageSpeedYardsPerSecond ||
+    impliedAverageSpeedYardsPerSecond >
+      WINNING_TIME_SANITY_ASSUMPTIONS.maxAverageSpeedYardsPerSecond
+  ) {
+    return {
+      parsedSeconds,
+      usableSeconds: null,
+      impliedAverageSpeedYardsPerSecond,
+      reason: "physically_implausible",
+    };
+  }
+
+  return {
+    parsedSeconds,
+    usableSeconds: parsedSeconds,
+    impliedAverageSpeedYardsPerSecond,
+    reason: "ok",
+  };
 }
 
 export function parseBeatenDistanceLengths(value: string | null): number | null {

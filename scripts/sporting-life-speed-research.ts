@@ -12,6 +12,7 @@ import {
   provisionalSpeedFigure,
   reconstructCumulativeBeatenLengths,
   sampleLabel,
+  sanityCheckWinningTime,
   secondsPerLength,
   speedFigureConfidence,
   standardDeviation,
@@ -21,8 +22,8 @@ import {
   type StandardTimeRaceInput,
 } from "@/lib/racing/speed-research";
 
-const START_DATE = "2020-08-01";
-const END_DATE = "2020-09-13";
+const START_DATE = process.argv[2] ?? "2020-08-01";
+const END_DATE = process.argv[3] ?? "2020-09-13";
 
 type RacePayload = {
   props: {
@@ -76,6 +77,9 @@ type RaceRow = {
 
 type ResearchRace = RaceRow & {
   parsedWinningSeconds: number | null;
+  usableWinningSeconds: number | null;
+  timingSanityReason: string;
+  impliedAverageSpeedYardsPerSecond: number | null;
   raceCategory: RaceCategory;
   surface: string | null;
 };
@@ -211,12 +215,34 @@ async function main() {
     console.log("finish status=race_runners.finishing_position/result_status; raw also in ride_status");
     console.log("finish_distance_semantics=treated as adjacent margin between consecutive finishers");
     console.log("cumulative_distance_to_winner=reconstructed in memory for research only");
+    console.log("winning_time_sanity=research-only implied average speed must be 5..25 yards/second");
 
     printHeader("Parser Coverage");
     const parsedWinning = races.filter((race) => race.parsedWinningSeconds !== null).length;
+    const usableWinning = races.filter((race) => race.usableWinningSeconds !== null).length;
+    const rejectedWinning = races.filter((race) => race.timingSanityReason !== "ok");
     const beatenWithValue = beaten.total - beaten.nullCount;
     console.log(`winning_time_parsed=${parsedWinning}/${races.length}`);
     console.log(`winning_time_missing_or_unrecognized=${races.length - parsedWinning}`);
+    console.log(`winning_time_usable_after_sanity=${usableWinning}/${races.length}`);
+    console.log(`winning_time_rejected_by_sanity=${rejectedWinning.length}`);
+    console.log(`winning_time_rejection_reasons=${counterValues(rejectedWinning.map((race) => race.timingSanityReason))}`);
+    for (const race of rejectedWinning) {
+      console.log(
+        [
+          "winning_time_rejected",
+          `race_id=${race.race_source_id}`,
+          `date=${race.race_date}`,
+          `course=${race.course_name}`,
+          `distance=${race.distance}`,
+          `distance_yards=${race.distance_yards ?? "-"}`,
+          `raw=${race.winning_time ?? "-"}`,
+          `parsed=${formatSeconds(race.parsedWinningSeconds)}`,
+          `implied_yps=${formatNumber(race.impliedAverageSpeedYardsPerSecond)}`,
+          `reason=${race.timingSanityReason}`,
+        ].join(" | "),
+      );
+    }
     console.log(`beaten_distance_parsed=${beaten.parsed}/${beatenWithValue} non_null_values`);
     console.log(`beaten_distance_null=${beaten.nullCount}`);
     console.log(`beaten_distance_unknown=${beaten.unknown}`);
@@ -344,9 +370,16 @@ function toResearchRace(row: RaceRow): ResearchRace {
   const surface =
     row.payload.props.pageProps.race.race_summary.course_surface?.surface ??
     null;
+  const timingSanity = sanityCheckWinningTime({
+    winningTime: row.winning_time,
+    distanceYards: row.distance_yards,
+  });
   return {
     ...row,
-    parsedWinningSeconds: parseWinningTimeSeconds(row.winning_time),
+    parsedWinningSeconds: timingSanity.parsedSeconds,
+    usableWinningSeconds: timingSanity.usableSeconds,
+    timingSanityReason: timingSanity.reason,
+    impliedAverageSpeedYardsPerSecond: timingSanity.impliedAverageSpeedYardsPerSecond,
     raceCategory: classifyRaceCategory({
       distanceYards: row.distance_yards,
       raceName: row.race_name,
@@ -372,7 +405,7 @@ function standardTimeInputs(races: ResearchRace[]): StandardTimeRaceInput[] {
     raceId: race.race_source_id,
     groupKey: raceGroupKey(race),
     meetingKey: `${race.race_date} ${race.course_source_id}`,
-    winningTimeSeconds: race.parsedWinningSeconds,
+    winningTimeSeconds: race.usableWinningSeconds,
   }));
 }
 
@@ -384,7 +417,7 @@ function calculateResearchSpeedFigures(
   const figures: ResearchSpeedFigure[] = [];
 
   for (const race of races) {
-    if (race.parsedWinningSeconds === null) {
+    if (race.usableWinningSeconds === null) {
       continue;
     }
 
@@ -424,7 +457,7 @@ function calculateResearchSpeedFigures(
         continue;
       }
       const equivalentTime = equivalentFinishingTimeSeconds(
-        race.parsedWinningSeconds,
+        race.usableWinningSeconds,
         runner.cumulativeBeatenLengths,
         "speed_based",
         {
@@ -442,7 +475,7 @@ function calculateResearchSpeedFigures(
         "fixed_points_per_second",
         {
           distanceYards: race.distance_yards,
-          winnerTimeSeconds: race.parsedWinningSeconds,
+          winnerTimeSeconds: race.usableWinningSeconds,
           raceCategory: race.raceCategory,
         },
       );
@@ -452,7 +485,7 @@ function calculateResearchSpeedFigures(
         "distance_aware",
         {
           distanceYards: race.distance_yards,
-          winnerTimeSeconds: race.parsedWinningSeconds,
+          winnerTimeSeconds: race.usableWinningSeconds,
           raceCategory: race.raceCategory,
         },
       );
@@ -508,8 +541,8 @@ function courseDistanceGroups(races: ResearchRace[]): Map<string, StandardGroup>
         validTimes: [],
       };
     group.races.push(race);
-    if (race.parsedWinningSeconds !== null) {
-      group.validTimes.push(race.parsedWinningSeconds);
+    if (race.usableWinningSeconds !== null) {
+      group.validTimes.push(race.usableWinningSeconds);
     }
     groups.set(key, group);
   }
@@ -526,7 +559,8 @@ function courseDistanceSampleBins(groups: Map<string, StandardGroup>): string {
     "2-4": 0,
     "5-9": 0,
     "10-19": 0,
-    "20+": 0,
+    "20-39": 0,
+    "40+": 0,
   };
   let largest = 0;
   for (const group of groups.values()) {
@@ -540,8 +574,10 @@ function courseDistanceSampleBins(groups: Map<string, StandardGroup>): string {
       bins["5-9"] += 1;
     } else if (sampleSize >= 10 && sampleSize <= 19) {
       bins["10-19"] += 1;
-    } else if (sampleSize >= 20) {
-      bins["20+"] += 1;
+    } else if (sampleSize >= 20 && sampleSize <= 39) {
+      bins["20-39"] += 1;
+    } else if (sampleSize >= 40) {
+      bins["40+"] += 1;
     }
   }
   return `course_distance_sample_bins=${JSON.stringify(bins)} largest_sample=${largest}`;
@@ -579,7 +615,7 @@ function meetingVariants(
 ): Map<string, VariantRow[]> {
   const variants = new Map<string, VariantRow[]>();
   for (const race of races) {
-    if (race.parsedWinningSeconds === null) {
+    if (race.usableWinningSeconds === null) {
       continue;
     }
     const group = groups.get(`${race.course_source_id}:${race.distance_yards ?? "unknown"}`);
@@ -595,7 +631,7 @@ function meetingVariants(
     rows.push({
       race,
       standardSeconds: standard,
-      differenceSeconds: race.parsedWinningSeconds - standard,
+      differenceSeconds: race.usableWinningSeconds - standard,
     });
     variants.set(key, rows);
   }
@@ -689,12 +725,12 @@ function goingSurfaceSummary(races: ResearchRace[]) {
 function illustrativeRunnerTiming(races: ResearchRace[]): string[] {
   const lines: string[] = [];
   const sampleRaces = races
-    .filter((race) => race.parsedWinningSeconds !== null)
+    .filter((race) => race.usableWinningSeconds !== null)
     .slice(0, 4);
   for (const race of sampleRaces) {
     lines.push(
       `${race.race_date} ${race.course_name} ${race.distance}: winner_time=${formatSeconds(
-        race.parsedWinningSeconds,
+        race.usableWinningSeconds,
       )}`,
     );
     for (const ride of race.payload.props.pageProps.race.rides
@@ -702,8 +738,8 @@ function illustrativeRunnerTiming(races: ResearchRace[]): string[] {
       .slice(0, 3)) {
       const lengths = parseBeatenDistanceLengths(ride.finish_distance ?? null);
       const fixedTime =
-        race.parsedWinningSeconds !== null && lengths !== null
-          ? race.parsedWinningSeconds + lengths * 0.2
+        race.usableWinningSeconds !== null && lengths !== null
+          ? race.usableWinningSeconds + lengths * 0.2
           : null;
       lines.push(
         `  pos=${ride.finish_position} beaten=${ride.finish_distance ?? "winner/null"} lengths=${

@@ -22,8 +22,22 @@ class FullResultPayload:
         return self.payload["props"]["pageProps"]
 
     @property
+    def race_payload(self) -> dict | None:
+        props = self.payload.get("props")
+        if not isinstance(props, dict):
+            return None
+        page_props = props.get("pageProps")
+        if not isinstance(page_props, dict):
+            return None
+        race = page_props.get("race")
+        return race if isinstance(race, dict) else None
+
+    @property
     def race(self) -> dict:
-        return self.page_props["race"]
+        race = self.race_payload
+        if race is None:
+            raise KeyError("race")
+        return race
 
 
 @dataclass(frozen=True)
