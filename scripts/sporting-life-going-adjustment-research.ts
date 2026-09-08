@@ -923,12 +923,15 @@ async function writeDiagnostics(
   await mkdir(OUTPUT_DIR, { recursive: true });
   const basename = `${START_DATE}-${END_DATE}`;
   const text = [
-    "race_source_id,race_date,course,distance,distance_yards,segment,surface,going,actual,base_standard,base_sample,deviation_seconds,deviation_per_f,same_day_adj_per_f,same_day_peer_count,same_day_stdev_per_f,conservative_same_day_adj_per_f,historical_adj_per_f,historical_fallback_sample_size,conservative_historical_adj_per_f,base_abs_error,same_day_abs_error,conservative_same_day_abs_error,fallback_abs_error,conservative_hierarchy_abs_error,conservative_hierarchy_method",
+    "race_source_id,race_date,course,race_name,race_type,race_class,distance,distance_yards,segment,surface,going,actual,base_standard,base_sample,deviation_seconds,deviation_per_f,same_day_adj_per_f,same_day_peer_count,same_day_stdev_per_f,conservative_same_day_adj_per_f,historical_adj_per_f,historical_fallback_sample_size,conservative_historical_adj_per_f,base_abs_error,same_day_abs_error,conservative_same_day_abs_error,fallback_abs_error,conservative_hierarchy_abs_error,conservative_hierarchy_method",
     ...results.map((row) =>
       csv([
         row.race.race_source_id,
         row.race.race_date,
         row.race.course_name,
+        row.race.race_name,
+        row.race.race_type,
+        row.race.race_class,
         row.race.distance,
         row.race.distance_yards,
         row.segment,
@@ -958,12 +961,15 @@ async function writeDiagnostics(
   await writeFile(`${OUTPUT_DIR}/going-adjustment-races-${basename}.csv`, text);
 
   const runnerText = [
-    "race_source_id,race_date,course,distance,distance_yards,segment,surface,going,actual_winning_time,equivalent_time_seconds,runner_source_id,horse,finish_position,official_rating,base_standard,same_day_adj_per_f,same_day_peer_count,same_day_stdev_per_f,conservative_same_day_adj_per_f,historical_adj_per_f,historical_fallback_sample_size,conservative_historical_adj_per_f,base_rating,same_day_rating,conservative_same_day_rating,historical_fallback_rating,conservative_hierarchy_rating,conservative_hierarchy_method,same_day_eligible,conservative_same_day_eligible,historical_fallback_eligible,conservative_hierarchy_uses_adjustment",
+    "race_source_id,race_date,course,race_name,race_type,race_class,distance,distance_yards,segment,surface,going,actual_winning_time,equivalent_time_seconds,runner_source_id,horse,finish_position,official_rating,base_standard,same_day_adj_per_f,same_day_peer_count,same_day_stdev_per_f,conservative_same_day_adj_per_f,historical_adj_per_f,historical_fallback_sample_size,conservative_historical_adj_per_f,base_rating,same_day_rating,conservative_same_day_rating,historical_fallback_rating,conservative_hierarchy_rating,conservative_hierarchy_method,same_day_eligible,conservative_same_day_eligible,historical_fallback_eligible,conservative_hierarchy_uses_adjustment",
     ...runnerRatings.map((row) =>
       csv([
         row.race.race_source_id,
         row.race.race_date,
         row.race.course_name,
+        row.race.race_name,
+        row.race.race_type,
+        row.race.race_class,
         row.race.distance,
         row.race.distance_yards,
         raceSegment(row.race),

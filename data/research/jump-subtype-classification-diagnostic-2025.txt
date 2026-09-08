@@ -1,0 +1,97 @@
+# Jump Subtype Classification Diagnostic 2025
+
+## Scope
+race_csv=data/research/going-adjustment-races-2025-01-01-2025-12-31.csv
+production_changes=false
+
+## Distinct Race Type Values
+race_type_count | race_type="handicap" | races=2307
+race_type_count | race_type="novice" | races=391
+race_type_count | race_type="maiden" | races=377
+race_type_count | race_type="(blank)" | races=194
+race_type_count | race_type="hurdle" | races=112
+race_type_count | race_type="chase" | races=99
+race_type_count | race_type="stakes" | races=1
+
+## Race Name Samples By Race Type
+race_type_sample | race_type="handicap" | samples="Happy New Year From Gamble Plant Amateur Jockeys' Handicap Hurdle"; "Jordan Road Surfacing Novices' Handicap Chase (GBB Race)"; "Queen Boudicca Last Chance To Qualify Mares' Handicap Chase"; "Sonic The Hedgehog 3 In Cinemas Now Novices' Limited Handicap Chase (GBB Race)"; "Happy New Year From Greendale Farm Conditional Jockeys' Handicap Chase"; "Jordan Recycling Innovation Handicap Chase"
+race_type_sample | race_type="novice" | samples="Happy New Year Novices' Hurdle (GBB Race)"; "Jordan Volumix Concrete Novices' Hurdle (GBB Race)"; "Bet At Racing TV Novices' Hurdle (GBB Race)"; "Thurlestone Hotel Novices' Hurdle (GBB Race)"; "Annual Badges On Sale Now Novices' Hurdle (GBB Race)"; "Dunraven Windows / EBF 'National Hunt' Novices' Hurdle (GBB Race)"
+race_type_sample | race_type="maiden" | samples="Book Your Skip Online At fakenhamskips.co.uk Maiden Hurdle (GBB Race)"; "Richmond Villages And Bupa Care Homes Maiden Hurdle (GBB Race)"; "Kennford Open Maiden NH Flat Race (GBB Race)"; "Ayr Racecourse Racing Club Only 30 Maiden Hurdle (GBB Race)"; "Advertise Your Business At Huntingdon Racecourse Maiden Hurdle (GBB Race)"; "Ayrshire Wedding Show 2 February Maiden Hurdle (GBB Race)"
+race_type_sample | race_type="(blank)" | samples="Raceridecheltenham 'Junior' NH Flat Race (Standard Open NH Flat Race) (Listed) (GBB Race)"; "Sunday Roast At Western House Hotel Open NH Flat Race (GBB Race)"; "DragonBet Real People, Real Bookmakers Open NH Flat Race (GBB Race)"; "General Gilbert Open NH Flat Race (GBB Race)"; "Download The Racecourse App Raceday Ready Open NH Flat Race (GBB Race)"; "Afternoon Tea Available For March Fixtures 'Newcomers' NH Flat Race (GBB Race)"
+race_type_sample | race_type="hurdle" | samples="Henry Bocian Juvenile Hurdle (GBB Race)"; "Dornan Engineering Relkeel Hurdle (Grade 2) (GBB Race)"; "Grosvenor Sport Win Rewards Every Day EBF Junior 'National Hunt' Hurdle (GBB Race)"; "Weatherbys Cheltenham Festival Betting Guide Hurdle (GBB Race)"; "BetMGM Juvenile Hurdle (GBB Race)"; "BetMGM Mares' Hurdle (Grade 2) (Registered As The Warfield Mares' Hurdle) (GBB Race)"
+race_type_sample | race_type="chase" | samples="Purchase Hospitality At Huntingdon In 2025 NH Flat Race (Conditional/Amateurs) (GBB Race)"; "Charlie Nugent Memorial Mares' Chase (Listed) (GBB Race)"; "Willoughby De Broke Open Hunters' Chase"; "Grand Military Gold Cup (Chase For Military Amateur Jockeys)"; "Betfair Cotswold Chase (Grade 2) (GBB Race)"; "Irish Thoroughbred Marketing Stewart Tory Memorial Open Hunters' Chase"
+race_type_sample | race_type="stakes" | samples="JenningsBet Chipchase Stakes (Group 3)"
+
+## Current Classifier Counts
+subtype_count | subtype=hurdle | races=112 | pct=3.22%
+subtype_count | subtype=chase | races=99 | pct=2.84%
+subtype_count | subtype=nh_flat | races=194 | pct=5.57%
+subtype_count | subtype=unknown_other | races=3076 | pct=88.37%
+
+## Corrected Classifier Counts
+subtype_count | subtype=hurdle | races=2017 | pct=57.94%
+subtype_count | subtype=chase | races=1216 | pct=34.93%
+subtype_count | subtype=nh_flat | races=241 | pct=6.92%
+subtype_count | subtype=unknown_other | races=7 | pct=0.20%
+
+## Structured Race Type Coverage
+structured_type_classified=211/3481 (6.06%)
+structured_type_reliable=false; race_type is usually generic, so race_name is required as a conservative fallback
+
+## Current Unknown Other Sample
+race_id | course | race_name | race_type | race_class | current_subtype
+836798 | Fakenham | "Happy New Year From Gamble Plant Amateur Jockeys' Handicap Hurdle" | handicap | 5 | unknown_other
+836811 | Southwell | "Jordan Road Surfacing Novices' Handicap Chase (GBB Race)" | handicap | 4 | unknown_other
+836799 | Fakenham | "Queen Boudicca Last Chance To Qualify Mares' Handicap Chase" | handicap | 4 | unknown_other
+834740 | Cheltenham | "Sonic The Hedgehog 3 In Cinemas Now Novices' Limited Handicap Chase (GBB Race)" | handicap | 3 | unknown_other
+837296 | Exeter | "Happy New Year From Greendale Farm Conditional Jockeys' Handicap Chase" | handicap | 4 | unknown_other
+836812 | Southwell | "Jordan Recycling Innovation Handicap Chase" | handicap | 5 | unknown_other
+836778 | Catterick | "Happy New Year Novices' Hurdle (GBB Race)" | novice | 4 | unknown_other
+836800 | Fakenham | "Book Your Skip Online At fakenhamskips.co.uk Maiden Hurdle (GBB Race)" | maiden | 3 | unknown_other
+834741 | Cheltenham | "Richmond Villages And Bupa Care Homes Maiden Hurdle (GBB Race)" | maiden | 2 | unknown_other
+836805 | Exeter | "Passage House Inn Novices' Handicap Chase (GBB Race)" | handicap | 4 | unknown_other
+836813 | Southwell | "Jordan Road Planning Handicap Chase" | handicap | 3 | unknown_other
+836773 | Musselburgh | "Virgin Bet Daily Price Boosts Novices' Handicap Chase" | handicap | 5 | unknown_other
+836779 | Catterick | "Happy 30th Birthday Sam Iveson Handicap Chase" | handicap | 5 | unknown_other
+836801 | Fakenham | "Betting Better With Sky Bet Mares' Novices' Limited Handicap Hurdle" | handicap | 5 | unknown_other
+834742 | Cheltenham | "Betfair Handicap Chase (GBB Race)" | handicap | 2 | unknown_other
+836806 | Exeter | "Peter Holland Memorial Handicap Hurdle (Div 1)" | handicap | 5 | unknown_other
+836814 | Southwell | "Jordan Volumix Concrete Novices' Hurdle (GBB Race)" | novice | 3 | unknown_other
+836774 | Musselburgh | "LiveScore Bet Best Odds Daily Hogmaneigh Handicap Hurdle (GBB Race)" | handicap | 2 | unknown_other
+836780 | Catterick | "Bet At Racing TV Novices' Hurdle (GBB Race)" | novice | 4 | unknown_other
+836802 | Fakenham | "Racing TV Novices' Handicap Chase" | handicap | 5 | unknown_other
+834739 | Cheltenham | "Betfair Exchange Handicap Chase (Premier Handicap) (GBB Race)" | handicap | 1 | unknown_other
+836807 | Exeter | "Peter Holland Memorial Handicap Hurdle (Div 2)" | handicap | 5 | unknown_other
+836815 | Southwell | "Jordan Recycling Environmental Mares' Handicap Hurdle" | handicap | 3 | unknown_other
+836775 | Musselburgh | "Virgin Bet Auld Reekie Handicap Chase (GBB Race)" | handicap | 2 | unknown_other
+836781 | Catterick | "Download The Raceday Ready App Handicap Chase" | handicap | 5 | unknown_other
+836803 | Fakenham | "Gamble Plant Norfolk Ltd Grand Prix Handicap Hurdle" | handicap | 3 | unknown_other
+834743 | Cheltenham | "Best Odds On The Betfair Exchange Handicap Hurdle (GBB Race)" | handicap | 2 | unknown_other
+836808 | Exeter | "Thurlestone Hotel Novices' Hurdle (GBB Race)" | novice | 4 | unknown_other
+836816 | Southwell | "Jordan Road Surfacing And Recycling Handicap Hurdle (GBB Race)" | handicap | 2 | unknown_other
+836776 | Musselburgh | "LiveScore Bet Handicap Hurdle" | handicap | 4 | unknown_other
+836782 | Catterick | "Go Racing In Yorkshire Season Ticket Handicap Hurdle" | handicap | 5 | unknown_other
+836804 | Fakenham | "fakenhamracecourse.co.uk Handicap Hurdle" | handicap | 4 | unknown_other
+836809 | Exeter | "Exeter Racecourse For Conference & Events Handicap Chase" | handicap | 5 | unknown_other
+836817 | Southwell | "Jordan Road Surfacing Highways Solution Novices' Limited Handicap Hurdle" | handicap | 5 | unknown_other
+836777 | Musselburgh | "Virgin Bet Daily Extra Places Handicap Hurdle" | handicap | 3 | unknown_other
+836783 | Catterick | "Racing Again 9th January Handicap Hurdle" | handicap | 5 | unknown_other
+836810 | Exeter | "Kennford Open Maiden NH Flat Race (GBB Race)" | maiden | 5 | unknown_other
+837037 | Ayr | "Ayr Racecourse Racing Club Only 30 Maiden Hurdle (GBB Race)" | maiden | 4 | unknown_other
+837030 | Huntingdon | "Advertise Your Business At Huntingdon Racecourse Maiden Hurdle (GBB Race)" | maiden | 4 | unknown_other
+837038 | Ayr | "Ayrshire Wedding Show 2 February Maiden Hurdle (GBB Race)" | maiden | 4 | unknown_other
+
+## Corrected Unknown Other Rows
+race_id | course | race_name | race_type | race_class | corrected_subtype
+865311 | Newcastle | "JenningsBet Chipchase Stakes (Group 3)" | stakes | 1 | unknown_other
+869982 | Sandown | "Chasemore Farm EBF Maiden Fillies' Stakes (GBB Race)" | maiden | 5 | unknown_other
+870757 | Sandown | "Chasemore Farm EBF Novice Stakes (GBB Race)" | novice | 4 | unknown_other
+870758 | Sandown | "Chasemore Farm Stud Staff Handicap" | handicap | 5 | unknown_other
+870760 | Sandown | "Chasemore Farm Handicap (GBBPlus Race)" | handicap | 4 | unknown_other
+872330 | Sandown | "Chasemore Farm EBF Maiden Stakes (GBB/GBBPlus Race)" | maiden | 4 | unknown_other
+876150 | Sandown | "Chasemore Farm EBF Maiden Stakes" | maiden | 4 | unknown_other
+
+## Extreme Example Classification
+example | race=856826 | course=Plumpton | race_type=handicap | race_class=5 | current_subtype=unknown_other | corrected_subtype=hurdle | race_name="Aine Mellett 40th Birthday Handicap Hurdle"
+example | race=891843 | course=Doncaster | race_type=- | race_class=5 | current_subtype=nh_flat | corrected_subtype=nh_flat | race_name="Easyfix Equine Fillies' 'Junior' NH Flat Race (GBB Race)"
+example | race=836815 | course=Southwell | race_type=handicap | race_class=3 | current_subtype=unknown_other | corrected_subtype=hurdle | race_name="Jordan Recycling Environmental Mares' Handicap Hurdle"

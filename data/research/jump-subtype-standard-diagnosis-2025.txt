@@ -1,0 +1,163 @@
+# Jump Subtype Standard Diagnosis 2025
+
+## Scope
+race_csv=data/research/going-adjustment-races-2025-01-01-2025-12-31.csv
+runner_csv=data/research/going-adjustment-runners-2025-01-01-2025-12-31.csv
+production_changes=false
+subtype_standard=course + exact distance_yards + jump subtype, leave-one-out median
+same_day_rule=existing conservative same-day adjustment only, unchanged thresholds
+
+## Subtype Counts
+subtype_count | subtype=hurdle | races=2017
+subtype_count | subtype=chase | races=1216
+subtype_count | subtype=nh_flat | races=241
+subtype_count | subtype=unknown_other | races=7
+
+## Standard Dispersion Summary
+dispersion_summary | scope=all_repeated_jump_course_distance_groups | groups=237 | mixed_subtype_groups=46 | median_stdev_reduction=0.00 | mean_stdev_reduction=0.04 | improved_groups=26 | worsened_groups=35
+dispersion_summary | scope=mixed_subtype_repeated_jump_course_distance_groups | groups=46 | median_stdev_reduction=-0.03 | mean_stdev_reduction=0.19 | improved_groups=20 | worsened_groups=26
+
+## Standard Dispersion Comparison
+dispersion | group="Doncaster:3648" | pooled_count=18 | pooled_median=240.34 | pooled_mean=239.21 | pooled_stdev=13.57 | pooled_iqr=7.52 | pooled_min=194.02 | pooled_max=261.20 | weighted_subtype_stdev=10.99 | stdev_reduction=2.58
+subtype_group | group="Doncaster:3648" | subtype=hurdle | races=14 | median=240.69 | mean=242.95 | stdev=7.87 | iqr=7.98 | min=231.04 | max=261.20
+subtype_group | group="Doncaster:3648" | subtype=nh_flat | races=4 | median=234.45 | mean=226.11 | stdev=21.94 | iqr=18.40 | min=194.02 | max=241.50
+dispersion | group="Lingfield:3520" | pooled_count=17 | pooled_median=249.41 | pooled_mean=247.90 | pooled_stdev=10.61 | pooled_iqr=14.02 | pooled_min=223.15 | pooled_max=263.23 | weighted_subtype_stdev=8.76 | stdev_reduction=1.85
+subtype_group | group="Lingfield:3520" | subtype=chase | races=5 | median=247.98 | mean=248.04 | stdev=6.27 | iqr=5.22 | min=241.04 | max=257.60
+subtype_group | group="Lingfield:3520" | subtype=hurdle | races=11 | median=252.70 | mean=250.09 | stdev=9.89 | iqr=16.44 | min=235.25 | max=263.23
+subtype_group | group="Lingfield:3520" | subtype=nh_flat | races=1 | median=223.15 | mean=223.15 | stdev=- | iqr=0.00 | min=223.15 | max=223.15
+dispersion | group="Kempton:3520" | pooled_count=24 | pooled_median=230.92 | pooled_mean=233.47 | pooled_stdev=9.20 | pooled_iqr=10.98 | pooled_min=221.29 | pooled_max=258.39 | weighted_subtype_stdev=7.44 | stdev_reduction=1.76
+subtype_group | group="Kempton:3520" | subtype=chase | races=2 | median=225.72 | mean=225.72 | stdev=0.30 | iqr=0.21 | min=225.51 | max=225.93
+subtype_group | group="Kempton:3520" | subtype=hurdle | races=18 | median=230.92 | mean=231.96 | stdev=7.09 | iqr=8.67 | min=221.29 | max=244.86
+subtype_group | group="Kempton:3520" | subtype=nh_flat | races=4 | median=244.56 | mean=244.14 | stdev=12.61 | iqr=14.48 | min=229.03 | max=258.39
+dispersion | group="Bangor-on-Dee:3665" | pooled_count=21 | pooled_median=244.50 | pooled_mean=249.50 | pooled_stdev=10.05 | pooled_iqr=11.06 | pooled_min=238.49 | pooled_max=272.22 | weighted_subtype_stdev=9.20 | stdev_reduction=0.85
+subtype_group | group="Bangor-on-Dee:3665" | subtype=hurdle | races=18 | median=245.89 | mean=250.70 | stdev=10.37 | iqr=12.21 | min=238.49 | max=272.22
+subtype_group | group="Bangor-on-Dee:3665" | subtype=nh_flat | races=3 | median=241.35 | mean=242.26 | stdev=2.18 | iqr=2.04 | min=240.68 | max=244.75
+dispersion | group="Cheltenham:3699" | pooled_count=12 | pooled_median=245.56 | pooled_mean=247.83 | pooled_stdev=6.95 | pooled_iqr=6.65 | pooled_min=240.15 | pooled_max=262.02 | weighted_subtype_stdev=6.10 | stdev_reduction=0.85
+subtype_group | group="Cheltenham:3699" | subtype=hurdle | races=10 | median=244.91 | mean=246.14 | stdev=5.71 | iqr=2.64 | min=240.15 | max=260.47
+subtype_group | group="Cheltenham:3699" | subtype=nh_flat | races=2 | median=256.32 | mean=256.32 | stdev=8.06 | iqr=5.70 | min=250.62 | max=262.02
+dispersion | group="Southwell:3482" | pooled_count=38 | pooled_median=244.73 | pooled_mean=244.76 | pooled_stdev=7.01 | pooled_iqr=7.67 | pooled_min=225.00 | pooled_max=262.26 | weighted_subtype_stdev=6.41 | stdev_reduction=0.60
+subtype_group | group="Southwell:3482" | subtype=chase | races=9 | median=248.60 | mean=248.86 | stdev=7.16 | iqr=7.01 | min=240.50 | max=262.26
+subtype_group | group="Southwell:3482" | subtype=hurdle | races=22 | median=245.20 | mean=244.71 | stdev=6.75 | iqr=6.41 | min=225.00 | max=257.11
+subtype_group | group="Southwell:3482" | subtype=nh_flat | races=7 | median=240.10 | mean=239.63 | stdev=4.35 | iqr=4.09 | min=231.50 | max=244.28
+dispersion | group="Musselburgh:3424" | pooled_count=14 | pooled_median=228.46 | pooled_mean=229.08 | pooled_stdev=8.42 | pooled_iqr=12.38 | pooled_min=216.34 | pooled_max=243.39 | weighted_subtype_stdev=7.88 | stdev_reduction=0.53
+subtype_group | group="Musselburgh:3424" | subtype=hurdle | races=13 | median=230.02 | mean=230.06 | stdev=7.88 | iqr=8.97 | min=219.67 | max=243.39
+subtype_group | group="Musselburgh:3424" | subtype=nh_flat | races=1 | median=216.34 | mean=216.34 | stdev=- | iqr=0.00 | min=216.34 | max=216.34
+dispersion | group="Ludlow:3469" | pooled_count=28 | pooled_median=228.05 | pooled_mean=227.60 | pooled_stdev=6.35 | pooled_iqr=7.92 | pooled_min=213.53 | pooled_max=238.87 | weighted_subtype_stdev=5.83 | stdev_reduction=0.52
+subtype_group | group="Ludlow:3469" | subtype=hurdle | races=24 | median=229.33 | mean=228.48 | stdev=6.40 | iqr=8.82 | min=213.53 | max=238.87
+subtype_group | group="Ludlow:3469" | subtype=nh_flat | races=4 | median=221.83 | mean=222.34 | stdev=2.39 | iqr=2.90 | min=220.20 | max=225.48
+dispersion | group="Fakenham:3523" | pooled_count=20 | pooled_median=242.97 | pooled_mean=242.51 | pooled_stdev=5.84 | pooled_iqr=5.19 | pooled_min=230.31 | pooled_max=258.11 | weighted_subtype_stdev=5.41 | stdev_reduction=0.43
+subtype_group | group="Fakenham:3523" | subtype=hurdle | races=18 | median=243.35 | mean=243.36 | stdev=5.30 | iqr=4.25 | min=232.78 | max=258.11
+subtype_group | group="Fakenham:3523" | subtype=nh_flat | races=2 | median=234.88 | mean=234.88 | stdev=6.46 | iqr=4.57 | min=230.31 | max=239.45
+dispersion | group="Carlisle:3740" | pooled_count=17 | pooled_median=264.81 | pooled_mean=264.47 | pooled_stdev=4.45 | pooled_iqr=2.70 | pooled_min=254.45 | pooled_max=273.98 | weighted_subtype_stdev=4.17 | stdev_reduction=0.28
+subtype_group | group="Carlisle:3740" | subtype=hurdle | races=14 | median=264.23 | mean=264.35 | stdev=4.93 | iqr=4.32 | min=254.45 | max=273.98
+subtype_group | group="Carlisle:3740" | subtype=nh_flat | races=3 | median=264.81 | mean=265.05 | stdev=0.67 | iqr=0.64 | min=264.53 | max=265.80
+dispersion | group="Worcester:4400" | pooled_count=43 | pooled_median=304.15 | pooled_mean=303.88 | pooled_stdev=8.70 | pooled_iqr=11.27 | pooled_min=280.38 | pooled_max=322.86 | weighted_subtype_stdev=8.44 | stdev_reduction=0.27
+subtype_group | group="Worcester:4400" | subtype=chase | races=14 | median=306.26 | mean=306.87 | stdev=6.63 | iqr=7.57 | min=290.23 | max=315.23
+subtype_group | group="Worcester:4400" | subtype=hurdle | races=29 | median=301.80 | mean=302.44 | stdev=9.31 | iqr=9.27 | min=280.38 | max=322.86
+dispersion | group="Newcastle:3710" | pooled_count=28 | pooled_median=249.08 | pooled_mean=250.07 | pooled_stdev=6.60 | pooled_iqr=9.56 | pooled_min=237.43 | pooled_max=265.12 | weighted_subtype_stdev=6.37 | stdev_reduction=0.24
+subtype_group | group="Newcastle:3710" | subtype=hurdle | races=20 | median=248.67 | mean=248.75 | stdev=6.40 | iqr=9.24 | min=237.43 | max=260.70
+subtype_group | group="Newcastle:3710" | subtype=nh_flat | races=8 | median=254.41 | mean=253.38 | stdev=6.29 | iqr=6.73 | min=244.46 | max=265.12
+dispersion | group="Aintree:3729" | pooled_count=12 | pooled_median=246.34 | pooled_mean=247.49 | pooled_stdev=7.01 | pooled_iqr=9.30 | pooled_min=239.40 | pooled_max=260.92 | weighted_subtype_stdev=6.79 | stdev_reduction=0.22
+subtype_group | group="Aintree:3729" | subtype=hurdle | races=6 | median=247.62 | mean=249.61 | stdev=8.38 | iqr=13.66 | min=241.51 | max=260.92
+subtype_group | group="Aintree:3729" | subtype=nh_flat | races=6 | median=245.21 | mean=245.37 | stdev=5.20 | iqr=9.10 | min=239.40 | max=251.05
+dispersion | group="Catterick:3456" | pooled_count=16 | pooled_median=231.75 | pooled_mean=231.92 | pooled_stdev=6.14 | pooled_iqr=8.16 | pooled_min=217.45 | pooled_max=240.65 | weighted_subtype_stdev=5.94 | stdev_reduction=0.20
+subtype_group | group="Catterick:3456" | subtype=hurdle | races=12 | median=233.15 | mean=233.02 | stdev=4.96 | iqr=7.32 | min=224.57 | max=240.65
+subtype_group | group="Catterick:3456" | subtype=nh_flat | races=4 | median=229.04 | mean=228.63 | stdev=8.88 | iqr=7.43 | min=217.45 | max=239.00
+dispersion | group="Southwell:4488" | pooled_count=34 | pooled_median=319.44 | pooled_mean=323.35 | pooled_stdev=17.19 | pooled_iqr=14.98 | pooled_min=301.00 | pooled_max=398.54 | weighted_subtype_stdev=17.02 | stdev_reduction=0.17
+subtype_group | group="Southwell:4488" | subtype=chase | races=10 | median=325.47 | mean=326.14 | stdev=12.40 | iqr=19.38 | min=306.70 | max=345.60
+subtype_group | group="Southwell:4488" | subtype=hurdle | races=24 | median=318.68 | mean=322.19 | stdev=18.95 | iqr=10.84 | min=301.00 | max=398.54
+dispersion | group="Worcester:3520" | pooled_count=47 | pooled_median=236.00 | pooled_mean=235.40 | pooled_stdev=7.55 | pooled_iqr=9.10 | pooled_min=221.25 | pooled_max=251.33 | weighted_subtype_stdev=7.39 | stdev_reduction=0.15
+subtype_group | group="Worcester:3520" | subtype=hurdle | races=35 | median=236.10 | mean=236.12 | stdev=8.12 | iqr=12.44 | min=223.82 | max=251.33
+subtype_group | group="Worcester:3520" | subtype=nh_flat | races=12 | median=233.19 | mean=233.28 | stdev=5.27 | iqr=5.00 | min=221.25 | max=242.12
+dispersion | group="Southwell:5340" | pooled_count=31 | pooled_median=395.65 | pooled_mean=395.09 | pooled_stdev=12.68 | pooled_iqr=17.34 | pooled_min=370.40 | pooled_max=419.08 | weighted_subtype_stdev=12.60 | stdev_reduction=0.07
+subtype_group | group="Southwell:5340" | subtype=chase | races=16 | median=397.74 | mean=397.11 | stdev=10.99 | iqr=10.41 | min=371.60 | max=415.10
+subtype_group | group="Southwell:5340" | subtype=hurdle | races=15 | median=389.91 | mean=392.93 | stdev=14.33 | iqr=22.99 | min=370.40 | max=419.08
+dispersion | group="Chepstow:5191" | pooled_count=21 | pooled_median=362.21 | pooled_mean=364.98 | pooled_stdev=15.41 | pooled_iqr=10.67 | pooled_min=342.67 | pooled_max=398.40 | weighted_subtype_stdev=15.34 | stdev_reduction=0.07
+subtype_group | group="Chepstow:5191" | subtype=chase | races=9 | median=363.94 | mean=368.83 | stdev=13.78 | iqr=3.77 | min=355.31 | max=398.40
+subtype_group | group="Chepstow:5191" | subtype=hurdle | races=12 | median=357.52 | mean=362.10 | stdev=16.52 | iqr=15.57 | min=342.67 | max=395.50
+dispersion | group="Ffos Las:3482" | pooled_count=22 | pooled_median=229.87 | pooled_mean=234.13 | pooled_stdev=9.43 | pooled_iqr=15.60 | pooled_min=222.53 | pooled_max=250.90 | weighted_subtype_stdev=9.40 | stdev_reduction=0.03
+subtype_group | group="Ffos Las:3482" | subtype=hurdle | races=15 | median=229.87 | mean=232.99 | stdev=8.15 | iqr=9.43 | min=222.53 | max=248.55
+subtype_group | group="Ffos Las:3482" | subtype=nh_flat | races=7 | median=229.86 | mean=236.58 | stdev=12.08 | iqr=21.70 | min=224.63 | max=250.90
+dispersion | group="Worcester:5060" | pooled_count=31 | pooled_median=352.40 | pooled_mean=353.01 | pooled_stdev=6.83 | pooled_iqr=9.75 | pooled_min=341.23 | pooled_max=368.76 | weighted_subtype_stdev=6.80 | stdev_reduction=0.03
+subtype_group | group="Worcester:5060" | subtype=chase | races=14 | median=352.44 | mean=354.32 | stdev=7.63 | iqr=8.34 | min=341.23 | max=368.76
+subtype_group | group="Worcester:5060" | subtype=hurdle | races=17 | median=352.07 | mean=351.94 | stdev=6.12 | iqr=9.70 | min=342.10 | max=360.85
+dispersion | group="Exeter:5334" | pooled_count=15 | pooled_median=382.81 | pooled_mean=387.58 | pooled_stdev=18.03 | pooled_iqr=22.44 | pooled_min=362.04 | pooled_max=418.95 | weighted_subtype_stdev=18.03 | stdev_reduction=0.00
+subtype_group | group="Exeter:5334" | subtype=chase | races=15 | median=382.81 | mean=387.58 | stdev=18.03 | iqr=22.44 | min=362.04 | max=418.95
+dispersion | group="Fakenham:5155" | pooled_count=8 | pooled_median=365.09 | pooled_mean=371.80 | pooled_stdev=18.03 | pooled_iqr=22.92 | pooled_min=350.87 | pooled_max=403.62 | weighted_subtype_stdev=18.03 | stdev_reduction=0.00
+subtype_group | group="Fakenham:5155" | subtype=hurdle | races=8 | median=365.09 | mean=371.80 | stdev=18.03 | iqr=22.92 | min=350.87 | max=403.62
+dispersion | group="Newbury:5332" | pooled_count=5 | pooled_median=362.90 | pooled_mean=367.49 | pooled_stdev=16.62 | pooled_iqr=29.33 | pooled_min=351.00 | pooled_max=387.00 | weighted_subtype_stdev=16.62 | stdev_reduction=0.00
+subtype_group | group="Newbury:5332" | subtype=hurdle | races=5 | median=362.90 | mean=367.49 | stdev=16.62 | iqr=29.33 | min=351.00 | max=387.00
+dispersion | group="Plumpton:3495" | pooled_count=23 | pooled_median=233.00 | pooled_mean=238.78 | pooled_stdev=26.46 | pooled_iqr=13.50 | pooled_min=215.77 | pooled_max=352.54 | weighted_subtype_stdev=26.46 | stdev_reduction=0.00
+subtype_group | group="Plumpton:3495" | subtype=hurdle | races=23 | median=233.00 | mean=238.78 | stdev=26.46 | iqr=13.50 | min=215.77 | max=352.54
+dispersion | group="Musselburgh:4351" | pooled_count=11 | pooled_median=303.70 | pooled_mean=303.92 | pooled_stdev=8.96 | pooled_iqr=8.81 | pooled_min=293.10 | pooled_max=325.23 | weighted_subtype_stdev=8.96 | stdev_reduction=0.00
+subtype_group | group="Musselburgh:4351" | subtype=hurdle | races=11 | median=303.70 | mean=303.92 | stdev=8.96 | iqr=8.81 | min=293.10 | max=325.23
+dispersion | group="Huntingdon:4369" | pooled_count=12 | pooled_median=309.31 | pooled_mean=306.50 | pooled_stdev=10.30 | pooled_iqr=11.01 | pooled_min=284.11 | pooled_max=319.90 | weighted_subtype_stdev=10.30 | stdev_reduction=0.00
+subtype_group | group="Huntingdon:4369" | subtype=chase | races=12 | median=309.31 | mean=306.50 | stdev=10.30 | iqr=11.01 | min=284.11 | max=319.90
+dispersion | group="Ayr:5300" | pooled_count=10 | pooled_median=395.63 | pooled_mean=397.44 | pooled_stdev=13.33 | pooled_iqr=10.81 | pooled_min=373.04 | pooled_max=418.09 | weighted_subtype_stdev=13.33 | stdev_reduction=0.00
+subtype_group | group="Ayr:5300" | subtype=chase | races=10 | median=395.63 | mean=397.44 | stdev=13.33 | iqr=10.81 | min=373.04 | max=418.09
+dispersion | group="Taunton:4181" | pooled_count=22 | pooled_median=287.97 | pooled_mean=290.13 | pooled_stdev=9.87 | pooled_iqr=15.77 | pooled_min=274.10 | pooled_max=306.70 | weighted_subtype_stdev=9.87 | stdev_reduction=0.00
+subtype_group | group="Taunton:4181" | subtype=hurdle | races=22 | median=287.97 | mean=290.13 | stdev=9.87 | iqr=15.77 | min=274.10 | max=306.70
+dispersion | group="Ffos Las:4263" | pooled_count=10 | pooled_median=311.59 | pooled_mean=312.51 | pooled_stdev=14.34 | pooled_iqr=10.77 | pooled_min=291.04 | pooled_max=340.09 | weighted_subtype_stdev=14.34 | stdev_reduction=0.00
+subtype_group | group="Ffos Las:4263" | subtype=chase | races=10 | median=311.59 | mean=312.51 | stdev=14.34 | iqr=10.77 | min=291.04 | max=340.09
+dispersion | group="Market Rasen:4709" | pooled_count=13 | pooled_median=330.90 | pooled_mean=336.19 | pooled_stdev=11.19 | pooled_iqr=16.33 | pooled_min=321.80 | pooled_max=354.39 | weighted_subtype_stdev=11.19 | stdev_reduction=0.00
+subtype_group | group="Market Rasen:4709" | subtype=chase | races=13 | median=330.90 | mean=336.19 | stdev=11.19 | iqr=16.33 | min=321.80 | max=354.39
+dispersion | group="Uttoxeter:4387" | pooled_count=32 | pooled_median=302.50 | pooled_mean=305.35 | pooled_stdev=12.23 | pooled_iqr=18.01 | pooled_min=287.18 | pooled_max=328.23 | weighted_subtype_stdev=12.23 | stdev_reduction=0.00
+subtype_group | group="Uttoxeter:4387" | subtype=hurdle | races=32 | median=302.50 | mean=305.35 | stdev=12.23 | iqr=18.01 | min=287.18 | max=328.23
+dispersion | group="Lingfield:5060" | pooled_count=8 | pooled_median=365.23 | pooled_mean=368.17 | pooled_stdev=15.74 | pooled_iqr=15.52 | pooled_min=346.16 | pooled_max=394.27 | weighted_subtype_stdev=15.74 | stdev_reduction=0.00
+subtype_group | group="Lingfield:5060" | subtype=hurdle | races=8 | median=365.23 | mean=368.17 | stdev=15.74 | iqr=15.52 | min=346.16 | max=394.27
+dispersion | group="Wetherby:5325" | pooled_count=14 | pooled_median=394.14 | pooled_mean=390.54 | pooled_stdev=14.18 | pooled_iqr=16.11 | pooled_min=356.81 | pooled_max=410.10 | weighted_subtype_stdev=14.18 | stdev_reduction=0.00
+subtype_group | group="Wetherby:5325" | subtype=chase | races=14 | median=394.14 | mean=390.54 | stdev=14.18 | iqr=16.11 | min=356.81 | max=410.10
+dispersion | group="Ludlow:5231" | pooled_count=14 | pooled_median=374.59 | pooled_mean=373.96 | pooled_stdev=10.29 | pooled_iqr=11.57 | pooled_min=352.31 | pooled_max=389.97 | weighted_subtype_stdev=10.29 | stdev_reduction=0.00
+subtype_group | group="Ludlow:5231" | subtype=chase | races=14 | median=374.59 | mean=373.96 | stdev=10.29 | iqr=11.57 | min=352.31 | max=389.97
+dispersion | group="Chepstow:4278" | pooled_count=10 | pooled_median=293.64 | pooled_mean=297.20 | pooled_stdev=9.68 | pooled_iqr=10.28 | pooled_min=281.09 | pooled_max=313.80 | weighted_subtype_stdev=9.68 | stdev_reduction=0.00
+subtype_group | group="Chepstow:4278" | subtype=chase | races=10 | median=293.64 | mean=297.20 | stdev=9.68 | iqr=10.28 | min=281.09 | max=313.80
+dispersion | group="Fontwell:3905" | pooled_count=6 | pooled_median=279.25 | pooled_mean=279.45 | pooled_stdev=8.67 | pooled_iqr=12.67 | pooled_min=268.90 | pooled_max=290.90 | weighted_subtype_stdev=8.67 | stdev_reduction=0.00
+subtype_group | group="Fontwell:3905" | subtype=chase | races=6 | median=279.25 | mean=279.45 | stdev=8.67 | iqr=12.67 | min=268.90 | max=290.90
+dispersion | group="Stratford:4965" | pooled_count=13 | pooled_median=343.02 | pooled_mean=343.75 | pooled_stdev=6.99 | pooled_iqr=12.44 | pooled_min=335.09 | pooled_max=355.01 | weighted_subtype_stdev=6.99 | stdev_reduction=0.00
+subtype_group | group="Stratford:4965" | subtype=chase | races=13 | median=343.02 | mean=343.75 | stdev=6.99 | iqr=12.44 | min=335.09 | max=355.01
+dispersion | group="Cheltenham:5500" | pooled_count=6 | pooled_median=391.50 | pooled_mean=395.93 | pooled_stdev=12.22 | pooled_iqr=18.30 | pooled_min=383.22 | pooled_max=412.13 | weighted_subtype_stdev=12.22 | stdev_reduction=0.00
+subtype_group | group="Cheltenham:5500" | subtype=chase | races=6 | median=391.50 | mean=395.93 | stdev=12.22 | iqr=18.30 | min=383.22 | max=412.13
+dispersion | group="Hexham:5321" | pooled_count=14 | pooled_median=403.90 | pooled_mean=405.86 | pooled_stdev=12.72 | pooled_iqr=8.49 | pooled_min=386.70 | pooled_max=434.23 | weighted_subtype_stdev=12.72 | stdev_reduction=0.00
+subtype_group | group="Hexham:5321" | subtype=chase | races=14 | median=403.90 | mean=405.86 | stdev=12.72 | iqr=8.49 | min=386.70 | max=434.23
+dispersion | group="Newton Abbot:4742" | pooled_count=17 | pooled_median=320.87 | pooled_mean=324.44 | pooled_stdev=11.51 | pooled_iqr=20.31 | pooled_min=309.80 | pooled_max=346.40 | weighted_subtype_stdev=11.51 | stdev_reduction=0.00
+subtype_group | group="Newton Abbot:4742" | subtype=hurdle | races=17 | median=320.87 | mean=324.44 | stdev=11.51 | iqr=20.31 | min=309.80 | max=346.40
+
+## Extreme Rating Recheck
+base_jump_extreme_ratings=2891
+comparable_with_subtype_standard=2867
+moved_inside_0_200=82
+remain_extreme=2785
+median_abs_rating_change=0.00
+improved=361
+worsened=331
+no_subtype_standard=24
+
+## Extreme Example Trace
+example_trace | race=856826 | subtype=hurdle | pooled_standard=232.91 | subtype_standard=232.91 | pooled_sample=22 | subtype_sample=22 | actual=352.54 | pooled_deviation=119.63 | subtype_deviation=119.63 | pooled_winner_rating=-344.73 | subtype_winner_rating=-344.73
+example_trace | race=891843 | subtype=nh_flat | pooled_standard=240.61 | subtype_standard=238.80 | pooled_sample=17 | subtype_sample=3 | actual=194.02 | pooled_deviation=-46.59 | subtype_deviation=-44.78 | pooled_winner_rating=428.50 | subtype_winner_rating=415.74
+example_trace | race=836815 | subtype=hurdle | pooled_standard=319.13 | subtype_standard=318.35 | pooled_sample=33 | subtype_sample=23 | actual=398.54 | pooled_deviation=79.41 | subtype_deviation=80.19 | pooled_winner_rating=-235.34 | subtype_winner_rating=-238.64
+
+## Same-Day Interaction
+same_day_interaction | subtype=hurdle | base_races=2016 | same_day_races=1214 | subtype_base_median_abs_error=6.53 | subtype_same_day_median_abs_error=3.05
+same_day_interaction | subtype=chase | base_races=1211 | same_day_races=752 | subtype_base_median_abs_error=7.33 | subtype_same_day_median_abs_error=3.47
+same_day_interaction | subtype=nh_flat | base_races=227 | same_day_races=134 | subtype_base_median_abs_error=7.76 | subtype_same_day_median_abs_error=3.81
+same_day_interaction | subtype=unknown_other | base_races=0 | same_day_races=0 | subtype_base_median_abs_error=- | subtype_same_day_median_abs_error=-
+
+## Historical Fallback Safety
+historical_fallback_safety | subtype=hurdle | runners=14332 | outside_0_200=1057 | median_abs_change_from_subtype=21.52 | max_abs_change_from_subtype=155.73
+historical_fallback_safety | subtype=chase | runners=6536 | outside_0_200=405 | median_abs_change_from_subtype=22.39 | max_abs_change_from_subtype=150.01
+historical_fallback_safety | subtype=nh_flat | runners=1935 | outside_0_200=164 | median_abs_change_from_subtype=19.72 | max_abs_change_from_subtype=119.47
+historical_fallback_safety | subtype=unknown_other | runners=0 | outside_0_200=0 | median_abs_change_from_subtype=- | max_abs_change_from_subtype=-
+
+## Rating Scale By Subtype
+rating_distribution | subtype=hurdle | runners=14547 | or_count=10549 | or_correlation=0.13 | mean=77.69 | median=82.15 | stdev=63.89 | p01=-93.94 | p99=222.30 | below_0=1578 | above_200=307 | outside_0_200=1885
+rating_distribution | subtype=chase | runners=6624 | or_count=6566 | or_correlation=0.13 | mean=82.91 | median=84.69 | stdev=63.60 | p01=-80.26 | p99=226.41 | below_0=655 | above_200=164 | outside_0_200=819
+rating_distribution | subtype=nh_flat | runners=1935 | or_count=60 | or_correlation=0.09 | mean=82.16 | median=80.97 | stdev=68.92 | p01=-90.68 | p99=243.54 | below_0=199 | above_200=68 | outside_0_200=267
+rating_distribution | subtype=unknown_other | runners=0 | or_count=0 | or_correlation=- | mean=- | median=- | stdev=- | p01=- | p99=- | below_0=0 | above_200=0 | outside_0_200=0
+
+## Conclusion
+subtype_standard_coverage=2867/2891 base_extreme_runner_ratings
+extreme_reduction=82 moved inside 0..200
+same_day_after_subtype_base=6.91 same_day=3.19
+production_readiness=do not promote jumps yet; confirm subtype classification quality and residual extremes first
+rating_scale_note=if subtype standards do not remove most extremes, jump seconds-to-rating scaling still needs review

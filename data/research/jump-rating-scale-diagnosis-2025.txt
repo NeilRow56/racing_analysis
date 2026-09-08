@@ -1,0 +1,197 @@
+# Jump Rating Scale Diagnosis 2025
+
+## Scope
+race_csv=data/research/going-adjustment-races-2025-01-01-2025-12-31.csv
+runner_csv=data/research/going-adjustment-runners-2025-01-01-2025-12-31.csv
+production_changes=false
+standards_or_thresholds_changed=false
+
+## Current Rating Formula
+For each runner, the research CSV first converts beaten distance into equivalent runner time:
+seconds_per_length = (8 / 3 yards) / (distance_yards / actual_winning_time_seconds)
+beaten_seconds = cumulative_beaten_lengths * seconds_per_length
+equivalent_time_seconds = actual_winning_time_seconds + beaten_seconds
+
+The current distance-aware rating formula is:
+current_rating = 100 + (standard_seconds - equivalent_time_seconds) / seconds_per_length
+
+For conservative same-day ratings:
+adjusted_standard_seconds = base_standard_seconds + conservative_same_day_adj_per_f * (distance_yards / 220)
+current_same_day_rating = 100 + (adjusted_standard_seconds - equivalent_time_seconds) / seconds_per_length
+
+Positive standard - equivalent_time means faster than standard. One rating point equals one speed-based length.
+
+## Alternative Research Calibration
+calibration_sample=17179
+median_abs_or_minus_100=14.00
+median_abs_standard_minus_equivalent_per_f=0.37
+median_abs_standard_minus_equivalent_pct=0.02
+sec_per_f_points_per_sec_per_f=37.76
+pct_time_points_per_1pct=5.75
+calibration_rule=median(|OR-100|) divided by median absolute time-deviation scale among central 2025 jump runners with OR and |OR-100|<=60
+
+## Worked Examples
+worked_example | label=normal_aw | race=849659 | date=2025-03-26 | course=Kempton | segment=all_weather_flat | subtype=- | surface=POLYTRACK | distance="7f" | distance_yards=1540 | winner_time=85.64 | standard=86.47 | same_day_standard=86.62 | seconds_per_length=0.15 | beaten_lengths=0.00 | beaten_seconds=0.00 | equivalent_time=85.64 | standard_minus_equivalent=0.83 | diff_sec_per_f=0.12 | diff_pct=0.97 | current_rating=105.63 | current_same_day_rating=106.64 | sec_per_f_rating=104.50 | sec_per_f_same_day_rating=105.31 | pct_rating=105.56 | pct_same_day_rating=106.54 | OR=106 | horse="Mount Athos" | race_name="Unibet More Extra Place Races Handicap"
+worked_example | label=normal_turf_flat | race=859902 | date=2025-05-29 | course=Yarmouth | segment=turf_flat | subtype=- | surface=TURF | distance="6f 3y" | distance_yards=1323 | winner_time=74.68 | standard=72.58 | same_day_standard=73.58 | seconds_per_length=0.15 | beaten_lengths=0.00 | beaten_seconds=0.00 | equivalent_time=74.68 | standard_minus_equivalent=-2.10 | diff_sec_per_f=-0.35 | diff_pct=-2.89 | current_rating=86.05 | current_same_day_rating=92.71 | sec_per_f_rating=86.81 | sec_per_f_same_day_rating=93.11 | pct_rating=83.35 | pct_same_day_rating=91.42 | OR=86 | horse="Showering" | race_name="Weekend Winners On At The Races Novice Stakes (GBB Race)"
+worked_example | label=normal_hurdle | race=841963 | date=2025-02-04 | course=Market Rasen | segment=jumps | subtype=hurdle | surface=TURF | distance="2m 125y" | distance_yards=3645 | winner_time=255.50 | standard=254.00 | same_day_standard=254.00 | seconds_per_length=0.19 | beaten_lengths=0.00 | beaten_seconds=0.00 | equivalent_time=255.50 | standard_minus_equivalent=-1.50 | diff_sec_per_f=-0.09 | diff_pct=-0.59 | current_rating=91.98 | current_same_day_rating=91.98 | sec_per_f_rating=96.58 | sec_per_f_same_day_rating=96.58 | pct_rating=96.60 | pct_same_day_rating=96.60 | OR=92 | horse="Lady Babs" | race_name="trustatrader.com Handicap Hurdle"
+worked_example | label=normal_chase | race=837032 | date=2025-01-02 | course=Huntingdon | segment=jumps | subtype=chase | surface=TURF | distance="2m 3f 189y" | distance_yards=4369 | winner_time=308.74 | standard=309.87 | same_day_standard=313.95 | seconds_per_length=0.19 | beaten_lengths=0.00 | beaten_seconds=0.00 | equivalent_time=308.74 | standard_minus_equivalent=1.13 | diff_sec_per_f=0.06 | diff_pct=0.36 | current_rating=106.00 | current_same_day_rating=127.63 | sec_per_f_rating=102.15 | sec_per_f_same_day_rating=109.90 | pct_rating=102.10 | pct_same_day_rating=109.54 | OR=106 | horse="Heard That" | race_name="Visit Huntingdon Racecourse For Your Conference Handicap Chase"
+
+## Seconds To Points Sensitivity
+sensitivity | distance=flat_5f | yards=1100 | assumed_winner_time=60 | seconds_per_length=0.15 | time_difference_seconds=0.5 | rating_points=3.44
+sensitivity | distance=flat_5f | yards=1100 | assumed_winner_time=60 | seconds_per_length=0.15 | time_difference_seconds=1 | rating_points=6.88
+sensitivity | distance=flat_5f | yards=1100 | assumed_winner_time=60 | seconds_per_length=0.15 | time_difference_seconds=2 | rating_points=13.75
+sensitivity | distance=flat_5f | yards=1100 | assumed_winner_time=60 | seconds_per_length=0.15 | time_difference_seconds=5 | rating_points=34.38
+sensitivity | distance=flat_5f | yards=1100 | assumed_winner_time=60 | seconds_per_length=0.15 | time_difference_seconds=10 | rating_points=68.75
+sensitivity | distance=flat_5f | yards=1100 | assumed_winner_time=60 | seconds_per_length=0.15 | time_difference_seconds=20 | rating_points=137.50
+sensitivity | distance=flat_1m | yards=1760 | assumed_winner_time=100 | seconds_per_length=0.15 | time_difference_seconds=0.5 | rating_points=3.30
+sensitivity | distance=flat_1m | yards=1760 | assumed_winner_time=100 | seconds_per_length=0.15 | time_difference_seconds=1 | rating_points=6.60
+sensitivity | distance=flat_1m | yards=1760 | assumed_winner_time=100 | seconds_per_length=0.15 | time_difference_seconds=2 | rating_points=13.20
+sensitivity | distance=flat_1m | yards=1760 | assumed_winner_time=100 | seconds_per_length=0.15 | time_difference_seconds=5 | rating_points=33.00
+sensitivity | distance=flat_1m | yards=1760 | assumed_winner_time=100 | seconds_per_length=0.15 | time_difference_seconds=10 | rating_points=66.00
+sensitivity | distance=flat_1m | yards=1760 | assumed_winner_time=100 | seconds_per_length=0.15 | time_difference_seconds=20 | rating_points=132.00
+sensitivity | distance=flat_1m4f | yards=2640 | assumed_winner_time=150 | seconds_per_length=0.15 | time_difference_seconds=0.5 | rating_points=3.30
+sensitivity | distance=flat_1m4f | yards=2640 | assumed_winner_time=150 | seconds_per_length=0.15 | time_difference_seconds=1 | rating_points=6.60
+sensitivity | distance=flat_1m4f | yards=2640 | assumed_winner_time=150 | seconds_per_length=0.15 | time_difference_seconds=2 | rating_points=13.20
+sensitivity | distance=flat_1m4f | yards=2640 | assumed_winner_time=150 | seconds_per_length=0.15 | time_difference_seconds=5 | rating_points=33.00
+sensitivity | distance=flat_1m4f | yards=2640 | assumed_winner_time=150 | seconds_per_length=0.15 | time_difference_seconds=10 | rating_points=66.00
+sensitivity | distance=flat_1m4f | yards=2640 | assumed_winner_time=150 | seconds_per_length=0.15 | time_difference_seconds=20 | rating_points=132.00
+sensitivity | distance=jumps_2m | yards=3520 | assumed_winner_time=240 | seconds_per_length=0.18 | time_difference_seconds=0.5 | rating_points=2.75
+sensitivity | distance=jumps_2m | yards=3520 | assumed_winner_time=240 | seconds_per_length=0.18 | time_difference_seconds=1 | rating_points=5.50
+sensitivity | distance=jumps_2m | yards=3520 | assumed_winner_time=240 | seconds_per_length=0.18 | time_difference_seconds=2 | rating_points=11.00
+sensitivity | distance=jumps_2m | yards=3520 | assumed_winner_time=240 | seconds_per_length=0.18 | time_difference_seconds=5 | rating_points=27.50
+sensitivity | distance=jumps_2m | yards=3520 | assumed_winner_time=240 | seconds_per_length=0.18 | time_difference_seconds=10 | rating_points=55.00
+sensitivity | distance=jumps_2m | yards=3520 | assumed_winner_time=240 | seconds_per_length=0.18 | time_difference_seconds=20 | rating_points=110.00
+sensitivity | distance=jumps_2m4f | yards=4400 | assumed_winner_time=310 | seconds_per_length=0.19 | time_difference_seconds=0.5 | rating_points=2.66
+sensitivity | distance=jumps_2m4f | yards=4400 | assumed_winner_time=310 | seconds_per_length=0.19 | time_difference_seconds=1 | rating_points=5.32
+sensitivity | distance=jumps_2m4f | yards=4400 | assumed_winner_time=310 | seconds_per_length=0.19 | time_difference_seconds=2 | rating_points=10.65
+sensitivity | distance=jumps_2m4f | yards=4400 | assumed_winner_time=310 | seconds_per_length=0.19 | time_difference_seconds=5 | rating_points=26.61
+sensitivity | distance=jumps_2m4f | yards=4400 | assumed_winner_time=310 | seconds_per_length=0.19 | time_difference_seconds=10 | rating_points=53.23
+sensitivity | distance=jumps_2m4f | yards=4400 | assumed_winner_time=310 | seconds_per_length=0.19 | time_difference_seconds=20 | rating_points=106.45
+sensitivity | distance=jumps_3m | yards=5280 | assumed_winner_time=390 | seconds_per_length=0.20 | time_difference_seconds=0.5 | rating_points=2.54
+sensitivity | distance=jumps_3m | yards=5280 | assumed_winner_time=390 | seconds_per_length=0.20 | time_difference_seconds=1 | rating_points=5.08
+sensitivity | distance=jumps_3m | yards=5280 | assumed_winner_time=390 | seconds_per_length=0.20 | time_difference_seconds=2 | rating_points=10.15
+sensitivity | distance=jumps_3m | yards=5280 | assumed_winner_time=390 | seconds_per_length=0.20 | time_difference_seconds=5 | rating_points=25.38
+sensitivity | distance=jumps_3m | yards=5280 | assumed_winner_time=390 | seconds_per_length=0.20 | time_difference_seconds=10 | rating_points=50.77
+sensitivity | distance=jumps_3m | yards=5280 | assumed_winner_time=390 | seconds_per_length=0.20 | time_difference_seconds=20 | rating_points=101.54
+
+## Jump Deviation Distributions
+deviation_distribution | subtype=hurdle | races=2017 | raw_seconds_median=0.01 | raw_seconds_mean=1.20 | raw_seconds_stdev=11.70 | raw_seconds_p01=-23.35 | raw_seconds_p05=-14.81 | raw_seconds_p25=-5.83 | raw_seconds_p75=7.24 | raw_seconds_p95=21.20 | raw_seconds_p99=34.03 | sec_per_f_median=0.00 | sec_per_f_mean=0.06 | sec_per_f_stdev=0.60 | sec_per_f_p01=-1.15 | sec_per_f_p05=-0.77 | sec_per_f_p25=-0.31 | sec_per_f_p75=0.39 | sec_per_f_p95=1.06 | sec_per_f_p99=1.68 | pct_standard_median=0.00 | pct_standard_mean=0.00 | pct_standard_stdev=0.04 | pct_standard_p01=-0.07 | pct_standard_p05=-0.05 | pct_standard_p25=-0.02 | pct_standard_p75=0.03 | pct_standard_p95=0.07 | pct_standard_p99=0.11
+deviation_distribution | subtype=chase | races=1216 | raw_seconds_median=0.22 | raw_seconds_mean=0.96 | raw_seconds_stdev=12.17 | raw_seconds_p01=-25.65 | raw_seconds_p05=-17.31 | raw_seconds_p25=-6.94 | raw_seconds_p75=7.63 | raw_seconds_p95=23.32 | raw_seconds_p99=33.83 | sec_per_f_median=0.01 | sec_per_f_mean=0.04 | sec_per_f_stdev=0.57 | sec_per_f_p01=-1.19 | sec_per_f_p05=-0.85 | sec_per_f_p25=-0.33 | sec_per_f_p75=0.38 | sec_per_f_p95=1.05 | sec_per_f_p99=1.56 | pct_standard_median=0.00 | pct_standard_mean=0.00 | pct_standard_stdev=0.04 | pct_standard_p01=-0.07 | pct_standard_p05=-0.05 | pct_standard_p25=-0.02 | pct_standard_p75=0.02 | pct_standard_p95=0.07 | pct_standard_p99=0.10
+deviation_distribution | subtype=nh_flat | races=241 | raw_seconds_median=-0.72 | raw_seconds_mean=-0.30 | raw_seconds_stdev=10.19 | raw_seconds_p01=-23.76 | raw_seconds_p05=-14.91 | raw_seconds_p25=-6.17 | raw_seconds_p75=6.40 | raw_seconds_p95=16.46 | raw_seconds_p99=21.50 | sec_per_f_median=-0.04 | sec_per_f_mean=-0.02 | sec_per_f_stdev=0.62 | sec_per_f_p01=-1.43 | sec_per_f_p05=-0.92 | sec_per_f_p25=-0.38 | sec_per_f_p75=0.41 | sec_per_f_p95=1.01 | sec_per_f_p99=1.32 | pct_standard_median=-0.00 | pct_standard_mean=-0.00 | pct_standard_stdev=0.04 | pct_standard_p01=-0.09 | pct_standard_p05=-0.06 | pct_standard_p25=-0.03 | pct_standard_p75=0.03 | pct_standard_p95=0.07 | pct_standard_p99=0.09
+deviation_distribution | subtype=unknown_other | races=7 | raw_seconds_median=0.03 | raw_seconds_mean=0.50 | raw_seconds_stdev=1.67 | raw_seconds_p01=-1.23 | raw_seconds_p05=-1.15 | raw_seconds_p25=-0.74 | raw_seconds_p75=1.39 | raw_seconds_p95=2.91 | raw_seconds_p99=3.30 | sec_per_f_median=0.01 | sec_per_f_mean=0.03 | sec_per_f_stdev=0.18 | sec_per_f_p01=-0.18 | sec_per_f_p05=-0.17 | sec_per_f_p25=-0.11 | sec_per_f_p75=0.18 | sec_per_f_p95=0.25 | sec_per_f_p99=0.25 | pct_standard_median=0.00 | pct_standard_mean=0.00 | pct_standard_stdev=0.01 | pct_standard_p01=-0.01 | pct_standard_p05=-0.01 | pct_standard_p25=-0.01 | pct_standard_p75=0.01 | pct_standard_p95=0.02 | pct_standard_p99=0.02
+deviation_distribution | subtype=overall | races=3481 | raw_seconds_median=0.03 | raw_seconds_mean=1.01 | raw_seconds_stdev=11.76 | raw_seconds_p01=-24.41 | raw_seconds_p05=-15.75 | raw_seconds_p25=-6.26 | raw_seconds_p75=7.31 | raw_seconds_p95=21.36 | raw_seconds_p99=33.37 | sec_per_f_median=0.00 | sec_per_f_mean=0.05 | sec_per_f_stdev=0.59 | sec_per_f_p01=-1.18 | sec_per_f_p05=-0.82 | sec_per_f_p25=-0.32 | sec_per_f_p75=0.39 | sec_per_f_p95=1.05 | sec_per_f_p99=1.60 | pct_standard_median=0.00 | pct_standard_mean=0.00 | pct_standard_stdev=0.04 | pct_standard_p01=-0.08 | pct_standard_p05=-0.05 | pct_standard_p25=-0.02 | pct_standard_p75=0.03 | pct_standard_p95=0.07 | pct_standard_p99=0.10
+
+## Rating Quality
+rating_quality | subtype=hurdle | scale=current | method=base | runners=14555 | or_count=10557 | pearson_or=0.13 | spearman_or=0.13 | median_abs_diff_or=41.13 | mean_abs_diff_or=51.96 | mean=77.66 | median=81.94 | stdev=63.48 | p01=-91.24 | p99=222.86 | below_0=1542 | above_200=306 | outside_0_200=1848
+rating_quality | subtype=hurdle | scale=current | method=same_day | runners=8939 | or_count=6539 | pearson_or=0.18 | spearman_or=0.17 | median_abs_diff_or=24.36 | mean_abs_diff_or=29.38 | mean=80.81 | median=82.75 | stdev=31.37 | p01=-3.45 | p99=147.84 | below_0=107 | above_200=0 | outside_0_200=107
+rating_quality | subtype=hurdle | scale=sec_per_f | method=base | runners=14555 | or_count=10557 | pearson_or=0.13 | spearman_or=0.13 | median_abs_diff_or=18.66 | mean_abs_diff_or=22.40 | mean=91.01 | median=93.26 | stdev=23.79 | p01=27.15 | p99=140.22 | below_0=20 | above_200=0 | outside_0_200=20
+rating_quality | subtype=hurdle | scale=sec_per_f | method=same_day | runners=8939 | or_count=6539 | pearson_or=0.18 | spearman_or=0.18 | median_abs_diff_or=13.53 | mean_abs_diff_or=16.30 | mean=92.90 | median=93.70 | stdev=11.40 | p01=61.44 | p99=116.82 | below_0=0 | above_200=0 | outside_0_200=0
+rating_quality | subtype=hurdle | scale=pct_time | method=base | runners=14555 | or_count=10557 | pearson_or=0.13 | spearman_or=0.13 | median_abs_diff_or=18.71 | mean_abs_diff_or=22.51 | mean=90.80 | median=93.13 | stdev=24.05 | p01=27.18 | p99=140.23 | below_0=23 | above_200=0 | outside_0_200=23
+rating_quality | subtype=hurdle | scale=pct_time | method=same_day | runners=8939 | or_count=6539 | pearson_or=0.18 | spearman_or=0.18 | median_abs_diff_or=13.66 | mean_abs_diff_or=16.39 | mean=92.72 | median=93.63 | stdev=11.63 | p01=60.36 | p99=116.86 | below_0=0 | above_200=0 | outside_0_200=0
+rating_quality | subtype=chase | scale=current | method=base | runners=6653 | or_count=6590 | pearson_or=0.14 | spearman_or=0.13 | median_abs_diff_or=44.15 | mean_abs_diff_or=54.47 | mean=82.03 | median=83.48 | stdev=63.72 | p01=-81.40 | p99=226.07 | below_0=675 | above_200=163 | outside_0_200=838
+rating_quality | subtype=chase | scale=current | method=same_day | runners=4252 | or_count=4204 | pearson_or=0.15 | spearman_or=0.15 | median_abs_diff_or=30.98 | mean_abs_diff_or=36.20 | mean=82.88 | median=83.77 | stdev=33.80 | p01=-2.92 | p99=157.33 | below_0=50 | above_200=0 | outside_0_200=50
+rating_quality | subtype=chase | scale=sec_per_f | method=base | runners=6653 | or_count=6590 | pearson_or=0.14 | spearman_or=0.13 | median_abs_diff_or=21.46 | mean_abs_diff_or=25.53 | mean=93.32 | median=94.28 | stdev=21.96 | p01=36.44 | p99=140.62 | below_0=1 | above_200=0 | outside_0_200=1
+rating_quality | subtype=chase | scale=sec_per_f | method=same_day | runners=4252 | or_count=4204 | pearson_or=0.16 | spearman_or=0.16 | median_abs_diff_or=18.01 | mean_abs_diff_or=21.41 | mean=94.09 | median=94.40 | stdev=11.29 | p01=65.71 | p99=117.50 | below_0=0 | above_200=0 | outside_0_200=0
+rating_quality | subtype=chase | scale=pct_time | method=base | runners=6653 | or_count=6590 | pearson_or=0.14 | spearman_or=0.13 | median_abs_diff_or=21.24 | mean_abs_diff_or=25.31 | mean=93.32 | median=94.37 | stdev=21.51 | p01=37.66 | p99=138.40 | below_0=2 | above_200=0 | outside_0_200=2
+rating_quality | subtype=chase | scale=pct_time | method=same_day | runners=4252 | or_count=4204 | pearson_or=0.15 | spearman_or=0.15 | median_abs_diff_or=18.04 | mean_abs_diff_or=21.37 | mean=94.11 | median=94.50 | stdev=11.15 | p01=65.53 | p99=116.93 | below_0=0 | above_200=0 | outside_0_200=0
+rating_quality | subtype=nh_flat | scale=current | method=base | runners=2066 | or_count=60 | pearson_or=0.05 | spearman_or=0.15 | median_abs_diff_or=26.37 | mean_abs_diff_or=34.64 | mean=83.67 | median=87.12 | stdev=62.48 | p01=-78.76 | p99=232.30 | below_0=170 | above_200=35 | outside_0_200=205
+rating_quality | subtype=nh_flat | scale=current | method=same_day | runners=1196 | or_count=57 | pearson_or=-0.05 | spearman_or=-0.10 | median_abs_diff_or=30.57 | mean_abs_diff_or=32.61 | mean=85.42 | median=90.38 | stdev=33.18 | p01=-24.15 | p99=143.68 | below_0=23 | above_200=0 | outside_0_200=23
+rating_quality | subtype=nh_flat | scale=sec_per_f | method=base | runners=2066 | or_count=60 | pearson_or=0.04 | spearman_or=0.15 | median_abs_diff_or=20.29 | mean_abs_diff_or=20.05 | mean=92.33 | median=94.61 | stdev=25.96 | p01=23.28 | p99=151.59 | below_0=6 | above_200=5 | outside_0_200=11
+rating_quality | subtype=nh_flat | scale=sec_per_f | method=same_day | runners=1196 | or_count=57 | pearson_or=-0.06 | spearman_or=-0.12 | median_abs_diff_or=19.26 | mean_abs_diff_or=20.81 | mean=93.83 | median=96.04 | stdev=13.87 | p01=48.77 | p99=118.34 | below_0=0 | above_200=0 | outside_0_200=0
+rating_quality | subtype=nh_flat | scale=pct_time | method=base | runners=2066 | or_count=60 | pearson_or=0.05 | spearman_or=0.15 | median_abs_diff_or=20.41 | mean_abs_diff_or=20.30 | mean=92.07 | median=94.43 | stdev=26.53 | p01=22.16 | p99=150.44 | below_0=6 | above_200=6 | outside_0_200=12
+rating_quality | subtype=nh_flat | scale=pct_time | method=same_day | runners=1196 | or_count=57 | pearson_or=-0.06 | spearman_or=-0.13 | median_abs_diff_or=19.28 | mean_abs_diff_or=21.11 | mean=93.66 | median=95.93 | stdev=14.17 | p01=47.48 | p99=118.42 | below_0=0 | above_200=0 | outside_0_200=0
+rating_quality | subtype=unknown_other | scale=current | method=base | runners=50 | or_count=23 | pearson_or=0.46 | spearman_or=0.46 | median_abs_diff_or=9.84 | mean_abs_diff_or=13.24 | mean=90.57 | median=92.50 | stdev=10.09 | p01=67.25 | p99=107.14 | below_0=0 | above_200=0 | outside_0_200=0
+rating_quality | subtype=unknown_other | scale=current | method=same_day | runners=50 | or_count=23 | pearson_or=0.35 | spearman_or=0.26 | median_abs_diff_or=12.36 | mean_abs_diff_or=15.43 | mean=92.97 | median=94.80 | stdev=12.41 | p01=61.81 | p99=111.63 | below_0=0 | above_200=0 | outside_0_200=0
+rating_quality | subtype=unknown_other | scale=sec_per_f | method=base | runners=50 | or_count=23 | pearson_or=0.52 | spearman_or=0.47 | median_abs_diff_or=11.55 | mean_abs_diff_or=15.05 | mean=93.14 | median=93.60 | stdev=6.99 | p01=80.74 | p99=106.24 | below_0=0 | above_200=0 | outside_0_200=0
+rating_quality | subtype=unknown_other | scale=sec_per_f | method=same_day | runners=50 | or_count=23 | pearson_or=0.33 | spearman_or=0.25 | median_abs_diff_or=11.42 | mean_abs_diff_or=15.35 | mean=95.45 | median=95.44 | stdev=7.97 | p01=79.90 | p99=110.07 | below_0=0 | above_200=0 | outside_0_200=0
+rating_quality | subtype=unknown_other | scale=pct_time | method=base | runners=50 | or_count=23 | pearson_or=0.52 | spearman_or=0.46 | median_abs_diff_or=10.63 | mean_abs_diff_or=14.49 | mean=91.96 | median=92.32 | stdev=8.27 | p01=76.90 | p99=107.52 | below_0=0 | above_200=0 | outside_0_200=0
+rating_quality | subtype=unknown_other | scale=pct_time | method=same_day | runners=50 | or_count=23 | pearson_or=0.31 | spearman_or=0.23 | median_abs_diff_or=10.50 | mean_abs_diff_or=14.80 | mean=94.53 | median=94.48 | stdev=9.34 | p01=75.88 | p99=111.35 | below_0=0 | above_200=0 | outside_0_200=0
+rating_quality | subtype=overall | scale=current | method=base | runners=23324 | or_count=17230 | pearson_or=0.13 | spearman_or=0.12 | median_abs_diff_or=42.08 | mean_abs_diff_or=52.80 | mean=79.46 | median=82.99 | stdev=63.44 | p01=-85.76 | p99=225.80 | below_0=2387 | above_200=504 | outside_0_200=2891
+rating_quality | subtype=overall | scale=current | method=same_day | runners=14437 | or_count=10823 | pearson_or=0.16 | spearman_or=0.16 | median_abs_diff_or=26.65 | mean_abs_diff_or=32.01 | mean=81.84 | median=83.90 | stdev=32.25 | p01=-4.32 | p99=151.51 | below_0=180 | above_200=0 | outside_0_200=180
+rating_quality | subtype=overall | scale=sec_per_f | method=base | runners=23324 | or_count=17230 | pearson_or=0.13 | spearman_or=0.13 | median_abs_diff_or=19.68 | mean_abs_diff_or=23.58 | mean=91.79 | median=93.73 | stdev=23.49 | p01=29.79 | p99=141.18 | below_0=27 | above_200=5 | outside_0_200=32
+rating_quality | subtype=overall | scale=sec_per_f | method=same_day | runners=14437 | or_count=10823 | pearson_or=0.17 | spearman_or=0.17 | median_abs_diff_or=15.11 | mean_abs_diff_or=18.30 | mean=93.33 | median=94.14 | stdev=11.59 | p01=61.31 | p99=117.19 | below_0=0 | above_200=0 | outside_0_200=0
+rating_quality | subtype=overall | scale=pct_time | method=base | runners=23324 | or_count=17230 | pearson_or=0.13 | spearman_or=0.12 | median_abs_diff_or=19.65 | mean_abs_diff_or=23.57 | mean=91.63 | median=93.70 | stdev=23.59 | p01=29.44 | p99=140.53 | below_0=31 | above_200=6 | outside_0_200=37
+rating_quality | subtype=overall | scale=pct_time | method=same_day | runners=14437 | or_count=10823 | pearson_or=0.17 | spearman_or=0.16 | median_abs_diff_or=15.14 | mean_abs_diff_or=18.35 | mean=93.21 | median=94.09 | stdev=11.73 | p01=60.71 | p99=117.02 | below_0=0 | above_200=0 | outside_0_200=0
+
+## Extreme Rating Recovery
+extreme_recovery | scale=sec_per_f | method=base | current_base_extremes=2891 | moved_inside_0_200=2859 | remain_extreme=32 | new_extremes=0
+extreme_recovery | scale=pct_time | method=base | current_base_extremes=2891 | moved_inside_0_200=2854 | remain_extreme=37 | new_extremes=0
+extreme_recovery | scale=sec_per_f | method=same_day | current_base_extremes=2891 | moved_inside_0_200=1355 | remain_extreme=1536 | new_extremes=0
+extreme_recovery | scale=pct_time | method=same_day | current_base_extremes=2891 | moved_inside_0_200=1355 | remain_extreme=1536 | new_extremes=0
+
+## Extreme Example Trace
+extreme_trace | race=856826 | course=Plumpton | subtype=hurdle | standard=232.91 | same_day_standard=- | actual=352.54 | deviation_seconds=119.63 | deviation_sec_per_f=7.53 | deviation_pct=51.36 | current_base=-344.73 | current_same_day=- | sec_per_f=-184.32 | sec_per_f_same_day=- | pct=-195.57 | pct_same_day=- | driver=possible_bad_timing_or_distance_data
+extreme_trace | race=891843 | course=Doncaster | subtype=nh_flat | standard=240.61 | same_day_standard=- | actual=194.02 | deviation_seconds=-46.59 | deviation_sec_per_f=-2.81 | deviation_pct=-19.36 | current_base=428.50 | current_same_day=- | sec_per_f=206.09 | sec_per_f_same_day=- | pct=211.43 | pct_same_day=- | driver=possible_bad_timing_or_distance_data
+extreme_trace | race=836815 | course=Southwell | subtype=hurdle | standard=319.13 | same_day_standard=- | actual=398.54 | deviation_seconds=79.41 | deviation_sec_per_f=3.89 | deviation_pct=24.88 | current_base=-235.34 | current_same_day=- | sec_per_f=-46.98 | sec_per_f_same_day=- | pct=-43.20 | pct_same_day=- | driver=likely_track_going_effect
+
+## Going Vs Bad Data Separation
+large_deviation_classification | classification=likely_track_going_effect | races=232
+large_deviation_classification | classification=insufficient_same_day_peers | races=2
+large_deviation_classification | classification=mixed_or_unclear | races=34
+large_deviation_classification | classification=possible_bad_timing_or_distance_data | races=19
+large_deviation_example | race=856826 | date=2025-05-11 | course=Plumpton | subtype=hurdle | actual=352.54 | standard=232.91 | deviation_seconds=119.63 | deviation_sec_per_f=7.53 | same_day_adj_per_f=- | classification=possible_bad_timing_or_distance_data | race_name="Aine Mellett 40th Birthday Handicap Hurdle"
+large_deviation_example | race=836815 | date=2025-01-01 | course=Southwell | subtype=hurdle | actual=398.54 | standard=319.13 | deviation_seconds=79.41 | deviation_sec_per_f=3.89 | same_day_adj_per_f=- | classification=likely_track_going_effect | race_name="Jordan Recycling Environmental Mares' Handicap Hurdle"
+large_deviation_example | race=889940 | date=2025-11-18 | course=Kelso | subtype=hurdle | actual=294.47 | standard=240.88 | deviation_seconds=53.60 | deviation_sec_per_f=3.30 | same_day_adj_per_f=- | classification=likely_track_going_effect | race_name="31 Days Free On RacingTV Handicap Hurdle"
+large_deviation_example | race=891843 | date=2025-11-29 | course=Doncaster | subtype=nh_flat | actual=194.02 | standard=240.61 | deviation_seconds=-46.59 | deviation_sec_per_f=-2.81 | same_day_adj_per_f=- | classification=possible_bad_timing_or_distance_data | race_name="Easyfix Equine Fillies' 'Junior' NH Flat Race (GBB Race)"
+large_deviation_example | race=840232 | date=2025-01-23 | course=Wetherby | subtype=hurdle | actual=417.90 | standard=361.35 | deviation_seconds=56.55 | deviation_sec_per_f=2.34 | same_day_adj_per_f=- | classification=likely_track_going_effect | race_name="William Hill Cheltenham Non-Runner Money Back Handicap Hurdle (Div 2)"
+large_deviation_example | race=890412 | date=2025-11-20 | course=Wincanton | subtype=chase | actual=214.13 | standard=250.39 | deviation_seconds=-36.26 | deviation_sec_per_f=-2.31 | same_day_adj_per_f=- | classification=likely_track_going_effect | race_name="PricedUp The Jumps Novices' Handicap Chase (GBB Race)"
+large_deviation_example | race=845376 | date=2025-02-26 | course=Bangor-on-Dee | subtype=hurdle | actual=402.21 | standard=348.89 | deviation_seconds=53.32 | deviation_sec_per_f=2.30 | same_day_adj_per_f=- | classification=likely_track_going_effect | race_name="Bangor Point To Point 9th March Conditional Jockeys' Handicap Hurdle"
+large_deviation_example | race=876415 | date=2025-08-30 | course=Newton Abbot | subtype=hurdle | actual=285.21 | standard=246.65 | deviation_seconds=38.56 | deviation_sec_per_f=2.30 | same_day_adj_per_f=- | classification=possible_bad_timing_or_distance_data | race_name="Devon Air Ambulance Mares' Maiden Hurdle (GBB Race)"
+large_deviation_example | race=845370 | date=2025-02-26 | course=Bangor-on-Dee | subtype=chase | actual=296.03 | standard=256.28 | deviation_seconds=39.75 | deviation_sec_per_f=2.29 | same_day_adj_per_f=- | classification=likely_track_going_effect | race_name="Weatherbys nhstallions.co.uk Novices' Handicap Chase"
+large_deviation_example | race=885397 | date=2025-10-21 | course=Perth | subtype=hurdle | actual=418.88 | standard=364.17 | deviation_seconds=54.71 | deviation_sec_per_f=2.29 | same_day_adj_per_f=- | classification=likely_track_going_effect | race_name="Follow racingtv On Instagram Handicap Hurdle"
+large_deviation_example | race=840231 | date=2025-01-23 | course=Wetherby | subtype=hurdle | actual=415.10 | standard=361.35 | deviation_seconds=53.75 | deviation_sec_per_f=2.23 | same_day_adj_per_f=- | classification=likely_track_going_effect | race_name="William Hill Cheltenham Non-Runner Money Back Handicap Hurdle (Div 1)"
+large_deviation_example | race=893229 | date=2025-12-10 | course=Hexham | subtype=chase | actual=283.28 | standard=250.45 | deviation_seconds=32.83 | deviation_sec_per_f=2.10 | same_day_adj_per_f=1.89 | classification=likely_track_going_effect | race_name="Tant Pis Handicap Chase"
+large_deviation_example | race=893226 | date=2025-12-10 | course=Hexham | subtype=hurdle | actual=358.18 | standard=316.10 | deviation_seconds=42.08 | deviation_sec_per_f=2.09 | same_day_adj_per_f=1.89 | classification=likely_track_going_effect | race_name="Buttermere Handicap Hurdle"
+large_deviation_example | race=845371 | date=2025-02-26 | course=Bangor-on-Dee | subtype=chase | actual=345.27 | standard=302.99 | deviation_seconds=42.28 | deviation_sec_per_f=2.08 | same_day_adj_per_f=- | classification=likely_track_going_effect | race_name="Bangor-On-Dee Occasion Package Handicap Chase (GBB Race)"
+large_deviation_example | race=882335 | date=2025-10-03 | course=Hexham | subtype=hurdle | actual=420.19 | standard=373.06 | deviation_seconds=47.13 | deviation_sec_per_f=2.02 | same_day_adj_per_f=- | classification=likely_track_going_effect | race_name="Pest Arrest Pest Control North East Handicap Hurdle"
+large_deviation_example | race=893227 | date=2025-12-10 | course=Hexham | subtype=hurdle | actual=418.67 | standard=373.06 | deviation_seconds=45.61 | deviation_sec_per_f=1.96 | same_day_adj_per_f=1.89 | classification=likely_track_going_effect | race_name="Robert & Helen Carr-Smith Wedding Anniversary Handicap Hurdle"
+large_deviation_example | race=893225 | date=2025-12-10 | course=Hexham | subtype=hurdle | actual=354.15 | standard=316.10 | deviation_seconds=38.05 | deviation_sec_per_f=1.89 | same_day_adj_per_f=1.96 | classification=likely_track_going_effect | race_name="Paxtons Now Stocking Stihl Equipment Maiden Hurdle (GBB Race)"
+large_deviation_example | race=892818 | date=2025-12-05 | course=Sandown | subtype=hurdle | actual=285.14 | standard=255.03 | deviation_seconds=30.10 | deviation_sec_per_f=1.88 | same_day_adj_per_f=- | classification=possible_bad_timing_or_distance_data | race_name="Betfair Racing Podcasts 'Four Years Old' Handicap Hurdle"
+large_deviation_example | race=841726 | date=2025-01-30 | course=Wincanton | subtype=hurdle | actual=350.10 | standard=310.06 | deviation_seconds=40.04 | deviation_sec_per_f=1.87 | same_day_adj_per_f=- | classification=likely_track_going_effect | race_name="ITM EBF Mares' 'National Hunt' Novices' Hurdle (GBB Race)"
+large_deviation_example | race=845774 | date=2025-02-28 | course=Ffos Las | subtype=hurdle | actual=409.37 | standard=365.08 | deviation_seconds=44.29 | deviation_sec_per_f=1.86 | same_day_adj_per_f=1.42 | classification=likely_track_going_effect | race_name="dragonbet.co.uk Novices' Handicap Hurdle"
+large_deviation_example | race=844852 | date=2025-02-23 | course=Fontwell | subtype=chase | actual=454.00 | standard=406.70 | deviation_seconds=47.30 | deviation_sec_per_f=1.82 | same_day_adj_per_f=- | classification=likely_track_going_effect | race_name="John & Harold Hartwell Memorial Novices' Handicap Chase"
+large_deviation_example | race=845372 | date=2025-02-26 | course=Bangor-on-Dee | subtype=chase | actual=287.85 | standard=256.28 | deviation_seconds=31.57 | deviation_sec_per_f=1.82 | same_day_adj_per_f=- | classification=likely_track_going_effect | race_name="Weatherbys Cheltenham Festival Betting Guide Novices' Chase (GBB Race)"
+large_deviation_example | race=894440 | date=2025-12-18 | course=Exeter | subtype=hurdle | actual=283.45 | standard=253.39 | deviation_seconds=30.06 | deviation_sec_per_f=1.80 | same_day_adj_per_f=1.40 | classification=likely_track_going_effect | race_name="PricedUp Daily Racing Boosts Juvenile Maiden Hurdle (GBB Race)"
+large_deviation_example | race=843753 | date=2025-02-15 | course=Wincanton | subtype=hurdle | actual=348.00 | standard=310.06 | deviation_seconds=37.94 | deviation_sec_per_f=1.78 | same_day_adj_per_f=- | classification=likely_track_going_effect | race_name="BetMGM Premier League Darts Conditional Jockeys' Handicap Hurdle"
+large_deviation_example | race=843008 | date=2025-02-07 | course=Kempton | subtype=nh_flat | actual=258.39 | standard=230.06 | deviation_seconds=28.33 | deviation_sec_per_f=1.77 | same_day_adj_per_f=- | classification=likely_track_going_effect | race_name="Racing TV Open Maiden NH Flat Race (GBB Race) (Div 1)"
+
+## Standard Confidence
+standard_confidence | bucket=extreme | runners=2891 | median_base_sample=13.00 | mean_base_sample=16.48 | median_abs_deviation_per_f=1.02
+standard_confidence | bucket=normal | runners=20433 | median_base_sample=15.00 | mean_base_sample=18.49 | median_abs_deviation_per_f=0.30
+sample_size_bucket | bucket=0_4 | runners=2072 | extremes=232 | extreme_rate=0.11
+sample_size_bucket | bucket=5_9 | runners=4345 | extremes=661 | extreme_rate=0.15
+sample_size_bucket | bucket=10_19 | runners=7774 | extremes=991 | extreme_rate=0.13
+sample_size_bucket | bucket=20_plus | runners=9133 | extremes=1007 | extreme_rate=0.11
+extreme_concentration_course | course=Wincanton | extremes=132 | runners=479 | rate=0.28
+extreme_concentration_course | course=Bangor-on-Dee | extremes=139 | runners=538 | rate=0.26
+extreme_concentration_course | course=Chepstow | extremes=194 | runners=790 | rate=0.25
+extreme_concentration_course | course=Exeter | extremes=133 | runners=566 | rate=0.23
+extreme_concentration_course | course=Wetherby | extremes=138 | runners=663 | rate=0.21
+extreme_concentration_course | course=Ffos Las | extremes=116 | runners=565 | rate=0.21
+extreme_concentration_course | course=Ayr | extremes=122 | runners=633 | rate=0.19
+extreme_concentration_course | course=Cartmel | extremes=76 | runners=428 | rate=0.18
+extreme_concentration_course | course=Sandown | extremes=55 | runners=324 | rate=0.17
+extreme_concentration_course | course=Kempton | extremes=63 | runners=388 | rate=0.16
+extreme_concentration_course | course=Uttoxeter | extremes=196 | runners=1225 | rate=0.16
+extreme_concentration_course | course=Plumpton | extremes=72 | runners=480 | rate=0.15
+extreme_concentration_distance | distance="2m 3f 100y" | extremes=67 | runners=189 | rate=0.35
+extreme_concentration_distance | distance="2m 3f 123y" | extremes=36 | runners=136 | rate=0.26
+extreme_concentration_distance | distance="2m 16y" | extremes=28 | runners=116 | rate=0.24
+extreme_concentration_distance | distance="2m 5f 164y" | extremes=33 | runners=137 | rate=0.24
+extreme_concentration_distance | distance="2m 7f 131y" | extremes=33 | runners=137 | rate=0.24
+extreme_concentration_distance | distance="3m 1f" | extremes=25 | runners=105 | rate=0.24
+extreme_concentration_distance | distance="1m 7f 216y" | extremes=31 | runners=132 | rate=0.23
+extreme_concentration_distance | distance="2m 161y" | extremes=43 | runners=187 | rate=0.23
+extreme_concentration_distance | distance="2m 3f 110y" | extremes=22 | runners=100 | rate=0.22
+extreme_concentration_distance | distance="2m 3f 207y" | extremes=52 | runners=253 | rate=0.21
+extreme_concentration_distance | distance="2m 4f 62y" | extremes=27 | runners=135 | rate=0.20
+extreme_concentration_distance | distance="2m 145y" | extremes=31 | runners=158 | rate=0.20
+research_confidence_flag_candidate=low_sample_base_sample_lt_5 OR high_abs_deviation_per_f_gte_1 OR conservative_same_day_unavailable_for_large_deviation
+
+## Conclusion
+current_raw_seconds_conversion_structurally_unsuitable_for_jumps=true; current_base_outside_0_200=2891
+seconds_per_furlong_behaves_better=true; same_day_outside_0_200=0
+percentage_time_deviation_behaves_better=true; same_day_outside_0_200=0
+conservative_same_day_remains_useful=true; it reduces timing error and reduces extremes under both alternative scales
+remaining_extremes_mainly=data_quality_or_weak_standard_plus_large_card_going_effects; subtype_mixing_is_not_primary
+jumps_should_use_separate_rating_conversion_from_flat=true; continue research validation before production logic
