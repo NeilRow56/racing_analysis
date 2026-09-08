@@ -552,6 +552,55 @@ export function provisionalSpeedFigure(
   );
 }
 
+export function distanceYardsToFurlongs(distanceYards: number | null): number | null {
+  if (distanceYards === null || distanceYards <= 0) {
+    return null;
+  }
+  return distanceYards / 220;
+}
+
+export function deviationPerFurlong(input: {
+  actualTimeSeconds: number | null;
+  standardSeconds: number | null;
+  distanceYards: number | null;
+}): number | null {
+  const distanceFurlongs = distanceYardsToFurlongs(input.distanceYards);
+  if (
+    input.actualTimeSeconds === null ||
+    input.standardSeconds === null ||
+    distanceFurlongs === null
+  ) {
+    return null;
+  }
+  return (input.actualTimeSeconds - input.standardSeconds) / distanceFurlongs;
+}
+
+export function goingAdjustedStandardSeconds(input: {
+  baseStandardSeconds: number | null;
+  adjustmentSecondsPerFurlong: number | null;
+  distanceYards: number | null;
+}): number | null {
+  const distanceFurlongs = distanceYardsToFurlongs(input.distanceYards);
+  if (
+    input.baseStandardSeconds === null ||
+    input.adjustmentSecondsPerFurlong === null ||
+    distanceFurlongs === null
+  ) {
+    return null;
+  }
+  return input.baseStandardSeconds + input.adjustmentSecondsPerFurlong * distanceFurlongs;
+}
+
+export function absoluteTimingErrorSeconds(
+  actualTimeSeconds: number | null,
+  expectedTimeSeconds: number | null,
+): number | null {
+  if (actualTimeSeconds === null || expectedTimeSeconds === null) {
+    return null;
+  }
+  return Math.abs(actualTimeSeconds - expectedTimeSeconds);
+}
+
 export function speedFigureConfidence(
   standardSampleSize: number | null,
   variantSampleSize: number | null,

@@ -3,9 +3,13 @@ import { describe, test } from "node:test";
 import {
   BEATEN_DISTANCE_ASSUMPTIONS,
   RESEARCH_MEETING_VARIANT_ASSUMPTIONS,
+  absoluteTimingErrorSeconds,
   beatenLengthsToSeconds,
   classifyRaceCategory,
+  deviationPerFurlong,
+  distanceYardsToFurlongs,
   equivalentFinishingTimeSeconds,
+  goingAdjustedStandardSeconds,
   leaveOneOutMeetingVariant,
   leaveOneOutStandardTime,
   median,
@@ -338,6 +342,57 @@ describe("provisional speed figures", () => {
   test("handles missing standard and variant inputs safely", () => {
     assert.equal(variantAdjustedTimeSeconds(62, null), null);
     assert.equal(provisionalSpeedFigure(62, null, "fixed_points_per_second"), null);
+  });
+});
+
+describe("going adjustment diagnostics", () => {
+  test("normalizes timing deviation per furlong", () => {
+    assert.equal(distanceYardsToFurlongs(1760), 8);
+    assert.equal(
+      deviationPerFurlong({
+        actualTimeSeconds: 99,
+        standardSeconds: 95,
+        distanceYards: 1760,
+      }),
+      0.5,
+    );
+  });
+
+  test("adjusts a base standard by seconds per furlong", () => {
+    assert.equal(
+      goingAdjustedStandardSeconds({
+        baseStandardSeconds: 95,
+        adjustmentSecondsPerFurlong: 0.5,
+        distanceYards: 1760,
+      }),
+      99,
+    );
+  });
+
+  test("returns null for missing adjustment inputs", () => {
+    assert.equal(distanceYardsToFurlongs(null), null);
+    assert.equal(
+      deviationPerFurlong({
+        actualTimeSeconds: 99,
+        standardSeconds: 95,
+        distanceYards: null,
+      }),
+      null,
+    );
+    assert.equal(
+      goingAdjustedStandardSeconds({
+        baseStandardSeconds: 95,
+        adjustmentSecondsPerFurlong: null,
+        distanceYards: 1760,
+      }),
+      null,
+    );
+    assert.equal(absoluteTimingErrorSeconds(null, 95), null);
+  });
+
+  test("calculates absolute timing error", () => {
+    assert.equal(absoluteTimingErrorSeconds(99, 95), 4);
+    assert.equal(absoluteTimingErrorSeconds(91, 95), 4);
   });
 });
 

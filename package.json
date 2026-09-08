@@ -20,6 +20,9 @@
     "sl:import-day": "scraper/.venv/bin/python scraper/scripts/import_sporting_life_day.py",
     "sl:import-range": "scraper/.venv/bin/python scraper/scripts/import_sporting_life_range.py",
     "sl:import-status": "scraper/.venv/bin/python scraper/scripts/sporting_life_import_status.py",
+    "sl:going-adjustment-validation": "bun run scripts/analyze-going-adjustment-validation.ts",
+    "sl:going-adjustment-rating-validation": "bun run scripts/analyze-going-adjustment-rating-validation.ts",
+    "sl:going-adjustment-research": "bun run scripts/sporting-life-going-adjustment-research.ts",
     "sl:speed-research": "bun run scripts/sporting-life-speed-research.ts",
     "db:studio": "drizzle-kit studio"
   },

@@ -1,0 +1,76 @@
+# Going Adjustment Validation 2025
+
+## Coverage
+coverage | segment=overall | base_eligible=9941 | same_day=9939 | same_day_pct=100.0% | requires_historical_fallback=0 | requires_historical_fallback_pct=0.0% | neither=2 | neither_pct=0.0%
+coverage | segment=all_weather_flat | base_eligible=2774 | same_day=2774 | same_day_pct=100.0% | requires_historical_fallback=0 | requires_historical_fallback_pct=0.0% | neither=0 | neither_pct=0.0%
+coverage | segment=jumps | base_eligible=3481 | same_day=3479 | same_day_pct=99.9% | requires_historical_fallback=0 | requires_historical_fallback_pct=0.0% | neither=2 | neither_pct=0.1%
+coverage | segment=turf_flat | base_eligible=3686 | same_day=3686 | same_day_pct=100.0% | requires_historical_fallback=0 | requires_historical_fallback_pct=0.0% | neither=0 | neither_pct=0.0%
+
+## Segment Performance
+performance | segment=all_weather_flat | method=base | races=2774 | median_abs_error=0.90 | mean_abs_error=1.29 | residual_stdev=1.90 | p25_abs_error=0.43 | p75_abs_error=1.63 | p90_abs_error=2.76 | improved=0.0% | worsened=0.0% | unchanged=100.0%
+performance | segment=all_weather_flat | method=same_day | races=2774 | median_abs_error=0.86 | mean_abs_error=1.22 | residual_stdev=1.81 | p25_abs_error=0.41 | p75_abs_error=1.57 | p90_abs_error=2.53 | improved=51.4% | worsened=48.3% | unchanged=0.3%
+performance | segment=all_weather_flat | method=historical_fallback | races=2766 | median_abs_error=0.93 | mean_abs_error=1.29 | residual_stdev=1.88 | p25_abs_error=0.42 | p75_abs_error=1.65 | p90_abs_error=2.71 | improved=47.1% | worsened=51.2% | unchanged=1.7%
+performance | segment=jumps | method=base | races=3481 | median_abs_error=6.80 | mean_abs_error=8.80 | residual_stdev=11.76 | p25_abs_error=3.15 | p75_abs_error=12.13 | p90_abs_error=18.78 | improved=0.0% | worsened=0.0% | unchanged=100.0%
+performance | segment=jumps | method=same_day | races=3479 | median_abs_error=3.92 | mean_abs_error=5.18 | residual_stdev=7.38 | p25_abs_error=1.77 | p75_abs_error=7.17 | p90_abs_error=11.06 | improved=68.6% | worsened=31.1% | unchanged=0.3%
+performance | segment=jumps | method=historical_fallback | races=3426 | median_abs_error=5.45 | mean_abs_error=7.05 | residual_stdev=9.60 | p25_abs_error=2.48 | p75_abs_error=9.90 | p90_abs_error=14.83 | improved=62.1% | worsened=37.9% | unchanged=0.0%
+performance | segment=turf_flat | method=base | races=3686 | median_abs_error=1.37 | mean_abs_error=1.99 | residual_stdev=3.01 | p25_abs_error=0.61 | p75_abs_error=2.54 | p90_abs_error=4.36 | improved=0.0% | worsened=0.0% | unchanged=100.0%
+performance | segment=turf_flat | method=same_day | races=3686 | median_abs_error=0.96 | mean_abs_error=1.39 | residual_stdev=2.17 | p25_abs_error=0.44 | p75_abs_error=1.79 | p90_abs_error=2.88 | improved=61.9% | worsened=37.9% | unchanged=0.2%
+performance | segment=turf_flat | method=historical_fallback | races=3638 | median_abs_error=1.17 | mean_abs_error=1.66 | residual_stdev=2.47 | p25_abs_error=0.54 | p75_abs_error=2.14 | p90_abs_error=3.54 | improved=57.0% | worsened=43.0% | unchanged=0.0%
+
+## Rating Quality
+rating_quality=not_available_from_generated_race_csv
+reason=the generated CSV is race-level only and does not contain runner-level experimental ratings or official ratings
+
+## Same-Day Peer Count
+same_day_peer_bucket | bucket=2 peers | races=9 | adjusted_median_abs_error=11.33 | base_median_abs_error=3.39 | improved=22.2% | worsened=77.8% | unchanged=0.0%
+same_day_peer_bucket | bucket=3 peers | races=36 | adjusted_median_abs_error=3.82 | base_median_abs_error=3.03 | improved=47.2% | worsened=50.0% | unchanged=2.8%
+same_day_peer_bucket | bucket=4+ peers | races=9894 | adjusted_median_abs_error=1.34 | base_median_abs_error=1.82 | improved=61.4% | worsened=38.3% | unchanged=0.2%
+
+## Same-Day Spread Bands
+same_day_spread_band | bucket=low | races=8125 | adjusted_median_abs_error=1.14 | base_median_abs_error=1.52 | improved=61.7% | worsened=38.0% | unchanged=0.3%
+same_day_spread_band | bucket=medium | races=1703 | adjusted_median_abs_error=4.22 | base_median_abs_error=5.60 | improved=60.0% | worsened=40.0% | unchanged=0.1%
+same_day_spread_band | bucket=high | races=111 | adjusted_median_abs_error=5.82 | base_median_abs_error=8.57 | improved=55.9% | worsened=44.1% | unchanged=0.0%
+
+## Historical Fallback Prior Samples
+historical_prior_bucket | bucket=2-4 | races=163 | adjusted_median_abs_error=2.32 | base_median_abs_error=2.77 | improved=62.0% | worsened=38.0% | unchanged=0.0%
+historical_prior_bucket | bucket=5-9 | races=199 | adjusted_median_abs_error=2.08 | base_median_abs_error=2.95 | improved=60.3% | worsened=39.7% | unchanged=0.0%
+historical_prior_bucket | bucket=10-19 | races=323 | adjusted_median_abs_error=2.29 | base_median_abs_error=2.89 | improved=64.4% | worsened=35.6% | unchanged=0.0%
+historical_prior_bucket | bucket=20-49 | races=845 | adjusted_median_abs_error=2.12 | base_median_abs_error=2.79 | improved=62.1% | worsened=37.9% | unchanged=0.0%
+historical_prior_bucket | bucket=50+ | races=8300 | adjusted_median_abs_error=1.53 | base_median_abs_error=1.68 | improved=54.8% | worsened=44.7% | unchanged=0.6%
+
+## Historical Fallback Going Outliers
+historical_outlier | segment=turf_flat | surface=TURF | going="Firm" | races=16 | median_prior_sample=9.50 | median_adj_per_f=-0.06 | median_base_error=1.07 | median_adjusted_error=1.24 | delta=0.16 | result=worse
+historical_outlier | segment=jumps | surface=TURF | going="Soft (Good to Soft in Places)" | races=10 | median_prior_sample=6.50 | median_adj_per_f=-0.44 | median_base_error=5.30 | median_adjusted_error=5.42 | delta=0.12 | result=worse
+historical_outlier | segment=all_weather_flat | surface=ALLWEATHER | going="Standard / Slow" | races=67 | median_prior_sample=35.00 | median_adj_per_f=0.08 | median_base_error=0.94 | median_adjusted_error=1.04 | delta=0.11 | result=worse
+historical_outlier | segment=turf_flat | surface=TURF | going="Firm (Good to Firm in places)" | races=18 | median_prior_sample=10.50 | median_adj_per_f=-0.09 | median_base_error=1.51 | median_adjusted_error=1.62 | delta=0.11 | result=worse
+historical_outlier | segment=jumps | surface=TURF | going="Good to Soft" | races=367 | median_prior_sample=185.00 | median_adj_per_f=0.11 | median_base_error=6.07 | median_adjusted_error=6.18 | delta=0.11 | result=worse
+historical_outlier | segment=all_weather_flat | surface=POLYTRACK | going="Standard / Slow" | races=506 | median_prior_sample=254.50 | median_adj_per_f=0.03 | median_base_error=0.94 | median_adjusted_error=1.03 | delta=0.09 | result=worse
+historical_outlier | segment=turf_flat | surface=TURF | going="Good" | races=530 | median_prior_sample=266.50 | median_adj_per_f=-0.02 | median_base_error=1.12 | median_adjusted_error=1.18 | delta=0.07 | result=worse
+historical_outlier | segment=turf_flat | surface=TURF | going="Good (Good to Soft in places)" | races=335 | median_prior_sample=169.00 | median_adj_per_f=-0.02 | median_base_error=1.05 | median_adjusted_error=1.11 | delta=0.06 | result=worse
+historical_outlier | segment=all_weather_flat | surface=ALLWEATHER | going="Standard" | races=1671 | median_prior_sample=837.00 | median_adj_per_f=0.01 | median_base_error=0.88 | median_adjusted_error=0.91 | delta=0.03 | result=worse
+historical_outlier | segment=all_weather_flat | surface=POLYTRACK | going="Standard" | races=522 | median_prior_sample=262.50 | median_adj_per_f=-0.02 | median_base_error=0.89 | median_adjusted_error=0.92 | delta=0.03 | result=worse
+historical_outlier | segment=turf_flat | surface=TURF | going="Good to Firm (Good In Places)" | races=14 | median_prior_sample=8.50 | median_adj_per_f=-0.22 | median_base_error=1.78 | median_adjusted_error=1.79 | delta=0.02 | result=worse
+historical_outlier | segment=turf_flat | surface=TURF | going="Good to Firm (Good in places)" | races=777 | median_prior_sample=390.00 | median_adj_per_f=-0.10 | median_base_error=1.12 | median_adjusted_error=1.05 | delta=-0.07 | result=better
+
+## Course Examples
+course_example | course=Wolverhampton | base_eligible=660 | same_day_available=660 | same_day_pct=100.0% | same_day_median=0.79 | same_day_base_median=0.79 | fallback_without_same_day=0 | fallback_median=- | fallback_base_median=- | anomaly=none_obvious_from_summary
+course_example | course=Newcastle | base_eligible=645 | same_day_available=645 | same_day_pct=100.0% | same_day_median=1.01 | same_day_base_median=1.08 | fallback_without_same_day=0 | fallback_median=- | fallback_base_median=- | anomaly=mixed_surface_labels
+course_example | course=Kempton | base_eligible=466 | same_day_available=466 | same_day_pct=100.0% | same_day_median=0.98 | same_day_base_median=1.08 | fallback_without_same_day=0 | fallback_median=- | fallback_base_median=- | anomaly=mixed_surface_labels
+course_example | course=Newmarket | base_eligible=243 | same_day_available=243 | same_day_pct=100.0% | same_day_median=0.91 | same_day_base_median=1.19 | fallback_without_same_day=0 | fallback_median=- | fallback_base_median=- | anomaly=none_obvious_from_summary
+course_example | course=Worcester | base_eligible=132 | same_day_available=132 | same_day_pct=100.0% | same_day_median=2.89 | same_day_base_median=5.13 | fallback_without_same_day=0 | fallback_median=- | fallback_base_median=- | anomaly=none_obvious_from_summary
+course_example | course=Uttoxeter | base_eligible=167 | same_day_available=167 | same_day_pct=100.0% | same_day_median=4.33 | same_day_base_median=9.02 | fallback_without_same_day=0 | fallback_median=- | fallback_base_median=- | anomaly=none_obvious_from_summary
+course_example | course=Market Rasen | base_eligible=132 | same_day_available=132 | same_day_pct=100.0% | same_day_median=5.30 | same_day_base_median=6.61 | fallback_without_same_day=0 | fallback_median=- | fallback_base_median=- | anomaly=none_obvious_from_summary
+
+## Conservative Production Rule
+suggested_min_same_day_peer_count=4
+suggested_same_day_spread_limit=stdev <= 0.30 seconds_per_furlong
+suggested_historical_fallback_min_prior_observations=50
+evidence_same_day_4plus=same_day_peer_bucket | bucket=4+ peers | races=9894 | adjusted_median_abs_error=1.34 | base_median_abs_error=1.82 | improved=61.4% | worsened=38.3% | unchanged=0.2%
+evidence_low_spread=same_day_spread_band | bucket=low | races=8125 | adjusted_median_abs_error=1.14 | base_median_abs_error=1.52 | improved=61.7% | worsened=38.0% | unchanged=0.3%
+evidence_fallback_50plus=historical_prior_bucket | bucket=50+ | races=8300 | adjusted_median_abs_error=1.53 | base_median_abs_error=1.68 | improved=54.8% | worsened=44.7% | unchanged=0.6%
+segment_exception=jumps require extra caution; high residual dispersion remains even when median error improves
+
+## Conclusion
+same_day=improves median_abs_error_delta=-0.48 races=9939
+historical_fallback=improves median_abs_error_delta=-0.22 races=9830
+production_direction=move toward a gated research implementation, not a default replacement
