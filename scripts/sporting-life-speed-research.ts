@@ -10,6 +10,7 @@ import {
   parseBeatenDistanceLengths,
   provisionalSpeedFigure,
   reconstructCumulativeBeatenLengths,
+  researchMeetingVariantFromDeviations,
   sampleLabel,
   sanityCheckWinningTime,
   secondsPerLength,
@@ -21,8 +22,8 @@ import {
   type StandardTimeRaceInput,
 } from "@/lib/racing/speed-research";
 
-const START_DATE = process.argv[2] ?? "2020-08-01";
-const END_DATE = process.argv[3] ?? "2020-09-13";
+const START_DATE = process.argv[2] ?? "2025-01-01";
+const END_DATE = process.argv[3] ?? "2025-12-31";
 
 type RacePayload = {
   props: {
@@ -139,6 +140,97 @@ type ResearchSpeedFigure = {
   officialRating: number | null;
 };
 
+type StandardGroupingMethod = "baseline" | "surface" | "exact_going" | "going_band";
+
+type VariantMethod = "baseline_median" | "trimmed_mean";
+
+type StandardDecision = {
+  standardSeconds: number | null;
+  sampleSize: number;
+  standardLevel: string;
+};
+
+type CandidateDefinition = {
+  key: string;
+  label: string;
+  standardMethod: StandardGroupingMethod;
+  variantMethod: VariantMethod;
+  minimumStandardSampleSize: number;
+  minimumVariantSampleSize: number;
+  fallback: boolean;
+};
+
+type CandidateSpeedFigure = ResearchSpeedFigure & {
+  candidateKey: string;
+  standardLevel: string;
+};
+
+type CandidateSummary = {
+  candidate: CandidateDefinition;
+  eligibleRaces: number;
+  eligibleRunnerFigures: number;
+  eligiblePercentage: number | null;
+  mean: number | null;
+  median: number | null;
+  p10: number | null;
+  p90: number | null;
+  min: number | null;
+  max: number | null;
+  outside0To200: number;
+  outsideMinus50To250: number;
+  orderingAnomalies: number;
+  deadHeatMismatches: number;
+  orCorrelation: number | null;
+  orPairs: number;
+};
+
+const EXPERIMENTAL_MINIMUM_STANDARD_SAMPLE_SIZES = [3, 5, 10] as const;
+
+const CANDIDATES: CandidateDefinition[] = [
+  {
+    key: "baseline_standard__baseline_variant",
+    label: "baseline standard + baseline median variant",
+    standardMethod: "baseline",
+    variantMethod: "baseline_median",
+    minimumStandardSampleSize: MINIMUM_STANDARD_SAMPLE_SIZE,
+    minimumVariantSampleSize: MINIMUM_VARIANT_SAMPLE_SIZE,
+    fallback: false,
+  },
+  {
+    key: "baseline_standard__trimmed_mean_min3_variant",
+    label: "baseline standard + trimmed_mean_min3 variant",
+    standardMethod: "baseline",
+    variantMethod: "trimmed_mean",
+    minimumStandardSampleSize: MINIMUM_STANDARD_SAMPLE_SIZE,
+    minimumVariantSampleSize: 3,
+    fallback: false,
+  },
+  ...EXPERIMENTAL_MINIMUM_STANDARD_SAMPLE_SIZES.flatMap((minimumStandardSampleSize) =>
+    ([
+      ["surface", "surface-aware standard"],
+      ["exact_going", "exact-going-aware standard"],
+      ["going_band", "going-band-aware standard"],
+    ] as const).map(([standardMethod, label]) => ({
+      key: `${standardMethod}_standard_min${minimumStandardSampleSize}__trimmed_mean_min3_variant`,
+      label: `${label} min${minimumStandardSampleSize} + trimmed_mean_min3 variant`,
+      standardMethod,
+      variantMethod: "trimmed_mean" as const,
+      minimumStandardSampleSize,
+      minimumVariantSampleSize: 3,
+      fallback: false,
+    })),
+  ),
+  {
+    key: "fallback_going_hierarchy__trimmed_mean_min3_variant",
+    label: "fallback going hierarchy + trimmed_mean_min3 variant",
+    standardMethod: "going_band",
+    variantMethod: "trimmed_mean",
+    minimumStandardSampleSize: 5,
+    minimumVariantSampleSize: 3,
+    fallback: true,
+  },
+];
+
 async function main() {
   const { client } = createDbConnection();
   try {
@@ -193,6 +285,20 @@ async function main() {
       races,
       runnersByRace,
       standardInputs,
+    );
+    const completedRunnerCount = completedTimedRunners(races, runnerRows);
+    const candidateFigures = new Map(
+      CANDIDATES.map((candidate) => [
+        candidate.key,
+        calculateCandidateSpeedFigures(races, runnersByRace, candidate),
+      ]),
+    );
+    const candidateSummaries = CANDIDATES.map((candidate) =>
+      summarizeCandidate(
+        candidate,
+        candidateFigures.get(candidate.key) ?? [],
+        completedRunnerCount,
+      ),
     );
     const groups = courseDistanceGroups(races);
     const variants = meetingVariants(races, groups);
@@ -289,6 +395,11 @@ async function main() {
     printHeader("Going/Surface Observations");
     console.log(`going=${JSON.stringify(goingSurface.going)}`);
     console.log(`surface=${JSON.stringify(goingSurface.surface)}`);
+    console.log(`surface_relationship=${surfaceRelationshipReport(races)}`);
+    console.log("going_band_mapping=research_only explicit exact strings");
+    for (const line of goingBandMappingReport(races)) {
+      console.log(line);
+    }
     console.log("course_distance_with_multiple_going_or_surface=");
     for (const line of goingSurface.mixedCourseDistances.slice(0, 20)) {
       console.log(line);
@@ -337,7 +448,7 @@ async function main() {
     console.log(`eligible_races=${new Set(speedFigures.map((figure) => figure.race.race_source_id)).size}`);
     console.log(`eligible_runner_figures=${speedFigures.length}`);
     console.log(
-      `completed_timed_runners=${completedTimedRunners(races, runnerRows)} eligible_percentage=${eligiblePercentage(
+      `completed_timed_runners=${completedRunnerCount} eligible_percentage=${eligiblePercentage(
         speedFigures,
         races,
         runnerRows,
@@ -353,6 +464,40 @@ async function main() {
       console.log(line);
     }
     for (const line of speedFigureAnomalies(speedFigures)) {
+      console.log(line);
+    }
+
+    printHeader("FULL-YEAR CANDIDATE COMPARISON");
+    console.log("research_only=true");
+    console.log("baseline_default_preserved=course_source_id + exact distance_yards standard; baseline median meeting variant");
+    console.log("robust_variant_preserved=course_source_id + exact distance_yards standard; trimmed_mean_min3 meeting variant");
+    console.log("standard_sample_sizes_tested=3,5,10 for surface/going-aware standards; no fallback unless candidate name starts fallback");
+    console.log("candidate_formula_and_inputs=same beaten-distance model, speed_based seconds-per-length model, timing sanity filter, and leave-one-out behavior");
+    for (const summary of candidateSummaries) {
+      console.log(formatCandidateSummary(summary));
+    }
+
+    printHeader("SEGMENT ANALYSIS");
+    for (const candidate of CANDIDATES) {
+      const figures = candidateFigures.get(candidate.key) ?? [];
+      console.log(`candidate=${candidate.key} label="${candidate.label}"`);
+      for (const line of segmentAnalysis(figures)) {
+        console.log(line);
+      }
+    }
+
+    printHeader("KNOWN UNSTABLE COURSE-DISTANCE GROUPS");
+    for (const line of knownUnstableGroupReport(races)) {
+      console.log(line);
+    }
+
+    printHeader("TAIL DIAGNOSIS FROM BASELINE 0..200 EXTREMES");
+    for (const line of tailDiagnosis(candidateFigures)) {
+      console.log(line);
+    }
+
+    printHeader("FALLBACK CONFIDENCE IMPLICATIONS");
+    for (const line of fallbackAndConfidenceReport(candidateFigures.get("fallback_going_hierarchy__trimmed_mean_min3_variant") ?? [])) {
       console.log(line);
     }
 
@@ -522,6 +667,284 @@ function calculateResearchSpeedFigures(
   }
 
   return figures;
+}
+
+function calculateCandidateSpeedFigures(
+  races: ResearchRace[],
+  runnersByRace: Map<string, RunnerRow[]>,
+  candidate: CandidateDefinition,
+): CandidateSpeedFigure[] {
+  const figures: CandidateSpeedFigure[] = [];
+  const standardInputs = candidateStandardInputs(races, candidate.standardMethod);
+
+  for (const race of races) {
+    if (race.usableWinningSeconds === null) {
+      continue;
+    }
+
+    const standard = candidate.fallback
+      ? fallbackStandardDecision(race, races, candidate.minimumStandardSampleSize)
+      : standardDecision(
+          race.race_source_id,
+          standardInputs,
+          candidate.minimumStandardSampleSize,
+          candidate.standardMethod,
+        );
+    if (standard.standardSeconds === null) {
+      continue;
+    }
+
+    const deviations = meetingVariantDeviations(
+      race.race_source_id,
+      races,
+      candidate.fallback ? null : standardInputs,
+      candidate,
+    );
+    const variant = researchMeetingVariantFromDeviations({
+      deviations,
+      method: candidate.variantMethod,
+      minimumVariantSampleSize: candidate.minimumVariantSampleSize,
+    });
+    if (variant.variantSeconds === null) {
+      continue;
+    }
+
+    const sourceRunners = runnersByRace.get(race.race_source_id) ?? [];
+    const sourceRunnerById = new Map(
+      sourceRunners.map((runner) => [runner.runner_source_id, runner]),
+    );
+    const reconstructed = reconstructCumulativeBeatenLengths(
+      sourceRunners.map((runner) => ({
+        id: runner.runner_source_id,
+        finishingPosition: runner.finishing_position,
+        resultStatus: runner.result_status,
+        beatenDistance: runner.beaten_distance,
+      })),
+    );
+
+    for (const runner of reconstructed) {
+      if (
+        runner.cumulativeBeatenLengths === null ||
+        runner.resultStatus !== "finished"
+      ) {
+        continue;
+      }
+      const equivalentTime = equivalentFinishingTimeSeconds(
+        race.usableWinningSeconds,
+        runner.cumulativeBeatenLengths,
+        "speed_based",
+        {
+          distanceYards: race.distance_yards,
+          raceCategory: race.raceCategory,
+        },
+      );
+      const adjustedTime = variantAdjustedTimeSeconds(
+        equivalentTime,
+        variant.variantSeconds,
+      );
+      const fixedPointsFigure = provisionalSpeedFigure(
+        adjustedTime,
+        standard.standardSeconds,
+        "fixed_points_per_second",
+        {
+          distanceYards: race.distance_yards,
+          winnerTimeSeconds: race.usableWinningSeconds,
+          raceCategory: race.raceCategory,
+        },
+      );
+      const distanceAwareFigure = provisionalSpeedFigure(
+        adjustedTime,
+        standard.standardSeconds,
+        "distance_aware",
+        {
+          distanceYards: race.distance_yards,
+          winnerTimeSeconds: race.usableWinningSeconds,
+          raceCategory: race.raceCategory,
+        },
+      );
+
+      if (
+        equivalentTime === null ||
+        adjustedTime === null ||
+        fixedPointsFigure === null ||
+        distanceAwareFigure === null
+      ) {
+        continue;
+      }
+
+      const sourceRunner = sourceRunnerById.get(runner.id);
+      figures.push({
+        candidateKey: candidate.key,
+        standardLevel: standard.standardLevel,
+        race,
+        horseName: sourceRunner?.horse_name ?? runner.id,
+        runnerSourceId: runner.id,
+        finishingPosition: runner.finishingPosition,
+        rawMargin: runner.beatenDistance ?? null,
+        cumulativeBeatenLengths: runner.cumulativeBeatenLengths,
+        equivalentTimeSeconds: equivalentTime,
+        standardSeconds: standard.standardSeconds,
+        standardSampleSize: standard.sampleSize,
+        variantSeconds: variant.variantSeconds,
+        variantSampleSize: variant.sampleSize,
+        adjustedTimeSeconds: adjustedTime,
+        fixedPointsFigure,
+        distanceAwareFigure,
+        selectedFigure: distanceAwareFigure,
+        confidence: speedFigureConfidence(standard.sampleSize, variant.sampleSize, true),
+        officialRating: sourceRunner?.official_rating ?? null,
+      });
+    }
+  }
+
+  return figures;
+}
+
+function candidateStandardInputs(
+  races: ResearchRace[],
+  method: StandardGroupingMethod,
+): StandardTimeRaceInput[] {
+  return races.map((race) => ({
+    raceId: race.race_source_id,
+    groupKey: standardGroupKey(race, method) ?? `__ineligible__:${race.race_source_id}`,
+    meetingKey: meetingKey(race),
+    winningTimeSeconds: race.usableWinningSeconds,
+  }));
+}
+
+function standardDecision(
+  raceId: string,
+  standardInputs: StandardTimeRaceInput[],
+  minimumSampleSize: number,
+  standardLevel: string,
+): StandardDecision {
+  const standard = leaveOneOutStandardTime(raceId, standardInputs, minimumSampleSize);
+  return {
+    standardSeconds: standard.standardSeconds,
+    sampleSize: standard.sampleSize,
+    standardLevel,
+  };
+}
+
+function fallbackStandardDecision(
+  race: ResearchRace,
+  races: ResearchRace[],
+  minimumSampleSize: number,
+): StandardDecision {
+  const levels: Array<[StandardGroupingMethod, string]> = [
+    ["exact_going", "fallback_exact_going_surface"],
+    ["going_band", "fallback_going_band_surface"],
+    ["baseline", "fallback_baseline_course_distance"],
+  ];
+
+  for (const [method, level] of levels) {
+    const inputs = candidateStandardInputs(races, method);
+    const decision = standardDecision(
+      race.race_source_id,
+      inputs,
+      minimumSampleSize,
+      level,
+    );
+    if (decision.standardSeconds !== null) {
+      return decision;
+    }
+  }
+
+  return { standardSeconds: null, sampleSize: 0, standardLevel: "fallback_none" };
+}
+
+function meetingVariantDeviations(
+  targetRaceId: string,
+  races: ResearchRace[],
+  standardInputs: StandardTimeRaceInput[] | null,
+  candidate: CandidateDefinition,
+): number[] {
+  const target = races.find((race) => race.race_source_id === targetRaceId);
+  if (!target) {
+    return [];
+  }
+
+  const deviations: number[] = [];
+  for (const race of races) {
+    if (
+      race.race_source_id === targetRaceId ||
+      meetingKey(race) !== meetingKey(target) ||
+      race.usableWinningSeconds === null
+    ) {
+      continue;
+    }
+
+    const standard = candidate.fallback
+      ? fallbackStandardDecision(
+          race,
+          races.filter((candidateRace) => candidateRace.race_source_id !== targetRaceId),
+          candidate.minimumStandardSampleSize,
+        )
+      : standardDecision(
+          race.race_source_id,
+          (standardInputs ?? []).filter((input) => input.raceId !== targetRaceId),
+          candidate.minimumStandardSampleSize,
+          candidate.standardMethod,
+        );
+    if (standard.standardSeconds === null) {
+      continue;
+    }
+    deviations.push(race.usableWinningSeconds - standard.standardSeconds);
+  }
+  return deviations;
+}
+
+function standardGroupKey(
+  race: ResearchRace,
+  method: StandardGroupingMethod,
+): string | null {
+  const baseline = raceGroupKey(race);
+  if (method === "baseline") {
+    return baseline;
+  }
+  if (method === "surface") {
+    return race.surface ? `${baseline}:surface:${race.surface}` : null;
+  }
+  if (method === "exact_going") {
+    if (!race.surface || !race.going) {
+      return null;
+    }
+    return `${baseline}:surface:${race.surface}:going:${race.going}`;
+  }
+
+  const band = goingBand(race);
+  if (!race.surface || !band) {
+    return null;
+  }
+  return `${baseline}:surface:${race.surface}:going_band:${band}`;
+}
+
+function goingBand(race: ResearchRace): string | null {
+  if (!race.going) {
+    return null;
+  }
+  const value = normalizeLabel(race.going);
+  if (race.raceCategory === "all_weather" || race.surface !== "TURF") {
+    return `AW:${race.going}`;
+  }
+
+  const mapping: Record<string, string> = {
+    firm: "Firm",
+    "good to firm": "Good to Firm",
+    good: "Good",
+    "good to soft": "Good to Soft",
+    soft: "Soft",
+    heavy: "Heavy",
+  };
+  return mapping[value] ?? null;
+}
+
+function normalizeLabel(value: string): string {
+  return value.trim().toLowerCase().replace(/\s+/g, " ");
+}
+
+function meetingKey(race: ResearchRace): string {
+  return `${race.race_date} ${race.course_source_id}`;
 }
 
 function courseDistanceGroups(races: ResearchRace[]): Map<string, StandardGroup> {
@@ -1097,6 +1520,342 @@ function speedFigureAnomalies(figures: ResearchSpeedFigure[]): string[] {
     return ["ordering_anomalies=none"];
   }
   return anomalies;
+}
+
+function summarizeCandidate(
+  candidate: CandidateDefinition,
+  figures: CandidateSpeedFigure[],
+  completedRunnerCount: number,
+): CandidateSummary {
+  const values = figures.map((figure) => figure.selectedFigure).sort((a, b) => a - b);
+  const paired = figures
+    .filter((figure) => figure.officialRating !== null)
+    .map((figure) => [figure.selectedFigure, figure.officialRating ?? 0] as const);
+  return {
+    candidate,
+    eligibleRaces: new Set(figures.map((figure) => figure.race.race_source_id)).size,
+    eligibleRunnerFigures: figures.length,
+    eligiblePercentage:
+      completedRunnerCount === 0 ? null : (figures.length / completedRunnerCount) * 100,
+    mean: mean(values),
+    median: median(values),
+    p10: percentile(values, 0.1),
+    p90: percentile(values, 0.9),
+    min: values[0] ?? null,
+    max: values.at(-1) ?? null,
+    outside0To200: figures.filter((figure) => isExtreme(figure.selectedFigure, 0, 200)).length,
+    outsideMinus50To250: figures.filter((figure) =>
+      isExtreme(figure.selectedFigure, -50, 250),
+    ).length,
+    orderingAnomalies: orderingAnomalyCount(figures),
+    deadHeatMismatches: deadHeatMismatchCount(figures),
+    orCorrelation: correlation(paired),
+    orPairs: paired.length,
+  };
+}
+
+function formatCandidateSummary(summary: CandidateSummary): string {
+  return [
+    "candidate_summary",
+    `key=${summary.candidate.key}`,
+    `label="${summary.candidate.label}"`,
+    `standard_min=${summary.candidate.minimumStandardSampleSize}`,
+    `variant_min=${summary.candidate.minimumVariantSampleSize}`,
+    `eligible_races=${summary.eligibleRaces}`,
+    `eligible_runner_figures=${summary.eligibleRunnerFigures}`,
+    `eligibility=${formatPercent(summary.eligiblePercentage)}`,
+    `mean=${formatNumber(summary.mean)}`,
+    `median=${formatNumber(summary.median)}`,
+    `p10=${formatNumber(summary.p10)}`,
+    `p90=${formatNumber(summary.p90)}`,
+    `min=${formatNumber(summary.min)}`,
+    `max=${formatNumber(summary.max)}`,
+    `outside_0_200=${summary.outside0To200}`,
+    `outside_-50_250=${summary.outsideMinus50To250}`,
+    `ordering_anomalies=${summary.orderingAnomalies}`,
+    `dead_heat_mismatches=${summary.deadHeatMismatches}`,
+    `or_pairs=${summary.orPairs}`,
+    `or_correlation=${formatNumber(summary.orCorrelation)}`,
+  ].join(" | ");
+}
+
+function segmentAnalysis(figures: CandidateSpeedFigure[]): string[] {
+  const lines: string[] = [];
+  const segmenters: Array<[string, (figure: CandidateSpeedFigure) => string]> = [
+    ["code", (figure) => raceCodeSegment(figure.race)],
+    ["distance", (figure) => distanceSegment(figure.race.distance_yards, figure.race.raceCategory)],
+  ];
+
+  for (const [segmentType, segmenter] of segmenters) {
+    const grouped = new Map<string, CandidateSpeedFigure[]>();
+    for (const figure of figures) {
+      const key = segmenter(figure);
+      const rows = grouped.get(key) ?? [];
+      rows.push(figure);
+      grouped.set(key, rows);
+    }
+    for (const [segment, rows] of [...grouped.entries()].sort(([a], [b]) => a.localeCompare(b))) {
+      const values = rows.map((figure) => figure.selectedFigure).sort((a, b) => a - b);
+      const paired = rows
+        .filter((figure) => figure.officialRating !== null)
+        .map((figure) => [figure.selectedFigure, figure.officialRating ?? 0] as const);
+      lines.push(
+        [
+          "segment",
+          `type=${segmentType}`,
+          `name=${segment}`,
+          `eligible=${rows.length}`,
+          `extreme_0_200=${rows.filter((figure) => isExtreme(figure.selectedFigure, 0, 200)).length}`,
+          `median=${formatNumber(median(values))}`,
+          `p10=${formatNumber(percentile(values, 0.1))}`,
+          `p90=${formatNumber(percentile(values, 0.9))}`,
+          `or_pairs=${paired.length}`,
+          `or_correlation=${formatNumber(correlation(paired))}`,
+        ].join(" | "),
+      );
+    }
+  }
+  return lines;
+}
+
+function raceCodeSegment(race: ResearchRace): string {
+  if (race.raceCategory === "all_weather") {
+    return "AW";
+  }
+  if (race.raceCategory === "jumps") {
+    return "jumps";
+  }
+  if (race.surface === "TURF") {
+    return "Flat turf";
+  }
+  return "unknown";
+}
+
+function distanceSegment(distanceYards: number | null, raceCategory: RaceCategory): string {
+  if (raceCategory === "jumps") {
+    return "staying";
+  }
+  if (distanceYards === null) {
+    return "unknown";
+  }
+  if (distanceYards <= 1320) {
+    return "sprint";
+  }
+  if (distanceYards <= 1760) {
+    return "mile";
+  }
+  if (distanceYards <= 2640) {
+    return "middle";
+  }
+  return "staying";
+}
+
+function knownUnstableGroupReport(races: ResearchRace[]): string[] {
+  const targets = [
+    ["Worcester", "2m"],
+    ["Uttoxeter", "1m 7f 168y"],
+    ["Market Rasen", "2m 125y"],
+    ["Fontwell", "2m 1f 162y"],
+    ["Huntingdon", "1m 7f 171y"],
+    ["Newmarket", "7f"],
+    ["Newmarket", "1m"],
+    ["Lingfield", "1m 2f"],
+  ];
+  const lines: string[] = [];
+  for (const [course, distance] of targets) {
+    const targetRaces = races.filter(
+      (race) => race.course_name === course && race.distance === distance,
+    );
+    if (targetRaces.length === 0) {
+      lines.push(`unstable_group course=${course} distance="${distance}" status=missing`);
+      continue;
+    }
+    lines.push(
+      [
+        "unstable_group",
+        `course=${course}`,
+        `distance="${distance}"`,
+        `races=${targetRaces.length}`,
+        standardSpreadForGroup("baseline", targetRaces, "baseline"),
+        standardSpreadForGroup("surface", targetRaces, "surface"),
+        standardSpreadForGroup("exact_going", targetRaces, "exact_going"),
+        standardSpreadForGroup("going_band", targetRaces, "going_band"),
+      ].join(" | "),
+    );
+  }
+  return lines;
+}
+
+function standardSpreadForGroup(
+  label: string,
+  races: ResearchRace[],
+  method: StandardGroupingMethod,
+): string {
+  const grouped = new Map<string, number[]>();
+  for (const race of races) {
+    if (race.usableWinningSeconds === null) {
+      continue;
+    }
+    const key = standardGroupKey(race, method);
+    if (!key) {
+      continue;
+    }
+    const values = grouped.get(key) ?? [];
+    values.push(race.usableWinningSeconds);
+    grouped.set(key, values);
+  }
+  const pieces = [...grouped.values()]
+    .sort((a, b) => b.length - a.length)
+    .map(
+      (values) =>
+        `n=${values.length},median=${formatSeconds(median(values))},stdev=${formatSeconds(
+          standardDeviation(values),
+        )},spread=${formatSeconds(values.length ? Math.max(...values) - Math.min(...values) : null)}`,
+    );
+  return `${label}=[${pieces.join("; ")}]`;
+}
+
+function tailDiagnosis(candidateFigures: Map<string, CandidateSpeedFigure[]>): string[] {
+  const baseline = candidateFigures.get("baseline_standard__baseline_variant") ?? [];
+  const baselineById = figureMap(baseline);
+  const baselineExtremeIds = new Set(
+    baseline
+      .filter((figure) => isExtreme(figure.selectedFigure, 0, 200))
+      .map(figureIdentity),
+  );
+  const baselineNormalIds = new Set(
+    baseline
+      .filter((figure) => !isExtreme(figure.selectedFigure, 0, 200))
+      .map(figureIdentity),
+  );
+  const lines = [`baseline_extreme_0_200=${baselineExtremeIds.size}`];
+
+  for (const candidate of CANDIDATES.filter((item) => item.key !== "baseline_standard__baseline_variant")) {
+    const figures = candidateFigures.get(candidate.key) ?? [];
+    const byId = figureMap(figures);
+    let becomeNonExtreme = 0;
+    let remainExtreme = 0;
+    let becomeIneligible = 0;
+    let previouslyNormalBecomeExtreme = 0;
+
+    for (const id of baselineExtremeIds) {
+      const candidateFigure = byId.get(id);
+      if (!candidateFigure) {
+        becomeIneligible += 1;
+      } else if (isExtreme(candidateFigure.selectedFigure, 0, 200)) {
+        remainExtreme += 1;
+      } else {
+        becomeNonExtreme += 1;
+      }
+    }
+    for (const id of baselineNormalIds) {
+      const candidateFigure = byId.get(id);
+      if (candidateFigure && isExtreme(candidateFigure.selectedFigure, 0, 200)) {
+        previouslyNormalBecomeExtreme += 1;
+      }
+    }
+
+    lines.push(
+      [
+        "tail_diagnosis",
+        `candidate=${candidate.key}`,
+        `baseline_extremes_become_non_extreme=${becomeNonExtreme}`,
+        `baseline_extremes_remain_extreme=${remainExtreme}`,
+        `baseline_extremes_become_ineligible=${becomeIneligible}`,
+        `previously_normal_become_extreme=${previouslyNormalBecomeExtreme}`,
+        `matched_from_baseline=${[...byId.keys()].filter((id) => baselineById.has(id)).length}`,
+      ].join(" | "),
+    );
+  }
+  return lines;
+}
+
+function fallbackAndConfidenceReport(figures: CandidateSpeedFigure[]): string[] {
+  const levels = counterValuesObject(figures.map((figure) => figure.standardLevel));
+  const sampleValues = figures.map((figure) => figure.standardSampleSize);
+  return [
+    `fallback_standard_level_counts=${JSON.stringify(levels)}`,
+    `confidence_should_consider=subgroup_standard_sample_size,variant_sample_size,standard_level_used,timing_spread_within_standard_group`,
+    `fallback_standard_sample_min=${formatNumber(sampleValues.length ? Math.min(...sampleValues) : null)} median=${formatNumber(
+      median(sampleValues),
+    )} max=${formatNumber(sampleValues.length ? Math.max(...sampleValues) : null)}`,
+  ];
+}
+
+function surfaceRelationshipReport(races: ResearchRace[]): string {
+  const byCourse = new Map<string, Set<string>>();
+  for (const race of races) {
+    if (!race.surface) {
+      continue;
+    }
+    const surfaces = byCourse.get(race.course_name) ?? new Set<string>();
+    surfaces.add(race.surface);
+    byCourse.set(race.course_name, surfaces);
+  }
+  const overlapping = [...byCourse.entries()]
+    .filter(([, surfaces]) => surfaces.size > 1)
+    .map(([course, surfaces]) => `${course}:${[...surfaces].sort().join("/")}`);
+  if (overlapping.length === 0) {
+    return "no courses with multiple observed surface labels in selected range; labels remain separate";
+  }
+  return `observed overlapping course labels ${overlapping.slice(0, 20).join(", ")}; labels remain separate research groups`;
+}
+
+function goingBandMappingReport(races: ResearchRace[]): string[] {
+  const observed = new Set(races.map((race) => race.going).filter((value): value is string => value !== null));
+  return [...observed].sort().map((going) => {
+    const turfRace = races.find((race) => race.going === going && race.surface === "TURF");
+    const race = turfRace ?? races.find((candidate) => candidate.going === going);
+    const band = race ? goingBand(race) : null;
+    return `going_mapping raw="${going}" band=${band ?? "unmapped"}`;
+  });
+}
+
+function figureMap(figures: CandidateSpeedFigure[]): Map<string, CandidateSpeedFigure> {
+  return new Map(figures.map((figure) => [figureIdentity(figure), figure]));
+}
+
+function figureIdentity(figure: ResearchSpeedFigure): string {
+  return `${figure.race.race_source_id}:${figure.runnerSourceId}`;
+}
+
+function orderingAnomalyCount(figures: ResearchSpeedFigure[]): number {
+  return speedFigureAnomalies(figures).filter((line) =>
+    line.startsWith("ordering_anomaly "),
+  ).length;
+}
+
+function deadHeatMismatchCount(figures: ResearchSpeedFigure[]): number {
+  const grouped = new Map<string, ResearchSpeedFigure[]>();
+  for (const figure of figures) {
+    const rows = grouped.get(figure.race.race_source_id) ?? [];
+    rows.push(figure);
+    grouped.set(figure.race.race_source_id, rows);
+  }
+  let mismatches = 0;
+  for (const rows of grouped.values()) {
+    const sorted = [...rows].sort(
+      (a, b) => (a.finishingPosition ?? 999) - (b.finishingPosition ?? 999),
+    );
+    for (let index = 1; index < sorted.length; index += 1) {
+      if (
+        sorted[index].rawMargin?.toLowerCase() === "dh" &&
+        Math.abs(sorted[index].selectedFigure - sorted[index - 1].selectedFigure) >
+          0.000_001
+      ) {
+        mismatches += 1;
+      }
+    }
+  }
+  return mismatches;
+}
+
+function isExtreme(value: number, minimum: number, maximum: number): boolean {
+  return value < minimum || value > maximum;
+}
+
+function formatPercent(value: number | null): string {
+  return value === null ? "-" : `${value.toFixed(1)}%`;
 }
 
 function pickFigureRace(
