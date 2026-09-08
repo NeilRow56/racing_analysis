@@ -8,7 +8,6 @@ import {
   mean,
   median,
   parseBeatenDistanceLengths,
-  parseWinningTimeSeconds,
   provisionalSpeedFigure,
   reconstructCumulativeBeatenLengths,
   sampleLabel,
@@ -560,7 +559,8 @@ function courseDistanceSampleBins(groups: Map<string, StandardGroup>): string {
     "5-9": 0,
     "10-19": 0,
     "20-39": 0,
-    "40+": 0,
+    "40-79": 0,
+    "80+": 0,
   };
   let largest = 0;
   for (const group of groups.values()) {
@@ -576,8 +576,10 @@ function courseDistanceSampleBins(groups: Map<string, StandardGroup>): string {
       bins["10-19"] += 1;
     } else if (sampleSize >= 20 && sampleSize <= 39) {
       bins["20-39"] += 1;
-    } else if (sampleSize >= 40) {
-      bins["40+"] += 1;
+    } else if (sampleSize >= 40 && sampleSize <= 79) {
+      bins["40-79"] += 1;
+    } else if (sampleSize >= 80) {
+      bins["80+"] += 1;
     }
   }
   return `course_distance_sample_bins=${JSON.stringify(bins)} largest_sample=${largest}`;
@@ -788,7 +790,7 @@ function candidateModelExamples(
         `race_id=${race.race_source_id}`,
         `category=${race.raceCategory}`,
         `surface=${race.surface ?? "missing"}`,
-        `winner_time=${formatSeconds(race.parsedWinningSeconds)}`,
+        `winner_time=${formatSeconds(race.usableWinningSeconds)}`,
       ].join(" | "),
     );
 
@@ -797,7 +799,7 @@ function candidateModelExamples(
         `${model}:${secondsPerLength(model, {
           distanceYards: race.distance_yards,
           raceCategory: race.raceCategory,
-          winnerTimeSeconds: race.parsedWinningSeconds,
+          winnerTimeSeconds: race.usableWinningSeconds,
         }).toFixed(3)}`,
     ).join(", ");
     lines.push(`  seconds_per_length=${splValues}`);
@@ -808,7 +810,7 @@ function candidateModelExamples(
         (model) =>
           `${model}:${formatSeconds(
             equivalentFinishingTimeSeconds(
-              race.parsedWinningSeconds,
+              race.usableWinningSeconds,
               runner.cumulativeBeatenLengths,
               model,
               {
@@ -845,7 +847,7 @@ function individualTimeConsistency(
   let timedRacesChecked = 0;
 
   for (const race of races) {
-    if (race.parsedWinningSeconds === null) {
+    if (race.usableWinningSeconds === null) {
       continue;
     }
     timedRacesChecked += 1;
@@ -883,7 +885,7 @@ function individualTimeConsistency(
       let previousTime: number | null = null;
       for (const runner of reconstructed) {
         const estimated = equivalentFinishingTimeSeconds(
-          race.parsedWinningSeconds,
+          race.usableWinningSeconds,
           runner.cumulativeBeatenLengths,
           model,
           {
@@ -895,7 +897,7 @@ function individualTimeConsistency(
         if (estimated === null) {
           continue;
         }
-        if (estimated < race.parsedWinningSeconds || !Number.isFinite(estimated)) {
+        if (estimated < race.usableWinningSeconds || !Number.isFinite(estimated)) {
           implausibleTimeRows.push(
             `${race.race_source_id} ${model} runner=${runner.id} estimated=${estimated}`,
           );
@@ -933,7 +935,7 @@ function pickRace(
   return (
     races.find(
       (race) =>
-        race.parsedWinningSeconds !== null &&
+        race.usableWinningSeconds !== null &&
         race.distance_yards !== null &&
         predicate(race),
     ) ?? null
@@ -1045,7 +1047,7 @@ function selectedFigureExamples(figures: ResearchSpeedFigure[]): string[] {
 function completedTimedRunners(races: ResearchRace[], runners: RunnerRow[]): number {
   const timedRaceIds = new Set(
     races
-      .filter((race) => race.parsedWinningSeconds !== null)
+      .filter((race) => race.usableWinningSeconds !== null)
       .map((race) => race.race_source_id),
   );
   return runners.filter(

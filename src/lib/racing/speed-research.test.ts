@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { describe, test } from "node:test";
 import {
   BEATEN_DISTANCE_ASSUMPTIONS,
+  RESEARCH_MEETING_VARIANT_ASSUMPTIONS,
   beatenLengthsToSeconds,
   classifyRaceCategory,
   equivalentFinishingTimeSeconds,
@@ -12,7 +13,9 @@ import {
   parseWinningTimeSeconds,
   provisionalSpeedFigure,
   reconstructCumulativeBeatenLengths,
+  researchMeetingVariantFromDeviations,
   sampleLabel,
+  sanityCheckWinningTime,
   secondsPerLength,
   timeDifferenceToSpeedPoints,
   standardDeviation,
@@ -33,6 +36,57 @@ describe("parseWinningTimeSeconds", () => {
     assert.equal(parseWinningTimeSeconds(null), null);
     assert.equal(parseWinningTimeSeconds("1:29.11"), null);
     assert.equal(parseWinningTimeSeconds("about 58s"), null);
+  });
+});
+
+describe("sanityCheckWinningTime", () => {
+  test("rejects physically impossible winning times", () => {
+    const result = sanityCheckWinningTime({
+      winningTime: "0.01s",
+      distanceYards: 2200,
+    });
+
+    assert.equal(result.parsedSeconds, 0.01);
+    assert.equal(result.usableSeconds, null);
+    assert.equal(result.reason, "physically_implausible");
+  });
+
+  test("accepts normal sprint, middle-distance and jumps winning times", () => {
+    assert.equal(
+      sanityCheckWinningTime({ winningTime: "58.19s", distanceYards: 1100 }).usableSeconds,
+      58.19,
+    );
+    assert.equal(
+      sanityCheckWinningTime({ winningTime: "2m 8.50s", distanceYards: 2200 }).usableSeconds,
+      128.5,
+    );
+    assert.equal(
+      sanityCheckWinningTime({ winningTime: "6m 14.33s", distanceYards: 3520 }).usableSeconds,
+      374.33,
+    );
+  });
+
+  test("keeps missing and unparseable winning times excluded", () => {
+    assert.deepEqual(sanityCheckWinningTime({ winningTime: null, distanceYards: 1100 }), {
+      parsedSeconds: null,
+      usableSeconds: null,
+      impliedAverageSpeedYardsPerSecond: null,
+      reason: "missing",
+    });
+    assert.equal(
+      sanityCheckWinningTime({ winningTime: "about 58s", distanceYards: 1100 }).reason,
+      "unparseable",
+    );
+  });
+
+  test("returns parsed source value separately from usable research value", () => {
+    const result = sanityCheckWinningTime({
+      winningTime: "0.01s",
+      distanceYards: 1540,
+    });
+
+    assert.equal(result.parsedSeconds, 0.01);
+    assert.equal(result.usableSeconds, null);
   });
 });
 
@@ -156,6 +210,109 @@ describe("provisional speed figures", () => {
     );
 
     assert.equal(variant.variantSeconds, 1);
+  });
+
+  test("research baseline median variant matches the existing baseline calculation", () => {
+    const variant = leaveOneOutMeetingVariant(
+      "target",
+      [
+        { raceId: "target", groupKey: "course:1100", meetingKey: "day-a", winningTimeSeconds: 60 },
+        { raceId: "peer-a", groupKey: "course:1320", meetingKey: "day-a", winningTimeSeconds: 75 },
+        { raceId: "peer-a-standard", groupKey: "course:1320", meetingKey: "day-b", winningTimeSeconds: 74 },
+        { raceId: "peer-b", groupKey: "course:1540", meetingKey: "day-a", winningTimeSeconds: 86 },
+        { raceId: "peer-b-standard", groupKey: "course:1540", meetingKey: "day-b", winningTimeSeconds: 85 },
+      ],
+      1,
+      1,
+    );
+    const researchVariant = researchMeetingVariantFromDeviations({
+      deviations: variant.deviations,
+      method: "baseline_median",
+      minimumVariantSampleSize: 1,
+    });
+
+    assert.equal(researchVariant.variantSeconds, variant.variantSeconds);
+    assert.deepEqual(researchVariant.adjustedDeviations, variant.deviations);
+  });
+
+  test("bounded median winsorizes individual race deviations before taking the median", () => {
+    const variant = researchMeetingVariantFromDeviations({
+      deviations: [-100, 1, 2, 3, 100],
+      method: "bounded_median",
+      minimumVariantSampleSize: 2,
+    });
+
+    assert.deepEqual(variant.adjustedDeviations, [
+      -RESEARCH_MEETING_VARIANT_ASSUMPTIONS.boundedDeviationSeconds,
+      1,
+      2,
+      3,
+      RESEARCH_MEETING_VARIANT_ASSUMPTIONS.boundedDeviationSeconds,
+    ]);
+    assert.equal(variant.variantSeconds, 2);
+  });
+
+  test("trimmed mean removes symmetric tails when enough races contribute", () => {
+    const variant = researchMeetingVariantFromDeviations({
+      deviations: [-50, 1, 2, 3, 100],
+      method: "trimmed_mean",
+      minimumVariantSampleSize: 2,
+    });
+
+    assert.deepEqual(variant.adjustedDeviations, [1, 2, 3]);
+    assert.equal(variant.variantSeconds, 2);
+  });
+
+  test("robust variants return null when the sample is insufficient", () => {
+    const bounded = researchMeetingVariantFromDeviations({
+      deviations: [1, 2],
+      method: "bounded_median",
+      minimumVariantSampleSize: 3,
+    });
+    const trimmed = researchMeetingVariantFromDeviations({
+      deviations: [-100, 1, 2, 3, 100],
+      method: "trimmed_mean",
+      minimumVariantSampleSize: 4,
+    });
+
+    assert.equal(bounded.variantSeconds, null);
+    assert.equal(trimmed.variantSeconds, null);
+  });
+
+  test("extreme single-race deviations do not dominate robust methods unexpectedly", () => {
+    const bounded = researchMeetingVariantFromDeviations({
+      deviations: [0, 1, 2, 3, 100],
+      method: "bounded_median",
+      minimumVariantSampleSize: 2,
+    });
+    const trimmed = researchMeetingVariantFromDeviations({
+      deviations: [0, 1, 2, 3, 100],
+      method: "trimmed_mean",
+      minimumVariantSampleSize: 2,
+    });
+
+    assert.equal(bounded.variantSeconds, 2);
+    assert.equal(trimmed.variantSeconds, 2);
+  });
+
+  test("stable meetings stay close to baseline under robust alternatives", () => {
+    const deviations = [-1, 0, 1, 2, 3];
+    const baseline = researchMeetingVariantFromDeviations({
+      deviations,
+      method: "baseline_median",
+    });
+    const bounded = researchMeetingVariantFromDeviations({
+      deviations,
+      method: "bounded_median",
+    });
+    const trimmed = researchMeetingVariantFromDeviations({
+      deviations,
+      method: "trimmed_mean",
+    });
+
+    assert.equal(baseline.variantSeconds, 1);
+    assert.equal(bounded.variantSeconds, 1);
+    assert.equal(trimmed.variantSeconds, 1);
   });
 
   test("uses the correct track-adjustment sign", () => {

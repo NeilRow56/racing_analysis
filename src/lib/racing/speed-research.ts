@@ -95,6 +95,26 @@ export type LeaveOneOutMeetingVariant = {
   confidence: string;
 };
 
+export type ResearchMeetingVariantMethod =
+  | "baseline_median"
+  | "bounded_median"
+  | "trimmed_mean";
+
+export const RESEARCH_MEETING_VARIANT_ASSUMPTIONS = {
+  boundedDeviationSeconds: 15,
+  trimmedMeanProportion: 0.2,
+  minimumSampleSizeToTrim: 5,
+} as const;
+
+export type ResearchMeetingVariantResult = {
+  method: ResearchMeetingVariantMethod;
+  variantSeconds: number | null;
+  sampleSize: number;
+  deviations: number[];
+  adjustedDeviations: number[];
+  confidence: string;
+};
+
 export type SpeedFigurePointsModel = "fixed_points_per_second" | "distance_aware";
 
 export type WinningTimeSanityReason =
@@ -420,6 +440,72 @@ export function leaveOneOutMeetingVariant(
     sampleSize: deviations.length,
     deviations,
     confidence: speedFigureConfidence(null, deviations.length, true),
+  };
+}
+
+export function researchMeetingVariantFromDeviations(input: {
+  deviations: number[];
+  method: ResearchMeetingVariantMethod;
+  minimumVariantSampleSize?: number;
+}): ResearchMeetingVariantResult {
+  const minimumVariantSampleSize =
+    input.minimumVariantSampleSize ??
+    SPEED_FIGURE_ASSUMPTIONS.minimumVariantSampleSize;
+  const deviations = input.deviations.filter((value) => Number.isFinite(value));
+
+  if (deviations.length < minimumVariantSampleSize) {
+    return {
+      method: input.method,
+      variantSeconds: null,
+      sampleSize: deviations.length,
+      deviations,
+      adjustedDeviations: [],
+      confidence: "insufficient",
+    };
+  }
+
+  let adjustedDeviations: number[];
+  let variantSeconds: number | null;
+
+  if (input.method === "baseline_median") {
+    adjustedDeviations = deviations;
+    variantSeconds = median(adjustedDeviations);
+  } else if (input.method === "bounded_median") {
+    const bound = RESEARCH_MEETING_VARIANT_ASSUMPTIONS.boundedDeviationSeconds;
+    adjustedDeviations = deviations.map((value) =>
+      Math.max(-bound, Math.min(bound, value)),
+    );
+    variantSeconds = median(adjustedDeviations);
+  } else {
+    const sorted = [...deviations].sort((a, b) => a - b);
+    const trimCount =
+      sorted.length >= RESEARCH_MEETING_VARIANT_ASSUMPTIONS.minimumSampleSizeToTrim
+        ? Math.floor(
+            sorted.length *
+              RESEARCH_MEETING_VARIANT_ASSUMPTIONS.trimmedMeanProportion,
+          )
+        : 0;
+    adjustedDeviations = sorted.slice(trimCount, sorted.length - trimCount);
+    if (adjustedDeviations.length < minimumVariantSampleSize) {
+      return {
+        method: input.method,
+        variantSeconds: null,
+        sampleSize: adjustedDeviations.length,
+        deviations,
+        adjustedDeviations,
+        confidence: "insufficient",
+      };
+    }
+    variantSeconds = mean(adjustedDeviations);
+  }
+
+  return {
+    method: input.method,
+    variantSeconds,
+    sampleSize: adjustedDeviations.length,
+    deviations,
+    adjustedDeviations,
+    confidence: speedFigureConfidence(null, adjustedDeviations.length, true),
   };
 }
 
