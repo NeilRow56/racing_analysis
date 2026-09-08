@@ -2,14 +2,19 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { mean, median, standardDeviation } from "@/lib/racing/speed-research";
 
 const YEAR = process.argv[2] ?? "2025";
+const CALIBRATION_YEAR = process.argv[3] ?? YEAR;
 const START_DATE = `${YEAR}-01-01`;
 const END_DATE = `${YEAR}-12-31`;
 const RACE_CSV = `data/research/going-adjustment-races-${START_DATE}-${END_DATE}.csv`;
 const RUNNER_CSV = `data/research/going-adjustment-runners-${START_DATE}-${END_DATE}.csv`;
 const OUTPUT_DIR = "data/research";
-const REPORT_PATH = `${OUTPUT_DIR}/jump-rating-scale-diagnosis-${YEAR}.txt`;
-const SUMMARY_CSV_PATH = `${OUTPUT_DIR}/jump-rating-scale-summary-${YEAR}.csv`;
-const EXTREME_CSV_PATH = `${OUTPUT_DIR}/jump-rating-scale-extremes-${YEAR}.csv`;
+const OUTPUT_STEM =
+  CALIBRATION_YEAR === YEAR
+    ? `jump-rating-scale-diagnosis-${YEAR}`
+    : `jump-rating-scale-validation-${YEAR}-calibrated-${CALIBRATION_YEAR}`;
+const REPORT_PATH = `${OUTPUT_DIR}/${OUTPUT_STEM}.txt`;
+const SUMMARY_CSV_PATH = `${OUTPUT_DIR}/${OUTPUT_STEM}-summary.csv`;
+const EXTREME_CSV_PATH = `${OUTPUT_DIR}/${OUTPUT_STEM}-extremes.csv`;
 
 type JumpSubtype = "hurdle" | "chase" | "nh_flat" | "unknown_other";
 type Method = "base" | "same_day";
@@ -86,16 +91,27 @@ async function main() {
   const jumpRaces = races
     .filter((race) => race.segment === "jumps")
     .map((race) => ({ ...race, subtype: classifyJumpSubtype(race) }));
-  const calibration = calibrate(jumps);
+  const calibrationJoined =
+    CALIBRATION_YEAR === YEAR ? joined : await loadJoinedRows(CALIBRATION_YEAR);
+  const calibration = calibrate(calibrationJoined.filter((runner) => runner.segment === "jumps"));
 
   const lines: string[] = [];
-  lines.push(`# Jump Rating Scale Diagnosis ${YEAR}`);
+  lines.push(
+    CALIBRATION_YEAR === YEAR
+      ? `# Jump Rating Scale Diagnosis ${YEAR}`
+      : `# Jump Rating Scale Validation ${YEAR} Calibrated From ${CALIBRATION_YEAR}`,
+  );
   lines.push("");
   lines.push("## Scope");
   lines.push(`race_csv=${RACE_CSV}`);
   lines.push(`runner_csv=${RUNNER_CSV}`);
+  lines.push(`calibration_year=${CALIBRATION_YEAR}`);
   lines.push("production_changes=false");
   lines.push("standards_or_thresholds_changed=false");
+  lines.push("same_day_rule=existing conservative same-day rule from research CSV, unchanged");
+  lines.push("");
+  lines.push("## Data Coverage");
+  lines.push(...coverageLines(races, joined));
   lines.push("");
   lines.push("## Current Rating Formula");
   lines.push(...formulaLines());
@@ -127,6 +143,9 @@ async function main() {
   lines.push("## Standard Confidence");
   lines.push(...standardConfidenceLines(jumps));
   lines.push("");
+  lines.push("## Calibration Year Comparison");
+  lines.push(...comparisonLines(jumps, calibrationJoined.filter((runner) => runner.segment === "jumps"), calibration));
+  lines.push("");
   lines.push("## Conclusion");
   lines.push(...conclusionLines(jumps, calibration));
 
@@ -140,6 +159,21 @@ async function main() {
   console.log(`full_report=${REPORT_PATH}`);
   console.log(`summary_csv=${SUMMARY_CSV_PATH}`);
   console.log(`extreme_csv=${EXTREME_CSV_PATH}`);
+}
+
+async function loadJoinedRows(year: string): Promise<JoinedRunner[]> {
+  const startDate = `${year}-01-01`;
+  const endDate = `${year}-12-31`;
+  const races = parseRaceRows(
+    await readFile(`data/research/going-adjustment-races-${startDate}-${endDate}.csv`, "utf8"),
+  );
+  const raceById = new Map(races.map((race) => [race.race_source_id, race]));
+  return parseRunnerRows(
+    await readFile(`data/research/going-adjustment-runners-${startDate}-${endDate}.csv`, "utf8"),
+  ).flatMap((runner) => {
+    const race = raceById.get(runner.race_source_id);
+    return race ? [{ ...runner, race, subtype: classifyJumpSubtype(race) }] : [];
+  });
 }
 
 function formulaLines(): string[] {
@@ -162,14 +196,46 @@ function formulaLines(): string[] {
 
 function calibrationLines(calibration: Calibration): string[] {
   return [
+    `calibration_year=${CALIBRATION_YEAR}`,
     `calibration_sample=${calibration.sampleSize}`,
     `median_abs_or_minus_100=${fmt(calibration.medianAbsOrDelta)}`,
     `median_abs_standard_minus_equivalent_per_f=${fmt(calibration.medianAbsSecPerF)}`,
     `median_abs_standard_minus_equivalent_pct=${fmt(calibration.medianAbsPct)}`,
     `sec_per_f_points_per_sec_per_f=${fmt(calibration.secPerFPoints)}`,
     `pct_time_points_per_1pct=${fmt(calibration.pctPoints / 100)}`,
-    "calibration_rule=median(|OR-100|) divided by median absolute time-deviation scale among central 2025 jump runners with OR and |OR-100|<=60",
+    "calibration_rule=median(|OR-100|) divided by median absolute time-deviation scale among central calibration-year jump runners with OR and |OR-100|<=60",
   ];
+}
+
+function coverageLines(races: RaceRow[], runners: JoinedRunner[]): string[] {
+  const raceDates = races.map((race) => race.race_date).sort();
+  const jumpRaces = races
+    .filter((race) => race.segment === "jumps")
+    .map((race) => ({ ...race, subtype: classifyJumpSubtype(race) }));
+  const jumpRunners = runners.filter((runner) => runner.segment === "jumps");
+  const earliest = raceDates[0] ?? "-";
+  const latest = raceDates.at(-1) ?? "-";
+  return [
+    `coverage | earliest_race_date=${earliest} | latest_race_date=${latest} | total_races=${races.length} | jump_races=${jumpRaces.length} | runner_count=${runners.length} | jump_runner_count=${jumpRunners.length} | or_count=${jumpRunners.filter((runner) => runner.official_rating !== null).length}`,
+    ...subtypeOrder().map((subtype) => {
+      const rows = jumpRaces.filter((race) => race.subtype === subtype);
+      return `coverage_subtype | subtype=${subtype} | races=${rows.length}`;
+    }),
+    `coverage_label=${coverageLabel(earliest, latest, races.length)}`,
+  ];
+}
+
+function coverageLabel(earliest: string, latest: string, raceCount: number): string {
+  if (raceCount === 0 || earliest === "-" || latest === "-") {
+    return "heavily_incomplete";
+  }
+  if (earliest <= `${YEAR}-01-07` && latest >= `${YEAR}-12-24`) {
+    return "full_year";
+  }
+  const start = Date.parse(earliest);
+  const end = Date.parse(latest);
+  const days = Number.isFinite(start) && Number.isFinite(end) ? (end - start) / 86_400_000 : 0;
+  return days >= 180 ? "partial_year" : "heavily_incomplete";
 }
 
 function workedExampleLines(runners: JoinedRunner[], calibration: Calibration): string[] {
@@ -436,7 +502,127 @@ function standardConfidenceLines(jumps: JoinedRunner[]): string[] {
   ];
 }
 
+function comparisonLines(
+  validationJumps: JoinedRunner[],
+  calibrationJumps: JoinedRunner[],
+  calibration: Calibration,
+): string[] {
+  const validation = comparisonMetrics(validationJumps, calibration);
+  const calibrationYear = comparisonMetrics(calibrationJumps, calibration);
+  return [
+    [
+      "year_comparison",
+      `year=${CALIBRATION_YEAR}`,
+      `role=calibration`,
+      comparisonFields(calibrationYear),
+    ].join(" | "),
+    [
+      "year_comparison",
+      `year=${YEAR}`,
+      `role=${YEAR === CALIBRATION_YEAR ? "calibration" : "validation"}`,
+      comparisonFields(validation),
+    ].join(" | "),
+    `holdout_read=${holdoutRead(validation, calibrationYear)}`,
+  ];
+}
+
+function comparisonMetrics(jumps: JoinedRunner[], calibration: Calibration) {
+  return {
+    runners: jumps.length,
+    currentExtremeRate: extremeRate(jumps, "current", "base", calibration),
+    secPerFExtremeRate: extremeRate(jumps, "sec_per_f", "base", calibration),
+    pctExtremeRate: extremeRate(jumps, "pct_time", "base", calibration),
+    secPerFMedianAbsOr: medianAbsOrDiff(jumps, "sec_per_f", "base", calibration),
+    pctMedianAbsOr: medianAbsOrDiff(jumps, "pct_time", "base", calibration),
+    secPerFSameDayMedianAbsOr: medianAbsOrDiff(jumps, "sec_per_f", "same_day", calibration),
+    pctSameDayMedianAbsOr: medianAbsOrDiff(jumps, "pct_time", "same_day", calibration),
+  };
+}
+
+function comparisonFields(metrics: ReturnType<typeof comparisonMetrics>): string {
+  return [
+    `runners=${metrics.runners}`,
+    `current_formula_extreme_rate=${fmt(metrics.currentExtremeRate)}`,
+    `sec_per_f_extreme_rate=${fmt(metrics.secPerFExtremeRate)}`,
+    `pct_time_extreme_rate=${fmt(metrics.pctExtremeRate)}`,
+    `sec_per_f_median_abs_or_diff=${fmt(metrics.secPerFMedianAbsOr)}`,
+    `pct_time_median_abs_or_diff=${fmt(metrics.pctMedianAbsOr)}`,
+    `sec_per_f_same_day_median_abs_or_diff=${fmt(metrics.secPerFSameDayMedianAbsOr)}`,
+    `pct_time_same_day_median_abs_or_diff=${fmt(metrics.pctSameDayMedianAbsOr)}`,
+  ].join(" | ");
+}
+
+function holdoutRead(
+  validation: ReturnType<typeof comparisonMetrics>,
+  calibrationYear: ReturnType<typeof comparisonMetrics>,
+): string {
+  if (YEAR === CALIBRATION_YEAR) {
+    return "calibration_year_only";
+  }
+  if (validation.runners < calibrationYear.runners * 0.25) {
+    return "too_incomplete_to_judge";
+  }
+  if (
+    validation.currentExtremeRate === null ||
+    validation.secPerFExtremeRate === null ||
+    validation.pctExtremeRate === null
+  ) {
+    return "too_incomplete_to_judge";
+  }
+  const currentImproves =
+    validation.secPerFExtremeRate < validation.currentExtremeRate &&
+    validation.pctExtremeRate < validation.currentExtremeRate;
+  const sameDayStable =
+    (validation.secPerFSameDayMedianAbsOr ?? Infinity) <=
+      (validation.secPerFMedianAbsOr ?? 0) &&
+    (validation.pctSameDayMedianAbsOr ?? Infinity) <=
+      (validation.pctMedianAbsOr ?? 0);
+  return currentImproves && sameDayStable ? "confirms_2025" : "partially_confirms_2025";
+}
+
+function extremeRate(
+  jumps: JoinedRunner[],
+  scale: Scale,
+  method: Method,
+  calibration: Calibration,
+): number | null {
+  const values = jumps
+    .map((runner) => ratingFor(runner, scale, method, calibration))
+    .filter((value): value is number => value !== null);
+  if (values.length === 0) {
+    return null;
+  }
+  return values.filter((value) => value < 0 || value > 200).length / values.length;
+}
+
+function medianAbsOrDiff(
+  jumps: JoinedRunner[],
+  scale: Scale,
+  method: Method,
+  calibration: Calibration,
+): number | null {
+  const values = jumps
+    .map((runner) => {
+      const rating = ratingFor(runner, scale, method, calibration);
+      return rating === null || runner.official_rating === null
+        ? null
+        : Math.abs(rating - runner.official_rating);
+    })
+    .filter((value): value is number => value !== null);
+  return median(values);
+}
+
 function conclusionLines(jumps: JoinedRunner[], calibration: Calibration): string[] {
+  if (jumps.length === 0) {
+    return [
+      "current_raw_seconds_conversion_structurally_unsuitable_for_jumps=not_judgeable_from_validation_year; validation_jump_runners=0",
+      "seconds_per_furlong_behaves_better=not_judgeable_from_validation_year",
+      "percentage_time_deviation_behaves_better=not_judgeable_from_validation_year",
+      "conservative_same_day_remains_useful=not_judgeable_from_validation_year",
+      "remaining_extremes_mainly=not_judgeable_from_validation_year",
+      "jumps_should_use_separate_rating_conversion_from_flat=not_judgeable_from_validation_year; 2025 evidence remains unchanged",
+    ];
+  }
   const quality = (scale: Scale, method: Method) => {
     const rows = jumps
       .map((runner) => ratingFor(runner, scale, method, calibration))

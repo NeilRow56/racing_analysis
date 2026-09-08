@@ -1,0 +1,156 @@
+# Jump Rating Scale Validation 2024 Calibrated From 2025
+
+## Scope
+race_csv=data/research/going-adjustment-races-2024-01-01-2024-12-31.csv
+runner_csv=data/research/going-adjustment-runners-2024-01-01-2024-12-31.csv
+calibration_year=2025
+production_changes=false
+standards_or_thresholds_changed=false
+same_day_rule=existing conservative same-day rule from research CSV, unchanged
+
+## Data Coverage
+coverage | earliest_race_date=- | latest_race_date=- | total_races=0 | jump_races=0 | runner_count=0 | jump_runner_count=0 | or_count=0
+coverage_subtype | subtype=hurdle | races=0
+coverage_subtype | subtype=chase | races=0
+coverage_subtype | subtype=nh_flat | races=0
+coverage_subtype | subtype=unknown_other | races=0
+coverage_label=heavily_incomplete
+
+## Current Rating Formula
+For each runner, the research CSV first converts beaten distance into equivalent runner time:
+seconds_per_length = (8 / 3 yards) / (distance_yards / actual_winning_time_seconds)
+beaten_seconds = cumulative_beaten_lengths * seconds_per_length
+equivalent_time_seconds = actual_winning_time_seconds + beaten_seconds
+
+The current distance-aware rating formula is:
+current_rating = 100 + (standard_seconds - equivalent_time_seconds) / seconds_per_length
+
+For conservative same-day ratings:
+adjusted_standard_seconds = base_standard_seconds + conservative_same_day_adj_per_f * (distance_yards / 220)
+current_same_day_rating = 100 + (adjusted_standard_seconds - equivalent_time_seconds) / seconds_per_length
+
+Positive standard - equivalent_time means faster than standard. One rating point equals one speed-based length.
+
+## Alternative Research Calibration
+calibration_year=2025
+calibration_sample=17179
+median_abs_or_minus_100=14.00
+median_abs_standard_minus_equivalent_per_f=0.37
+median_abs_standard_minus_equivalent_pct=0.02
+sec_per_f_points_per_sec_per_f=37.76
+pct_time_points_per_1pct=5.75
+calibration_rule=median(|OR-100|) divided by median absolute time-deviation scale among central calibration-year jump runners with OR and |OR-100|<=60
+
+## Worked Examples
+
+## Seconds To Points Sensitivity
+sensitivity | distance=flat_5f | yards=1100 | assumed_winner_time=60 | seconds_per_length=0.15 | time_difference_seconds=0.5 | rating_points=3.44
+sensitivity | distance=flat_5f | yards=1100 | assumed_winner_time=60 | seconds_per_length=0.15 | time_difference_seconds=1 | rating_points=6.88
+sensitivity | distance=flat_5f | yards=1100 | assumed_winner_time=60 | seconds_per_length=0.15 | time_difference_seconds=2 | rating_points=13.75
+sensitivity | distance=flat_5f | yards=1100 | assumed_winner_time=60 | seconds_per_length=0.15 | time_difference_seconds=5 | rating_points=34.38
+sensitivity | distance=flat_5f | yards=1100 | assumed_winner_time=60 | seconds_per_length=0.15 | time_difference_seconds=10 | rating_points=68.75
+sensitivity | distance=flat_5f | yards=1100 | assumed_winner_time=60 | seconds_per_length=0.15 | time_difference_seconds=20 | rating_points=137.50
+sensitivity | distance=flat_1m | yards=1760 | assumed_winner_time=100 | seconds_per_length=0.15 | time_difference_seconds=0.5 | rating_points=3.30
+sensitivity | distance=flat_1m | yards=1760 | assumed_winner_time=100 | seconds_per_length=0.15 | time_difference_seconds=1 | rating_points=6.60
+sensitivity | distance=flat_1m | yards=1760 | assumed_winner_time=100 | seconds_per_length=0.15 | time_difference_seconds=2 | rating_points=13.20
+sensitivity | distance=flat_1m | yards=1760 | assumed_winner_time=100 | seconds_per_length=0.15 | time_difference_seconds=5 | rating_points=33.00
+sensitivity | distance=flat_1m | yards=1760 | assumed_winner_time=100 | seconds_per_length=0.15 | time_difference_seconds=10 | rating_points=66.00
+sensitivity | distance=flat_1m | yards=1760 | assumed_winner_time=100 | seconds_per_length=0.15 | time_difference_seconds=20 | rating_points=132.00
+sensitivity | distance=flat_1m4f | yards=2640 | assumed_winner_time=150 | seconds_per_length=0.15 | time_difference_seconds=0.5 | rating_points=3.30
+sensitivity | distance=flat_1m4f | yards=2640 | assumed_winner_time=150 | seconds_per_length=0.15 | time_difference_seconds=1 | rating_points=6.60
+sensitivity | distance=flat_1m4f | yards=2640 | assumed_winner_time=150 | seconds_per_length=0.15 | time_difference_seconds=2 | rating_points=13.20
+sensitivity | distance=flat_1m4f | yards=2640 | assumed_winner_time=150 | seconds_per_length=0.15 | time_difference_seconds=5 | rating_points=33.00
+sensitivity | distance=flat_1m4f | yards=2640 | assumed_winner_time=150 | seconds_per_length=0.15 | time_difference_seconds=10 | rating_points=66.00
+sensitivity | distance=flat_1m4f | yards=2640 | assumed_winner_time=150 | seconds_per_length=0.15 | time_difference_seconds=20 | rating_points=132.00
+sensitivity | distance=jumps_2m | yards=3520 | assumed_winner_time=240 | seconds_per_length=0.18 | time_difference_seconds=0.5 | rating_points=2.75
+sensitivity | distance=jumps_2m | yards=3520 | assumed_winner_time=240 | seconds_per_length=0.18 | time_difference_seconds=1 | rating_points=5.50
+sensitivity | distance=jumps_2m | yards=3520 | assumed_winner_time=240 | seconds_per_length=0.18 | time_difference_seconds=2 | rating_points=11.00
+sensitivity | distance=jumps_2m | yards=3520 | assumed_winner_time=240 | seconds_per_length=0.18 | time_difference_seconds=5 | rating_points=27.50
+sensitivity | distance=jumps_2m | yards=3520 | assumed_winner_time=240 | seconds_per_length=0.18 | time_difference_seconds=10 | rating_points=55.00
+sensitivity | distance=jumps_2m | yards=3520 | assumed_winner_time=240 | seconds_per_length=0.18 | time_difference_seconds=20 | rating_points=110.00
+sensitivity | distance=jumps_2m4f | yards=4400 | assumed_winner_time=310 | seconds_per_length=0.19 | time_difference_seconds=0.5 | rating_points=2.66
+sensitivity | distance=jumps_2m4f | yards=4400 | assumed_winner_time=310 | seconds_per_length=0.19 | time_difference_seconds=1 | rating_points=5.32
+sensitivity | distance=jumps_2m4f | yards=4400 | assumed_winner_time=310 | seconds_per_length=0.19 | time_difference_seconds=2 | rating_points=10.65
+sensitivity | distance=jumps_2m4f | yards=4400 | assumed_winner_time=310 | seconds_per_length=0.19 | time_difference_seconds=5 | rating_points=26.61
+sensitivity | distance=jumps_2m4f | yards=4400 | assumed_winner_time=310 | seconds_per_length=0.19 | time_difference_seconds=10 | rating_points=53.23
+sensitivity | distance=jumps_2m4f | yards=4400 | assumed_winner_time=310 | seconds_per_length=0.19 | time_difference_seconds=20 | rating_points=106.45
+sensitivity | distance=jumps_3m | yards=5280 | assumed_winner_time=390 | seconds_per_length=0.20 | time_difference_seconds=0.5 | rating_points=2.54
+sensitivity | distance=jumps_3m | yards=5280 | assumed_winner_time=390 | seconds_per_length=0.20 | time_difference_seconds=1 | rating_points=5.08
+sensitivity | distance=jumps_3m | yards=5280 | assumed_winner_time=390 | seconds_per_length=0.20 | time_difference_seconds=2 | rating_points=10.15
+sensitivity | distance=jumps_3m | yards=5280 | assumed_winner_time=390 | seconds_per_length=0.20 | time_difference_seconds=5 | rating_points=25.38
+sensitivity | distance=jumps_3m | yards=5280 | assumed_winner_time=390 | seconds_per_length=0.20 | time_difference_seconds=10 | rating_points=50.77
+sensitivity | distance=jumps_3m | yards=5280 | assumed_winner_time=390 | seconds_per_length=0.20 | time_difference_seconds=20 | rating_points=101.54
+
+## Jump Deviation Distributions
+deviation_distribution | subtype=hurdle | races=0 | raw_seconds_median=- | raw_seconds_mean=- | raw_seconds_stdev=- | raw_seconds_p01=- | raw_seconds_p05=- | raw_seconds_p25=- | raw_seconds_p75=- | raw_seconds_p95=- | raw_seconds_p99=- | sec_per_f_median=- | sec_per_f_mean=- | sec_per_f_stdev=- | sec_per_f_p01=- | sec_per_f_p05=- | sec_per_f_p25=- | sec_per_f_p75=- | sec_per_f_p95=- | sec_per_f_p99=- | pct_standard_median=- | pct_standard_mean=- | pct_standard_stdev=- | pct_standard_p01=- | pct_standard_p05=- | pct_standard_p25=- | pct_standard_p75=- | pct_standard_p95=- | pct_standard_p99=-
+deviation_distribution | subtype=chase | races=0 | raw_seconds_median=- | raw_seconds_mean=- | raw_seconds_stdev=- | raw_seconds_p01=- | raw_seconds_p05=- | raw_seconds_p25=- | raw_seconds_p75=- | raw_seconds_p95=- | raw_seconds_p99=- | sec_per_f_median=- | sec_per_f_mean=- | sec_per_f_stdev=- | sec_per_f_p01=- | sec_per_f_p05=- | sec_per_f_p25=- | sec_per_f_p75=- | sec_per_f_p95=- | sec_per_f_p99=- | pct_standard_median=- | pct_standard_mean=- | pct_standard_stdev=- | pct_standard_p01=- | pct_standard_p05=- | pct_standard_p25=- | pct_standard_p75=- | pct_standard_p95=- | pct_standard_p99=-
+deviation_distribution | subtype=nh_flat | races=0 | raw_seconds_median=- | raw_seconds_mean=- | raw_seconds_stdev=- | raw_seconds_p01=- | raw_seconds_p05=- | raw_seconds_p25=- | raw_seconds_p75=- | raw_seconds_p95=- | raw_seconds_p99=- | sec_per_f_median=- | sec_per_f_mean=- | sec_per_f_stdev=- | sec_per_f_p01=- | sec_per_f_p05=- | sec_per_f_p25=- | sec_per_f_p75=- | sec_per_f_p95=- | sec_per_f_p99=- | pct_standard_median=- | pct_standard_mean=- | pct_standard_stdev=- | pct_standard_p01=- | pct_standard_p05=- | pct_standard_p25=- | pct_standard_p75=- | pct_standard_p95=- | pct_standard_p99=-
+deviation_distribution | subtype=unknown_other | races=0 | raw_seconds_median=- | raw_seconds_mean=- | raw_seconds_stdev=- | raw_seconds_p01=- | raw_seconds_p05=- | raw_seconds_p25=- | raw_seconds_p75=- | raw_seconds_p95=- | raw_seconds_p99=- | sec_per_f_median=- | sec_per_f_mean=- | sec_per_f_stdev=- | sec_per_f_p01=- | sec_per_f_p05=- | sec_per_f_p25=- | sec_per_f_p75=- | sec_per_f_p95=- | sec_per_f_p99=- | pct_standard_median=- | pct_standard_mean=- | pct_standard_stdev=- | pct_standard_p01=- | pct_standard_p05=- | pct_standard_p25=- | pct_standard_p75=- | pct_standard_p95=- | pct_standard_p99=-
+deviation_distribution | subtype=overall | races=0 | raw_seconds_median=- | raw_seconds_mean=- | raw_seconds_stdev=- | raw_seconds_p01=- | raw_seconds_p05=- | raw_seconds_p25=- | raw_seconds_p75=- | raw_seconds_p95=- | raw_seconds_p99=- | sec_per_f_median=- | sec_per_f_mean=- | sec_per_f_stdev=- | sec_per_f_p01=- | sec_per_f_p05=- | sec_per_f_p25=- | sec_per_f_p75=- | sec_per_f_p95=- | sec_per_f_p99=- | pct_standard_median=- | pct_standard_mean=- | pct_standard_stdev=- | pct_standard_p01=- | pct_standard_p05=- | pct_standard_p25=- | pct_standard_p75=- | pct_standard_p95=- | pct_standard_p99=-
+
+## Rating Quality
+rating_quality | subtype=hurdle | scale=current | method=base | runners=0 | or_count=0 | pearson_or=- | spearman_or=- | median_abs_diff_or=- | mean_abs_diff_or=- | mean=- | median=- | stdev=- | p01=- | p99=- | below_0=0 | above_200=0 | outside_0_200=0
+rating_quality | subtype=hurdle | scale=current | method=same_day | runners=0 | or_count=0 | pearson_or=- | spearman_or=- | median_abs_diff_or=- | mean_abs_diff_or=- | mean=- | median=- | stdev=- | p01=- | p99=- | below_0=0 | above_200=0 | outside_0_200=0
+rating_quality | subtype=hurdle | scale=sec_per_f | method=base | runners=0 | or_count=0 | pearson_or=- | spearman_or=- | median_abs_diff_or=- | mean_abs_diff_or=- | mean=- | median=- | stdev=- | p01=- | p99=- | below_0=0 | above_200=0 | outside_0_200=0
+rating_quality | subtype=hurdle | scale=sec_per_f | method=same_day | runners=0 | or_count=0 | pearson_or=- | spearman_or=- | median_abs_diff_or=- | mean_abs_diff_or=- | mean=- | median=- | stdev=- | p01=- | p99=- | below_0=0 | above_200=0 | outside_0_200=0
+rating_quality | subtype=hurdle | scale=pct_time | method=base | runners=0 | or_count=0 | pearson_or=- | spearman_or=- | median_abs_diff_or=- | mean_abs_diff_or=- | mean=- | median=- | stdev=- | p01=- | p99=- | below_0=0 | above_200=0 | outside_0_200=0
+rating_quality | subtype=hurdle | scale=pct_time | method=same_day | runners=0 | or_count=0 | pearson_or=- | spearman_or=- | median_abs_diff_or=- | mean_abs_diff_or=- | mean=- | median=- | stdev=- | p01=- | p99=- | below_0=0 | above_200=0 | outside_0_200=0
+rating_quality | subtype=chase | scale=current | method=base | runners=0 | or_count=0 | pearson_or=- | spearman_or=- | median_abs_diff_or=- | mean_abs_diff_or=- | mean=- | median=- | stdev=- | p01=- | p99=- | below_0=0 | above_200=0 | outside_0_200=0
+rating_quality | subtype=chase | scale=current | method=same_day | runners=0 | or_count=0 | pearson_or=- | spearman_or=- | median_abs_diff_or=- | mean_abs_diff_or=- | mean=- | median=- | stdev=- | p01=- | p99=- | below_0=0 | above_200=0 | outside_0_200=0
+rating_quality | subtype=chase | scale=sec_per_f | method=base | runners=0 | or_count=0 | pearson_or=- | spearman_or=- | median_abs_diff_or=- | mean_abs_diff_or=- | mean=- | median=- | stdev=- | p01=- | p99=- | below_0=0 | above_200=0 | outside_0_200=0
+rating_quality | subtype=chase | scale=sec_per_f | method=same_day | runners=0 | or_count=0 | pearson_or=- | spearman_or=- | median_abs_diff_or=- | mean_abs_diff_or=- | mean=- | median=- | stdev=- | p01=- | p99=- | below_0=0 | above_200=0 | outside_0_200=0
+rating_quality | subtype=chase | scale=pct_time | method=base | runners=0 | or_count=0 | pearson_or=- | spearman_or=- | median_abs_diff_or=- | mean_abs_diff_or=- | mean=- | median=- | stdev=- | p01=- | p99=- | below_0=0 | above_200=0 | outside_0_200=0
+rating_quality | subtype=chase | scale=pct_time | method=same_day | runners=0 | or_count=0 | pearson_or=- | spearman_or=- | median_abs_diff_or=- | mean_abs_diff_or=- | mean=- | median=- | stdev=- | p01=- | p99=- | below_0=0 | above_200=0 | outside_0_200=0
+rating_quality | subtype=nh_flat | scale=current | method=base | runners=0 | or_count=0 | pearson_or=- | spearman_or=- | median_abs_diff_or=- | mean_abs_diff_or=- | mean=- | median=- | stdev=- | p01=- | p99=- | below_0=0 | above_200=0 | outside_0_200=0
+rating_quality | subtype=nh_flat | scale=current | method=same_day | runners=0 | or_count=0 | pearson_or=- | spearman_or=- | median_abs_diff_or=- | mean_abs_diff_or=- | mean=- | median=- | stdev=- | p01=- | p99=- | below_0=0 | above_200=0 | outside_0_200=0
+rating_quality | subtype=nh_flat | scale=sec_per_f | method=base | runners=0 | or_count=0 | pearson_or=- | spearman_or=- | median_abs_diff_or=- | mean_abs_diff_or=- | mean=- | median=- | stdev=- | p01=- | p99=- | below_0=0 | above_200=0 | outside_0_200=0
+rating_quality | subtype=nh_flat | scale=sec_per_f | method=same_day | runners=0 | or_count=0 | pearson_or=- | spearman_or=- | median_abs_diff_or=- | mean_abs_diff_or=- | mean=- | median=- | stdev=- | p01=- | p99=- | below_0=0 | above_200=0 | outside_0_200=0
+rating_quality | subtype=nh_flat | scale=pct_time | method=base | runners=0 | or_count=0 | pearson_or=- | spearman_or=- | median_abs_diff_or=- | mean_abs_diff_or=- | mean=- | median=- | stdev=- | p01=- | p99=- | below_0=0 | above_200=0 | outside_0_200=0
+rating_quality | subtype=nh_flat | scale=pct_time | method=same_day | runners=0 | or_count=0 | pearson_or=- | spearman_or=- | median_abs_diff_or=- | mean_abs_diff_or=- | mean=- | median=- | stdev=- | p01=- | p99=- | below_0=0 | above_200=0 | outside_0_200=0
+rating_quality | subtype=unknown_other | scale=current | method=base | runners=0 | or_count=0 | pearson_or=- | spearman_or=- | median_abs_diff_or=- | mean_abs_diff_or=- | mean=- | median=- | stdev=- | p01=- | p99=- | below_0=0 | above_200=0 | outside_0_200=0
+rating_quality | subtype=unknown_other | scale=current | method=same_day | runners=0 | or_count=0 | pearson_or=- | spearman_or=- | median_abs_diff_or=- | mean_abs_diff_or=- | mean=- | median=- | stdev=- | p01=- | p99=- | below_0=0 | above_200=0 | outside_0_200=0
+rating_quality | subtype=unknown_other | scale=sec_per_f | method=base | runners=0 | or_count=0 | pearson_or=- | spearman_or=- | median_abs_diff_or=- | mean_abs_diff_or=- | mean=- | median=- | stdev=- | p01=- | p99=- | below_0=0 | above_200=0 | outside_0_200=0
+rating_quality | subtype=unknown_other | scale=sec_per_f | method=same_day | runners=0 | or_count=0 | pearson_or=- | spearman_or=- | median_abs_diff_or=- | mean_abs_diff_or=- | mean=- | median=- | stdev=- | p01=- | p99=- | below_0=0 | above_200=0 | outside_0_200=0
+rating_quality | subtype=unknown_other | scale=pct_time | method=base | runners=0 | or_count=0 | pearson_or=- | spearman_or=- | median_abs_diff_or=- | mean_abs_diff_or=- | mean=- | median=- | stdev=- | p01=- | p99=- | below_0=0 | above_200=0 | outside_0_200=0
+rating_quality | subtype=unknown_other | scale=pct_time | method=same_day | runners=0 | or_count=0 | pearson_or=- | spearman_or=- | median_abs_diff_or=- | mean_abs_diff_or=- | mean=- | median=- | stdev=- | p01=- | p99=- | below_0=0 | above_200=0 | outside_0_200=0
+rating_quality | subtype=overall | scale=current | method=base | runners=0 | or_count=0 | pearson_or=- | spearman_or=- | median_abs_diff_or=- | mean_abs_diff_or=- | mean=- | median=- | stdev=- | p01=- | p99=- | below_0=0 | above_200=0 | outside_0_200=0
+rating_quality | subtype=overall | scale=current | method=same_day | runners=0 | or_count=0 | pearson_or=- | spearman_or=- | median_abs_diff_or=- | mean_abs_diff_or=- | mean=- | median=- | stdev=- | p01=- | p99=- | below_0=0 | above_200=0 | outside_0_200=0
+rating_quality | subtype=overall | scale=sec_per_f | method=base | runners=0 | or_count=0 | pearson_or=- | spearman_or=- | median_abs_diff_or=- | mean_abs_diff_or=- | mean=- | median=- | stdev=- | p01=- | p99=- | below_0=0 | above_200=0 | outside_0_200=0
+rating_quality | subtype=overall | scale=sec_per_f | method=same_day | runners=0 | or_count=0 | pearson_or=- | spearman_or=- | median_abs_diff_or=- | mean_abs_diff_or=- | mean=- | median=- | stdev=- | p01=- | p99=- | below_0=0 | above_200=0 | outside_0_200=0
+rating_quality | subtype=overall | scale=pct_time | method=base | runners=0 | or_count=0 | pearson_or=- | spearman_or=- | median_abs_diff_or=- | mean_abs_diff_or=- | mean=- | median=- | stdev=- | p01=- | p99=- | below_0=0 | above_200=0 | outside_0_200=0
+rating_quality | subtype=overall | scale=pct_time | method=same_day | runners=0 | or_count=0 | pearson_or=- | spearman_or=- | median_abs_diff_or=- | mean_abs_diff_or=- | mean=- | median=- | stdev=- | p01=- | p99=- | below_0=0 | above_200=0 | outside_0_200=0
+
+## Extreme Rating Recovery
+extreme_recovery | scale=sec_per_f | method=base | current_base_extremes=0 | moved_inside_0_200=0 | remain_extreme=0 | new_extremes=0
+extreme_recovery | scale=pct_time | method=base | current_base_extremes=0 | moved_inside_0_200=0 | remain_extreme=0 | new_extremes=0
+extreme_recovery | scale=sec_per_f | method=same_day | current_base_extremes=0 | moved_inside_0_200=0 | remain_extreme=0 | new_extremes=0
+extreme_recovery | scale=pct_time | method=same_day | current_base_extremes=0 | moved_inside_0_200=0 | remain_extreme=0 | new_extremes=0
+
+## Extreme Example Trace
+extreme_trace | race=856826 | status=missing
+extreme_trace | race=891843 | status=missing
+extreme_trace | race=836815 | status=missing
+
+## Going Vs Bad Data Separation
+
+## Standard Confidence
+standard_confidence | bucket=extreme | runners=0 | median_base_sample=- | mean_base_sample=- | median_abs_deviation_per_f=-
+standard_confidence | bucket=normal | runners=0 | median_base_sample=- | mean_base_sample=- | median_abs_deviation_per_f=-
+sample_size_bucket | bucket=0_4 | runners=0 | extremes=0 | extreme_rate=-
+sample_size_bucket | bucket=5_9 | runners=0 | extremes=0 | extreme_rate=-
+sample_size_bucket | bucket=10_19 | runners=0 | extremes=0 | extreme_rate=-
+sample_size_bucket | bucket=20_plus | runners=0 | extremes=0 | extreme_rate=-
+research_confidence_flag_candidate=low_sample_base_sample_lt_5 OR high_abs_deviation_per_f_gte_1 OR conservative_same_day_unavailable_for_large_deviation
+
+## Calibration Year Comparison
+year_comparison | year=2025 | role=calibration | runners=23324 | current_formula_extreme_rate=0.12 | sec_per_f_extreme_rate=0.00 | pct_time_extreme_rate=0.00 | sec_per_f_median_abs_or_diff=19.68 | pct_time_median_abs_or_diff=19.65 | sec_per_f_same_day_median_abs_or_diff=15.11 | pct_time_same_day_median_abs_or_diff=15.14
+year_comparison | year=2024 | role=validation | runners=0 | current_formula_extreme_rate=- | sec_per_f_extreme_rate=- | pct_time_extreme_rate=- | sec_per_f_median_abs_or_diff=- | pct_time_median_abs_or_diff=- | sec_per_f_same_day_median_abs_or_diff=- | pct_time_same_day_median_abs_or_diff=-
+holdout_read=too_incomplete_to_judge
+
+## Conclusion
+current_raw_seconds_conversion_structurally_unsuitable_for_jumps=not_judgeable_from_validation_year; validation_jump_runners=0
+seconds_per_furlong_behaves_better=not_judgeable_from_validation_year
+percentage_time_deviation_behaves_better=not_judgeable_from_validation_year
+conservative_same_day_remains_useful=not_judgeable_from_validation_year
+remaining_extremes_mainly=not_judgeable_from_validation_year
+jumps_should_use_separate_rating_conversion_from_flat=not_judgeable_from_validation_year; 2025 evidence remains unchanged
