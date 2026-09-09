@@ -20,6 +20,8 @@
     "sl:import-day": "scraper/.venv/bin/python scraper/scripts/import_sporting_life_day.py",
     "sl:import-range": "scraper/.venv/bin/python scraper/scripts/import_sporting_life_range.py",
     "sl:import-status": "scraper/.venv/bin/python scraper/scripts/sporting_life_import_status.py",
+    "sl:import-racecards": "scraper/.venv/bin/python scraper/scripts/import_sporting_life_racecards.py",
+    "sl:racecard-status": "scraper/.venv/bin/python scraper/scripts/sporting_life_racecard_status.py",
     "sl:extreme-jump-diagnosis": "bun run scripts/diagnose-extreme-jump-ratings.ts",
     "sl:going-adjustment-validation": "bun run scripts/analyze-going-adjustment-validation.ts",
     "sl:going-adjustment-rating-validation": "bun run scripts/analyze-going-adjustment-rating-validation.ts",

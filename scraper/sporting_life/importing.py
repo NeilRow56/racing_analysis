@@ -14,6 +14,8 @@ SOURCE = "sporting_life"
 FULL_RESULT_SOURCE_TYPE = "full-result-next-data"
 RESULTS_INDEX_SOURCE_TYPE = "results-index-next-data"
 NO_RACE_PAYLOAD_SOURCE_TYPE = "full-result-no-race-payload"
+RACECARD_SOURCE_TYPE = "racecard-next-data"
+RACECARD_INDEX_SOURCE_TYPE = "racecard-index-next-data"
 
 
 def write_raw_payload(
@@ -60,6 +62,34 @@ def import_full_result(
     }
 
 
+def import_racecard(
+    cursor: psycopg.Cursor,
+    *,
+    payload: dict[str, Any],
+) -> dict[str, int | str]:
+    page_props = payload["props"]["pageProps"]
+    race = page_props["race"]
+    race_summary = race["race_summary"]
+    source_id = str(race_summary["race_summary_reference"]["id"])
+
+    import_id = upsert_source_import(
+        cursor=cursor,
+        source_id=source_id,
+        source_type=RACECARD_SOURCE_TYPE,
+        payload=payload,
+    )
+    course_id = upsert_racecard_course(cursor, page_props)
+    race_row_id = upsert_racecard_race(cursor, race, course_id)
+    counts = upsert_racecard_runners(cursor, race, race_row_id)
+
+    return {
+        "source_import_id": import_id,
+        "courses": 1,
+        "races": 1,
+        **counts,
+    }
+
+
 def import_results_index(
     cursor: psycopg.Cursor,
     *,
@@ -70,6 +100,20 @@ def import_results_index(
         cursor=cursor,
         source_id=race_date,
         source_type=RESULTS_INDEX_SOURCE_TYPE,
+        payload=payload,
+    )
+
+
+def import_racecards_index(
+    cursor: psycopg.Cursor,
+    *,
+    race_date: str,
+    payload: dict[str, Any],
+) -> str:
+    return upsert_source_import(
+        cursor=cursor,
+        source_id=race_date,
+        source_type=RACECARD_INDEX_SOURCE_TYPE,
         payload=payload,
     )
 
@@ -108,6 +152,30 @@ def upsert_source_import(
     return str(cursor.fetchone()[0])
 
 
+def upsert_racecard_course(cursor: psycopg.Cursor, page_props: dict[str, Any]) -> str:
+    meeting_summary = page_props["meeting"][0]["meeting_summary"]
+    course = meeting_summary["course"]
+    source_id = str(course["course_reference"]["id"])
+    display_name = course["name"]
+    country = course_country_text(course)
+
+    cursor.execute(
+        """
+        insert into courses (source, source_id, display_name, normalized_name, country)
+        values (%s, %s, %s, %s, %s)
+        on conflict (source, source_id)
+        do update set
+            display_name = excluded.display_name,
+            normalized_name = excluded.normalized_name,
+            country = excluded.country,
+            updated_at = now()
+        returning id
+        """,
+        (SOURCE, source_id, display_name, normalize_name(display_name), country),
+    )
+    return str(cursor.fetchone()[0])
+
+
 def upsert_course(cursor: psycopg.Cursor, page_props: dict[str, Any]) -> str:
     meeting_summary = page_props["meeting"][0]["meeting_summary"]
     course = meeting_summary["course"]
@@ -128,6 +196,72 @@ def upsert_course(cursor: psycopg.Cursor, page_props: dict[str, Any]) -> str:
         returning id
         """,
         (SOURCE, source_id, display_name, normalize_name(display_name), country),
+    )
+    return str(cursor.fetchone()[0])
+
+
+def upsert_racecard_race(
+    cursor: psycopg.Cursor,
+    race: dict[str, Any],
+    course_id: str,
+) -> str:
+    race_summary = race["race_summary"]
+    scheduled_time = parse_time(race_summary.get("time"))
+    race_datetime = parse_race_datetime(race_summary["date"], race_summary.get("time"))
+    local_race_datetime = parse_race_datetime(race_summary["date"], race_summary.get("time"))
+
+    cursor.execute(
+        """
+        insert into races (
+            source, source_id, race_date, course_id, scheduled_time, off_time,
+            race_datetime, local_race_datetime, race_name, race_type, race_type_code,
+            race_class, distance, distance_yards, going, declared_runner_count,
+            actual_runner_count, winning_time
+        )
+        values (
+            %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
+        )
+        on conflict (source, source_id)
+        do update set
+            race_date = excluded.race_date,
+            course_id = excluded.course_id,
+            scheduled_time = excluded.scheduled_time,
+            race_datetime = excluded.race_datetime,
+            local_race_datetime = excluded.local_race_datetime,
+            race_name = excluded.race_name,
+            race_type = excluded.race_type,
+            race_type_code = excluded.race_type_code,
+            race_class = excluded.race_class,
+            distance = excluded.distance,
+            distance_yards = excluded.distance_yards,
+            going = excluded.going,
+            declared_runner_count = excluded.declared_runner_count,
+            off_time = races.off_time,
+            actual_runner_count = races.actual_runner_count,
+            winning_time = races.winning_time,
+            updated_at = now()
+        returning id
+        """,
+        (
+            SOURCE,
+            str(race_summary["race_summary_reference"]["id"]),
+            race_summary["date"],
+            course_id,
+            scheduled_time,
+            None,
+            race_datetime,
+            local_race_datetime,
+            race_summary.get("name"),
+            race_type_from_summary(race_summary),
+            None,
+            race_summary.get("race_class"),
+            race_summary.get("distance"),
+            distance_yards(race_summary.get("distance")),
+            race_summary.get("going"),
+            race_summary.get("ride_count"),
+            None,
+            None,
+        ),
     )
     return str(cursor.fetchone()[0])
 
@@ -197,6 +331,156 @@ def upsert_race(
         ),
     )
     return str(cursor.fetchone()[0])
+
+
+def upsert_racecard_runners(cursor: psycopg.Cursor, race: dict[str, Any], race_id: str) -> dict[str, int]:
+    counts = {"horses": 0, "trainers": 0, "jockeys": 0, "runners": 0}
+
+    for ride in race["rides"]:
+        horse = ride["horse"]
+        trainer = ride.get("trainer")
+        jockey = ride.get("jockey")
+
+        horse_id = upsert_named_entity(
+            cursor,
+            table="horses",
+            source_id=str(horse["horse_reference"]["id"]),
+            display_name=horse["name"],
+        )
+        trainer_id = (
+            upsert_named_entity(
+                cursor,
+                table="trainers",
+                source_id=str(trainer["business_reference"]["id"]),
+                display_name=trainer["name"],
+            )
+            if trainer_reference_id(trainer) and trainer.get("name")
+            else None
+        )
+        jockey_id = (
+            upsert_named_entity(
+                cursor,
+                table="jockeys",
+                source_id=str(jockey["person_reference"]["id"]),
+                display_name=jockey["name"],
+            )
+            if jockey_reference_id(jockey) and jockey.get("name")
+            else None
+        )
+
+        odds = starting_price(ride)
+        cursor.execute(
+            """
+            insert into race_runners (
+                source, source_id, race_id, horse_id, trainer_id, jockey_id,
+                saddlecloth_number, finishing_position, finishing_status, result_status,
+                outcome_code, runner_comment, draw, beaten_distance, beaten_distance_to_winner, weight,
+                weight_carried_lbs, jockey_claim_lbs, headgear, official_rating,
+                racing_post_rating, topspeed_rating, starting_price, starting_price_decimal,
+                is_favourite, horse_age, horse_sex
+            )
+            values (
+                %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
+            )
+            on conflict (source, source_id)
+            do update set
+                race_id = excluded.race_id,
+                horse_id = excluded.horse_id,
+                trainer_id = excluded.trainer_id,
+                jockey_id = excluded.jockey_id,
+                saddlecloth_number = excluded.saddlecloth_number,
+                draw = excluded.draw,
+                weight = excluded.weight,
+                weight_carried_lbs = excluded.weight_carried_lbs,
+                jockey_claim_lbs = excluded.jockey_claim_lbs,
+                headgear = excluded.headgear,
+                official_rating = excluded.official_rating,
+                horse_age = excluded.horse_age,
+                horse_sex = excluded.horse_sex,
+                result_status = case
+                    when exists (
+                        select 1
+                        from races completed
+                        where completed.id = race_runners.race_id
+                          and completed.winning_time is not null
+                          and btrim(completed.winning_time) <> ''
+                    )
+                    then race_runners.result_status
+                    else excluded.result_status
+                end,
+                starting_price = case
+                    when exists (
+                        select 1
+                        from races completed
+                        where completed.id = race_runners.race_id
+                          and completed.winning_time is not null
+                          and btrim(completed.winning_time) <> ''
+                    )
+                    then race_runners.starting_price
+                    else excluded.starting_price
+                end,
+                starting_price_decimal = case
+                    when exists (
+                        select 1
+                        from races completed
+                        where completed.id = race_runners.race_id
+                          and completed.winning_time is not null
+                          and btrim(completed.winning_time) <> ''
+                    )
+                    then race_runners.starting_price_decimal
+                    else excluded.starting_price_decimal
+                end,
+                is_favourite = case
+                    when exists (
+                        select 1
+                        from races completed
+                        where completed.id = race_runners.race_id
+                          and completed.winning_time is not null
+                          and btrim(completed.winning_time) <> ''
+                    )
+                    then race_runners.is_favourite
+                    else excluded.is_favourite
+                end,
+                updated_at = now()
+            """,
+            (
+                SOURCE,
+                str(ride["ride_reference"]["id"]),
+                race_id,
+                horse_id,
+                trainer_id,
+                jockey_id,
+                int_or_none(ride.get("cloth_number")),
+                None,
+                None,
+                racecard_result_status(ride),
+                None,
+                None,
+                int_or_none(ride.get("draw_number")),
+                None,
+                None,
+                ride.get("handicap"),
+                weight_lbs(ride.get("handicap")),
+                int_or_none(ride.get("jockey_claim")),
+                format_headgear(ride.get("headgear")),
+                int_or_none(ride.get("official_rating")),
+                None,
+                None,
+                odds,
+                decimal_odds(odds),
+                is_favourite(ride),
+                int_or_none(horse.get("age")),
+                horse.get("sex", {}).get("type"),
+            ),
+        )
+        counts["horses"] += 1
+        if trainer_id is not None:
+            counts["trainers"] += 1
+        if jockey_id is not None:
+            counts["jockeys"] += 1
+        counts["runners"] += 1
+
+    return counts
 
 
 def upsert_runners(cursor: psycopg.Cursor, race: dict[str, Any], race_id: str) -> dict[str, int]:
@@ -468,6 +752,13 @@ def result_status(ride: dict[str, Any]) -> str | None:
     return None
 
 
+def racecard_result_status(ride: dict[str, Any]) -> str | None:
+    raw_status = str(ride.get("ride_status") or "").upper()
+    if raw_status in {"NONRUNNER", "NON_RUNNER", "NON-RUNNER", "WITHDRAWN", "NR"}:
+        return "non_runner"
+    return None
+
+
 def starting_price(ride: dict[str, Any]) -> str | None:
     return (ride.get("betting") or {}).get("current_odds")
 
@@ -523,6 +814,13 @@ def format_headgear(value: Any) -> str | None:
     if isinstance(value, list):
         return ",".join(str(item) for item in value) or None
     return str(value)
+
+
+def course_country_text(course: dict[str, Any]) -> str | None:
+    country = course.get("country") or {}
+    if not isinstance(country, dict):
+        return None
+    return country.get("short_name") or country.get("long_name")
 
 
 def slugify(value: str) -> str:

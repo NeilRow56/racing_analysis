@@ -101,3 +101,16 @@ If an import stops part-way through a month:
 Rerunning a completed month is safe: races, runners, entities, and `source_imports` are keyed by Sporting Life source IDs and upserted idempotently. By default, already-imported full-result payloads are skipped, so a resume does not refetch every completed race.
 
 Codex does not need to supervise these long imports. The command runs as a normal local process in the terminal. If you later want Codex to review a month or diagnose a failure, keep the terminal output from the failed run plus the matching `sl:import-status` output. Never use proxies, IP rotation, CAPTCHA bypass, or other access-control avoidance.
+
+## Manual Sporting Life Racecard Import Workflow
+
+Current and future racecards use a separate ingestion path from historical results. The importer reads the public dated racecards page, filters to UK and Ireland meetings with the same country helper as results, then fetches individual racecard pages for full runner data.
+
+```bash
+bun run sl:import-racecards YYYY-MM-DD --request-delay-seconds 2
+bun run sl:racecard-status YYYY-MM-DD
+```
+
+Racecard provenance is stored in `source_imports` as `racecard-index-next-data` and `racecard-next-data`. Existing racecard payloads are skipped by default on rerun; use `--refresh-existing-racecards` only when you intentionally want to refresh declarations, weights, jockeys, non-runner state, or live odds.
+
+Racecard imports create or update the same normalized course, race, horse, trainer, jockey, and runner rows keyed by Sporting Life source IDs. They do not set result-only fields such as winning time, off time, finishing position, beaten distance, result comments, Racing Post ratings, or Topspeed ratings. If full results have already completed a race, an older racecard refresh preserves those completed result fields and final result odds.
