@@ -159,6 +159,7 @@ function FormTable({ runs }: { runs: HorseFormRun[] }) {
             <th className="py-2 pr-4 font-medium">Draw</th>
             <th className="py-2 pr-4 font-medium">SP</th>
             <th className="py-2 pr-4 font-medium">OR</th>
+            <th className="py-2 pr-4 font-medium">Speed</th>
             <th className="py-2 pr-4 font-medium">RPR</th>
             <th className="py-2 pr-4 font-medium">TS</th>
           </tr>
@@ -194,6 +195,9 @@ function FormTable({ runs }: { runs: HorseFormRun[] }) {
               <td className="py-3 pr-4">{run.draw ?? "-"}</td>
               <td className="py-3 pr-4">{run.startingPrice ?? "-"}</td>
               <td className="py-3 pr-4">{run.officialRating ?? "-"}</td>
+              <td className="py-3 pr-4" title={jumpSpeedTitle(run)}>
+                {formatJumpSpeed(run)}
+              </td>
               <td className="py-3 pr-4">{run.racingPostRating ?? "-"}</td>
               <td className="py-3 pr-4">{run.topspeedRating ?? "-"}</td>
             </tr>
@@ -216,6 +220,44 @@ function formatOutcome(run: HorseFormRun): string {
     return String(run.finishingPosition);
   }
   return run.resultStatus ?? run.outcomeCode ?? "-";
+}
+
+function formatJumpSpeed(run: HorseFormRun): string {
+  const rating = run.jumpSpeedRating;
+  if (!rating || rating.method === "unavailable") {
+    return "-";
+  }
+  if (rating.rating === null) {
+    return "-";
+  }
+  return Math.round(rating.rating).toString();
+}
+
+function jumpSpeedTitle(run: HorseFormRun): string | undefined {
+  const rating = run.jumpSpeedRating;
+  if (!rating) {
+    return undefined;
+  }
+  if (rating.method === "unavailable") {
+    return rating.withheldReason ? `Not rated: ${formatReason(rating.withheldReason)}` : "Not rated";
+  }
+  if (rating.method === "withheld") {
+    return rating.withheldReason ? `Not rated: ${formatReason(rating.withheldReason)}` : "Not rated";
+  }
+  return `${rating.method === "same_day" ? "Same-day" : "Base"} / ${rating.confidence} confidence`;
+}
+
+function formatReason(reason: string): string {
+  if (reason === "beaten_distance_gt_75_lengths") {
+    return "beaten >75L";
+  }
+  if (reason === "not_jump_race") {
+    return "not a jump race";
+  }
+  if (reason === "insufficient_timing_or_standard") {
+    return "insufficient timing or standard";
+  }
+  return reason.replaceAll("_", " ");
 }
 
 function formatPercent(value: number | null): string | null {

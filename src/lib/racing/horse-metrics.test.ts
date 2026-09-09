@@ -196,6 +196,9 @@ describe("calculateHorseMetricsAsOf", () => {
     assert.equal(metrics.averageTsLast3, null);
     assert.equal(metrics.latestOr, null);
     assert.equal(metrics.latestRprMinusLatestOr, null);
+    assert.equal(metrics.latestJumpSpeedRating, null);
+    assert.equal(metrics.bestJumpSpeedLast3, null);
+    assert.equal(metrics.averageJumpSpeedLast3, null);
   });
 
   test("does not count non-runners as prior runs", () => {
@@ -228,7 +231,102 @@ describe("calculateHorseMetricsAsOf", () => {
     assert.equal(metrics.latestRunDate, "2020-09-28");
     assert.equal(metrics.daysSinceLastRun, 2);
   });
+
+  test("uses only available jump speed ratings and does not treat missing as zero", () => {
+    const metrics = calculateHorseMetricsAsOf({
+      beforeDateTime: cutoff,
+      runs: [
+        run({
+          raceDateTime: new Date("2020-09-30T15:00:00.000Z"),
+          raceDate: "2020-09-30",
+          jumpSpeedRating: {
+            rating: null,
+            method: "withheld",
+            confidence: "low",
+            baseRating: 50,
+            sameDayAdjustedRating: null,
+            cumulativeBeatenLengths: 80,
+            standardSampleSize: 12,
+            sameDaySampleSize: null,
+            withheldReason: "beaten_distance_gt_75_lengths",
+            calculationVersion: "jump_speed_v1",
+          },
+        }),
+        run({
+          raceDateTime: new Date("2020-09-20T15:00:00.000Z"),
+          raceDate: "2020-09-20",
+          jumpSpeedRating: {
+            rating: 92,
+            method: "base",
+            confidence: "medium",
+            baseRating: 92,
+            sameDayAdjustedRating: null,
+            cumulativeBeatenLengths: 10,
+            standardSampleSize: 8,
+            sameDaySampleSize: null,
+            withheldReason: null,
+            calculationVersion: "jump_speed_v1",
+          },
+        }),
+      ],
+    });
+
+    assert.equal(metrics.latestJumpSpeedRating, 92);
+    assert.equal(metrics.previousJumpSpeedRating, null);
+    assert.equal(metrics.bestJumpSpeedLast3, 92);
+    assert.equal(metrics.averageJumpSpeedLast3, 92);
+  });
+
+  test("calculates latest, previous, best and average jump speed ratings", () => {
+    const metrics = calculateHorseMetricsAsOf({
+      beforeDateTime: cutoff,
+      runs: [
+        run({
+          raceDateTime: new Date("2020-09-30T15:00:00.000Z"),
+          raceDate: "2020-09-30",
+          jumpSpeedRating: jumpRating(91),
+        }),
+        run({
+          raceDateTime: new Date("2020-09-20T15:00:00.000Z"),
+          raceDate: "2020-09-20",
+          jumpSpeedRating: jumpRating(105),
+        }),
+        run({
+          raceDateTime: new Date("2020-09-10T15:00:00.000Z"),
+          raceDate: "2020-09-10",
+          jumpSpeedRating: jumpRating(87),
+        }),
+        run({
+          raceDateTime: new Date("2020-09-01T15:00:00.000Z"),
+          raceDate: "2020-09-01",
+          jumpSpeedRating: jumpRating(99),
+        }),
+      ],
+    });
+
+    assert.equal(metrics.latestJumpSpeedRating, 91);
+    assert.equal(metrics.previousJumpSpeedRating, 105);
+    assert.equal(metrics.bestJumpSpeedLast3, 105);
+    assert.equal(metrics.bestJumpSpeedLast5, 105);
+    assert.equal(metrics.averageJumpSpeedLast3, 94.33333333333333);
+    assert.equal(metrics.averageJumpSpeedLast5, 95.5);
+  });
 });
+
+function jumpRating(rating: number): HistoricalRunInput["jumpSpeedRating"] {
+  return {
+    rating,
+    method: "same_day",
+    confidence: "high",
+    baseRating: rating - 2,
+    sameDayAdjustedRating: rating,
+    cumulativeBeatenLengths: 5,
+    standardSampleSize: 12,
+    sameDaySampleSize: 4,
+    withheldReason: null,
+    calculationVersion: "jump_speed_v1",
+  };
+}
 
 function target(
   overrides: Partial<TargetRunnerMetrics["target"]> & {
@@ -428,5 +526,47 @@ describe("calculateTargetRunnerMetrics", () => {
     });
 
     assert.deepEqual(bulkResult.metrics, singleHorseMetrics);
+  });
+
+  test("bulk metrics exclude withheld speed ratings deterministically", () => {
+    const [result] = calculateTargetRunnerMetrics({
+      targets: [
+        target({
+          runnerId: "runner-target",
+          horseId,
+          raceDateTime: targetTime,
+        }),
+      ],
+      candidateRuns: [
+        run({
+          horseId,
+          source: "sporting_life",
+          raceDateTime: new Date("2020-09-12T12:00:00.000Z"),
+          raceDate: "2020-09-12",
+          jumpSpeedRating: {
+            rating: null,
+            method: "withheld",
+            confidence: "low",
+            baseRating: 40,
+            sameDayAdjustedRating: null,
+            cumulativeBeatenLengths: 80,
+            standardSampleSize: 12,
+            sameDaySampleSize: null,
+            withheldReason: "beaten_distance_gt_75_lengths",
+            calculationVersion: "jump_speed_v1",
+          },
+        }),
+        run({
+          horseId,
+          source: "sporting_life",
+          raceDateTime: new Date("2020-09-10T12:00:00.000Z"),
+          raceDate: "2020-09-10",
+          jumpSpeedRating: jumpRating(88),
+        }),
+      ],
+    });
+
+    assert.equal(result.metrics.latestJumpSpeedRating, 88);
+    assert.equal(result.metrics.previousJumpSpeedRating, null);
   });
 });

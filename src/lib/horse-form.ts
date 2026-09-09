@@ -8,6 +8,8 @@ import {
   races,
   trainers,
 } from "@/db/schema";
+import { getJumpSpeedRatingsForRunners } from "./racing/jump-speed-ratings";
+import type { JumpSpeedRating } from "./racing/jump-speed-rating";
 
 type Db = ReturnType<typeof createDbConnection>["db"];
 
@@ -31,6 +33,7 @@ export type HorseFormRun = {
   officialRating: number | null;
   racingPostRating: number | null;
   topspeedRating: number | null;
+  jumpSpeedRating: JumpSpeedRating | null;
   runnerComment: string | null;
   jockeyName: string | null;
   trainerName: string | null;
@@ -102,7 +105,18 @@ export async function getHorseForm(
       desc(sql<string>`coalesce(${races.sourceId}, '')`),
     );
 
-  return { horse, runs };
+  const jumpSpeedRatings = await getJumpSpeedRatingsForRunners(
+    db,
+    runs.map((run) => run.runnerId),
+  );
+
+  return {
+    horse,
+    runs: runs.map((run) => ({
+      ...run,
+      jumpSpeedRating: jumpSpeedRatings.get(run.runnerId) ?? null,
+    })),
+  };
 }
 
 export type HorseFormSummary = {

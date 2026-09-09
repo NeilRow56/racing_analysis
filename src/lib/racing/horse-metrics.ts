@@ -1,11 +1,14 @@
 import { and, asc, desc, eq, inArray, isNull, lt, lte, ne, or } from "drizzle-orm";
 import { createDbConnection } from "@/db";
 import { courses, horses, raceRunners, races } from "@/db/schema";
+import { getJumpSpeedRatingsForRunners } from "./jump-speed-ratings";
+import type { JumpSpeedRating } from "./jump-speed-rating";
 
 type Db = ReturnType<typeof createDbConnection>["db"];
 
 export type HistoricalRunInput = {
   source?: string | null;
+  runnerId?: string;
   horseId: string;
   raceDateTime: Date;
   raceDate: string;
@@ -18,6 +21,7 @@ export type HistoricalRunInput = {
   racingPostRating: number | null;
   topspeedRating: number | null;
   officialRating: number | null;
+  jumpSpeedRating?: JumpSpeedRating | null;
 };
 
 export type HorseMetricsContext = {
@@ -44,6 +48,12 @@ export type HorseMetricsAsOf = {
   bestTsLast5: number | null;
   averageTsLast3: number | null;
   averageTsLast5: number | null;
+  latestJumpSpeedRating: number | null;
+  previousJumpSpeedRating: number | null;
+  bestJumpSpeedLast3: number | null;
+  bestJumpSpeedLast5: number | null;
+  averageJumpSpeedLast3: number | null;
+  averageJumpSpeedLast5: number | null;
   latestOr: number | null;
   latestRprMinusPreviousRpr: number | null;
   latestTsMinusPreviousTs: number | null;
@@ -94,6 +104,7 @@ export async function getHorseMetricsAsOf({
   const priorRuns = await db
     .select({
       horseId: raceRunners.horseId,
+      runnerId: raceRunners.id,
       raceDateTime: races.raceDatetime,
       raceDate: races.raceDate,
       courseId: races.courseId,
@@ -110,8 +121,18 @@ export async function getHorseMetricsAsOf({
     .where(and(eq(raceRunners.horseId, horseId), lt(races.raceDatetime, beforeDateTime)))
     .orderBy(desc(races.raceDatetime));
 
+  const timedPriorRuns = priorRuns.filter(hasRaceDateTime);
+  const jumpSpeedRatings = await getJumpSpeedRatingsForRunners(
+    db,
+    timedPriorRuns.map((run) => run.runnerId),
+    { calculationCutoffDateTime: beforeDateTime },
+  );
+
   return calculateHorseMetricsAsOf({
-    runs: priorRuns.filter(hasRaceDateTime),
+    runs: timedPriorRuns.map((run) => ({
+      ...run,
+      jumpSpeedRating: jumpSpeedRatings.get(run.runnerId) ?? null,
+    })),
     beforeDateTime,
     targetCourseId,
     targetDistanceYards,
@@ -172,6 +193,7 @@ export async function getTargetRunnerMetricsForDate(
   const candidateRuns = await db
     .select({
       source: raceRunners.source,
+      runnerId: raceRunners.id,
       horseId: raceRunners.horseId,
       raceDateTime: races.raceDatetime,
       raceDate: races.raceDate,
@@ -199,8 +221,18 @@ export async function getTargetRunnerMetricsForDate(
     )
     .orderBy(desc(races.raceDatetime));
 
+  const timedCandidateRuns = candidateRuns.filter(hasRaceDateTime);
+  const jumpSpeedRatings = await getJumpSpeedRatingsForRunners(
+    db,
+    timedCandidateRuns.map((run) => run.runnerId),
+    { source, calculationCutoffDateTime: latestTargetDateTime },
+  );
+
   return calculateTargetRunnerMetrics({
-    candidateRuns: candidateRuns.filter(hasRaceDateTime),
+    candidateRuns: timedCandidateRuns.map((run) => ({
+      ...run,
+      jumpSpeedRating: jumpSpeedRatings.get(run.runnerId) ?? null,
+    })),
     targets: timedTargets,
   });
 }
@@ -265,10 +297,15 @@ export function calculateHorseMetricsAsOf({
   );
   const tsValuesLast3 = ratingValues(priorRuns.slice(0, 3), "topspeedRating");
   const tsValuesLast5 = ratingValues(priorRuns.slice(0, 5), "topspeedRating");
+  const jumpSpeedValues = jumpSpeedRatingValues(priorRuns);
+  const jumpSpeedValuesLast3 = jumpSpeedRatingValues(priorRuns.slice(0, 3));
+  const jumpSpeedValuesLast5 = jumpSpeedRatingValues(priorRuns.slice(0, 5));
   const latestRpr = rprValues[0] ?? null;
   const previousRpr = rprValues[1] ?? null;
   const latestTs = tsValues[0] ?? null;
   const previousTs = tsValues[1] ?? null;
+  const latestJumpSpeedRating = jumpSpeedValues[0] ?? null;
+  const previousJumpSpeedRating = jumpSpeedValues[1] ?? null;
   const latestOr =
     priorRuns.find((run) => run.officialRating !== null)?.officialRating ??
     null;
@@ -292,6 +329,12 @@ export function calculateHorseMetricsAsOf({
     bestTsLast5: maxRating(tsValuesLast5),
     averageTsLast3: averageRating(tsValuesLast3),
     averageTsLast5: averageRating(tsValuesLast5),
+    latestJumpSpeedRating,
+    previousJumpSpeedRating,
+    bestJumpSpeedLast3: maxRating(jumpSpeedValuesLast3),
+    bestJumpSpeedLast5: maxRating(jumpSpeedValuesLast5),
+    averageJumpSpeedLast3: averageRating(jumpSpeedValuesLast3),
+    averageJumpSpeedLast5: averageRating(jumpSpeedValuesLast5),
     latestOr,
     latestRprMinusPreviousRpr: difference(latestRpr, previousRpr),
     latestTsMinusPreviousTs: difference(latestTs, previousTs),
@@ -328,6 +371,12 @@ function ratingValues(
 ): number[] {
   return runs
     .map((run) => run[field])
+    .filter((rating): rating is number => rating !== null);
+}
+
+function jumpSpeedRatingValues(runs: HistoricalRunInput[]): number[] {
+  return runs
+    .map((run) => run.jumpSpeedRating?.rating ?? null)
     .filter((rating): rating is number => rating !== null);
 }
 
