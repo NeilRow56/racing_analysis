@@ -1,17 +1,15 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { mean, median, standardDeviation } from "@/lib/racing/speed-research";
 
-const YEAR = process.argv[2] ?? "2025";
-const CALIBRATION_YEAR = process.argv[3] ?? YEAR;
-const START_DATE = `${YEAR}-01-01`;
-const END_DATE = `${YEAR}-12-31`;
-const RACE_CSV = `data/research/going-adjustment-races-${START_DATE}-${END_DATE}.csv`;
-const RUNNER_CSV = `data/research/going-adjustment-runners-${START_DATE}-${END_DATE}.csv`;
 const OUTPUT_DIR = "data/research";
+const VALIDATION_RANGE = parseCliRange(process.argv.slice(2));
+const CALIBRATION_RANGE = parseCalibrationRange(process.argv.slice(2), VALIDATION_RANGE);
+const RACE_CSV = raceCsvPath(VALIDATION_RANGE);
+const RUNNER_CSV = runnerCsvPath(VALIDATION_RANGE);
 const OUTPUT_STEM =
-  CALIBRATION_YEAR === YEAR
-    ? `jump-rating-scale-diagnosis-${YEAR}`
-    : `jump-rating-scale-validation-${YEAR}-calibrated-${CALIBRATION_YEAR}`;
+  sameRange(VALIDATION_RANGE, CALIBRATION_RANGE)
+    ? `jump-rating-scale-diagnosis-${rangeSlug(VALIDATION_RANGE)}`
+    : `jump-rating-scale-validation-${rangeSlug(VALIDATION_RANGE)}-calibrated-${rangeSlug(CALIBRATION_RANGE)}`;
 const REPORT_PATH = `${OUTPUT_DIR}/${OUTPUT_STEM}.txt`;
 const SUMMARY_CSV_PATH = `${OUTPUT_DIR}/${OUTPUT_STEM}-summary.csv`;
 const EXTREME_CSV_PATH = `${OUTPUT_DIR}/${OUTPUT_STEM}-extremes.csv`;
@@ -19,6 +17,12 @@ const EXTREME_CSV_PATH = `${OUTPUT_DIR}/${OUTPUT_STEM}-extremes.csv`;
 type JumpSubtype = "hurdle" | "chase" | "nh_flat" | "unknown_other";
 type Method = "base" | "same_day";
 type Scale = "current" | "sec_per_f" | "pct_time";
+
+type DateRange = {
+  label: string;
+  startDate: string;
+  endDate: string;
+};
 
 type RaceRow = {
   race_source_id: string;
@@ -92,20 +96,23 @@ async function main() {
     .filter((race) => race.segment === "jumps")
     .map((race) => ({ ...race, subtype: classifyJumpSubtype(race) }));
   const calibrationJoined =
-    CALIBRATION_YEAR === YEAR ? joined : await loadJoinedRows(CALIBRATION_YEAR);
+    sameRange(VALIDATION_RANGE, CALIBRATION_RANGE)
+      ? joined
+      : await loadJoinedRows(CALIBRATION_RANGE);
   const calibration = calibrate(calibrationJoined.filter((runner) => runner.segment === "jumps"));
 
   const lines: string[] = [];
   lines.push(
-    CALIBRATION_YEAR === YEAR
-      ? `# Jump Rating Scale Diagnosis ${YEAR}`
-      : `# Jump Rating Scale Validation ${YEAR} Calibrated From ${CALIBRATION_YEAR}`,
+    sameRange(VALIDATION_RANGE, CALIBRATION_RANGE)
+      ? `# Jump Rating Scale Diagnosis ${VALIDATION_RANGE.label}`
+      : `# Jump Rating Scale Validation ${VALIDATION_RANGE.label} Calibrated From ${CALIBRATION_RANGE.label}`,
   );
   lines.push("");
   lines.push("## Scope");
   lines.push(`race_csv=${RACE_CSV}`);
   lines.push(`runner_csv=${RUNNER_CSV}`);
-  lines.push(`calibration_year=${CALIBRATION_YEAR}`);
+  lines.push(`validation_range=${VALIDATION_RANGE.startDate}..${VALIDATION_RANGE.endDate}`);
+  lines.push(`calibration_range=${CALIBRATION_RANGE.startDate}..${CALIBRATION_RANGE.endDate}`);
   lines.push("production_changes=false");
   lines.push("standards_or_thresholds_changed=false");
   lines.push("same_day_rule=existing conservative same-day rule from research CSV, unchanged");
@@ -131,8 +138,14 @@ async function main() {
   lines.push("## Rating Quality");
   lines.push(...ratingQualityLines(jumps, calibration));
   lines.push("");
+  lines.push("## Segment Validation");
+  lines.push(...segmentValidationLines(jumps, calibration));
+  lines.push("");
   lines.push("## Extreme Rating Recovery");
   lines.push(...extremeRecoveryLines(jumps, calibration));
+  lines.push("");
+  lines.push("## Tail Review Sec Per F Same Day");
+  lines.push(...tailReviewLines(jumps, jumpRaces, calibration));
   lines.push("");
   lines.push("## Extreme Example Trace");
   lines.push(...extremeTraceLines(jumps, calibration));
@@ -161,19 +174,70 @@ async function main() {
   console.log(`extreme_csv=${EXTREME_CSV_PATH}`);
 }
 
-async function loadJoinedRows(year: string): Promise<JoinedRunner[]> {
-  const startDate = `${year}-01-01`;
-  const endDate = `${year}-12-31`;
-  const races = parseRaceRows(
-    await readFile(`data/research/going-adjustment-races-${startDate}-${endDate}.csv`, "utf8"),
-  );
+async function loadJoinedRows(range: DateRange): Promise<JoinedRunner[]> {
+  const races = parseRaceRows(await readFile(raceCsvPath(range), "utf8"));
   const raceById = new Map(races.map((race) => [race.race_source_id, race]));
-  return parseRunnerRows(
-    await readFile(`data/research/going-adjustment-runners-${startDate}-${endDate}.csv`, "utf8"),
-  ).flatMap((runner) => {
+  return parseRunnerRows(await readFile(runnerCsvPath(range), "utf8")).flatMap((runner) => {
     const race = raceById.get(runner.race_source_id);
     return race ? [{ ...runner, race, subtype: classifyJumpSubtype(race) }] : [];
   });
+}
+
+function parseCliRange(args: string[]): DateRange {
+  const [first, second] = args;
+  if (isDate(first) && isDate(second)) {
+    return {
+      label: `${first}..${second}`,
+      startDate: first,
+      endDate: second,
+    };
+  }
+  const year = first ?? "2025";
+  return yearRange(year);
+}
+
+function parseCalibrationRange(args: string[], validationRange: DateRange): DateRange {
+  const [first, second, third] = args;
+  if (isDate(first) && isDate(second)) {
+    return third ? rangeFromSpec(third) : validationRange;
+  }
+  return second ? rangeFromSpec(second) : validationRange;
+}
+
+function rangeFromSpec(spec: string): DateRange {
+  const [startDate, endDate] = spec.split("..");
+  if (isDate(startDate) && isDate(endDate)) {
+    return { label: `${startDate}..${endDate}`, startDate, endDate };
+  }
+  return yearRange(spec);
+}
+
+function yearRange(year: string): DateRange {
+  return {
+    label: year,
+    startDate: `${year}-01-01`,
+    endDate: `${year}-12-31`,
+  };
+}
+
+function raceCsvPath(range: DateRange): string {
+  return `data/research/going-adjustment-races-${range.startDate}-${range.endDate}.csv`;
+}
+
+function runnerCsvPath(range: DateRange): string {
+  return `data/research/going-adjustment-runners-${range.startDate}-${range.endDate}.csv`;
+}
+
+function sameRange(a: DateRange, b: DateRange): boolean {
+  return a.startDate === b.startDate && a.endDate === b.endDate;
+}
+
+function rangeSlug(range: DateRange): string {
+  return range.label.replace(/\.\./g, "-to-");
+}
+
+function isDate(value: string | undefined): value is string {
+  return typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value);
 }
 
 function formulaLines(): string[] {
@@ -196,7 +260,7 @@ function formulaLines(): string[] {
 
 function calibrationLines(calibration: Calibration): string[] {
   return [
-    `calibration_year=${CALIBRATION_YEAR}`,
+    `calibration_range=${CALIBRATION_RANGE.startDate}..${CALIBRATION_RANGE.endDate}`,
     `calibration_sample=${calibration.sampleSize}`,
     `median_abs_or_minus_100=${fmt(calibration.medianAbsOrDelta)}`,
     `median_abs_standard_minus_equivalent_per_f=${fmt(calibration.medianAbsSecPerF)}`,
@@ -215,8 +279,12 @@ function coverageLines(races: RaceRow[], runners: JoinedRunner[]): string[] {
   const jumpRunners = runners.filter((runner) => runner.segment === "jumps");
   const earliest = raceDates[0] ?? "-";
   const latest = raceDates.at(-1) ?? "-";
+  const usableSpeedFigures = jumpRunners.filter(
+    (runner) => ratingFor(runner, "current", "base", fallbackCalibration()) !== null,
+  ).length;
+  const orCount = jumpRunners.filter((runner) => runner.official_rating !== null).length;
   return [
-    `coverage | earliest_race_date=${earliest} | latest_race_date=${latest} | total_races=${races.length} | jump_races=${jumpRaces.length} | runner_count=${runners.length} | jump_runner_count=${jumpRunners.length} | or_count=${jumpRunners.filter((runner) => runner.official_rating !== null).length}`,
+    `coverage | earliest_race_date=${earliest} | latest_race_date=${latest} | total_races=${races.length} | jump_races=${jumpRaces.length} | runner_count=${runners.length} | jump_runner_count=${jumpRunners.length} | or_count=${orCount} | or_runner_pct=${fmtPct(orCount, jumpRunners.length)} | usable_speed_figures=${usableSpeedFigures}`,
     ...subtypeOrder().map((subtype) => {
       const rows = jumpRaces.filter((race) => race.subtype === subtype);
       return `coverage_subtype | subtype=${subtype} | races=${rows.length}`;
@@ -229,13 +297,33 @@ function coverageLabel(earliest: string, latest: string, raceCount: number): str
   if (raceCount === 0 || earliest === "-" || latest === "-") {
     return "heavily_incomplete";
   }
-  if (earliest <= `${YEAR}-01-07` && latest >= `${YEAR}-12-24`) {
+  const rangeIsCalendarYear =
+    VALIDATION_RANGE.startDate.endsWith("-01-01") &&
+    VALIDATION_RANGE.endDate.endsWith("-12-31");
+  const requestedRangeCovered =
+    earliest <= addDays(VALIDATION_RANGE.startDate, 7) &&
+    latest >= addDays(VALIDATION_RANGE.endDate, -7);
+  if (rangeIsCalendarYear && requestedRangeCovered) {
     return "full_year";
+  }
+  if (requestedRangeCovered) {
+    return "partial_year";
   }
   const start = Date.parse(earliest);
   const end = Date.parse(latest);
   const days = Number.isFinite(start) && Number.isFinite(end) ? (end - start) / 86_400_000 : 0;
   return days >= 180 ? "partial_year" : "heavily_incomplete";
+}
+
+function fallbackCalibration(): Calibration {
+  return {
+    secPerFPoints: 1,
+    pctPoints: 1,
+    medianAbsOrDelta: 1,
+    medianAbsSecPerF: 1,
+    medianAbsPct: 1,
+    sampleSize: 0,
+  };
 }
 
 function workedExampleLines(runners: JoinedRunner[], calibration: Calibration): string[] {
@@ -374,10 +462,74 @@ function qualityLine(
     `median=${fmt(median(values))}`,
     `stdev=${fmt(standardDeviation(values))}`,
     `p01=${fmt(percentile(values, 0.01))}`,
+    `p10=${fmt(percentile(values, 0.10))}`,
+    `p90=${fmt(percentile(values, 0.90))}`,
     `p99=${fmt(percentile(values, 0.99))}`,
+    `min=${fmt(values[0] ?? null)}`,
+    `max=${fmt(values.at(-1) ?? null)}`,
     `below_0=${values.filter((value) => value < 0).length}`,
     `above_200=${values.filter((value) => value > 200).length}`,
     `outside_0_200=${values.filter((value) => value < 0 || value > 200).length}`,
+    `extreme_rate=${fmtPct(values.filter((value) => value < 0 || value > 200).length, values.length)}`,
+    `ordering_anomalies=${orderingAnomalyCount(rows, scale, method, calibration)}`,
+    `dead_heat_mismatches=${deadHeatMismatchCount(rows, scale, method, calibration)}`,
+  ].join(" | ");
+}
+
+function segmentValidationLines(jumps: JoinedRunner[], calibration: Calibration): string[] {
+  const segments = [
+    ...subtypeOrder().map((subtype) => ({
+      segment: subtype,
+      rows: jumps.filter((runner) => runner.subtype === subtype),
+    })),
+    {
+      segment: "short_distance_jumps",
+      rows: jumps.filter((runner) => distanceBand(runner) === "short"),
+    },
+    {
+      segment: "middle_distance_jumps",
+      rows: jumps.filter((runner) => distanceBand(runner) === "middle"),
+    },
+    {
+      segment: "staying_jumps",
+      rows: jumps.filter((runner) => distanceBand(runner) === "staying"),
+    },
+  ];
+  return segments.flatMap(({ segment, rows }) =>
+    scaleOrder().flatMap((scale) =>
+      methodOrder().map((method) => segmentLine(segment, rows, scale, method, calibration)),
+    ),
+  );
+}
+
+function segmentLine(
+  segment: string,
+  rows: JoinedRunner[],
+  scale: Scale,
+  method: Method,
+  calibration: Calibration,
+): string {
+  const values = rows
+    .map((runner) => ratingFor(runner, scale, method, calibration))
+    .filter((value): value is number => value !== null)
+    .sort((a, b) => a - b);
+  const paired = rows
+    .map((runner) => {
+      const rating = ratingFor(runner, scale, method, calibration);
+      return rating === null || runner.official_rating === null ? null : [rating, runner.official_rating] as const;
+    })
+    .filter((value): value is readonly [number, number] => value !== null);
+  const absDiffs = paired.map(([rating, officialRating]) => Math.abs(rating - officialRating));
+  return [
+    "segment_validation",
+    `segment=${segment}`,
+    `scale=${scale}`,
+    `method=${method}`,
+    `runners=${values.length}`,
+    `extreme_rate=${fmtPct(values.filter((value) => value < 0 || value > 200).length, values.length)}`,
+    `median=${fmt(median(values))}`,
+    `median_abs_diff_or=${fmt(median(absDiffs))}`,
+    `or_correlation=${fmt(correlation(paired))}`,
   ].join(" | ");
 }
 
@@ -413,6 +565,109 @@ function extremeRecoveryLines(jumps: JoinedRunner[], calibration: Calibration): 
       `new_extremes=${newExtremes}`,
     ].join(" | ");
   });
+}
+
+function tailReviewLines(
+  jumps: JoinedRunner[],
+  races: Array<RaceRow & { subtype: JumpSubtype }>,
+  calibration: Calibration,
+): string[] {
+  const evaluated = jumps
+    .map((runner) => ({
+      runner,
+      rating: ratingFor(runner, "sec_per_f", "same_day", calibration),
+    }))
+    .filter((row): row is { runner: JoinedRunner; rating: number } => row.rating !== null);
+  const low = [...evaluated].sort((a, b) => a.rating - b.rating).slice(0, 25);
+  const high = [...evaluated].sort((a, b) => b.rating - a.rating).slice(0, 25);
+  return [
+    ...high.map((row, index) => tailLine("high", index + 1, row.runner, row.rating, races, calibration)),
+    ...low.map((row, index) => tailLine("low", index + 1, row.runner, row.rating, races, calibration)),
+  ];
+}
+
+function tailLine(
+  tail: "high" | "low",
+  rank: number,
+  runner: JoinedRunner,
+  rating: number,
+  races: Array<RaceRow & { subtype: JumpSubtype }>,
+  calibration: Calibration,
+): string {
+  const sameDayStandard = standardFor(runner, "same_day");
+  const baseDiff = runner.base_standard - runner.equivalent_time_seconds;
+  const sameDayDiff = sameDayStandard === null ? null : sameDayStandard - runner.equivalent_time_seconds;
+  const beatenSeconds = runner.equivalent_time_seconds - runner.actual_winning_time;
+  const secondsPerLen = secondsPerLength(runner.distance_yards, runner.actual_winning_time);
+  const beatenLengths = secondsPerLen <= 0 ? null : beatenSeconds / secondsPerLen;
+  return [
+    "tail_review",
+    `tail=${tail}`,
+    `rank=${rank}`,
+    `date=${runner.race_date}`,
+    `race=${runner.race_source_id}`,
+    `course=${runner.course}`,
+    `distance="${runner.distance}"`,
+    `going="${runner.going}"`,
+    `race_type=${runner.race_type || "-"}`,
+    `subtype=${runner.subtype}`,
+    `horse="${runner.horse}"`,
+    `finish=${runner.finish_position ?? "-"}`,
+    `OR=${runner.official_rating ?? "-"}`,
+    `base_standard=${fmt(runner.base_standard)}`,
+    `same_day_standard=${fmt(sameDayStandard)}`,
+    `winner_time=${fmt(runner.actual_winning_time)}`,
+    `equivalent_time=${fmt(runner.equivalent_time_seconds)}`,
+    `base_diff_seconds=${fmt(baseDiff)}`,
+    `same_day_diff_seconds=${fmt(sameDayDiff)}`,
+    `same_day_adj_per_f=${fmt(runner.conservative_same_day_adj_per_f)}`,
+    `beaten_lengths=${fmt(beatenLengths)}`,
+    `beaten_seconds=${fmt(beatenSeconds)}`,
+    `figure=${fmt(rating)}`,
+    `cause=${tailCause(runner, rating, races, calibration)}`,
+    `race_name="${runner.race_name}"`,
+  ].join(" | ");
+}
+
+function tailCause(
+  runner: JoinedRunner,
+  rating: number,
+  races: Array<RaceRow & { subtype: JumpSubtype }>,
+  calibration: Calibration,
+): string {
+  const sameDayRating = ratingFor(runner, "sec_per_f", "same_day", calibration);
+  const baseRating = ratingFor(runner, "sec_per_f", "base", calibration);
+  const beatenSeconds = runner.equivalent_time_seconds - runner.actual_winning_time;
+  const secondsPerLen = secondsPerLength(runner.distance_yards, runner.actual_winning_time);
+  const beatenLengths = secondsPerLen <= 0 ? 0 : beatenSeconds / secondsPerLen;
+  const raceCause = classifyRaceDeviation(runner.race, races);
+  if (runner.race.base_sample < 5) {
+    return "weak_sample";
+  }
+  if (beatenLengths >= 40) {
+    return "large_beaten_distance";
+  }
+  if (
+    runner.conservative_same_day_adj_per_f !== null &&
+    baseRating !== null &&
+    sameDayRating !== null &&
+    Math.abs(sameDayRating - baseRating) >= 20
+  ) {
+    return "same_day_adjustment_effect";
+  }
+  if (raceCause === "likely_track_going_effect") {
+    return "unusual_going";
+  }
+  if (raceCause === "possible_bad_timing_or_distance_data") {
+    return "source_timing_issue";
+  }
+  if (runner.subtype === "unknown_other") {
+    return "race_type_effect";
+  }
+  if (rating < 0 || rating > 200) {
+    return "no_obvious_cause";
+  }
+  return "not_extreme_tail";
 }
 
 function extremeTraceLines(jumps: JoinedRunner[], calibration: Calibration): string[] {
@@ -512,14 +767,14 @@ function comparisonLines(
   return [
     [
       "year_comparison",
-      `year=${CALIBRATION_YEAR}`,
+      `range=${CALIBRATION_RANGE.startDate}..${CALIBRATION_RANGE.endDate}`,
       `role=calibration`,
       comparisonFields(calibrationYear),
     ].join(" | "),
     [
       "year_comparison",
-      `year=${YEAR}`,
-      `role=${YEAR === CALIBRATION_YEAR ? "calibration" : "validation"}`,
+      `range=${VALIDATION_RANGE.startDate}..${VALIDATION_RANGE.endDate}`,
+      `role=${sameRange(VALIDATION_RANGE, CALIBRATION_RANGE) ? "calibration" : "validation"}`,
       comparisonFields(validation),
     ].join(" | "),
     `holdout_read=${holdoutRead(validation, calibrationYear)}`,
@@ -556,7 +811,7 @@ function holdoutRead(
   validation: ReturnType<typeof comparisonMetrics>,
   calibrationYear: ReturnType<typeof comparisonMetrics>,
 ): string {
-  if (YEAR === CALIBRATION_YEAR) {
+  if (sameRange(VALIDATION_RANGE, CALIBRATION_RANGE)) {
     return "calibration_year_only";
   }
   if (validation.runners < calibrationYear.runners * 0.25) {
@@ -643,7 +898,7 @@ function conclusionLines(jumps: JoinedRunner[], calibration: Calibration): strin
 }
 
 function summaryCsv(jumps: JoinedRunner[], calibration: Calibration): string {
-  const rows = [["subtype", "scale", "method", "runners", "or_count", "pearson_or", "spearman_or", "median_abs_diff_or", "mean_abs_diff_or", "mean", "median", "stdev", "p01", "p99", "below_0", "above_200", "outside_0_200"]];
+  const rows = [["subtype", "scale", "method", "runners", "or_count", "pearson_or", "spearman_or", "median_abs_diff_or", "mean_abs_diff_or", "mean", "median", "stdev", "p01", "p10", "p90", "p99", "min", "max", "below_0", "above_200", "outside_0_200", "extreme_rate", "ordering_anomalies", "dead_heat_mismatches"]];
   for (const subtype of [...subtypeOrder(), "overall"] as const) {
     const subset = subtype === "overall" ? jumps : jumps.filter((runner) => runner.subtype === subtype);
     for (const scale of scaleOrder()) {
@@ -696,6 +951,7 @@ function qualityCsvRow(
     })
     .filter((value): value is readonly [number, number] => value !== null);
   const absDiffs = paired.map(([rating, officialRating]) => Math.abs(rating - officialRating));
+  const outside = values.filter((value) => value < 0 || value > 200).length;
   return [
     subtype,
     scale,
@@ -710,10 +966,17 @@ function qualityCsvRow(
     fmt(median(values)),
     fmt(standardDeviation(values)),
     fmt(percentile(values, 0.01)),
+    fmt(percentile(values, 0.10)),
+    fmt(percentile(values, 0.90)),
     fmt(percentile(values, 0.99)),
+    fmt(values[0] ?? null),
+    fmt(values.at(-1) ?? null),
     String(values.filter((value) => value < 0).length),
     String(values.filter((value) => value > 200).length),
-    String(values.filter((value) => value < 0 || value > 200).length),
+    String(outside),
+    fmtPct(outside, values.length),
+    String(orderingAnomalyCount(rows, scale, method, calibration)),
+    String(deadHeatMismatchCount(rows, scale, method, calibration)),
   ];
 }
 
@@ -801,6 +1064,74 @@ function sampleSizeBucketLines(jumps: JoinedRunner[]): string[] {
     const extremes = rows.filter((runner) => runner.base_rating < 0 || runner.base_rating > 200);
     return `sample_size_bucket | bucket=${bucket} | runners=${rows.length} | extremes=${extremes.length} | extreme_rate=${fmt(rows.length ? extremes.length / rows.length : null)}`;
   });
+}
+
+function orderingAnomalyCount(
+  rows: JoinedRunner[],
+  scale: Scale,
+  method: Method,
+  calibration: Calibration,
+): number {
+  let anomalies = 0;
+  for (const raceRows of groupBy(rows, (runner) => runner.race_source_id).values()) {
+    const ordered = raceRows
+      .map((runner) => ({
+        runner,
+        rating: ratingFor(runner, scale, method, calibration),
+      }))
+      .filter((row) => row.runner.finish_position !== null && row.rating !== null)
+      .sort((a, b) => (a.runner.finish_position ?? 0) - (b.runner.finish_position ?? 0));
+    for (let i = 0; i < ordered.length; i += 1) {
+      for (let j = i + 1; j < ordered.length; j += 1) {
+        const firstPosition = ordered[i].runner.finish_position ?? 0;
+        const secondPosition = ordered[j].runner.finish_position ?? 0;
+        if (firstPosition < secondPosition && (ordered[i].rating ?? 0) + 0.01 < (ordered[j].rating ?? 0)) {
+          anomalies += 1;
+        }
+      }
+    }
+  }
+  return anomalies;
+}
+
+function deadHeatMismatchCount(
+  rows: JoinedRunner[],
+  scale: Scale,
+  method: Method,
+  calibration: Calibration,
+): number {
+  let mismatches = 0;
+  for (const raceRows of groupBy(rows, (runner) => runner.race_source_id).values()) {
+    for (const positionRows of groupBy(
+      raceRows.filter((runner) => runner.finish_position !== null),
+      (runner) => String(runner.finish_position),
+    ).values()) {
+      if (positionRows.length < 2) {
+        continue;
+      }
+      const ratings = positionRows
+        .map((runner) => ratingFor(runner, scale, method, calibration))
+        .filter((value): value is number => value !== null);
+      if (ratings.length > 1 && Math.max(...ratings) - Math.min(...ratings) > 0.01) {
+        mismatches += 1;
+      }
+    }
+  }
+  return mismatches;
+}
+
+function distanceBand(runner: JoinedRunner): "short" | "middle" | "staying" | "unknown" {
+  const distanceFurlongs = furlongs(runner);
+  if (distanceFurlongs === null) {
+    return "unknown";
+  }
+  if (distanceFurlongs < 18) {
+    return "short";
+  }
+  if (distanceFurlongs < 24) {
+    return "middle";
+  }
+  return "staying";
 }
 
 function classifyRaceDeviation(
@@ -1080,6 +1411,16 @@ function numberOrNull(value: string): number | null {
 
 function fmt(value: number | null): string {
   return value === null || !Number.isFinite(value) ? "-" : value.toFixed(2);
+}
+
+function fmtPct(count: number, total: number): string {
+  return total === 0 ? "-" : `${((count / total) * 100).toFixed(2)}%`;
+}
+
+function addDays(date: string, days: number): string {
+  const parsed = new Date(`${date}T00:00:00.000Z`);
+  parsed.setUTCDate(parsed.getUTCDate() + days);
+  return parsed.toISOString().slice(0, 10);
 }
 
 function csv(row: string[]): string {

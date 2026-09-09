@@ -1,0 +1,15 @@
+section,dataset,policy,method,runners,extreme_rate,median_abs_or,or_correlation
+tail_policy,2025,no_cap,hierarchy,23324,0.12%,16.90,0.16
+tail_policy,2025,exclude_gt_50,hierarchy,21491,0.11%,16.50,0.16
+tail_policy,2025,exclude_gt_75,hierarchy,22790,0.11%,16.75,0.16
+tail_policy,2025,exclude_gt_100,hierarchy,23158,0.11%,16.84,0.16
+tail_policy,2025,cap_50,hierarchy,23324,0.10%,16.71,0.16
+tail_policy,2025,cap_75,hierarchy,23324,0.11%,16.83,0.16
+tail_policy,2025,cap_100,hierarchy,23324,0.11%,16.89,0.16
+tail_policy,2026,no_cap,hierarchy,13289,0.33%,16.48,0.16
+tail_policy,2026,exclude_gt_50,hierarchy,12116,0.31%,16.08,0.15
+tail_policy,2026,exclude_gt_75,hierarchy,12921,0.30%,16.38,0.15
+tail_policy,2026,exclude_gt_100,hierarchy,13165,0.30%,16.44,0.15
+tail_policy,2026,cap_50,hierarchy,13289,0.29%,16.33,0.15
+tail_policy,2026,cap_75,hierarchy,13289,0.29%,16.42,0.15
+tail_policy,2026,cap_100,hierarchy,13289,0.30%,16.47,0.16

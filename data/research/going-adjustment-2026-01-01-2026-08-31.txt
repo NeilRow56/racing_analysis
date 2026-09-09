@@ -1,0 +1,1016 @@
+date_range=2026-01-01..2026-08-31
+valid_race_deviations=6507
+same_day_cards=963
+performance | method=base | eligible_races=6507 | median_abs_error=1.62 | mean_abs_error=3.83 | residual_stdev=6.98 | improved_vs_baseline=0.0% | worsened_vs_baseline=0.0%
+performance | method=same_day | eligible_races=6501 | median_abs_error=1.29 | mean_abs_error=2.66 | residual_stdev=4.80 | improved_vs_baseline=59.5% | worsened_vs_baseline=40.2%
+performance | method=historical_fallback | eligible_races=6412 | median_abs_error=1.49 | mean_abs_error=3.30 | residual_stdev=5.99 | improved_vs_baseline=53.8% | worsened_vs_baseline=44.9%
+
+going_group | key="all_weather_flat | ALLWEATHER | Standard" | races=997 | median_per_f=-0.00 | mean_per_f=0.02 | stdev=0.21 | p25=-0.11 | p75=0.12 | confidence=strong
+going_group | key="turf_flat | TURF | Good to Firm" | races=657 | median_per_f=-0.06 | mean_per_f=-0.05 | stdev=0.23 | p25=-0.19 | p75=0.09 | confidence=strong
+going_group | key="turf_flat | TURF | Good to Firm (Good in places)" | races=629 | median_per_f=-0.07 | mean_per_f=-0.05 | stdev=0.23 | p25=-0.20 | p75=0.09 | confidence=strong
+going_group | key="jumps | TURF | Good" | races=580 | median_per_f=-0.21 | mean_per_f=-0.22 | stdev=0.44 | p25=-0.46 | p75=0.05 | confidence=strong
+going_group | key="turf_flat | TURF | Good (Good to Firm in places)" | races=453 | median_per_f=-0.05 | mean_per_f=-0.03 | stdev=0.26 | p25=-0.18 | p75=0.10 | confidence=strong
+going_group | key="turf_flat | TURF | Good" | races=415 | median_per_f=0.00 | mean_per_f=0.02 | stdev=0.28 | p25=-0.12 | p75=0.16 | confidence=strong
+going_group | key="all_weather_flat | POLYTRACK | Standard" | races=384 | median_per_f=-0.01 | mean_per_f=-0.01 | stdev=0.20 | p25=-0.14 | p75=0.10 | confidence=strong
+going_group | key="jumps | TURF | Good (Good to Soft in places)" | races=289 | median_per_f=-0.11 | mean_per_f=-0.10 | stdev=0.42 | p25=-0.36 | p75=0.20 | confidence=strong
+going_group | key="all_weather_flat | POLYTRACK | Standard / Slow" | races=238 | median_per_f=-0.00 | mean_per_f=-0.00 | stdev=0.20 | p25=-0.13 | p75=0.11 | confidence=strong
+going_group | key="jumps | TURF | Soft" | races=169 | median_per_f=0.45 | mean_per_f=0.52 | stdev=0.59 | p25=0.18 | p75=0.80 | confidence=strong
+going_group | key="jumps | TURF | Good to Soft (Soft in places)" | races=167 | median_per_f=0.19 | mean_per_f=0.15 | stdev=0.45 | p25=-0.10 | p75=0.37 | confidence=strong
+going_group | key="turf_flat | TURF | Good (Good to Soft in places)" | races=152 | median_per_f=0.06 | mean_per_f=0.05 | stdev=0.21 | p25=-0.10 | p75=0.20 | confidence=strong
+going_group | key="jumps | TURF | Good to Soft" | races=150 | median_per_f=0.12 | mean_per_f=0.08 | stdev=0.53 | p25=-0.18 | p75=0.34 | confidence=strong
+going_group | key="jumps | TURF | Good to Soft (Good in places)" | races=120 | median_per_f=-0.08 | mean_per_f=-0.08 | stdev=0.53 | p25=-0.38 | p75=0.27 | confidence=strong
+going_group | key="turf_flat | TURF | Good to Soft" | races=116 | median_per_f=0.25 | mean_per_f=0.29 | stdev=0.26 | p25=0.12 | p75=0.47 | confidence=strong
+going_group | key="jumps | TURF | Good (Good to Firm in places)" | races=108 | median_per_f=-0.45 | mean_per_f=-0.43 | stdev=0.51 | p25=-0.81 | p75=-0.13 | confidence=strong
+going_group | key="jumps | TURF | Soft (Heavy in places)" | races=101 | median_per_f=0.53 | mean_per_f=0.63 | stdev=0.56 | p25=0.28 | p75=0.87 | confidence=strong
+going_group | key="jumps | TURF | Soft (Good to Soft in places)" | races=88 | median_per_f=0.23 | mean_per_f=0.14 | stdev=0.60 | p25=-0.23 | p75=0.50 | confidence=strong
+going_group | key="turf_flat | TURF | Soft" | races=83 | median_per_f=0.41 | mean_per_f=0.44 | stdev=0.23 | p25=0.29 | p75=0.60 | confidence=strong
+going_group | key="turf_flat | TURF | Good to Soft (Soft in places)" | races=77 | median_per_f=0.40 | mean_per_f=0.37 | stdev=0.24 | p25=0.20 | p75=0.55 | confidence=strong
+going_group | key="jumps | TURF | Heavy" | races=70 | median_per_f=0.91 | mean_per_f=0.90 | stdev=0.57 | p25=0.48 | p75=1.29 | confidence=strong
+going_group | key="jumps | TURF | Good to Firm (Good in places)" | races=65 | median_per_f=-0.27 | mean_per_f=-0.26 | stdev=0.52 | p25=-0.61 | p75=0.09 | confidence=strong
+going_group | key="jumps | TURF | Heavy (Soft in places)" | races=60 | median_per_f=0.51 | mean_per_f=0.48 | stdev=0.53 | p25=0.17 | p75=0.74 | confidence=strong
+going_group | key="turf_flat | TURF | Good to Soft (Good in places)" | races=60 | median_per_f=0.10 | mean_per_f=0.08 | stdev=0.21 | p25=-0.06 | p75=0.20 | confidence=strong
+going_group | key="turf_flat | TURF | Good to Firm (Firm in places)" | races=46 | median_per_f=0.03 | mean_per_f=0.03 | stdev=0.25 | p25=-0.18 | p75=0.18 | confidence=strong
+going_group | key="all_weather_flat | ALLWEATHER | Standard / Slow" | races=43 | median_per_f=0.07 | mean_per_f=-0.02 | stdev=0.50 | p25=-0.23 | p75=0.25 | confidence=strong
+going_group | key="turf_flat | TURF | Firm (Good to Firm in places)" | races=27 | median_per_f=-0.05 | mean_per_f=0.04 | stdev=0.29 | p25=-0.13 | p75=0.15 | confidence=strong
+going_group | key="turf_flat | TURF | Firm" | races=26 | median_per_f=-0.16 | mean_per_f=-0.12 | stdev=0.25 | p25=-0.31 | p75=0.02 | confidence=strong
+going_group | key="jumps | TURF | Good to Firm" | races=26 | median_per_f=-0.35 | mean_per_f=-0.27 | stdev=0.37 | p25=-0.60 | p75=0.14 | confidence=strong
+going_group | key="turf_flat | TURF | Soft (Heavy in places)" | races=23 | median_per_f=0.78 | mean_per_f=0.75 | stdev=0.21 | p25=0.63 | p75=0.88 | confidence=moderate
+going_group | key="turf_flat | TURF | Soft (Good to Soft in places)" | races=23 | median_per_f=0.45 | mean_per_f=0.43 | stdev=0.18 | p25=0.33 | p75=0.53 | confidence=moderate
+going_group | key="turf_flat | TURF | Good (Good to Firm to places)" | races=7 | median_per_f=-0.10 | mean_per_f=-0.05 | stdev=0.16 | p25=-0.14 | p75=0.04 | confidence=weak
+going_group | key="turf_flat | TURF | Good (Good To Firm in places)" | races=7 | median_per_f=-0.06 | mean_per_f=0.05 | stdev=0.25 | p25=-0.07 | p75=0.23 | confidence=weak
+going_group | key="turf_flat | TURF | Good (Good to Firm in Places)" | races=7 | median_per_f=-0.14 | mean_per_f=-0.22 | stdev=0.23 | p25=-0.32 | p75=-0.08 | confidence=weak
+going_group | key="turf_flat | TURF | Good to Firm (Good in Places)" | races=6 | median_per_f=-0.03 | mean_per_f=0.11 | stdev=0.36 | p25=-0.13 | p75=0.24 | confidence=weak
+going_group | key="turf_flat | TURF | Heavy" | races=6 | median_per_f=0.75 | mean_per_f=0.76 | stdev=0.09 | p25=0.70 | p75=0.81 | confidence=weak
+going_group | key="turf_flat | TURF | Soft (Good to Soft in Places)" | races=5 | median_per_f=0.84 | mean_per_f=0.79 | stdev=0.08 | p25=0.79 | p75=0.84 | confidence=weak
+going_group | key="jumps | TURF | Good (Good to Firm in Places)" | races=5 | median_per_f=0.16 | mean_per_f=0.03 | stdev=0.23 | p25=-0.17 | p75=0.19 | confidence=weak
+going_group | key="jumps | TURF | Good (Good to Soft in Places)" | races=4 | median_per_f=-0.05 | mean_per_f=-0.05 | stdev=0.36 | p25=-0.34 | p75=0.24 | confidence=very_weak
+going_group | key="turf_flat | TURF | Soft (good to soft in places)" | races=3 | median_per_f=0.37 | mean_per_f=0.47 | stdev=0.31 | p25=0.29 | p75=0.60 | confidence=very_weak
+going_group | key="jumps | ALLWEATHER | Standard / Slow" | races=2 | median_per_f=0.32 | mean_per_f=0.32 | stdev=0.92 | p25=-0.01 | p75=0.65 | confidence=very_weak
+going_group | key="jumps | TURF | Good ( Good to Soft in places)" | races=2 | median_per_f=-0.48 | mean_per_f=-0.48 | stdev=0.23 | p25=-0.56 | p75=-0.40 | confidence=very_weak
+going_group | key="turf_flat | TURF | Good to Firm ( Good in places)" | races=2 | median_per_f=-0.07 | mean_per_f=-0.07 | stdev=0.04 | p25=-0.08 | p75=-0.06 | confidence=very_weak
+going_group | key="jumps | POLYTRACK | Standard / Slow" | races=1 | median_per_f=-2.73 | mean_per_f=-2.73 | stdev=- | p25=-2.73 | p75=-2.73 | confidence=very_weak
+going_group | key="turf_flat | TURF | Standard" | races=1 | median_per_f=1.75 | mean_per_f=1.75 | stdev=- | p25=1.75 | p75=1.75 | confidence=very_weak
+
+same_day_course | date=2026-01-02 | course=Wolverhampton | races=9 | median_per_f=0.03 | mean_per_f=-0.00 | trimmed_mean_per_f=0.01 | stdev=0.13 | going={"Standard":9}
+same_day_course | date=2026-01-04 | course=Southwell | races=9 | median_per_f=-0.06 | mean_per_f=-0.01 | trimmed_mean_per_f=-0.01 | stdev=0.10 | going={"Standard":9}
+same_day_course | date=2026-01-06 | course=Wolverhampton | races=9 | median_per_f=-0.04 | mean_per_f=0.01 | trimmed_mean_per_f=0.01 | stdev=0.13 | going={"Standard":9}
+same_day_course | date=2026-01-06 | course=Southwell | races=9 | median_per_f=0.11 | mean_per_f=0.16 | trimmed_mean_per_f=0.14 | stdev=0.16 | going={"Standard":9}
+same_day_course | date=2026-01-10 | course=Newcastle | races=9 | median_per_f=-0.03 | mean_per_f=-0.00 | trimmed_mean_per_f=-0.01 | stdev=0.09 | going={"Standard":9}
+same_day_course | date=2026-01-22 | course=Southwell | races=9 | median_per_f=0.16 | mean_per_f=0.18 | trimmed_mean_per_f=0.18 | stdev=0.14 | going={"Standard":9}
+same_day_course | date=2026-01-26 | course=Wolverhampton | races=9 | median_per_f=-0.05 | mean_per_f=-0.03 | trimmed_mean_per_f=-0.02 | stdev=0.12 | going={"Standard":9}
+same_day_course | date=2026-01-27 | course=Wolverhampton | races=9 | median_per_f=0.24 | mean_per_f=0.24 | trimmed_mean_per_f=0.24 | stdev=0.09 | going={"Standard":9}
+same_day_course | date=2026-02-04 | course=Newcastle | races=9 | median_per_f=-0.04 | mean_per_f=-0.06 | trimmed_mean_per_f=-0.07 | stdev=0.13 | going={"Standard":9}
+same_day_course | date=2026-02-05 | course=Southwell | races=9 | median_per_f=0.06 | mean_per_f=0.11 | trimmed_mean_per_f=0.11 | stdev=0.13 | going={"Standard":9}
+same_day_course | date=2026-02-06 | course=Newcastle | races=9 | median_per_f=-0.32 | mean_per_f=-0.29 | trimmed_mean_per_f=-0.29 | stdev=0.15 | going={"Standard":9}
+same_day_course | date=2026-02-09 | course=Wolverhampton | races=9 | median_per_f=-0.06 | mean_per_f=-0.03 | trimmed_mean_per_f=-0.04 | stdev=0.09 | going={"Standard":9}
+same_day_course | date=2026-02-17 | course=Wolverhampton | races=9 | median_per_f=-0.00 | mean_per_f=0.06 | trimmed_mean_per_f=-0.00 | stdev=0.28 | going={"Standard":9}
+same_day_course | date=2026-02-19 | course=Newcastle | races=9 | median_per_f=0.02 | mean_per_f=-0.06 | trimmed_mean_per_f=-0.03 | stdev=0.20 | going={"Standard":9}
+same_day_course | date=2026-02-20 | course=Southwell | races=9 | median_per_f=-0.06 | mean_per_f=-0.06 | trimmed_mean_per_f=-0.05 | stdev=0.15 | going={"Standard":9}
+same_day_course | date=2026-02-23 | course=Wolverhampton | races=9 | median_per_f=-0.02 | mean_per_f=0.00 | trimmed_mean_per_f=0.01 | stdev=0.11 | going={"Standard":9}
+same_day_course | date=2026-02-24 | course=Southwell | races=9 | median_per_f=0.15 | mean_per_f=0.11 | trimmed_mean_per_f=0.11 | stdev=0.12 | going={"Standard":9}
+same_day_course | date=2026-02-28 | course=Southwell | races=9 | median_per_f=0.12 | mean_per_f=0.11 | trimmed_mean_per_f=0.11 | stdev=0.23 | going={"Standard":9}
+same_day_course | date=2026-03-06 | course=Newcastle | races=9 | median_per_f=0.05 | mean_per_f=0.08 | trimmed_mean_per_f=0.08 | stdev=0.13 | going={"Standard":9}
+same_day_course | date=2026-03-10 | course=Wolverhampton | races=9 | median_per_f=0.06 | mean_per_f=0.08 | trimmed_mean_per_f=0.09 | stdev=0.11 | going={"Standard":9}
+same_day_course | date=2026-03-12 | course=Newcastle | races=9 | median_per_f=-0.02 | mean_per_f=0.06 | trimmed_mean_per_f=0.04 | stdev=0.21 | going={"Standard":9}
+same_day_course | date=2026-03-13 | course=Wolverhampton | races=9 | median_per_f=0.00 | mean_per_f=-0.01 | trimmed_mean_per_f=-0.02 | stdev=0.09 | going={"Standard":9}
+same_day_course | date=2026-03-17 | course=Wolverhampton | races=9 | median_per_f=-0.01 | mean_per_f=-0.02 | trimmed_mean_per_f=-0.03 | stdev=0.09 | going={"Standard":9}
+same_day_course | date=2026-03-20 | course=Wolverhampton | races=9 | median_per_f=-0.32 | mean_per_f=-0.29 | trimmed_mean_per_f=-0.30 | stdev=0.14 | going={"Standard":9}
+same_day_course | date=2026-03-23 | course=Wolverhampton | races=9 | median_per_f=-0.08 | mean_per_f=-0.07 | trimmed_mean_per_f=-0.05 | stdev=0.13 | going={"Standard":9}
+same_day_course | date=2026-03-24 | course=Wolverhampton | races=9 | median_per_f=-0.03 | mean_per_f=-0.05 | trimmed_mean_per_f=-0.04 | stdev=0.14 | going={"Standard":9}
+same_day_course | date=2026-03-25 | course=Lingfield | races=9 | median_per_f=-0.07 | mean_per_f=0.01 | trimmed_mean_per_f=0.01 | stdev=0.14 | going={"Standard":9}
+same_day_course | date=2026-05-02 | course=Newmarket | races=9 | median_per_f=-0.03 | mean_per_f=-0.05 | trimmed_mean_per_f=-0.04 | stdev=0.14 | going={"Good to Firm":9}
+same_day_course | date=2026-07-06 | course=Lingfield | races=9 | median_per_f=0.04 | mean_per_f=0.14 | trimmed_mean_per_f=0.01 | stdev=0.46 | going={"Standard":9}
+same_day_course | date=2026-08-16 | course=Southwell | races=9 | median_per_f=-0.04 | mean_per_f=0.01 | trimmed_mean_per_f=-0.06 | stdev=0.37 | going={"Standard":9}
+same_day_course | date=2026-01-01 | course=Newcastle | races=8 | median_per_f=0.33 | mean_per_f=0.34 | trimmed_mean_per_f=0.35 | stdev=0.27 | going={"Standard":8}
+same_day_course | date=2026-01-01 | course=Southwell | races=8 | median_per_f=-0.03 | mean_per_f=-0.03 | trimmed_mean_per_f=-0.03 | stdev=0.19 | going={"Standard":8}
+same_day_course | date=2026-01-03 | course=Southwell | races=8 | median_per_f=0.02 | mean_per_f=0.01 | trimmed_mean_per_f=-0.01 | stdev=0.15 | going={"Standard":8}
+same_day_course | date=2026-01-03 | course=Lingfield | races=8 | median_per_f=0.01 | mean_per_f=-0.01 | trimmed_mean_per_f=0.01 | stdev=0.09 | going={"Standard / Slow":8}
+same_day_course | date=2026-01-10 | course=Lingfield | races=8 | median_per_f=0.09 | mean_per_f=0.16 | trimmed_mean_per_f=0.13 | stdev=0.21 | going={"Standard":8}
+same_day_course | date=2026-01-13 | course=Southwell | races=8 | median_per_f=0.16 | mean_per_f=0.18 | trimmed_mean_per_f=0.17 | stdev=0.19 | going={"Standard":8}
+same_day_course | date=2026-01-14 | course=Lingfield | races=8 | median_per_f=0.09 | mean_per_f=0.02 | trimmed_mean_per_f=0.05 | stdev=0.15 | going={"Standard":8}
+same_day_course | date=2026-01-15 | course=Newcastle | races=8 | median_per_f=-0.23 | mean_per_f=-0.07 | trimmed_mean_per_f=-0.11 | stdev=0.38 | going={"Good to Soft (Good in places)":8}
+same_day_course | date=2026-01-16 | course=Newcastle | races=8 | median_per_f=-0.26 | mean_per_f=-0.23 | trimmed_mean_per_f=-0.21 | stdev=0.22 | going={"Standard":8}
+same_day_course | date=2026-01-16 | course=Wolverhampton | races=8 | median_per_f=0.02 | mean_per_f=0.02 | trimmed_mean_per_f=0.02 | stdev=0.08 | going={"Standard":8}
+same_day_course | date=2026-01-17 | course=Southwell | races=8 | median_per_f=0.12 | mean_per_f=0.10 | trimmed_mean_per_f=0.10 | stdev=0.13 | going={"Standard":8}
+same_day_course | date=2026-01-17 | course=Lingfield | races=8 | median_per_f=-0.18 | mean_per_f=-0.19 | trimmed_mean_per_f=-0.19 | stdev=0.19 | going={"Standard":8}
+same_day_course | date=2026-01-20 | course=Newcastle | races=8 | median_per_f=-0.01 | mean_per_f=0.02 | trimmed_mean_per_f=0.00 | stdev=0.13 | going={"Standard":8}
+same_day_course | date=2026-01-20 | course=Southwell | races=8 | median_per_f=0.13 | mean_per_f=0.16 | trimmed_mean_per_f=0.16 | stdev=0.21 | going={"Standard":8}
+same_day_course | date=2026-01-21 | course=Lingfield | races=8 | median_per_f=0.13 | mean_per_f=0.13 | trimmed_mean_per_f=0.12 | stdev=0.16 | going={"Standard":8}
+same_day_course | date=2026-01-21 | course=Kempton | races=8 | median_per_f=0.01 | mean_per_f=-0.04 | trimmed_mean_per_f=-0.03 | stdev=0.20 | going={"Standard / Slow":8}
+same_day_course | date=2026-01-23 | course=Wolverhampton | races=8 | median_per_f=0.02 | mean_per_f=0.02 | trimmed_mean_per_f=0.02 | stdev=0.11 | going={"Standard":8}
+same_day_course | date=2026-01-23 | course=Southwell | races=8 | median_per_f=0.12 | mean_per_f=0.11 | trimmed_mean_per_f=0.12 | stdev=0.13 | going={"Standard":8}
+same_day_course | date=2026-01-24 | course=Lingfield | races=8 | median_per_f=0.07 | mean_per_f=0.10 | trimmed_mean_per_f=0.09 | stdev=0.14 | going={"Standard":8}
+same_day_course | date=2026-01-30 | course=Wolverhampton | races=8 | median_per_f=-0.03 | mean_per_f=-0.00 | trimmed_mean_per_f=-0.04 | stdev=0.23 | going={"Standard":8}
+same_day_course | date=2026-01-31 | course=Lingfield | races=8 | median_per_f=-0.05 | mean_per_f=-0.02 | trimmed_mean_per_f=-0.01 | stdev=0.22 | going={"Standard":8}
+same_day_course | date=2026-02-06 | course=Wolverhampton | races=8 | median_per_f=0.10 | mean_per_f=0.05 | trimmed_mean_per_f=0.07 | stdev=0.15 | going={"Standard":8}
+same_day_course | date=2026-02-07 | course=Warwick | races=8 | median_per_f=0.40 | mean_per_f=0.49 | trimmed_mean_per_f=0.47 | stdev=0.33 | going={"Heavy (Soft in places)":8}
+same_day_course | date=2026-02-07 | course=Lingfield | races=8 | median_per_f=0.21 | mean_per_f=0.23 | trimmed_mean_per_f=0.22 | stdev=0.12 | going={"Standard":8}
+same_day_course | date=2026-02-10 | course=Lingfield | races=8 | median_per_f=0.05 | mean_per_f=0.07 | trimmed_mean_per_f=0.08 | stdev=0.16 | going={"Standard":8}
+same_day_course | date=2026-02-11 | course=Kempton | races=8 | median_per_f=-0.11 | mean_per_f=-0.03 | trimmed_mean_per_f=-0.04 | stdev=0.18 | going={"Standard / Slow":8}
+same_day_course | date=2026-02-14 | course=Wincanton | races=8 | median_per_f=0.79 | mean_per_f=0.80 | trimmed_mean_per_f=0.74 | stdev=0.52 | going={"Heavy":8}
+same_day_course | date=2026-02-15 | course=Newcastle | races=8 | median_per_f=0.01 | mean_per_f=0.05 | trimmed_mean_per_f=0.03 | stdev=0.21 | going={"Standard":8}
+same_day_course | date=2026-02-24 | course=Newcastle | races=8 | median_per_f=0.21 | mean_per_f=0.19 | trimmed_mean_per_f=0.21 | stdev=0.21 | going={"Standard":8}
+same_day_course | date=2026-02-25 | course=Lingfield | races=8 | median_per_f=-0.01 | mean_per_f=0.00 | trimmed_mean_per_f=-0.01 | stdev=0.09 | going={"Standard":8}
+same_day_course | date=2026-02-28 | course=Lingfield | races=8 | median_per_f=-0.01 | mean_per_f=-0.01 | trimmed_mean_per_f=-0.03 | stdev=0.16 | going={"Standard":8}
+same_day_course | date=2026-03-02 | course=Wolverhampton | races=8 | median_per_f=0.06 | mean_per_f=0.04 | trimmed_mean_per_f=0.04 | stdev=0.19 | going={"Standard":8}
+same_day_course | date=2026-03-02 | course=Kempton | races=8 | median_per_f=-0.02 | mean_per_f=-0.04 | trimmed_mean_per_f=-0.04 | stdev=0.15 | going={"Standard / Slow":8}
+same_day_course | date=2026-03-04 | course=Southwell | races=8 | median_per_f=-0.01 | mean_per_f=0.01 | trimmed_mean_per_f=-0.00 | stdev=0.15 | going={"Standard":8}
+same_day_course | date=2026-03-04 | course=Kempton | races=8 | median_per_f=-0.15 | mean_per_f=-0.13 | trimmed_mean_per_f=-0.15 | stdev=0.13 | going={"Standard / Slow":8}
+same_day_course | date=2026-03-12 | course=Chelmsford City | races=8 | median_per_f=-0.08 | mean_per_f=-0.09 | trimmed_mean_per_f=-0.07 | stdev=0.22 | going={"Standard":8}
+same_day_course | date=2026-03-13 | course=Southwell | races=8 | median_per_f=-0.15 | mean_per_f=-0.08 | trimmed_mean_per_f=-0.12 | stdev=0.21 | going={"Standard":8}
+same_day_course | date=2026-03-18 | course=Kempton | races=8 | median_per_f=-0.03 | mean_per_f=0.04 | trimmed_mean_per_f=0.02 | stdev=0.18 | going={"Standard / Slow":8}
+same_day_course | date=2026-03-21 | course=Newcastle | races=8 | median_per_f=0.00 | mean_per_f=0.00 | trimmed_mean_per_f=0.00 | stdev=0.15 | going={"Standard":8}
+same_day_course | date=2026-03-21 | course=Southwell | races=8 | median_per_f=0.11 | mean_per_f=0.12 | trimmed_mean_per_f=0.12 | stdev=0.19 | going={"Standard":8}
+same_day_course | date=2026-03-25 | course=Kempton | races=8 | median_per_f=0.05 | mean_per_f=0.03 | trimmed_mean_per_f=0.04 | stdev=0.14 | going={"Standard / Slow":8}
+same_day_course | date=2026-03-27 | course=Newcastle | races=8 | median_per_f=0.12 | mean_per_f=0.13 | trimmed_mean_per_f=0.12 | stdev=0.21 | going={"Standard":8}
+same_day_course | date=2026-03-28 | course=Southwell | races=8 | median_per_f=0.14 | mean_per_f=0.12 | trimmed_mean_per_f=0.15 | stdev=0.30 | going={"Standard":8}
+same_day_course | date=2026-03-28 | course=Doncaster | races=8 | median_per_f=0.42 | mean_per_f=0.35 | trimmed_mean_per_f=0.35 | stdev=0.29 | going={"Good to Soft (Soft in places)":8}
+same_day_course | date=2026-03-29 | course=Doncaster | races=8 | median_per_f=0.57 | mean_per_f=0.60 | trimmed_mean_per_f=0.61 | stdev=0.16 | going={"Good to Soft":8}
+same_day_course | date=2026-04-05 | course=Bath | races=8 | median_per_f=0.18 | mean_per_f=0.20 | trimmed_mean_per_f=0.19 | stdev=0.14 | going={"Good (Good to Firm in places)":8}
+same_day_course | date=2026-04-06 | course=Wolverhampton | races=8 | median_per_f=-0.05 | mean_per_f=-0.01 | trimmed_mean_per_f=-0.03 | stdev=0.15 | going={"Standard":8}
+same_day_course | date=2026-04-07 | course=Southwell | races=8 | median_per_f=-0.09 | mean_per_f=-0.10 | trimmed_mean_per_f=-0.12 | stdev=0.26 | going={"Standard":8}
+same_day_course | date=2026-04-07 | course=Pontefract | races=8 | median_per_f=0.47 | mean_per_f=0.48 | trimmed_mean_per_f=0.49 | stdev=0.10 | going={"Good to Soft":8}
+same_day_course | date=2026-04-08 | course=Nottingham | races=8 | median_per_f=0.08 | mean_per_f=0.08 | trimmed_mean_per_f=0.08 | stdev=0.22 | going={"Good (Good to Soft in places)":8}
+same_day_course | date=2026-04-08 | course=Catterick | races=8 | median_per_f=-0.15 | mean_per_f=-0.15 | trimmed_mean_per_f=-0.15 | stdev=0.07 | going={"Good (Good to Firm in places)":8}
+same_day_course | date=2026-04-08 | course=Kempton | races=8 | median_per_f=-0.07 | mean_per_f=-0.07 | trimmed_mean_per_f=-0.07 | stdev=0.14 | going={"Standard / Slow":8}
+same_day_course | date=2026-04-10 | course=Thirsk | races=8 | median_per_f=0.13 | mean_per_f=0.18 | trimmed_mean_per_f=0.12 | stdev=0.28 | going={"Good":8}
+same_day_course | date=2026-04-10 | course=Wolverhampton | races=8 | median_per_f=0.00 | mean_per_f=-0.01 | trimmed_mean_per_f=0.00 | stdev=0.15 | going={"Standard":8}
+same_day_course | date=2026-04-11 | course=Yarmouth | races=8 | median_per_f=0.10 | mean_per_f=0.12 | trimmed_mean_per_f=0.12 | stdev=0.14 | going={"Good":8}
+same_day_course | date=2026-04-11 | course=Southwell | races=8 | median_per_f=-0.03 | mean_per_f=-0.05 | trimmed_mean_per_f=-0.04 | stdev=0.18 | going={"Standard":8}
+same_day_course | date=2026-04-12 | course=Wincanton | races=8 | median_per_f=-0.70 | mean_per_f=-0.65 | trimmed_mean_per_f=-0.66 | stdev=0.21 | going={"Good":8}
+same_day_course | date=2026-04-13 | course=Leicester | races=8 | median_per_f=0.12 | mean_per_f=0.13 | trimmed_mean_per_f=0.12 | stdev=0.18 | going={"Good":8}
+same_day_course | date=2026-04-13 | course=Hexham | races=8 | median_per_f=-0.26 | mean_per_f=-0.17 | trimmed_mean_per_f=-0.19 | stdev=0.19 | going={"Good (Good to Soft in places)":8}
+same_day_course | date=2026-04-14 | course=Market Rasen | races=8 | median_per_f=-0.05 | mean_per_f=0.05 | trimmed_mean_per_f=0.05 | stdev=0.36 | going={"Good":8}
+same_day_course | date=2026-04-15 | course=Haydock | races=8 | median_per_f=-0.24 | mean_per_f=-0.07 | trimmed_mean_per_f=-0.17 | stdev=0.46 | going={"Good (Good to Soft in places)":7,"Good to Soft (Good in places)":1}
+same_day_course | date=2026-04-18 | course=Nottingham | races=8 | median_per_f=0.15 | mean_per_f=0.15 | trimmed_mean_per_f=0.14 | stdev=0.14 | going={"Good (Good to Soft in places)":8}
+same_day_course | date=2026-04-18 | course=Thirsk | races=8 | median_per_f=0.06 | mean_per_f=0.06 | trimmed_mean_per_f=0.06 | stdev=0.16 | going={"Good (Good to Soft in places)":8}
+same_day_course | date=2026-04-18 | course=Bangor-on-Dee | races=8 | median_per_f=0.30 | mean_per_f=0.24 | trimmed_mean_per_f=0.24 | stdev=0.23 | going={"Good":6,"Good (Good to Soft in places)":2}
+same_day_course | date=2026-04-20 | course=Kelso | races=8 | median_per_f=-0.26 | mean_per_f=-0.27 | trimmed_mean_per_f=-0.25 | stdev=0.39 | going={"Good (Good to Soft in places)":8}
+same_day_course | date=2026-04-21 | course=Wolverhampton | races=8 | median_per_f=0.07 | mean_per_f=0.11 | trimmed_mean_per_f=0.10 | stdev=0.18 | going={"Standard":8}
+same_day_course | date=2026-04-22 | course=Perth | races=8 | median_per_f=-0.11 | mean_per_f=-0.10 | trimmed_mean_per_f=-0.13 | stdev=0.29 | going={"Good to Soft":1,"Good (Good to Soft in places)":7}
+same_day_course | date=2026-04-23 | course=Southwell | races=8 | median_per_f=0.03 | mean_per_f=0.09 | trimmed_mean_per_f=0.07 | stdev=0.20 | going={"Standard":8}
+same_day_course | date=2026-04-23 | course=Beverley | races=8 | median_per_f=-0.24 | mean_per_f=-0.26 | trimmed_mean_per_f=-0.25 | stdev=0.15 | going={"Good":3,"Good to Firm (Good in places)":5}
+same_day_course | date=2026-04-23 | course=Perth | races=8 | median_per_f=-0.16 | mean_per_f=-0.10 | trimmed_mean_per_f=-0.15 | stdev=0.27 | going={"Good (Good to Soft in places)":8}
+same_day_course | date=2026-04-26 | course=Nottingham | races=8 | median_per_f=0.04 | mean_per_f=0.02 | trimmed_mean_per_f=0.03 | stdev=0.09 | going={"Good (Good to Firm in places)":8}
+same_day_course | date=2026-04-27 | course=Lingfield | races=8 | median_per_f=0.07 | mean_per_f=0.22 | trimmed_mean_per_f=0.06 | stdev=0.64 | going={"Standard":8}
+same_day_course | date=2026-04-29 | course=Southwell | races=8 | median_per_f=0.10 | mean_per_f=0.04 | trimmed_mean_per_f=0.04 | stdev=0.19 | going={"Standard":8}
+same_day_course | date=2026-04-29 | course=Bath | races=8 | median_per_f=-0.27 | mean_per_f=-0.23 | trimmed_mean_per_f=-0.25 | stdev=0.25 | going={"Firm":8}
+same_day_course | date=2026-04-30 | course=Lingfield | races=8 | median_per_f=0.06 | mean_per_f=0.04 | trimmed_mean_per_f=0.06 | stdev=0.18 | going={"Standard":8}
+same_day_course | date=2026-05-02 | course=Uttoxeter | races=8 | median_per_f=-0.67 | mean_per_f=-0.60 | trimmed_mean_per_f=-0.67 | stdev=0.40 | going={"Good":8}
+same_day_course | date=2026-05-02 | course=Hexham | races=8 | median_per_f=-0.05 | mean_per_f=0.02 | trimmed_mean_per_f=-0.00 | stdev=0.32 | going={"Good (Good to Soft in places)":2,"Good":6}
+same_day_course | date=2026-05-04 | course=Windsor | races=8 | median_per_f=0.13 | mean_per_f=0.12 | trimmed_mean_per_f=0.13 | stdev=0.15 | going={"Good to Firm (Good in places)":8}
+same_day_course | date=2026-05-04 | course=Beverley | races=8 | median_per_f=-0.08 | mean_per_f=-0.06 | trimmed_mean_per_f=-0.06 | stdev=0.20 | going={"Good to Soft (Good in places)":8}
+same_day_course | date=2026-05-04 | course=Bath | races=8 | median_per_f=0.00 | mean_per_f=0.26 | trimmed_mean_per_f=-0.00 | stdev=0.83 | going={"Good":8}
+same_day_course | date=2026-05-04 | course=Kempton | races=8 | median_per_f=0.04 | mean_per_f=0.07 | trimmed_mean_per_f=0.06 | stdev=0.14 | going={"Standard / Slow":8}
+same_day_course | date=2026-05-07 | course=Redcar | races=8 | median_per_f=-0.12 | mean_per_f=-0.04 | trimmed_mean_per_f=-0.07 | stdev=0.18 | going={"Good (Good to Firm in places)":8}
+same_day_course | date=2026-05-15 | course=Newbury | races=8 | median_per_f=0.26 | mean_per_f=0.16 | trimmed_mean_per_f=0.18 | stdev=0.27 | going={"Good":8}
+same_day_course | date=2026-05-15 | course=Newmarket | races=8 | median_per_f=0.01 | mean_per_f=-0.00 | trimmed_mean_per_f=-0.00 | stdev=0.14 | going={"Good":8}
+same_day_course | date=2026-05-15 | course=Aintree | races=8 | median_per_f=0.01 | mean_per_f=0.01 | trimmed_mean_per_f=-0.01 | stdev=0.18 | going={"Good":8}
+same_day_course | date=2026-05-16 | course=Newbury | races=8 | median_per_f=-0.04 | mean_per_f=-0.07 | trimmed_mean_per_f=-0.05 | stdev=0.23 | going={"Good (Good to Firm in places)":8}
+same_day_course | date=2026-05-16 | course=Thirsk | races=8 | median_per_f=0.13 | mean_per_f=0.12 | trimmed_mean_per_f=0.14 | stdev=0.11 | going={"Good (Good to Soft in places)":8}
+same_day_course | date=2026-05-16 | course=Doncaster | races=8 | median_per_f=0.15 | mean_per_f=0.14 | trimmed_mean_per_f=0.15 | stdev=0.10 | going={"Good to Firm (Good in places)":2,"Good":1,"Good to Soft":5}
+same_day_course | date=2026-05-19 | course=Lingfield | races=8 | median_per_f=0.42 | mean_per_f=0.44 | trimmed_mean_per_f=0.41 | stdev=0.12 | going={"Good":2,"Good (Good to Soft in places)":6}
+same_day_course | date=2026-05-20 | course=Kempton | races=8 | median_per_f=0.01 | mean_per_f=-0.02 | trimmed_mean_per_f=-0.02 | stdev=0.20 | going={"Standard / Slow":8}
+same_day_course | date=2026-05-21 | course=Southwell | races=8 | median_per_f=-0.02 | mean_per_f=0.07 | trimmed_mean_per_f=0.04 | stdev=0.36 | going={"Standard":8}
+same_day_course | date=2026-05-22 | course=Worcester | races=8 | median_per_f=0.22 | mean_per_f=0.06 | trimmed_mean_per_f=0.10 | stdev=0.36 | going={"Good":8}
+same_day_course | date=2026-05-22 | course=Bath | races=8 | median_per_f=-0.21 | mean_per_f=-0.13 | trimmed_mean_per_f=-0.20 | stdev=0.24 | going={"Good to Firm (Good in places)":8}
+same_day_course | date=2026-05-23 | course=Windsor | races=8 | median_per_f=-0.17 | mean_per_f=-0.12 | trimmed_mean_per_f=-0.13 | stdev=0.13 | going={"Good to Firm":8}
+same_day_course | date=2026-05-27 | course=Kempton | races=8 | median_per_f=-0.09 | mean_per_f=-0.12 | trimmed_mean_per_f=-0.12 | stdev=0.18 | going={"Standard / Slow":8}
+same_day_course | date=2026-05-30 | course=Carlisle | races=8 | median_per_f=-0.22 | mean_per_f=-0.25 | trimmed_mean_per_f=-0.21 | stdev=0.23 | going={"Good to Firm (Good in places)":8}
+same_day_course | date=2026-06-01 | course=Windsor | races=8 | median_per_f=0.00 | mean_per_f=-0.05 | trimmed_mean_per_f=-0.03 | stdev=0.19 | going={"Good to Firm":8}
+same_day_course | date=2026-06-02 | course=Wolverhampton | races=8 | median_per_f=-0.05 | mean_per_f=0.01 | trimmed_mean_per_f=-0.03 | stdev=0.14 | going={"Standard":8}
+same_day_course | date=2026-06-04 | course=Wetherby | races=8 | median_per_f=-0.12 | mean_per_f=-0.13 | trimmed_mean_per_f=-0.14 | stdev=0.12 | going={"Good to Firm (Good in places)":8}
+same_day_course | date=2026-06-04 | course=Lingfield | races=8 | median_per_f=-0.04 | mean_per_f=0.01 | trimmed_mean_per_f=-0.01 | stdev=0.13 | going={"Standard":8}
+same_day_course | date=2026-06-05 | course=Bath | races=8 | median_per_f=-0.02 | mean_per_f=-0.00 | trimmed_mean_per_f=-0.01 | stdev=0.09 | going={"Good":8}
+same_day_course | date=2026-06-06 | course=Chepstow | races=8 | median_per_f=0.51 | mean_per_f=0.52 | trimmed_mean_per_f=0.52 | stdev=0.15 | going={"Soft (Good to Soft in places)":8}
+same_day_course | date=2026-06-08 | course=Windsor | races=8 | median_per_f=0.54 | mean_per_f=0.45 | trimmed_mean_per_f=0.48 | stdev=0.20 | going={"Good to Soft (Soft in places)":8}
+same_day_course | date=2026-06-08 | course=Leicester | races=8 | median_per_f=0.18 | mean_per_f=0.13 | trimmed_mean_per_f=0.18 | stdev=0.20 | going={"Good (Good to Soft in places)":8}
+same_day_course | date=2026-06-10 | course=Kempton | races=8 | median_per_f=0.11 | mean_per_f=0.12 | trimmed_mean_per_f=0.11 | stdev=0.12 | going={"Standard / Slow":8}
+same_day_course | date=2026-06-11 | course=Worcester | races=8 | median_per_f=0.46 | mean_per_f=0.46 | trimmed_mean_per_f=0.46 | stdev=0.17 | going={"Good (Good to Soft in places)":8}
+same_day_course | date=2026-06-12 | course=Chester | races=8 | median_per_f=0.84 | mean_per_f=0.84 | trimmed_mean_per_f=0.84 | stdev=0.11 | going={"Good to Soft":3,"Soft (Good to Soft in Places)":5}
+same_day_course | date=2026-06-12 | course=Sandown | races=8 | median_per_f=0.35 | mean_per_f=0.32 | trimmed_mean_per_f=0.31 | stdev=0.25 | going={"Good (Good to Soft in places)":3,"Good":5}
+same_day_course | date=2026-06-14 | course=Doncaster | races=8 | median_per_f=-0.18 | mean_per_f=-0.10 | trimmed_mean_per_f=-0.15 | stdev=0.20 | going={"Good to Soft (Good in places)":3,"Good (Good to Soft in places)":5}
+same_day_course | date=2026-06-15 | course=Chepstow | races=8 | median_per_f=-0.04 | mean_per_f=0.03 | trimmed_mean_per_f=-0.03 | stdev=0.23 | going={"Good to Soft (Good in places)":3,"Good":5}
+same_day_course | date=2026-06-16 | course=Wolverhampton | races=8 | median_per_f=-0.03 | mean_per_f=-0.01 | trimmed_mean_per_f=-0.02 | stdev=0.16 | going={"Standard":8}
+same_day_course | date=2026-06-17 | course=Worcester | races=8 | median_per_f=-0.26 | mean_per_f=-0.30 | trimmed_mean_per_f=-0.30 | stdev=0.16 | going={"Good":8}
+same_day_course | date=2026-06-18 | course=Lingfield | races=8 | median_per_f=0.08 | mean_per_f=0.06 | trimmed_mean_per_f=0.06 | stdev=0.15 | going={"Good (Good to Firm in places)":8}
+same_day_course | date=2026-06-19 | course=Newmarket | races=8 | median_per_f=-0.05 | mean_per_f=0.01 | trimmed_mean_per_f=-0.03 | stdev=0.18 | going={"Good (Good to Firm in places)":8}
+same_day_course | date=2026-06-24 | course=Carlisle | races=8 | median_per_f=-0.29 | mean_per_f=-0.22 | trimmed_mean_per_f=-0.27 | stdev=0.23 | going={"Good to Firm":8}
+same_day_course | date=2026-06-25 | course=Newcastle | races=8 | median_per_f=-0.05 | mean_per_f=-0.04 | trimmed_mean_per_f=-0.02 | stdev=0.16 | going={"Standard / Slow":8}
+same_day_course | date=2026-06-26 | course=Newmarket | races=8 | median_per_f=0.14 | mean_per_f=0.26 | trimmed_mean_per_f=0.22 | stdev=0.35 | going={"Good to Firm":8}
+same_day_course | date=2026-06-27 | course=Chester | races=8 | median_per_f=-0.25 | mean_per_f=-0.24 | trimmed_mean_per_f=-0.23 | stdev=0.14 | going={"Good (Good to Firm in places)":8}
+same_day_course | date=2026-07-01 | course=Thirsk | races=8 | median_per_f=-0.18 | mean_per_f=-0.13 | trimmed_mean_per_f=-0.13 | stdev=0.16 | going={"Good to Firm (Good in places)":8}
+same_day_course | date=2026-07-01 | course=Worcester | races=8 | median_per_f=0.11 | mean_per_f=0.09 | trimmed_mean_per_f=0.12 | stdev=0.32 | going={"Good":8}
+same_day_course | date=2026-07-02 | course=Kempton | races=8 | median_per_f=0.09 | mean_per_f=0.11 | trimmed_mean_per_f=0.10 | stdev=0.13 | going={"Standard / Slow":8}
+same_day_course | date=2026-07-05 | course=Southwell | races=8 | median_per_f=-0.08 | mean_per_f=-0.08 | trimmed_mean_per_f=-0.09 | stdev=0.15 | going={"Standard":8}
+same_day_course | date=2026-07-07 | course=Wolverhampton | races=8 | median_per_f=0.08 | mean_per_f=0.08 | trimmed_mean_per_f=0.08 | stdev=0.08 | going={"Standard":8}
+same_day_course | date=2026-07-10 | course=Worcester | races=8 | median_per_f=-0.09 | mean_per_f=-0.13 | trimmed_mean_per_f=-0.10 | stdev=0.26 | going={"Good":1,"Good (Good to Firm in places)":7}
+same_day_course | date=2026-07-11 | course=Newmarket | races=8 | median_per_f=-0.10 | mean_per_f=-0.06 | trimmed_mean_per_f=-0.07 | stdev=0.16 | going={"Good to Firm":8}
+same_day_course | date=2026-07-13 | course=Windsor | races=8 | median_per_f=0.02 | mean_per_f=0.04 | trimmed_mean_per_f=0.03 | stdev=0.26 | going={"Good to Firm":3,"Good to Firm (Firm in places)":5}
+same_day_course | date=2026-07-23 | course=Southwell | races=8 | median_per_f=0.20 | mean_per_f=0.19 | trimmed_mean_per_f=0.19 | stdev=0.17 | going={"Standard":8}
+same_day_course | date=2026-07-25 | course=Newcastle | races=8 | median_per_f=0.26 | mean_per_f=0.26 | trimmed_mean_per_f=0.25 | stdev=0.31 | going={"Standard / Slow":8}
+same_day_course | date=2026-07-25 | course=Ascot | races=8 | median_per_f=0.13 | mean_per_f=0.13 | trimmed_mean_per_f=0.15 | stdev=0.24 | going={"Good to Firm":8}
+same_day_course | date=2026-07-26 | course=Uttoxeter | races=8 | median_per_f=-0.10 | mean_per_f=-0.14 | trimmed_mean_per_f=-0.16 | stdev=0.38 | going={"Good":8}
+same_day_course | date=2026-07-27 | course=Southwell | races=8 | median_per_f=-0.01 | mean_per_f=0.02 | trimmed_mean_per_f=-0.01 | stdev=0.13 | going={"Standard":8}
+same_day_course | date=2026-07-28 | course=Goodwood | races=8 | median_per_f=-0.18 | mean_per_f=-0.24 | trimmed_mean_per_f=-0.23 | stdev=0.17 | going={"Good (Good to Firm in places)":8}
+same_day_course | date=2026-07-30 | course=Wolverhampton | races=8 | median_per_f=0.07 | mean_per_f=0.07 | trimmed_mean_per_f=0.08 | stdev=0.09 | going={"Standard":8}
+same_day_course | date=2026-07-30 | course=Goodwood | races=8 | median_per_f=-0.20 | mean_per_f=-0.19 | trimmed_mean_per_f=-0.18 | stdev=0.27 | going={"Good to Firm (Good in places)":8}
+same_day_course | date=2026-08-01 | course=Doncaster | races=8 | median_per_f=0.09 | mean_per_f=0.11 | trimmed_mean_per_f=0.10 | stdev=0.14 | going={"Good to Firm":8}
+same_day_course | date=2026-08-05 | course=Kempton | races=8 | median_per_f=0.02 | mean_per_f=0.09 | trimmed_mean_per_f=0.08 | stdev=0.21 | going={"Standard / Slow":8}
+same_day_course | date=2026-08-10 | course=Ayr | races=8 | median_per_f=0.22 | mean_per_f=0.23 | trimmed_mean_per_f=0.22 | stdev=0.09 | going={"Good to Soft (Good in places)":8}
+same_day_course | date=2026-08-12 | course=Kempton | races=8 | median_per_f=0.03 | mean_per_f=0.06 | trimmed_mean_per_f=0.05 | stdev=0.17 | going={"Standard / Slow":8}
+same_day_course | date=2026-08-18 | course=Lingfield | races=8 | median_per_f=-0.20 | mean_per_f=-0.19 | trimmed_mean_per_f=-0.19 | stdev=0.05 | going={"Standard":8}
+same_day_course | date=2026-08-19 | course=Kempton | races=8 | median_per_f=0.08 | mean_per_f=0.04 | trimmed_mean_per_f=0.05 | stdev=0.07 | going={"Standard / Slow":8}
+same_day_course | date=2026-08-21 | course=Hamilton | races=8 | median_per_f=0.19 | mean_per_f=0.19 | trimmed_mean_per_f=0.22 | stdev=0.20 | going={"Good to Soft":8}
+same_day_course | date=2026-08-22 | course=Redcar | races=8 | median_per_f=0.10 | mean_per_f=0.11 | trimmed_mean_per_f=0.11 | stdev=0.11 | going={"Good (Good to Firm in places)":8}
+same_day_course | date=2026-08-31 | course=Ripon | races=8 | median_per_f=0.27 | mean_per_f=0.34 | trimmed_mean_per_f=0.31 | stdev=0.14 | going={"Good to Soft":2,"Soft":6}
+same_day_course | date=2026-08-31 | course=Southwell | races=8 | median_per_f=-0.18 | mean_per_f=-0.16 | trimmed_mean_per_f=-0.16 | stdev=0.15 | going={"Standard":8}
+same_day_course | date=2026-08-31 | course=Chepstow | races=8 | median_per_f=0.53 | mean_per_f=0.53 | trimmed_mean_per_f=0.53 | stdev=0.11 | going={"Good to Soft (Soft in places)":8}
+same_day_course | date=2026-01-02 | course=Ayr | races=7 | median_per_f=-0.87 | mean_per_f=-0.83 | trimmed_mean_per_f=-0.91 | stdev=0.52 | going={"Soft (Good to Soft in places)":7}
+same_day_course | date=2026-01-02 | course=Chelmsford City | races=7 | median_per_f=-0.14 | mean_per_f=-0.11 | trimmed_mean_per_f=-0.11 | stdev=0.12 | going={"Standard":7}
+same_day_course | date=2026-01-03 | course=Sandown | races=7 | median_per_f=-0.30 | mean_per_f=-0.26 | trimmed_mean_per_f=-0.27 | stdev=0.20 | going={"Good (Good to Soft in places)":4,"Good":3}
+same_day_course | date=2026-01-07 | course=Lingfield | races=7 | median_per_f=0.02 | mean_per_f=0.00 | trimmed_mean_per_f=0.01 | stdev=0.08 | going={"Standard":7}
+same_day_course | date=2026-01-07 | course=Kempton | races=7 | median_per_f=-0.01 | mean_per_f=-0.00 | trimmed_mean_per_f=-0.02 | stdev=0.14 | going={"Standard / Slow":7}
+same_day_course | date=2026-01-08 | course=Chelmsford City | races=7 | median_per_f=0.21 | mean_per_f=0.20 | trimmed_mean_per_f=0.21 | stdev=0.09 | going={"Standard":7}
+same_day_course | date=2026-01-09 | course=Newcastle | races=7 | median_per_f=0.14 | mean_per_f=0.20 | trimmed_mean_per_f=0.20 | stdev=0.24 | going={"Standard":7}
+same_day_course | date=2026-01-10 | course=Kempton | races=7 | median_per_f=0.03 | mean_per_f=-0.02 | trimmed_mean_per_f=-0.01 | stdev=0.18 | going={"Good (Good to Soft in places)":7}
+same_day_course | date=2026-01-11 | course=Fontwell | races=7 | median_per_f=1.04 | mean_per_f=1.05 | trimmed_mean_per_f=1.06 | stdev=0.21 | going={"Soft (Good to Soft in places)":1,"Soft":6}
+same_day_course | date=2026-01-11 | course=Chelmsford City | races=7 | median_per_f=0.03 | mean_per_f=0.09 | trimmed_mean_per_f=0.06 | stdev=0.19 | going={"Standard":7}
+same_day_course | date=2026-01-12 | course=Wolverhampton | races=7 | median_per_f=0.08 | mean_per_f=0.09 | trimmed_mean_per_f=0.10 | stdev=0.15 | going={"Standard":7}
+same_day_course | date=2026-01-12 | course=Lingfield | races=7 | median_per_f=-0.04 | mean_per_f=-0.04 | trimmed_mean_per_f=-0.03 | stdev=0.11 | going={"Standard":7}
+same_day_course | date=2026-01-12 | course=Hereford | races=7 | median_per_f=0.49 | mean_per_f=0.48 | trimmed_mean_per_f=0.50 | stdev=0.36 | going={"Good to Soft (Soft in places)":2,"Soft":5}
+same_day_course | date=2026-01-13 | course=Newcastle | races=7 | median_per_f=0.35 | mean_per_f=0.49 | trimmed_mean_per_f=0.42 | stdev=0.32 | going={"Standard":7}
+same_day_course | date=2026-01-13 | course=Ayr | races=7 | median_per_f=0.16 | mean_per_f=0.32 | trimmed_mean_per_f=0.28 | stdev=0.34 | going={"Heavy (Soft in places)":7}
+same_day_course | date=2026-01-14 | course=Newbury | races=7 | median_per_f=-0.11 | mean_per_f=-0.17 | trimmed_mean_per_f=-0.11 | stdev=0.25 | going={"Good to Soft":7}
+same_day_course | date=2026-01-14 | course=Kempton | races=7 | median_per_f=0.10 | mean_per_f=0.17 | trimmed_mean_per_f=0.10 | stdev=0.24 | going={"Standard / Slow":7}
+same_day_course | date=2026-01-15 | course=Wincanton | races=7 | median_per_f=0.27 | mean_per_f=0.51 | trimmed_mean_per_f=0.49 | stdev=0.44 | going={"Soft (Good to Soft in places)":1,"Soft":4,"Heavy (Soft in places)":2}
+same_day_course | date=2026-01-15 | course=Ludlow | races=7 | median_per_f=0.20 | mean_per_f=0.10 | trimmed_mean_per_f=0.12 | stdev=0.28 | going={"Good to Soft (Soft in places)":7}
+same_day_course | date=2026-01-15 | course=Chelmsford City | races=7 | median_per_f=0.03 | mean_per_f=0.02 | trimmed_mean_per_f=0.02 | stdev=0.15 | going={"Standard":7}
+same_day_course | date=2026-01-16 | course=Market Rasen | races=7 | median_per_f=0.24 | mean_per_f=0.23 | trimmed_mean_per_f=0.22 | stdev=0.29 | going={"Good to Soft (Soft in places)":4,"Soft (Good to Soft in places)":3}
+same_day_course | date=2026-01-17 | course=Taunton | races=7 | median_per_f=-0.04 | mean_per_f=0.00 | trimmed_mean_per_f=-0.02 | stdev=0.27 | going={"Good to Soft (Soft in places)":7}
+same_day_course | date=2026-01-18 | course=Fakenham | races=7 | median_per_f=0.56 | mean_per_f=0.51 | trimmed_mean_per_f=0.49 | stdev=0.39 | going={"Good to Soft (Soft in places)":7}
+same_day_course | date=2026-01-19 | course=Wolverhampton | races=7 | median_per_f=-0.02 | mean_per_f=-0.03 | trimmed_mean_per_f=-0.02 | stdev=0.04 | going={"Standard":7}
+same_day_course | date=2026-01-19 | course=Kempton | races=7 | median_per_f=-0.14 | mean_per_f=-0.06 | trimmed_mean_per_f=-0.08 | stdev=0.20 | going={"Standard / Slow":7}
+same_day_course | date=2026-01-21 | course=Catterick | races=7 | median_per_f=-0.19 | mean_per_f=-0.18 | trimmed_mean_per_f=-0.20 | stdev=0.30 | going={"Good to Soft":4,"Soft (Good to Soft in places)":3}
+same_day_course | date=2026-01-22 | course=Newcastle | races=7 | median_per_f=-0.16 | mean_per_f=-0.14 | trimmed_mean_per_f=-0.16 | stdev=0.25 | going={"Standard":7}
+same_day_course | date=2026-01-22 | course=Wetherby | races=7 | median_per_f=1.58 | mean_per_f=1.76 | trimmed_mean_per_f=1.69 | stdev=0.86 | going={"Soft":7}
+same_day_course | date=2026-01-22 | course=Huntingdon | races=7 | median_per_f=0.21 | mean_per_f=0.37 | trimmed_mean_per_f=0.34 | stdev=0.26 | going={"Soft":7}
+same_day_course | date=2026-01-23 | course=Warwick | races=7 | median_per_f=0.28 | mean_per_f=0.25 | trimmed_mean_per_f=0.29 | stdev=0.21 | going={"Good to Soft (Soft in places)":7}
+same_day_course | date=2026-01-23 | course=Doncaster | races=7 | median_per_f=-0.21 | mean_per_f=-0.31 | trimmed_mean_per_f=-0.10 | stdev=0.81 | going={"Soft (Heavy in places)":2,"Soft":5}
+same_day_course | date=2026-01-24 | course=Newcastle | races=7 | median_per_f=-0.07 | mean_per_f=-0.10 | trimmed_mean_per_f=-0.11 | stdev=0.15 | going={"Standard":7}
+same_day_course | date=2026-01-26 | course=Plumpton | races=7 | median_per_f=0.32 | mean_per_f=0.23 | trimmed_mean_per_f=0.20 | stdev=0.36 | going={"Soft (Good to Soft in places)":7}
+same_day_course | date=2026-01-27 | course=Newcastle | races=7 | median_per_f=1.17 | mean_per_f=1.16 | trimmed_mean_per_f=1.17 | stdev=0.38 | going={"Standard / Slow":1,"Soft (Heavy in places)":1,"Heavy":5}
+same_day_course | date=2026-01-27 | course=Chepstow | races=7 | median_per_f=0.56 | mean_per_f=0.51 | trimmed_mean_per_f=0.54 | stdev=0.21 | going={"Soft (Heavy in places)":7}
+same_day_course | date=2026-01-28 | course=Kempton | races=7 | median_per_f=0.13 | mean_per_f=0.06 | trimmed_mean_per_f=0.07 | stdev=0.21 | going={"":7}
+same_day_course | date=2026-01-29 | course=Wincanton | races=7 | median_per_f=0.55 | mean_per_f=0.60 | trimmed_mean_per_f=0.58 | stdev=0.46 | going={"Heavy":7}
+same_day_course | date=2026-01-29 | course=Ayr | races=7 | median_per_f=-0.28 | mean_per_f=-0.31 | trimmed_mean_per_f=-0.30 | stdev=0.20 | going={"Soft":7}
+same_day_course | date=2026-01-29 | course=Lingfield | races=7 | median_per_f=0.06 | mean_per_f=0.07 | trimmed_mean_per_f=0.07 | stdev=0.12 | going={"Standard":7}
+same_day_course | date=2026-01-30 | course=Southwell | races=7 | median_per_f=0.06 | mean_per_f=0.10 | trimmed_mean_per_f=0.10 | stdev=0.23 | going={"Standard":7}
+same_day_course | date=2026-01-30 | course=Catterick | races=7 | median_per_f=0.51 | mean_per_f=0.52 | trimmed_mean_per_f=0.49 | stdev=0.22 | going={"Soft (Heavy in places)":7}
+same_day_course | date=2026-01-30 | course=Ffos Las | races=7 | median_per_f=0.27 | mean_per_f=0.57 | trimmed_mean_per_f=0.35 | stdev=0.96 | going={"Heavy (Soft in places)":4,"Heavy":3}
+same_day_course | date=2026-01-31 | course=Newcastle | races=7 | median_per_f=-0.10 | mean_per_f=0.01 | trimmed_mean_per_f=-0.06 | stdev=0.28 | going={"Standard":7}
+same_day_course | date=2026-02-01 | course=Market Rasen | races=7 | median_per_f=0.64 | mean_per_f=0.70 | trimmed_mean_per_f=0.64 | stdev=0.49 | going={"Good to Soft (Soft in places)":2,"Soft (Good to Soft in places)":5}
+same_day_course | date=2026-02-02 | course=Wolverhampton | races=7 | median_per_f=0.03 | mean_per_f=0.02 | trimmed_mean_per_f=0.01 | stdev=0.08 | going={"Standard":7}
+same_day_course | date=2026-02-02 | course=Southwell | races=7 | median_per_f=0.27 | mean_per_f=0.28 | trimmed_mean_per_f=0.27 | stdev=0.18 | going={"Good to Soft (Soft in places)":7}
+same_day_course | date=2026-02-02 | course=Kempton | races=7 | median_per_f=0.58 | mean_per_f=0.54 | trimmed_mean_per_f=0.54 | stdev=0.20 | going={"Good to Soft (Soft in places)":7}
+same_day_course | date=2026-02-03 | course=Wolverhampton | races=7 | median_per_f=-0.03 | mean_per_f=-0.01 | trimmed_mean_per_f=-0.03 | stdev=0.10 | going={"Standard":7}
+same_day_course | date=2026-02-03 | course=Carlisle | races=7 | median_per_f=0.03 | mean_per_f=0.06 | trimmed_mean_per_f=0.10 | stdev=0.27 | going={"Good to Soft":4,"Good to Soft (Good in places)":3}
+same_day_course | date=2026-02-04 | course=Ludlow | races=7 | median_per_f=0.53 | mean_per_f=0.52 | trimmed_mean_per_f=0.53 | stdev=0.12 | going={"Soft":7}
+same_day_course | date=2026-02-04 | course=Kempton | races=7 | median_per_f=-0.12 | mean_per_f=-0.11 | trimmed_mean_per_f=-0.10 | stdev=0.12 | going={"Standard / Slow":7}
+same_day_course | date=2026-02-05 | course=Huntingdon | races=7 | median_per_f=0.64 | mean_per_f=0.64 | trimmed_mean_per_f=0.59 | stdev=0.44 | going={"Soft (Good to Soft in places)":2,"Soft":5}
+same_day_course | date=2026-02-07 | course=Newbury | races=7 | median_per_f=0.55 | mean_per_f=0.61 | trimmed_mean_per_f=0.63 | stdev=0.40 | going={"Heavy (Soft in places)":7}
+same_day_course | date=2026-02-07 | course=Southwell | races=7 | median_per_f=0.05 | mean_per_f=0.04 | trimmed_mean_per_f=0.05 | stdev=0.24 | going={"Standard":7}
+same_day_course | date=2026-02-08 | course=Chelmsford City | races=7 | median_per_f=0.00 | mean_per_f=0.02 | trimmed_mean_per_f=0.01 | stdev=0.13 | going={"Standard":7}
+same_day_course | date=2026-02-09 | course=Plumpton | races=7 | median_per_f=0.30 | mean_per_f=0.30 | trimmed_mean_per_f=0.31 | stdev=0.22 | going={"Soft":3,"Soft (Heavy in places)":4}
+same_day_course | date=2026-02-10 | course=Newcastle | races=7 | median_per_f=-0.14 | mean_per_f=-0.09 | trimmed_mean_per_f=-0.13 | stdev=0.26 | going={"Standard":7}
+same_day_course | date=2026-02-10 | course=Ayr | races=7 | median_per_f=0.11 | mean_per_f=0.11 | trimmed_mean_per_f=0.10 | stdev=0.26 | going={"Soft":7}
+same_day_course | date=2026-02-11 | course=Southwell | races=7 | median_per_f=0.14 | mean_per_f=0.11 | trimmed_mean_per_f=0.11 | stdev=0.11 | going={"Standard":7}
+same_day_course | date=2026-02-11 | course=Hereford | races=7 | median_per_f=0.72 | mean_per_f=0.62 | trimmed_mean_per_f=0.66 | stdev=0.27 | going={"Heavy (Soft in places)":7}
+same_day_course | date=2026-02-12 | course=Lingfield | races=7 | median_per_f=0.05 | mean_per_f=0.08 | trimmed_mean_per_f=0.07 | stdev=0.23 | going={"Standard":7}
+same_day_course | date=2026-02-12 | course=Chelmsford City | races=7 | median_per_f=-0.02 | mean_per_f=0.02 | trimmed_mean_per_f=-0.01 | stdev=0.25 | going={"Standard":7}
+same_day_course | date=2026-02-13 | course=Fakenham | races=7 | median_per_f=0.67 | mean_per_f=0.81 | trimmed_mean_per_f=0.79 | stdev=0.49 | going={"Soft":7}
+same_day_course | date=2026-02-13 | course=Wolverhampton | races=7 | median_per_f=-0.01 | mean_per_f=0.01 | trimmed_mean_per_f=0.01 | stdev=0.08 | going={"Standard":7}
+same_day_course | date=2026-02-13 | course=Chepstow | races=7 | median_per_f=1.03 | mean_per_f=0.84 | trimmed_mean_per_f=0.91 | stdev=0.42 | going={"Soft (Heavy in places)":7}
+same_day_course | date=2026-02-14 | course=Newcastle | races=7 | median_per_f=0.14 | mean_per_f=-0.26 | trimmed_mean_per_f=0.11 | stdev=1.03 | going={"Standard / Slow":7}
+same_day_course | date=2026-02-14 | course=Lingfield | races=7 | median_per_f=-0.03 | mean_per_f=-0.03 | trimmed_mean_per_f=-0.01 | stdev=0.12 | going={"Standard":7}
+same_day_course | date=2026-02-16 | course=Wolverhampton | races=7 | median_per_f=-0.01 | mean_per_f=-0.01 | trimmed_mean_per_f=-0.01 | stdev=0.12 | going={"Standard":7}
+same_day_course | date=2026-02-17 | course=Market Rasen | races=7 | median_per_f=0.48 | mean_per_f=0.58 | trimmed_mean_per_f=0.52 | stdev=0.40 | going={"Soft (Good to Soft in places)":5,"Soft (Heavy in places)":2}
+same_day_course | date=2026-02-18 | course=Kempton | races=7 | median_per_f=-0.16 | mean_per_f=-0.18 | trimmed_mean_per_f=-0.18 | stdev=0.18 | going={"Standard / Slow":7}
+same_day_course | date=2026-02-19 | course=Huntingdon | races=7 | median_per_f=1.11 | mean_per_f=0.97 | trimmed_mean_per_f=0.97 | stdev=0.41 | going={"Heavy":7}
+same_day_course | date=2026-02-20 | course=Warwick | races=7 | median_per_f=0.51 | mean_per_f=0.53 | trimmed_mean_per_f=0.48 | stdev=0.42 | going={"Soft":7}
+same_day_course | date=2026-02-20 | course=Ffos Las | races=7 | median_per_f=0.93 | mean_per_f=1.12 | trimmed_mean_per_f=0.96 | stdev=0.75 | going={"Heavy (Soft in places)":7}
+same_day_course | date=2026-02-21 | course=Chepstow | races=7 | median_per_f=0.29 | mean_per_f=0.26 | trimmed_mean_per_f=0.28 | stdev=0.21 | going={"Soft":7}
+same_day_course | date=2026-02-21 | course=Lingfield | races=7 | median_per_f=-0.20 | mean_per_f=0.01 | trimmed_mean_per_f=-0.06 | stdev=0.45 | going={"Standard":7}
+same_day_course | date=2026-02-21 | course=Chelmsford City | races=7 | median_per_f=0.05 | mean_per_f=0.04 | trimmed_mean_per_f=0.05 | stdev=0.16 | going={"Standard":7}
+same_day_course | date=2026-02-21 | course=Kempton | races=7 | median_per_f=-0.01 | mean_per_f=-0.03 | trimmed_mean_per_f=-0.02 | stdev=0.16 | going={"Good to Soft (Soft in places)":7}
+same_day_course | date=2026-02-23 | course=Plumpton | races=7 | median_per_f=0.39 | mean_per_f=0.39 | trimmed_mean_per_f=0.37 | stdev=0.24 | going={"Soft":4,"Soft (Good to Soft in places)":3}
+same_day_course | date=2026-02-25 | course=Wincanton | races=7 | median_per_f=0.08 | mean_per_f=0.20 | trimmed_mean_per_f=0.16 | stdev=0.35 | going={"Good to Soft (Soft in places)":7}
+same_day_course | date=2026-02-25 | course=Kempton | races=7 | median_per_f=-0.09 | mean_per_f=-0.03 | trimmed_mean_per_f=-0.06 | stdev=0.18 | going={"Standard / Slow":7}
+same_day_course | date=2026-02-26 | course=Wetherby | races=7 | median_per_f=0.25 | mean_per_f=0.02 | trimmed_mean_per_f=0.14 | stdev=0.63 | going={"Soft (Good to Soft in places)":7}
+same_day_course | date=2026-02-26 | course=Chelmsford City | races=7 | median_per_f=-0.04 | mean_per_f=-0.02 | trimmed_mean_per_f=-0.02 | stdev=0.13 | going={"Standard":7}
+same_day_course | date=2026-02-27 | course=Wolverhampton | races=7 | median_per_f=0.08 | mean_per_f=0.07 | trimmed_mean_per_f=0.06 | stdev=0.26 | going={"Standard":7}
+same_day_course | date=2026-02-27 | course=Doncaster | races=7 | median_per_f=-0.09 | mean_per_f=0.14 | trimmed_mean_per_f=0.08 | stdev=0.46 | going={"Good to Soft (Good in places)":4,"Good (Good to Soft in places)":2,"Good to Soft":1}
+same_day_course | date=2026-02-27 | course=Lingfield | races=7 | median_per_f=-0.21 | mean_per_f=-0.19 | trimmed_mean_per_f=-0.19 | stdev=0.15 | going={"Standard":7}
+same_day_course | date=2026-02-28 | course=Kelso | races=7 | median_per_f=0.44 | mean_per_f=0.66 | trimmed_mean_per_f=0.65 | stdev=0.50 | going={"Good to Soft (Soft in places)":2,"Good to Soft":5}
+same_day_course | date=2026-03-01 | course=Ffos Las | races=7 | median_per_f=1.42 | mean_per_f=1.12 | trimmed_mean_per_f=1.16 | stdev=0.63 | going={"Heavy":7}
+same_day_course | date=2026-03-01 | course=Huntingdon | races=7 | median_per_f=0.30 | mean_per_f=0.42 | trimmed_mean_per_f=0.40 | stdev=0.30 | going={"Good to Soft":7}
+same_day_course | date=2026-03-03 | course=Wolverhampton | races=7 | median_per_f=-0.06 | mean_per_f=-0.07 | trimmed_mean_per_f=-0.06 | stdev=0.15 | going={"Standard":7}
+same_day_course | date=2026-03-05 | course=Newcastle | races=7 | median_per_f=-0.13 | mean_per_f=0.01 | trimmed_mean_per_f=-0.07 | stdev=0.29 | going={"Standard":7}
+same_day_course | date=2026-03-05 | course=Wincanton | races=7 | median_per_f=-0.25 | mean_per_f=-0.05 | trimmed_mean_per_f=-0.13 | stdev=0.44 | going={"Good to Soft (Good in places)":7}
+same_day_course | date=2026-03-05 | course=Lingfield | races=7 | median_per_f=-0.01 | mean_per_f=0.02 | trimmed_mean_per_f=0.03 | stdev=0.14 | going={"Standard":7}
+same_day_course | date=2026-03-06 | course=Exeter | races=7 | median_per_f=0.34 | mean_per_f=0.45 | trimmed_mean_per_f=0.38 | stdev=0.38 | going={"Good to Soft":7}
+same_day_course | date=2026-03-07 | course=Wolverhampton | races=7 | median_per_f=-0.21 | mean_per_f=-0.14 | trimmed_mean_per_f=-0.12 | stdev=0.21 | going={"Standard":7}
+same_day_course | date=2026-03-07 | course=Ayr | races=7 | median_per_f=0.25 | mean_per_f=0.36 | trimmed_mean_per_f=0.27 | stdev=0.52 | going={"Soft":7}
+same_day_course | date=2026-03-07 | course=Chelmsford City | races=7 | median_per_f=-0.04 | mean_per_f=-0.08 | trimmed_mean_per_f=-0.07 | stdev=0.13 | going={"Standard":7}
+same_day_course | date=2026-03-07 | course=Hereford | races=7 | median_per_f=0.20 | mean_per_f=0.16 | trimmed_mean_per_f=0.14 | stdev=0.41 | going={"Good (Good to Soft in places)":7}
+same_day_course | date=2026-03-07 | course=Sandown | races=7 | median_per_f=0.44 | mean_per_f=0.47 | trimmed_mean_per_f=0.43 | stdev=0.21 | going={"Soft (Heavy in places)":4,"Soft (Good to Soft in places)":3}
+same_day_course | date=2026-03-08 | course=Warwick | races=7 | median_per_f=0.48 | mean_per_f=0.42 | trimmed_mean_per_f=0.43 | stdev=0.27 | going={"Good to Soft (Good in places)":7}
+same_day_course | date=2026-03-08 | course=Carlisle | races=7 | median_per_f=0.13 | mean_per_f=0.07 | trimmed_mean_per_f=0.10 | stdev=0.28 | going={"Soft (Good to Soft in places)":3,"Good to Soft (Soft in places)":4}
+same_day_course | date=2026-03-09 | course=Stratford | races=7 | median_per_f=1.00 | mean_per_f=1.01 | trimmed_mean_per_f=0.99 | stdev=0.20 | going={"Soft (Good to Soft in places)":7}
+same_day_course | date=2026-03-09 | course=Taunton | races=7 | median_per_f=-0.06 | mean_per_f=0.23 | trimmed_mean_per_f=-0.03 | stdev=0.85 | going={"Good (Good to Soft in places)":7}
+same_day_course | date=2026-03-09 | course=Wolverhampton | races=7 | median_per_f=0.02 | mean_per_f=0.01 | trimmed_mean_per_f=0.01 | stdev=0.14 | going={"Standard":7}
+same_day_course | date=2026-03-09 | course=Plumpton | races=7 | median_per_f=0.48 | mean_per_f=0.47 | trimmed_mean_per_f=0.54 | stdev=0.41 | going={"Good to Soft (Good in places)":3,"Good (Good to Soft in places)":1,"Good to Soft":3}
+same_day_course | date=2026-03-10 | course=Southwell | races=7 | median_per_f=-0.03 | mean_per_f=-0.03 | trimmed_mean_per_f=-0.04 | stdev=0.14 | going={"Standard":7}
+same_day_course | date=2026-03-11 | course=Newcastle | races=7 | median_per_f=0.05 | mean_per_f=0.11 | trimmed_mean_per_f=0.08 | stdev=0.15 | going={"Standard":7}
+same_day_course | date=2026-03-11 | course=Southwell | races=7 | median_per_f=-0.02 | mean_per_f=-0.03 | trimmed_mean_per_f=-0.04 | stdev=0.10 | going={"Standard":7}
+same_day_course | date=2026-03-11 | course=Huntingdon | races=7 | median_per_f=-0.17 | mean_per_f=-0.16 | trimmed_mean_per_f=-0.18 | stdev=0.19 | going={"Good (Good to Soft in places)":7}
+same_day_course | date=2026-03-12 | course=Cheltenham | races=7 | median_per_f=-0.17 | mean_per_f=-0.12 | trimmed_mean_per_f=-0.17 | stdev=0.29 | going={"Good (Good to Soft in places)":7}
+same_day_course | date=2026-03-13 | course=Fakenham | races=7 | median_per_f=0.35 | mean_per_f=0.64 | trimmed_mean_per_f=0.47 | stdev=0.72 | going={"Good to Soft (Good in places)":7}
+same_day_course | date=2026-03-13 | course=Cheltenham | races=7 | median_per_f=0.02 | mean_per_f=0.02 | trimmed_mean_per_f=0.04 | stdev=0.38 | going={"Good to Soft (Soft in places)":7}
+same_day_course | date=2026-03-14 | course=Newcastle | races=7 | median_per_f=0.28 | mean_per_f=0.26 | trimmed_mean_per_f=0.27 | stdev=0.18 | going={"Good to Soft (Soft in places)":7}
+same_day_course | date=2026-03-14 | course=Southwell | races=7 | median_per_f=0.01 | mean_per_f=-0.03 | trimmed_mean_per_f=-0.01 | stdev=0.12 | going={"Standard":7}
+same_day_course | date=2026-03-14 | course=Fontwell | races=7 | median_per_f=0.51 | mean_per_f=0.60 | trimmed_mean_per_f=0.58 | stdev=0.26 | going={"Soft":7}
+same_day_course | date=2026-03-15 | course=Market Rasen | races=7 | median_per_f=0.10 | mean_per_f=0.00 | trimmed_mean_per_f=0.03 | stdev=0.27 | going={"Good to Soft":5,"Good to Soft (Soft in places)":2}
+same_day_course | date=2026-03-15 | course=Chepstow | races=7 | median_per_f=0.11 | mean_per_f=0.22 | trimmed_mean_per_f=0.16 | stdev=0.28 | going={"Soft (Good to Soft in places)":7}
+same_day_course | date=2026-03-16 | course=Wolverhampton | races=7 | median_per_f=0.11 | mean_per_f=0.09 | trimmed_mean_per_f=0.11 | stdev=0.15 | going={"Standard":7}
+same_day_course | date=2026-03-16 | course=Plumpton | races=7 | median_per_f=0.28 | mean_per_f=0.27 | trimmed_mean_per_f=0.25 | stdev=0.37 | going={"Good to Soft (Soft in places)":5,"Good to Soft (Good in places)":2}
+same_day_course | date=2026-03-17 | course=Exeter | races=7 | median_per_f=-0.40 | mean_per_f=-0.29 | trimmed_mean_per_f=-0.27 | stdev=0.34 | going={"Good to Soft":7}
+same_day_course | date=2026-03-18 | course=Huntingdon | races=7 | median_per_f=-0.11 | mean_per_f=-0.06 | trimmed_mean_per_f=-0.07 | stdev=0.15 | going={"Good":7}
+same_day_course | date=2026-03-18 | course=Hereford | races=7 | median_per_f=-0.19 | mean_per_f=-0.14 | trimmed_mean_per_f=-0.16 | stdev=0.13 | going={"Good (Good to Soft in places)":7}
+same_day_course | date=2026-03-19 | course=Newcastle | races=7 | median_per_f=0.06 | mean_per_f=-0.00 | trimmed_mean_per_f=-0.00 | stdev=0.21 | going={"Standard":7}
+same_day_course | date=2026-03-20 | course=Lingfield | races=7 | median_per_f=-0.09 | mean_per_f=-0.05 | trimmed_mean_per_f=-0.06 | stdev=0.16 | going={"Standard":7}
+same_day_course | date=2026-03-21 | course=Bangor-on-Dee | races=7 | median_per_f=-0.11 | mean_per_f=-0.01 | trimmed_mean_per_f=-0.06 | stdev=0.37 | going={"Good (Good to Soft in places)":5,"Good to Soft (Good in places)":2}
+same_day_course | date=2026-03-23 | course=Wincanton | races=7 | median_per_f=-0.80 | mean_per_f=-0.83 | trimmed_mean_per_f=-0.83 | stdev=0.27 | going={"Good":7}
+same_day_course | date=2026-03-26 | course=Southwell | races=7 | median_per_f=-0.07 | mean_per_f=-0.03 | trimmed_mean_per_f=-0.04 | stdev=0.18 | going={"Standard":7}
+same_day_course | date=2026-03-26 | course=Chelmsford City | races=7 | median_per_f=-0.18 | mean_per_f=-0.21 | trimmed_mean_per_f=-0.21 | stdev=0.09 | going={"Standard":7}
+same_day_course | date=2026-03-27 | course=Lingfield | races=7 | median_per_f=0.03 | mean_per_f=0.04 | trimmed_mean_per_f=-0.02 | stdev=0.24 | going={"Standard":7}
+same_day_course | date=2026-03-28 | course=Stratford | races=7 | median_per_f=0.39 | mean_per_f=0.43 | trimmed_mean_per_f=0.41 | stdev=0.18 | going={"Good (Good to Soft in places)":7}
+same_day_course | date=2026-03-28 | course=Uttoxeter | races=7 | median_per_f=0.19 | mean_per_f=0.21 | trimmed_mean_per_f=0.20 | stdev=0.17 | going={"Good to Soft":7}
+same_day_course | date=2026-03-28 | course=Kempton | races=7 | median_per_f=-0.24 | mean_per_f=-0.29 | trimmed_mean_per_f=-0.27 | stdev=0.13 | going={"Standard / Slow":7}
+same_day_course | date=2026-03-30 | course=Wolverhampton | races=7 | median_per_f=-0.04 | mean_per_f=-0.01 | trimmed_mean_per_f=-0.02 | stdev=0.13 | going={"Standard":7}
+same_day_course | date=2026-03-30 | course=Kempton | races=7 | median_per_f=0.03 | mean_per_f=0.03 | trimmed_mean_per_f=0.01 | stdev=0.16 | going={"Standard / Slow":7}
+same_day_course | date=2026-03-31 | course=Wolverhampton | races=7 | median_per_f=-0.03 | mean_per_f=-0.04 | trimmed_mean_per_f=-0.02 | stdev=0.11 | going={"Standard":7}
+same_day_course | date=2026-04-01 | course=Wincanton | races=7 | median_per_f=-0.89 | mean_per_f=-0.86 | trimmed_mean_per_f=-0.84 | stdev=0.19 | going={"Good":7}
+same_day_course | date=2026-04-01 | course=Kempton | races=7 | median_per_f=0.01 | mean_per_f=-0.03 | trimmed_mean_per_f=-0.00 | stdev=0.12 | going={"Standard / Slow":7}
+same_day_course | date=2026-04-02 | course=Southwell | races=7 | median_per_f=-0.07 | mean_per_f=-0.03 | trimmed_mean_per_f=-0.06 | stdev=0.15 | going={"Standard":7}
+same_day_course | date=2026-04-02 | course=Chepstow | races=7 | median_per_f=-0.18 | mean_per_f=-0.28 | trimmed_mean_per_f=-0.28 | stdev=0.38 | going={"Good to Soft (Good in places)":7}
+same_day_course | date=2026-04-03 | course=Newcastle | races=7 | median_per_f=-0.19 | mean_per_f=-0.16 | trimmed_mean_per_f=-0.16 | stdev=0.08 | going={"Standard":7}
+same_day_course | date=2026-04-03 | course=Lingfield | races=7 | median_per_f=-0.30 | mean_per_f=-0.26 | trimmed_mean_per_f=-0.27 | stdev=0.09 | going={"Standard":7}
+same_day_course | date=2026-04-04 | course=Wolverhampton | races=7 | median_per_f=0.01 | mean_per_f=0.11 | trimmed_mean_per_f=0.06 | stdev=0.23 | going={"Standard":7}
+same_day_course | date=2026-04-04 | course=Carlisle | races=7 | median_per_f=0.11 | mean_per_f=0.07 | trimmed_mean_per_f=0.10 | stdev=0.21 | going={"Good to Soft (Good in places)":1,"Good (Good to Soft in places)":6}
+same_day_course | date=2026-04-04 | course=Haydock | races=7 | median_per_f=-0.36 | mean_per_f=-0.22 | trimmed_mean_per_f=-0.27 | stdev=0.30 | going={"Good (Good to Soft in places)":7}
+same_day_course | date=2026-04-05 | course=Southwell | races=7 | median_per_f=-0.10 | mean_per_f=-0.12 | trimmed_mean_per_f=-0.15 | stdev=0.18 | going={"Standard":7}
+same_day_course | date=2026-04-05 | course=Plumpton | races=7 | median_per_f=-0.44 | mean_per_f=-0.38 | trimmed_mean_per_f=-0.40 | stdev=0.35 | going={"Good (Good to Soft in places)":4,"Good":3}
+same_day_course | date=2026-04-06 | course=Hereford | races=7 | median_per_f=-0.23 | mean_per_f=-0.24 | trimmed_mean_per_f=-0.16 | stdev=0.43 | going={"Good":7}
+same_day_course | date=2026-04-06 | course=Kempton | races=7 | median_per_f=-0.09 | mean_per_f=-0.11 | trimmed_mean_per_f=-0.09 | stdev=0.11 | going={"Standard / Slow":7}
+same_day_course | date=2026-04-07 | course=Exeter | races=7 | median_per_f=-0.78 | mean_per_f=-0.75 | trimmed_mean_per_f=-0.77 | stdev=0.16 | going={"Good (Good to Firm in places)":7}
+same_day_course | date=2026-04-09 | course=Wolverhampton | races=7 | median_per_f=-0.01 | mean_per_f=-0.06 | trimmed_mean_per_f=-0.02 | stdev=0.15 | going={"Standard":7}
+same_day_course | date=2026-04-09 | course=Southwell | races=7 | median_per_f=-0.13 | mean_per_f=-0.07 | trimmed_mean_per_f=-0.12 | stdev=0.23 | going={"Standard":7}
+same_day_course | date=2026-04-11 | course=Newcastle | races=7 | median_per_f=-0.52 | mean_per_f=-0.60 | trimmed_mean_per_f=-0.55 | stdev=0.23 | going={"Good":7}
+same_day_course | date=2026-04-11 | course=Chepstow | races=7 | median_per_f=-0.52 | mean_per_f=-0.51 | trimmed_mean_per_f=-0.51 | stdev=0.31 | going={"Good to Soft (Good in places)":7}
+same_day_course | date=2026-04-12 | course=Ffos Las | races=7 | median_per_f=-0.62 | mean_per_f=-0.68 | trimmed_mean_per_f=-0.68 | stdev=0.14 | going={"Good to Soft (Soft in places)":7}
+same_day_course | date=2026-04-12 | course=Musselburgh | races=7 | median_per_f=0.07 | mean_per_f=0.11 | trimmed_mean_per_f=0.07 | stdev=0.18 | going={"Good to Soft (Good in places)":2,"Good":5}
+same_day_course | date=2026-04-13 | course=Newcastle | races=7 | median_per_f=-0.24 | mean_per_f=-0.26 | trimmed_mean_per_f=-0.24 | stdev=0.08 | going={"Standard":7}
+same_day_course | date=2026-04-14 | course=Newmarket | races=7 | median_per_f=0.11 | mean_per_f=0.17 | trimmed_mean_per_f=0.13 | stdev=0.23 | going={"Good":7}
+same_day_course | date=2026-04-14 | course=Lingfield | races=7 | median_per_f=0.04 | mean_per_f=0.04 | trimmed_mean_per_f=0.02 | stdev=0.19 | going={"Standard":7}
+same_day_course | date=2026-04-15 | course=Newmarket | races=7 | median_per_f=-0.02 | mean_per_f=0.10 | trimmed_mean_per_f=0.07 | stdev=0.18 | going={"Good":7}
+same_day_course | date=2026-04-15 | course=Southwell | races=7 | median_per_f=-0.07 | mean_per_f=-0.03 | trimmed_mean_per_f=-0.04 | stdev=0.14 | going={"Standard":7}
+same_day_course | date=2026-04-15 | course=Beverley | races=7 | median_per_f=0.12 | mean_per_f=0.04 | trimmed_mean_per_f=0.09 | stdev=0.19 | going={"Good to Soft (Good in places)":7}
+same_day_course | date=2026-04-16 | course=Newmarket | races=7 | median_per_f=-0.15 | mean_per_f=-0.12 | trimmed_mean_per_f=-0.13 | stdev=0.10 | going={"Good":7}
+same_day_course | date=2026-04-16 | course=Ripon | races=7 | median_per_f=0.13 | mean_per_f=0.09 | trimmed_mean_per_f=0.11 | stdev=0.20 | going={"Good to Soft":7}
+same_day_course | date=2026-04-16 | course=Hereford | races=7 | median_per_f=-0.54 | mean_per_f=-0.53 | trimmed_mean_per_f=-0.54 | stdev=0.27 | going={"Good ( Good to Soft in places)":2,"Good":5}
+same_day_course | date=2026-04-17 | course=Wolverhampton | races=7 | median_per_f=0.10 | mean_per_f=0.02 | trimmed_mean_per_f=0.02 | stdev=0.19 | going={"Standard":7}
+same_day_course | date=2026-04-17 | course=Ayr | races=7 | median_per_f=-0.34 | mean_per_f=-0.35 | trimmed_mean_per_f=-0.37 | stdev=0.37 | going={"Soft (Good to Soft in places)":6,"Soft (Heavy in places)":1}
+same_day_course | date=2026-04-17 | course=Bath | races=7 | median_per_f=0.38 | mean_per_f=0.38 | trimmed_mean_per_f=0.38 | stdev=0.13 | going={"Good":3,"Good to Soft":4}
+same_day_course | date=2026-04-18 | course=Newbury | races=7 | median_per_f=0.02 | mean_per_f=0.05 | trimmed_mean_per_f=0.02 | stdev=0.16 | going={"Good (Good to Firm in places)":7}
+same_day_course | date=2026-04-19 | course=Stratford | races=7 | median_per_f=-0.17 | mean_per_f=-0.17 | trimmed_mean_per_f=-0.18 | stdev=0.19 | going={"Good":7}
+same_day_course | date=2026-04-19 | course=Plumpton | races=7 | median_per_f=-0.48 | mean_per_f=-0.50 | trimmed_mean_per_f=-0.48 | stdev=0.30 | going={"Good":7}
+same_day_course | date=2026-04-20 | course=Redcar | races=7 | median_per_f=0.09 | mean_per_f=0.04 | trimmed_mean_per_f=0.06 | stdev=0.10 | going={"Good to Firm (Good in places)":7}
+same_day_course | date=2026-04-21 | course=Yarmouth | races=7 | median_per_f=-0.28 | mean_per_f=-0.30 | trimmed_mean_per_f=-0.29 | stdev=0.17 | going={"Good to Firm (Good in places)":2,"Good to Firm":5}
+same_day_course | date=2026-04-21 | course=Ffos Las | races=7 | median_per_f=-0.90 | mean_per_f=-0.97 | trimmed_mean_per_f=-1.01 | stdev=0.35 | going={"Good to Soft":1,"Good (Good to Soft in places)":6}
+same_day_course | date=2026-04-22 | course=Catterick | races=7 | median_per_f=-0.10 | mean_per_f=-0.05 | trimmed_mean_per_f=-0.06 | stdev=0.16 | going={"Good (Good to Firm to places)":7}
+same_day_course | date=2026-04-23 | course=Warwick | races=7 | median_per_f=-0.51 | mean_per_f=-0.56 | trimmed_mean_per_f=-0.56 | stdev=0.26 | going={"Good":5,"Good (Good to Firm in places)":2}
+same_day_course | date=2026-04-24 | course=Chepstow | races=7 | median_per_f=-0.59 | mean_per_f=-0.60 | trimmed_mean_per_f=-0.60 | stdev=0.31 | going={"Good":7}
+same_day_course | date=2026-04-24 | course=Doncaster | races=7 | median_per_f=0.01 | mean_per_f=-0.00 | trimmed_mean_per_f=-0.00 | stdev=0.15 | going={"Good to Firm (Good in places)":7}
+same_day_course | date=2026-04-24 | course=Sandown | races=7 | median_per_f=-0.05 | mean_per_f=-0.06 | trimmed_mean_per_f=-0.05 | stdev=0.20 | going={"Good (Good to Firm in places)":1,"Good":6}
+same_day_course | date=2026-04-25 | course=Southwell | races=7 | median_per_f=-0.08 | mean_per_f=-0.03 | trimmed_mean_per_f=-0.07 | stdev=0.13 | going={"Standard":7}
+same_day_course | date=2026-04-25 | course=Doncaster | races=7 | median_per_f=-0.19 | mean_per_f=-0.18 | trimmed_mean_per_f=-0.18 | stdev=0.17 | going={"Good to Firm (Good in places)":7}
+same_day_course | date=2026-04-25 | course=Leicester | races=7 | median_per_f=-0.03 | mean_per_f=0.01 | trimmed_mean_per_f=-0.02 | stdev=0.15 | going={"Good to Firm (Good in places)":7}
+same_day_course | date=2026-04-26 | course=Wetherby | races=7 | median_per_f=0.14 | mean_per_f=0.06 | trimmed_mean_per_f=0.08 | stdev=0.19 | going={"Good to Firm (Good in places)":7}
+same_day_course | date=2026-04-26 | course=Musselburgh | races=7 | median_per_f=0.01 | mean_per_f=0.04 | trimmed_mean_per_f=0.01 | stdev=0.17 | going={"Good (Good to Firm in places)":7}
+same_day_course | date=2026-04-27 | course=Wolverhampton | races=7 | median_per_f=-0.03 | mean_per_f=-0.05 | trimmed_mean_per_f=-0.05 | stdev=0.07 | going={"Standard":7}
+same_day_course | date=2026-04-27 | course=Bath | races=7 | median_per_f=-0.13 | mean_per_f=-0.17 | trimmed_mean_per_f=-0.17 | stdev=0.13 | going={"Firm (Good to Firm in places)":7}
+same_day_course | date=2026-04-28 | course=Yarmouth | races=7 | median_per_f=-0.23 | mean_per_f=-0.22 | trimmed_mean_per_f=-0.23 | stdev=0.18 | going={"Good":7}
+same_day_course | date=2026-04-28 | course=Southwell | races=7 | median_per_f=-0.06 | mean_per_f=-0.02 | trimmed_mean_per_f=-0.02 | stdev=0.07 | going={"Standard":7}
+same_day_course | date=2026-04-28 | course=Lingfield | races=7 | median_per_f=0.09 | mean_per_f=0.10 | trimmed_mean_per_f=0.11 | stdev=0.14 | going={"Standard":7}
+same_day_course | date=2026-04-29 | course=Pontefract | races=7 | median_per_f=0.20 | mean_per_f=0.24 | trimmed_mean_per_f=0.21 | stdev=0.33 | going={"Good (Good to Firm in places)":7}
+same_day_course | date=2026-04-29 | course=Musselburgh | races=7 | median_per_f=0.07 | mean_per_f=0.09 | trimmed_mean_per_f=0.09 | stdev=0.07 | going={"Good":2,"Good (Good to Firm in places)":5}
+same_day_course | date=2026-04-30 | course=Southwell | races=7 | median_per_f=-0.14 | mean_per_f=-0.09 | trimmed_mean_per_f=-0.11 | stdev=0.12 | going={"Standard":7}
+same_day_course | date=2026-04-30 | course=Kempton | races=7 | median_per_f=0.12 | mean_per_f=0.13 | trimmed_mean_per_f=0.10 | stdev=0.20 | going={"Standard / Slow":7}
+same_day_course | date=2026-05-01 | course=Newcastle | races=7 | median_per_f=0.08 | mean_per_f=0.12 | trimmed_mean_per_f=0.11 | stdev=0.11 | going={"Standard":7}
+same_day_course | date=2026-05-01 | course=Newmarket | races=7 | median_per_f=0.03 | mean_per_f=-0.01 | trimmed_mean_per_f=-0.00 | stdev=0.11 | going={"Good (Good to Firm in places)":1,"Good to Firm":6}
+same_day_course | date=2026-05-01 | course=Ascot | races=7 | median_per_f=0.01 | mean_per_f=0.01 | trimmed_mean_per_f=0.00 | stdev=0.20 | going={"Good to Firm (Good in places)":7}
+same_day_course | date=2026-05-01 | course=Goodwood | races=7 | median_per_f=0.18 | mean_per_f=0.14 | trimmed_mean_per_f=0.13 | stdev=0.33 | going={"Good":7}
+same_day_course | date=2026-05-02 | course=Doncaster | races=7 | median_per_f=0.23 | mean_per_f=0.11 | trimmed_mean_per_f=0.15 | stdev=0.31 | going={"Good to Firm (Good in places)":7}
+same_day_course | date=2026-05-03 | course=Newmarket | races=7 | median_per_f=-0.20 | mean_per_f=-0.19 | trimmed_mean_per_f=-0.20 | stdev=0.15 | going={"Good to Firm":7}
+same_day_course | date=2026-05-03 | course=Salisbury | races=7 | median_per_f=-0.10 | mean_per_f=-0.13 | trimmed_mean_per_f=-0.11 | stdev=0.10 | going={"Good to Firm":7}
+same_day_course | date=2026-05-03 | course=Hamilton | races=7 | median_per_f=0.24 | mean_per_f=0.18 | trimmed_mean_per_f=0.19 | stdev=0.16 | going={"Good":7}
+same_day_course | date=2026-05-04 | course=Fakenham | races=7 | median_per_f=-0.36 | mean_per_f=-0.35 | trimmed_mean_per_f=-0.36 | stdev=0.36 | going={"Good":7}
+same_day_course | date=2026-05-06 | course=Kelso | races=7 | median_per_f=-0.11 | mean_per_f=-0.33 | trimmed_mean_per_f=-0.26 | stdev=0.40 | going={"Good":7}
+same_day_course | date=2026-05-06 | course=Kempton | races=7 | median_per_f=-0.11 | mean_per_f=-0.07 | trimmed_mean_per_f=-0.09 | stdev=0.15 | going={"Standard / Slow":7}
+same_day_course | date=2026-05-07 | course=Southwell | races=7 | median_per_f=-0.06 | mean_per_f=-0.03 | trimmed_mean_per_f=-0.07 | stdev=0.18 | going={"Standard":7}
+same_day_course | date=2026-05-08 | course=Wolverhampton | races=7 | median_per_f=-0.04 | mean_per_f=0.11 | trimmed_mean_per_f=0.06 | stdev=0.28 | going={"Standard":7}
+same_day_course | date=2026-05-08 | course=Ascot | races=7 | median_per_f=0.02 | mean_per_f=0.11 | trimmed_mean_per_f=0.07 | stdev=0.24 | going={"Good (Good to Firm in places)":7}
+same_day_course | date=2026-05-09 | course=Nottingham | races=7 | median_per_f=-0.06 | mean_per_f=-0.02 | trimmed_mean_per_f=-0.04 | stdev=0.21 | going={"Good (Good to Firm in places)":7}
+same_day_course | date=2026-05-09 | course=Ascot | races=7 | median_per_f=-0.12 | mean_per_f=-0.08 | trimmed_mean_per_f=-0.10 | stdev=0.18 | going={"Good (Good to Firm in places)":3,"Good to Firm (Good in places)":4}
+same_day_course | date=2026-05-09 | course=Leicester | races=7 | median_per_f=0.16 | mean_per_f=0.18 | trimmed_mean_per_f=0.17 | stdev=0.18 | going={"Good to Firm (Good in places)":7}
+same_day_course | date=2026-05-09 | course=Hexham | races=7 | median_per_f=1.02 | mean_per_f=1.09 | trimmed_mean_per_f=1.11 | stdev=0.24 | going={"Good to Soft":3,"Soft":4}
+same_day_course | date=2026-05-09 | course=Lingfield | races=7 | median_per_f=-0.04 | mean_per_f=-0.04 | trimmed_mean_per_f=-0.01 | stdev=0.21 | going={"Good to Firm (Good in places)":7}
+same_day_course | date=2026-05-11 | course=Windsor | races=7 | median_per_f=-0.02 | mean_per_f=0.04 | trimmed_mean_per_f=0.02 | stdev=0.10 | going={"Good to Firm (Good in places)":7}
+same_day_course | date=2026-05-11 | course=Southwell | races=7 | median_per_f=-0.66 | mean_per_f=-0.69 | trimmed_mean_per_f=-0.68 | stdev=0.18 | going={"Good":7}
+same_day_course | date=2026-05-12 | course=Bath | races=7 | median_per_f=0.15 | mean_per_f=0.21 | trimmed_mean_per_f=0.11 | stdev=0.39 | going={"Firm (Good to Firm in places)":7}
+same_day_course | date=2026-05-12 | course=Lingfield | races=7 | median_per_f=0.12 | mean_per_f=0.15 | trimmed_mean_per_f=0.09 | stdev=0.33 | going={"Standard":7}
+same_day_course | date=2026-05-13 | course=Newton Abbot | races=7 | median_per_f=0.42 | mean_per_f=0.40 | trimmed_mean_per_f=0.40 | stdev=0.30 | going={"Good":7}
+same_day_course | date=2026-05-13 | course=York | races=7 | median_per_f=0.01 | mean_per_f=0.08 | trimmed_mean_per_f=0.06 | stdev=0.18 | going={"Good (Good to Firm in places)":2,"Good":5}
+same_day_course | date=2026-05-13 | course=Bath | races=7 | median_per_f=0.13 | mean_per_f=0.17 | trimmed_mean_per_f=0.14 | stdev=0.25 | going={"Firm (Good to Firm in places)":7}
+same_day_course | date=2026-05-14 | course=York | races=7 | median_per_f=0.02 | mean_per_f=0.10 | trimmed_mean_per_f=0.06 | stdev=0.31 | going={"Good":7}
+same_day_course | date=2026-05-14 | course=Perth | races=7 | median_per_f=0.66 | mean_per_f=0.96 | trimmed_mean_per_f=0.73 | stdev=0.72 | going={"Good to Soft":2,"Good to Soft (Soft in places)":5}
+same_day_course | date=2026-05-14 | course=Salisbury | races=7 | median_per_f=0.17 | mean_per_f=0.18 | trimmed_mean_per_f=0.17 | stdev=0.26 | going={"Good (Good to Firm in places)":7}
+same_day_course | date=2026-05-15 | course=York | races=7 | median_per_f=0.05 | mean_per_f=0.12 | trimmed_mean_per_f=0.11 | stdev=0.18 | going={"Good":7}
+same_day_course | date=2026-05-15 | course=Hamilton | races=7 | median_per_f=0.05 | mean_per_f=0.00 | trimmed_mean_per_f=0.03 | stdev=0.14 | going={"Good":7}
+same_day_course | date=2026-05-16 | course=Newmarket | races=7 | median_per_f=-0.16 | mean_per_f=-0.12 | trimmed_mean_per_f=-0.13 | stdev=0.13 | going={"Good (Good to Firm in places)":7}
+same_day_course | date=2026-05-16 | course=Uttoxeter | races=7 | median_per_f=0.14 | mean_per_f=0.13 | trimmed_mean_per_f=0.18 | stdev=0.25 | going={"Good":7}
+same_day_course | date=2026-05-17 | course=Ripon | races=7 | median_per_f=-0.07 | mean_per_f=-0.06 | trimmed_mean_per_f=-0.05 | stdev=0.11 | going={"Good (Good to Firm in places)":7}
+same_day_course | date=2026-05-17 | course=Stratford | races=7 | median_per_f=0.28 | mean_per_f=0.36 | trimmed_mean_per_f=0.37 | stdev=0.25 | going={"Good to Firm (Good in places)":7}
+same_day_course | date=2026-05-17 | course=Hamilton | races=7 | median_per_f=-0.31 | mean_per_f=-0.29 | trimmed_mean_per_f=-0.31 | stdev=0.21 | going={"Good":7}
+same_day_course | date=2026-05-18 | course=Windsor | races=7 | median_per_f=-0.07 | mean_per_f=-0.06 | trimmed_mean_per_f=-0.03 | stdev=0.15 | going={"Good (Good to Firm in places)":7}
+same_day_course | date=2026-05-18 | course=Wolverhampton | races=7 | median_per_f=-0.05 | mean_per_f=-0.07 | trimmed_mean_per_f=-0.06 | stdev=0.09 | going={"Standard":7}
+same_day_course | date=2026-05-18 | course=Carlisle | races=7 | median_per_f=0.68 | mean_per_f=0.73 | trimmed_mean_per_f=0.72 | stdev=0.16 | going={"Good (Good to Firm in places)":2,"Good to Soft":1,"Soft":4}
+same_day_course | date=2026-05-18 | course=Redcar | races=7 | median_per_f=-0.09 | mean_per_f=-0.07 | trimmed_mean_per_f=-0.07 | stdev=0.10 | going={"Good (Good to Firm in places)":7}
+same_day_course | date=2026-05-19 | course=Newcastle | races=7 | median_per_f=-0.04 | mean_per_f=0.14 | trimmed_mean_per_f=-0.03 | stdev=0.50 | going={"Standard":7}
+same_day_course | date=2026-05-19 | course=Hexham | races=7 | median_per_f=0.19 | mean_per_f=0.13 | trimmed_mean_per_f=0.13 | stdev=0.15 | going={"Good (Good to Soft in places)":7}
+same_day_course | date=2026-05-20 | course=Ayr | races=7 | median_per_f=-0.11 | mean_per_f=-0.06 | trimmed_mean_per_f=-0.06 | stdev=0.13 | going={"Good to Firm":7}
+same_day_course | date=2026-05-21 | course=Catterick | races=7 | median_per_f=0.06 | mean_per_f=0.06 | trimmed_mean_per_f=0.07 | stdev=0.14 | going={"Good (Good to Soft in places)":7}
+same_day_course | date=2026-05-21 | course=Chepstow | races=7 | median_per_f=0.02 | mean_per_f=0.08 | trimmed_mean_per_f=0.08 | stdev=0.14 | going={"Good to Soft":7}
+same_day_course | date=2026-05-21 | course=Musselburgh | races=7 | median_per_f=0.13 | mean_per_f=0.21 | trimmed_mean_per_f=0.17 | stdev=0.22 | going={"Good":7}
+same_day_course | date=2026-05-22 | course=Goodwood | races=7 | median_per_f=-0.08 | mean_per_f=-0.12 | trimmed_mean_per_f=-0.10 | stdev=0.12 | going={"Good to Soft (Good in places)":1,"Good (Good to Soft in places)":4,"Good":2}
+same_day_course | date=2026-05-22 | course=Haydock | races=7 | median_per_f=0.35 | mean_per_f=0.34 | trimmed_mean_per_f=0.32 | stdev=0.27 | going={"Soft (Good to Soft in places)":2,"Good to Soft (Soft in places)":5}
+same_day_course | date=2026-05-23 | course=York | races=7 | median_per_f=0.08 | mean_per_f=0.06 | trimmed_mean_per_f=0.03 | stdev=0.23 | going={"Good (Good to Firm in places)":7}
+same_day_course | date=2026-05-23 | course=Cartmel | races=7 | median_per_f=-0.27 | mean_per_f=-0.30 | trimmed_mean_per_f=-0.28 | stdev=0.13 | going={"Good (Good to Soft in places)":1,"Good":6}
+same_day_course | date=2026-05-23 | course=Salisbury | races=7 | median_per_f=-0.00 | mean_per_f=0.02 | trimmed_mean_per_f=0.05 | stdev=0.23 | going={"Good":7}
+same_day_course | date=2026-05-23 | course=Goodwood | races=7 | median_per_f=-0.11 | mean_per_f=-0.08 | trimmed_mean_per_f=-0.11 | stdev=0.14 | going={"Good":5,"Good (Good to Firm in places)":2}
+same_day_course | date=2026-05-23 | course=Bangor-on-Dee | races=7 | median_per_f=-0.27 | mean_per_f=-0.27 | trimmed_mean_per_f=-0.24 | stdev=0.40 | going={"Good":7}
+same_day_course | date=2026-05-24 | course=Uttoxeter | races=7 | median_per_f=-0.16 | mean_per_f=-0.11 | trimmed_mean_per_f=-0.10 | stdev=0.28 | going={"Good":7}
+same_day_course | date=2026-05-24 | course=Kelso | races=7 | median_per_f=-0.49 | mean_per_f=-0.44 | trimmed_mean_per_f=-0.49 | stdev=0.30 | going={"Good":7}
+same_day_course | date=2026-05-24 | course=Fontwell | races=7 | median_per_f=-0.42 | mean_per_f=-0.33 | trimmed_mean_per_f=-0.37 | stdev=0.22 | going={"Good (Good to Soft in places)":7}
+same_day_course | date=2026-05-25 | course=Windsor | races=7 | median_per_f=-0.08 | mean_per_f=-0.10 | trimmed_mean_per_f=-0.08 | stdev=0.14 | going={"Good to Firm":7}
+same_day_course | date=2026-05-25 | course=Redcar | races=7 | median_per_f=-0.26 | mean_per_f=-0.24 | trimmed_mean_per_f=-0.24 | stdev=0.14 | going={"Good to Firm (Good in places)":7}
+same_day_course | date=2026-05-25 | course=Leicester | races=7 | median_per_f=-0.30 | mean_per_f=-0.28 | trimmed_mean_per_f=-0.30 | stdev=0.13 | going={"Good to Firm (Good in places)":7}
+same_day_course | date=2026-05-26 | course=Plumpton | races=7 | median_per_f=-0.46 | mean_per_f=-0.42 | trimmed_mean_per_f=-0.44 | stdev=0.23 | going={"Good (Good to Soft in places)":5,"Good":2}
+same_day_course | date=2026-05-26 | course=Redcar | races=7 | median_per_f=0.01 | mean_per_f=0.00 | trimmed_mean_per_f=0.00 | stdev=0.11 | going={"Good to Firm (Good in places)":7}
+same_day_course | date=2026-05-26 | course=Leicester | races=7 | median_per_f=-0.07 | mean_per_f=-0.10 | trimmed_mean_per_f=-0.08 | stdev=0.18 | going={"Good to Firm (Good in places)":7}
+same_day_course | date=2026-05-27 | course=Beverley | races=7 | median_per_f=-0.14 | mean_per_f=-0.09 | trimmed_mean_per_f=-0.10 | stdev=0.25 | going={"Good to Firm (Good in places)":7}
+same_day_course | date=2026-05-27 | course=Hamilton | races=7 | median_per_f=-0.15 | mean_per_f=-0.16 | trimmed_mean_per_f=-0.17 | stdev=0.13 | going={"Good to Firm (Good in places)":7}
+same_day_course | date=2026-05-28 | course=Ripon | races=7 | median_per_f=0.02 | mean_per_f=0.07 | trimmed_mean_per_f=0.07 | stdev=0.14 | going={"Good (Good to Soft in places)":7}
+same_day_course | date=2026-05-29 | course=Brighton | races=7 | median_per_f=-0.05 | mean_per_f=-0.00 | trimmed_mean_per_f=-0.02 | stdev=0.13 | going={"Good to Firm (Good in places)":7}
+same_day_course | date=2026-05-29 | course=Carlisle | races=7 | median_per_f=0.13 | mean_per_f=0.09 | trimmed_mean_per_f=0.14 | stdev=0.24 | going={"Good (Good to Firm in places)":7}
+same_day_course | date=2026-05-29 | course=Chepstow | races=7 | median_per_f=-0.09 | mean_per_f=-0.09 | trimmed_mean_per_f=-0.08 | stdev=0.06 | going={"Good to Firm (Good in places)":7}
+same_day_course | date=2026-05-30 | course=Stratford | races=7 | median_per_f=0.09 | mean_per_f=0.04 | trimmed_mean_per_f=0.09 | stdev=0.28 | going={"Good to Firm (Good in places)":7}
+same_day_course | date=2026-05-30 | course=Beverley | races=7 | median_per_f=-0.15 | mean_per_f=-0.12 | trimmed_mean_per_f=-0.10 | stdev=0.17 | going={"Good to Firm (Good in places)":7}
+same_day_course | date=2026-05-30 | course=Catterick | races=7 | median_per_f=0.01 | mean_per_f=-0.03 | trimmed_mean_per_f=-0.01 | stdev=0.24 | going={"Good to Firm":7}
+same_day_course | date=2026-05-30 | course=Chester | races=7 | median_per_f=0.28 | mean_per_f=0.25 | trimmed_mean_per_f=0.27 | stdev=0.12 | going={"Good":7}
+same_day_course | date=2026-05-30 | course=Lingfield | races=7 | median_per_f=-0.12 | mean_per_f=-0.06 | trimmed_mean_per_f=-0.05 | stdev=0.11 | going={"Good to Firm (Good in places)":7}
+same_day_course | date=2026-05-31 | course=Nottingham | races=7 | median_per_f=-0.02 | mean_per_f=-0.01 | trimmed_mean_per_f=-0.03 | stdev=0.14 | going={"Good (Good to Firm in places)":7}
+same_day_course | date=2026-06-01 | course=Wolverhampton | races=7 | median_per_f=-0.13 | mean_per_f=-0.11 | trimmed_mean_per_f=-0.13 | stdev=0.15 | going={"Standard":7}
+same_day_course | date=2026-06-02 | course=Southwell | races=7 | median_per_f=-0.39 | mean_per_f=-0.44 | trimmed_mean_per_f=-0.39 | stdev=0.24 | going={"Good (Good to Soft in places)":7}
+same_day_course | date=2026-06-03 | course=Newton Abbot | races=7 | median_per_f=0.46 | mean_per_f=0.35 | trimmed_mean_per_f=0.56 | stdev=0.82 | going={"Good (Good to Firm in places)":1,"Good":5,"Good to Soft":1}
+same_day_course | date=2026-06-04 | course=Uttoxeter | races=7 | median_per_f=0.31 | mean_per_f=0.30 | trimmed_mean_per_f=0.28 | stdev=0.21 | going={"Good":7}
+same_day_course | date=2026-06-04 | course=Hamilton | races=7 | median_per_f=0.22 | mean_per_f=0.23 | trimmed_mean_per_f=0.22 | stdev=0.10 | going={"Good (Good to Soft in places)":7}
+same_day_course | date=2026-06-05 | course=Epsom Downs | races=7 | median_per_f=0.03 | mean_per_f=0.05 | trimmed_mean_per_f=0.04 | stdev=0.16 | going={"Good to Soft (Good in places)":7}
+same_day_course | date=2026-06-05 | course=Thirsk | races=7 | median_per_f=0.08 | mean_per_f=0.10 | trimmed_mean_per_f=0.10 | stdev=0.05 | going={"Good to Soft (Good in places)":1,"Good":6}
+same_day_course | date=2026-06-05 | course=Doncaster | races=7 | median_per_f=-0.24 | mean_per_f=-0.23 | trimmed_mean_per_f=-0.24 | stdev=0.19 | going={"Good to Firm":7}
+same_day_course | date=2026-06-06 | course=Epsom Downs | races=7 | median_per_f=0.22 | mean_per_f=0.21 | trimmed_mean_per_f=0.19 | stdev=0.29 | going={"Good to Soft (Good in places)":1,"Good to Soft":2,"Soft":4}
+same_day_course | date=2026-06-06 | course=Worcester | races=7 | median_per_f=0.37 | mean_per_f=0.42 | trimmed_mean_per_f=0.43 | stdev=0.24 | going={"Good":7}
+same_day_course | date=2026-06-06 | course=Doncaster | races=7 | median_per_f=-0.26 | mean_per_f=-0.23 | trimmed_mean_per_f=-0.23 | stdev=0.15 | going={"Good to Firm":7}
+same_day_course | date=2026-06-06 | course=Musselburgh | races=7 | median_per_f=-0.17 | mean_per_f=-0.16 | trimmed_mean_per_f=-0.16 | stdev=0.07 | going={"Good":7}
+same_day_course | date=2026-06-06 | course=Lingfield | races=7 | median_per_f=0.78 | mean_per_f=0.83 | trimmed_mean_per_f=0.83 | stdev=0.18 | going={"Soft":1,"Soft (Heavy in places)":6}
+same_day_course | date=2026-06-07 | course=Perth | races=7 | median_per_f=-0.09 | mean_per_f=-0.04 | trimmed_mean_per_f=-0.05 | stdev=0.24 | going={"Good":7}
+same_day_course | date=2026-06-07 | course=Goodwood | races=7 | median_per_f=0.51 | mean_per_f=0.55 | trimmed_mean_per_f=0.53 | stdev=0.16 | going={"Soft":4,"Soft (Good to Soft in places)":3}
+same_day_course | date=2026-06-08 | course=Carlisle | races=7 | median_per_f=0.31 | mean_per_f=0.29 | trimmed_mean_per_f=0.30 | stdev=0.21 | going={"Soft":7}
+same_day_course | date=2026-06-09 | course=Southwell | races=7 | median_per_f=-0.21 | mean_per_f=-0.26 | trimmed_mean_per_f=-0.26 | stdev=0.27 | going={"Good (Good to Soft in places)":7}
+same_day_course | date=2026-06-09 | course=Salisbury | races=7 | median_per_f=0.38 | mean_per_f=0.40 | trimmed_mean_per_f=0.38 | stdev=0.12 | going={"Soft":7}
+same_day_course | date=2026-06-11 | course=Yarmouth | races=7 | median_per_f=0.48 | mean_per_f=0.48 | trimmed_mean_per_f=0.52 | stdev=0.24 | going={"Soft (Good to Soft in places)":2,"Soft":5}
+same_day_course | date=2026-06-12 | course=Newton Abbot | races=7 | median_per_f=0.19 | mean_per_f=0.17 | trimmed_mean_per_f=0.22 | stdev=0.16 | going={"Good (Good to Soft in places)":1,"Good":2,"Good (Good to Firm in Places)":4}
+same_day_course | date=2026-06-12 | course=York | races=7 | median_per_f=-0.08 | mean_per_f=-0.09 | trimmed_mean_per_f=-0.08 | stdev=0.12 | going={"Good":7}
+same_day_course | date=2026-06-13 | course=Uttoxeter | races=7 | median_per_f=0.28 | mean_per_f=0.30 | trimmed_mean_per_f=0.29 | stdev=0.14 | going={"Good":7}
+same_day_course | date=2026-06-13 | course=Chester | races=7 | median_per_f=0.45 | mean_per_f=0.46 | trimmed_mean_per_f=0.44 | stdev=0.27 | going={"Good to Soft (Soft in places)":7}
+same_day_course | date=2026-06-13 | course=Bath | races=7 | median_per_f=0.14 | mean_per_f=0.18 | trimmed_mean_per_f=0.13 | stdev=0.15 | going={"Good (Good to Soft in places)":3,"Good":4}
+same_day_course | date=2026-06-13 | course=Leicester | races=7 | median_per_f=0.16 | mean_per_f=0.15 | trimmed_mean_per_f=0.15 | stdev=0.11 | going={"Good (Good to Soft in places)":7}
+same_day_course | date=2026-06-13 | course=Hexham | races=7 | median_per_f=-0.12 | mean_per_f=-0.17 | trimmed_mean_per_f=-0.17 | stdev=0.25 | going={"Good":7}
+same_day_course | date=2026-06-14 | course=Salisbury | races=7 | median_per_f=-0.23 | mean_per_f=-0.15 | trimmed_mean_per_f=-0.17 | stdev=0.23 | going={"Good":7}
+same_day_course | date=2026-06-15 | course=Wetherby | races=7 | median_per_f=0.21 | mean_per_f=0.12 | trimmed_mean_per_f=0.14 | stdev=0.18 | going={"Good to Firm (Good in places)":7}
+same_day_course | date=2026-06-15 | course=Windsor | races=7 | median_per_f=-0.07 | mean_per_f=-0.09 | trimmed_mean_per_f=-0.08 | stdev=0.11 | going={"Good to Firm (Good in places)":7}
+same_day_course | date=2026-06-15 | course=Carlisle | races=7 | median_per_f=0.02 | mean_per_f=0.01 | trimmed_mean_per_f=-0.00 | stdev=0.12 | going={"Good (Good to Soft in places)":7}
+same_day_course | date=2026-06-17 | course=Ffos Las | races=7 | median_per_f=0.70 | mean_per_f=0.67 | trimmed_mean_per_f=0.69 | stdev=0.21 | going={"Soft":7}
+same_day_course | date=2026-06-17 | course=Hamilton | races=7 | median_per_f=0.01 | mean_per_f=-0.03 | trimmed_mean_per_f=-0.04 | stdev=0.14 | going={"Good to Soft (Good in places)":3,"Good (Good to Soft in places)":4}
+same_day_course | date=2026-06-18 | course=Ripon | races=7 | median_per_f=-0.27 | mean_per_f=-0.28 | trimmed_mean_per_f=-0.28 | stdev=0.12 | going={"Good (Good to Firm in places)":7}
+same_day_course | date=2026-06-18 | course=Southwell | races=7 | median_per_f=-0.07 | mean_per_f=-0.05 | trimmed_mean_per_f=-0.06 | stdev=0.11 | going={"Standard":7}
+same_day_course | date=2026-06-19 | course=Market Rasen | races=7 | median_per_f=-0.29 | mean_per_f=-0.24 | trimmed_mean_per_f=-0.20 | stdev=0.44 | going={"Good":7}
+same_day_course | date=2026-06-19 | course=Royal Ascot | races=7 | median_per_f=-0.03 | mean_per_f=-0.01 | trimmed_mean_per_f=-0.02 | stdev=0.13 | going={"Good to Firm":7}
+same_day_course | date=2026-06-20 | course=Newmarket | races=7 | median_per_f=-0.03 | mean_per_f=-0.02 | trimmed_mean_per_f=-0.03 | stdev=0.10 | going={"Good to Firm (Good in places)":7}
+same_day_course | date=2026-06-20 | course=Ayr | races=7 | median_per_f=0.36 | mean_per_f=0.32 | trimmed_mean_per_f=0.32 | stdev=0.16 | going={"Soft (Good to Soft in places)":7}
+same_day_course | date=2026-06-20 | course=Doncaster | races=7 | median_per_f=-0.09 | mean_per_f=-0.02 | trimmed_mean_per_f=-0.08 | stdev=0.30 | going={"Good to Firm":7}
+same_day_course | date=2026-06-20 | course=Redcar | races=7 | median_per_f=0.04 | mean_per_f=0.03 | trimmed_mean_per_f=0.05 | stdev=0.13 | going={"Good":7}
+same_day_course | date=2026-06-21 | course=Brighton | races=7 | median_per_f=-0.18 | mean_per_f=-0.17 | trimmed_mean_per_f=-0.17 | stdev=0.08 | going={"Good to Firm ( Good in places)":2,"Good to Firm":5}
+same_day_course | date=2026-06-22 | course=Windsor | races=7 | median_per_f=0.02 | mean_per_f=0.03 | trimmed_mean_per_f=-0.00 | stdev=0.20 | going={"Good to Firm":7}
+same_day_course | date=2026-06-22 | course=Musselburgh | races=7 | median_per_f=-0.06 | mean_per_f=-0.08 | trimmed_mean_per_f=-0.10 | stdev=0.12 | going={"Good":7}
+same_day_course | date=2026-06-23 | course=Newbury | races=7 | median_per_f=-0.17 | mean_per_f=-0.10 | trimmed_mean_per_f=-0.10 | stdev=0.16 | going={"Good to Firm (Good in places)":7}
+same_day_course | date=2026-06-23 | course=Newton Abbot | races=7 | median_per_f=-0.06 | mean_per_f=0.10 | trimmed_mean_per_f=-0.06 | stdev=0.89 | going={"Good (Good to Firm in places)":7}
+same_day_course | date=2026-06-23 | course=Beverley | races=7 | median_per_f=-0.07 | mean_per_f=-0.07 | trimmed_mean_per_f=-0.08 | stdev=0.10 | going={"Good (Good to Firm in places)":4,"Good to Firm (Good in places)":3}
+same_day_course | date=2026-06-25 | course=Hamilton | races=7 | median_per_f=0.04 | mean_per_f=0.05 | trimmed_mean_per_f=0.04 | stdev=0.13 | going={"Good to Firm (Good in places)":7}
+same_day_course | date=2026-06-26 | course=Newcastle | races=7 | median_per_f=-0.32 | mean_per_f=-0.27 | trimmed_mean_per_f=-0.30 | stdev=0.18 | going={"Standard / Slow":7}
+same_day_course | date=2026-06-26 | course=Yarmouth | races=7 | median_per_f=0.07 | mean_per_f=0.07 | trimmed_mean_per_f=0.08 | stdev=0.16 | going={"Good to Firm":7}
+same_day_course | date=2026-06-26 | course=Doncaster | races=7 | median_per_f=-0.26 | mean_per_f=-0.21 | trimmed_mean_per_f=-0.25 | stdev=0.15 | going={"Good to Firm":7}
+same_day_course | date=2026-06-27 | course=Newcastle | races=7 | median_per_f=-0.31 | mean_per_f=-0.24 | trimmed_mean_per_f=-0.27 | stdev=0.22 | going={"Standard / Slow":7}
+same_day_course | date=2026-06-27 | course=Windsor | races=7 | median_per_f=0.02 | mean_per_f=0.05 | trimmed_mean_per_f=-0.00 | stdev=0.23 | going={"Good to Firm (Good in places)":2,"Good to Firm":5}
+same_day_course | date=2026-06-27 | course=York | races=7 | median_per_f=-0.24 | mean_per_f=-0.13 | trimmed_mean_per_f=-0.15 | stdev=0.23 | going={"Good (Good to Firm in places)":7}
+same_day_course | date=2026-06-27 | course=Chepstow | races=7 | median_per_f=0.06 | mean_per_f=0.05 | trimmed_mean_per_f=0.05 | stdev=0.06 | going={"Good to Firm":7}
+same_day_course | date=2026-06-27 | course=Lingfield | races=7 | median_per_f=0.09 | mean_per_f=0.09 | trimmed_mean_per_f=0.06 | stdev=0.26 | going={"Good to Firm (Good in places)":7}
+same_day_course | date=2026-06-28 | course=Uttoxeter | races=7 | median_per_f=-0.32 | mean_per_f=-0.46 | trimmed_mean_per_f=-0.40 | stdev=0.29 | going={"Good (Good to Firm in places)":7}
+same_day_course | date=2026-06-28 | course=Wolverhampton | races=7 | median_per_f=0.05 | mean_per_f=0.05 | trimmed_mean_per_f=0.05 | stdev=0.07 | going={"Standard":7}
+same_day_course | date=2026-06-28 | course=Cartmel | races=7 | median_per_f=0.44 | mean_per_f=0.49 | trimmed_mean_per_f=0.49 | stdev=0.16 | going={"Good (Good to Soft in places)":7}
+same_day_course | date=2026-06-29 | course=Windsor | races=7 | median_per_f=-0.14 | mean_per_f=-0.12 | trimmed_mean_per_f=-0.12 | stdev=0.21 | going={"Good to Firm":7}
+same_day_course | date=2026-06-29 | course=Ffos Las | races=7 | median_per_f=-0.06 | mean_per_f=0.05 | trimmed_mean_per_f=0.05 | stdev=0.25 | going={"Good (Good To Firm in places)":7}
+same_day_course | date=2026-06-29 | course=Pontefract | races=7 | median_per_f=-0.03 | mean_per_f=-0.03 | trimmed_mean_per_f=-0.03 | stdev=0.06 | going={"Good (Good to Firm in places)":7}
+same_day_course | date=2026-06-29 | course=Kempton | races=7 | median_per_f=0.19 | mean_per_f=0.18 | trimmed_mean_per_f=0.17 | stdev=0.18 | going={"Standard / Slow":7}
+same_day_course | date=2026-06-30 | course=Salisbury | races=7 | median_per_f=-0.10 | mean_per_f=-0.10 | trimmed_mean_per_f=-0.11 | stdev=0.10 | going={"Good to Firm (Good in places)":7}
+same_day_course | date=2026-06-30 | course=Musselburgh | races=7 | median_per_f=-0.08 | mean_per_f=-0.14 | trimmed_mean_per_f=-0.13 | stdev=0.14 | going={"Good (Good to Firm in places)":3,"Good":4}
+same_day_course | date=2026-07-01 | course=Epsom Downs | races=7 | median_per_f=-0.03 | mean_per_f=-0.07 | trimmed_mean_per_f=-0.07 | stdev=0.19 | going={"Good (Good to Firm in places)":7}
+same_day_course | date=2026-07-02 | course=Nottingham | races=7 | median_per_f=0.04 | mean_per_f=-0.03 | trimmed_mean_per_f=-0.01 | stdev=0.26 | going={"Good to Firm (Good in places)":7}
+same_day_course | date=2026-07-03 | course=Chepstow | races=7 | median_per_f=-0.12 | mean_per_f=-0.14 | trimmed_mean_per_f=-0.15 | stdev=0.11 | going={"Good to Firm (Good in places)":7}
+same_day_course | date=2026-07-03 | course=Doncaster | races=7 | median_per_f=-0.07 | mean_per_f=-0.08 | trimmed_mean_per_f=-0.08 | stdev=0.19 | going={"Good to Firm":7}
+same_day_course | date=2026-07-04 | course=Newmarket | races=7 | median_per_f=-0.35 | mean_per_f=-0.36 | trimmed_mean_per_f=-0.37 | stdev=0.12 | going={"Good to Firm":7}
+same_day_course | date=2026-07-04 | course=Nottingham | races=7 | median_per_f=-0.01 | mean_per_f=-0.08 | trimmed_mean_per_f=-0.07 | stdev=0.19 | going={"Good to Firm (Good in places)":7}
+same_day_course | date=2026-07-04 | course=Beverley | races=7 | median_per_f=0.27 | mean_per_f=0.21 | trimmed_mean_per_f=0.21 | stdev=0.24 | going={"Good to Firm (Good in places)":7}
+same_day_course | date=2026-07-04 | course=Leicester | races=7 | median_per_f=-0.08 | mean_per_f=-0.07 | trimmed_mean_per_f=-0.07 | stdev=0.14 | going={"Good to Firm":7}
+same_day_course | date=2026-07-04 | course=Sandown | races=7 | median_per_f=-0.40 | mean_per_f=-0.35 | trimmed_mean_per_f=-0.37 | stdev=0.17 | going={"Good (Good to Firm in places)":1,"Good to Firm (Good in places)":6}
+same_day_course | date=2026-07-05 | course=Market Rasen | races=7 | median_per_f=-0.20 | mean_per_f=-0.34 | trimmed_mean_per_f=-0.27 | stdev=0.34 | going={"Good":7}
+same_day_course | date=2026-07-05 | course=Ayr | races=7 | median_per_f=-0.04 | mean_per_f=0.01 | trimmed_mean_per_f=-0.02 | stdev=0.13 | going={"Good":7}
+same_day_course | date=2026-07-06 | course=Ayr | races=7 | median_per_f=-0.07 | mean_per_f=-0.06 | trimmed_mean_per_f=-0.06 | stdev=0.25 | going={"Good":7}
+same_day_course | date=2026-07-07 | course=Uttoxeter | races=7 | median_per_f=-0.26 | mean_per_f=-0.26 | trimmed_mean_per_f=-0.28 | stdev=0.21 | going={"Good":7}
+same_day_course | date=2026-07-07 | course=Pontefract | races=7 | median_per_f=-0.10 | mean_per_f=-0.14 | trimmed_mean_per_f=-0.14 | stdev=0.17 | going={"Good (Good to Firm in places)":7}
+same_day_course | date=2026-07-08 | course=Kempton | races=7 | median_per_f=0.13 | mean_per_f=0.27 | trimmed_mean_per_f=0.16 | stdev=0.35 | going={"Standard / Slow":7}
+same_day_course | date=2026-07-09 | course=Newbury | races=7 | median_per_f=0.00 | mean_per_f=-0.05 | trimmed_mean_per_f=-0.01 | stdev=0.15 | going={"Good to Firm":7}
+same_day_course | date=2026-07-10 | course=Newmarket | races=7 | median_per_f=0.02 | mean_per_f=0.05 | trimmed_mean_per_f=0.02 | stdev=0.18 | going={"Good to Firm":7}
+same_day_course | date=2026-07-10 | course=York | races=7 | median_per_f=-0.27 | mean_per_f=-0.25 | trimmed_mean_per_f=-0.28 | stdev=0.15 | going={"Good to Firm (Good in places)":7}
+same_day_course | date=2026-07-11 | course=York | races=7 | median_per_f=-0.19 | mean_per_f=-0.09 | trimmed_mean_per_f=-0.11 | stdev=0.18 | going={"Good to Firm (Good in places)":7}
+same_day_course | date=2026-07-11 | course=Chester | races=7 | median_per_f=-0.15 | mean_per_f=-0.08 | trimmed_mean_per_f=-0.14 | stdev=0.22 | going={"Good (Good to Firm in places)":7}
+same_day_course | date=2026-07-11 | course=Hamilton | races=7 | median_per_f=0.07 | mean_per_f=0.13 | trimmed_mean_per_f=0.13 | stdev=0.28 | going={"Good (Good to Firm in places)":7}
+same_day_course | date=2026-07-12 | course=Stratford | races=7 | median_per_f=-0.70 | mean_per_f=-0.61 | trimmed_mean_per_f=-0.62 | stdev=0.17 | going={"Good to Firm":7}
+same_day_course | date=2026-07-13 | course=Ayr | races=7 | median_per_f=-0.30 | mean_per_f=-0.38 | trimmed_mean_per_f=-0.35 | stdev=0.25 | going={"Good to Firm (Good in places)":7}
+same_day_course | date=2026-07-14 | course=Wolverhampton | races=7 | median_per_f=0.06 | mean_per_f=0.07 | trimmed_mean_per_f=0.07 | stdev=0.10 | going={"Standard":7}
+same_day_course | date=2026-07-14 | course=Leicester | races=7 | median_per_f=0.09 | mean_per_f=0.05 | trimmed_mean_per_f=0.07 | stdev=0.19 | going={"Good to Firm":7}
+same_day_course | date=2026-07-15 | course=Uttoxeter | races=7 | median_per_f=-0.25 | mean_per_f=-0.16 | trimmed_mean_per_f=-0.18 | stdev=0.26 | going={"Good":7}
+same_day_course | date=2026-07-16 | course=Chepstow | races=7 | median_per_f=-0.16 | mean_per_f=-0.04 | trimmed_mean_per_f=-0.13 | stdev=0.36 | going={"Good to Firm":7}
+same_day_course | date=2026-07-16 | course=Hamilton | races=7 | median_per_f=-0.12 | mean_per_f=-0.19 | trimmed_mean_per_f=-0.18 | stdev=0.13 | going={"Good to Firm (Good in places)":7}
+same_day_course | date=2026-07-17 | course=Newmarket | races=7 | median_per_f=-0.05 | mean_per_f=0.11 | trimmed_mean_per_f=0.08 | stdev=0.27 | going={"Good to Firm":7}
+same_day_course | date=2026-07-17 | course=Hamilton | races=7 | median_per_f=-0.07 | mean_per_f=-0.08 | trimmed_mean_per_f=-0.07 | stdev=0.17 | going={"Good to Firm (Good in places)":7}
+same_day_course | date=2026-07-18 | course=Market Rasen | races=7 | median_per_f=-0.49 | mean_per_f=-0.61 | trimmed_mean_per_f=-0.56 | stdev=0.34 | going={"Good":7}
+same_day_course | date=2026-07-18 | course=Ripon | races=7 | median_per_f=0.09 | mean_per_f=0.11 | trimmed_mean_per_f=0.10 | stdev=0.14 | going={"Good (Good to Firm in places)":7}
+same_day_course | date=2026-07-18 | course=Cartmel | races=7 | median_per_f=0.06 | mean_per_f=-0.04 | trimmed_mean_per_f=-0.03 | stdev=0.28 | going={"Good":7}
+same_day_course | date=2026-07-19 | course=Stratford | races=7 | median_per_f=-0.56 | mean_per_f=-0.48 | trimmed_mean_per_f=-0.51 | stdev=0.22 | going={"Good to Firm":7}
+same_day_course | date=2026-07-20 | course=Windsor | races=7 | median_per_f=0.06 | mean_per_f=0.00 | trimmed_mean_per_f=0.01 | stdev=0.12 | going={"Good to Firm":7}
+same_day_course | date=2026-07-20 | course=Ayr | races=7 | median_per_f=-0.13 | mean_per_f=-0.12 | trimmed_mean_per_f=-0.20 | stdev=0.33 | going={"Good to Firm":7}
+same_day_course | date=2026-07-20 | course=Cartmel | races=7 | median_per_f=0.15 | mean_per_f=0.29 | trimmed_mean_per_f=0.19 | stdev=0.43 | going={"Good":7}
+same_day_course | date=2026-07-21 | course=Wolverhampton | races=7 | median_per_f=0.01 | mean_per_f=0.03 | trimmed_mean_per_f=0.03 | stdev=0.07 | going={"Standard":7}
+same_day_course | date=2026-07-22 | course=Worcester | races=7 | median_per_f=-0.21 | mean_per_f=-0.14 | trimmed_mean_per_f=-0.17 | stdev=0.28 | going={"Good":7}
+same_day_course | date=2026-07-23 | course=Yarmouth | races=7 | median_per_f=-0.00 | mean_per_f=0.03 | trimmed_mean_per_f=0.04 | stdev=0.16 | going={"Good to Firm":7}
+same_day_course | date=2026-07-23 | course=Doncaster | races=7 | median_per_f=0.14 | mean_per_f=0.17 | trimmed_mean_per_f=0.13 | stdev=0.14 | going={"Good to Firm":7}
+same_day_course | date=2026-07-23 | course=Sandown | races=7 | median_per_f=0.18 | mean_per_f=0.21 | trimmed_mean_per_f=0.19 | stdev=0.25 | going={"Good to Firm":1,"Good to Firm (Firm in places)":6}
+same_day_course | date=2026-07-24 | course=Uttoxeter | races=7 | median_per_f=-0.14 | mean_per_f=-0.16 | trimmed_mean_per_f=-0.16 | stdev=0.15 | going={"Good":7}
+same_day_course | date=2026-07-24 | course=Chepstow | races=7 | median_per_f=-0.18 | mean_per_f=-0.13 | trimmed_mean_per_f=-0.14 | stdev=0.14 | going={"Good to Firm":7}
+same_day_course | date=2026-07-25 | course=York | races=7 | median_per_f=0.04 | mean_per_f=0.04 | trimmed_mean_per_f=0.04 | stdev=0.14 | going={"Good to Firm (Good in places)":7}
+same_day_course | date=2026-07-25 | course=Chester | races=7 | median_per_f=-0.00 | mean_per_f=-0.03 | trimmed_mean_per_f=-0.02 | stdev=0.18 | going={"Good (Good to Firm in places)":7}
+same_day_course | date=2026-07-25 | course=Lingfield | races=7 | median_per_f=-0.07 | mean_per_f=-0.07 | trimmed_mean_per_f=-0.05 | stdev=0.13 | going={"Good to Firm":7}
+same_day_course | date=2026-07-26 | course=Pontefract | races=7 | median_per_f=-0.16 | mean_per_f=-0.13 | trimmed_mean_per_f=-0.16 | stdev=0.24 | going={"Good to Firm (Good in places)":7}
+same_day_course | date=2026-07-27 | course=Windsor | races=7 | median_per_f=-0.16 | mean_per_f=-0.11 | trimmed_mean_per_f=-0.12 | stdev=0.17 | going={"Good to Firm":7}
+same_day_course | date=2026-07-27 | course=Ayr | races=7 | median_per_f=-0.07 | mean_per_f=-0.06 | trimmed_mean_per_f=-0.08 | stdev=0.13 | going={"Good to Firm (Good in places)":7}
+same_day_course | date=2026-07-29 | course=Goodwood | races=7 | median_per_f=-0.22 | mean_per_f=-0.28 | trimmed_mean_per_f=-0.24 | stdev=0.19 | going={"Good to Firm (Good in places)":7}
+same_day_course | date=2026-07-30 | course=Nottingham | races=7 | median_per_f=-0.03 | mean_per_f=-0.06 | trimmed_mean_per_f=-0.05 | stdev=0.17 | going={"Good to Firm (Good in places)":7}
+same_day_course | date=2026-07-31 | course=Newcastle | races=7 | median_per_f=0.33 | mean_per_f=0.37 | trimmed_mean_per_f=0.36 | stdev=0.10 | going={"Standard / Slow":7}
+same_day_course | date=2026-07-31 | course=Wolverhampton | races=7 | median_per_f=0.03 | mean_per_f=0.05 | trimmed_mean_per_f=0.04 | stdev=0.12 | going={"Standard":7}
+same_day_course | date=2026-07-31 | course=Goodwood | races=7 | median_per_f=-0.69 | mean_per_f=-0.62 | trimmed_mean_per_f=-0.63 | stdev=0.24 | going={"Good to Firm (Good in places)":5,"Good to Firm":2}
+same_day_course | date=2026-08-01 | course=Newmarket | races=7 | median_per_f=-0.07 | mean_per_f=-0.08 | trimmed_mean_per_f=-0.09 | stdev=0.15 | going={"Good to Firm":7}
+same_day_course | date=2026-08-01 | course=Thirsk | races=7 | median_per_f=-0.17 | mean_per_f=-0.10 | trimmed_mean_per_f=-0.12 | stdev=0.23 | going={"Good (Good to Firm in places)":7}
+same_day_course | date=2026-08-01 | course=Goodwood | races=7 | median_per_f=-0.38 | mean_per_f=-0.39 | trimmed_mean_per_f=-0.37 | stdev=0.27 | going={"Good to Firm":7}
+same_day_course | date=2026-08-01 | course=Lingfield | races=7 | median_per_f=-0.06 | mean_per_f=-0.02 | trimmed_mean_per_f=-0.02 | stdev=0.19 | going={"Good to Firm (Good in places)":7}
+same_day_course | date=2026-08-01 | course=Hamilton | races=7 | median_per_f=-0.19 | mean_per_f=-0.10 | trimmed_mean_per_f=-0.15 | stdev=0.22 | going={"Good (Good to Soft in places)":1,"Good":6}
+same_day_course | date=2026-08-04 | course=Ffos Las | races=7 | median_per_f=-0.08 | mean_per_f=-0.02 | trimmed_mean_per_f=-0.03 | stdev=0.16 | going={"Good":7}
+same_day_course | date=2026-08-04 | course=Lingfield | races=7 | median_per_f=0.12 | mean_per_f=0.06 | trimmed_mean_per_f=0.07 | stdev=0.20 | going={"Standard":4,"Good to Firm":3}
+same_day_course | date=2026-08-08 | course=Newmarket | races=7 | median_per_f=0.08 | mean_per_f=0.13 | trimmed_mean_per_f=0.12 | stdev=0.24 | going={"Good to Firm":7}
+same_day_course | date=2026-08-08 | course=Ayr | races=7 | median_per_f=-0.16 | mean_per_f=-0.13 | trimmed_mean_per_f=-0.14 | stdev=0.15 | going={"Good (Good to Soft in places)":7}
+same_day_course | date=2026-08-08 | course=Redcar | races=7 | median_per_f=-0.08 | mean_per_f=-0.10 | trimmed_mean_per_f=-0.11 | stdev=0.22 | going={"Good to Firm (Good in places)":7}
+same_day_course | date=2026-08-08 | course=Haydock | races=7 | median_per_f=-0.25 | mean_per_f=-0.28 | trimmed_mean_per_f=-0.26 | stdev=0.15 | going={"Good (Good to Firm in places)":7}
+same_day_course | date=2026-08-11 | course=Hamilton | races=7 | median_per_f=-0.10 | mean_per_f=-0.18 | trimmed_mean_per_f=-0.16 | stdev=0.21 | going={"Good (Good to Soft in places)":7}
+same_day_course | date=2026-08-14 | course=Newbury | races=7 | median_per_f=0.00 | mean_per_f=0.15 | trimmed_mean_per_f=0.02 | stdev=0.37 | going={"Good to Firm (Good in places)":7}
+same_day_course | date=2026-08-15 | course=Newbury | races=7 | median_per_f=-0.17 | mean_per_f=-0.12 | trimmed_mean_per_f=-0.13 | stdev=0.15 | going={"Good to Firm":7}
+same_day_course | date=2026-08-15 | course=Newmarket | races=7 | median_per_f=0.16 | mean_per_f=0.17 | trimmed_mean_per_f=0.15 | stdev=0.20 | going={"Good to Firm":7}
+same_day_course | date=2026-08-15 | course=Ripon | races=7 | median_per_f=-0.12 | mean_per_f=-0.12 | trimmed_mean_per_f=-0.12 | stdev=0.13 | going={"Good (Good to Firm in places)":7}
+same_day_course | date=2026-08-15 | course=Perth | races=7 | median_per_f=-1.05 | mean_per_f=-1.00 | trimmed_mean_per_f=-1.05 | stdev=0.18 | going={"Good":7}
+same_day_course | date=2026-08-16 | course=Pontefract | races=7 | median_per_f=-0.18 | mean_per_f=-0.17 | trimmed_mean_per_f=-0.19 | stdev=0.14 | going={"Good to Firm (Good in places)":7}
+same_day_course | date=2026-08-17 | course=Wolverhampton | races=7 | median_per_f=0.13 | mean_per_f=0.11 | trimmed_mean_per_f=0.11 | stdev=0.08 | going={"Standard":7}
+same_day_course | date=2026-08-19 | course=Worcester | races=7 | median_per_f=-0.37 | mean_per_f=-0.31 | trimmed_mean_per_f=-0.33 | stdev=0.13 | going={"Good":7}
+same_day_course | date=2026-08-19 | course=Carlisle | races=7 | median_per_f=0.27 | mean_per_f=0.30 | trimmed_mean_per_f=0.31 | stdev=0.17 | going={"Good to Soft (Soft in places)":5,"Soft":2}
+same_day_course | date=2026-08-20 | course=York | races=7 | median_per_f=0.27 | mean_per_f=0.28 | trimmed_mean_per_f=0.26 | stdev=0.15 | going={"Good to Soft":7}
+same_day_course | date=2026-08-21 | course=York | races=7 | median_per_f=0.17 | mean_per_f=0.19 | trimmed_mean_per_f=0.16 | stdev=0.16 | going={"Good to Soft":7}
+same_day_course | date=2026-08-22 | course=Newmarket | races=7 | median_per_f=0.10 | mean_per_f=0.23 | trimmed_mean_per_f=0.18 | stdev=0.28 | going={"Good":7}
+same_day_course | date=2026-08-23 | course=Worcester | races=7 | median_per_f=-0.09 | mean_per_f=-0.17 | trimmed_mean_per_f=-0.16 | stdev=0.19 | going={"Good":7}
+same_day_course | date=2026-08-26 | course=Newbury | races=7 | median_per_f=-0.17 | mean_per_f=-0.16 | trimmed_mean_per_f=-0.14 | stdev=0.13 | going={"Good to Firm":7}
+same_day_course | date=2026-08-26 | course=Wolverhampton | races=7 | median_per_f=0.11 | mean_per_f=0.33 | trimmed_mean_per_f=0.11 | stdev=0.62 | going={"Standard":7}
+same_day_course | date=2026-08-27 | course=Newton Abbot | races=7 | median_per_f=-0.31 | mean_per_f=-0.25 | trimmed_mean_per_f=-0.35 | stdev=0.39 | going={"Good (Good to Firm in Places)":1,"Good to Firm (Good in places)":6}
+same_day_course | date=2026-08-27 | course=Southwell | races=7 | median_per_f=-0.18 | mean_per_f=-0.24 | trimmed_mean_per_f=-0.23 | stdev=0.10 | going={"Standard":7}
+same_day_course | date=2026-08-27 | course=Carlisle | races=7 | median_per_f=-0.14 | mean_per_f=-0.22 | trimmed_mean_per_f=-0.19 | stdev=0.23 | going={"Good (Good to Firm in Places)":7}
+same_day_course | date=2026-08-28 | course=Sedgefield | races=7 | median_per_f=-0.84 | mean_per_f=-0.83 | trimmed_mean_per_f=-0.82 | stdev=0.26 | going={"Good (Good to Firm in places)":7}
+same_day_course | date=2026-08-28 | course=Fontwell | races=7 | median_per_f=-0.58 | mean_per_f=-0.44 | trimmed_mean_per_f=-0.48 | stdev=0.27 | going={"Good":7}
+same_day_course | date=2026-08-29 | course=Windsor | races=7 | median_per_f=0.32 | mean_per_f=0.30 | trimmed_mean_per_f=0.30 | stdev=0.15 | going={"Good":1,"Soft":6}
+same_day_course | date=2026-08-29 | course=Chepstow | races=7 | median_per_f=0.55 | mean_per_f=0.56 | trimmed_mean_per_f=0.55 | stdev=0.08 | going={"Good to Soft (Soft in places)":7}
+same_day_course | date=2026-08-29 | course=Goodwood | races=7 | median_per_f=0.61 | mean_per_f=0.64 | trimmed_mean_per_f=0.62 | stdev=0.16 | going={"Good to Soft":2,"Good to Soft (Soft in places)":1,"Soft":4}
+same_day_course | date=2026-08-29 | course=Sandown | races=7 | median_per_f=0.10 | mean_per_f=0.10 | trimmed_mean_per_f=0.10 | stdev=0.08 | going={"Good (Good to Soft in places)":1,"Good to Soft":6}
+same_day_course | date=2026-08-30 | course=Goodwood | races=7 | median_per_f=0.35 | mean_per_f=0.36 | trimmed_mean_per_f=0.31 | stdev=0.23 | going={"Soft":4,"Soft (good to soft in places)":3}
+same_day_course | date=2026-08-31 | course=Epsom Downs | races=7 | median_per_f=0.30 | mean_per_f=0.20 | trimmed_mean_per_f=0.20 | stdev=0.26 | going={"Good to Soft":7}
+same_day_course | date=2026-01-01 | course=Catterick | races=6 | median_per_f=-0.42 | mean_per_f=-0.46 | trimmed_mean_per_f=-0.43 | stdev=0.18 | going={"Good":6}
+same_day_course | date=2026-01-01 | course=Cheltenham | races=6 | median_per_f=-0.11 | mean_per_f=-0.19 | trimmed_mean_per_f=-0.17 | stdev=0.26 | going={"Good":6}
+same_day_course | date=2026-01-01 | course=Musselburgh | races=6 | median_per_f=0.24 | mean_per_f=0.17 | trimmed_mean_per_f=0.19 | stdev=0.30 | going={"Good to Soft (Good in places)":4,"Good to Soft":2}
+same_day_course | date=2026-01-08 | course=Taunton | races=6 | median_per_f=0.14 | mean_per_f=0.19 | trimmed_mean_per_f=0.18 | stdev=0.37 | going={"Good":6}
+same_day_course | date=2026-01-08 | course=Ffos Las | races=6 | median_per_f=0.00 | mean_per_f=-0.02 | trimmed_mean_per_f=0.04 | stdev=0.36 | going={"Soft":3,"Heavy":3}
+same_day_course | date=2026-01-09 | course=Exeter | races=6 | median_per_f=0.29 | mean_per_f=0.23 | trimmed_mean_per_f=0.25 | stdev=0.28 | going={"Good to Soft (Soft in places)":6}
+same_day_course | date=2026-01-17 | course=Haydock | races=6 | median_per_f=0.14 | mean_per_f=0.07 | trimmed_mean_per_f=0.12 | stdev=0.38 | going={"Good to Soft":6}
+same_day_course | date=2026-01-24 | course=Uttoxeter | races=6 | median_per_f=0.86 | mean_per_f=0.95 | trimmed_mean_per_f=0.95 | stdev=0.27 | going={"Soft (Heavy in places)":6}
+same_day_course | date=2026-01-24 | course=Cheltenham | races=6 | median_per_f=0.48 | mean_per_f=0.55 | trimmed_mean_per_f=0.47 | stdev=0.30 | going={"Soft":6}
+same_day_course | date=2026-01-24 | course=Doncaster | races=6 | median_per_f=-0.54 | mean_per_f=-0.43 | trimmed_mean_per_f=-0.46 | stdev=0.22 | going={"Soft (Good to Soft in places)":6}
+same_day_course | date=2026-01-25 | course=Sedgefield | races=6 | median_per_f=0.31 | mean_per_f=0.35 | trimmed_mean_per_f=0.33 | stdev=0.14 | going={"Good to Soft (Good in places)":6}
+same_day_course | date=2026-01-26 | course=Hereford | races=6 | median_per_f=0.35 | mean_per_f=0.54 | trimmed_mean_per_f=0.43 | stdev=0.46 | going={"Soft (Heavy in places)":6}
+same_day_course | date=2026-01-29 | course=Chelmsford City | races=6 | median_per_f=0.04 | mean_per_f=0.04 | trimmed_mean_per_f=0.02 | stdev=0.15 | going={"Standard":6}
+same_day_course | date=2026-01-31 | course=Sandown | races=6 | median_per_f=0.37 | mean_per_f=0.39 | trimmed_mean_per_f=0.41 | stdev=0.48 | going={"Heavy":2,"Soft (Heavy in places)":4}
+same_day_course | date=2026-02-03 | course=Taunton | races=6 | median_per_f=0.45 | mean_per_f=0.39 | trimmed_mean_per_f=0.41 | stdev=0.22 | going={"Heavy (Soft in places)":6}
+same_day_course | date=2026-02-04 | course=Sedgefield | races=6 | median_per_f=0.43 | mean_per_f=0.43 | trimmed_mean_per_f=0.45 | stdev=0.33 | going={"Good to Soft (Good in places)":1,"Good to Soft (Soft in places)":5}
+same_day_course | date=2026-02-05 | course=Doncaster | races=6 | median_per_f=0.97 | mean_per_f=1.00 | trimmed_mean_per_f=0.96 | stdev=0.26 | going={"Good to Soft":3,"Soft":3}
+same_day_course | date=2026-02-09 | course=Catterick | races=6 | median_per_f=0.27 | mean_per_f=0.31 | trimmed_mean_per_f=0.27 | stdev=0.24 | going={"Soft (Heavy in places)":6}
+same_day_course | date=2026-02-12 | course=Taunton | races=6 | median_per_f=0.60 | mean_per_f=0.54 | trimmed_mean_per_f=0.57 | stdev=0.14 | going={"Heavy (Soft in places)":6}
+same_day_course | date=2026-02-12 | course=Leicester | races=6 | median_per_f=0.22 | mean_per_f=0.28 | trimmed_mean_per_f=0.27 | stdev=0.35 | going={"Heavy":6}
+same_day_course | date=2026-02-13 | course=Kelso | races=6 | median_per_f=1.49 | mean_per_f=1.59 | trimmed_mean_per_f=1.57 | stdev=0.36 | going={"Heavy":6}
+same_day_course | date=2026-02-14 | course=Ascot | races=6 | median_per_f=-0.11 | mean_per_f=-0.11 | trimmed_mean_per_f=-0.10 | stdev=0.29 | going={"Good to Soft (Soft in places)":6}
+same_day_course | date=2026-02-14 | course=Haydock | races=6 | median_per_f=0.23 | mean_per_f=0.25 | trimmed_mean_per_f=0.23 | stdev=0.15 | going={"Soft":2,"Good to Soft":3,"Good to Soft (Soft in places)":1}
+same_day_course | date=2026-02-15 | course=Musselburgh | races=6 | median_per_f=0.40 | mean_per_f=0.61 | trimmed_mean_per_f=0.55 | stdev=0.40 | going={"Good to Soft (Soft in places)":3,"Soft":3}
+same_day_course | date=2026-02-17 | course=Newbury | races=6 | median_per_f=1.23 | mean_per_f=1.04 | trimmed_mean_per_f=1.04 | stdev=0.80 | going={"Soft":2,"Soft (Heavy in places)":4}
+same_day_course | date=2026-02-18 | course=Southwell | races=6 | median_per_f=0.39 | mean_per_f=0.29 | trimmed_mean_per_f=0.34 | stdev=0.33 | going={"Soft (Heavy in places)":6}
+same_day_course | date=2026-02-18 | course=Ludlow | races=6 | median_per_f=0.51 | mean_per_f=0.52 | trimmed_mean_per_f=0.50 | stdev=0.26 | going={"Soft":6}
+same_day_course | date=2026-02-19 | course=Sedgefield | races=6 | median_per_f=0.26 | mean_per_f=0.31 | trimmed_mean_per_f=0.29 | stdev=0.34 | going={"Good to Soft (Soft in places)":1,"Soft (Good to Soft in places)":5}
+same_day_course | date=2026-02-20 | course=Exeter | races=6 | median_per_f=1.18 | mean_per_f=1.12 | trimmed_mean_per_f=1.15 | stdev=0.21 | going={"Heavy":6}
+same_day_course | date=2026-02-21 | course=Newcastle | races=6 | median_per_f=0.11 | mean_per_f=-0.44 | trimmed_mean_per_f=-0.00 | stdev=1.29 | going={"Good to Soft":6}
+same_day_course | date=2026-02-22 | course=Fontwell | races=6 | median_per_f=1.13 | mean_per_f=1.01 | trimmed_mean_per_f=1.09 | stdev=0.27 | going={"Heavy":6}
+same_day_course | date=2026-02-22 | course=Hereford | races=6 | median_per_f=0.53 | mean_per_f=0.44 | trimmed_mean_per_f=0.53 | stdev=0.41 | going={"Soft (Heavy in places)":6}
+same_day_course | date=2026-02-24 | course=Catterick | races=6 | median_per_f=0.37 | mean_per_f=0.32 | trimmed_mean_per_f=0.35 | stdev=0.26 | going={"Good to Soft (Soft in places)":6}
+same_day_course | date=2026-02-24 | course=Leicester | races=6 | median_per_f=0.46 | mean_per_f=0.85 | trimmed_mean_per_f=0.46 | stdev=1.35 | going={"Soft (Heavy in places)":6}
+same_day_course | date=2026-02-25 | course=Bangor-on-Dee | races=6 | median_per_f=1.04 | mean_per_f=1.04 | trimmed_mean_per_f=1.07 | stdev=0.55 | going={"Soft":3,"Soft (Heavy in places)":3}
+same_day_course | date=2026-02-26 | course=Ludlow | races=6 | median_per_f=0.26 | mean_per_f=0.17 | trimmed_mean_per_f=0.21 | stdev=0.30 | going={"Good to Soft (Soft in places)":6}
+same_day_course | date=2026-02-27 | course=Newbury | races=6 | median_per_f=0.07 | mean_per_f=0.12 | trimmed_mean_per_f=0.12 | stdev=0.35 | going={"Good to Soft (Soft in places)":6}
+same_day_course | date=2026-02-28 | course=Newbury | races=6 | median_per_f=-0.07 | mean_per_f=-0.26 | trimmed_mean_per_f=-0.09 | stdev=0.63 | going={"Good to Soft (Soft in places)":1,"Good to Soft":5}
+same_day_course | date=2026-03-02 | course=Southwell | races=6 | median_per_f=0.93 | mean_per_f=0.87 | trimmed_mean_per_f=0.92 | stdev=0.44 | going={"Soft (Heavy in places)":6}
+same_day_course | date=2026-03-03 | course=Newcastle | races=6 | median_per_f=-0.39 | mean_per_f=-0.37 | trimmed_mean_per_f=-0.36 | stdev=0.36 | going={"Good to Soft":6}
+same_day_course | date=2026-03-04 | course=Catterick | races=6 | median_per_f=-0.75 | mean_per_f=-0.70 | trimmed_mean_per_f=-0.75 | stdev=0.16 | going={"Good (Good to Soft in places)":6}
+same_day_course | date=2026-03-05 | course=Haydock | races=6 | median_per_f=0.14 | mean_per_f=0.12 | trimmed_mean_per_f=0.10 | stdev=0.25 | going={"Good to Soft":2,"Good to Soft (Good in places)":4}
+same_day_course | date=2026-03-06 | course=Ayr | races=6 | median_per_f=0.19 | mean_per_f=0.26 | trimmed_mean_per_f=0.25 | stdev=0.22 | going={"Soft":6}
+same_day_course | date=2026-03-06 | course=Leicester | races=6 | median_per_f=-0.34 | mean_per_f=-0.38 | trimmed_mean_per_f=-0.38 | stdev=0.24 | going={"Good to Soft (Soft in places)":6}
+same_day_course | date=2026-03-10 | course=Sedgefield | races=6 | median_per_f=0.08 | mean_per_f=0.15 | trimmed_mean_per_f=0.12 | stdev=0.16 | going={"Good (Good to Soft in places)":6}
+same_day_course | date=2026-03-14 | course=Uttoxeter | races=6 | median_per_f=0.26 | mean_per_f=0.38 | trimmed_mean_per_f=0.33 | stdev=0.49 | going={"Soft":6}
+same_day_course | date=2026-03-14 | course=Kempton | races=6 | median_per_f=-0.16 | mean_per_f=-0.20 | trimmed_mean_per_f=-0.20 | stdev=0.14 | going={"Good (Good to Soft in places)":6}
+same_day_course | date=2026-03-16 | course=Ffos Las | races=6 | median_per_f=0.67 | mean_per_f=0.78 | trimmed_mean_per_f=0.72 | stdev=0.55 | going={"Soft (Heavy in places)":6}
+same_day_course | date=2026-03-17 | course=Wetherby | races=6 | median_per_f=-1.07 | mean_per_f=-1.17 | trimmed_mean_per_f=-1.15 | stdev=0.54 | going={"Good to Soft (Good in places)":6}
+same_day_course | date=2026-03-19 | course=Sedgefield | races=6 | median_per_f=-0.19 | mean_per_f=-0.15 | trimmed_mean_per_f=-0.19 | stdev=0.23 | going={"Good (Good to Soft in places)":6}
+same_day_course | date=2026-03-21 | course=Newbury | races=6 | median_per_f=-0.50 | mean_per_f=-0.51 | trimmed_mean_per_f=-0.51 | stdev=0.19 | going={"Good to Soft (Good in places)":6}
+same_day_course | date=2026-03-23 | course=Kempton | races=6 | median_per_f=-0.06 | mean_per_f=0.11 | trimmed_mean_per_f=-0.02 | stdev=0.45 | going={"Good":6}
+same_day_course | date=2026-03-24 | course=Taunton | races=6 | median_per_f=-0.41 | mean_per_f=-0.40 | trimmed_mean_per_f=-0.38 | stdev=0.30 | going={"Good":6}
+same_day_course | date=2026-03-24 | course=Southwell | races=6 | median_per_f=0.31 | mean_per_f=0.37 | trimmed_mean_per_f=0.35 | stdev=0.32 | going={"Good":6}
+same_day_course | date=2026-03-25 | course=Hexham | races=6 | median_per_f=1.46 | mean_per_f=1.49 | trimmed_mean_per_f=1.48 | stdev=0.23 | going={"Soft":6}
+same_day_course | date=2026-03-25 | course=Hereford | races=6 | median_per_f=0.29 | mean_per_f=0.25 | trimmed_mean_per_f=0.28 | stdev=0.24 | going={"Good (Good to Soft in places)":6}
+same_day_course | date=2026-03-26 | course=Warwick | races=6 | median_per_f=0.09 | mean_per_f=0.13 | trimmed_mean_per_f=0.11 | stdev=0.21 | going={"Good (Good to Soft in places)":6}
+same_day_course | date=2026-03-26 | course=Chepstow | races=6 | median_per_f=-0.40 | mean_per_f=-0.42 | trimmed_mean_per_f=-0.41 | stdev=0.07 | going={"Good to Soft (Good in places)":6}
+same_day_course | date=2026-03-27 | course=Fontwell | races=6 | median_per_f=0.40 | mean_per_f=0.37 | trimmed_mean_per_f=0.37 | stdev=0.19 | going={"Good (Good to Soft in places)":1,"Good to Soft":5}
+same_day_course | date=2026-03-30 | course=Ludlow | races=6 | median_per_f=-0.27 | mean_per_f=-0.18 | trimmed_mean_per_f=-0.23 | stdev=0.21 | going={"Good":6}
+same_day_course | date=2026-03-31 | course=Newcastle | races=6 | median_per_f=0.01 | mean_per_f=-0.00 | trimmed_mean_per_f=0.01 | stdev=0.25 | going={"Good to Soft (Good in places)":6}
+same_day_course | date=2026-03-31 | course=Bangor-on-Dee | races=6 | median_per_f=-0.17 | mean_per_f=-0.08 | trimmed_mean_per_f=-0.11 | stdev=0.29 | going={"Good":4,"Good (Good to Soft in Places)":2}
+same_day_course | date=2026-04-01 | course=Southwell | races=6 | median_per_f=-0.13 | mean_per_f=-0.25 | trimmed_mean_per_f=-0.17 | stdev=0.34 | going={"Good":6}
+same_day_course | date=2026-04-01 | course=Sedgefield | races=6 | median_per_f=-0.09 | mean_per_f=-0.14 | trimmed_mean_per_f=-0.10 | stdev=0.22 | going={"Good (Good to Soft in places)":6}
+same_day_course | date=2026-04-02 | course=Kelso | races=6 | median_per_f=0.12 | mean_per_f=0.17 | trimmed_mean_per_f=0.13 | stdev=0.45 | going={"Good to Soft":1,"Good (Good to Soft in places)":5}
+same_day_course | date=2026-04-04 | course=Newton Abbot | races=6 | median_per_f=-0.41 | mean_per_f=-0.28 | trimmed_mean_per_f=-0.33 | stdev=0.38 | going={"Good (Good to Soft in places)":2,"Good":4}
+same_day_course | date=2026-04-04 | course=Huntingdon | races=6 | median_per_f=-0.17 | mean_per_f=-0.02 | trimmed_mean_per_f=-0.10 | stdev=0.31 | going={"Good":6}
+same_day_course | date=2026-04-05 | course=Market Rasen | races=6 | median_per_f=0.19 | mean_per_f=0.21 | trimmed_mean_per_f=0.21 | stdev=0.27 | going={"Good (Good to Soft in places)":6}
+same_day_course | date=2026-04-06 | course=Fakenham | races=6 | median_per_f=-1.07 | mean_per_f=-1.01 | trimmed_mean_per_f=-1.09 | stdev=0.34 | going={"Good":6}
+same_day_course | date=2026-04-06 | course=Plumpton | races=6 | median_per_f=-0.52 | mean_per_f=-0.53 | trimmed_mean_per_f=-0.53 | stdev=0.29 | going={"Good (Good to Soft in places)":5,"Good":1}
+same_day_course | date=2026-04-08 | course=Fontwell | races=6 | median_per_f=0.04 | mean_per_f=0.05 | trimmed_mean_per_f=0.06 | stdev=0.27 | going={"Good to Soft (Good in places)":6}
+same_day_course | date=2026-04-09 | course=Taunton | races=6 | median_per_f=-0.21 | mean_per_f=-0.13 | trimmed_mean_per_f=-0.15 | stdev=0.27 | going={"Good":6}
+same_day_course | date=2026-04-10 | course=Sedgefield | races=6 | median_per_f=-0.15 | mean_per_f=-0.18 | trimmed_mean_per_f=-0.20 | stdev=0.32 | going={"Good":6}
+same_day_course | date=2026-04-13 | course=Fakenham | races=6 | median_per_f=-0.39 | mean_per_f=-0.56 | trimmed_mean_per_f=-0.50 | stdev=0.40 | going={"Good":6}
+same_day_course | date=2026-04-14 | course=Newton Abbot | races=6 | median_per_f=0.71 | mean_per_f=0.59 | trimmed_mean_per_f=0.63 | stdev=0.23 | going={"Good (Good to Soft in places)":6}
+same_day_course | date=2026-04-17 | course=Newbury | races=6 | median_per_f=0.16 | mean_per_f=0.18 | trimmed_mean_per_f=0.16 | stdev=0.20 | going={"Good":6}
+same_day_course | date=2026-04-17 | course=Exeter | races=6 | median_per_f=-0.33 | mean_per_f=-0.15 | trimmed_mean_per_f=-0.31 | stdev=0.43 | going={"Good":6}
+same_day_course | date=2026-04-18 | course=Ayr | races=6 | median_per_f=-0.49 | mean_per_f=-0.41 | trimmed_mean_per_f=-0.48 | stdev=0.24 | going={"Heavy (Soft in places)":6}
+same_day_course | date=2026-04-20 | course=Lingfield | races=6 | median_per_f=-0.04 | mean_per_f=-0.01 | trimmed_mean_per_f=-0.01 | stdev=0.07 | going={"Standard":6}
+same_day_course | date=2026-04-21 | course=Pontefract | races=6 | median_per_f=0.03 | mean_per_f=0.05 | trimmed_mean_per_f=0.08 | stdev=0.25 | going={"Good":3,"Good (Good to Firm in places)":3}
+same_day_course | date=2026-04-22 | course=Taunton | races=6 | median_per_f=-0.89 | mean_per_f=-0.74 | trimmed_mean_per_f=-0.79 | stdev=0.33 | going={"Good":6}
+same_day_course | date=2026-04-22 | course=Ludlow | races=6 | median_per_f=-0.61 | mean_per_f=-0.55 | trimmed_mean_per_f=-0.61 | stdev=0.23 | going={"Good":6}
+same_day_course | date=2026-04-24 | course=Perth | races=6 | median_per_f=0.22 | mean_per_f=0.21 | trimmed_mean_per_f=0.19 | stdev=0.24 | going={"Good (Good to Soft in places)":6}
+same_day_course | date=2026-04-24 | course=Fontwell | races=6 | median_per_f=-0.30 | mean_per_f=-0.43 | trimmed_mean_per_f=-0.34 | stdev=0.27 | going={"Good to Soft (Good in places)":1,"Good":5}
+same_day_course | date=2026-04-25 | course=Ripon | races=6 | median_per_f=0.18 | mean_per_f=0.20 | trimmed_mean_per_f=0.18 | stdev=0.16 | going={"Good (Good to Firm in places)":6}
+same_day_course | date=2026-04-28 | course=Epsom Downs | races=6 | median_per_f=0.03 | mean_per_f=0.05 | trimmed_mean_per_f=0.04 | stdev=0.13 | going={"Good":6}
+same_day_course | date=2026-04-30 | course=Yarmouth | races=6 | median_per_f=-0.07 | mean_per_f=-0.07 | trimmed_mean_per_f=-0.07 | stdev=0.13 | going={"Good to Firm":6}
+same_day_course | date=2026-04-30 | course=Redcar | races=6 | median_per_f=-0.04 | mean_per_f=-0.04 | trimmed_mean_per_f=-0.03 | stdev=0.06 | going={"Good to Firm":6}
+same_day_course | date=2026-05-02 | course=Thirsk | races=6 | median_per_f=-0.19 | mean_per_f=-0.15 | trimmed_mean_per_f=-0.18 | stdev=0.18 | going={"Good to Firm (Good in places)":6}
+same_day_course | date=2026-05-02 | course=Goodwood | races=6 | median_per_f=-0.14 | mean_per_f=-0.11 | trimmed_mean_per_f=-0.11 | stdev=0.17 | going={"Good (Good to Firm in places)":6}
+same_day_course | date=2026-05-04 | course=Warwick | races=6 | median_per_f=-0.26 | mean_per_f=-0.24 | trimmed_mean_per_f=-0.25 | stdev=0.16 | going={"Good":6}
+same_day_course | date=2026-05-05 | course=Wolverhampton | races=6 | median_per_f=-0.01 | mean_per_f=0.03 | trimmed_mean_per_f=0.03 | stdev=0.17 | going={"Standard":6}
+same_day_course | date=2026-05-05 | course=Hereford | races=6 | median_per_f=-0.44 | mean_per_f=-0.46 | trimmed_mean_per_f=-0.44 | stdev=0.10 | going={"Good":6}
+same_day_course | date=2026-05-06 | course=Newton Abbot | races=6 | median_per_f=0.35 | mean_per_f=0.30 | trimmed_mean_per_f=0.33 | stdev=0.32 | going={"Good (Good to Soft in places)":6}
+same_day_course | date=2026-05-06 | course=Chester | races=6 | median_per_f=-0.13 | mean_per_f=-0.06 | trimmed_mean_per_f=-0.09 | stdev=0.23 | going={"Good":6}
+same_day_course | date=2026-05-06 | course=Fontwell | races=6 | median_per_f=-0.18 | mean_per_f=-0.16 | trimmed_mean_per_f=-0.18 | stdev=0.37 | going={"Good (Good to Soft in Places)":2,"Good":4}
+same_day_course | date=2026-05-07 | course=Windsor | races=6 | median_per_f=-0.01 | mean_per_f=-0.01 | trimmed_mean_per_f=-0.01 | stdev=0.09 | going={"Good to Firm (Good in places)":6}
+same_day_course | date=2026-05-07 | course=Huntingdon | races=6 | median_per_f=-1.02 | mean_per_f=-0.96 | trimmed_mean_per_f=-1.02 | stdev=0.29 | going={"Good (Good to Firm in places)":6}
+same_day_course | date=2026-05-08 | course=Market Rasen | races=6 | median_per_f=-0.06 | mean_per_f=-0.15 | trimmed_mean_per_f=-0.05 | stdev=0.45 | going={"Good":6}
+same_day_course | date=2026-05-08 | course=Ripon | races=6 | median_per_f=0.12 | mean_per_f=0.07 | trimmed_mean_per_f=0.10 | stdev=0.20 | going={"Good":6}
+same_day_course | date=2026-05-08 | course=Chester | races=6 | median_per_f=-0.20 | mean_per_f=-0.20 | trimmed_mean_per_f=-0.20 | stdev=0.15 | going={"Good (Good to Soft in places)":6}
+same_day_course | date=2026-05-09 | course=Warwick | races=6 | median_per_f=-0.17 | mean_per_f=-0.17 | trimmed_mean_per_f=-0.16 | stdev=0.23 | going={"Good":6}
+same_day_course | date=2026-05-09 | course=Haydock | races=6 | median_per_f=-0.20 | mean_per_f=-0.16 | trimmed_mean_per_f=-0.18 | stdev=0.21 | going={"Good (Good to Soft in places)":3,"Good":3}
+same_day_course | date=2026-05-10 | course=Ludlow | races=6 | median_per_f=-0.59 | mean_per_f=-0.63 | trimmed_mean_per_f=-0.63 | stdev=0.17 | going={"Good (Good to Firm in places)":6}
+same_day_course | date=2026-05-11 | course=Wolverhampton | races=6 | median_per_f=-0.01 | mean_per_f=-0.00 | trimmed_mean_per_f=0.01 | stdev=0.20 | going={"Standard":6}
+same_day_course | date=2026-05-11 | course=Catterick | races=6 | median_per_f=0.14 | mean_per_f=0.16 | trimmed_mean_per_f=0.15 | stdev=0.09 | going={"Good":6}
+same_day_course | date=2026-05-12 | course=Beverley | races=6 | median_per_f=0.31 | mean_per_f=0.32 | trimmed_mean_per_f=0.30 | stdev=0.22 | going={"Good to Firm (Good in places)":6}
+same_day_course | date=2026-05-13 | course=Yarmouth | races=6 | median_per_f=0.38 | mean_per_f=0.40 | trimmed_mean_per_f=0.40 | stdev=0.13 | going={"Good":2,"Good to Soft":1,"Soft":3}
+same_day_course | date=2026-05-13 | course=Perth | races=6 | median_per_f=0.75 | mean_per_f=0.76 | trimmed_mean_per_f=0.72 | stdev=0.45 | going={"Good":1,"Good to Soft":5}
+same_day_course | date=2026-05-14 | course=Fontwell | races=6 | median_per_f=-0.42 | mean_per_f=-0.43 | trimmed_mean_per_f=-0.38 | stdev=0.48 | going={"Good (Good to Soft in places)":6}
+same_day_course | date=2026-05-16 | course=Bangor-on-Dee | races=6 | median_per_f=-0.01 | mean_per_f=-0.19 | trimmed_mean_per_f=-0.16 | stdev=0.44 | going={"Good":3,"Good (Good to Soft in places)":3}
+same_day_course | date=2026-05-18 | course=Lingfield | races=6 | median_per_f=-0.03 | mean_per_f=-0.03 | trimmed_mean_per_f=-0.01 | stdev=0.14 | going={"Good (Good to Firm in places)":6}
+same_day_course | date=2026-05-19 | course=Nottingham | races=6 | median_per_f=0.25 | mean_per_f=0.27 | trimmed_mean_per_f=0.25 | stdev=0.09 | going={"Good to Soft (Good in places)":6}
+same_day_course | date=2026-05-19 | course=Huntingdon | races=6 | median_per_f=-0.62 | mean_per_f=-0.68 | trimmed_mean_per_f=-0.68 | stdev=0.23 | going={"Good to Firm (Good in places)":4,"Good (Good to Firm in places)":2}
+same_day_course | date=2026-05-20 | course=Warwick | races=6 | median_per_f=-0.26 | mean_per_f=-0.32 | trimmed_mean_per_f=-0.27 | stdev=0.24 | going={"Good":6}
+same_day_course | date=2026-05-20 | course=Yarmouth | races=6 | median_per_f=-0.03 | mean_per_f=0.04 | trimmed_mean_per_f=0.02 | stdev=0.20 | going={"Good (Good to Soft in places)":1,"Good":5}
+same_day_course | date=2026-05-20 | course=Ffos Las | races=6 | median_per_f=-0.23 | mean_per_f=-0.31 | trimmed_mean_per_f=-0.28 | stdev=0.35 | going={"Good to Soft":6}
+same_day_course | date=2026-05-22 | course=Pontefract | races=6 | median_per_f=0.22 | mean_per_f=0.15 | trimmed_mean_per_f=0.17 | stdev=0.13 | going={"Good to Soft (Soft in places)":6}
+same_day_course | date=2026-05-25 | course=Cartmel | races=6 | median_per_f=-0.12 | mean_per_f=-0.13 | trimmed_mean_per_f=-0.15 | stdev=0.14 | going={"Good":6}
+same_day_course | date=2026-05-25 | course=Huntingdon | races=6 | median_per_f=-1.16 | mean_per_f=-1.09 | trimmed_mean_per_f=-1.15 | stdev=0.23 | going={"Good to Firm (Good in places)":6}
+same_day_course | date=2026-05-26 | course=Bath | races=6 | median_per_f=-0.21 | mean_per_f=-0.19 | trimmed_mean_per_f=-0.19 | stdev=0.07 | going={"Firm":6}
+same_day_course | date=2026-05-26 | course=Lingfield | races=6 | median_per_f=0.01 | mean_per_f=0.00 | trimmed_mean_per_f=0.00 | stdev=0.15 | going={"Good (Good to Firm in places)":6}
+same_day_course | date=2026-05-27 | course=Newton Abbot | races=6 | median_per_f=0.17 | mean_per_f=0.07 | trimmed_mean_per_f=0.16 | stdev=0.41 | going={"Good (Good to Firm in places)":6}
+same_day_course | date=2026-05-27 | course=Cartmel | races=6 | median_per_f=0.34 | mean_per_f=0.34 | trimmed_mean_per_f=0.34 | stdev=0.20 | going={"Good":6}
+same_day_course | date=2026-05-28 | course=Market Rasen | races=6 | median_per_f=0.36 | mean_per_f=0.36 | trimmed_mean_per_f=0.35 | stdev=0.41 | going={"Good":6}
+same_day_course | date=2026-05-28 | course=Worcester | races=6 | median_per_f=0.04 | mean_per_f=0.07 | trimmed_mean_per_f=0.07 | stdev=0.17 | going={"Good":6}
+same_day_course | date=2026-05-28 | course=Yarmouth | races=6 | median_per_f=0.03 | mean_per_f=0.03 | trimmed_mean_per_f=0.02 | stdev=0.30 | going={"Good to Firm (Good in places)":6}
+same_day_course | date=2026-05-28 | course=Sandown | races=6 | median_per_f=-0.21 | mean_per_f=-0.22 | trimmed_mean_per_f=-0.22 | stdev=0.17 | going={"Good (Good to Firm in places)":6}
+same_day_course | date=2026-05-29 | course=Wolverhampton | races=6 | median_per_f=-0.05 | mean_per_f=-0.01 | trimmed_mean_per_f=-0.05 | stdev=0.21 | going={"Standard":6}
+same_day_course | date=2026-05-31 | course=Thirsk | races=6 | median_per_f=-0.24 | mean_per_f=-0.23 | trimmed_mean_per_f=-0.24 | stdev=0.12 | going={"Good (Good to Firm in places)":6}
+same_day_course | date=2026-06-01 | course=Newbury | races=6 | median_per_f=-0.25 | mean_per_f=-0.23 | trimmed_mean_per_f=-0.25 | stdev=0.19 | going={"Good to Firm":6}
+same_day_course | date=2026-06-01 | course=Lingfield | races=6 | median_per_f=-0.11 | mean_per_f=-0.11 | trimmed_mean_per_f=-0.12 | stdev=0.07 | going={"Standard":3,"Good (Good to Firm in places)":3}
+same_day_course | date=2026-06-02 | course=Newcastle | races=6 | median_per_f=0.18 | mean_per_f=0.16 | trimmed_mean_per_f=0.16 | stdev=0.14 | going={"Standard":6}
+same_day_course | date=2026-06-02 | course=Pontefract | races=6 | median_per_f=-0.02 | mean_per_f=-0.02 | trimmed_mean_per_f=-0.03 | stdev=0.14 | going={"Good (Good to Firm in places)":6}
+same_day_course | date=2026-06-03 | course=Nottingham | races=6 | median_per_f=0.33 | mean_per_f=0.25 | trimmed_mean_per_f=0.27 | stdev=0.19 | going={"Good (Good to Soft in places)":6}
+same_day_course | date=2026-06-03 | course=Ripon | races=6 | median_per_f=-0.16 | mean_per_f=-0.19 | trimmed_mean_per_f=-0.15 | stdev=0.21 | going={"Good":6}
+same_day_course | date=2026-06-03 | course=Warwick | races=6 | median_per_f=-0.87 | mean_per_f=-0.89 | trimmed_mean_per_f=-0.86 | stdev=0.26 | going={"Good (Good to Firm in places)":6}
+same_day_course | date=2026-06-04 | course=Ffos Las | races=6 | median_per_f=0.39 | mean_per_f=0.38 | trimmed_mean_per_f=0.37 | stdev=0.35 | going={"Good to Soft":6}
+same_day_course | date=2026-06-05 | course=Goodwood | races=6 | median_per_f=0.49 | mean_per_f=0.49 | trimmed_mean_per_f=0.46 | stdev=0.23 | going={"Good to Soft (Soft in places)":4,"Good to Soft":2}
+same_day_course | date=2026-06-05 | course=Musselburgh | races=6 | median_per_f=-0.05 | mean_per_f=-0.03 | trimmed_mean_per_f=-0.04 | stdev=0.11 | going={"Good":6}
+same_day_course | date=2026-06-06 | course=Hexham | races=6 | median_per_f=-0.21 | mean_per_f=-0.12 | trimmed_mean_per_f=-0.14 | stdev=0.36 | going={"Good":6}
+same_day_course | date=2026-06-08 | course=Pontefract | races=6 | median_per_f=0.05 | mean_per_f=-0.01 | trimmed_mean_per_f=0.01 | stdev=0.16 | going={"Good (Good to Soft in places)":6}
+same_day_course | date=2026-06-09 | course=Brighton | races=6 | median_per_f=0.21 | mean_per_f=0.23 | trimmed_mean_per_f=0.21 | stdev=0.17 | going={"Good":6}
+same_day_course | date=2026-06-09 | course=Carlisle | races=6 | median_per_f=0.37 | mean_per_f=0.29 | trimmed_mean_per_f=0.36 | stdev=0.30 | going={"Good to Soft (Soft in places)":6}
+same_day_course | date=2026-06-10 | course=Yarmouth | races=6 | median_per_f=0.16 | mean_per_f=0.21 | trimmed_mean_per_f=0.21 | stdev=0.24 | going={"Good to Soft (Good in places)":1,"Soft":5}
+same_day_course | date=2026-06-10 | course=Fontwell | races=6 | median_per_f=-0.27 | mean_per_f=-0.20 | trimmed_mean_per_f=-0.25 | stdev=0.26 | going={"Good (Good to Soft in places)":6}
+same_day_course | date=2026-06-10 | course=Hamilton | races=6 | median_per_f=0.22 | mean_per_f=0.23 | trimmed_mean_per_f=0.21 | stdev=0.09 | going={"Good to Soft (Soft in places)":6}
+same_day_course | date=2026-06-11 | course=Nottingham | races=6 | median_per_f=0.43 | mean_per_f=0.49 | trimmed_mean_per_f=0.49 | stdev=0.14 | going={"Good to Soft":1,"Soft":5}
+same_day_course | date=2026-06-11 | course=Catterick | races=6 | median_per_f=0.30 | mean_per_f=0.33 | trimmed_mean_per_f=0.29 | stdev=0.21 | going={"Good to Soft":6}
+same_day_course | date=2026-06-12 | course=Market Rasen | races=6 | median_per_f=-0.39 | mean_per_f=-0.48 | trimmed_mean_per_f=-0.42 | stdev=0.34 | going={"Good":6}
+same_day_course | date=2026-06-12 | course=Goodwood | races=6 | median_per_f=0.88 | mean_per_f=0.90 | trimmed_mean_per_f=0.89 | stdev=0.10 | going={"Soft (Heavy in places)":6}
+same_day_course | date=2026-06-13 | course=York | races=6 | median_per_f=-0.24 | mean_per_f=-0.19 | trimmed_mean_per_f=-0.21 | stdev=0.16 | going={"Good (Good to Firm in places)":6}
+same_day_course | date=2026-06-13 | course=Sandown | races=6 | median_per_f=-0.06 | mean_per_f=-0.08 | trimmed_mean_per_f=-0.07 | stdev=0.18 | going={"Good (Good to Firm in places)":5,"Good (Good to Soft in places)":1}
+same_day_course | date=2026-06-16 | course=Stratford | races=6 | median_per_f=-0.19 | mean_per_f=-0.24 | trimmed_mean_per_f=-0.22 | stdev=0.10 | going={"Good (Good to Firm in places)":6}
+same_day_course | date=2026-06-16 | course=Thirsk | races=6 | median_per_f=0.11 | mean_per_f=0.11 | trimmed_mean_per_f=0.12 | stdev=0.15 | going={"Good (Good to Firm in places)":6}
+same_day_course | date=2026-06-16 | course=Beverley | races=6 | median_per_f=-0.06 | mean_per_f=-0.07 | trimmed_mean_per_f=-0.07 | stdev=0.10 | going={"Good (Good to Soft in places)":6}
+same_day_course | date=2026-06-17 | course=Ripon | races=6 | median_per_f=-0.13 | mean_per_f=-0.13 | trimmed_mean_per_f=-0.12 | stdev=0.10 | going={"Good":6}
+same_day_course | date=2026-06-17 | course=Royal Ascot | races=6 | median_per_f=0.05 | mean_per_f=0.04 | trimmed_mean_per_f=0.05 | stdev=0.12 | going={"Good to Firm":6}
+same_day_course | date=2026-06-18 | course=Yarmouth | races=6 | median_per_f=0.13 | mean_per_f=0.10 | trimmed_mean_per_f=0.13 | stdev=0.15 | going={"Good to Firm":6}
+same_day_course | date=2026-06-18 | course=Royal Ascot | races=6 | median_per_f=0.05 | mean_per_f=0.04 | trimmed_mean_per_f=0.04 | stdev=0.13 | going={"Good to Firm":6}
+same_day_course | date=2026-06-19 | course=Ayr | races=6 | median_per_f=0.49 | mean_per_f=0.53 | trimmed_mean_per_f=0.49 | stdev=0.24 | going={"Soft":6}
+same_day_course | date=2026-06-19 | course=Redcar | races=6 | median_per_f=-0.07 | mean_per_f=0.01 | trimmed_mean_per_f=-0.02 | stdev=0.20 | going={"Good":6}
+same_day_course | date=2026-06-19 | course=Goodwood | races=6 | median_per_f=-0.07 | mean_per_f=0.01 | trimmed_mean_per_f=-0.02 | stdev=0.26 | going={"Good (Good to Firm in places)":6}
+same_day_course | date=2026-06-20 | course=Nottingham | races=6 | median_per_f=-0.01 | mean_per_f=-0.01 | trimmed_mean_per_f=-0.03 | stdev=0.21 | going={"Good (Good to Firm in places)":6}
+same_day_course | date=2026-06-20 | course=Royal Ascot | races=6 | median_per_f=-0.12 | mean_per_f=-0.08 | trimmed_mean_per_f=-0.11 | stdev=0.14 | going={"Good to Firm":6}
+same_day_course | date=2026-06-21 | course=Pontefract | races=6 | median_per_f=-0.10 | mean_per_f=-0.13 | trimmed_mean_per_f=-0.09 | stdev=0.15 | going={"Good (Good to Firm in places)":6}
+same_day_course | date=2026-06-21 | course=Hexham | races=6 | median_per_f=-0.40 | mean_per_f=-0.45 | trimmed_mean_per_f=-0.42 | stdev=0.28 | going={"Good":6}
+same_day_course | date=2026-06-22 | course=Brighton | races=6 | median_per_f=-0.23 | mean_per_f=-0.19 | trimmed_mean_per_f=-0.21 | stdev=0.16 | going={"Good to Firm (Good in places)":6}
+same_day_course | date=2026-06-22 | course=Catterick | races=6 | median_per_f=-0.17 | mean_per_f=-0.04 | trimmed_mean_per_f=-0.12 | stdev=0.34 | going={"Good to Firm":6}
+same_day_course | date=2026-06-23 | course=Ffos Las | races=6 | median_per_f=-0.13 | mean_per_f=-0.13 | trimmed_mean_per_f=-0.11 | stdev=0.17 | going={"Good":6}
+same_day_course | date=2026-06-25 | course=Newmarket | races=6 | median_per_f=0.34 | mean_per_f=0.29 | trimmed_mean_per_f=0.33 | stdev=0.20 | going={"Good to Firm (Good in places)":6}
+same_day_course | date=2026-06-25 | course=Nottingham | races=6 | median_per_f=-0.03 | mean_per_f=-0.03 | trimmed_mean_per_f=-0.07 | stdev=0.33 | going={"Good to Firm (Good in places)":6}
+same_day_course | date=2026-06-25 | course=Leicester | races=6 | median_per_f=-0.12 | mean_per_f=-0.13 | trimmed_mean_per_f=-0.12 | stdev=0.12 | going={"Good to Firm":6}
+same_day_course | date=2026-06-26 | course=Cartmel | races=6 | median_per_f=-0.09 | mean_per_f=-0.12 | trimmed_mean_per_f=-0.10 | stdev=0.13 | going={"Good":6}
+same_day_course | date=2026-06-26 | course=Bangor-on-Dee | races=6 | median_per_f=-0.16 | mean_per_f=-0.13 | trimmed_mean_per_f=-0.17 | stdev=0.30 | going={"Good (Good to Firm in places)":6}
+same_day_course | date=2026-06-29 | course=Stratford | races=6 | median_per_f=-0.30 | mean_per_f=-0.26 | trimmed_mean_per_f=-0.30 | stdev=0.37 | going={"Good to Firm (Good in places)":6}
+same_day_course | date=2026-06-30 | course=Stratford | races=6 | median_per_f=0.02 | mean_per_f=0.15 | trimmed_mean_per_f=0.03 | stdev=0.53 | going={"Good to Firm (Good in places)":6}
+same_day_course | date=2026-06-30 | course=Brighton | races=6 | median_per_f=0.16 | mean_per_f=0.20 | trimmed_mean_per_f=0.16 | stdev=0.16 | going={"Good to Firm":6}
+same_day_course | date=2026-06-30 | course=Ffos Las | races=6 | median_per_f=-0.12 | mean_per_f=-0.46 | trimmed_mean_per_f=-0.08 | stdev=1.04 | going={"Good (Good to Firm in places)":6}
+same_day_course | date=2026-07-01 | course=Bath | races=6 | median_per_f=-0.13 | mean_per_f=-0.05 | trimmed_mean_per_f=-0.07 | stdev=0.18 | going={"Firm (Good to Firm in places)":6}
+same_day_course | date=2026-07-02 | course=Newbury | races=6 | median_per_f=-0.03 | mean_per_f=-0.03 | trimmed_mean_per_f=-0.03 | stdev=0.08 | going={"Good to Firm":6}
+same_day_course | date=2026-07-02 | course=Yarmouth | races=6 | median_per_f=-0.17 | mean_per_f=-0.14 | trimmed_mean_per_f=-0.14 | stdev=0.37 | going={"Good to Firm":6}
+same_day_course | date=2026-07-02 | course=Perth | races=6 | median_per_f=-0.26 | mean_per_f=-0.55 | trimmed_mean_per_f=-0.20 | stdev=1.09 | going={"Good":6}
+same_day_course | date=2026-07-03 | course=Newton Abbot | races=6 | median_per_f=-0.29 | mean_per_f=-0.35 | trimmed_mean_per_f=-0.30 | stdev=0.28 | going={"Good (Good to Firm in places)":6}
+same_day_course | date=2026-07-03 | course=Beverley | races=6 | median_per_f=0.04 | mean_per_f=-0.01 | trimmed_mean_per_f=0.01 | stdev=0.15 | going={"Good to Firm (Good in places)":6}
+same_day_course | date=2026-07-03 | course=Sandown | races=6 | median_per_f=-0.20 | mean_per_f=-0.22 | trimmed_mean_per_f=-0.21 | stdev=0.04 | going={"Good":2,"Good (Good to Firm in places)":4}
+same_day_course | date=2026-07-06 | course=Ripon | races=6 | median_per_f=0.07 | mean_per_f=0.07 | trimmed_mean_per_f=0.08 | stdev=0.18 | going={"Good (Good to Firm in places)":6}
+same_day_course | date=2026-07-06 | course=Wolverhampton | races=6 | median_per_f=0.01 | mean_per_f=0.01 | trimmed_mean_per_f=0.01 | stdev=0.10 | going={"Standard":6}
+same_day_course | date=2026-07-07 | course=Brighton | races=6 | median_per_f=-0.04 | mean_per_f=-0.06 | trimmed_mean_per_f=-0.05 | stdev=0.20 | going={"Good to Firm":6}
+same_day_course | date=2026-07-08 | course=Yarmouth | races=6 | median_per_f=-0.27 | mean_per_f=-0.17 | trimmed_mean_per_f=-0.23 | stdev=0.33 | going={"Good to Firm":6}
+same_day_course | date=2026-07-08 | course=Catterick | races=6 | median_per_f=-0.25 | mean_per_f=-0.20 | trimmed_mean_per_f=-0.24 | stdev=0.15 | going={"Good to Firm":6}
+same_day_course | date=2026-07-08 | course=Chepstow | races=6 | median_per_f=0.07 | mean_per_f=0.04 | trimmed_mean_per_f=0.06 | stdev=0.11 | going={"Good to Firm":6}
+same_day_course | date=2026-07-09 | course=Epsom Downs | races=6 | median_per_f=-0.05 | mean_per_f=0.09 | trimmed_mean_per_f=0.04 | stdev=0.44 | going={"Good to Firm":6}
+same_day_course | date=2026-07-09 | course=Newmarket | races=6 | median_per_f=0.02 | mean_per_f=-0.05 | trimmed_mean_per_f=-0.02 | stdev=0.19 | going={"Good to Firm (Good in places)":6}
+same_day_course | date=2026-07-09 | course=Carlisle | races=6 | median_per_f=-0.30 | mean_per_f=-0.30 | trimmed_mean_per_f=-0.31 | stdev=0.23 | going={"Good to Firm (Good in places)":6}
+same_day_course | date=2026-07-09 | course=Doncaster | races=6 | median_per_f=-0.20 | mean_per_f=-0.06 | trimmed_mean_per_f=-0.17 | stdev=0.39 | going={"Good to Firm":6}
+same_day_course | date=2026-07-10 | course=Ascot | races=6 | median_per_f=-0.05 | mean_per_f=-0.02 | trimmed_mean_per_f=-0.02 | stdev=0.18 | going={"Good to Firm":6}
+same_day_course | date=2026-07-10 | course=Chester | races=6 | median_per_f=-0.19 | mean_per_f=-0.19 | trimmed_mean_per_f=-0.19 | stdev=0.12 | going={"Good (Good to Firm in places)":6}
+same_day_course | date=2026-07-11 | course=Ascot | races=6 | median_per_f=-0.17 | mean_per_f=-0.11 | trimmed_mean_per_f=-0.16 | stdev=0.27 | going={"Good to Firm":6}
+same_day_course | date=2026-07-11 | course=Salisbury | races=6 | median_per_f=-0.30 | mean_per_f=-0.33 | trimmed_mean_per_f=-0.31 | stdev=0.15 | going={"Good to Firm":6}
+same_day_course | date=2026-07-12 | course=Perth | races=6 | median_per_f=-0.04 | mean_per_f=-0.05 | trimmed_mean_per_f=-0.01 | stdev=0.19 | going={"Good":6}
+same_day_course | date=2026-07-13 | course=Newton Abbot | races=6 | median_per_f=-0.30 | mean_per_f=-0.33 | trimmed_mean_per_f=-0.30 | stdev=0.20 | going={"Good to Firm (Good in places)":6}
+same_day_course | date=2026-07-13 | course=Lingfield | races=6 | median_per_f=0.06 | mean_per_f=0.06 | trimmed_mean_per_f=0.06 | stdev=0.12 | going={"Standard":6}
+same_day_course | date=2026-07-14 | course=Beverley | races=6 | median_per_f=-0.08 | mean_per_f=-0.04 | trimmed_mean_per_f=-0.08 | stdev=0.20 | going={"Good to Firm (Good in places)":6}
+same_day_course | date=2026-07-14 | course=Ffos Las | races=6 | median_per_f=-0.26 | mean_per_f=-0.19 | trimmed_mean_per_f=-0.22 | stdev=0.23 | going={"Good (Good to Firm in places)":6}
+same_day_course | date=2026-07-15 | course=Yarmouth | races=6 | median_per_f=-0.28 | mean_per_f=-0.35 | trimmed_mean_per_f=-0.31 | stdev=0.31 | going={"Good to Firm":6}
+same_day_course | date=2026-07-15 | course=Catterick | races=6 | median_per_f=-0.03 | mean_per_f=-0.01 | trimmed_mean_per_f=-0.01 | stdev=0.21 | going={"Good to Firm":6}
+same_day_course | date=2026-07-15 | course=Bath | races=6 | median_per_f=-0.22 | mean_per_f=-0.18 | trimmed_mean_per_f=-0.20 | stdev=0.16 | going={"Firm":6}
+same_day_course | date=2026-07-15 | course=Lingfield | races=6 | median_per_f=-0.07 | mean_per_f=-0.07 | trimmed_mean_per_f=-0.06 | stdev=0.23 | going={"Good to Firm":6}
+same_day_course | date=2026-07-16 | course=Epsom Downs | races=6 | median_per_f=-0.02 | mean_per_f=-0.06 | trimmed_mean_per_f=-0.06 | stdev=0.20 | going={"Good to Firm (Firm in places)":6}
+same_day_course | date=2026-07-16 | course=Thirsk | races=6 | median_per_f=-0.15 | mean_per_f=-0.14 | trimmed_mean_per_f=-0.16 | stdev=0.11 | going={"Good to Firm (Good in places)":6}
+same_day_course | date=2026-07-16 | course=Worcester | races=6 | median_per_f=0.22 | mean_per_f=0.24 | trimmed_mean_per_f=0.23 | stdev=0.17 | going={"Good (Good to Firm in places)":6}
+same_day_course | date=2026-07-17 | course=Newbury | races=6 | median_per_f=0.04 | mean_per_f=0.03 | trimmed_mean_per_f=0.03 | stdev=0.19 | going={"Good to Firm":6}
+same_day_course | date=2026-07-17 | course=Wolverhampton | races=6 | median_per_f=-0.02 | mean_per_f=-0.01 | trimmed_mean_per_f=-0.01 | stdev=0.08 | going={"Standard":6}
+same_day_course | date=2026-07-17 | course=Pontefract | races=6 | median_per_f=-0.15 | mean_per_f=-0.08 | trimmed_mean_per_f=-0.11 | stdev=0.17 | going={"Good to Firm (Good in places)":6}
+same_day_course | date=2026-07-18 | course=Newbury | races=6 | median_per_f=-0.13 | mean_per_f=-0.11 | trimmed_mean_per_f=-0.14 | stdev=0.23 | going={"Good to Firm":6}
+same_day_course | date=2026-07-18 | course=Newmarket | races=6 | median_per_f=-0.03 | mean_per_f=-0.01 | trimmed_mean_per_f=-0.02 | stdev=0.12 | going={"Good to Firm":6}
+same_day_course | date=2026-07-18 | course=Nottingham | races=6 | median_per_f=-0.11 | mean_per_f=-0.11 | trimmed_mean_per_f=-0.12 | stdev=0.22 | going={"Good to Firm (Good in places)":6}
+same_day_course | date=2026-07-18 | course=Doncaster | races=6 | median_per_f=-0.11 | mean_per_f=-0.06 | trimmed_mean_per_f=-0.07 | stdev=0.17 | going={"Good to Firm":6}
+same_day_course | date=2026-07-19 | course=Newton Abbot | races=6 | median_per_f=-0.13 | mean_per_f=-0.16 | trimmed_mean_per_f=-0.14 | stdev=0.31 | going={"Good to Firm (Good in places)":6}
+same_day_course | date=2026-07-21 | course=Nottingham | races=6 | median_per_f=-0.13 | mean_per_f=-0.00 | trimmed_mean_per_f=-0.12 | stdev=0.32 | going={"Good to Firm (Good in places)":6}
+same_day_course | date=2026-07-21 | course=Salisbury | races=6 | median_per_f=0.05 | mean_per_f=-0.04 | trimmed_mean_per_f=0.02 | stdev=0.22 | going={"Good to Firm (Firm in places)":6}
+same_day_course | date=2026-07-22 | course=Catterick | races=6 | median_per_f=-0.02 | mean_per_f=-0.01 | trimmed_mean_per_f=-0.02 | stdev=0.14 | going={"Good to Firm":6}
+same_day_course | date=2026-07-22 | course=Leicester | races=6 | median_per_f=-0.04 | mean_per_f=0.09 | trimmed_mean_per_f=-0.00 | stdev=0.30 | going={"Good to Firm (Good in places)":6}
+same_day_course | date=2026-07-22 | course=Lingfield | races=6 | median_per_f=-0.07 | mean_per_f=-0.06 | trimmed_mean_per_f=-0.09 | stdev=0.17 | going={"Good to Firm":6}
+same_day_course | date=2026-07-23 | course=Newbury | races=6 | median_per_f=0.36 | mean_per_f=0.30 | trimmed_mean_per_f=0.29 | stdev=0.22 | going={"Good to Firm":6}
+same_day_course | date=2026-07-24 | course=Thirsk | races=6 | median_per_f=-0.16 | mean_per_f=-0.16 | trimmed_mean_per_f=-0.13 | stdev=0.18 | going={"Good to Firm (Good in places)":6}
+same_day_course | date=2026-07-24 | course=Ascot | races=6 | median_per_f=0.14 | mean_per_f=0.12 | trimmed_mean_per_f=0.13 | stdev=0.05 | going={"Good to Firm":6}
+same_day_course | date=2026-07-24 | course=Sandown | races=6 | median_per_f=0.01 | mean_per_f=0.01 | trimmed_mean_per_f=0.01 | stdev=0.20 | going={"Good to Firm (Firm in places)":5,"Good to Firm (Good in places)":1}
+same_day_course | date=2026-07-25 | course=Salisbury | races=6 | median_per_f=0.16 | mean_per_f=0.15 | trimmed_mean_per_f=0.17 | stdev=0.11 | going={"Good to Firm (Firm in places)":6}
+same_day_course | date=2026-07-27 | course=Ripon | races=6 | median_per_f=-0.11 | mean_per_f=-0.12 | trimmed_mean_per_f=-0.12 | stdev=0.13 | going={"Good to Firm (Good in places)":6}
+same_day_course | date=2026-07-28 | course=Yarmouth | races=6 | median_per_f=0.12 | mean_per_f=0.13 | trimmed_mean_per_f=0.13 | stdev=0.28 | going={"Good to Firm":6}
+same_day_course | date=2026-07-28 | course=Beverley | races=6 | median_per_f=0.23 | mean_per_f=0.14 | trimmed_mean_per_f=0.17 | stdev=0.29 | going={"Good to Firm (Good in places)":6}
+same_day_course | date=2026-07-28 | course=Ffos Las | races=6 | median_per_f=0.23 | mean_per_f=0.32 | trimmed_mean_per_f=0.23 | stdev=0.29 | going={"Good (Good to Firm in places)":6}
+same_day_course | date=2026-07-29 | course=Redcar | races=6 | median_per_f=0.10 | mean_per_f=0.06 | trimmed_mean_per_f=0.08 | stdev=0.17 | going={"Good to Firm (Good in places)":6}
+same_day_course | date=2026-07-29 | course=Leicester | races=6 | median_per_f=0.00 | mean_per_f=0.07 | trimmed_mean_per_f=0.06 | stdev=0.35 | going={"Good to Firm (Firm in places)":6}
+same_day_course | date=2026-07-29 | course=Sandown | races=6 | median_per_f=0.06 | mean_per_f=0.12 | trimmed_mean_per_f=0.09 | stdev=0.19 | going={"Good to Firm (Good in places)":5,"Good (Good to Firm in places)":1}
+same_day_course | date=2026-07-30 | course=Epsom Downs | races=6 | median_per_f=-0.06 | mean_per_f=-0.02 | trimmed_mean_per_f=-0.02 | stdev=0.13 | going={"Good to Firm":6}
+same_day_course | date=2026-07-31 | course=Newmarket | races=6 | median_per_f=0.02 | mean_per_f=0.05 | trimmed_mean_per_f=0.02 | stdev=0.31 | going={"Good to Firm":6}
+same_day_course | date=2026-07-31 | course=Bath | races=6 | median_per_f=0.13 | mean_per_f=0.17 | trimmed_mean_per_f=0.13 | stdev=0.24 | going={"Firm":6}
+same_day_course | date=2026-07-31 | course=Musselburgh | races=6 | median_per_f=-0.03 | mean_per_f=0.01 | trimmed_mean_per_f=-0.01 | stdev=0.13 | going={"Good":6}
+same_day_course | date=2026-08-02 | course=Yarmouth | races=6 | median_per_f=-0.02 | mean_per_f=-0.08 | trimmed_mean_per_f=-0.06 | stdev=0.12 | going={"Good to Firm":6}
+same_day_course | date=2026-08-02 | course=Chester | races=6 | median_per_f=0.09 | mean_per_f=0.03 | trimmed_mean_per_f=0.08 | stdev=0.18 | going={"Good":6}
+same_day_course | date=2026-08-03 | course=Nottingham | races=6 | median_per_f=-0.25 | mean_per_f=-0.25 | trimmed_mean_per_f=-0.26 | stdev=0.09 | going={"Good to Firm (Good in places)":6}
+same_day_course | date=2026-08-03 | course=Ripon | races=6 | median_per_f=-0.10 | mean_per_f=-0.15 | trimmed_mean_per_f=-0.15 | stdev=0.17 | going={"Good (Good to Firm in places)":6}
+same_day_course | date=2026-08-03 | course=Windsor | races=6 | median_per_f=0.05 | mean_per_f=0.07 | trimmed_mean_per_f=0.07 | stdev=0.11 | going={"Good to Firm":6}
+same_day_course | date=2026-08-04 | course=Catterick | races=6 | median_per_f=0.04 | mean_per_f=0.01 | trimmed_mean_per_f=0.02 | stdev=0.16 | going={"Good to Firm (Good in places)":6}
+same_day_course | date=2026-08-05 | course=Yarmouth | races=6 | median_per_f=0.06 | mean_per_f=0.05 | trimmed_mean_per_f=0.05 | stdev=0.16 | going={"Good to Firm":6}
+same_day_course | date=2026-08-05 | course=Brighton | races=6 | median_per_f=0.27 | mean_per_f=0.27 | trimmed_mean_per_f=0.25 | stdev=0.10 | going={"Good to Firm (Good in places)":6}
+same_day_course | date=2026-08-05 | course=Pontefract | races=6 | median_per_f=0.09 | mean_per_f=0.07 | trimmed_mean_per_f=0.08 | stdev=0.18 | going={"Good to Firm (Good in places)":6}
+same_day_course | date=2026-08-06 | course=Newmarket | races=6 | median_per_f=0.03 | mean_per_f=0.01 | trimmed_mean_per_f=0.02 | stdev=0.21 | going={"Good to Firm":6}
+same_day_course | date=2026-08-06 | course=Southwell | races=6 | median_per_f=-0.19 | mean_per_f=-0.17 | trimmed_mean_per_f=-0.17 | stdev=0.30 | going={"Standard":6}
+same_day_course | date=2026-08-06 | course=Brighton | races=6 | median_per_f=0.04 | mean_per_f=0.06 | trimmed_mean_per_f=0.04 | stdev=0.23 | going={"Good to Firm (Good in places)":6}
+same_day_course | date=2026-08-06 | course=Chepstow | races=6 | median_per_f=-0.15 | mean_per_f=-0.10 | trimmed_mean_per_f=-0.13 | stdev=0.18 | going={"Good to Firm":6}
+same_day_course | date=2026-08-06 | course=Sandown | races=6 | median_per_f=-0.05 | mean_per_f=-0.01 | trimmed_mean_per_f=-0.04 | stdev=0.25 | going={"Good to Firm (Good in places)":6}
+same_day_course | date=2026-08-07 | course=Newmarket | races=6 | median_per_f=0.07 | mean_per_f=0.16 | trimmed_mean_per_f=0.06 | stdev=0.35 | going={"Good to Firm":6}
+same_day_course | date=2026-08-07 | course=Thirsk | races=6 | median_per_f=-0.01 | mean_per_f=-0.04 | trimmed_mean_per_f=-0.03 | stdev=0.19 | going={"Good (Good to Firm in places)":6}
+same_day_course | date=2026-08-07 | course=Brighton | races=6 | median_per_f=0.14 | mean_per_f=0.11 | trimmed_mean_per_f=0.13 | stdev=0.17 | going={"Good to Firm (Good in places)":6}
+same_day_course | date=2026-08-07 | course=Musselburgh | races=6 | median_per_f=0.15 | mean_per_f=0.13 | trimmed_mean_per_f=0.16 | stdev=0.20 | going={"Good":6}
+same_day_course | date=2026-08-08 | course=Ascot | races=6 | median_per_f=-0.08 | mean_per_f=-0.09 | trimmed_mean_per_f=-0.08 | stdev=0.12 | going={"Good to Firm":6}
+same_day_course | date=2026-08-08 | course=Lingfield | races=6 | median_per_f=-0.07 | mean_per_f=-0.07 | trimmed_mean_per_f=-0.07 | stdev=0.09 | going={"Standard":6}
+same_day_course | date=2026-08-09 | course=Chepstow | races=6 | median_per_f=-0.04 | mean_per_f=-0.02 | trimmed_mean_per_f=-0.04 | stdev=0.12 | going={"Good to Firm":6}
+same_day_course | date=2026-08-09 | course=Leicester | races=6 | median_per_f=-0.07 | mean_per_f=-0.03 | trimmed_mean_per_f=-0.03 | stdev=0.11 | going={"Good to Firm":6}
+same_day_course | date=2026-08-10 | course=Windsor | races=6 | median_per_f=-0.13 | mean_per_f=-0.09 | trimmed_mean_per_f=-0.10 | stdev=0.17 | going={"Good to Firm":6}
+same_day_course | date=2026-08-10 | course=Kempton | races=6 | median_per_f=0.19 | mean_per_f=0.12 | trimmed_mean_per_f=0.16 | stdev=0.26 | going={"Standard / Slow":6}
+same_day_course | date=2026-08-11 | course=Carlisle | races=6 | median_per_f=-0.48 | mean_per_f=-0.42 | trimmed_mean_per_f=-0.41 | stdev=0.35 | going={"Good (Good to Firm in places)":6}
+same_day_course | date=2026-08-11 | course=Lingfield | races=6 | median_per_f=-0.07 | mean_per_f=-0.08 | trimmed_mean_per_f=-0.07 | stdev=0.14 | going={"Standard":6}
+same_day_course | date=2026-08-12 | course=Beverley | races=6 | median_per_f=0.01 | mean_per_f=-0.02 | trimmed_mean_per_f=0.00 | stdev=0.22 | going={"Good to Firm (Good in places)":6}
+same_day_course | date=2026-08-12 | course=Ffos Las | races=6 | median_per_f=0.04 | mean_per_f=-0.02 | trimmed_mean_per_f=-0.03 | stdev=0.30 | going={"Good":6}
+same_day_course | date=2026-08-12 | course=Salisbury | races=6 | median_per_f=-0.14 | mean_per_f=-0.20 | trimmed_mean_per_f=-0.17 | stdev=0.18 | going={"Good to Firm (Good in places)":6}
+same_day_course | date=2026-08-13 | course=Windsor | races=6 | median_per_f=-0.19 | mean_per_f=-0.17 | trimmed_mean_per_f=-0.21 | stdev=0.20 | going={"Good to Firm":6}
+same_day_course | date=2026-08-13 | course=Beverley | races=6 | median_per_f=0.10 | mean_per_f=0.05 | trimmed_mean_per_f=0.08 | stdev=0.15 | going={"Good to Firm (Good in places)":6}
+same_day_course | date=2026-08-13 | course=Salisbury | races=6 | median_per_f=0.05 | mean_per_f=0.08 | trimmed_mean_per_f=0.09 | stdev=0.22 | going={"Good (Good to Firm in places)":6}
+same_day_course | date=2026-08-13 | course=Lingfield | races=6 | median_per_f=0.07 | mean_per_f=0.05 | trimmed_mean_per_f=0.05 | stdev=0.13 | going={"Standard":6}
+same_day_course | date=2026-08-14 | course=Epsom Downs | races=6 | median_per_f=-0.14 | mean_per_f=-0.17 | trimmed_mean_per_f=-0.15 | stdev=0.17 | going={"Good to Firm (Firm in places)":6}
+same_day_course | date=2026-08-14 | course=Newmarket | races=6 | median_per_f=0.04 | mean_per_f=0.03 | trimmed_mean_per_f=0.04 | stdev=0.09 | going={"Good to Firm":6}
+same_day_course | date=2026-08-14 | course=Thirsk | races=6 | median_per_f=-0.07 | mean_per_f=-0.05 | trimmed_mean_per_f=-0.10 | stdev=0.29 | going={"Good (Good to Firm in places)":6}
+same_day_course | date=2026-08-14 | course=Yarmouth | races=6 | median_per_f=-0.27 | mean_per_f=-0.31 | trimmed_mean_per_f=-0.28 | stdev=0.10 | going={"Good to Firm":6}
+same_day_course | date=2026-08-15 | course=Market Rasen | races=6 | median_per_f=-0.36 | mean_per_f=-0.45 | trimmed_mean_per_f=-0.37 | stdev=0.51 | going={"Good":6}
+same_day_course | date=2026-08-15 | course=Doncaster | races=6 | median_per_f=0.14 | mean_per_f=0.12 | trimmed_mean_per_f=0.15 | stdev=0.23 | going={"Good to Firm":6}
+same_day_course | date=2026-08-15 | course=Lingfield | races=6 | median_per_f=-0.01 | mean_per_f=-0.03 | trimmed_mean_per_f=0.00 | stdev=0.22 | going={"Standard":6}
+same_day_course | date=2026-08-17 | course=Windsor | races=6 | median_per_f=-0.14 | mean_per_f=-0.06 | trimmed_mean_per_f=-0.12 | stdev=0.21 | going={"Good to Firm":6}
+same_day_course | date=2026-08-17 | course=Catterick | races=6 | median_per_f=0.27 | mean_per_f=0.23 | trimmed_mean_per_f=0.26 | stdev=0.19 | going={"Good (Good to Firm in places)":6}
+same_day_course | date=2026-08-17 | course=Lingfield | races=6 | median_per_f=-0.16 | mean_per_f=-0.12 | trimmed_mean_per_f=-0.15 | stdev=0.16 | going={"Standard":6}
+same_day_course | date=2026-08-18 | course=Wolverhampton | races=6 | median_per_f=-0.09 | mean_per_f=-0.06 | trimmed_mean_per_f=-0.09 | stdev=0.20 | going={"Standard":6}
+same_day_course | date=2026-08-18 | course=Chepstow | races=6 | median_per_f=-0.03 | mean_per_f=-0.04 | trimmed_mean_per_f=-0.04 | stdev=0.09 | going={"Good to Firm":6}
+same_day_course | date=2026-08-19 | course=York | races=6 | median_per_f=-0.07 | mean_per_f=-0.06 | trimmed_mean_per_f=-0.05 | stdev=0.16 | going={"Good (Good to Soft in places)":6}
+same_day_course | date=2026-08-20 | course=Newcastle | races=6 | median_per_f=-0.08 | mean_per_f=-0.09 | trimmed_mean_per_f=-0.09 | stdev=0.08 | going={"Standard":6}
+same_day_course | date=2026-08-20 | course=Newmarket | races=6 | median_per_f=0.10 | mean_per_f=0.07 | trimmed_mean_per_f=0.08 | stdev=0.23 | going={"Good to Firm (Good in places)":6}
+same_day_course | date=2026-08-20 | course=Stratford | races=6 | median_per_f=0.20 | mean_per_f=0.12 | trimmed_mean_per_f=0.15 | stdev=0.19 | going={"Good to Firm":6}
+same_day_course | date=2026-08-20 | course=Lingfield | races=6 | median_per_f=-0.23 | mean_per_f=-0.20 | trimmed_mean_per_f=-0.23 | stdev=0.15 | going={"Standard":6}
+same_day_course | date=2026-08-21 | course=Newmarket | races=6 | median_per_f=-0.03 | mean_per_f=-0.05 | trimmed_mean_per_f=-0.04 | stdev=0.10 | going={"Good to Firm (Good in places)":6}
+same_day_course | date=2026-08-21 | course=Ffos Las | races=6 | median_per_f=-0.22 | mean_per_f=-0.20 | trimmed_mean_per_f=-0.21 | stdev=0.18 | going={"Good":6}
+same_day_course | date=2026-08-21 | course=Salisbury | races=6 | median_per_f=0.24 | mean_per_f=0.25 | trimmed_mean_per_f=0.24 | stdev=0.21 | going={"Good (Good to Firm in places)":6}
+same_day_course | date=2026-08-22 | course=Newton Abbot | races=6 | median_per_f=-0.57 | mean_per_f=-0.64 | trimmed_mean_per_f=-0.60 | stdev=0.26 | going={"Good to Firm (Good in places)":6}
+same_day_course | date=2026-08-22 | course=York | races=6 | median_per_f=-0.06 | mean_per_f=-0.04 | trimmed_mean_per_f=-0.06 | stdev=0.09 | going={"Good to Soft (Good in places)":6}
+same_day_course | date=2026-08-22 | course=Chester | races=6 | median_per_f=0.16 | mean_per_f=0.15 | trimmed_mean_per_f=0.16 | stdev=0.12 | going={"Good to Soft (Soft in places)":6}
+same_day_course | date=2026-08-22 | course=Lingfield | races=6 | median_per_f=-0.19 | mean_per_f=-0.15 | trimmed_mean_per_f=-0.17 | stdev=0.23 | going={"Standard":6}
+same_day_course | date=2026-08-23 | course=Brighton | races=6 | median_per_f=-0.03 | mean_per_f=0.11 | trimmed_mean_per_f=0.03 | stdev=0.36 | going={"Good to Firm (Good in Places)":6}
+same_day_course | date=2026-08-24 | course=Windsor | races=6 | median_per_f=0.25 | mean_per_f=0.20 | trimmed_mean_per_f=0.26 | stdev=0.21 | going={"Good to Firm (Good in places)":6}
+same_day_course | date=2026-08-24 | course=Brighton | races=6 | median_per_f=-0.24 | mean_per_f=-0.22 | trimmed_mean_per_f=-0.24 | stdev=0.09 | going={"Good to Firm (Good in places)":6}
+same_day_course | date=2026-08-24 | course=Musselburgh | races=6 | median_per_f=-0.03 | mean_per_f=-0.02 | trimmed_mean_per_f=-0.02 | stdev=0.11 | going={"Good (Good to Soft in places)":2,"Good":4}
+same_day_course | date=2026-08-25 | course=Stratford | races=6 | median_per_f=0.11 | mean_per_f=-0.00 | trimmed_mean_per_f=0.05 | stdev=0.27 | going={"Good to Firm":6}
+same_day_course | date=2026-08-25 | course=Lingfield | races=6 | median_per_f=-0.13 | mean_per_f=-0.08 | trimmed_mean_per_f=-0.11 | stdev=0.18 | going={"Standard":6}
+same_day_course | date=2026-08-26 | course=Catterick | races=6 | median_per_f=-0.08 | mean_per_f=-0.08 | trimmed_mean_per_f=-0.05 | stdev=0.17 | going={"Good (Good to Firm in places)":6}
+same_day_course | date=2026-08-26 | course=Kempton | races=6 | median_per_f=-0.14 | mean_per_f=-0.13 | trimmed_mean_per_f=-0.14 | stdev=0.13 | going={"Standard / Slow":6}
+same_day_course | date=2026-08-27 | course=Ffos Las | races=6 | median_per_f=-0.27 | mean_per_f=-0.68 | trimmed_mean_per_f=-0.34 | stdev=0.96 | going={"Good":6}
+same_day_course | date=2026-08-27 | course=Lingfield | races=6 | median_per_f=-0.24 | mean_per_f=-0.22 | trimmed_mean_per_f=-0.23 | stdev=0.10 | going={"Standard":6}
+same_day_course | date=2026-08-28 | course=Ffos Las | races=6 | median_per_f=0.03 | mean_per_f=0.02 | trimmed_mean_per_f=0.03 | stdev=0.17 | going={"Good":2,"Good to Soft":4}
+same_day_course | date=2026-08-28 | course=Goodwood | races=6 | median_per_f=0.15 | mean_per_f=0.31 | trimmed_mean_per_f=0.15 | stdev=0.47 | going={"Good to Firm (Good in places)":2,"Good to Firm":4}
+same_day_course | date=2026-08-28 | course=Sandown | races=6 | median_per_f=0.24 | mean_per_f=0.26 | trimmed_mean_per_f=0.25 | stdev=0.10 | going={"Good":6}
+same_day_course | date=2026-08-29 | course=Beverley | races=6 | median_per_f=0.63 | mean_per_f=0.60 | trimmed_mean_per_f=0.62 | stdev=0.18 | going={"Soft (Heavy in places)":6}
+same_day_course | date=2026-08-29 | course=Cartmel | races=6 | median_per_f=-0.38 | mean_per_f=-0.37 | trimmed_mean_per_f=-0.36 | stdev=0.17 | going={"Good (Good to Soft in places)":6}
+same_day_course | date=2026-08-30 | course=Yarmouth | races=6 | median_per_f=0.28 | mean_per_f=0.28 | trimmed_mean_per_f=0.29 | stdev=0.23 | going={"Soft (Good to Soft in places)":1,"Good to Soft":5}
+same_day_course | date=2026-08-30 | course=Beverley | races=6 | median_per_f=0.75 | mean_per_f=0.76 | trimmed_mean_per_f=0.75 | stdev=0.09 | going={"Heavy":6}
+same_day_course | date=2026-08-31 | course=Cartmel | races=6 | median_per_f=0.11 | mean_per_f=0.18 | trimmed_mean_per_f=0.10 | stdev=0.39 | going={"Good to Soft (Soft in places)":6}
+same_day_course | date=2026-01-01 | course=Windsor | races=5 | median_per_f=-0.74 | mean_per_f=-0.74 | trimmed_mean_per_f=-0.70 | stdev=0.36 | going={"Good (Good to Soft in places)":5}
+same_day_course | date=2026-01-17 | course=Ascot | races=5 | median_per_f=0.34 | mean_per_f=0.25 | trimmed_mean_per_f=0.28 | stdev=0.26 | going={"Soft":5}
+same_day_course | date=2026-01-18 | course=Windsor | races=5 | median_per_f=0.62 | mean_per_f=0.56 | trimmed_mean_per_f=0.57 | stdev=0.22 | going={"Soft":5}
+same_day_course | date=2026-01-31 | course=Musselburgh | races=5 | median_per_f=-0.37 | mean_per_f=-0.44 | trimmed_mean_per_f=-0.37 | stdev=0.22 | going={"Good to Soft (Soft in places)":3,"Good to Soft":2}
+same_day_course | date=2026-02-01 | course=Musselburgh | races=5 | median_per_f=-0.14 | mean_per_f=-0.06 | trimmed_mean_per_f=-0.12 | stdev=0.20 | going={"Good to Soft":5}
+same_day_course | date=2026-02-16 | course=Carlisle | races=5 | median_per_f=-0.22 | mean_per_f=0.04 | trimmed_mean_per_f=-0.05 | stdev=0.41 | going={"Soft (Good to Soft in places)":4,"Good to Soft (Soft in places)":1}
+same_day_course | date=2026-02-23 | course=Ayr | races=5 | median_per_f=0.35 | mean_per_f=0.39 | trimmed_mean_per_f=0.37 | stdev=0.24 | going={"Soft (Heavy in places)":5}
+same_day_course | date=2026-02-26 | course=Taunton | races=5 | median_per_f=-0.10 | mean_per_f=-0.04 | trimmed_mean_per_f=-0.03 | stdev=0.44 | going={"Good to Soft (Soft in places)":5}
+same_day_course | date=2026-02-28 | course=Doncaster | races=5 | median_per_f=0.31 | mean_per_f=0.38 | trimmed_mean_per_f=0.38 | stdev=0.25 | going={"Soft":5}
+same_day_course | date=2026-03-13 | course=Doncaster | races=5 | median_per_f=-0.19 | mean_per_f=-0.15 | trimmed_mean_per_f=-0.17 | stdev=0.23 | going={"Good to Soft":5}
+same_day_course | date=2026-03-19 | course=Ludlow | races=5 | median_per_f=-0.21 | mean_per_f=-0.17 | trimmed_mean_per_f=-0.20 | stdev=0.13 | going={"Good (Good to Soft in places)":5}
+same_day_course | date=2026-03-20 | course=Newbury | races=5 | median_per_f=-0.12 | mean_per_f=-0.09 | trimmed_mean_per_f=-0.12 | stdev=0.23 | going={"Good to Soft":5}
+same_day_course | date=2026-03-21 | course=Kelso | races=5 | median_per_f=-0.08 | mean_per_f=-0.05 | trimmed_mean_per_f=-0.05 | stdev=0.28 | going={"Good to Soft":5}
+same_day_course | date=2026-03-22 | course=Carlisle | races=5 | median_per_f=-0.62 | mean_per_f=-0.65 | trimmed_mean_per_f=-0.65 | stdev=0.25 | going={"Good to Soft (Good in places)":5}
+same_day_course | date=2026-03-22 | course=Exeter | races=5 | median_per_f=-0.38 | mean_per_f=-0.31 | trimmed_mean_per_f=-0.32 | stdev=0.60 | going={"Good":5}
+same_day_course | date=2026-03-27 | course=Wetherby | races=5 | median_per_f=-0.45 | mean_per_f=-0.38 | trimmed_mean_per_f=-0.45 | stdev=0.50 | going={"Good":5}
+same_day_course | date=2026-04-04 | course=Musselburgh | races=5 | median_per_f=0.28 | mean_per_f=0.30 | trimmed_mean_per_f=0.30 | stdev=0.19 | going={"Good to Soft":2,"Soft":3}
+same_day_course | date=2026-04-09 | course=Aintree | races=5 | median_per_f=0.12 | mean_per_f=0.12 | trimmed_mean_per_f=0.12 | stdev=0.15 | going={"Good to Soft":5}
+same_day_course | date=2026-04-11 | course=Aintree | races=5 | median_per_f=0.17 | mean_per_f=0.13 | trimmed_mean_per_f=0.17 | stdev=0.29 | going={"Good to Soft (Good in places)":5}
+same_day_course | date=2026-04-25 | course=Sandown | races=5 | median_per_f=-0.91 | mean_per_f=-0.99 | trimmed_mean_per_f=-0.90 | stdev=0.35 | going={"Good (Good to Firm in places)":5}
+same_day_course | date=2026-05-01 | course=Warwick | races=5 | median_per_f=0.00 | mean_per_f=-0.09 | trimmed_mean_per_f=-0.04 | stdev=0.24 | going={"Good":5}
+same_day_course | date=2026-05-05 | course=Ayr | races=5 | median_per_f=0.09 | mean_per_f=0.07 | trimmed_mean_per_f=0.09 | stdev=0.08 | going={"Good to Firm (Good in places)":5}
+same_day_course | date=2026-05-05 | course=Ffos Las | races=5 | median_per_f=-1.02 | mean_per_f=-0.98 | trimmed_mean_per_f=-0.97 | stdev=0.38 | going={"Good":2,"Good (Good to Firm in places)":3}
+same_day_course | date=2026-05-07 | course=Chester | races=5 | median_per_f=-0.12 | mean_per_f=-0.14 | trimmed_mean_per_f=-0.12 | stdev=0.13 | going={"Good":5}
+same_day_course | date=2026-05-12 | course=Hereford | races=5 | median_per_f=-0.67 | mean_per_f=-0.67 | trimmed_mean_per_f=-0.67 | stdev=0.09 | going={"Good (Good to Firm in places)":3,"Good to Firm (Good in places)":2}
+same_day_course | date=2026-05-21 | course=Haydock | races=5 | median_per_f=0.56 | mean_per_f=0.62 | trimmed_mean_per_f=0.58 | stdev=0.25 | going={"Soft (Heavy in places)":5}
+same_day_course | date=2026-05-31 | course=Fakenham | races=5 | median_per_f=-0.51 | mean_per_f=-0.48 | trimmed_mean_per_f=-0.50 | stdev=0.43 | going={"Good (Good to Firm in places)":5}
+same_day_course | date=2026-06-11 | course=Newbury | races=5 | median_per_f=0.26 | mean_per_f=0.32 | trimmed_mean_per_f=0.26 | stdev=0.22 | going={"Good to Soft":5}
+same_day_course | date=2026-06-16 | course=Royal Ascot | races=5 | median_per_f=-0.09 | mean_per_f=-0.05 | trimmed_mean_per_f=-0.07 | stdev=0.15 | going={"Good to Firm":5}
+same_day_course | date=2026-07-04 | course=Carlisle | races=5 | median_per_f=-0.12 | mean_per_f=-0.08 | trimmed_mean_per_f=-0.06 | stdev=0.19 | going={"Good (Good to Firm in places)":3,"Good":2}
+same_day_course | date=2026-07-17 | course=Nottingham | races=5 | median_per_f=-0.21 | mean_per_f=-0.23 | trimmed_mean_per_f=-0.24 | stdev=0.06 | going={"Good to Firm (Good in places)":5}
+same_day_course | date=2026-07-19 | course=Redcar | races=5 | median_per_f=0.39 | mean_per_f=0.29 | trimmed_mean_per_f=0.31 | stdev=0.17 | going={"Good to Firm (Good in places)":5}
+same_day_course | date=2026-07-24 | course=York | races=5 | median_per_f=-0.02 | mean_per_f=0.06 | trimmed_mean_per_f=0.02 | stdev=0.24 | going={"Good to Firm (Good in places)":5}
+same_day_course | date=2026-08-07 | course=Haydock | races=5 | median_per_f=-0.06 | mean_per_f=-0.03 | trimmed_mean_per_f=-0.02 | stdev=0.19 | going={"Good (Good to Firm in places)":5}
+same_day_course | date=2026-08-11 | course=Nottingham | races=5 | median_per_f=-0.23 | mean_per_f=-0.24 | trimmed_mean_per_f=-0.24 | stdev=0.06 | going={"Good to Firm (Good in places)":5}
+same_day_course | date=2026-08-25 | course=Musselburgh | races=5 | median_per_f=-0.18 | mean_per_f=-0.11 | trimmed_mean_per_f=-0.12 | stdev=0.14 | going={"Good":3,"Good (Good to Soft in places)":2}
+same_day_course | date=2026-01-16 | course=Windsor | races=4 | median_per_f=0.07 | mean_per_f=0.09 | trimmed_mean_per_f=- | stdev=0.60 | going={"Soft":2,"Soft (Heavy in places)":2}
+same_day_course | date=2026-01-19 | course=Lingfield | races=4 | median_per_f=-0.59 | mean_per_f=-1.03 | trimmed_mean_per_f=- | stdev=1.18 | going={"Standard / Slow":1,"Soft (Good to Soft in places)":3}
+same_day_course | date=2026-02-05 | course=Lingfield | races=4 | median_per_f=0.48 | mean_per_f=0.50 | trimmed_mean_per_f=- | stdev=0.08 | going={"Heavy":4}
+same_day_course | date=2026-03-10 | course=Cheltenham | races=4 | median_per_f=0.09 | mean_per_f=0.08 | trimmed_mean_per_f=- | stdev=0.22 | going={"Good to Soft":4}
+same_day_course | date=2026-03-20 | course=Musselburgh | races=4 | median_per_f=-0.07 | mean_per_f=-0.15 | trimmed_mean_per_f=- | stdev=0.25 | going={"Good to Soft":4}
+same_day_course | date=2026-03-29 | course=Ascot | races=4 | median_per_f=-0.25 | mean_per_f=-0.23 | trimmed_mean_per_f=- | stdev=0.31 | going={"Good (Good to Firm in places)":4}
+same_day_course | date=2026-04-10 | course=Aintree | races=4 | median_per_f=-0.22 | mean_per_f=-0.25 | trimmed_mean_per_f=- | stdev=0.17 | going={"Good to Soft (Good in places)":4}
+same_day_course | date=2026-04-20 | course=Newcastle | races=4 | median_per_f=-0.17 | mean_per_f=-0.17 | trimmed_mean_per_f=- | stdev=0.12 | going={"Standard":4}
+same_day_course | date=2026-03-11 | course=Cheltenham | races=3 | median_per_f=-0.05 | mean_per_f=-0.13 | trimmed_mean_per_f=- | stdev=0.23 | going={"Good to Soft (Good in places)":1,"Good":2}
+same_day_course | date=2026-05-23 | course=Haydock | races=3 | median_per_f=-0.11 | mean_per_f=-0.12 | trimmed_mean_per_f=- | stdev=0.24 | going={"Good to Soft (Good in places)":3}
+same_day_course | date=2026-07-20 | course=Beverley | races=3 | median_per_f=-0.29 | mean_per_f=-0.22 | trimmed_mean_per_f=- | stdev=0.13 | going={"Good to Firm (Good in places)":3}
+same_day_course | date=2026-01-20 | course=Leicester | races=2 | median_per_f=-0.71 | mean_per_f=-0.71 | trimmed_mean_per_f=- | stdev=0.27 | going={"Good to Soft (Soft in places)":2}
+same_day_course | date=2026-04-25 | course=Haydock | races=2 | median_per_f=-0.46 | mean_per_f=-0.46 | trimmed_mean_per_f=- | stdev=0.10 | going={"Good to Firm":2}
+same_day_course | date=2026-08-28 | course=Thirsk | races=2 | median_per_f=0.02 | mean_per_f=0.02 | trimmed_mean_per_f=- | stdev=0.23 | going={"Good":2}

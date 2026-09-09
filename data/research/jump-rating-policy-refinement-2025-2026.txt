@@ -1,0 +1,149 @@
+# Jump Rating Policy Refinement 2025-2026
+
+## Scope
+production_changes=false
+schema_changes=false
+ratings_persisted=false
+calibration=unchanged 2025 sec_per_f calibration
+sec_per_f_points_per_sec_per_f=37.76
+calibration_sample=17179
+
+## Coverage
+coverage | dataset=2025 | range=2025-01-01..2025-12-31 | earliest=2025-01-01 | latest=2025-12-31 | jump_races=3481 | finished_jump_runners=23324 | or_count=17230 | or_pct=73.87% | hurdle_races=2017 | chase_races=1216 | nh_flat_races=241 | unknown_other_races=7
+coverage | dataset=2026 | range=2026-01-01..2026-08-31 | earliest=2026-01-01 | latest=2026-08-31 | jump_races=2007 | finished_jump_runners=13289 | or_count=9882 | or_pct=74.36% | hurdle_races=1173 | chase_races=686 | nh_flat_races=143 | unknown_other_races=5
+
+## Beaten Distance Bands
+beaten_band | dataset=2025 | band=0_5 | runners=7494 | median=99.11 | p10=80.54 | p90=116.04 | extremes=8 | extreme_rate=0.11% | median_abs_or=15.14 | mean_abs_or=18.94 | or_correlation=0.13 | hurdle_runners=4421 | chase_runners=2422 | nh_flat_runners=628 | unknown_other_runners=23 | short_runners=2951 | middle_runners=3554 | staying_runners=989
+beaten_band | dataset=2025 | band=gt5_10 | runners=3125 | median=97.33 | p10=78.84 | p90=114.60 | extremes=5 | extreme_rate=0.16% | median_abs_or=16.50 | mean_abs_or=20.07 | or_correlation=0.13 | hurdle_runners=1928 | chase_runners=863 | nh_flat_runners=324 | unknown_other_runners=10 | short_runners=1350 | middle_runners=1364 | staying_runners=411
+beaten_band | dataset=2025 | band=gt10_20 | runners=4654 | median=94.81 | p10=75.45 | p90=111.50 | extremes=7 | extreme_rate=0.15% | median_abs_or=16.30 | mean_abs_or=20.26 | or_correlation=0.14 | hurdle_runners=2923 | chase_runners=1264 | nh_flat_runners=452 | unknown_other_runners=15 | short_runners=2071 | middle_runners=2047 | staying_runners=536
+beaten_band | dataset=2025 | band=gt20_30 | runners=3061 | median=90.88 | p10=71.07 | p90=106.39 | extremes=2 | extreme_rate=0.07% | median_abs_or=17.71 | mean_abs_or=21.61 | or_correlation=0.17 | hurdle_runners=1935 | chase_runners=886 | nh_flat_runners=238 | unknown_other_runners=2 | short_runners=1301 | middle_runners=1408 | staying_runners=352
+beaten_band | dataset=2025 | band=gt30_50 | runners=3157 | median=86.14 | p10=66.35 | p90=103.67 | extremes=2 | extreme_rate=0.06% | median_abs_or=19.48 | mean_abs_or=23.40 | or_correlation=0.13 | hurdle_runners=2112 | chase_runners=817 | nh_flat_runners=228 | unknown_other_runners=0 | short_runners=1313 | middle_runners=1481 | staying_runners=363
+beaten_band | dataset=2025 | band=gt50_75 | runners=1299 | median=78.92 | p10=60.25 | p90=96.53 | extremes=1 | extreme_rate=0.08% | median_abs_or=23.27 | mean_abs_or=26.84 | or_correlation=0.13 | hurdle_runners=907 | chase_runners=305 | nh_flat_runners=87 | unknown_other_runners=0 | short_runners=535 | middle_runners=646 | staying_runners=118
+beaten_band | dataset=2025 | band=gt75_100 | runners=368 | median=68.93 | p10=46.73 | p90=87.68 | extremes=1 | extreme_rate=0.27% | median_abs_or=27.78 | mean_abs_or=31.42 | or_correlation=0.06 | hurdle_runners=250 | chase_runners=69 | nh_flat_runners=49 | unknown_other_runners=0 | short_runners=166 | middle_runners=170 | staying_runners=32
+beaten_band | dataset=2025 | band=gt100 | runners=166 | median=59.28 | p10=27.61 | p90=79.51 | extremes=3 | extreme_rate=1.81% | median_abs_or=37.61 | mean_abs_or=41.07 | or_correlation=0.17 | hurdle_runners=79 | chase_runners=27 | nh_flat_runners=60 | unknown_other_runners=0 | short_runners=97 | middle_runners=62 | staying_runners=7
+beaten_band | dataset=2026 | band=0_5 | runners=4193 | median=98.66 | p10=78.88 | p90=116.05 | extremes=22 | extreme_rate=0.52% | median_abs_or=15.33 | mean_abs_or=19.46 | or_correlation=0.13 | hurdle_runners=2526 | chase_runners=1311 | nh_flat_runners=333 | unknown_other_runners=23 | short_runners=1595 | middle_runners=1989 | staying_runners=609
+beaten_band | dataset=2026 | band=gt5_10 | runners=1763 | median=96.77 | p10=79.04 | p90=114.82 | extremes=5 | extreme_rate=0.28% | median_abs_or=15.75 | mean_abs_or=19.53 | or_correlation=0.14 | hurdle_runners=1115 | chase_runners=458 | nh_flat_runners=178 | unknown_other_runners=12 | short_runners=739 | middle_runners=824 | staying_runners=200
+beaten_band | dataset=2026 | band=gt10_20 | runners=2574 | median=94.96 | p10=75.62 | p90=112.71 | extremes=3 | extreme_rate=0.12% | median_abs_or=16.99 | mean_abs_or=20.94 | or_correlation=0.11 | hurdle_runners=1678 | chase_runners=654 | nh_flat_runners=239 | unknown_other_runners=3 | short_runners=1021 | middle_runners=1251 | staying_runners=302
+beaten_band | dataset=2026 | band=gt20_30 | runners=1723 | median=91.46 | p10=72.71 | p90=108.90 | extremes=5 | extreme_rate=0.29% | median_abs_or=16.23 | mean_abs_or=20.85 | or_correlation=0.15 | hurdle_runners=1140 | chase_runners=432 | nh_flat_runners=151 | unknown_other_runners=0 | short_runners=740 | middle_runners=787 | staying_runners=196
+beaten_band | dataset=2026 | band=gt30_50 | runners=1863 | median=86.96 | p10=67.40 | p90=105.04 | extremes=3 | extreme_rate=0.16% | median_abs_or=17.17 | mean_abs_or=22.15 | or_correlation=0.15 | hurdle_runners=1266 | chase_runners=440 | nh_flat_runners=157 | unknown_other_runners=0 | short_runners=840 | middle_runners=815 | staying_runners=208
+beaten_band | dataset=2026 | band=gt50_75 | runners=805 | median=78.96 | p10=59.82 | p90=97.54 | extremes=1 | extreme_rate=0.12% | median_abs_or=24.78 | mean_abs_or=28.36 | or_correlation=0.13 | hurdle_runners=579 | chase_runners=145 | nh_flat_runners=80 | unknown_other_runners=1 | short_runners=341 | middle_runners=387 | staying_runners=77
+beaten_band | dataset=2026 | band=gt75_100 | runners=244 | median=70.69 | p10=46.83 | p90=90.86 | extremes=0 | extreme_rate=0.00% | median_abs_or=22.82 | mean_abs_or=28.48 | or_correlation=-0.09 | hurdle_runners=180 | chase_runners=36 | nh_flat_runners=28 | unknown_other_runners=0 | short_runners=130 | middle_runners=99 | staying_runners=15
+beaten_band | dataset=2026 | band=gt100 | runners=124 | median=57.51 | p10=21.38 | p90=77.55 | extremes=5 | extreme_rate=4.03% | median_abs_or=30.30 | mean_abs_or=35.63 | or_correlation=-0.10 | hurdle_runners=57 | chase_runners=12 | nh_flat_runners=55 | unknown_other_runners=0 | short_runners=84 | middle_runners=33 | staying_runners=7
+
+## Seconds Per Length Stress Test
+spl_stress | dataset=2025 | band=0_5 | model=speed_based | runners=7494 | median=99.11 | p10=80.54 | p90=116.04 | outside_0_200=8 | extreme_rate=0.11%
+spl_stress | dataset=2025 | band=0_5 | model=fixed_020 | runners=7494 | median=99.06 | p10=80.49 | p90=116.01 | outside_0_200=8 | extreme_rate=0.11%
+spl_stress | dataset=2025 | band=0_5 | model=race_category | runners=7494 | median=98.90 | p10=80.36 | p90=115.85 | outside_0_200=8 | extreme_rate=0.11%
+spl_stress | dataset=2025 | band=gt5_10 | model=speed_based | runners=3125 | median=97.33 | p10=78.84 | p90=114.60 | outside_0_200=5 | extreme_rate=0.16%
+spl_stress | dataset=2025 | band=gt5_10 | model=fixed_020 | runners=3125 | median=97.08 | p10=78.60 | p90=114.26 | outside_0_200=5 | extreme_rate=0.16%
+spl_stress | dataset=2025 | band=gt5_10 | model=race_category | runners=3125 | median=96.36 | p10=77.73 | p90=113.55 | outside_0_200=5 | extreme_rate=0.16%
+spl_stress | dataset=2025 | band=gt10_20 | model=speed_based | runners=4654 | median=94.81 | p10=75.45 | p90=111.50 | outside_0_200=7 | extreme_rate=0.15%
+spl_stress | dataset=2025 | band=gt10_20 | model=fixed_020 | runners=4654 | median=94.29 | p10=75.02 | p90=110.97 | outside_0_200=5 | extreme_rate=0.11%
+spl_stress | dataset=2025 | band=gt10_20 | model=race_category | runners=4654 | median=92.78 | p10=73.53 | p90=109.39 | outside_0_200=5 | extreme_rate=0.11%
+spl_stress | dataset=2025 | band=gt20_30 | model=speed_based | runners=3061 | median=90.88 | p10=71.07 | p90=106.39 | outside_0_200=2 | extreme_rate=0.07%
+spl_stress | dataset=2025 | band=gt20_30 | model=fixed_020 | runners=3061 | median=90.04 | p10=70.50 | p90=105.53 | outside_0_200=2 | extreme_rate=0.07%
+spl_stress | dataset=2025 | band=gt20_30 | model=race_category | runners=3061 | median=87.54 | p10=67.74 | p90=102.98 | outside_0_200=3 | extreme_rate=0.10%
+spl_stress | dataset=2025 | band=gt30_50 | model=speed_based | runners=3157 | median=86.14 | p10=66.35 | p90=103.67 | outside_0_200=2 | extreme_rate=0.06%
+spl_stress | dataset=2025 | band=gt30_50 | model=fixed_020 | runners=3157 | median=84.67 | p10=65.31 | p90=102.24 | outside_0_200=2 | extreme_rate=0.06%
+spl_stress | dataset=2025 | band=gt30_50 | model=race_category | runners=3157 | median=80.93 | p10=61.22 | p90=98.47 | outside_0_200=5 | extreme_rate=0.16%
+spl_stress | dataset=2025 | band=gt50_75 | model=speed_based | runners=1299 | median=78.92 | p10=60.25 | p90=96.53 | outside_0_200=1 | extreme_rate=0.08%
+spl_stress | dataset=2025 | band=gt50_75 | model=fixed_020 | runners=1299 | median=76.80 | p10=58.21 | p90=94.19 | outside_0_200=1 | extreme_rate=0.08%
+spl_stress | dataset=2025 | band=gt50_75 | model=race_category | runners=1299 | median=71.03 | p10=51.50 | p90=88.29 | outside_0_200=2 | extreme_rate=0.15%
+spl_stress | dataset=2025 | band=gt75_100 | model=speed_based | runners=368 | median=68.93 | p10=46.73 | p90=87.68 | outside_0_200=1 | extreme_rate=0.27%
+spl_stress | dataset=2025 | band=gt75_100 | model=fixed_020 | runners=368 | median=65.54 | p10=44.65 | p90=84.68 | outside_0_200=1 | extreme_rate=0.27%
+spl_stress | dataset=2025 | band=gt75_100 | model=race_category | runners=368 | median=56.98 | p10=35.52 | p90=77.44 | outside_0_200=1 | extreme_rate=0.27%
+spl_stress | dataset=2025 | band=gt100 | model=speed_based | runners=166 | median=59.28 | p10=27.61 | p90=79.51 | outside_0_200=3 | extreme_rate=1.81%
+spl_stress | dataset=2025 | band=gt100 | model=fixed_020 | runners=166 | median=53.07 | p10=23.84 | p90=75.05 | outside_0_200=3 | extreme_rate=1.81%
+spl_stress | dataset=2025 | band=gt100 | model=race_category | runners=166 | median=40.06 | p10=11.12 | p90=63.35 | outside_0_200=8 | extreme_rate=4.82%
+spl_stress | dataset=2026 | band=0_5 | model=speed_based | runners=4193 | median=98.66 | p10=78.88 | p90=116.05 | outside_0_200=22 | extreme_rate=0.52%
+spl_stress | dataset=2026 | band=0_5 | model=fixed_020 | runners=4193 | median=98.58 | p10=78.88 | p90=116.03 | outside_0_200=22 | extreme_rate=0.52%
+spl_stress | dataset=2026 | band=0_5 | model=race_category | runners=4193 | median=98.47 | p10=78.68 | p90=115.91 | outside_0_200=22 | extreme_rate=0.52%
+spl_stress | dataset=2026 | band=gt5_10 | model=speed_based | runners=1763 | median=96.77 | p10=79.04 | p90=114.82 | outside_0_200=5 | extreme_rate=0.28%
+spl_stress | dataset=2026 | band=gt5_10 | model=fixed_020 | runners=1763 | median=96.53 | p10=78.79 | p90=114.50 | outside_0_200=5 | extreme_rate=0.28%
+spl_stress | dataset=2026 | band=gt5_10 | model=race_category | runners=1763 | median=95.76 | p10=77.97 | p90=113.79 | outside_0_200=4 | extreme_rate=0.23%
+spl_stress | dataset=2026 | band=gt10_20 | model=speed_based | runners=2574 | median=94.96 | p10=75.62 | p90=112.71 | outside_0_200=3 | extreme_rate=0.12%
+spl_stress | dataset=2026 | band=gt10_20 | model=fixed_020 | runners=2574 | median=94.45 | p10=75.43 | p90=112.35 | outside_0_200=3 | extreme_rate=0.12%
+spl_stress | dataset=2026 | band=gt10_20 | model=race_category | runners=2574 | median=93.04 | p10=73.97 | p90=111.08 | outside_0_200=3 | extreme_rate=0.12%
+spl_stress | dataset=2026 | band=gt20_30 | model=speed_based | runners=1723 | median=91.46 | p10=72.71 | p90=108.90 | outside_0_200=5 | extreme_rate=0.29%
+spl_stress | dataset=2026 | band=gt20_30 | model=fixed_020 | runners=1723 | median=90.56 | p10=72.27 | p90=108.24 | outside_0_200=5 | extreme_rate=0.29%
+spl_stress | dataset=2026 | band=gt20_30 | model=race_category | runners=1723 | median=88.05 | p10=69.67 | p90=105.94 | outside_0_200=4 | extreme_rate=0.23%
+spl_stress | dataset=2026 | band=gt30_50 | model=speed_based | runners=1863 | median=86.96 | p10=67.40 | p90=105.04 | outside_0_200=3 | extreme_rate=0.16%
+spl_stress | dataset=2026 | band=gt30_50 | model=fixed_020 | runners=1863 | median=85.62 | p10=66.31 | p90=103.82 | outside_0_200=3 | extreme_rate=0.16%
+spl_stress | dataset=2026 | band=gt30_50 | model=race_category | runners=1863 | median=81.58 | p10=62.18 | p90=100.33 | outside_0_200=4 | extreme_rate=0.21%
+spl_stress | dataset=2026 | band=gt50_75 | model=speed_based | runners=805 | median=78.96 | p10=59.82 | p90=97.54 | outside_0_200=1 | extreme_rate=0.12%
+spl_stress | dataset=2026 | band=gt50_75 | model=fixed_020 | runners=805 | median=76.80 | p10=58.19 | p90=95.46 | outside_0_200=1 | extreme_rate=0.12%
+spl_stress | dataset=2026 | band=gt50_75 | model=race_category | runners=805 | median=70.85 | p10=52.12 | p90=89.84 | outside_0_200=1 | extreme_rate=0.12%
+spl_stress | dataset=2026 | band=gt75_100 | model=speed_based | runners=244 | median=70.69 | p10=46.83 | p90=90.86 | outside_0_200=0 | extreme_rate=0.00%
+spl_stress | dataset=2026 | band=gt75_100 | model=fixed_020 | runners=244 | median=67.54 | p10=44.97 | p90=86.12 | outside_0_200=0 | extreme_rate=0.00%
+spl_stress | dataset=2026 | band=gt75_100 | model=race_category | runners=244 | median=59.16 | p10=36.02 | p90=77.69 | outside_0_200=1 | extreme_rate=0.41%
+spl_stress | dataset=2026 | band=gt100 | model=speed_based | runners=124 | median=57.51 | p10=21.38 | p90=77.55 | outside_0_200=5 | extreme_rate=4.03%
+spl_stress | dataset=2026 | band=gt100 | model=fixed_020 | runners=124 | median=52.15 | p10=18.29 | p90=74.06 | outside_0_200=5 | extreme_rate=4.03%
+spl_stress | dataset=2026 | band=gt100 | model=race_category | runners=124 | median=39.48 | p10=-0.71 | p90=64.30 | outside_0_200=13 | extreme_rate=10.48%
+
+## Cap And Exclusion Policies
+tail_policy | dataset=2025 | policy=no_cap | runners=23324 | median=93.59 | p10=70.16 | p90=111.90 | extremes=29 | extreme_rate=0.12% | median_abs_or=16.90 | mean_abs_or=20.83 | or_correlation=0.16 | affected_finished_runners=0 | affected_pct=0.00% | hurdle_runners=14555 | chase_runners=6653 | nh_flat_runners=2066 | unknown_other_runners=50 | short_runners=9784 | middle_runners=10732 | staying_runners=2808
+tail_policy | dataset=2025 | policy=exclude_gt_50 | runners=21491 | median=94.74 | p10=73.64 | p90=112.58 | extremes=24 | extreme_rate=0.11% | median_abs_or=16.50 | mean_abs_or=20.35 | or_correlation=0.16 | affected_finished_runners=1833 | affected_pct=7.86% | hurdle_runners=13319 | chase_runners=6252 | nh_flat_runners=1870 | unknown_other_runners=50 | short_runners=8986 | middle_runners=9854 | staying_runners=2651
+tail_policy | dataset=2025 | policy=exclude_gt_75 | runners=22790 | median=93.96 | p10=71.98 | p90=112.13 | extremes=25 | extreme_rate=0.11% | median_abs_or=16.75 | mean_abs_or=20.65 | or_correlation=0.16 | affected_finished_runners=534 | affected_pct=2.29% | hurdle_runners=14226 | chase_runners=6557 | nh_flat_runners=1957 | unknown_other_runners=50 | short_runners=9521 | middle_runners=10500 | staying_runners=2769
+tail_policy | dataset=2025 | policy=exclude_gt_100 | runners=23158 | median=93.70 | p10=70.98 | p90=111.94 | extremes=26 | extreme_rate=0.11% | median_abs_or=16.84 | mean_abs_or=20.76 | or_correlation=0.16 | affected_finished_runners=166 | affected_pct=0.71% | hurdle_runners=14476 | chase_runners=6626 | nh_flat_runners=2006 | unknown_other_runners=50 | short_runners=9687 | middle_runners=10670 | staying_runners=2801
+tail_policy | dataset=2025 | policy=cap_50 | runners=23324 | median=93.83 | p10=72.35 | p90=111.99 | extremes=24 | extreme_rate=0.10% | median_abs_or=16.71 | mean_abs_or=20.59 | or_correlation=0.16 | affected_finished_runners=1833 | affected_pct=7.86% | hurdle_runners=14555 | chase_runners=6653 | nh_flat_runners=2066 | unknown_other_runners=50 | short_runners=9784 | middle_runners=10732 | staying_runners=2808
+tail_policy | dataset=2025 | policy=cap_75 | runners=23324 | median=93.61 | p10=70.96 | p90=111.92 | extremes=25 | extreme_rate=0.11% | median_abs_or=16.83 | mean_abs_or=20.77 | or_correlation=0.16 | affected_finished_runners=534 | affected_pct=2.29% | hurdle_runners=14555 | chase_runners=6653 | nh_flat_runners=2066 | unknown_other_runners=50 | short_runners=9784 | middle_runners=10732 | staying_runners=2808
+tail_policy | dataset=2025 | policy=cap_100 | runners=23324 | median=93.59 | p10=70.34 | p90=111.90 | extremes=26 | extreme_rate=0.11% | median_abs_or=16.89 | mean_abs_or=20.82 | or_correlation=0.16 | affected_finished_runners=166 | affected_pct=0.71% | hurdle_runners=14555 | chase_runners=6653 | nh_flat_runners=2066 | unknown_other_runners=50 | short_runners=9784 | middle_runners=10732 | staying_runners=2808
+tail_policy | dataset=2026 | policy=no_cap | runners=13289 | median=93.66 | p10=70.39 | p90=112.61 | extremes=44 | extreme_rate=0.33% | median_abs_or=16.48 | mean_abs_or=20.82 | or_correlation=0.16 | affected_finished_runners=0 | affected_pct=0.00% | hurdle_runners=8541 | chase_runners=3488 | nh_flat_runners=1221 | unknown_other_runners=39 | short_runners=5490 | middle_runners=6185 | staying_runners=1614
+tail_policy | dataset=2026 | policy=exclude_gt_50 | runners=12116 | median=94.94 | p10=74.09 | p90=113.26 | extremes=38 | extreme_rate=0.31% | median_abs_or=16.08 | mean_abs_or=20.32 | or_correlation=0.15 | affected_finished_runners=1173 | affected_pct=8.83% | hurdle_runners=7725 | chase_runners=3295 | nh_flat_runners=1058 | unknown_other_runners=38 | short_runners=4935 | middle_runners=5666 | staying_runners=1515
+tail_policy | dataset=2026 | policy=exclude_gt_75 | runners=12921 | median=94.16 | p10=72.29 | p90=112.90 | extremes=39 | extreme_rate=0.30% | median_abs_or=16.38 | mean_abs_or=20.67 | or_correlation=0.15 | affected_finished_runners=368 | affected_pct=2.77% | hurdle_runners=8304 | chase_runners=3440 | nh_flat_runners=1138 | unknown_other_runners=39 | short_runners=5276 | middle_runners=6053 | staying_runners=1592
+tail_policy | dataset=2026 | policy=exclude_gt_100 | runners=13165 | median=93.84 | p10=71.27 | p90=112.71 | extremes=39 | extreme_rate=0.30% | median_abs_or=16.44 | mean_abs_or=20.76 | or_correlation=0.15 | affected_finished_runners=124 | affected_pct=0.93% | hurdle_runners=8484 | chase_runners=3476 | nh_flat_runners=1166 | unknown_other_runners=39 | short_runners=5406 | middle_runners=6152 | staying_runners=1607
+tail_policy | dataset=2026 | policy=cap_50 | runners=13289 | median=94.01 | p10=72.43 | p90=112.79 | extremes=39 | extreme_rate=0.29% | median_abs_or=16.33 | mean_abs_or=20.60 | or_correlation=0.15 | affected_finished_runners=1173 | affected_pct=8.83% | hurdle_runners=8541 | chase_runners=3488 | nh_flat_runners=1221 | unknown_other_runners=39 | short_runners=5490 | middle_runners=6185 | staying_runners=1614
+tail_policy | dataset=2026 | policy=cap_75 | runners=13289 | median=93.71 | p10=71.15 | p90=112.68 | extremes=39 | extreme_rate=0.29% | median_abs_or=16.42 | mean_abs_or=20.75 | or_correlation=0.15 | affected_finished_runners=368 | affected_pct=2.77% | hurdle_runners=8541 | chase_runners=3488 | nh_flat_runners=1221 | unknown_other_runners=39 | short_runners=5490 | middle_runners=6185 | staying_runners=1614
+tail_policy | dataset=2026 | policy=cap_100 | runners=13289 | median=93.68 | p10=70.57 | p90=112.61 | extremes=40 | extreme_rate=0.30% | median_abs_or=16.47 | mean_abs_or=20.79 | or_correlation=0.16 | affected_finished_runners=124 | affected_pct=0.93% | hurdle_runners=8541 | chase_runners=3488 | nh_flat_runners=1221 | unknown_other_runners=39 | short_runners=5490 | middle_runners=6185 | staying_runners=1614
+
+## Same-Day Eligibility
+same_day_ineligibility | dataset=2025 | reason=same_day_stdev_gt_0_30 | races=1329
+same_day_ineligibility | dataset=2025 | reason=eligible | races=2117
+same_day_ineligibility | dataset=2025 | reason=too_few_qualifying_races | races=35
+same_day_method | dataset=2025 | method=base_only | runners=23324 | median=93.73 | p10=62.17 | p90=119.07 | extremes=32 | extreme_rate=0.14% | median_abs_or=19.68 | mean_abs_or=23.58 | or_correlation=0.13
+same_day_method | dataset=2025 | method=hierarchy_same_day_else_base | runners=23324 | median=93.59 | p10=70.16 | p90=111.90 | extremes=29 | extreme_rate=0.12% | median_abs_or=16.90 | mean_abs_or=20.83 | or_correlation=0.16
+same_day_method | dataset=2025 | method=same_day_only_eligible_subset | runners=14437 | median=94.14 | p10=78.46 | p90=107.14 | extremes=0 | extreme_rate=0.00% | median_abs_or=15.11 | mean_abs_or=18.30 | or_correlation=0.17
+same_day_ineligibility | dataset=2026 | reason=same_day_stdev_gt_0_30 | races=838
+same_day_ineligibility | dataset=2026 | reason=eligible | races=1136
+same_day_ineligibility | dataset=2026 | reason=too_few_qualifying_races | races=33
+same_day_method | dataset=2026 | method=base_only | runners=13289 | median=93.65 | p10=64.39 | p90=119.59 | extremes=45 | extreme_rate=0.34% | median_abs_or=19.48 | mean_abs_or=23.56 | or_correlation=0.09
+same_day_method | dataset=2026 | method=hierarchy_same_day_else_base | runners=13289 | median=93.66 | p10=70.39 | p90=112.61 | extremes=44 | extreme_rate=0.33% | median_abs_or=16.48 | mean_abs_or=20.82 | or_correlation=0.16
+same_day_method | dataset=2026 | method=same_day_only_eligible_subset | runners=7540 | median=94.32 | p10=78.05 | p90=108.09 | extremes=2 | extreme_rate=0.03% | median_abs_or=14.15 | mean_abs_or=16.98 | or_correlation=0.24
+
+## Fallback Policy
+fallback_policy | dataset=2025 | policy=same_day_else_base | same_day_pct=61.90% | base_fallback_pct=38.10% | runners=23324 | median=93.59 | p10=70.16 | p90=111.90 | extremes=29 | extreme_rate=0.12% | median_abs_or=16.90 | mean_abs_or=20.83 | or_correlation=0.16
+fallback_policy_subtype | dataset=2025 | subtype=hurdle | same_day_pct=61.42% | runners=14555 | median=93.04 | p10=68.67 | p90=110.76 | extremes=20 | extreme_rate=0.14% | median_abs_or=15.47 | mean_abs_or=19.35 | or_correlation=0.16
+fallback_policy_subtype | dataset=2025 | subtype=chase | same_day_pct=63.91% | runners=6653 | median=94.17 | p10=73.96 | p90=113.07 | extremes=1 | extreme_rate=0.02% | median_abs_or=19.75 | mean_abs_or=23.24 | or_correlation=0.16
+fallback_policy_subtype | dataset=2025 | subtype=nh_flat | same_day_pct=57.89% | runners=2066 | median=95.27 | p10=68.19 | p90=114.85 | extremes=8 | extreme_rate=0.39% | median_abs_or=18.42 | mean_abs_or=20.13 | or_correlation=-0.11
+fallback_policy_subtype | dataset=2025 | subtype=unknown_other | same_day_pct=100.00% | runners=50 | median=95.44 | p10=85.30 | p90=106.55 | extremes=0 | extreme_rate=0.00% | median_abs_or=11.42 | mean_abs_or=15.35 | or_correlation=0.33
+fallback_policy | dataset=2026 | policy=same_day_else_base | same_day_pct=56.74% | base_fallback_pct=43.26% | runners=13289 | median=93.66 | p10=70.39 | p90=112.61 | extremes=44 | extreme_rate=0.33% | median_abs_or=16.48 | mean_abs_or=20.82 | or_correlation=0.16
+fallback_policy_subtype | dataset=2026 | subtype=hurdle | same_day_pct=56.00% | runners=8541 | median=93.35 | p10=69.68 | p90=112.05 | extremes=20 | extreme_rate=0.23% | median_abs_or=15.47 | mean_abs_or=19.57 | or_correlation=0.17
+fallback_policy_subtype | dataset=2026 | subtype=chase | same_day_pct=56.97% | runners=3488 | median=93.66 | p10=72.46 | p90=113.62 | extremes=15 | extreme_rate=0.43% | median_abs_or=18.77 | mean_abs_or=23.15 | or_correlation=0.14
+fallback_policy_subtype | dataset=2026 | subtype=nh_flat | same_day_pct=59.87% | runners=1221 | median=97.03 | p10=65.72 | p90=113.98 | extremes=9 | extreme_rate=0.74% | median_abs_or=34.93 | mean_abs_or=33.14 | or_correlation=0.90
+fallback_policy_subtype | dataset=2026 | subtype=unknown_other | same_day_pct=100.00% | runners=39 | median=93.83 | p10=80.37 | p90=99.90 | extremes=0 | extreme_rate=0.00% | median_abs_or=10.55 | mean_abs_or=13.60 | or_correlation=0.17
+
+## Confidence Framework
+confidence_band | dataset=2025 | confidence=HIGH | runners=8108 | median=96.25 | p10=83.59 | p90=108.04 | extremes=0 | extreme_rate=0.00% | median_abs_or=13.07 | mean_abs_or=15.62 | or_correlation=0.15
+confidence_band | dataset=2025 | confidence=MEDIUM | runners=12638 | median=90.97 | p10=64.35 | p90=115.48 | extremes=25 | extreme_rate=0.20% | median_abs_or=18.52 | mean_abs_or=22.64 | or_correlation=0.19
+confidence_band | dataset=2025 | confidence=LOW | runners=2578 | median=91.40 | p10=60.78 | p90=112.77 | extremes=4 | extreme_rate=0.16% | median_abs_or=23.98 | mean_abs_or=27.08 | or_correlation=0.14
+confidence_band | dataset=2026 | confidence=HIGH | runners=2980 | median=97.07 | p10=84.36 | p90=109.36 | extremes=0 | extreme_rate=0.00% | median_abs_or=10.14 | mean_abs_or=12.09 | or_correlation=0.36
+confidence_band | dataset=2026 | confidence=MEDIUM | runners=8028 | median=92.18 | p10=67.91 | p90=113.84 | extremes=27 | extreme_rate=0.34% | median_abs_or=17.48 | mean_abs_or=21.55 | or_correlation=0.14
+confidence_band | dataset=2026 | confidence=LOW | runners=2281 | median=92.54 | p10=59.04 | p90=115.92 | extremes=17 | extreme_rate=0.75% | median_abs_or=23.50 | mean_abs_or=27.46 | or_correlation=0.19
+
+## Cross-Year Consistency
+cross_year_policy | policy=no_cap | 2025_extreme_rate=0.12% | 2026_extreme_rate=0.33% | 2025_median_abs_or=16.90 | 2026_median_abs_or=16.48 | stable=true
+cross_year_policy | policy=exclude_gt_50 | 2025_extreme_rate=0.11% | 2026_extreme_rate=0.31% | 2025_median_abs_or=16.50 | 2026_median_abs_or=16.08 | stable=true
+cross_year_policy | policy=exclude_gt_75 | 2025_extreme_rate=0.11% | 2026_extreme_rate=0.30% | 2025_median_abs_or=16.75 | 2026_median_abs_or=16.38 | stable=true
+cross_year_policy | policy=exclude_gt_100 | 2025_extreme_rate=0.11% | 2026_extreme_rate=0.30% | 2025_median_abs_or=16.84 | 2026_median_abs_or=16.44 | stable=true
+cross_year_policy | policy=cap_50 | 2025_extreme_rate=0.10% | 2026_extreme_rate=0.29% | 2025_median_abs_or=16.71 | 2026_median_abs_or=16.33 | stable=true
+cross_year_policy | policy=cap_75 | 2025_extreme_rate=0.11% | 2026_extreme_rate=0.29% | 2025_median_abs_or=16.83 | 2026_median_abs_or=16.42 | stable=true
+cross_year_policy | policy=cap_100 | 2025_extreme_rate=0.11% | 2026_extreme_rate=0.30% | 2025_median_abs_or=16.89 | 2026_median_abs_or=16.47 | stable=true
+
+## Recommendation
+default_rating_method=sec_per_f + conservative same-day where eligible
+same_day_fallback=use sec_per_f base when conservative same-day eligibility is not met; expose method
+large_beaten_distance_handling=do not publish runner-level speed figure above 75 cumulative beaten lengths; retain race result and expose no_rating_large_beaten_distance
+confidence_label=HIGH same_day eligible + base_sample>=10 + beaten<=30; MEDIUM valid base/base fallback + base_sample>=5 + beaten<=75; LOW weak sample, beaten>75, unknown subtype, or data issue
+no_cap_median_abs_or_2025=16.90 | no_cap_median_abs_or_2026=16.48
+exclude_gt_75_median_abs_or_2025=16.75 | exclude_gt_75_median_abs_or_2026=16.38
+production_readiness=ready_to_move_to_production_design_with_no_persistence_yet; design should include explicit method and confidence outputs
