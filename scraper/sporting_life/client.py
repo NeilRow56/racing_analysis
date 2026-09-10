@@ -7,7 +7,16 @@ from urllib.request import Request, urlopen
 
 
 class SportingLifeRequestError(RuntimeError):
-    pass
+    def __init__(
+        self,
+        message: str,
+        *,
+        status_code: int | None = None,
+        access_control_signal: bool = False,
+    ) -> None:
+        super().__init__(message)
+        self.status_code = status_code
+        self.access_control_signal = access_control_signal
 
 
 class SportingLifeClient:
@@ -39,7 +48,9 @@ class SportingLifeClient:
             body = error.read(180).decode("utf-8", errors="replace")
             body_prefix = " ".join(body.split())
             raise SportingLifeRequestError(
-                f"Sporting Life returned HTTP {error.code} for {url}; body_prefix={body_prefix!r}"
+                f"Sporting Life returned HTTP {error.code} for {url}; body_prefix={body_prefix!r}",
+                status_code=error.code,
+                access_control_signal=error.code in {403, 406, 429},
             ) from error
 
     def _wait_between_requests(self) -> None:

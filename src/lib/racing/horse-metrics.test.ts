@@ -1,8 +1,12 @@
 import assert from "node:assert/strict";
 import { describe, test } from "node:test";
+import { and, eq, inArray, lte } from "drizzle-orm";
+import { PgDialect } from "drizzle-orm/pg-core";
+import { raceRunners, races } from "@/db/schema";
 import {
   calculateHorseMetricsAsOf,
   calculateTargetRunnerMetrics,
+  isRunnableResultStatus,
   type HistoricalRunInput,
   type TargetRunnerMetrics,
 } from "./horse-metrics";
@@ -209,6 +213,23 @@ describe("calculateHorseMetricsAsOf", () => {
           raceDateTime: new Date("2020-09-30T15:00:00.000Z"),
           raceDate: "2020-09-30",
           resultStatus: "non_runner",
+        }),
+      ],
+    });
+
+    assert.equal(metrics.priorRuns, 0);
+    assert.equal(metrics.latestRunDate, null);
+  });
+
+  test("does not count imported racecard rows without a result as prior runs", () => {
+    const metrics = calculateHorseMetricsAsOf({
+      beforeDateTime: cutoff,
+      runs: [
+        run({
+          raceDateTime: new Date("2020-09-30T15:00:00.000Z"),
+          raceDate: "2020-09-30",
+          finishingPosition: null,
+          resultStatus: null,
         }),
       ],
     });
@@ -568,5 +589,37 @@ describe("calculateTargetRunnerMetrics", () => {
 
     assert.equal(result.metrics.latestJumpSpeedRating, 88);
     assert.equal(result.metrics.previousJumpSpeedRating, null);
+  });
+});
+
+describe("isRunnableResultStatus", () => {
+  test("keeps runnable status OR grouped inside candidate AND conditions", () => {
+    const dialect = new PgDialect();
+    const latestTargetDateTime = new Date("2026-09-10T18:20:00.000Z");
+    const query = dialect.sqlToQuery(
+      and(
+        inArray(raceRunners.horseId, ["horse-1", "horse-2"]),
+        eq(races.source, "sporting_life"),
+        eq(raceRunners.source, "sporting_life"),
+        isRunnableResultStatus(),
+        lte(races.raceDatetime, latestTargetDateTime),
+      )!,
+    );
+
+    assert.match(
+      query.sql,
+      /and \("race_runners"\."result_status" is null or "race_runners"\."result_status" <> \$\d+\) and/,
+    );
+    assert.doesNotMatch(
+      query.sql,
+      /and "race_runners"\."result_status" is null or "race_runners"\."result_status" <>/,
+    );
+    assert.deepEqual(query.params.slice(0, 4), [
+      "horse-1",
+      "horse-2",
+      "sporting_life",
+      "sporting_life",
+    ]);
+    assert.equal(query.params.includes("non_runner"), true);
   });
 });

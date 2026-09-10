@@ -9,7 +9,7 @@ from collections import Counter
 from dataclasses import dataclass
 from datetime import date
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable, TypeVar
 
 import psycopg
 from dotenv import load_dotenv
@@ -20,14 +20,16 @@ RAW_OUTPUT_DIR = REPO_ROOT / "data" / "raw" / "sporting-life"
 
 sys.path.insert(0, str(REPO_ROOT / "scraper"))
 
-from sporting_life.client import SportingLifeClient  # noqa: E402
+from sporting_life.client import SportingLifeClient, SportingLifeRequestError  # noqa: E402
 from sporting_life.extract import (  # noqa: E402
+    BASE_URL,
     RacecardLink,
     discover_uk_ire_racecard_links,
     fetch_racecard,
     fetch_racecards_index,
 )
 from sporting_life.importing import (  # noqa: E402
+    FULL_RESULT_SOURCE_TYPE,
     RACECARD_SOURCE_TYPE,
     SOURCE,
     import_racecard,
@@ -36,12 +38,18 @@ from sporting_life.importing import (  # noqa: E402
 )
 
 
+T = TypeVar("T")
+ACCESS_CONTROL_STATUS_CODES = {403, 406, 429}
+TRANSIENT_RETRY_ATTEMPTS = 3
+
+
 @dataclass
 class RacecardImportResult:
     race_date: date
     discovered_links: list[RacecardLink]
     imported_links: list[RacecardLink]
     skipped_existing: int
+    skipped_completed_results: int
     raw_files: int
     totals: Counter[str]
     elapsed_seconds: float
@@ -59,9 +67,14 @@ def main() -> None:
         help="Delay between Sporting Life HTTP requests. Defaults to SL_REQUEST_DELAY_SECONDS or 2.0.",
     )
     parser.add_argument(
+        "--skip-existing-racecards",
+        action="store_true",
+        help="Do not refetch racecard pages already recorded in source_imports.",
+    )
+    parser.add_argument(
         "--refresh-existing-racecards",
         action="store_true",
-        help="Refetch racecard pages already recorded in source_imports.",
+        help=argparse.SUPPRESS,
     )
     args = parser.parse_args()
 
@@ -74,7 +87,8 @@ def main() -> None:
         race_date=args.race_date,
         database_url=database_url,
         request_delay_seconds=args.request_delay_seconds,
-        refresh_existing_racecards=args.refresh_existing_racecards,
+        skip_existing_racecards=args.skip_existing_racecards
+        and not args.refresh_existing_racecards,
     )
     print_import_result(result)
 
@@ -84,13 +98,21 @@ def import_sporting_life_racecards(
     race_date: date,
     database_url: str,
     request_delay_seconds: float | None = None,
-    refresh_existing_racecards: bool = False,
+    skip_existing_racecards: bool = False,
+    skip_completed_results: bool = True,
+    refresh_existing_racecards: bool | None = None,
     client: SportingLifeClient | None = None,
 ) -> RacecardImportResult:
     started_at = time.monotonic()
+    if refresh_existing_racecards is True:
+        skip_existing_racecards = False
     delay = request_delay_seconds if request_delay_seconds is not None else 2.0
     client = client or SportingLifeClient(request_delay_seconds=delay)
-    index = fetch_racecards_index(race_date, client)
+    index_url = f"{BASE_URL}/racing/racecards/{race_date.isoformat()}"
+    index = fetch_with_conservative_retries(
+        lambda: fetch_racecards_index(race_date, client),
+        url=index_url,
+    )
     links = discover_uk_ire_racecard_links(index)
 
     write_raw_payload(
@@ -105,6 +127,7 @@ def import_sporting_life_racecards(
     totals: Counter[str] = Counter()
     imported_links: list[RacecardLink] = []
     skipped_existing = 0
+    skipped_completed_results = 0
     raw_files = 1
 
     with psycopg.connect(database_url) as connection:
@@ -123,6 +146,7 @@ def import_sporting_life_racecards(
                 discovered_links=links,
                 imported_links=imported_links,
                 skipped_existing=skipped_existing,
+                skipped_completed_results=skipped_completed_results,
                 raw_files=raw_files,
                 totals=totals,
                 elapsed_seconds=time.monotonic() - started_at,
@@ -130,7 +154,18 @@ def import_sporting_life_racecards(
 
         for link in links:
             with connection.cursor() as cursor:
-                if not refresh_existing_racecards and racecard_source_import_exists(
+                if skip_completed_results and full_result_source_import_exists(
+                    cursor,
+                    link.race_id,
+                ):
+                    skipped_completed_results += 1
+                    print(
+                        "RACECARD_SKIPPED_COMPLETED_RESULT "
+                        f"course={link.course_name!r} time={link.race_time} race_id={link.race_id}",
+                        flush=True,
+                    )
+                    continue
+                if skip_existing_racecards and racecard_source_import_exists(
                     cursor,
                     link.race_id,
                 ):
@@ -142,11 +177,10 @@ def import_sporting_life_racecards(
                     )
                     continue
 
-            try:
-                racecard = fetch_racecard(link.url, client)
-            except Exception:
-                print(f"REQUEST_FAILED url={link.url}", flush=True)
-                raise
+            racecard = fetch_with_conservative_retries(
+                lambda: fetch_racecard(link.url, client),
+                url=link.url,
+            )
 
             race = racecard.race_payload
             if race is None:
@@ -187,6 +221,7 @@ def import_sporting_life_racecards(
         discovered_links=links,
         imported_links=imported_links,
         skipped_existing=skipped_existing,
+        skipped_completed_results=skipped_completed_results,
         raw_files=raw_files,
         totals=totals,
         elapsed_seconds=time.monotonic() - started_at,
@@ -208,6 +243,66 @@ def racecard_source_import_exists(cursor: psycopg.Cursor, race_id: str) -> bool:
     return cursor.fetchone() is not None
 
 
+def full_result_source_import_exists(cursor: psycopg.Cursor, race_id: str) -> bool:
+    cursor.execute(
+        """
+        select 1
+        from source_imports
+        where source = %s
+          and source_type = %s
+          and source_id = %s
+        limit 1
+        """,
+        (SOURCE, FULL_RESULT_SOURCE_TYPE, race_id),
+    )
+    return cursor.fetchone() is not None
+
+
+def fetch_with_conservative_retries(fetch: Callable[[], T], *, url: str) -> T:
+    for attempt in range(1, TRANSIENT_RETRY_ATTEMPTS + 1):
+        try:
+            return fetch()
+        except SportingLifeRequestError as error:
+            if error.access_control_signal or error.status_code in ACCESS_CONTROL_STATUS_CODES:
+                print(f"REQUEST_FAILED url={url}", flush=True)
+                print(
+                    "ACCESS_CONTROL_SIGNAL "
+                    f"status={error.status_code} action=stop url={url}",
+                    flush=True,
+                )
+                raise
+            if (
+                error.status_code is not None
+                and 500 <= error.status_code <= 599
+                and attempt < TRANSIENT_RETRY_ATTEMPTS
+            ):
+                sleep_seconds = attempt * 2
+                print(
+                    "REQUEST_RETRY "
+                    f"attempt={attempt} status={error.status_code} "
+                    f"sleep_seconds={sleep_seconds} url={url}",
+                    flush=True,
+                )
+                time.sleep(sleep_seconds)
+                continue
+            print(f"REQUEST_FAILED url={url}", flush=True)
+            raise
+        except OSError:
+            if attempt < TRANSIENT_RETRY_ATTEMPTS:
+                sleep_seconds = attempt * 2
+                print(
+                    "REQUEST_RETRY "
+                    f"attempt={attempt} status=network "
+                    f"sleep_seconds={sleep_seconds} url={url}",
+                    flush=True,
+                )
+                time.sleep(sleep_seconds)
+                continue
+            print(f"REQUEST_FAILED url={url}", flush=True)
+            raise
+    raise RuntimeError(f"Request retry loop exhausted for {url}")
+
+
 def print_import_result(result: RacecardImportResult) -> None:
     print(f"DATE={result.race_date.isoformat()}")
     print(
@@ -220,6 +315,7 @@ def print_import_result(result: RacecardImportResult) -> None:
     print(f"DISCOVERED_RACES={len(result.discovered_links)}")
     print(f"IMPORTED_RACECARDS={len(result.imported_links)}")
     print(f"SKIPPED_EXISTING_RACECARDS={result.skipped_existing}")
+    print(f"SKIPPED_COMPLETED_RESULTS={result.skipped_completed_results}")
     print(f"RAW_FILES={result.raw_files}")
     print(
         "UPSERT_ATTEMPTS "

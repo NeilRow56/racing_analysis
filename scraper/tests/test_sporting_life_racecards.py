@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import unittest
 from typing import Any
 
@@ -7,8 +8,11 @@ from sporting_life.extract import (
     RacecardPayload,
     RacecardsIndexPayload,
     discover_uk_ire_racecard_links,
+    fetch_page_next_data,
+    looks_like_access_control_page,
 )
-from sporting_life.importing import import_racecard, racecard_result_status
+from sporting_life.client import SportingLifeRequestError
+from sporting_life.importing import import_full_result, import_racecard, racecard_result_status
 
 
 class RacecardExtractionTest(unittest.TestCase):
@@ -74,6 +78,36 @@ class RacecardExtractionTest(unittest.TestCase):
 
         self.assertEqual([link.race_id for link in links], ["937435"])
 
+    def test_fetch_page_next_data_classifies_200_bot_check_as_access_control(self) -> None:
+        client = FakeClient(
+            "<html><title>Security check</title><body>Bot check: verify you are human</body></html>",
+        )
+
+        with self.assertRaises(SportingLifeRequestError) as context:
+            fetch_page_next_data("https://example.test/racecard", client)
+
+        self.assertEqual(context.exception.status_code, 200)
+        self.assertTrue(context.exception.access_control_signal)
+
+    def test_fetch_page_next_data_keeps_ordinary_malformed_page_generic(self) -> None:
+        client = FakeClient("<html><body>Racecard temporarily unavailable</body></html>")
+
+        with self.assertRaises(RuntimeError) as context:
+            fetch_page_next_data("https://example.test/racecard", client)
+
+        self.assertIn("No __NEXT_DATA__", str(context.exception))
+
+    def test_fetch_page_next_data_normal_page_still_succeeds(self) -> None:
+        payload = {"props": {"pageProps": {"race": {"race_summary": {"name": "Test"}}}}}
+        client = FakeClient(next_data_html(payload))
+
+        self.assertEqual(fetch_page_next_data("https://example.test/racecard", client), payload)
+
+    def test_access_control_markers_are_case_insensitive_and_conservative(self) -> None:
+        self.assertTrue(looks_like_access_control_page("VERIFY YOU ARE HUMAN"))
+        self.assertTrue(looks_like_access_control_page("Security Check"))
+        self.assertFalse(looks_like_access_control_page("Racecard temporarily unavailable"))
+
 
 class RacecardImportTest(unittest.TestCase):
     def test_import_racecard_uses_stable_ids_and_does_not_fabricate_result_values(self) -> None:
@@ -135,6 +169,27 @@ class RacecardImportTest(unittest.TestCase):
         self.assertIsNone(racecard_result_status({"ride_status": "RUNNER"}))
         self.assertEqual(racecard_result_status({"ride_status": "NONRUNNER"}), "non_runner")
 
+    def test_racecard_to_full_result_lifecycle_uses_same_rows(self) -> None:
+        cursor = FakeCursor()
+        racecard_payload = sample_racecard_payload()
+        result_payload = sample_full_result_payload()
+
+        import_racecard(cursor, payload=racecard_payload)
+        import_full_result(cursor, payload=result_payload)
+
+        race_inserts = cursor.queries_containing("insert into races")
+        self.assertEqual(race_inserts[0][1][1], "937435")
+        self.assertEqual(race_inserts[1][1][1], "937435")
+        self.assertIsNone(race_inserts[0][1][17])
+        self.assertEqual(race_inserts[1][1][17], "1m 13.42s")
+
+        runner_inserts = cursor.queries_containing("insert into race_runners")
+        self.assertEqual(runner_inserts[0][1][1], "253213767")
+        self.assertEqual(runner_inserts[2][1][1], "253213767")
+        self.assertIsNone(runner_inserts[0][1][7])
+        self.assertEqual(runner_inserts[2][1][7], 1)
+        self.assertEqual(runner_inserts[2][1][9], "finished")
+
 
 class FakeCursor:
     def __init__(self) -> None:
@@ -153,6 +208,22 @@ class FakeCursor:
 
     def queries_containing(self, pattern: str) -> list[tuple[str, tuple[Any, ...]]]:
         return [(query, params) for query, params in self.executions if pattern in query]
+
+
+class FakeClient:
+    def __init__(self, page_text: str) -> None:
+        self.page_text = page_text
+
+    def get_text(self, _url: str) -> str:
+        return self.page_text
+
+
+def next_data_html(payload: dict[str, Any]) -> str:
+    return (
+        '<html><body><script id="__NEXT_DATA__" type="application/json">'
+        + json.dumps(payload)
+        + "</script></body></html>"
+    )
 
 
 def sample_index_meeting(
@@ -264,6 +335,18 @@ def sample_racecard_payload() -> dict[str, Any]:
             },
         },
     }
+
+
+def sample_full_result_payload() -> dict[str, Any]:
+    payload = sample_racecard_payload()
+    race_summary = payload["props"]["pageProps"]["race"]["race_summary"]
+    race_summary["race_stage"] = "RESULT"
+    race_summary["off_time"] = "13:13:00"
+    race_summary["winning_time"] = "1m 13.42s"
+    first_ride = payload["props"]["pageProps"]["race"]["rides"][0]
+    first_ride["finish_position"] = 1
+    first_ride["ride_description"] = "Made all, won readily"
+    return payload
 
 
 if __name__ == "__main__":

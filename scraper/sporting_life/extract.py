@@ -6,7 +6,7 @@ from datetime import date
 
 from lxml import html
 
-from .client import SportingLifeClient
+from .client import SportingLifeClient, SportingLifeRequestError
 
 
 BASE_URL = "https://www.sportinglife.com"
@@ -264,13 +264,40 @@ def discover_uk_ire_racecard_links(index: RacecardsIndexPayload) -> list[Racecar
 
 
 def fetch_page_next_data(page_url: str, client: SportingLifeClient) -> dict:
-    document = html.fromstring(client.get_text(page_url))
+    page_text = client.get_text(page_url)
+    document = html.fromstring(page_text)
     raw_next_data = document.xpath('string(//script[@id="__NEXT_DATA__"])')
 
     if not raw_next_data:
+        if looks_like_access_control_page(page_text):
+            raise SportingLifeRequestError(
+                f"Sporting Life access-control page returned without __NEXT_DATA__ at {page_url}",
+                status_code=200,
+                access_control_signal=True,
+            )
         raise RuntimeError(f"No __NEXT_DATA__ script found at {page_url}")
 
     return json.loads(raw_next_data)
+
+
+def looks_like_access_control_page(page_text: str) -> bool:
+    lowered = page_text.lower()
+    access_markers = (
+        "captcha",
+        "access denied",
+        "bot check",
+        "verify you are human",
+        "challenge",
+        "unusual traffic",
+        "forbidden",
+        "security check",
+        "checking your browser",
+        "cf-challenge",
+        "cloudflare",
+        "akamai bot manager",
+        "perimeterx",
+    )
+    return any(marker in lowered for marker in access_markers)
 
 
 def slugify(value: str) -> str:

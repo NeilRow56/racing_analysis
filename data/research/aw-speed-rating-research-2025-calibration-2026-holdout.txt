@@ -1,0 +1,211 @@
+# All-Weather Speed-Rating Research
+
+research_only=true
+production_jump_logic_changed=false
+schema_changed=false
+ratings_persisted=false
+external_requests=false
+calibration=2025-01-01..2025-12-31
+holdout=2026-01-01..2026-08-31
+
+## Stage 1 - AW Race Predicate
+source=data/research/going-adjustment-races/runners Sporting Life exports
+aw_predicate=segment == all_weather_flat AND surface IN (ALLWEATHER, POLYTRACK)
+predicate_note=positive inclusive predicate; TURF, blank, null and unrelated surfaces are excluded.
+observed_surfaces_2025_2026=TURF:11998, ALLWEATHER:2787, POLYTRACK:1663
+observed_aw_surfaces=ALLWEATHER:2782, POLYTRACK:1661
+db_segment_values=turf_flat:6517, jumps:5488, all_weather_flat:4443
+db_surface_values=TURF:11998, ALLWEATHER:2787, POLYTRACK:1663
+mixed_course_examples=Southwell(ALLWEATHER:518, TURF:103); Newcastle(ALLWEATHER:567, TURF:78); Lingfield(POLYTRACK:331, TURF:137); Kempton(POLYTRACK:406, TURF:60); Southwell(ALLWEATHER:349, TURF:52); Newcastle(ALLWEATHER:262, TURF:46); Lingfield(POLYTRACK:309, TURF:96); Kempton(POLYTRACK:237, TURF:33)
+material_surface_labels=partial; POLYTRACK is present, but no TAPETA or FIBRESAND values were observed in the surface column.
+
+## Stage 2 - Coverage
+coverage_source=live_postgres_full_race_runner_rows
+figure_csv_scope=completed_or_usable_timing_export; not used as full runner coverage denominator
+2025_aw_races=2774
+2025_declared_recorded_runners=26539
+2025_finished_completed_runners=24942
+2025_non_runners=1542
+2025_other_non_completion_statuses=pulled_up:28, unseated_rider:16, other:8, fell:3
+2025_usable_timing_runners=24942
+2025_runners_with_or=21844
+2025_or_coverage_pct=82.3%
+2025_usable_timing_coverage_pct=94.0%
+2025_winning_time_coverage=2774/2774
+2025_distance_yards_coverage=2774/2774
+2025_csv_completed_runner_scope=24942; completed_rows_in_csv=24942
+2025_courses=6
+2025_course_exact_distance_groups=50
+2025_courses_detail=Wolverhampton:660, Newcastle:564, Southwell:518, Kempton:406, Lingfield:330, Chelmsford City:296
+2026_holdout_aw_races=1669
+2026_holdout_declared_recorded_runners=15473
+2026_holdout_finished_completed_runners=14598
+2026_holdout_non_runners=824
+2026_holdout_other_non_completion_statuses=pulled_up:26, unseated_rider:14, other:8, fell:3
+2026_holdout_usable_timing_runners=14598
+2026_holdout_runners_with_or=12951
+2026_holdout_or_coverage_pct=83.7%
+2026_holdout_usable_timing_coverage_pct=94.3%
+2026_holdout_winning_time_coverage=1669/1669
+2026_holdout_distance_yards_coverage=1669/1669
+2026_holdout_csv_completed_runner_scope=14598; completed_rows_in_csv=14598
+2026_holdout_courses=6
+2026_holdout_course_exact_distance_groups=49
+2026_holdout_courses_detail=Wolverhampton:431, Southwell:349, Lingfield:308, Newcastle:260, Kempton:237, Chelmsford City:84
+
+## Stage 3 - Standard-Time Stability
+standard_key=course + exact distance_yards + observed AW surface
+2025 calibration_sample_bins=80+:15, 40-79:14, 20-39:9, 10-19:4, 5-9:3, 2-4:5
+2025 calibration_largest_groups=
+Wolverhampton 7f 36y 1576y ALLWEATHER n=136 median=88.240 sd=0.989 p10=87.170 p90=89.590
+Newcastle 7f 14y 1554y ALLWEATHER n=132 median=88.580 sd=1.836 p10=86.560 p90=91.270
+Newcastle 6f 1320y ALLWEATHER n=125 median=73.460 sd=1.355 p10=72.230 p90=74.950
+Wolverhampton 6f 20y 1340y ALLWEATHER n=124 median=73.720 sd=0.835 p10=72.640 p90=74.800
+Kempton 7f 1540y POLYTRACK n=115 median=86.470 sd=1.341 p10=84.740 p90=88.270
+Southwell 1m 13y 1773y ALLWEATHER n=112 median=101.545 sd=1.371 p10=100.200 p90=103.580
+Kempton 1m 1760y POLYTRACK n=111 median=99.900 sd=1.375 p10=98.370 p90=101.630
+Newcastle 1m 5y 1765y ALLWEATHER n=108 median=102.050 sd=1.819 p10=99.800 p90=103.930
+Wolverhampton 1m 142y 1902y ALLWEATHER n=103 median=109.370 sd=1.391 p10=107.890 p90=111.270
+Southwell 7f 14y 1554y ALLWEATHER n=102 median=88.325 sd=1.236 p10=86.550 p90=89.810
+Southwell 6f 16y 1336y ALLWEATHER n=100 median=74.685 sd=1.021 p10=73.430 p90=76.020
+Wolverhampton 1m 1f 104y 2084y ALLWEATHER n=98 median=120.805 sd=1.687 p10=118.790 p90=122.640
+2025 calibration_Wolverhampton_groups=9 races=660 largest=Wolverhampton 7f 36y 1576y ALLWEATHER n=136 median=88.240 sd=0.989 p10=87.170 p90=89.590 ; Wolverhampton 6f 20y 1340y ALLWEATHER n=124 median=73.720 sd=0.835 p10=72.640 p90=74.800 ; Wolverhampton 1m 142y 1902y ALLWEATHER n=103 median=109.370 sd=1.391 p10=107.890 p90=111.270 ; Wolverhampton 1m 1f 104y 2084y ALLWEATHER n=98 median=120.805 sd=1.687 p10=118.790 p90=122.640 ; Wolverhampton 5f 21y 1121y ALLWEATHER n=93 median=61.170 sd=0.801 p10=60.310 p90=62.130
+2025 calibration_Newcastle_groups=7 races=564 largest=Newcastle 7f 14y 1554y ALLWEATHER n=132 median=88.580 sd=1.836 p10=86.560 p90=91.270 ; Newcastle 6f 1320y ALLWEATHER n=125 median=73.460 sd=1.355 p10=72.230 p90=74.950 ; Newcastle 1m 5y 1765y ALLWEATHER n=108 median=102.050 sd=1.819 p10=99.800 p90=103.930 ; Newcastle 5f 1100y ALLWEATHER n=82 median=60.045 sd=0.902 p10=59.180 p90=60.940 ; Newcastle 1m 2f 42y 2242y ALLWEATHER n=61 median=133.410 sd=2.492 p10=130.760 p90=136.980
+2025 calibration_Kempton_groups=6 races=406 largest=Kempton 7f 1540y POLYTRACK n=115 median=86.470 sd=1.341 p10=84.740 p90=88.270 ; Kempton 1m 1760y POLYTRACK n=111 median=99.900 sd=1.375 p10=98.370 p90=101.630 ; Kempton 6f 1320y POLYTRACK n=83 median=72.720 sd=1.118 p10=71.370 p90=73.980 ; Kempton 1m 3f 219y 2639y POLYTRACK n=39 median=154.700 sd=2.280 p10=151.570 p90=157.700 ; Kempton 1m 2f 219y 2419y POLYTRACK n=35 median=141.400 sd=2.589 p10=139.120 p90=145.030
+2025 calibration_Southwell_groups=12 races=518 largest=Southwell 1m 13y 1773y ALLWEATHER n=112 median=101.545 sd=1.371 p10=100.200 p90=103.580 ; Southwell 7f 14y 1554y ALLWEATHER n=102 median=88.325 sd=1.236 p10=86.550 p90=89.810 ; Southwell 6f 16y 1336y ALLWEATHER n=100 median=74.685 sd=1.021 p10=73.430 p90=76.020 ; Southwell 4f 214y 1094y ALLWEATHER n=68 median=58.480 sd=0.906 p10=57.640 p90=59.620 ; Southwell 1m 4f 14y 2654y ALLWEATHER n=40 median=158.235 sd=2.400 p10=155.450 p90=160.460
+2025 calibration_Lingfield_groups=8 races=330 largest=Lingfield 1m 1y 1761y POLYTRACK n=68 median=98.090 sd=1.357 p10=96.620 p90=100.100 ; Lingfield 7f 1y 1541y POLYTRACK n=63 median=84.720 sd=1.184 p10=83.870 p90=85.970 ; Lingfield 6f 1y 1321y POLYTRACK n=62 median=71.500 sd=1.002 p10=70.660 p90=72.850 ; Lingfield 1m 2f 2200y POLYTRACK n=48 median=126.685 sd=2.643 p10=123.860 p90=130.720 ; Lingfield 5f 6y 1106y POLYTRACK n=41 median=58.710 sd=0.935 p10=57.340 p90=59.640
+2025 calibration_Chelmsford City_groups=8 races=296 largest=Chelmsford City 7f 1540y POLYTRACK n=72 median=85.300 sd=1.170 p10=83.980 p90=86.920 ; Chelmsford City 6f 1320y POLYTRACK n=60 median=71.690 sd=0.798 p10=70.580 p90=72.800 ; Chelmsford City 1m 2f 2200y POLYTRACK n=58 median=125.855 sd=2.434 p10=123.640 p90=128.370 ; Chelmsford City 1m 1760y POLYTRACK n=45 median=98.380 sd=1.699 p10=96.750 p90=99.860 ; Chelmsford City 5f 1100y POLYTRACK n=37 median=59.040 sd=0.906 p10=58.160 p90=60.240
+2026 holdout_sample_bins=40-79:18, 20-39:7, 10-19:12, 5-9:3, 80+:3, 2-4:6
+2026 holdout_largest_groups=
+Wolverhampton 7f 36y 1576y ALLWEATHER n=90 median=88.550 sd=0.990 p10=87.640 p90=90.050
+Wolverhampton 6f 20y 1340y ALLWEATHER n=88 median=73.895 sd=0.809 p10=73.050 p90=74.730
+Wolverhampton 1m 142y 1902y ALLWEATHER n=80 median=109.965 sd=2.258 p10=107.850 p90=111.830
+Southwell 7f 14y 1554y ALLWEATHER n=78 median=87.765 sd=1.325 p10=86.500 p90=89.890
+Southwell 1m 13y 1773y ALLWEATHER n=71 median=101.530 sd=1.283 p10=99.840 p90=103.110
+Kempton 1m 1760y POLYTRACK n=66 median=100.130 sd=1.111 p10=98.940 p90=101.330
+Lingfield 7f 1y 1541y POLYTRACK n=64 median=84.935 sd=1.072 p10=83.630 p90=86.130
+Southwell 6f 16y 1336y ALLWEATHER n=63 median=74.650 sd=0.948 p10=73.570 p90=75.820
+Newcastle 6f 1320y ALLWEATHER n=62 median=73.320 sd=2.287 p10=71.600 p90=74.640
+Kempton 7f 1540y POLYTRACK n=62 median=86.770 sd=1.391 p10=85.380 p90=88.650
+Lingfield 1m 1y 1761y POLYTRACK n=58 median=98.625 sd=1.395 p10=96.430 p90=100.110
+Wolverhampton 5f 21y 1121y ALLWEATHER n=57 median=61.230 sd=0.686 p10=60.260 p90=62.120
+2026 holdout_Wolverhampton_groups=8 races=431 largest=Wolverhampton 7f 36y 1576y ALLWEATHER n=90 median=88.550 sd=0.990 p10=87.640 p90=90.050 ; Wolverhampton 6f 20y 1340y ALLWEATHER n=88 median=73.895 sd=0.809 p10=73.050 p90=74.730 ; Wolverhampton 1m 142y 1902y ALLWEATHER n=80 median=109.965 sd=2.258 p10=107.850 p90=111.830 ; Wolverhampton 5f 21y 1121y ALLWEATHER n=57 median=61.230 sd=0.686 p10=60.260 p90=62.120 ; Wolverhampton 1m 1f 104y 2084y ALLWEATHER n=56 median=121.120 sd=1.756 p10=119.130 p90=123.010
+2026 holdout_Newcastle_groups=7 races=260 largest=Newcastle 6f 1320y ALLWEATHER n=62 median=73.320 sd=2.287 p10=71.600 p90=74.640 ; Newcastle 1m 5y 1765y ALLWEATHER n=52 median=101.030 sd=2.453 p10=98.980 p90=104.450 ; Newcastle 7f 14y 1554y ALLWEATHER n=51 median=87.820 sd=1.693 p10=86.080 p90=89.910 ; Newcastle 5f 1100y ALLWEATHER n=44 median=59.675 sd=1.095 p10=58.370 p90=61.240 ; Newcastle 1m 2f 42y 2242y ALLWEATHER n=26 median=133.935 sd=2.919 p10=131.240 p90=137.650
+2026 holdout_Kempton_groups=6 races=237 largest=Kempton 1m 1760y POLYTRACK n=66 median=100.130 sd=1.111 p10=98.940 p90=101.330 ; Kempton 7f 1540y POLYTRACK n=62 median=86.770 sd=1.391 p10=85.380 p90=88.650 ; Kempton 6f 1320y POLYTRACK n=47 median=72.980 sd=1.158 p10=71.520 p90=74.450 ; Kempton 1m 2f 219y 2419y POLYTRACK n=29 median=141.750 sd=2.836 p10=138.740 p90=143.440 ; Kempton 1m 3f 219y 2639y POLYTRACK n=20 median=155.070 sd=2.475 p10=151.880 p90=158.870
+2026 holdout_Southwell_groups=11 races=349 largest=Southwell 7f 14y 1554y ALLWEATHER n=78 median=87.765 sd=1.325 p10=86.500 p90=89.890 ; Southwell 1m 13y 1773y ALLWEATHER n=71 median=101.530 sd=1.283 p10=99.840 p90=103.110 ; Southwell 6f 16y 1336y ALLWEATHER n=63 median=74.650 sd=0.948 p10=73.570 p90=75.820 ; Southwell 4f 214y 1094y ALLWEATHER n=45 median=58.480 sd=1.033 p10=57.220 p90=59.850 ; Southwell 1m 3f 23y 2443y ALLWEATHER n=29 median=144.920 sd=3.194 p10=142.760 p90=149.710
+2026 holdout_Lingfield_groups=10 races=308 largest=Lingfield 7f 1y 1541y POLYTRACK n=64 median=84.935 sd=1.072 p10=83.630 p90=86.130 ; Lingfield 1m 1y 1761y POLYTRACK n=58 median=98.625 sd=1.395 p10=96.430 p90=100.110 ; Lingfield 6f 1y 1321y POLYTRACK n=53 median=71.690 sd=1.086 p10=70.240 p90=73.030 ; Lingfield 1m 2f 2200y POLYTRACK n=45 median=126.710 sd=2.177 p10=124.430 p90=129.500 ; Lingfield 5f 6y 1106y POLYTRACK n=40 median=58.335 sd=0.660 p10=57.680 p90=59.130
+2026 holdout_Chelmsford City_groups=7 races=84 largest=Chelmsford City 6f 1320y POLYTRACK n=18 median=72.570 sd=1.007 p10=71.670 p90=73.720 ; Chelmsford City 1m 1760y POLYTRACK n=18 median=99.780 sd=1.245 p10=98.310 p90=100.980 ; Chelmsford City 7f 1540y POLYTRACK n=17 median=86.530 sd=1.164 p10=84.310 p90=86.970 ; Chelmsford City 1m 2f 2200y POLYTRACK n=13 median=128.440 sd=2.062 p10=126.660 p90=130.370 ; Chelmsford City 5f 1100y POLYTRACK n=10 median=59.605 sd=0.922 p10=58.480 p90=60.660
+
+## Stage 4 - Candidate Scales
+current_length=100 + speed_based_lengths_faster_than_standard; this is the existing generic research scale, not the jump production sec-per-f constant.
+sec_per_f=100 + 37.760 * ((standard - equivalent_time) / furlongs)
+pct_time=100 + 1000.000 * ((standard - equivalent_time) / standard)
+scale_calibration=OR_independent_fixed_constants; sec_per_f reuses the transparent jump_speed_v1 seconds-per-furlong constant; pct_time uses fixed 1000 points per unit time-ratio.
+OR_usage=diagnostic_only_after_ratings_are_generated; not used for constants, thresholds, candidate selection or recommendation.
+beaten_distance_conversion=existing speed_based conversion from cumulative beaten lengths.
+
+## Stage 5 - Same-Day AW Variant
+same_day_measure=winner deviation per furlong against course+distance AW standard, excluding target race
+same_day_threshold_selection=timing_only; thresholds are not chosen by OR optimization
+threshold peers>=2 stdev_per_f<=0.2: eligible_races=2193/2774
+threshold peers>=2 stdev_per_f<=0.3: eligible_races=2661/2774
+threshold peers>=3 stdev_per_f<=0.2: eligible_races=2186/2774
+threshold peers>=3 stdev_per_f<=0.3: eligible_races=2654/2774
+threshold peers>=4 stdev_per_f<=0.2: eligible_races=2174/2774
+threshold peers>=4 stdev_per_f<=0.3: eligible_races=2642/2774
+
+## Stage 5b - Dead-Heat Validation
+dead_heat_method=infer supported dead-heats from repeated finish_position within a race and require equivalent_time and final rating equality
+dead_heat_tolerance=0.000001
+2025_dead_heat_current_length_hierarchical=examined=55 mismatches=0 tolerance=0.000001
+2026_dead_heat_current_length_hierarchical=examined=26 mismatches=0 tolerance=0.000001
+
+## Stage 6 - 2025 Candidate Comparison
+2025_current_length_base: eligible_runners=24942 mean=93.075 median=94.745 p10=77.563 p90=107.232 min=-68.774 max=189.039 outside_0_200=42 extreme_rate=0.002 median_abs_or_diff=31.927 mean_abs_or_diff=31.353 or_correlation=0.330 ordering_anomalies=0 dead_heats_examined=55 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+2025_current_length_same_day: eligible_runners=23935 mean=92.843 median=94.634 p10=78.435 p90=106.183 min=-69.521 max=179.323 outside_0_200=33 extreme_rate=0.001 median_abs_or_diff=31.509 mean_abs_or_diff=31.177 or_correlation=0.272 ordering_anomalies=0 dead_heats_examined=51 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+2025_current_length_hierarchical: eligible_runners=24942 mean=92.863 median=94.653 p10=78.401 p90=106.285 min=-69.521 max=179.323 outside_0_200=35 extreme_rate=0.001 median_abs_or_diff=31.601 mean_abs_or_diff=31.229 or_correlation=0.275 ordering_anomalies=0 dead_heats_examined=55 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+2025_sec_per_f_base: eligible_runners=24942 mean=94.948 median=95.947 p10=83.818 p90=105.225 min=-17.172 max=132.356 outside_0_200=3 extreme_rate=0.000 median_abs_or_diff=32.723 mean_abs_or_diff=32.029 or_correlation=0.366 ordering_anomalies=0 dead_heats_examined=55 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+2025_sec_per_f_same_day: eligible_runners=23935 mean=94.869 median=95.845 p10=84.471 p90=104.483 min=-16.558 max=128.825 outside_0_200=3 extreme_rate=0.000 median_abs_or_diff=32.449 mean_abs_or_diff=31.992 or_correlation=0.307 ordering_anomalies=0 dead_heats_examined=51 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+2025_sec_per_f_hierarchical: eligible_runners=24942 mean=94.879 median=95.866 p10=84.438 p90=104.532 min=-16.558 max=128.825 outside_0_200=3 extreme_rate=0.000 median_abs_or_diff=32.554 mean_abs_or_diff=32.036 or_correlation=0.309 ordering_anomalies=0 dead_heats_examined=55 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+2025_pct_time_base: eligible_runners=24942 mean=89.239 median=91.388 p10=65.509 p90=111.086 min=-156.382 max=163.191 outside_0_200=84 extreme_rate=0.003 median_abs_or_diff=29.942 mean_abs_or_diff=29.569 or_correlation=0.368 ordering_anomalies=0 dead_heats_examined=55 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+2025_pct_time_same_day: eligible_runners=23935 mean=89.054 median=91.149 p10=66.710 p90=109.543 min=-154.696 max=156.687 outside_0_200=68 extreme_rate=0.003 median_abs_or_diff=29.523 mean_abs_or_diff=29.312 or_correlation=0.308 ordering_anomalies=0 dead_heats_examined=51 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+2025_pct_time_hierarchical: eligible_runners=24942 mean=89.076 median=91.196 p10=66.662 p90=109.653 min=-154.696 max=156.687 outside_0_200=72 extreme_rate=0.003 median_abs_or_diff=29.650 mean_abs_or_diff=29.393 or_correlation=0.310 ordering_anomalies=0 dead_heats_examined=55 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+
+## Stage 7 - Surface/Course Segmentation
+segmentation=surface
+ALLWEATHER: eligible_runners=15608 mean=92.996 median=94.824 p10=78.389 p90=106.375 min=-56.889 max=148.461 outside_0_200=23 extreme_rate=0.001 median_abs_or_diff=32.984 mean_abs_or_diff=32.192 or_correlation=0.253 ordering_anomalies=0 dead_heats_examined=31 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+POLYTRACK: eligible_runners=9334 mean=92.639 median=94.362 p10=78.409 p90=106.129 min=-69.521 max=179.323 outside_0_200=12 extreme_rate=0.001 median_abs_or_diff=29.549 mean_abs_or_diff=29.474 or_correlation=0.316 ordering_anomalies=0 dead_heats_examined=24 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+segmentation=course
+Wolverhampton: eligible_runners=5830 mean=93.255 median=95.093 p10=79.931 p90=105.528 min=-26.710 max=129.777 outside_0_200=6 extreme_rate=0.001 median_abs_or_diff=35.395 mean_abs_or_diff=34.385 or_correlation=0.253 ordering_anomalies=0 dead_heats_examined=12 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+Newcastle: eligible_runners=5001 mean=93.315 median=94.841 p10=77.656 p90=106.784 min=-56.889 max=148.461 outside_0_200=4 extreme_rate=0.001 median_abs_or_diff=32.506 mean_abs_or_diff=31.494 or_correlation=0.225 ordering_anomalies=0 dead_heats_examined=10 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+Southwell: eligible_runners=4777 mean=92.346 median=94.483 p10=77.458 p90=107.029 min=-53.655 max=141.437 outside_0_200=13 extreme_rate=0.003 median_abs_or_diff=30.182 mean_abs_or_diff=30.166 or_correlation=0.297 ordering_anomalies=0 dead_heats_examined=9 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+Kempton: eligible_runners=3873 mean=92.144 median=94.017 p10=77.626 p90=106.142 min=-69.521 max=133.055 outside_0_200=6 extreme_rate=0.002 median_abs_or_diff=26.244 mean_abs_or_diff=25.989 or_correlation=0.356 ordering_anomalies=0 dead_heats_examined=7 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+Lingfield: eligible_runners=2881 mean=92.546 median=94.340 p10=79.163 p90=105.942 min=-32.954 max=126.559 outside_0_200=4 extreme_rate=0.001 median_abs_or_diff=32.293 mean_abs_or_diff=31.427 or_correlation=0.258 ordering_anomalies=0 dead_heats_examined=6 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+Chelmsford City: eligible_runners=2580 mean=93.487 median=94.827 p10=78.573 p90=106.183 min=-20.294 max=179.323 outside_0_200=2 extreme_rate=0.001 median_abs_or_diff=31.848 mean_abs_or_diff=31.911 or_correlation=0.356 ordering_anomalies=0 dead_heats_examined=11 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+
+## Stage 8 - Distance Segmentation
+segmentation=distance
+mile: eligible_runners=9958 mean=93.693 median=94.795 p10=81.167 p90=104.937 min=-26.273 max=121.348 outside_0_200=2 extreme_rate=0.000 median_abs_or_diff=31.733 mean_abs_or_diff=31.537 or_correlation=0.322 ordering_anomalies=0 dead_heats_examined=25 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+middle: eligible_runners=7249 mean=92.046 median=93.822 p10=75.316 p90=107.946 min=-69.521 max=144.336 outside_0_200=12 extreme_rate=0.002 median_abs_or_diff=31.231 mean_abs_or_diff=30.656 or_correlation=0.303 ordering_anomalies=0 dead_heats_examined=12 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+sprint: eligible_runners=5177 mean=95.114 median=96.024 p10=84.870 p90=104.173 min=-18.424 max=121.056 outside_0_200=1 extreme_rate=0.000 median_abs_or_diff=32.879 mean_abs_or_diff=32.223 or_correlation=0.299 ordering_anomalies=0 dead_heats_examined=14 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+staying: eligible_runners=2558 mean=87.389 median=90.391 p10=53.586 p90=114.452 min=-56.889 max=179.323 outside_0_200=20 extreme_rate=0.008 median_abs_or_diff=29.382 mean_abs_or_diff=29.917 or_correlation=0.295 ordering_anomalies=0 dead_heats_examined=4 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+## Stage 8b - 2026 Segmentation
+segmentation=surface
+ALLWEATHER: eligible_runners=9210 mean=92.837 median=94.462 p10=77.857 p90=106.466 min=-70.503 max=238.847 outside_0_200=29 extreme_rate=0.003 median_abs_or_diff=32.894 mean_abs_or_diff=32.292 or_correlation=0.278 ordering_anomalies=0 dead_heats_examined=10 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+POLYTRACK: eligible_runners=5324 mean=92.495 median=93.930 p10=76.767 p90=106.714 min=-37.547 max=139.462 outside_0_200=4 extreme_rate=0.001 median_abs_or_diff=30.551 mean_abs_or_diff=29.759 or_correlation=0.353 ordering_anomalies=0 dead_heats_examined=16 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+segmentation=course
+Wolverhampton: eligible_runners=3628 mean=92.899 median=94.305 p10=80.247 p90=105.392 min=-47.254 max=126.962 outside_0_200=5 extreme_rate=0.001 median_abs_or_diff=34.943 mean_abs_or_diff=34.131 or_correlation=0.332 ordering_anomalies=0 dead_heats_examined=4 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+Southwell: eligible_runners=3151 mean=92.374 median=94.287 p10=76.260 p90=106.782 min=-70.503 max=146.128 outside_0_200=6 extreme_rate=0.002 median_abs_or_diff=31.372 mean_abs_or_diff=31.223 or_correlation=0.351 ordering_anomalies=0 dead_heats_examined=3 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+Lingfield: eligible_runners=2487 mean=93.019 median=94.345 p10=78.175 p90=107.008 min=-14.784 max=125.578 outside_0_200=1 extreme_rate=0.000 median_abs_or_diff=33.355 mean_abs_or_diff=32.394 or_correlation=0.342 ordering_anomalies=0 dead_heats_examined=6 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+Newcastle: eligible_runners=2431 mean=93.345 median=95.086 p10=76.279 p90=107.921 min=-26.095 max=238.847 outside_0_200=18 extreme_rate=0.007 median_abs_or_diff=31.293 mean_abs_or_diff=30.930 or_correlation=0.195 ordering_anomalies=0 dead_heats_examined=3 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+Kempton: eligible_runners=2189 mean=91.577 median=93.347 p10=74.544 p90=106.653 min=-37.547 max=139.462 outside_0_200=3 extreme_rate=0.001 median_abs_or_diff=25.447 mean_abs_or_diff=25.144 or_correlation=0.386 ordering_anomalies=0 dead_heats_examined=5 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+Chelmsford City: eligible_runners=648 mean=93.586 median=94.920 p10=78.874 p90=105.544 min=48.767 max=128.368 outside_0_200=0 extreme_rate=0.000 median_abs_or_diff=33.588 mean_abs_or_diff=32.915 or_correlation=0.503 ordering_anomalies=0 dead_heats_examined=5 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+segmentation=distance
+mile: eligible_runners=5892 mean=94.181 median=95.079 p10=82.032 p90=105.583 min=-25.062 max=120.199 outside_0_200=2 extreme_rate=0.000 median_abs_or_diff=33.255 mean_abs_or_diff=32.350 or_correlation=0.364 ordering_anomalies=0 dead_heats_examined=10 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+middle: eligible_runners=4507 mean=90.996 median=92.143 p10=72.226 p90=108.365 min=-70.503 max=146.128 outside_0_200=7 extreme_rate=0.002 median_abs_or_diff=30.510 mean_abs_or_diff=30.115 or_correlation=0.354 ordering_anomalies=0 dead_heats_examined=9 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+sprint: eligible_runners=2698 mean=96.191 median=96.478 p10=85.568 p90=104.921 min=1.372 max=238.847 outside_0_200=10 extreme_rate=0.004 median_abs_or_diff=33.411 mean_abs_or_diff=33.258 or_correlation=0.197 ordering_anomalies=0 dead_heats_examined=7 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+staying: eligible_runners=1437 mean=85.538 median=88.378 p10=54.608 p90=111.684 min=-47.254 max=139.462 outside_0_200=14 extreme_rate=0.010 median_abs_or_diff=28.590 mean_abs_or_diff=28.484 or_correlation=0.303 ordering_anomalies=0 dead_heats_examined=0 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+
+## Stage 9 - Large Beaten-Distance Review
+0-5: runners=13409 eligible_runners=13409 mean=97.246 median=97.982 p10=86.308 p90=108.215 min=15.762 max=179.323 outside_0_200=0 extreme_rate=0.000 median_abs_or_diff=33.798 mean_abs_or_diff=33.182 or_correlation=0.267 ordering_anomalies=0 dead_heats_examined=43 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+>5-10: runners=6391 eligible_runners=6391 mean=92.794 median=93.501 p10=81.065 p90=103.930 min=9.845 max=172.023 outside_0_200=0 extreme_rate=0.000 median_abs_or_diff=30.961 mean_abs_or_diff=30.537 or_correlation=0.318 ordering_anomalies=0 dead_heats_examined=8 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+>10-20: runners=3706 eligible_runners=3706 mean=87.145 median=87.483 p10=75.339 p90=99.339 min=7.947 max=136.211 outside_0_200=0 extreme_rate=0.000 median_abs_or_diff=27.960 mean_abs_or_diff=27.550 or_correlation=0.319 ordering_anomalies=0 dead_heats_examined=3 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+>20-30: runners=809 eligible_runners=809 mean=77.804 median=78.140 p10=63.802 p90=91.479 min=-8.155 max=128.411 outside_0_200=1 extreme_rate=0.001 median_abs_or_diff=18.920 mean_abs_or_diff=20.265 or_correlation=0.283 ordering_anomalies=0 dead_heats_examined=1 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+>30-50: runners=402 eligible_runners=402 mean=66.408 median=66.480 p10=49.728 p90=82.578 min=-2.933 max=147.523 outside_0_200=1 extreme_rate=0.002 median_abs_or_diff=12.911 mean_abs_or_diff=14.965 or_correlation=0.303 ordering_anomalies=0 dead_heats_examined=0 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+>50-75: runners=147 eligible_runners=147 mean=42.664 median=42.618 p10=26.946 p90=61.279 min=-53.655 max=90.111 outside_0_200=2 extreme_rate=0.014 median_abs_or_diff=17.651 mean_abs_or_diff=19.100 or_correlation=0.246 ordering_anomalies=0 dead_heats_examined=0 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+>75: runners=78 eligible_runners=78 mean=3.651 median=6.273 p10=-27.267 p90=37.341 min=-69.521 max=59.650 outside_0_200=31 extreme_rate=0.397 median_abs_or_diff=53.345 mean_abs_or_diff=55.620 or_correlation=-0.130 ordering_anomalies=0 dead_heats_examined=0 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+
+## Stage 10 - 2026 Holdout
+2026_holdout_current_length_base: eligible_runners=14534 mean=92.266 median=93.719 p10=75.789 p90=107.149 min=-65.688 max=234.221 outside_0_200=37 extreme_rate=0.003 median_abs_or_diff=31.216 mean_abs_or_diff=30.903 or_correlation=0.362 ordering_anomalies=0 dead_heats_examined=26 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+2026_holdout_current_length_same_day: eligible_runners=13766 mean=92.836 median=94.405 p10=77.944 p90=106.449 min=-70.503 max=238.847 outside_0_200=31 extreme_rate=0.002 median_abs_or_diff=31.930 mean_abs_or_diff=31.420 or_correlation=0.298 ordering_anomalies=0 dead_heats_examined=26 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+2026_holdout_current_length_hierarchical: eligible_runners=14534 mean=92.712 median=94.306 p10=77.510 p90=106.532 min=-70.503 max=238.847 outside_0_200=33 extreme_rate=0.002 median_abs_or_diff=31.936 mean_abs_or_diff=31.394 or_correlation=0.301 ordering_anomalies=0 dead_heats_examined=26 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+2026_holdout_sec_per_f_base: eligible_runners=14534 mean=94.528 median=95.181 p10=83.030 p90=105.300 min=-0.456 max=198.617 outside_0_200=1 extreme_rate=0.000 median_abs_or_diff=32.618 mean_abs_or_diff=32.124 or_correlation=0.393 ordering_anomalies=0 dead_heats_examined=26 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+2026_holdout_sec_per_f_same_day: eligible_runners=13766 mean=94.983 median=95.744 p10=84.359 p90=104.792 min=-1.970 max=202.015 outside_0_200=5 extreme_rate=0.000 median_abs_or_diff=33.099 mean_abs_or_diff=32.549 or_correlation=0.325 ordering_anomalies=0 dead_heats_examined=26 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+2026_holdout_sec_per_f_hierarchical: eligible_runners=14534 mean=94.894 median=95.663 p10=84.096 p90=104.871 min=-1.970 max=202.015 outside_0_200=5 extreme_rate=0.000 median_abs_or_diff=33.130 mean_abs_or_diff=32.522 or_correlation=0.330 ordering_anomalies=0 dead_heats_examined=26 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+2026_holdout_pct_time_base: eligible_runners=14534 mean=88.371 median=89.697 p10=64.070 p90=111.180 min=-110.297 max=313.313 outside_0_200=47 extreme_rate=0.003 median_abs_or_diff=28.747 mean_abs_or_diff=28.907 or_correlation=0.394 ordering_anomalies=0 dead_heats_examined=26 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+2026_holdout_pct_time_same_day: eligible_runners=13766 mean=89.344 median=90.948 p10=66.715 p90=110.201 min=-121.648 max=319.054 outside_0_200=47 extreme_rate=0.003 median_abs_or_diff=29.809 mean_abs_or_diff=29.671 or_correlation=0.326 ordering_anomalies=0 dead_heats_examined=26 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+2026_holdout_pct_time_hierarchical: eligible_runners=14534 mean=89.153 median=90.767 p10=66.098 p90=110.387 min=-121.648 max=319.054 outside_0_200=52 extreme_rate=0.004 median_abs_or_diff=29.771 mean_abs_or_diff=29.628 or_correlation=0.331 ordering_anomalies=0 dead_heats_examined=26 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+holdout_preferred_comparison=
+2025 eligible_runners=24942 mean=92.863 median=94.653 p10=78.401 p90=106.285 min=-69.521 max=179.323 outside_0_200=35 extreme_rate=0.001 median_abs_or_diff=31.601 mean_abs_or_diff=31.229 or_correlation=0.275 ordering_anomalies=0 dead_heats_examined=55 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+2026 eligible_runners=14534 mean=92.712 median=94.306 p10=77.510 p90=106.532 min=-70.503 max=238.847 outside_0_200=33 extreme_rate=0.002 median_abs_or_diff=31.936 mean_abs_or_diff=31.394 or_correlation=0.301 ordering_anomalies=0 dead_heats_examined=26 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+
+## Stage 11 - Same-Day Value
+2025_current_length_base: eligible_runners=24942 mean=93.075 median=94.745 p10=77.563 p90=107.232 min=-68.774 max=189.039 outside_0_200=42 extreme_rate=0.002 median_abs_or_diff=31.927 mean_abs_or_diff=31.353 or_correlation=0.330 ordering_anomalies=0 dead_heats_examined=55 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+2025_current_length_same_day: eligible_runners=23935 mean=92.843 median=94.634 p10=78.435 p90=106.183 min=-69.521 max=179.323 outside_0_200=33 extreme_rate=0.001 median_abs_or_diff=31.509 mean_abs_or_diff=31.177 or_correlation=0.272 ordering_anomalies=0 dead_heats_examined=51 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+2025_current_length_hierarchical: eligible_runners=24942 mean=92.863 median=94.653 p10=78.401 p90=106.285 min=-69.521 max=179.323 outside_0_200=35 extreme_rate=0.001 median_abs_or_diff=31.601 mean_abs_or_diff=31.229 or_correlation=0.275 ordering_anomalies=0 dead_heats_examined=55 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+2025_sec_per_f_base: eligible_runners=24942 mean=94.948 median=95.947 p10=83.818 p90=105.225 min=-17.172 max=132.356 outside_0_200=3 extreme_rate=0.000 median_abs_or_diff=32.723 mean_abs_or_diff=32.029 or_correlation=0.366 ordering_anomalies=0 dead_heats_examined=55 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+2025_sec_per_f_same_day: eligible_runners=23935 mean=94.869 median=95.845 p10=84.471 p90=104.483 min=-16.558 max=128.825 outside_0_200=3 extreme_rate=0.000 median_abs_or_diff=32.449 mean_abs_or_diff=31.992 or_correlation=0.307 ordering_anomalies=0 dead_heats_examined=51 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+2025_sec_per_f_hierarchical: eligible_runners=24942 mean=94.879 median=95.866 p10=84.438 p90=104.532 min=-16.558 max=128.825 outside_0_200=3 extreme_rate=0.000 median_abs_or_diff=32.554 mean_abs_or_diff=32.036 or_correlation=0.309 ordering_anomalies=0 dead_heats_examined=55 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+2026_current_length_base: eligible_runners=14534 mean=92.266 median=93.719 p10=75.789 p90=107.149 min=-65.688 max=234.221 outside_0_200=37 extreme_rate=0.003 median_abs_or_diff=31.216 mean_abs_or_diff=30.903 or_correlation=0.362 ordering_anomalies=0 dead_heats_examined=26 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+2026_current_length_same_day: eligible_runners=13766 mean=92.836 median=94.405 p10=77.944 p90=106.449 min=-70.503 max=238.847 outside_0_200=31 extreme_rate=0.002 median_abs_or_diff=31.930 mean_abs_or_diff=31.420 or_correlation=0.298 ordering_anomalies=0 dead_heats_examined=26 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+2026_current_length_hierarchical: eligible_runners=14534 mean=92.712 median=94.306 p10=77.510 p90=106.532 min=-70.503 max=238.847 outside_0_200=33 extreme_rate=0.002 median_abs_or_diff=31.936 mean_abs_or_diff=31.394 or_correlation=0.301 ordering_anomalies=0 dead_heats_examined=26 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+2026_sec_per_f_base: eligible_runners=14534 mean=94.528 median=95.181 p10=83.030 p90=105.300 min=-0.456 max=198.617 outside_0_200=1 extreme_rate=0.000 median_abs_or_diff=32.618 mean_abs_or_diff=32.124 or_correlation=0.393 ordering_anomalies=0 dead_heats_examined=26 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+2026_sec_per_f_same_day: eligible_runners=13766 mean=94.983 median=95.744 p10=84.359 p90=104.792 min=-1.970 max=202.015 outside_0_200=5 extreme_rate=0.000 median_abs_or_diff=33.099 mean_abs_or_diff=32.549 or_correlation=0.325 ordering_anomalies=0 dead_heats_examined=26 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+2026_sec_per_f_hierarchical: eligible_runners=14534 mean=94.894 median=95.663 p10=84.096 p90=104.871 min=-1.970 max=202.015 outside_0_200=5 extreme_rate=0.000 median_abs_or_diff=33.130 mean_abs_or_diff=32.522 or_correlation=0.330 ordering_anomalies=0 dead_heats_examined=26 dead_heat_mismatches=0 dead_heat_tolerance=0.000001
+same_day_verdict=hierarchical same-day is preferable to same-day-only because it preserves coverage; same-day-only has cleaner eligibility but much smaller sample.
+
+## Preferred Research Configuration
+preferred=current_length + hierarchical same-day fallback
+same_day_threshold=min_peer_races_3_and_stdev_per_f_lte_0.3
+verdict=broadly confirmed with caveats
+caveats=TAPETA is not separately labelled despite tapeta courses being present by name, Southwell is mixed turf/AW by course name so segment+surface predicate is mandatory, and same-day AW adjustment helps only as a conservative fallback rather than a blanket adjustment.

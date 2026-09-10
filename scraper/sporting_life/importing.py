@@ -630,11 +630,15 @@ def upsert_named_entity(
     return str(cursor.fetchone()[0])
 
 
-def trainer_reference_id(trainer: dict[str, Any]) -> Any:
+def trainer_reference_id(trainer: dict[str, Any] | None) -> Any:
+    if trainer is None:
+        return None
     return (trainer.get("business_reference") or {}).get("id")
 
 
-def jockey_reference_id(jockey: dict[str, Any]) -> Any:
+def jockey_reference_id(jockey: dict[str, Any] | None) -> Any:
+    if jockey is None:
+        return None
     return (jockey.get("person_reference") or {}).get("id")
 
 
