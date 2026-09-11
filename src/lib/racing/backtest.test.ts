@@ -25,6 +25,8 @@ function feature(
     source: "sporting_life",
     horseId: "horse-1",
     horseName: "Example",
+    trainerId: "trainer-1",
+    trainerName: "A Trainer",
     raceDateTime: new Date("2025-06-01T13:00:00.000Z"),
     raceDate: "2025-06-01",
     courseId: "course-1",
@@ -53,6 +55,8 @@ function feature(
     placePercentage: 40,
     latestRunDate: "2025-05-01",
     daysSinceLastRun: 31,
+    breakLengthDays: null,
+    runAfterBreakNumber: null,
     latestOr: 98,
     previousOr: 96,
     latestSpeedRating: 108,
@@ -344,12 +348,46 @@ describe("backtest scoring", () => {
     assert.equal(settleSelection(outcome({ startingPriceDecimal: null })), null);
   });
 
-  test("calculates max consecutive losers in chronological order", () => {
+  test("calculates max consecutive losing races in chronological order", () => {
     const selections: BacktestSelection[] = [
-      selection("a", "2025-01-01", false, -1),
-      selection("b", "2025-01-02", false, -1),
-      selection("c", "2025-01-03", true, 3),
-      selection("d", "2025-01-04", false, -1),
+      selection("r1-a", "2025-01-01", true, 3, "race-1"),
+      selection("r2-a", "2025-01-02", false, -1, "race-2"),
+      selection("r3-a", "2025-01-03", false, -1, "race-3"),
+      selection("r4-a", "2025-01-04", true, 3, "race-4"),
+      selection("r5-a", "2025-01-05", false, -1, "race-5"),
+    ];
+
+    assert.equal(summarizeSelections(selections).maxConsecutiveLosers, 2);
+  });
+
+  test("max losing run is zero when every settled race has a selected winner", () => {
+    const selections: BacktestSelection[] = [
+      selection("r1-a", "2025-01-01", false, -1, "race-1"),
+      selection("r1-b", "2025-01-01", true, 3, "race-1"),
+      selection("r2-a", "2025-01-02", false, -1, "race-2"),
+      selection("r2-b", "2025-01-02", true, 2, "race-2"),
+    ];
+
+    assert.equal(summarizeSelections(selections).maxConsecutiveLosers, 0);
+  });
+
+  test("a winning selection in a multi-selection race resets race-level losing run", () => {
+    const selections: BacktestSelection[] = [
+      selection("r1-a", "2025-01-01", false, -1, "race-1"),
+      selection("r1-b", "2025-01-01", true, 3, "race-1"),
+      selection("r2-a", "2025-01-02", false, -1, "race-2"),
+      selection("r3-a", "2025-01-03", false, -1, "race-3"),
+    ];
+
+    assert.equal(summarizeSelections(selections).maxConsecutiveLosers, 2);
+  });
+
+  test("max losing run ignores races with no settled selected runners", () => {
+    const unsettled = selection("r2-a", "2025-01-02", false, -1, "race-2");
+    const selections: BacktestSelection[] = [
+      selection("r1-a", "2025-01-01", false, -1, "race-1"),
+      { ...unsettled, settlement: null, outcome: { ...unsettled.outcome, startingPriceDecimal: null } },
+      selection("r3-a", "2025-01-03", false, -1, "race-3"),
     ];
 
     assert.equal(summarizeSelections(selections).maxConsecutiveLosers, 2);
@@ -463,8 +501,10 @@ function selection(
   date: string,
   won: boolean,
   profitLoss: number,
+  raceId = id,
 ): BacktestSelection {
   const features = feature({
+    targetRaceId: raceId,
     targetRunnerId: id,
     raceDate: date,
     raceDateTime: new Date(`${date}T12:00:00.000Z`),

@@ -237,6 +237,8 @@ function feature(
     source: "sporting_life",
     horseId: "horse-1",
     horseName: "Example",
+    trainerId: "trainer-1",
+    trainerName: "A Trainer",
     raceDateTime: new Date("2025-01-01T12:00:00.000Z"),
     raceDate: "2025-01-01",
     courseId: "course-1",
@@ -265,6 +267,8 @@ function feature(
     placePercentage: 66.667,
     latestRunDate: "2024-12-01",
     daysSinceLastRun: 31,
+    breakLengthDays: null,
+    runAfterBreakNumber: null,
     latestOr: 98,
     previousOr: 97,
     latestSpeedRating: 105,
@@ -331,6 +335,7 @@ function outcome(
 
 function selection(id: string, date: string, won: boolean): BacktestSelection {
   const features = feature({
+    targetRaceId: `race-${id}`,
     targetRunnerId: id,
     raceDate: date,
     raceDateTime: new Date(`${date}T12:00:00.000Z`),

@@ -1,6 +1,6 @@
 import { and, desc, eq, inArray, lt, sql, type SQL } from "drizzle-orm";
 import { createDbConnection } from "@/db";
-import { courses, horses, raceRunners, races, sourceImports } from "@/db/schema";
+import { courses, horses, raceRunners, races, sourceImports, trainers } from "@/db/schema";
 import {
   getAwSpeedRatingsAsOfRuns,
 } from "./aw-speed-ratings";
@@ -30,7 +30,8 @@ type Db = ReturnType<typeof createDbConnection>["db"];
 const QUERY_CHUNK_SIZE = 5_000;
 const RESULT_SOURCE_TYPE = "full-result-next-data";
 
-export const BACKTEST_FEATURE_SOURCE_VERSION = "historical_target_metrics_v1";
+export const BACKTEST_FEATURE_SOURCE_VERSION = "historical_target_metrics_v2";
+const RETURN_FROM_BREAK_THRESHOLD_DAYS = 90;
 
 export type HistoricalRaceCode = "jump" | "aw" | "turf" | "unsupported";
 
@@ -46,6 +47,8 @@ export type HistoricalPreRaceFeatureRow = {
   source: string | null;
   horseId: string;
   horseName: string;
+  trainerId: string | null;
+  trainerName: string | null;
   raceDateTime: Date;
   raceDate: string;
   courseId: string;
@@ -74,6 +77,8 @@ export type HistoricalPreRaceFeatureRow = {
   placePercentage: number | null;
   latestRunDate: string | null;
   daysSinceLastRun: number | null;
+  breakLengthDays: number | null;
+  runAfterBreakNumber: number | null;
   latestOr: number | null;
   previousOr: number | null;
   latestSpeedRating: number | null;
@@ -142,6 +147,8 @@ export type HistoricalTargetRow = {
   source: string | null;
   horseId: string;
   horseName: string;
+  trainerId: string | null;
+  trainerName: string | null;
   raceDateTime: Date;
   raceDate: string;
   courseId: string;
@@ -251,6 +258,7 @@ export function buildHistoricalTargetRunnerMetricRows({
     });
     const speed = speedFieldsForRaceCode(raceCode, metrics);
     const performance = performanceFieldsForRaceCode(raceCode, priorRuns);
+    const breakSequence = breakSequenceBeforeTarget(priorRuns, target.raceDateTime);
     const todays = todaysRatingFieldsForRaceCode(
       raceCode,
       priorRuns,
@@ -265,6 +273,8 @@ export function buildHistoricalTargetRunnerMetricRows({
         source: target.source,
         horseId: target.horseId,
         horseName: target.horseName,
+        trainerId: target.trainerId,
+        trainerName: target.trainerName,
         raceDateTime: target.raceDateTime,
         raceDate: target.raceDate,
         courseId: target.courseId,
@@ -293,6 +303,8 @@ export function buildHistoricalTargetRunnerMetricRows({
         placePercentage: metrics.placePercentage,
         latestRunDate: metrics.latestRunDate,
         daysSinceLastRun: metrics.daysSinceLastRun,
+        breakLengthDays: breakSequence.breakLengthDays,
+        runAfterBreakNumber: breakSequence.runAfterBreakNumber,
         latestOr: metrics.latestOr,
         previousOr: previousOfficialRating(priorRuns, target.raceDateTime),
         latestSpeedRating: speed.latest,
@@ -385,6 +397,8 @@ async function loadTargets(
         source: raceRunners.source,
         horseId: raceRunners.horseId,
         horseName: horses.displayName,
+        trainerId: raceRunners.trainerId,
+        trainerName: trainers.displayName,
         raceDateTime: races.raceDatetime,
         raceDate: races.raceDate,
         courseId: races.courseId,
@@ -412,6 +426,7 @@ async function loadTargets(
       .innerJoin(races, eq(raceRunners.raceId, races.id))
       .innerJoin(courses, eq(races.courseId, courses.id))
       .innerJoin(horses, eq(raceRunners.horseId, horses.id))
+      .leftJoin(trainers, eq(raceRunners.trainerId, trainers.id))
       .leftJoin(sourceImports, sourceImportJoinCondition(input.source))
       .where(and(...conditions))
       .orderBy(desc(races.raceDatetime))
@@ -632,6 +647,54 @@ function performanceFieldsForRaceCode(
       performances.find((performance) => performance !== null)
         ?.calculationVersion ?? null,
   };
+}
+
+export function breakSequenceBeforeTarget(
+  priorRuns: HistoricalCandidateRun[],
+  targetRaceDateTime: Date,
+): { breakLengthDays: number | null; runAfterBreakNumber: number | null } {
+  const completed = priorRuns
+    .filter(
+      (run) =>
+        run.resultStatus !== "non_runner" &&
+        (run.resultStatus !== null || run.finishingPosition !== null) &&
+        run.raceDateTime < targetRaceDateTime,
+    )
+    .sort((left, right) => left.raceDateTime.getTime() - right.raceDateTime.getTime());
+  if (completed.length === 0) {
+    return { breakLengthDays: null, runAfterBreakNumber: null };
+  }
+
+  let latestBreakLengthDays: number | null = null;
+  let runAfterBreakNumber: number | null = null;
+  let previousRun = completed[0];
+  for (let index = 1; index < completed.length; index += 1) {
+    const run = completed[index]!;
+    const gapDays = daysBetween(previousRun.raceDateTime, run.raceDateTime);
+    if (gapDays >= RETURN_FROM_BREAK_THRESHOLD_DAYS) {
+      latestBreakLengthDays = gapDays;
+      runAfterBreakNumber = 1;
+    } else if (runAfterBreakNumber !== null) {
+      runAfterBreakNumber += 1;
+    }
+    previousRun = run;
+  }
+
+  const targetGapDays = daysBetween(previousRun.raceDateTime, targetRaceDateTime);
+  if (targetGapDays >= RETURN_FROM_BREAK_THRESHOLD_DAYS) {
+    return {
+      breakLengthDays: targetGapDays,
+      runAfterBreakNumber: 1,
+    };
+  }
+  return {
+    breakLengthDays: latestBreakLengthDays,
+    runAfterBreakNumber: runAfterBreakNumber === null ? null : runAfterBreakNumber + 1,
+  };
+}
+
+function daysBetween(previous: Date, next: Date): number {
+  return Math.floor((next.getTime() - previous.getTime()) / 86_400_000);
 }
 
 function calculatePerformanceForRun(

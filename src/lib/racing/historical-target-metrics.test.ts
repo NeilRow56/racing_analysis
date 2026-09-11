@@ -15,6 +15,8 @@ function target(overrides: Partial<HistoricalTargetRow> = {}): HistoricalTargetR
     source: "sporting_life",
     horseId: "horse-1",
     horseName: "Example Horse",
+    trainerId: "trainer-1",
+    trainerName: "A Trainer",
     raceDateTime: targetTime,
     raceDate: "2026-09-10",
     courseId: "course-worcester",
@@ -94,6 +96,8 @@ describe("buildHistoricalTargetRunnerMetricRows", () => {
     assert.equal(row.features.priorWins, 0);
     assert.equal(row.features.odds, null);
     assert.equal(row.features.oddsDecimal, null);
+    assert.equal(row.features.trainerId, "trainer-1");
+    assert.equal(row.features.trainerName, "A Trainer");
     assert.equal(row.outcome.won, true);
     assert.equal(row.outcome.startingPrice, "6/4");
     assert.equal(row.outcome.startingPriceDecimal, "2.500");
@@ -326,5 +330,84 @@ describe("buildHistoricalTargetRunnerMetricRows", () => {
     assert.equal(row.features.latestTurfSpeedRating, 104);
     assert.equal(row.features.latestJumpSpeedRating, null);
     assert.equal(row.features.latestSpeedMethod, "same_day");
+  });
+
+  test("derives run number after 90-day break from prior completed runs only", () => {
+    const [runOne] = buildHistoricalTargetRunnerMetricRows({
+      targets: [target({ raceDateTime: new Date("2026-04-30T14:00:00.000Z") })],
+      candidateRuns: [
+        run({
+          runnerId: "old",
+          raceDate: "2025-12-01",
+          raceDateTime: new Date("2025-12-01T14:00:00.000Z"),
+        }),
+      ],
+    });
+    assert.equal(runOne.features.breakLengthDays, 150);
+    assert.equal(runOne.features.runAfterBreakNumber, 1);
+
+    const [runThree] = buildHistoricalTargetRunnerMetricRows({
+      targets: [target({ raceDateTime: new Date("2026-05-25T14:00:00.000Z") })],
+      candidateRuns: [
+        run({
+          runnerId: "old",
+          raceDate: "2025-12-01",
+          raceDateTime: new Date("2025-12-01T14:00:00.000Z"),
+        }),
+        run({
+          runnerId: "run1",
+          raceDate: "2026-04-01",
+          raceDateTime: new Date("2026-04-01T14:00:00.000Z"),
+        }),
+        run({
+          runnerId: "non-runner",
+          raceDate: "2026-04-10",
+          raceDateTime: new Date("2026-04-10T14:00:00.000Z"),
+          resultStatus: "non_runner",
+          finishingPosition: null,
+        }),
+        run({
+          runnerId: "run2",
+          raceDate: "2026-04-21",
+          raceDateTime: new Date("2026-04-21T14:00:00.000Z"),
+        }),
+        run({
+          runnerId: "future",
+          raceDate: "2026-05-26",
+          raceDateTime: new Date("2026-05-26T14:00:00.000Z"),
+        }),
+      ],
+    });
+    assert.equal(runThree.features.breakLengthDays, 121);
+    assert.equal(runThree.features.runAfterBreakNumber, 3);
+
+    const [reset] = buildHistoricalTargetRunnerMetricRows({
+      targets: [target({ raceDateTime: new Date("2026-09-10T14:00:00.000Z") })],
+      candidateRuns: [
+        run({
+          runnerId: "pre-break",
+          raceDate: "2026-04-01",
+          raceDateTime: new Date("2026-04-01T14:00:00.000Z"),
+        }),
+        run({
+          runnerId: "last",
+          raceDate: "2026-05-23",
+          raceDateTime: new Date("2026-05-23T14:00:00.000Z"),
+        }),
+      ],
+    });
+    assert.equal(reset.features.breakLengthDays, 110);
+    assert.equal(reset.features.runAfterBreakNumber, 1);
+  });
+
+  test("keeps first career run separate from run after break", () => {
+    const [row] = buildHistoricalTargetRunnerMetricRows({
+      targets: [target()],
+      candidateRuns: [],
+    });
+
+    assert.equal(row.features.daysSinceLastRun, null);
+    assert.equal(row.features.breakLengthDays, null);
+    assert.equal(row.features.runAfterBreakNumber, null);
   });
 });

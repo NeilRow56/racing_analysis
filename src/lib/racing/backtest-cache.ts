@@ -22,7 +22,7 @@ import type { BacktestRaceSegment } from "./backtest";
 
 type Db = ReturnType<typeof createDbConnection>["db"];
 
-export const BACKTEST_FEATURE_CACHE_VERSION = "backtest_features_v1";
+export const BACKTEST_FEATURE_CACHE_VERSION = "backtest_features_v2";
 export const DEFAULT_BACKTEST_CACHE_DIR = "data/research/backtest-cache";
 
 export type BacktestCacheFamily = BacktestRaceSegment | "all";

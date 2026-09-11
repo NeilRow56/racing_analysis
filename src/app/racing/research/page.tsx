@@ -1,18 +1,26 @@
-import type React from "react";
 import Link from "next/link";
 import { loadBacktestFeatureCache } from "@/lib/racing/backtest-cache";
 import {
   DEVELOPMENT_FROM,
   DEVELOPMENT_TO,
   FAMILY_OPTIONS,
+  HANDICAP_STATUS_OPTIONS,
   RANK_METRIC_OPTIONS,
   RATING_METRIC_OPTIONS,
   RELATIVE_METRIC_OPTIONS,
+  RETURN_BUCKET_OPTIONS,
+  RUN_AFTER_BREAK_OPTIONS,
   evaluateResearchRule,
+  formatExactDistance,
+  hydrateResearchRuleMetadata,
+  researchFilterOptionsForRows,
   ruleFromSearchParams,
+  type ResearchFilterOptions,
   type ResearchResult,
   type ResearchRuleV1,
 } from "@/lib/racing/research-rule";
+import { researchRuleKey } from "@/lib/racing/research-rule-identity";
+import { ResearchWorkspace } from "./research-form-client";
 
 export default async function ResearchPage({
   searchParams,
@@ -21,7 +29,9 @@ export default async function ResearchPage({
 }) {
   const params = new URLSearchParams(await normalizedSearchParams(searchParams));
   const rule = ruleFromSearchParams(params);
-  const result = await loadResearchResult(rule);
+  const data = await loadResearchData(rule);
+  const displayRule = data?.rule ?? rule;
+  const filterOptions = data?.filterOptions ?? emptyFilterOptions();
 
   return (
     <main className="min-h-screen bg-stone-50 px-5 py-6 text-slate-950">
@@ -46,128 +56,60 @@ export default async function ResearchPage({
           </Link>
         </header>
 
-        <section className="border border-slate-200 bg-white p-5 shadow-sm">
-          <ResearchForm rule={rule} />
-        </section>
-
-        {result ? (
-          <ResearchResults result={result} />
-        ) : (
-          <section className="mt-6 border border-amber-200 bg-amber-50 p-5 text-sm text-amber-900">
-            Compatible 2025 cache not found for {familyLabel(rule.family)}.
-            Build it with <code>bun run racing:build-backtest-cache --from 2025-01-01 --to 2025-12-31 --family {rule.family}</code>.
-          </section>
-        )}
+        <ResearchWorkspace
+          executedRule={displayRule}
+          familyOptions={FAMILY_OPTIONS}
+          filterOptions={filterOptions}
+          handicapStatusOptions={HANDICAP_STATUS_OPTIONS}
+          hasResults={data?.result !== undefined}
+          key={researchRuleKey(displayRule)}
+          rankMetricOptions={RANK_METRIC_OPTIONS}
+          ratingMetricOptions={RATING_METRIC_OPTIONS}
+          returnBucketOptions={RETURN_BUCKET_OPTIONS}
+          relativeMetricOptions={RELATIVE_METRIC_OPTIONS}
+          runAfterBreakOptions={RUN_AFTER_BREAK_OPTIONS}
+        >
+          {data?.result ? (
+            <ResearchResults result={data.result} />
+          ) : (
+            <section className="mt-6 border border-amber-200 bg-amber-50 p-5 text-sm text-amber-900">
+              Compatible 2025 cache not found for {familyLabel(rule.family)}.
+              Build it with <code>bun run racing:build-backtest-cache --from 2025-01-01 --to 2025-12-31 --family {rule.family}</code>.
+            </section>
+          )}
+        </ResearchWorkspace>
       </div>
     </main>
   );
 }
 
-async function loadResearchResult(rule: ResearchRuleV1): Promise<ResearchResult | null> {
+type ResearchPageData = {
+  filterOptions: ResearchFilterOptions;
+  result: ResearchResult;
+  rule: ResearchRuleV1;
+};
+
+async function loadResearchData(rule: ResearchRuleV1): Promise<ResearchPageData | null> {
   const startedAt = performance.now();
   const cached = await loadBacktestFeatureCache({
     from: DEVELOPMENT_FROM,
     to: DEVELOPMENT_TO,
     family: rule.family,
   });
-  return cached
-    ? evaluateResearchRule({
+  if (!cached) {
+    return null;
+  }
+  const hydratedRule = hydrateResearchRuleMetadata(rule, cached.rows);
+  return {
+    filterOptions: researchFilterOptionsForRows(cached.rows),
+    rule: hydratedRule,
+    result: evaluateResearchRule({
         rows: cached.rows,
-        rule,
+        rule: hydratedRule,
         cache: { manifest: cached.manifest, directory: cached.directory },
         elapsedMs: performance.now() - startedAt,
-      })
-    : null;
-}
-
-function ResearchForm({ rule }: { rule: ResearchRuleV1 }) {
-  const rating = rule.ratings[0];
-  const relative = rule.relatives[0];
-  const rank = rule.ranks[0];
-  return (
-    <form action="/racing/research" className="space-y-6" method="get">
-      <div className="grid gap-4 md:grid-cols-4">
-        <SelectField label="Race family" name="family" value={rule.family}>
-          {FAMILY_OPTIONS.map((option) => (
-            <option key={option.value} value={option.value}>{option.label}</option>
-          ))}
-        </SelectField>
-        <InputField label="Date from" name="from" type="date" value={rule.dateRange.from} />
-        <InputField label="Date to" name="to" type="date" value={rule.dateRange.to} />
-        <div className="rounded border border-slate-200 bg-slate-50 p-3 text-sm text-slate-600">
-          <div className="font-semibold text-slate-700">Historical pre-race odds</div>
-          <div className="mt-1">Not yet available. Result SP is used only after selection for settlement.</div>
-        </div>
-      </div>
-
-      <FilterGroup title="Race Filters">
-        <InputField label="Course" name="course" value={rule.race.courseName ?? ""} />
-        <InputField label="Race class" name="class" value={rule.race.raceClass ?? ""} />
-        <InputField label="Distance min (yards)" name="distanceMin" type="number" value={rule.race.distanceYards?.min} />
-        <InputField label="Distance max (yards)" name="distanceMax" type="number" value={rule.race.distanceYards?.max} />
-        <InputField label="Field min" name="fieldMin" type="number" value={rule.race.fieldSize?.min} />
-        <InputField label="Field max" name="fieldMax" type="number" value={rule.race.fieldSize?.max} />
-      </FilterGroup>
-
-      <FilterGroup title="Runner Filters">
-        <InputField label="OR min" name="orMin" type="number" value={rule.runner.officialRating?.min} />
-        <InputField label="OR max" name="orMax" type="number" value={rule.runner.officialRating?.max} />
-        <InputField label="Weight min (lb)" name="weightMin" type="number" value={rule.runner.weightCarriedLbs?.min} />
-        <InputField label="Weight max (lb)" name="weightMax" type="number" value={rule.runner.weightCarriedLbs?.max} />
-        <InputField label="Days min" name="daysMin" type="number" value={rule.runner.daysSinceRun?.min} />
-        <InputField label="Days max" name="daysMax" type="number" value={rule.runner.daysSinceRun?.max} />
-        <InputField label="Prior runs min" name="priorRunsMin" type="number" value={rule.runner.priorRuns?.min} />
-        <InputField label="Prior runs max" name="priorRunsMax" type="number" value={rule.runner.priorRuns?.max} />
-      </FilterGroup>
-
-      <FilterGroup title="Rating And OR-Relative Filters">
-        <SelectField label="Rating metric" name="ratingMetric" value={rating?.metric ?? ""}>
-          <option value="">No rating filter</option>
-          {groupedRatingOptions().map(([group, options]) => (
-            <optgroup key={group} label={group}>
-              {options.map((option) => (
-                <option key={option.value} value={option.value}>{option.label}</option>
-              ))}
-            </optgroup>
-          ))}
-        </SelectField>
-        <InputField label="Rating min" name="ratingMin" type="number" value={rating?.range.min} />
-        <InputField label="Rating max" name="ratingMax" type="number" value={rating?.range.max} />
-        <SelectField label="OR-relative metric" name="relativeMetric" value={relative?.metric ?? ""}>
-          <option value="">No OR-relative filter</option>
-          {RELATIVE_METRIC_OPTIONS.map((option) => (
-            <option key={option.value} value={option.value}>{option.label}</option>
-          ))}
-        </SelectField>
-        <InputField label="Relative min" name="relativeMin" type="number" value={relative?.range.min} />
-        <InputField label="Relative max" name="relativeMax" type="number" value={relative?.range.max} />
-      </FilterGroup>
-
-      <FilterGroup title="Within-Race Ranking">
-        <SelectField label="Rank metric" name="rankMetric" value={rank?.metric ?? ""}>
-          <option value="">No rank filter</option>
-          {RANK_METRIC_OPTIONS.map((option) => (
-            <option key={option.value} value={option.value}>{option.label}</option>
-          ))}
-        </SelectField>
-        <InputField label="Rank min" name="rankMin" type="number" value={rank?.range.min} />
-        <InputField label="Rank max" name="rankMax" type="number" value={rank?.range.max} />
-        <div className="md:col-span-3 rounded border border-slate-200 bg-slate-50 p-3 text-sm text-slate-600">
-          Ranks are per race, highest value first. Missing values and non-runners are excluded. Equal values share the same competition rank.
-        </div>
-      </FilterGroup>
-
-      <div className="flex flex-wrap items-center gap-3">
-        <button className="bg-emerald-800 px-5 py-2.5 text-sm font-semibold text-white hover:bg-emerald-900" type="submit">
-          Run Research
-        </button>
-        <button className="border border-slate-300 bg-slate-100 px-5 py-2.5 text-sm font-semibold text-slate-500" disabled type="button">
-          Save Rule
-        </button>
-        <span className="text-sm text-slate-500">Saving/freezing rules comes after this v1 research layer.</span>
-      </div>
-    </form>
-  );
+      }),
+  };
 }
 
 function ResearchResults({ result }: { result: ResearchResult }) {
@@ -217,7 +159,10 @@ function ResearchResults({ result }: { result: ResearchResult }) {
         </div>
 
         <details className="border border-slate-200 bg-white p-5 shadow-sm">
-          <summary className="cursor-pointer text-lg font-semibold">Missing-data diagnostics</summary>
+          <summary className="cursor-pointer text-lg font-semibold">Eligible population data quality</summary>
+          <p className="mt-2 text-sm text-slate-600">
+            Counts below refer to runners before the final rating/rank selection is applied.
+          </p>
           <dl className="mt-3 grid grid-cols-2 gap-3 text-sm">
             {Object.entries(result.missingData).map(([key, value]) => (
               <div key={key} className="border border-slate-100 p-2">
@@ -240,6 +185,7 @@ function ResearchResults({ result }: { result: ResearchResult }) {
               <tr>
                 <th className="py-2 pr-3 font-medium">Date</th>
                 <th className="py-2 pr-3 font-medium">Course</th>
+                <th className="py-2 pr-3 font-medium">Distance</th>
                 <th className="py-2 pr-3 font-medium">Race</th>
                 <th className="py-2 pr-3 font-medium">Horse</th>
                 <th className="py-2 pr-3 font-medium">OR</th>
@@ -260,6 +206,7 @@ function ResearchResults({ result }: { result: ResearchResult }) {
                 <tr key={selection.id}>
                   <td className="py-2 pr-3">{selection.features.raceDate}</td>
                   <td className="py-2 pr-3">{selection.features.courseName}</td>
+                  <td className="py-2 pr-3">{formatExactDistance(selection.features.distanceYards)}</td>
                   <td className="py-2 pr-3">{selection.features.raceName ?? "-"}</td>
                   <td className="py-2 pr-3 font-medium text-emerald-800">{selection.features.horseName}</td>
                   <td className="py-2 pr-3">{selection.features.officialRating ?? "-"}</td>
@@ -283,62 +230,8 @@ function ResearchResults({ result }: { result: ResearchResult }) {
   );
 }
 
-function FilterGroup({ children, title }: { children: React.ReactNode; title: string }) {
-  return (
-    <fieldset>
-      <legend className="mb-3 text-sm font-semibold uppercase text-slate-500">{title}</legend>
-      <div className="grid gap-4 md:grid-cols-6">{children}</div>
-    </fieldset>
-  );
-}
-
-function InputField({
-  label,
-  name,
-  type = "text",
-  value,
-}: {
-  label: string;
-  name: string;
-  type?: string;
-  value?: string | number;
-}) {
-  return (
-    <label className="block text-sm">
-      <span className="font-medium text-slate-700">{label}</span>
-      <input
-        className="mt-1 w-full border border-slate-300 bg-white px-3 py-2 text-sm"
-        defaultValue={value ?? ""}
-        name={name}
-        type={type}
-      />
-    </label>
-  );
-}
-
-function SelectField({
-  children,
-  label,
-  name,
-  value,
-}: {
-  children: React.ReactNode;
-  label: string;
-  name: string;
-  value: string;
-}) {
-  return (
-    <label className="block text-sm">
-      <span className="font-medium text-slate-700">{label}</span>
-      <select
-        className="mt-1 w-full border border-slate-300 bg-white px-3 py-2 text-sm"
-        defaultValue={value}
-        name={name}
-      >
-        {children}
-      </select>
-    </label>
-  );
+function emptyFilterOptions(): ResearchFilterOptions {
+  return { courses: [], classes: [], distances: [], trainers: [], weights: [] };
 }
 
 function Metric({ label, value }: { label: string; value: string | number }) {
@@ -348,14 +241,6 @@ function Metric({ label, value }: { label: string; value: string | number }) {
       <div className="mt-1 text-xl font-semibold">{value}</div>
     </div>
   );
-}
-
-function groupedRatingOptions() {
-  const groups = new Map<string, typeof RATING_METRIC_OPTIONS>();
-  for (const option of RATING_METRIC_OPTIONS) {
-    groups.set(option.group, [...(groups.get(option.group) ?? []), option]);
-  }
-  return [...groups.entries()];
 }
 
 async function normalizedSearchParams(
@@ -391,7 +276,16 @@ function formatNumber(value: number | null) {
 }
 
 function diagnosticLabel(key: string) {
-  return key
+  const labels: Record<string, string> = {
+    noSpeed: "No Speed",
+    noPerformance: "No Performance",
+    noTodaysRating: "No Today's Rating",
+    noOr: "No OR",
+    noWeight: "No Weight",
+    noSettlementSp: "No Settlement SP",
+    nonRunnerOrUnsettled: "Non-runner/unsettled",
+  };
+  return labels[key] ?? key
     .replace(/([A-Z])/g, " $1")
     .replace(/^./, (char) => char.toUpperCase());
 }

@@ -850,10 +850,25 @@ function average(values: number[]): number | null {
 }
 
 function maxConsecutiveLosers(selections: BacktestSelection[]): number {
+  const raceSelections = new Map<string, BacktestSelection[]>();
+  for (const selection of selections) {
+    raceSelections.set(selection.features.targetRaceId, [
+      ...(raceSelections.get(selection.features.targetRaceId) ?? []),
+      selection,
+    ]);
+  }
+
   let current = 0;
   let max = 0;
-  for (const selection of [...selections].sort(compareSelections)) {
-    if (selection.outcome.won) {
+  const races = [...raceSelections.values()].sort((left, right) =>
+    compareSelections(left[0], right[0]),
+  );
+  for (const race of races) {
+    const settled = race.filter((selection) => selection.settlement !== null);
+    if (settled.length === 0) {
+      continue;
+    }
+    if (settled.some((selection) => selection.outcome.won)) {
       current = 0;
       continue;
     }
