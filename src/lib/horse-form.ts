@@ -8,8 +8,12 @@ import {
   races,
   trainers,
 } from "@/db/schema";
+import { getAwSpeedRatingsForRunners } from "./racing/aw-speed-ratings";
+import type { AwSpeedRating } from "./racing/aw-speed-rating";
 import { getJumpSpeedRatingsForRunners } from "./racing/jump-speed-ratings";
 import type { JumpSpeedRating } from "./racing/jump-speed-rating";
+import { getTurfSpeedRatingsForRunners } from "./racing/turf-speed-ratings";
+import type { TurfSpeedRating } from "./racing/turf-speed-rating";
 
 type Db = ReturnType<typeof createDbConnection>["db"];
 
@@ -23,6 +27,7 @@ export type HorseFormRun = {
   raceClass: string | null;
   distance: string | null;
   going: string | null;
+  awSpeedRating: AwSpeedRating | null;
   finishingPosition: number | null;
   resultStatus: string | null;
   outcomeCode: string | null;
@@ -34,6 +39,7 @@ export type HorseFormRun = {
   racingPostRating: number | null;
   topspeedRating: number | null;
   jumpSpeedRating: JumpSpeedRating | null;
+  turfSpeedRating: TurfSpeedRating | null;
   runnerComment: string | null;
   jockeyName: string | null;
   trainerName: string | null;
@@ -109,12 +115,22 @@ export async function getHorseForm(
     db,
     runs.map((run) => run.runnerId),
   );
+  const awSpeedRatings = await getAwSpeedRatingsForRunners(
+    db,
+    runs.map((run) => run.runnerId),
+  );
+  const turfSpeedRatings = await getTurfSpeedRatingsForRunners(
+    db,
+    runs.map((run) => run.runnerId),
+  );
 
   return {
     horse,
     runs: runs.map((run) => ({
       ...run,
       jumpSpeedRating: jumpSpeedRatings.get(run.runnerId) ?? null,
+      awSpeedRating: awSpeedRatings.get(run.runnerId) ?? null,
+      turfSpeedRating: turfSpeedRatings.get(run.runnerId) ?? null,
     })),
   };
 }

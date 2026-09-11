@@ -5,7 +5,9 @@ import {
   formatRacingDate,
   getLocalRacingDate,
   groupTodaysRacingRows,
+  isAllWeatherRaceForDisplay,
   isJumpRaceForDisplay,
+  isOrdinaryFlatTurfRaceForDisplay,
   meetingOrderFromIndexPayload,
   racingPageTitle,
   resolveRacingDate,
@@ -234,6 +236,34 @@ describe("Today racing grouping", () => {
     );
     assert.equal(grouped[0].races[0].runners[1].metrics, null);
   });
+
+  test("classifies current AW racecards from explicit surface when going is blank", () => {
+    assert.equal(
+      isAllWeatherRaceForDisplay({
+        raceName: "Sky Sports Racing Nursery",
+        raceType: null,
+        courseName: "Lingfield",
+        courseSourceId: "353",
+        going: "",
+        surface: "POLYTRACK",
+      }),
+      true,
+    );
+  });
+
+  test("does not force ambiguous blank-going Lingfield races to AW", () => {
+    assert.equal(
+      isAllWeatherRaceForDisplay({
+        raceName: "Handicap",
+        raceType: "handicap",
+        courseName: "Lingfield",
+        courseSourceId: "353",
+        going: "",
+        surface: null,
+      }),
+      false,
+    );
+  });
 });
 
 describe("Today racing display helpers", () => {
@@ -318,6 +348,48 @@ describe("Today racing display helpers", () => {
     );
   });
 
+  test("identifies all-weather races for AW speed display", () => {
+    assert.equal(
+      isAllWeatherRaceForDisplay({
+        raceName: "Fillies' Handicap",
+        raceType: "handicap",
+        courseName: "Kempton",
+        going: "Standard / Slow",
+      }),
+      true,
+    );
+    assert.equal(
+      isAllWeatherRaceForDisplay({
+        raceName: "Turf Handicap",
+        raceType: "handicap",
+        courseName: "Lingfield",
+        going: "Good to Firm",
+      }),
+      false,
+    );
+  });
+
+  test("identifies ordinary Flat Turf races for Turf speed display", () => {
+    assert.equal(
+      isOrdinaryFlatTurfRaceForDisplay({
+        raceName: "Nua Healthcare Handicap",
+        raceType: "handicap",
+        courseName: "Curragh",
+        going: "Good",
+      }),
+      true,
+    );
+    assert.equal(
+      isOrdinaryFlatTurfRaceForDisplay({
+        raceName: "Irish Stallion Farms EBF Mares Flat Race",
+        raceType: "",
+        courseName: "Naas",
+        going: "Soft",
+      }),
+      false,
+    );
+  });
+
   test("formats the racing date without substituting another date", () => {
     assert.equal(formatRacingDate("2026-09-09"), "Wednesday 9 September 2026");
   });
@@ -377,6 +449,7 @@ function row(overrides: Partial<TodayRacecardRow> = {}): TodayRacecardRow {
     distance: "5f 182y",
     distanceYards: 1282,
     going: "Good",
+    surface: "TURF",
     declaredRunnerCount: 2,
     actualRunnerCount: null,
     winningTime: null,
@@ -392,6 +465,7 @@ function row(overrides: Partial<TodayRacecardRow> = {}): TodayRacecardRow {
     horseAge: 2,
     horseSex: "f",
     weight: "9-2",
+    weightCarriedLbs: 128,
     draw: 6,
     jockeyName: "A Jockey",
     trainerName: "A Trainer",
@@ -431,6 +505,34 @@ function metric(
     bestJumpSpeedLast5: null,
     averageJumpSpeedLast3: null,
     averageJumpSpeedLast5: null,
+    latestAwSpeedRating: null,
+    previousAwSpeedRating: null,
+    bestAwSpeedLast3: null,
+    bestAwSpeedLast5: null,
+    averageAwSpeedLast3: null,
+    averageAwSpeedLast5: null,
+    latestTurfSpeedRating: null,
+    previousTurfSpeedRating: null,
+    bestTurfSpeedLast3: null,
+    bestTurfSpeedLast5: null,
+    averageTurfSpeedLast3: null,
+    averageTurfSpeedLast5: null,
+    latestPerformanceRating: null,
+    previousPerformanceRating: null,
+    bestPerformanceLast3: null,
+    bestPerformanceLast5: null,
+    averagePerformanceLast3: null,
+    averagePerformanceLast5: null,
+    latestTodaysRating: null,
+    previousTodaysRating: null,
+    bestTodaysRatingLast3: null,
+    bestTodaysRatingLast5: null,
+    averageTodaysRatingLast3: null,
+    averageTodaysRatingLast5: null,
+    todaysRatingCalculationVersion: null,
+    latestJumpTodaysRating: null,
+    latestAwTodaysRating: null,
+    latestTurfTodaysRating: null,
     latestOr: null,
     latestRprMinusPreviousRpr: null,
     latestTsMinusPreviousTs: null,

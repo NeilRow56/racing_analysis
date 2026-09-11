@@ -14,8 +14,14 @@ import {
 } from "drizzle-orm";
 import { createDbConnection } from "@/db";
 import { courses, horses, raceRunners, races } from "@/db/schema";
+import { getAwSpeedRatingsForRunners } from "./aw-speed-ratings";
+import { type AwSpeedRating } from "./aw-speed-rating";
 import { getJumpSpeedRatingsForRunners } from "./jump-speed-ratings";
 import { isJumpRace, type JumpSpeedRating } from "./jump-speed-rating";
+import { getTurfSpeedRatingsForRunners } from "./turf-speed-ratings";
+import { type TurfSpeedRating } from "./turf-speed-rating";
+import { calculateTodaysRating } from "./todays-rating";
+import { calculateWeightAdjustedPerformance } from "./weight-performance";
 
 type Db = ReturnType<typeof createDbConnection>["db"];
 
@@ -36,13 +42,17 @@ export type HistoricalRunInput = {
   racingPostRating: number | null;
   topspeedRating: number | null;
   officialRating: number | null;
+  weightCarriedLbs?: number | null;
   jumpSpeedRating?: JumpSpeedRating | null;
+  awSpeedRating?: AwSpeedRating | null;
+  turfSpeedRating?: TurfSpeedRating | null;
 };
 
 export type HorseMetricsContext = {
   targetCourseId?: string | null;
   targetDistanceYards?: number | null;
   targetGoing?: string | null;
+  targetWeightCarriedLbs?: number | null;
 };
 
 export type HorseMetricsAsOf = {
@@ -69,6 +79,34 @@ export type HorseMetricsAsOf = {
   bestJumpSpeedLast5: number | null;
   averageJumpSpeedLast3: number | null;
   averageJumpSpeedLast5: number | null;
+  latestAwSpeedRating: number | null;
+  previousAwSpeedRating: number | null;
+  bestAwSpeedLast3: number | null;
+  bestAwSpeedLast5: number | null;
+  averageAwSpeedLast3: number | null;
+  averageAwSpeedLast5: number | null;
+  latestTurfSpeedRating: number | null;
+  previousTurfSpeedRating: number | null;
+  bestTurfSpeedLast3: number | null;
+  bestTurfSpeedLast5: number | null;
+  averageTurfSpeedLast3: number | null;
+  averageTurfSpeedLast5: number | null;
+  latestPerformanceRating: number | null;
+  previousPerformanceRating: number | null;
+  bestPerformanceLast3: number | null;
+  bestPerformanceLast5: number | null;
+  averagePerformanceLast3: number | null;
+  averagePerformanceLast5: number | null;
+  latestTodaysRating: number | null;
+  previousTodaysRating: number | null;
+  bestTodaysRatingLast3: number | null;
+  bestTodaysRatingLast5: number | null;
+  averageTodaysRatingLast3: number | null;
+  averageTodaysRatingLast5: number | null;
+  todaysRatingCalculationVersion: string | null;
+  latestJumpTodaysRating: number | null;
+  latestAwTodaysRating: number | null;
+  latestTurfTodaysRating: number | null;
   latestOr: number | null;
   latestRprMinusPreviousRpr: number | null;
   latestTsMinusPreviousTs: number | null;
@@ -96,10 +134,12 @@ export type TargetRunnerMetrics = {
     raceDate: string;
     scheduledTime: string | null;
     courseId: string;
-    courseName: string;
-    raceName: string | null;
-    distanceYards: number | null;
-    going: string | null;
+  courseName: string;
+  raceName: string | null;
+  raceType: string | null;
+  distanceYards: number | null;
+  going: string | null;
+  weightCarriedLbs: number | null;
   };
   metrics: HorseMetricsAsOf;
 };
@@ -111,6 +151,7 @@ export async function getHorseMetricsAsOf({
   targetCourseId,
   targetDistanceYards,
   targetGoing,
+  targetWeightCarriedLbs,
 }: {
   db: Db;
   horseId: string;
@@ -125,6 +166,7 @@ export async function getHorseMetricsAsOf({
       raceName: races.raceName,
       raceType: races.raceType,
       courseId: races.courseId,
+      courseName: courses.displayName,
       distanceYards: races.distanceYards,
       going: races.going,
       finishingPosition: raceRunners.finishingPosition,
@@ -132,9 +174,11 @@ export async function getHorseMetricsAsOf({
       racingPostRating: raceRunners.racingPostRating,
       topspeedRating: raceRunners.topspeedRating,
       officialRating: raceRunners.officialRating,
+      weightCarriedLbs: raceRunners.weightCarriedLbs,
     })
     .from(raceRunners)
     .innerJoin(races, eq(raceRunners.raceId, races.id))
+    .innerJoin(courses, eq(races.courseId, courses.id))
     .where(and(eq(raceRunners.horseId, horseId), lt(races.raceDatetime, beforeDateTime)))
     .orderBy(desc(races.raceDatetime));
 
@@ -144,16 +188,29 @@ export async function getHorseMetricsAsOf({
     timedPriorRuns.map((run) => run.runnerId),
     { calculationCutoffDateTime: beforeDateTime },
   );
+  const awSpeedRatings = await getAwSpeedRatingsForRunners(
+    db,
+    timedPriorRuns.map((run) => run.runnerId),
+    { calculationCutoffDateTime: beforeDateTime },
+  );
+  const turfSpeedRatings = await getTurfSpeedRatingsForRunners(
+    db,
+    timedPriorRuns.map((run) => run.runnerId),
+    { calculationCutoffDateTime: beforeDateTime },
+  );
 
   return calculateHorseMetricsAsOf({
     runs: timedPriorRuns.map((run) => ({
       ...run,
       jumpSpeedRating: jumpSpeedRatings.get(run.runnerId) ?? null,
+      awSpeedRating: awSpeedRatings.get(run.runnerId) ?? null,
+      turfSpeedRating: turfSpeedRatings.get(run.runnerId) ?? null,
     })),
     beforeDateTime,
     targetCourseId,
     targetDistanceYards,
     targetGoing,
+    targetWeightCarriedLbs,
   });
 }
 
@@ -187,8 +244,10 @@ export async function getTargetRunnerMetricsForDate(
       courseId: races.courseId,
       courseName: courses.displayName,
       raceName: races.raceName,
+      raceType: races.raceType,
       distanceYards: races.distanceYards,
       going: races.going,
+      weightCarriedLbs: raceRunners.weightCarriedLbs,
     })
     .from(raceRunners)
     .innerJoin(races, eq(raceRunners.raceId, races.id))
@@ -244,6 +303,7 @@ export async function getTargetRunnerMetricsForDate(
       racingPostRating: raceRunners.racingPostRating,
       topspeedRating: raceRunners.topspeedRating,
       officialRating: raceRunners.officialRating,
+      weightCarriedLbs: raceRunners.weightCarriedLbs,
     })
     .from(raceRunners)
     .innerJoin(races, eq(raceRunners.raceId, races.id))
@@ -260,11 +320,23 @@ export async function getTargetRunnerMetricsForDate(
     timedJumpCandidateRuns.map((run) => run.runnerId),
     { source, calculationCutoffDateTime: latestTargetDateTime },
   );
+  const awSpeedRatings = await getAwSpeedRatingsForRunners(
+    db,
+    timedCandidateRuns.map((run) => run.runnerId),
+    { source, calculationCutoffDateTime: latestTargetDateTime },
+  );
+  const turfSpeedRatings = await getTurfSpeedRatingsForRunners(
+    db,
+    timedCandidateRuns.map((run) => run.runnerId),
+    { source, calculationCutoffDateTime: latestTargetDateTime },
+  );
 
   return calculateTargetRunnerMetrics({
     candidateRuns: timedCandidateRuns.map((run) => ({
       ...run,
       jumpSpeedRating: jumpSpeedRatings.get(run.runnerId) ?? null,
+      awSpeedRating: awSpeedRatings.get(run.runnerId) ?? null,
+      turfSpeedRating: turfSpeedRatings.get(run.runnerId) ?? null,
     })),
     targets: timedTargets,
   });
@@ -294,6 +366,7 @@ export function calculateTargetRunnerMetrics({
       targetCourseId: target.courseId,
       targetDistanceYards: target.distanceYards,
       targetGoing: target.going,
+      targetWeightCarriedLbs: target.weightCarriedLbs,
     }),
   }));
 }
@@ -304,6 +377,7 @@ export function calculateHorseMetricsAsOf({
   targetCourseId,
   targetDistanceYards,
   targetGoing,
+  targetWeightCarriedLbs,
 }: {
   runs: HistoricalRunInput[];
   beforeDateTime: Date;
@@ -335,12 +409,47 @@ export function calculateHorseMetricsAsOf({
   const jumpSpeedValues = jumpSpeedRatingValues(priorRuns);
   const jumpSpeedValuesLast3 = jumpSpeedRatingValues(priorRuns.slice(0, 3));
   const jumpSpeedValuesLast5 = jumpSpeedRatingValues(priorRuns.slice(0, 5));
+  const awSpeedValues = awSpeedRatingValues(priorRuns);
+  const awSpeedValuesLast3 = awSpeedRatingValues(priorRuns.slice(0, 3));
+  const awSpeedValuesLast5 = awSpeedRatingValues(priorRuns.slice(0, 5));
+  const turfSpeedValues = turfSpeedRatingValues(priorRuns);
+  const turfSpeedValuesLast3 = turfSpeedRatingValues(priorRuns.slice(0, 3));
+  const turfSpeedValuesLast5 = turfSpeedRatingValues(priorRuns.slice(0, 5));
   const latestRpr = rprValues[0] ?? null;
   const previousRpr = rprValues[1] ?? null;
   const latestTs = tsValues[0] ?? null;
   const previousTs = tsValues[1] ?? null;
   const latestJumpSpeedRating = jumpSpeedValues[0] ?? null;
   const previousJumpSpeedRating = jumpSpeedValues[1] ?? null;
+  const latestAwSpeedRating = awSpeedValues[0] ?? null;
+  const previousAwSpeedRating = awSpeedValues[1] ?? null;
+  const latestTurfSpeedRating = turfSpeedValues[0] ?? null;
+  const previousTurfSpeedRating = turfSpeedValues[1] ?? null;
+  const performanceValues = performanceRatingValues(priorRuns);
+  const performanceValuesLast3 = performanceRatingValues(priorRuns.slice(0, 3));
+  const performanceValuesLast5 = performanceRatingValues(priorRuns.slice(0, 5));
+  const todaysRatingValues = todaysRatingValuesFor(priorRuns, targetWeightCarriedLbs);
+  const todaysRatingValuesLast3 = todaysRatingValuesFor(priorRuns.slice(0, 3), targetWeightCarriedLbs);
+  const todaysRatingValuesLast5 = todaysRatingValuesFor(priorRuns.slice(0, 5), targetWeightCarriedLbs);
+  const jumpTodaysRatingValues = todaysRatingValuesFor(
+    priorRuns,
+    targetWeightCarriedLbs,
+    "jump",
+  );
+  const awTodaysRatingValues = todaysRatingValuesFor(
+    priorRuns,
+    targetWeightCarriedLbs,
+    "aw",
+  );
+  const turfTodaysRatingValues = todaysRatingValuesFor(
+    priorRuns,
+    targetWeightCarriedLbs,
+    "turf",
+  );
+  const latestPerformanceRating = performanceValues[0] ?? null;
+  const previousPerformanceRating = performanceValues[1] ?? null;
+  const latestTodaysRating = todaysRatingValues[0] ?? null;
+  const previousTodaysRating = todaysRatingValues[1] ?? null;
   const latestOr =
     priorRuns.find((run) => run.officialRating !== null)?.officialRating ??
     null;
@@ -370,6 +479,35 @@ export function calculateHorseMetricsAsOf({
     bestJumpSpeedLast5: maxRating(jumpSpeedValuesLast5),
     averageJumpSpeedLast3: averageRating(jumpSpeedValuesLast3),
     averageJumpSpeedLast5: averageRating(jumpSpeedValuesLast5),
+    latestAwSpeedRating,
+    previousAwSpeedRating,
+    bestAwSpeedLast3: maxRating(awSpeedValuesLast3),
+    bestAwSpeedLast5: maxRating(awSpeedValuesLast5),
+    averageAwSpeedLast3: averageRating(awSpeedValuesLast3),
+    averageAwSpeedLast5: averageRating(awSpeedValuesLast5),
+    latestTurfSpeedRating,
+    previousTurfSpeedRating,
+    bestTurfSpeedLast3: maxRating(turfSpeedValuesLast3),
+    bestTurfSpeedLast5: maxRating(turfSpeedValuesLast5),
+    averageTurfSpeedLast3: averageRating(turfSpeedValuesLast3),
+    averageTurfSpeedLast5: averageRating(turfSpeedValuesLast5),
+    latestPerformanceRating,
+    previousPerformanceRating,
+    bestPerformanceLast3: maxRating(performanceValuesLast3),
+    bestPerformanceLast5: maxRating(performanceValuesLast5),
+    averagePerformanceLast3: averageRating(performanceValuesLast3),
+    averagePerformanceLast5: averageRating(performanceValuesLast5),
+    latestTodaysRating,
+    previousTodaysRating,
+    bestTodaysRatingLast3: maxRating(todaysRatingValuesLast3),
+    bestTodaysRatingLast5: maxRating(todaysRatingValuesLast5),
+    averageTodaysRatingLast3: averageRating(todaysRatingValuesLast3),
+    averageTodaysRatingLast5: averageRating(todaysRatingValuesLast5),
+    todaysRatingCalculationVersion:
+      latestTodaysRating === null ? null : "todays_rating_v1",
+    latestJumpTodaysRating: jumpTodaysRatingValues[0] ?? null,
+    latestAwTodaysRating: awTodaysRatingValues[0] ?? null,
+    latestTurfTodaysRating: turfTodaysRatingValues[0] ?? null,
     latestOr,
     latestRprMinusPreviousRpr: difference(latestRpr, previousRpr),
     latestTsMinusPreviousTs: difference(latestTs, previousTs),
@@ -412,6 +550,72 @@ function ratingValues(
 function jumpSpeedRatingValues(runs: HistoricalRunInput[]): number[] {
   return runs
     .map((run) => run.jumpSpeedRating?.rating ?? null)
+    .filter((rating): rating is number => rating !== null);
+}
+
+function awSpeedRatingValues(runs: HistoricalRunInput[]): number[] {
+  return runs
+    .map((run) => run.awSpeedRating?.rating ?? null)
+    .filter((rating): rating is number => rating !== null);
+}
+
+function turfSpeedRatingValues(runs: HistoricalRunInput[]): number[] {
+  return runs
+    .map((run) => run.turfSpeedRating?.rating ?? null)
+    .filter((rating): rating is number => rating !== null);
+}
+
+function rawSpeedRatingForRun(run: HistoricalRunInput): number | null {
+  return run.jumpSpeedRating?.rating ??
+    run.awSpeedRating?.rating ??
+    run.turfSpeedRating?.rating ??
+    null;
+}
+
+function rawSpeedRatingForFamily(
+  run: HistoricalRunInput,
+  family: "jump" | "aw" | "turf" | undefined,
+): number | null {
+  if (family === "jump") {
+    return run.jumpSpeedRating?.rating ?? null;
+  }
+  if (family === "aw") {
+    return run.awSpeedRating?.rating ?? null;
+  }
+  if (family === "turf") {
+    return run.turfSpeedRating?.rating ?? null;
+  }
+  return rawSpeedRatingForRun(run);
+}
+
+function performanceRatingForRun(
+  run: HistoricalRunInput,
+  family?: "jump" | "aw" | "turf",
+): number | null {
+  return calculateWeightAdjustedPerformance({
+    rawSpeedRating: rawSpeedRatingForFamily(run, family),
+    weightCarriedLb: run.weightCarriedLbs ?? null,
+  })?.performanceRating ?? null;
+}
+
+function performanceRatingValues(runs: HistoricalRunInput[]): number[] {
+  return runs
+    .map((run) => performanceRatingForRun(run))
+    .filter((rating): rating is number => rating !== null);
+}
+
+function todaysRatingValuesFor(
+  runs: HistoricalRunInput[],
+  targetWeightCarriedLbs: number | null | undefined,
+  family?: "jump" | "aw" | "turf",
+): number[] {
+  return runs
+    .map((run) =>
+      calculateTodaysRating({
+        historicalPerformanceRating: performanceRatingForRun(run, family),
+        currentWeightCarriedLb: targetWeightCarriedLbs ?? null,
+      })?.todaysRating ?? null,
+    )
     .filter((rating): rating is number => rating !== null);
 }
 

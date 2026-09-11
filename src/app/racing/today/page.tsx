@@ -3,7 +3,9 @@ import { createDbConnection } from "@/db";
 import {
   formatRaceTimeForDisplay,
   getTodaysRacingData,
+  isAllWeatherRaceForDisplay,
   isJumpRaceForDisplay,
+  isOrdinaryFlatTurfRaceForDisplay,
   racingPageTitle,
   resolveRacingDate,
   type TodayMeeting,
@@ -134,6 +136,8 @@ function MeetingSection({ meeting }: { meeting: TodayMeeting }) {
 
 function RaceBlock({ race }: { race: TodayRace }) {
   const isJumpRace = isJumpRaceForDisplay(race);
+  const isAllWeatherRace = isAllWeatherRaceForDisplay(race);
+  const isTurfRace = isOrdinaryFlatTurfRaceForDisplay(race);
   const completed = isCompletedRace(race);
 
   return (
@@ -157,7 +161,12 @@ function RaceBlock({ race }: { race: TodayRace }) {
         <RaceMeta race={race} />
       </header>
 
-      <RunnerTable isJumpRace={isJumpRace} runners={race.runners} />
+      <RunnerTable
+        isAllWeatherRace={isAllWeatherRace}
+        isJumpRace={isJumpRace}
+        isTurfRace={isTurfRace}
+        runners={race.runners}
+      />
     </section>
   );
 }
@@ -186,15 +195,19 @@ function RaceMeta({ race }: { race: TodayRace }) {
 }
 
 function RunnerTable({
+  isAllWeatherRace,
   isJumpRace,
+  isTurfRace,
   runners,
 }: {
+  isAllWeatherRace: boolean;
   isJumpRace: boolean;
+  isTurfRace: boolean;
   runners: TodayRunner[];
 }) {
   return (
     <div className="mt-4 overflow-x-auto">
-      <table className="w-full min-w-[1180px] table-fixed text-left text-sm">
+      <table className="w-full min-w-[1260px] table-fixed text-left text-sm">
         <thead className="border-y border-slate-200 text-xs uppercase text-slate-500">
           <tr>
             <th className="w-14 py-2 pr-3 font-medium">No.</th>
@@ -210,6 +223,12 @@ function RunnerTable({
             <th className="w-16 py-2 pr-3 font-medium">Latest Speed</th>
             <th className="w-16 py-2 pr-3 font-medium">Prev Speed</th>
             <th className="w-16 py-2 pr-3 font-medium">Best L3</th>
+            <th
+              className="w-20 py-2 pr-3 font-medium"
+              title="Latest historical performance adjusted for today's weight."
+            >
+              Today&apos;s Rating
+            </th>
             <th className="w-16 py-2 pr-3 font-medium">Days</th>
             <th className="w-20 py-2 pr-3 font-medium">Odds</th>
           </tr>
@@ -217,7 +236,9 @@ function RunnerTable({
         <tbody className="divide-y divide-slate-200">
           {runners.map((runner) => (
             <RunnerRow
+              isAllWeatherRace={isAllWeatherRace}
               isJumpRace={isJumpRace}
+              isTurfRace={isTurfRace}
               key={runner.runnerId}
               runner={runner}
             />
@@ -229,13 +250,29 @@ function RunnerTable({
 }
 
 function RunnerRow({
+  isAllWeatherRace,
   isJumpRace,
+  isTurfRace,
   runner,
 }: {
+  isAllWeatherRace: boolean;
   isJumpRace: boolean;
+  isTurfRace: boolean;
   runner: TodayRunner;
 }) {
   const nonRunner = runner.resultStatus === "non_runner";
+  const speedMetrics = speedMetricValues({
+    isAllWeatherRace,
+    isJumpRace,
+    isTurfRace,
+    metrics: runner.metrics,
+  });
+  const todaysRating = todaysRatingValue({
+    isAllWeatherRace,
+    isJumpRace,
+    isTurfRace,
+    metrics: runner.metrics,
+  });
 
   return (
     <tr
@@ -267,23 +304,82 @@ function RunnerRow({
       <td className="py-3 pr-3">{runner.jockeyName ?? "-"}</td>
       <td className="py-3 pr-3">{runner.trainerName ?? "-"}</td>
       <td className="py-3 pr-3">{runner.officialRating ?? "-"}</td>
-      <td className="py-3 pr-3">
-        {isJumpRace ? formatRating(runner.metrics?.latestJumpSpeedRating) : "-"}
-      </td>
-      <td className="py-3 pr-3">
-        {isJumpRace
-          ? formatRating(runner.metrics?.previousJumpSpeedRating)
-          : "-"}
-      </td>
-      <td className="py-3 pr-3">
-        {isJumpRace ? formatRating(runner.metrics?.bestJumpSpeedLast3) : "-"}
-      </td>
+      <td className="py-3 pr-3">{formatRating(speedMetrics.latest)}</td>
+      <td className="py-3 pr-3">{formatRating(speedMetrics.previous)}</td>
+      <td className="py-3 pr-3">{formatRating(speedMetrics.bestLast3)}</td>
+      <td className="py-3 pr-3">{formatRating(todaysRating)}</td>
       <td className="py-3 pr-3">
         {runner.metrics?.daysSinceLastRun ?? "-"}
       </td>
       <td className="py-3 pr-3">{runner.odds ?? "-"}</td>
     </tr>
   );
+}
+
+function todaysRatingValue({
+  isAllWeatherRace,
+  isJumpRace,
+  isTurfRace,
+  metrics,
+}: {
+  isAllWeatherRace: boolean;
+  isJumpRace: boolean;
+  isTurfRace: boolean;
+  metrics: TodayRunner["metrics"];
+}): number | null | undefined {
+  if (isJumpRace) {
+    return metrics?.latestJumpTodaysRating;
+  }
+  if (isAllWeatherRace) {
+    return metrics?.latestAwTodaysRating;
+  }
+  if (isTurfRace) {
+    return metrics?.latestTurfTodaysRating;
+  }
+  return metrics?.latestTodaysRating;
+}
+
+function speedMetricValues({
+  isAllWeatherRace,
+  isJumpRace,
+  isTurfRace,
+  metrics,
+}: {
+  isAllWeatherRace: boolean;
+  isJumpRace: boolean;
+  isTurfRace: boolean;
+  metrics: TodayRunner["metrics"];
+}): {
+  latest: number | null | undefined;
+  previous: number | null | undefined;
+  bestLast3: number | null | undefined;
+} {
+  if (isJumpRace) {
+    return {
+      latest: metrics?.latestJumpSpeedRating,
+      previous: metrics?.previousJumpSpeedRating,
+      bestLast3: metrics?.bestJumpSpeedLast3,
+    };
+  }
+  if (isAllWeatherRace) {
+    return {
+      latest: metrics?.latestAwSpeedRating,
+      previous: metrics?.previousAwSpeedRating,
+      bestLast3: metrics?.bestAwSpeedLast3,
+    };
+  }
+  if (isTurfRace) {
+    return {
+      latest: metrics?.latestTurfSpeedRating,
+      previous: metrics?.previousTurfSpeedRating,
+      bestLast3: metrics?.bestTurfSpeedLast3,
+    };
+  }
+  return {
+    latest: null,
+    previous: null,
+    bestLast3: null,
+  };
 }
 
 function formatFreshnessTime(value: Date): string {

@@ -195,8 +195,8 @@ function FormTable({ runs }: { runs: HorseFormRun[] }) {
               <td className="py-3 pr-4">{run.draw ?? "-"}</td>
               <td className="py-3 pr-4">{run.startingPrice ?? "-"}</td>
               <td className="py-3 pr-4">{run.officialRating ?? "-"}</td>
-              <td className="py-3 pr-4" title={jumpSpeedTitle(run)}>
-                {formatJumpSpeed(run)}
+              <td className="py-3 pr-4" title={speedTitle(run)}>
+                {formatSpeed(run)}
               </td>
               <td className="py-3 pr-4">{run.racingPostRating ?? "-"}</td>
               <td className="py-3 pr-4">{run.topspeedRating ?? "-"}</td>
@@ -222,8 +222,8 @@ function formatOutcome(run: HorseFormRun): string {
   return run.resultStatus ?? run.outcomeCode ?? "-";
 }
 
-function formatJumpSpeed(run: HorseFormRun): string {
-  const rating = run.jumpSpeedRating;
+function formatSpeed(run: HorseFormRun): string {
+  const rating = displayedSpeedRating(run);
   if (!rating || rating.method === "unavailable") {
     return "-";
   }
@@ -233,18 +233,33 @@ function formatJumpSpeed(run: HorseFormRun): string {
   return Math.round(rating.rating).toString();
 }
 
-function jumpSpeedTitle(run: HorseFormRun): string | undefined {
-  const rating = run.jumpSpeedRating;
+function speedTitle(run: HorseFormRun): string | undefined {
+  const rating = displayedSpeedRating(run);
   if (!rating) {
     return undefined;
   }
   if (rating.method === "unavailable") {
-    return rating.withheldReason ? `Not rated: ${formatReason(rating.withheldReason)}` : "Not rated";
+    const reason =
+      "unavailableReason" in rating ? rating.unavailableReason : rating.withheldReason;
+    return reason ? `Not rated: ${formatReason(reason)}` : "Not rated";
   }
   if (rating.method === "withheld") {
     return rating.withheldReason ? `Not rated: ${formatReason(rating.withheldReason)}` : "Not rated";
   }
   return `${rating.method === "same_day" ? "Same-day" : "Base"} / ${rating.confidence} confidence`;
+}
+
+function displayedSpeedRating(run: HorseFormRun) {
+  if (run.jumpSpeedRating?.rating !== null && run.jumpSpeedRating?.rating !== undefined) {
+    return run.jumpSpeedRating;
+  }
+  if (run.awSpeedRating?.rating !== null && run.awSpeedRating?.rating !== undefined) {
+    return run.awSpeedRating;
+  }
+  if (run.turfSpeedRating?.rating !== null && run.turfSpeedRating?.rating !== undefined) {
+    return run.turfSpeedRating;
+  }
+  return run.jumpSpeedRating ?? run.awSpeedRating ?? run.turfSpeedRating;
 }
 
 function formatReason(reason: string): string {
@@ -253,6 +268,15 @@ function formatReason(reason: string): string {
   }
   if (reason === "not_jump_race") {
     return "not a jump race";
+  }
+  if (reason === "not_all_weather_flat") {
+    return "not an all-weather flat race";
+  }
+  if (reason === "not_ordinary_flat_turf") {
+    return "not ordinary Flat Turf";
+  }
+  if (reason === "source_timing_outlier") {
+    return "source timing outlier";
   }
   if (reason === "insufficient_timing_or_standard") {
     return "insufficient timing or standard";

@@ -3,14 +3,36 @@ import { describe, test } from "node:test";
 import Home from "./page";
 
 describe("home route", () => {
-  test("redirects to today's racing", () => {
-    assert.throws(
-      () => Home(),
-      (error) =>
-        error instanceof Error &&
-        "digest" in error &&
-        typeof error.digest === "string" &&
-        error.digest.includes("/racing/today"),
-    );
+  test("renders primary navigation routes", () => {
+    const text = collectText(Home()).join(" ");
+
+    assert.match(text, /Today/);
+    assert.match(text, /Research Filters/);
+    assert.equal(text.includes("/racing/today"), true);
+    assert.equal(text.includes("/racing/research"), true);
   });
 });
+
+function collectText(value: unknown, seen = new WeakSet<object>()): string[] {
+  if (value === null || value === undefined || typeof value === "boolean") {
+    return [];
+  }
+  if (typeof value === "string" || typeof value === "number") {
+    return [String(value)];
+  }
+  if (Array.isArray(value)) {
+    return value.flatMap((item) => collectText(item, seen));
+  }
+  if (typeof value === "object") {
+    if (seen.has(value)) {
+      return [];
+    }
+    seen.add(value);
+    const record = value as { props?: { children?: unknown; href?: unknown } };
+    return [
+      ...collectText(record.props?.href, seen),
+      ...collectText(record.props?.children, seen),
+    ];
+  }
+  return [];
+}

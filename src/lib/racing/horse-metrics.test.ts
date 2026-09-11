@@ -203,6 +203,12 @@ describe("calculateHorseMetricsAsOf", () => {
     assert.equal(metrics.latestJumpSpeedRating, null);
     assert.equal(metrics.bestJumpSpeedLast3, null);
     assert.equal(metrics.averageJumpSpeedLast3, null);
+    assert.equal(metrics.latestAwSpeedRating, null);
+    assert.equal(metrics.bestAwSpeedLast3, null);
+    assert.equal(metrics.averageAwSpeedLast3, null);
+    assert.equal(metrics.latestTurfSpeedRating, null);
+    assert.equal(metrics.bestTurfSpeedLast3, null);
+    assert.equal(metrics.averageTurfSpeedLast3, null);
   });
 
   test("does not count non-runners as prior runs", () => {
@@ -332,6 +338,110 @@ describe("calculateHorseMetricsAsOf", () => {
     assert.equal(metrics.averageJumpSpeedLast3, 94.33333333333333);
     assert.equal(metrics.averageJumpSpeedLast5, 95.5);
   });
+
+  test("translates historical performance to the target race weight", () => {
+    const metrics = calculateHorseMetricsAsOf({
+      beforeDateTime: cutoff,
+      targetWeightCarriedLbs: 154,
+      runs: [
+        run({
+          raceDateTime: new Date("2020-09-30T15:00:00.000Z"),
+          raceDate: "2020-09-30",
+          weightCarriedLbs: 168,
+          jumpSpeedRating: jumpRating(110),
+        }),
+        run({
+          raceDateTime: new Date("2020-09-20T15:00:00.000Z"),
+          raceDate: "2020-09-20",
+          weightCarriedLbs: 154,
+          jumpSpeedRating: jumpRating(110),
+        }),
+      ],
+    });
+
+    assert.equal(metrics.latestJumpSpeedRating, 110);
+    assert.equal(metrics.latestPerformanceRating, 110);
+    assert.equal(metrics.previousPerformanceRating, 96);
+    assert.equal(metrics.latestTodaysRating, 124);
+    assert.equal(metrics.previousTodaysRating, 110);
+    assert.equal(metrics.bestTodaysRatingLast3, 124);
+    assert.equal(metrics.averageTodaysRatingLast3, 117);
+    assert.equal(metrics.todaysRatingCalculationVersion, "todays_rating_v1");
+  });
+
+  test("calculates latest, previous, best and average AW speed ratings separately", () => {
+    const metrics = calculateHorseMetricsAsOf({
+      beforeDateTime: cutoff,
+      runs: [
+        run({
+          raceDateTime: new Date("2020-09-30T15:00:00.000Z"),
+          raceDate: "2020-09-30",
+          awSpeedRating: awRating(91),
+          jumpSpeedRating: jumpRating(120),
+        }),
+        run({
+          raceDateTime: new Date("2020-09-20T15:00:00.000Z"),
+          raceDate: "2020-09-20",
+          awSpeedRating: awRating(105),
+        }),
+        run({
+          raceDateTime: new Date("2020-09-10T15:00:00.000Z"),
+          raceDate: "2020-09-10",
+          awSpeedRating: awRating(87),
+        }),
+        run({
+          raceDateTime: new Date("2020-09-01T15:00:00.000Z"),
+          raceDate: "2020-09-01",
+          awSpeedRating: awRating(99),
+        }),
+      ],
+    });
+
+    assert.equal(metrics.latestAwSpeedRating, 91);
+    assert.equal(metrics.previousAwSpeedRating, 105);
+    assert.equal(metrics.bestAwSpeedLast3, 105);
+    assert.equal(metrics.bestAwSpeedLast5, 105);
+    assert.equal(metrics.averageAwSpeedLast3, 94.33333333333333);
+    assert.equal(metrics.averageAwSpeedLast5, 95.5);
+    assert.equal(metrics.latestJumpSpeedRating, 120);
+  });
+
+  test("calculates latest, previous, best and average Turf speed ratings separately", () => {
+    const metrics = calculateHorseMetricsAsOf({
+      beforeDateTime: cutoff,
+      runs: [
+        run({
+          raceDateTime: new Date("2020-09-30T15:00:00.000Z"),
+          raceDate: "2020-09-30",
+          turfSpeedRating: turfRating(91),
+          awSpeedRating: awRating(120),
+        }),
+        run({
+          raceDateTime: new Date("2020-09-20T15:00:00.000Z"),
+          raceDate: "2020-09-20",
+          turfSpeedRating: turfRating(105),
+        }),
+        run({
+          raceDateTime: new Date("2020-09-10T15:00:00.000Z"),
+          raceDate: "2020-09-10",
+          turfSpeedRating: turfRating(87),
+        }),
+        run({
+          raceDateTime: new Date("2020-09-01T15:00:00.000Z"),
+          raceDate: "2020-09-01",
+          turfSpeedRating: turfRating(99),
+        }),
+      ],
+    });
+
+    assert.equal(metrics.latestTurfSpeedRating, 91);
+    assert.equal(metrics.previousTurfSpeedRating, 105);
+    assert.equal(metrics.bestTurfSpeedLast3, 105);
+    assert.equal(metrics.bestTurfSpeedLast5, 105);
+    assert.equal(metrics.averageTurfSpeedLast3, 94.33333333333333);
+    assert.equal(metrics.averageTurfSpeedLast5, 95.5);
+    assert.equal(metrics.latestAwSpeedRating, 120);
+  });
 });
 
 function jumpRating(rating: number): HistoricalRunInput["jumpSpeedRating"] {
@@ -346,6 +456,43 @@ function jumpRating(rating: number): HistoricalRunInput["jumpSpeedRating"] {
     sameDaySampleSize: 4,
     withheldReason: null,
     calculationVersion: "jump_speed_v1",
+  };
+}
+
+function awRating(rating: number): HistoricalRunInput["awSpeedRating"] {
+  return {
+    rating,
+    method: "same_day",
+    confidence: "high",
+    baseRating: rating - 2,
+    sameDayAdjustedRating: rating,
+    cumulativeBeatenLengths: 5,
+    standardSampleSize: 40,
+    sameDaySampleSize: 3,
+    unavailableReason: null,
+    withheldReason: null,
+    standardSeconds: 100,
+    equivalentTimeSeconds: 99,
+    secondsPerLength: 0.15,
+    calculationVersion: "aw_speed_v1",
+  };
+}
+
+function turfRating(rating: number): HistoricalRunInput["turfSpeedRating"] {
+  return {
+    rating,
+    method: "same_day",
+    confidence: "high",
+    baseRating: rating - 2,
+    sameDayAdjustedRating: rating,
+    cumulativeBeatenLengths: 5,
+    standardSampleSize: 8,
+    sameDaySampleSize: 3,
+    unavailableReason: null,
+    withheldReason: null,
+    standardSeconds: 100,
+    equivalentTimeSeconds: 99,
+    calculationVersion: "turf_speed_v1",
   };
 }
 
@@ -368,8 +515,10 @@ function target(
     courseId: targetCourseId,
     courseName: "Bath",
     raceName: "Target race",
+    raceType: "handicap",
     distanceYards: targetDistanceYards,
     going: targetGoing,
+    weightCarriedLbs: 126,
     ...rest,
   };
 }

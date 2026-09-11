@@ -1,13 +1,15 @@
 import { and, eq, inArray, lte, or, sql } from "drizzle-orm";
 import { createDbConnection } from "@/db";
-import { raceRunners, races } from "@/db/schema";
+import { raceRunners, races, sourceImports } from "@/db/schema";
 import {
-  calculateJumpSpeedRating,
-  isJumpRace,
-  type JumpSpeedRating,
-} from "./jump-speed-rating";
+  calculateTurfSpeedRating,
+  isOrdinaryFlatTurfRace,
+  ratingForStandard,
+  type TurfSpeedRating,
+} from "./turf-speed-rating";
 import {
   deviationPerFurlong,
+  distanceYardsToFurlongs,
   median,
   reconstructCumulativeBeatenLengths,
   sanityCheckWinningTime,
@@ -17,6 +19,7 @@ import {
 type Db = ReturnType<typeof createDbConnection>["db"];
 
 type RaceContextRow = {
+  runnerId?: string;
   raceId: string;
   source: string | null;
   sourceId: string | null;
@@ -27,6 +30,8 @@ type RaceContextRow = {
   winningTime: string | null;
   raceName: string | null;
   raceType: string | null;
+  raceTypeCode: string | null;
+  surface: string | null;
 };
 
 type RunnerMarginRow = {
@@ -41,6 +46,7 @@ type RaceDeviation = RaceContextRow & {
   winningTimeSeconds: number;
   baseStandardSeconds: number;
   standardSampleSize: number;
+  standardTimingSpreadSecondsPerFurlong: number | null;
   deviationSecondsPerFurlong: number;
 };
 
@@ -51,15 +57,16 @@ type RaceContextData = {
 
 const QUERY_CHUNK_SIZE = 5_000;
 const CONTEXT_KEY_CHUNK_SIZE = 200;
+const RESULT_SOURCE_TYPE = "full-result-next-data";
 
-export async function getJumpSpeedRatingsForRunners(
+export async function getTurfSpeedRatingsForRunners(
   db: Db,
   runnerIds: string[],
   options: {
     source?: string;
     calculationCutoffDateTime?: Date | null;
   } = {},
-): Promise<Map<string, JumpSpeedRating>> {
+): Promise<Map<string, TurfSpeedRating>> {
   const uniqueRunnerIds = [...new Set(runnerIds)];
   if (uniqueRunnerIds.length === 0) {
     return new Map();
@@ -82,9 +89,12 @@ export async function getJumpSpeedRatingsForRunners(
             winningTime: races.winningTime,
             raceName: races.raceName,
             raceType: races.raceType,
+            raceTypeCode: races.raceTypeCode,
+            surface: surfaceSql(),
           })
           .from(raceRunners)
           .innerJoin(races, eq(raceRunners.raceId, races.id))
+          .innerJoin(sourceImports, sourceImportJoinCondition(source))
           .where(
             and(
               inArray(raceRunners.id, runnerIdChunk),
@@ -94,7 +104,7 @@ export async function getJumpSpeedRatingsForRunners(
           ),
       ),
     )
-  ).flat();
+  ).flat().filter(isOrdinaryFlatTurfRace);
 
   if (targets.length === 0) {
     return new Map();
@@ -106,33 +116,39 @@ export async function getJumpSpeedRatingsForRunners(
     targets,
     options.calculationCutoffDateTime,
   );
-  const deviations = raceDeviations(
-    context.standardContexts,
-    context.deviationRaceIds,
-  );
+  const deviations = raceDeviations(context.standardContexts, context.deviationRaceIds);
   const deviationByRaceId = new Map(deviations.map((row) => [row.raceId, row]));
-  const marginsByRaceId = await loadRunnerMargins(db, targets.map((target) => target.raceId), source);
-  const cumulativeByRunnerId = cumulativeMargins(marginsByRaceId);
   const sameDayGroups = groupBy(deviations, sameDayKey);
-  const ratings = new Map<string, JumpSpeedRating>();
+  const marginsByRaceId = await loadRunnerMargins(
+    db,
+    targets.map((target) => target.raceId),
+    source,
+  );
+  const cumulativeByRunnerId = cumulativeMargins(marginsByRaceId);
+  const sourceTimingIssueByRaceId = sourceTimingIssues(deviations, sameDayGroups);
+  const ratings = new Map<string, TurfSpeedRating>();
 
   for (const target of targets) {
     const deviation = deviationByRaceId.get(target.raceId);
     const sameDay = deviation ? sameDayAdjustmentFor(deviation, sameDayGroups) : null;
     ratings.set(
-      target.runnerId,
-      calculateJumpSpeedRating({
+      target.runnerId ?? "",
+      calculateTurfSpeedRating({
         raceName: target.raceName,
         raceType: target.raceType,
+        raceTypeCode: target.raceTypeCode,
+        surface: target.surface,
         distanceYards: target.distanceYards,
         winningTime: target.winningTime,
         baseStandardSeconds: deviation?.baseStandardSeconds ?? null,
         standardSampleSize: deviation?.standardSampleSize ?? null,
+        standardTimingSpreadSecondsPerFurlong: deviation?.standardTimingSpreadSecondsPerFurlong ?? null,
         cumulativeBeatenLengths:
-          cumulativeByRunnerId.get(target.runnerId)?.cumulativeBeatenLengths ?? null,
+          cumulativeByRunnerId.get(target.runnerId ?? "")?.cumulativeBeatenLengths ?? null,
         sameDayAdjustmentSecondsPerFurlong: sameDay?.adjustmentSecondsPerFurlong ?? null,
         sameDayPeerCount: sameDay?.peerCount ?? null,
         sameDayStdevSecondsPerFurlong: sameDay?.stdevSecondsPerFurlong ?? null,
+        sourceTimingIssue: sourceTimingIssueByRaceId.has(target.raceId),
       }),
     );
   }
@@ -140,13 +156,13 @@ export async function getJumpSpeedRatingsForRunners(
   return ratings;
 }
 
-export async function getJumpSpeedRatingsAsOfRuns(
+export async function getTurfSpeedRatingsAsOfRuns(
   db: Db,
   runnerIds: string[],
   options: {
     source?: string;
   } = {},
-): Promise<Map<string, JumpSpeedRating>> {
+): Promise<Map<string, TurfSpeedRating>> {
   const source = options.source ?? "sporting_life";
   const runnerCutoffs = await loadRunnerRaceDateTimes(
     db,
@@ -157,14 +173,14 @@ export async function getJumpSpeedRatingsAsOfRuns(
     runnerCutoffs.filter(hasRaceDateTime),
     (row) => String(row.raceDateTime.getTime()),
   );
-  const ratings = new Map<string, JumpSpeedRating>();
+  const ratings = new Map<string, TurfSpeedRating>();
 
   for (const group of groups.values()) {
     const cutoff = group[0]?.raceDateTime;
     if (!cutoff) {
       continue;
     }
-    const groupRatings = await getJumpSpeedRatingsForRunners(
+    const groupRatings = await getTurfSpeedRatingsForRunners(
       db,
       group.map((row) => row.runnerId),
       { source, calculationCutoffDateTime: cutoff },
@@ -190,11 +206,7 @@ async function loadRaceContextForTargets(
     loadRaceContextsForStandardKeys(db, source, targetStandardKeys, cutoff),
     loadRaceContextsForSameDayKeys(db, source, targetSameDayKeys, cutoff),
   ]);
-  const loaded = uniqueRaceContexts([
-    ...targets,
-    ...standardContexts,
-    ...sameDayContexts,
-  ]);
+  const loaded = uniqueRaceContexts([...targets, ...standardContexts, ...sameDayContexts]);
   const loadedStandardKeys = standardKeysFor(loaded);
   const peerStandardKeys = withoutExistingStandardKeys(
     standardKeysFor(sameDayContexts),
@@ -204,25 +216,16 @@ async function loadRaceContextForTargets(
   if (peerStandardKeys.length === 0) {
     return {
       standardContexts: loaded,
-      deviationRaceIds: new Set(
-        [...targets, ...sameDayContexts].map((row) => row.raceId),
-      ),
+      deviationRaceIds: new Set([...targets, ...sameDayContexts].map((row) => row.raceId)),
     };
   }
 
   return {
     standardContexts: uniqueRaceContexts([
       ...loaded,
-      ...(await loadRaceContextsForStandardKeys(
-        db,
-        source,
-        peerStandardKeys,
-        cutoff,
-      )),
+      ...(await loadRaceContextsForStandardKeys(db, source, peerStandardKeys, cutoff)),
     ]),
-    deviationRaceIds: new Set(
-      [...targets, ...sameDayContexts].map((row) => row.raceId),
-    ),
+    deviationRaceIds: new Set([...targets, ...sameDayContexts].map((row) => row.raceId)),
   };
 }
 
@@ -235,30 +238,25 @@ async function loadRaceContextsForStandardKeys(
   if (keys.length === 0) {
     return [];
   }
-
   const rows = await Promise.all(
     chunks(keys, CONTEXT_KEY_CHUNK_SIZE).map((keyChunk) =>
       db
         .select(raceContextSelection)
         .from(races)
+        .innerJoin(sourceImports, sourceImportJoinCondition(source))
         .where(
           and(
             eq(races.source, source),
             completedTimingCondition(),
-            jumpRaceCondition(),
+            turfRaceCondition(),
             cutoffCondition(calculationCutoffDateTime),
             or(...keyChunk.map(standardKeyCondition)),
           ),
         )
-        .orderBy(
-          races.raceDate,
-          races.scheduledTime,
-          sql`coalesce(${races.sourceId}, '')`,
-        ),
+        .orderBy(races.raceDate, races.scheduledTime, sql`coalesce(${races.sourceId}, '')`),
     ),
   );
-
-  return rows.flat();
+  return rows.flat().filter(isOrdinaryFlatTurfRace);
 }
 
 async function loadRaceContextsForSameDayKeys(
@@ -270,30 +268,25 @@ async function loadRaceContextsForSameDayKeys(
   if (keys.length === 0) {
     return [];
   }
-
   const rows = await Promise.all(
     chunks(keys, CONTEXT_KEY_CHUNK_SIZE).map((keyChunk) =>
       db
         .select(raceContextSelection)
         .from(races)
+        .innerJoin(sourceImports, sourceImportJoinCondition(source))
         .where(
           and(
             eq(races.source, source),
             completedTimingCondition(),
-            jumpRaceCondition(),
+            turfRaceCondition(),
             cutoffCondition(calculationCutoffDateTime),
             or(...keyChunk.map(sameDayKeyCondition)),
           ),
         )
-        .orderBy(
-          races.raceDate,
-          races.scheduledTime,
-          sql`coalesce(${races.sourceId}, '')`,
-        ),
+        .orderBy(races.raceDate, races.scheduledTime, sql`coalesce(${races.sourceId}, '')`),
     ),
   );
-
-  return rows.flat();
+  return rows.flat().filter(isOrdinaryFlatTurfRace);
 }
 
 const raceContextSelection = {
@@ -307,7 +300,56 @@ const raceContextSelection = {
   winningTime: races.winningTime,
   raceName: races.raceName,
   raceType: races.raceType,
+  raceTypeCode: races.raceTypeCode,
+  surface: surfaceSql(),
 };
+
+function surfaceSql() {
+  return sql<string | null>`${sourceImports.payload} #>> '{props,pageProps,race,race_summary,course_surface,surface}'`;
+}
+
+function sourceImportJoinCondition(source: string) {
+  return and(
+    eq(sourceImports.source, source),
+    eq(sourceImports.sourceId, races.sourceId),
+    eq(sourceImports.sourceType, RESULT_SOURCE_TYPE),
+  )!;
+}
+
+function turfRaceCondition() {
+  const surface = sql`upper(coalesce(${sourceImports.payload} #>> '{props,pageProps,race,race_summary,course_surface,surface}', ''))`;
+  const text = raceTextSql();
+  return and(
+    sql`${surface} = 'TURF'`,
+    sql`${text} not like '%hurdle%'`,
+    sql`${text} not like '%chase%'`,
+    sql`${text} not like '%steeplechase%'`,
+    sql`${text} not like '%national hunt%'`,
+    sql`${text} not like '%nh flat%'`,
+    sql`${text} not like '%n.h. flat%'`,
+    sql`${text} not like '%i.n.h.%'`,
+    sql`${text} not like '%bumper%'`,
+    sql`${text} not like '%point-to-point flat race%'`,
+    sql`${text} not like '%(pro/am) flat race%'`,
+    sql`${text} not like '%(ladies pro/am) flat race%'`,
+    sql`${text} not like 'flat race%'`,
+    sql`${text} not like '% flat race%'`,
+  );
+}
+
+function raceTextSql() {
+  return sql`lower(coalesce(${races.raceName}, '') || ' ' || coalesce(${races.raceType}, '') || ' ' || coalesce(${races.raceTypeCode}, ''))`;
+}
+
+function completedTimingCondition() {
+  return sql`${races.winningTime} is not null and btrim(${races.winningTime}) <> ''`;
+}
+
+function cutoffCondition(calculationCutoffDateTime: Date | null) {
+  return calculationCutoffDateTime
+    ? lte(races.raceDatetime, calculationCutoffDateTime)
+    : undefined;
+}
 
 function standardKeyCondition(key: StandardContextKey) {
   return and(
@@ -322,35 +364,9 @@ function sameDayKeyCondition(key: SameDayContextKey) {
   return and(eq(races.raceDate, key.raceDate), eq(races.courseId, key.courseId));
 }
 
-function completedTimingCondition() {
-  return sql`${races.winningTime} is not null and btrim(${races.winningTime}) <> ''`;
-}
-
-function cutoffCondition(calculationCutoffDateTime: Date | null) {
-  return calculationCutoffDateTime
-    ? lte(races.raceDatetime, calculationCutoffDateTime)
-    : undefined;
-}
-
-function jumpRaceCondition() {
-  const text = sql`lower(coalesce(${races.raceName}, '') || ' ' || coalesce(${races.raceType}, ''))`;
-  return or(
-    sql`${text} like '%hurdle%'`,
-    sql`${text} like '%chase%'`,
-    sql`${text} like '%national hunt%'`,
-    sql`${text} like '%nh flat%'`,
-    sql`${text} like '%bumper%'`,
-  );
-}
-
 function latestRaceDateTime(rows: RaceContextRow[]): Date | null {
-  const raceDateTimes = rows
-    .map((row) => row.raceDateTime)
-    .filter((value): value is Date => value !== null);
-  if (raceDateTimes.length === 0) {
-    return null;
-  }
-  return raceDateTimes.reduce((latest, value) => (value > latest ? value : latest));
+  const values = rows.map((row) => row.raceDateTime).filter((value): value is Date => value !== null);
+  return values.length ? values.reduce((latest, value) => (value > latest ? value : latest)) : null;
 }
 
 type StandardContextKey = {
@@ -365,24 +381,20 @@ type SameDayContextKey = {
 
 function standardKeysFor(rows: RaceContextRow[]): StandardContextKey[] {
   return uniqueBy(
-    rows
-      .filter(isJumpRace)
-      .map((row) => ({
-        courseId: row.courseId,
-        distanceYards: row.distanceYards,
-      })),
+    rows.filter(isOrdinaryFlatTurfRace).map((row) => ({
+      courseId: row.courseId,
+      distanceYards: row.distanceYards,
+    })),
     standardContextKey,
   );
 }
 
 function sameDayKeysFor(rows: RaceContextRow[]): SameDayContextKey[] {
   return uniqueBy(
-    rows
-      .filter(isJumpRace)
-      .map((row) => ({
-        raceDate: row.raceDate,
-        courseId: row.courseId,
-      })),
+    rows.filter(isOrdinaryFlatTurfRace).map((row) => ({
+      raceDate: row.raceDate,
+      courseId: row.courseId,
+    })),
     sameDayContextKey,
   );
 }
@@ -404,21 +416,20 @@ function uniqueBy<T>(values: T[], keyForValue: (value: T) => string): T[] {
   const unique: T[] = [];
   for (const value of values) {
     const key = keyForValue(value);
-    if (seen.has(key)) {
-      continue;
+    if (!seen.has(key)) {
+      seen.add(key);
+      unique.push(value);
     }
-    seen.add(key);
-    unique.push(value);
   }
   return unique;
 }
 
 function standardContextKey(key: StandardContextKey): string {
-  return `${key.courseId}:${key.distanceYards ?? "unknown"}`;
+  return `${key.courseId}:${key.distanceYards ?? "unknown"}:TURF`;
 }
 
 function sameDayContextKey(key: SameDayContextKey): string {
-  return `${key.raceDate}:${key.courseId}`;
+  return `${key.raceDate}:${key.courseId}:TURF`;
 }
 
 async function loadRunnerMargins(
@@ -442,21 +453,11 @@ async function loadRunnerMargins(
             beatenDistance: raceRunners.beatenDistance,
           })
           .from(raceRunners)
-          .where(
-            and(
-              inArray(raceRunners.raceId, raceIdChunk),
-              eq(raceRunners.source, source),
-            ),
-          )
-          .orderBy(
-            raceRunners.raceId,
-            raceRunners.finishingPosition,
-            raceRunners.sourceId,
-          ),
+          .where(and(inArray(raceRunners.raceId, raceIdChunk), eq(raceRunners.source, source)))
+          .orderBy(raceRunners.raceId, raceRunners.finishingPosition, raceRunners.sourceId),
       ),
     )
   ).flat();
-
   return groupBy(rows, (row) => row.raceId);
 }
 
@@ -464,11 +465,11 @@ function raceDeviations(
   raceRows: RaceContextRow[],
   deviationRaceIds: Set<string>,
 ): RaceDeviation[] {
-  const jumpRaces = raceRows.filter(isJumpRace);
-  const standardTimesByKey = standardTimesFor(jumpRaces);
+  const turfRaces = raceRows.filter(isOrdinaryFlatTurfRace);
+  const standardTimesByKey = standardTimesFor(turfRaces);
   const rows: RaceDeviation[] = [];
 
-  for (const race of jumpRaces) {
+  for (const race of turfRaces) {
     if (!deviationRaceIds.has(race.raceId)) {
       continue;
     }
@@ -479,10 +480,8 @@ function raceDeviations(
     if (winningTimeSeconds === null) {
       continue;
     }
-    const standard = medianStandardExcludingRace(
-      standardTimesByKey.get(standardKey(race)) ?? [],
-      race.raceId,
-    );
+    const values = standardTimesByKey.get(standardKey(race)) ?? [];
+    const standard = medianStandardExcludingRace(values, race.raceId);
     const baseStandardSeconds =
       standard.sampleSize >= 2 ? standard.medianSeconds : null;
     const deviationSecondsPerFurlong = deviationPerFurlong({
@@ -498,6 +497,7 @@ function raceDeviations(
       winningTimeSeconds,
       baseStandardSeconds,
       standardSampleSize: standard.sampleSize,
+      standardTimingSpreadSecondsPerFurlong: standardSpreadPerFurlong(values, race.raceId, race.distanceYards),
       deviationSecondsPerFurlong,
     });
   }
@@ -535,33 +535,22 @@ function medianStandardExcludingRace(
   values: StandardTime[],
   excludedRaceId: string,
 ): { medianSeconds: number | null; sampleSize: number } {
-  const excludedIndex = values.findIndex((value) => value.raceId === excludedRaceId);
-  const sampleSize = values.length - (excludedIndex === -1 ? 0 : 1);
-  if (sampleSize <= 0) {
-    return { medianSeconds: null, sampleSize };
-  }
-
-  if (sampleSize % 2 === 1) {
-    return {
-      medianSeconds: standardValueAt(values, Math.floor(sampleSize / 2), excludedIndex),
-      sampleSize,
-    };
-  }
-
-  const upperIndex = sampleSize / 2;
-  const lower = standardValueAt(values, upperIndex - 1, excludedIndex);
-  const upper = standardValueAt(values, upperIndex, excludedIndex);
-  return { medianSeconds: (lower + upper) / 2, sampleSize };
+  const sample = values.filter((value) => value.raceId !== excludedRaceId).map((value) => value.seconds);
+  return { medianSeconds: median(sample), sampleSize: sample.length };
 }
 
-function standardValueAt(
+function standardSpreadPerFurlong(
   values: StandardTime[],
-  index: number,
-  excludedIndex: number,
-): number {
-  const sourceIndex =
-    excludedIndex !== -1 && index >= excludedIndex ? index + 1 : index;
-  return values[sourceIndex].seconds;
+  excludedRaceId: string,
+  distanceYards: number | null,
+): number | null {
+  const furlongs = distanceYardsToFurlongs(distanceYards);
+  if (furlongs === null) {
+    return null;
+  }
+  const sample = values.filter((value) => value.raceId !== excludedRaceId).map((value) => value.seconds);
+  const spread = standardDeviation(sample);
+  return spread === null ? null : spread / furlongs;
 }
 
 function sameDayAdjustmentFor(
@@ -572,14 +561,9 @@ function sameDayAdjustmentFor(
   peerCount: number;
   stdevSecondsPerFurlong: number | null;
 } | null {
-  const sameDayRaces = sameDayGroups.get(sameDayKey(target)) ?? [];
-  const peers = sameDayRaces.filter(
-    (race) => race.raceId !== target.raceId,
-  );
+  const peers = (sameDayGroups.get(sameDayKey(target)) ?? [])
+    .filter((race) => race.raceId !== target.raceId);
   const peerValues = peers.map((race) => race.deviationSecondsPerFurlong);
-  if (peerValues.length < 2) {
-    return null;
-  }
   const adjustmentSecondsPerFurlong = median(peerValues);
   if (adjustmentSecondsPerFurlong === null) {
     return null;
@@ -587,10 +571,38 @@ function sameDayAdjustmentFor(
   return {
     adjustmentSecondsPerFurlong,
     peerCount: peerValues.length,
-    stdevSecondsPerFurlong: standardDeviation(
-      sameDayRaces.map((race) => race.deviationSecondsPerFurlong),
-    ),
+    stdevSecondsPerFurlong: standardDeviation(peerValues),
   };
+}
+
+function sourceTimingIssues(
+  deviations: RaceDeviation[],
+  sameDayGroups: Map<string, RaceDeviation[]>,
+): Set<string> {
+  const issues = new Set<string>();
+  for (const deviation of deviations) {
+    const sameDay = sameDayAdjustmentFor(deviation, sameDayGroups);
+    const sameDayEligible =
+      sameDay?.adjustmentSecondsPerFurlong !== null &&
+      sameDay?.peerCount !== undefined &&
+      sameDay.peerCount >= 3 &&
+      sameDay.stdevSecondsPerFurlong !== null &&
+      sameDay.stdevSecondsPerFurlong <= 0.3;
+    const finalStandard = sameDayEligible
+      ? deviation.baseStandardSeconds + (sameDay?.adjustmentSecondsPerFurlong ?? 0) *
+          (distanceYardsToFurlongs(deviation.distanceYards) ?? 0)
+      : deviation.baseStandardSeconds;
+    const winnerRating = ratingForStandard({
+      standardSeconds: finalStandard,
+      winningTimeSeconds: deviation.winningTimeSeconds,
+      cumulativeBeatenLengths: 0,
+      distanceYards: deviation.distanceYards,
+    }).rating;
+    if (winnerRating !== null && (winnerRating < 0 || winnerRating > 200)) {
+      issues.add(deviation.raceId);
+    }
+  }
+  return issues;
 }
 
 function cumulativeMargins(
@@ -614,24 +626,15 @@ function cumulativeMargins(
   return byRunnerId;
 }
 
-function standardKey(race: {
-  courseId: string;
-  distanceYards: number | null;
-}): string {
-  return `${race.courseId}:${race.distanceYards ?? "unknown"}`;
+function standardKey(race: { courseId: string; distanceYards: number | null }): string {
+  return `${race.courseId}:${race.distanceYards ?? "unknown"}:TURF`;
 }
 
-function sameDayKey(race: {
-  raceDate: string;
-  courseId: string;
-}): string {
-  return `${race.raceDate}:${race.courseId}`;
+function sameDayKey(race: { raceDate: string; courseId: string }): string {
+  return `${race.raceDate}:${race.courseId}:TURF`;
 }
 
-function groupBy<T>(
-  rows: T[],
-  keyForRow: (row: T) => string,
-): Map<string, T[]> {
+function groupBy<T>(rows: T[], keyForRow: (row: T) => string): Map<string, T[]> {
   const grouped = new Map<string, T[]>();
   for (const row of rows) {
     const key = keyForRow(row);

@@ -13,6 +13,10 @@ import {
   getTargetRunnerMetricsForDate,
   type HorseMetricsAsOf,
 } from "./horse-metrics";
+import {
+  isCurrentAllWeatherRace,
+  isCurrentOrdinaryFlatTurfRace,
+} from "./current-race-classification";
 
 type Db = ReturnType<typeof createDbConnection>["db"];
 
@@ -30,6 +34,7 @@ export type TodayRunner = {
   horseAge: number | null;
   horseSex: string | null;
   weight: string | null;
+  weightCarriedLbs: number | null;
   draw: number | null;
   jockeyName: string | null;
   trainerName: string | null;
@@ -53,6 +58,7 @@ export type TodayRace = {
   distance: string | null;
   distanceYards: number | null;
   going: string | null;
+  surface: string | null;
   declaredRunnerCount: number | null;
   actualRunnerCount: number | null;
   winningTime: string | null;
@@ -105,6 +111,7 @@ export type TodayRacecardRow = {
   distance: string | null;
   distanceYards: number | null;
   going: string | null;
+  surface: string | null;
   declaredRunnerCount: number | null;
   actualRunnerCount: number | null;
   winningTime: string | null;
@@ -120,6 +127,7 @@ export type TodayRacecardRow = {
   horseAge: number | null;
   horseSex: string | null;
   weight: string | null;
+  weightCarriedLbs: number | null;
   draw: number | null;
   jockeyName: string | null;
   trainerName: string | null;
@@ -289,6 +297,7 @@ export function groupTodaysRacingRows(
         distance: row.distance,
         distanceYards: row.distanceYards,
         going: row.going,
+        surface: row.surface,
         declaredRunnerCount: row.declaredRunnerCount,
         actualRunnerCount: row.actualRunnerCount,
         winningTime: row.winningTime,
@@ -307,6 +316,7 @@ export function groupTodaysRacingRows(
       horseAge: row.horseAge,
       horseSex: row.horseSex,
       weight: row.weight,
+      weightCarriedLbs: row.weightCarriedLbs,
       draw: row.draw,
       jockeyName: row.jockeyName,
       trainerName: row.trainerName,
@@ -379,6 +389,29 @@ export function isJumpRaceForDisplay(race: {
     text.includes("nh flat") ||
     text.includes("bumper")
   );
+}
+
+export function isAllWeatherRaceForDisplay(race: {
+  raceName: string | null;
+  raceType: string | null;
+  courseName?: string | null;
+  courseSourceId?: string | null;
+  going: string | null;
+  surface?: string | null;
+}): boolean {
+  return isCurrentAllWeatherRace(race);
+}
+
+export function isOrdinaryFlatTurfRaceForDisplay(race: {
+  raceName: string | null;
+  raceType: string | null;
+  raceTypeCode?: string | null;
+  courseName?: string | null;
+  courseSourceId?: string | null;
+  going: string | null;
+  surface?: string | null;
+}): boolean {
+  return isCurrentOrdinaryFlatTurfRace(race);
 }
 
 function compareMeetings(left: TodayMeeting, right: TodayMeeting): number {
@@ -489,6 +522,7 @@ async function getRacecardRows(
       distance: races.distance,
       distanceYards: races.distanceYards,
       going: races.going,
+      surface: sql<string | null>`${sourceImports.payload} #>> '{props,pageProps,race,race_summary,course_surface,surface}'`,
       declaredRunnerCount: races.declaredRunnerCount,
       actualRunnerCount: races.actualRunnerCount,
       winningTime: races.winningTime,
@@ -504,6 +538,7 @@ async function getRacecardRows(
       horseAge: raceRunners.horseAge,
       horseSex: raceRunners.horseSex,
       weight: raceRunners.weight,
+      weightCarriedLbs: raceRunners.weightCarriedLbs,
       draw: raceRunners.draw,
       jockeyName: jockeys.displayName,
       trainerName: trainers.displayName,
@@ -519,18 +554,19 @@ async function getRacecardRows(
     .innerJoin(horses, eq(raceRunners.horseId, horses.id))
     .leftJoin(jockeys, eq(raceRunners.jockeyId, jockeys.id))
     .leftJoin(trainers, eq(raceRunners.trainerId, trainers.id))
+    .innerJoin(
+      sourceImports,
+      and(
+        eq(sourceImports.source, SPORTING_LIFE_SOURCE),
+        eq(sourceImports.sourceType, RACECARD_SOURCE_TYPE),
+        eq(sourceImports.sourceId, races.sourceId),
+      ),
+    )
     .where(
       and(
         eq(races.source, SPORTING_LIFE_SOURCE),
         eq(raceRunners.source, SPORTING_LIFE_SOURCE),
         eq(races.raceDate, raceDate),
-        sql`exists (
-          select 1
-          from source_imports racecard_import
-          where racecard_import.source = ${SPORTING_LIFE_SOURCE}
-            and racecard_import.source_type = ${RACECARD_SOURCE_TYPE}
-            and racecard_import.source_id = ${races.sourceId}
-        )`,
       ),
     )
     .orderBy(
