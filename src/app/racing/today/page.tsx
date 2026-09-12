@@ -1,10 +1,13 @@
 import Link from "next/link";
 import { createDbConnection } from "@/db";
 import { listSavedResearchRulesWithDb } from "@/lib/racing/saved-research-rules";
+import { refreshEligibleTodaySelectionResults } from "@/lib/racing/today-result-refresh";
 import {
   attachFrozenRuleMatchesToToday,
+  buildTodayRuleSelections,
   summarizeTodayFrozenRuleMatches,
   type TodayFrozenRuleMatchSummary,
+  type TodayRuleSelections,
 } from "@/lib/racing/today-rule-matches";
 import {
   formatRaceTimeForDisplay,
@@ -18,6 +21,8 @@ import {
   type TodayRace,
   type TodayRunner,
 } from "@/lib/racing/todays-racing";
+import { refreshTodaySelectionResultsAction } from "./actions";
+import { RefreshResultsButton } from "./refresh-results-button";
 
 export const dynamic = "force-dynamic";
 
@@ -36,17 +41,28 @@ export default async function TodaysRacingPage({ searchParams }: PageProps) {
 
   try {
     connection = createDbConnection();
-    const data = await getTodaysRacingData(connection.db, raceDate);
+    let data = await getTodaysRacingData(connection.db, raceDate);
     const savedRules = await listSavedResearchRulesWithDb(connection.db);
-    await connection.client.end();
-    connection = null;
-    const frozenRulesChecked = savedRules.filter((rule) => rule.status === "frozen").length;
-    const displayData = data.status === "ok"
+    const attachMatches = () => data.status === "ok"
       ? {
           ...data,
           meetings: attachFrozenRuleMatchesToToday(data.meetings, savedRules, raceDate),
         }
       : data;
+    let displayData = attachMatches();
+    if (displayData.status === "ok") {
+      const refreshSummary = await refreshEligibleTodaySelectionResults(
+        displayData.meetings,
+        raceDate,
+      );
+      if (refreshSummary.imported > 0) {
+        data = await getTodaysRacingData(connection.db, raceDate);
+        displayData = attachMatches();
+      }
+    }
+    await connection.client.end();
+    connection = null;
+    const frozenRulesChecked = savedRules.filter((rule) => rule.status === "frozen").length;
     const matchSummary = summarizeTodayFrozenRuleMatches(
       displayData.status === "ok" ? displayData.meetings : [],
       frozenRulesChecked,
@@ -82,7 +98,13 @@ export default async function TodaysRacingPage({ searchParams }: PageProps) {
               ) : null}
             </div>
           </header>
-          <FrozenRuleMatchSummary summary={matchSummary} />
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <FrozenRuleMatchSummary summary={matchSummary} />
+            <form action={refreshTodaySelectionResultsAction} className="mt-4 sm:mt-0">
+              <input name="raceDate" type="hidden" value={raceDate} />
+              <RefreshResultsButton />
+            </form>
+          </div>
 
           {displayData.status === "empty" ? (
             <p className="mt-8 text-sm leading-6 text-slate-700">
@@ -118,6 +140,8 @@ function FrozenRuleMatchSummary({ summary }: { summary: TodayFrozenRuleMatchSumm
 }
 
 function TodaysRacing({ meetings }: { meetings: TodayMeeting[] }) {
+  const ruleSelections = buildTodayRuleSelections(meetings);
+
   return (
     <>
       <nav
@@ -142,7 +166,82 @@ function TodaysRacing({ meetings }: { meetings: TodayMeeting[] }) {
           <MeetingSection key={meeting.courseId} meeting={meeting} />
         ))}
       </div>
+      <TodayRuleSelectionsTable selections={ruleSelections} />
     </>
+  );
+}
+
+function TodayRuleSelectionsTable({ selections }: { selections: TodayRuleSelections }) {
+  return (
+    <section className="mt-10 border-t border-slate-300 pt-6">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h2 className="text-xl font-semibold tracking-normal">Today&apos;s rule selections</h2>
+          <p className="mt-1 text-sm text-slate-600">
+            Rule selections today: {selections.summary.selections}
+            {selections.summary.selections > 0 ? (
+              <>
+                {" "}· Settled: {selections.summary.settled} · Daily P/L:{" "}
+                {formatProfitLoss(selections.summary.profitLoss)}
+              </>
+            ) : null}
+          </p>
+        </div>
+      </div>
+
+      {selections.rows.length === 0 ? (
+        <p className="mt-4 text-sm text-slate-600">No frozen-rule selections today.</p>
+      ) : (
+        <div className="mt-4 overflow-x-auto">
+          <table className="w-full min-w-[880px] text-left text-sm">
+            <thead className="border-y border-slate-200 text-xs uppercase text-slate-500">
+              <tr>
+                <th className="py-2 pr-3 font-medium">Time</th>
+                <th className="py-2 pr-3 font-medium">Course</th>
+                <th className="py-2 pr-3 font-medium">Horse</th>
+                <th className="py-2 pr-3 font-medium">Rule</th>
+                <th className="py-2 pr-3 font-medium">Odds</th>
+                <th className="py-2 pr-3 font-medium">Result</th>
+                <th className="py-2 pr-3 font-medium">£1 P/L</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {selections.rows.map((selection) => (
+                <tr key={`${selection.raceId}:${selection.runnerId}`}>
+                  <td className="py-2 pr-3">{formatRaceTimeForDisplay(selection)}</td>
+                  <td className="py-2 pr-3">{selection.courseName}</td>
+                  <td className="py-2 pr-3">
+                    <Link
+                      className="font-medium text-emerald-800 hover:text-emerald-950 hover:underline"
+                      href={`/horses/${selection.horseId}`}
+                    >
+                      {selection.horseName}
+                    </Link>
+                    {selection.raceName ? (
+                      <div className="mt-0.5 max-w-xs truncate text-xs text-slate-500">
+                        {selection.raceName}
+                      </div>
+                    ) : null}
+                  </td>
+                  <td className="py-2 pr-3">
+                    <div className="max-w-xs text-slate-700">
+                      {selection.ruleNames.join("; ")}
+                    </div>
+                  </td>
+                  <td className="py-2 pr-3">{selection.odds ?? "-"}</td>
+                  <td className="py-2 pr-3">{selection.result}</td>
+                  <td className="py-2 pr-3">
+                    {selection.settlement
+                      ? formatProfitLoss(selection.settlement.profitLoss)
+                      : "—"}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </section>
   );
 }
 
@@ -475,6 +574,13 @@ function formatPercent(value: number | null): string {
 function formatMoney(value: number | null): string {
   if (value === null) return "-";
   return value < 0 ? `-£${Math.abs(value).toFixed(2)}` : `£${value.toFixed(2)}`;
+}
+
+function formatProfitLoss(value: number): string {
+  if (value < 0) {
+    return `-£${Math.abs(value).toFixed(2)}`;
+  }
+  return `+£${value.toFixed(2)}`;
 }
 
 function formatCountry(value: string): string {

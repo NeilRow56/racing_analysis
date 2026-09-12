@@ -4,9 +4,15 @@ import { defaultResearchRule, type ResearchRuleV1 } from "./research-rule";
 import type { SavedResearchRule } from "./saved-research-rules";
 import {
   attachFrozenRuleMatchesToToday,
+  buildTodayRuleSelections,
   summarizeTodayFrozenRuleMatches,
 } from "./today-rule-matches";
-import type { TodayMeeting, TodayRace, TodayRunner } from "./todays-racing";
+import type {
+  TodayMeeting,
+  TodayRace,
+  TodayRunner,
+  TodaySavedRuleMatch,
+} from "./todays-racing";
 
 describe("Today frozen rule matching", () => {
   test("matches only runners satisfying the full frozen rule with race-wide ranks", () => {
@@ -157,6 +163,192 @@ describe("Today frozen rule matching", () => {
   });
 });
 
+describe("Today rule selections", () => {
+  test("shows no selections summary and rows when no runners have matches", () => {
+    const selections = buildTodayRuleSelections([
+      meetingWithRace(race(), [runner("runner-rank-2", { latestPerformanceRating: 95 })]),
+    ]);
+
+    assert.deepEqual(selections.summary, {
+      selections: 0,
+      settled: 0,
+      profitLoss: 0,
+    });
+    assert.deepEqual(selections.rows, []);
+  });
+
+  test("includes one unsettled selection without counting it in P/L", () => {
+    const selections = buildTodayRuleSelections([
+      meetingWithRace(race(), [
+        runner("runner-unsettled", {}, { savedRuleMatches: [todayMatch("rule-a", "Rule A")] }),
+      ]),
+    ]);
+
+    assert.equal(selections.rows.length, 1);
+    assert.equal(selections.rows[0]?.result, "—");
+    assert.equal(selections.rows[0]?.settlement, null);
+    assert.deepEqual(selections.summary, {
+      selections: 1,
+      settled: 0,
+      profitLoss: 0,
+    });
+  });
+
+  test("settles a winning selection at 5/1 as plus five pounds", () => {
+    const selections = buildTodayRuleSelections([
+      meetingWithRace(race(), [
+        runner("runner-winner", {}, {
+          finishingPosition: 1,
+          odds: "5/1",
+          oddsDecimal: "6",
+          resultStatus: "finished",
+          savedRuleMatches: [todayMatch("rule-a", "Rule A")],
+        }),
+      ]),
+    ]);
+
+    assert.equal(selections.rows[0]?.result, "1");
+    assert.equal(selections.rows[0]?.settlement?.profitLoss, 5);
+    assert.deepEqual(selections.summary, {
+      selections: 1,
+      settled: 1,
+      profitLoss: 5,
+    });
+  });
+
+  test("settles a losing selection as minus one pound", () => {
+    const selections = buildTodayRuleSelections([
+      meetingWithRace(race(), [
+        runner("runner-loser", {}, {
+          finishingPosition: 2,
+          odds: "5/1",
+          oddsDecimal: "6",
+          resultStatus: "finished",
+          savedRuleMatches: [todayMatch("rule-a", "Rule A")],
+        }),
+      ]),
+    ]);
+
+    assert.equal(selections.rows[0]?.result, "2");
+    assert.equal(selections.rows[0]?.settlement?.profitLoss, -1);
+    assert.deepEqual(selections.summary, {
+      selections: 1,
+      settled: 1,
+      profitLoss: -1,
+    });
+  });
+
+  test("sums multiple settled selections and excludes unsettled runners", () => {
+    const selections = buildTodayRuleSelections([
+      meetingWithRace(race(), [
+        runner("runner-winner", {}, {
+          finishingPosition: 1,
+          oddsDecimal: "6",
+          resultStatus: "finished",
+          savedRuleMatches: [todayMatch("rule-a", "Rule A")],
+        }),
+        runner("runner-loser", {}, {
+          finishingPosition: 4,
+          oddsDecimal: "3",
+          resultStatus: "finished",
+          savedRuleMatches: [todayMatch("rule-b", "Rule B")],
+        }),
+        runner("runner-unsettled", {}, {
+          savedRuleMatches: [todayMatch("rule-c", "Rule C")],
+        }),
+      ]),
+    ]);
+
+    assert.deepEqual(selections.summary, {
+      selections: 3,
+      settled: 2,
+      profitLoss: 4,
+    });
+  });
+
+  test("keeps one row for a horse matching multiple rules and counts P/L once", () => {
+    const selections = buildTodayRuleSelections([
+      meetingWithRace(race(), [
+        runner("runner-multi-rule", {}, {
+          finishingPosition: 1,
+          odds: "5/1",
+          oddsDecimal: "6",
+          resultStatus: "finished",
+          savedRuleMatches: [
+            todayMatch("rule-a", "Rule A"),
+            todayMatch("rule-b", "Rule B"),
+          ],
+        }),
+      ]),
+    ]);
+
+    assert.equal(selections.rows.length, 1);
+    assert.deepEqual(selections.rows[0]?.ruleNames, ["Rule A", "Rule B"]);
+    assert.deepEqual(selections.summary, {
+      selections: 1,
+      settled: 1,
+      profitLoss: 5,
+    });
+  });
+
+  test("shows non-runners as unsettled and excludes them from the total", () => {
+    const selections = buildTodayRuleSelections([
+      meetingWithRace(race(), [
+        runner("runner-nr", {}, {
+          resultStatus: "non_runner",
+          odds: "5/1",
+          oddsDecimal: "6",
+          savedRuleMatches: [todayMatch("rule-a", "Rule A")],
+        }),
+      ]),
+    ]);
+
+    assert.equal(selections.rows[0]?.result, "NR");
+    assert.equal(selections.rows[0]?.settlement, null);
+    assert.deepEqual(selections.summary, {
+      selections: 1,
+      settled: 0,
+      profitLoss: 0,
+    });
+  });
+
+  test("sorts rows in race time order", () => {
+    const selections = buildTodayRuleSelections([
+      meetingWithRace(
+        race({
+          raceId: "race-late",
+          scheduledTime: "16:10:00",
+          raceDateTime: new Date("2026-09-11T15:10:00.000Z"),
+        }),
+        [
+          runner("runner-late", {}, {
+            horseName: "Late Horse",
+            savedRuleMatches: [todayMatch("rule-a", "Rule A")],
+          }),
+        ],
+      ),
+      meetingWithRace(
+        race({
+          raceId: "race-early",
+          scheduledTime: "13:40:00",
+          raceDateTime: new Date("2026-09-11T12:40:00.000Z"),
+        }),
+        [
+          runner("runner-early", {}, {
+            horseName: "Early Horse",
+            savedRuleMatches: [todayMatch("rule-a", "Rule A")],
+          }),
+        ],
+      ),
+    ]);
+
+    assert.deepEqual(
+      selections.rows.map((row) => row.horseName),
+      ["Early Horse", "Late Horse"],
+    );
+  });
+});
+
 function matchIds(
   rule: SavedResearchRule,
   raceOverrides: Partial<TodayRace> = {},
@@ -232,10 +424,26 @@ function savedRule(
       roiPercentage: 102.9076923076923,
       maxConsecutiveLosers: 5,
     },
+    holdoutSnapshot: null,
     cacheMetadata: null,
     createdAt: new Date("2026-09-11T10:00:00.000Z"),
     updatedAt: new Date("2026-09-11T10:00:00.000Z"),
     frozenAt: status === "frozen" ? new Date("2026-09-11T10:30:00.000Z") : null,
+  };
+}
+
+function todayMatch(ruleId: string, ruleName: string): TodaySavedRuleMatch {
+  return {
+    ruleId,
+    ruleName,
+    development: {
+      selections: 10,
+      winners: 4,
+      strikeRate: 40,
+      roiPercentage: 20,
+      profitLoss: 2,
+      maxConsecutiveLosers: 3,
+    },
   };
 }
 

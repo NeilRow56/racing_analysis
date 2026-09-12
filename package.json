@@ -31,6 +31,7 @@
     "sl:jump-rating-policy-diagnosis": "bun run scripts/diagnose-jump-rating-policy.ts",
     "sl:speed-research": "bun run scripts/sporting-life-speed-research.ts",
     "racing:backtest": "bun run scripts/run-racing-backtest.ts",
+    "backtest:build-holdout": "bun run scripts/build-racing-holdout-cache.ts",
     "racing:build-backtest-cache": "bun run scripts/build-racing-backtest-cache.ts",
     "db:studio": "drizzle-kit studio"
   },

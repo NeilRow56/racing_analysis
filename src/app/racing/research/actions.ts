@@ -9,6 +9,7 @@ import {
   deleteSavedResearchRule,
   freezeSavedResearchRule,
   saveFrozenResearchRuleSnapshot,
+  validateSavedResearchRuleHoldout,
   type DevelopmentResultSnapshot,
   type ResearchRuleCacheMetadata,
 } from "@/lib/racing/saved-research-rules";
@@ -37,6 +38,11 @@ export async function deleteSavedResearchRuleAction(formData: FormData) {
   await deleteSavedResearchRule(requiredText(formData.get("id"), "Saved rule ID"), {
     confirmFrozenDelete: formData.get("confirmFrozenDelete") === "yes",
   });
+  revalidatePath("/racing/research");
+}
+
+export async function validateSavedResearchRuleHoldoutAction(formData: FormData) {
+  await validateSavedResearchRuleHoldout(requiredText(formData.get("id"), "Saved rule ID"));
   revalidatePath("/racing/research");
 }
 

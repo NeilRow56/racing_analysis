@@ -199,6 +199,7 @@ export const savedResearchRules = pgTable(
     developmentFrom: date("development_from").notNull(),
     developmentTo: date("development_to").notNull(),
     developmentSnapshot: jsonb("development_snapshot").notNull(),
+    holdoutSnapshot: jsonb("holdout_snapshot"),
     cacheMetadata: jsonb("cache_metadata"),
     frozenAt: timestamp("frozen_at", { withTimezone: true }),
     ...timestamps(),

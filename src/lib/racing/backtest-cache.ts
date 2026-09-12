@@ -1,4 +1,4 @@
-import { mkdir, readFile, rename, rm, stat, writeFile } from "node:fs/promises";
+import { mkdir, readFile, readdir, rename, rm, stat, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { and, asc, eq, gte, lte, or, sql, type SQL } from "drizzle-orm";
 import { createDbConnection } from "@/db";
@@ -222,6 +222,55 @@ export async function loadBacktestFeatureCache(input: {
     })),
     directory,
   };
+}
+
+export async function loadLatestBacktestFeatureCacheForYear(input: {
+  year: string;
+  family: BacktestCacheFamily;
+  source?: string;
+  outputDir?: string;
+}): Promise<LoadedBacktestFeatureCache | null> {
+  const source = input.source ?? DEFAULT_SOURCE;
+  const root = input.outputDir ?? DEFAULT_BACKTEST_CACHE_DIR;
+  const from = `${input.year}-01-01`;
+  const toLimit = `${input.year}-12-31`;
+  let entries: string[];
+  try {
+    entries = await readdir(root);
+  } catch {
+    return null;
+  }
+
+  const manifests = await Promise.all(
+    entries.map(async (entry) => {
+      const manifest = await readManifest(join(root, entry));
+      if (!manifest) return null;
+      if (manifest.from !== from || manifest.to > toLimit) return null;
+      if (!isCompatibleManifest(manifest, {
+        from: manifest.from,
+        to: manifest.to,
+        family: input.family,
+        source,
+      })) {
+        return null;
+      }
+      return manifest;
+    }),
+  );
+  const latest = manifests
+    .filter((manifest): manifest is BacktestFeatureCacheManifest => manifest !== null)
+    .sort((left, right) => right.to.localeCompare(left.to))[0];
+  if (!latest) {
+    return null;
+  }
+
+  return loadBacktestFeatureCache({
+    from: latest.from,
+    to: latest.to,
+    family: input.family,
+    source,
+    outputDir: input.outputDir,
+  });
 }
 
 export function isCompatibleManifest(

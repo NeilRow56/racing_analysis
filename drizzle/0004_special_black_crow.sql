@@ -1,0 +1,1 @@
+ALTER TABLE "saved_research_rules" ADD COLUMN "holdout_snapshot" jsonb;

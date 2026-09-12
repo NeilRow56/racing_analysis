@@ -25,6 +25,7 @@ import {
 import { researchRuleKey } from "@/lib/racing/research-rule-identity";
 import {
   cacheMetadataFromResult,
+  canValidateHoldout,
   developmentSnapshotFromResult,
   listSavedResearchRules,
   type SavedResearchRule,
@@ -333,7 +334,7 @@ function SavedRulesSection({ savedRules }: { savedRules: SavedResearchRule[] }) 
         </div>
       ) : (
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[1120px] text-left text-sm">
+          <table className="w-full min-w-[1240px] text-left text-sm">
             <thead className="border-y border-slate-200 text-xs uppercase text-slate-500">
               <tr>
                 <th className="py-2 pr-3 font-medium">Name</th>
@@ -345,6 +346,7 @@ function SavedRulesSection({ savedRules }: { savedRules: SavedResearchRule[] }) 
                 <th className="py-2 pr-3 font-medium">ROI</th>
                 <th className="py-2 pr-3 font-medium">Strike</th>
                 <th className="py-2 pr-3 font-medium">Max losing run</th>
+                <th className="py-2 pr-3 font-medium">2026 Holdout</th>
                 <th className="py-2 pr-3 font-medium">Actions</th>
               </tr>
             </thead>
@@ -365,6 +367,9 @@ function SavedRulesSection({ savedRules }: { savedRules: SavedResearchRule[] }) 
                   <td className="py-3 pr-3 align-top">{formatPct(rule.developmentSnapshot.roiPercentage)}</td>
                   <td className="py-3 pr-3 align-top">{formatPct(rule.developmentSnapshot.strikeRate)}</td>
                   <td className="py-3 pr-3 align-top">{rule.developmentSnapshot.maxConsecutiveLosers}</td>
+                  <td className="py-3 pr-3 align-top">
+                    <HoldoutSummary rule={rule} />
+                  </td>
                   <td className="py-3 pr-3 align-top">
                     <SavedRuleActions rule={rule} />
                   </td>
@@ -404,6 +409,7 @@ function SavedRuleDetails({ rule }: { rule: SavedResearchRule }) {
           value={Object.entries(rule.cacheMetadata?.calculationVersions ?? {}).map(([key, value]) => `${key}=${value}`).join(", ") || "-"}
         />
       </dl>
+      <SavedRuleResultComparison rule={rule} />
       <Link
         className="inline-block font-medium text-emerald-800 hover:underline"
         href={`/racing/research?rule=${encodeURIComponent(JSON.stringify(rule.canonicalRule))}`}
@@ -414,10 +420,105 @@ function SavedRuleDetails({ rule }: { rule: SavedResearchRule }) {
   );
 }
 
+function HoldoutSummary({ rule }: { rule: SavedResearchRule }) {
+  const snapshot = rule.holdoutSnapshot;
+  if (!snapshot) {
+    return (
+      <div className="max-w-44 text-xs text-slate-500">
+        Holdout not run
+      </div>
+    );
+  }
+  return (
+    <div className="max-w-52 text-xs">
+      <div className="font-semibold text-slate-700">{holdoutStatusLabel(snapshot.status)}</div>
+      <div className="mt-1 text-slate-500">
+        {snapshot.holdoutFrom} to {snapshot.holdoutTo}
+      </div>
+      <div className="mt-1 text-slate-700">
+        {snapshot.selections} selections · {formatPct(snapshot.roiPercentage)} ROI
+      </div>
+    </div>
+  );
+}
+
+function SavedRuleResultComparison({ rule }: { rule: SavedResearchRule }) {
+  const holdout = rule.holdoutSnapshot;
+  if (!holdout) {
+    return (
+      <p className="text-xs text-slate-500">
+        Holdout not run.
+      </p>
+    );
+  }
+  return (
+    <div className="overflow-x-auto">
+      <table className="w-full min-w-[600px] text-left text-xs">
+        <thead className="border-y border-slate-200 uppercase text-slate-500">
+          <tr>
+            <th className="py-1 pr-2 font-medium">Sample</th>
+            <th className="py-1 pr-2 font-medium">Range</th>
+            <th className="py-1 pr-2 font-medium">Selections</th>
+            <th className="py-1 pr-2 font-medium">Settled</th>
+            <th className="py-1 pr-2 font-medium">Winners</th>
+            <th className="py-1 pr-2 font-medium">Strike</th>
+            <th className="py-1 pr-2 font-medium">Places</th>
+            <th className="py-1 pr-2 font-medium">Place strike</th>
+            <th className="py-1 pr-2 font-medium">P/L</th>
+            <th className="py-1 pr-2 font-medium">ROI</th>
+            <th className="py-1 pr-2 font-medium">Max losing run</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-slate-200">
+          <ResultComparisonRow
+            label="2025 Development"
+            range={`${rule.developmentFrom} to ${rule.developmentTo}`}
+            snapshot={rule.developmentSnapshot}
+          />
+          <ResultComparisonRow
+            label="2026 Holdout"
+            range={`${holdout.holdoutFrom} to ${holdout.holdoutTo}`}
+            snapshot={holdout}
+          />
+        </tbody>
+      </table>
+      <p className="mt-2 text-xs text-slate-500">
+        Holdout cache {holdout.cacheMetadata.featureSchemaVersion ?? "-"} · validated {formatDateTime(new Date(holdout.validatedAt))}
+      </p>
+    </div>
+  );
+}
+
+function ResultComparisonRow({
+  label,
+  range,
+  snapshot,
+}: {
+  label: string;
+  range: string;
+  snapshot: SavedResearchRule["developmentSnapshot"];
+}) {
+  return (
+    <tr>
+      <td className="py-1 pr-2 font-medium text-slate-700">{label}</td>
+      <td className="py-1 pr-2">{range}</td>
+      <td className="py-1 pr-2">{snapshot.selections}</td>
+      <td className="py-1 pr-2">{snapshot.settledSelections}</td>
+      <td className="py-1 pr-2">{snapshot.winners}</td>
+      <td className="py-1 pr-2">{formatPct(snapshot.strikeRate)}</td>
+      <td className="py-1 pr-2">{snapshot.places}</td>
+      <td className="py-1 pr-2">{formatPct(snapshot.placeStrikeRate)}</td>
+      <td className="py-1 pr-2">{formatMoney(snapshot.profitLoss)}</td>
+      <td className="py-1 pr-2">{formatPct(snapshot.roiPercentage)}</td>
+      <td className="py-1 pr-2">{snapshot.maxConsecutiveLosers}</td>
+    </tr>
+  );
+}
+
 function SavedRuleActions({ rule }: { rule: SavedResearchRule }) {
   return (
     <>
-      <SavedRuleActionForms id={rule.id} status={rule.status} />
+      <SavedRuleActionForms canValidateHoldout={canValidateHoldout(rule)} id={rule.id} status={rule.status} />
       {rule.status === "draft" ? (
         <p className="mt-1 max-w-48 text-xs text-slate-500">Freeze before future holdout validation.</p>
       ) : null}
@@ -470,6 +571,16 @@ function familyLabel(family: ResearchRuleV1["family"]) {
 
 function statusLabel(status: SavedResearchRule["status"]) {
   return status === "frozen" ? "Frozen" : "Draft";
+}
+
+function holdoutStatusLabel(status: NonNullable<SavedResearchRule["holdoutSnapshot"]>["status"]) {
+  if (status === "no_settled_holdout_selections") {
+    return "No settled holdout selections";
+  }
+  if (status === "insufficient_holdout_sample") {
+    return "Insufficient holdout sample";
+  }
+  return "2026 holdout completed";
 }
 
 function formatDateTime(value: Date) {

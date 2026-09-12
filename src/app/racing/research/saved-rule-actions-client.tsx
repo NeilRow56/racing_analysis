@@ -1,15 +1,19 @@
 "use client";
 
+import { useFormStatus } from "react-dom";
 import {
   deleteSavedResearchRuleAction,
   freezeSavedResearchRuleAction,
+  validateSavedResearchRuleHoldoutAction,
 } from "./actions";
 
 export function SavedRuleActionForms({
   id,
+  canValidateHoldout = false,
   status,
 }: {
   id: string;
+  canValidateHoldout?: boolean;
   status: "draft" | "frozen";
 }) {
   return (
@@ -34,6 +38,21 @@ export function SavedRuleActionForms({
           </button>
         </form>
       ) : null}
+      {canValidateHoldout ? (
+        <form
+          action={validateSavedResearchRuleHoldoutAction}
+          onSubmit={(event) => {
+            if (!window.confirm(
+              "Run this frozen rule once against the 2026 holdout cache? This records the official holdout result and cannot be rerun from the normal Research UI.",
+            )) {
+              event.preventDefault();
+            }
+          }}
+        >
+          <input name="id" type="hidden" value={id} />
+          <ValidateHoldoutButton />
+        </form>
+      ) : null}
       <form
         action={deleteSavedResearchRuleAction}
         onSubmit={(event) => {
@@ -53,4 +72,25 @@ export function SavedRuleActionForms({
       </form>
     </div>
   );
+}
+
+function ValidateHoldoutButton() {
+  const { pending } = useFormStatus();
+  return (
+    <button
+      className="border border-blue-700 px-3 py-1 text-xs font-semibold text-blue-800 hover:bg-blue-50 disabled:cursor-not-allowed disabled:opacity-60"
+      disabled={isValidateHoldoutSubmitDisabled(pending)}
+      type="submit"
+    >
+      {validateHoldoutSubmitButtonLabel(pending)}
+    </button>
+  );
+}
+
+export function validateHoldoutSubmitButtonLabel(pending: boolean): string {
+  return pending ? "Validating..." : "Validate on 2026 holdout";
+}
+
+export function isValidateHoldoutSubmitDisabled(pending: boolean): boolean {
+  return pending;
 }

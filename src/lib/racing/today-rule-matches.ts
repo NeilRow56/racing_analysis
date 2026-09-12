@@ -1,4 +1,5 @@
 import { classifyCurrentRaceFamily } from "./current-race-classification";
+import { settleSelection, type BacktestSettlement } from "./backtest";
 import type {
   HistoricalPostRaceOutcome,
   HistoricalPreRaceFeatureRow,
@@ -22,6 +23,30 @@ import type {
   TodayRunner,
   TodaySavedRuleMatch,
 } from "./todays-racing";
+
+export type TodayRuleSelectionRow = {
+  raceId: string;
+  runnerId: string;
+  horseId: string;
+  horseName: string;
+  courseName: string;
+  raceName: string | null;
+  scheduledTime: string | null;
+  raceDateTime: Date | null;
+  ruleNames: string[];
+  odds: string | null;
+  result: string;
+  settlement: BacktestSettlement | null;
+};
+
+export type TodayRuleSelections = {
+  rows: TodayRuleSelectionRow[];
+  summary: {
+    selections: number;
+    settled: number;
+    profitLoss: number;
+  };
+};
 
 export function attachFrozenRuleMatchesToToday(
   meetings: TodayMeeting[],
@@ -65,6 +90,50 @@ export function summarizeTodayFrozenRuleMatches(
     }
   }
   return { frozenRulesChecked, matchingRunners, ruleMatches };
+}
+
+export function buildTodayRuleSelections(meetings: TodayMeeting[]): TodayRuleSelections {
+  const rows: TodayRuleSelectionRow[] = [];
+
+  for (const meeting of meetings) {
+    for (const race of meeting.races) {
+      for (const runner of race.runners) {
+        const matches = runner.savedRuleMatches ?? [];
+        if (matches.length === 0) {
+          continue;
+        }
+        rows.push({
+          raceId: race.raceId,
+          runnerId: runner.runnerId,
+          horseId: runner.horseId,
+          horseName: runner.horseName,
+          courseName: meeting.courseName,
+          raceName: race.raceName,
+          scheduledTime: race.scheduledTime,
+          raceDateTime: race.raceDateTime,
+          ruleNames: matches.map((match) => match.ruleName),
+          odds: runner.odds,
+          result: resultLabelForTodayRunner(runner),
+          settlement: settleSelection(todayRunnerSettlementOutcome(race, runner)),
+        });
+      }
+    }
+  }
+
+  rows.sort(compareTodayRuleSelectionRows);
+
+  const settledRows = rows.filter((row) => row.settlement !== null);
+  return {
+    rows,
+    summary: {
+      selections: rows.length,
+      settled: settledRows.length,
+      profitLoss: settledRows.reduce(
+        (total, row) => total + (row.settlement?.profitLoss ?? 0),
+        0,
+      ),
+    },
+  };
 }
 
 function raceWithFrozenRuleMatches(
@@ -276,6 +345,74 @@ function todayRunnerOutcome(
     startingPrice: null,
     startingPriceDecimal: null,
   };
+}
+
+function todayRunnerSettlementOutcome(
+  race: TodayRace,
+  runner: TodayRunner,
+): HistoricalPostRaceOutcome {
+  return {
+    targetRaceId: race.raceId,
+    targetRunnerId: runner.runnerId,
+    finishingPosition: runner.finishingPosition,
+    resultStatus: runner.resultStatus,
+    won: runner.finishingPosition === null ? null : runner.finishingPosition === 1,
+    placed: runner.finishingPosition === null
+      ? null
+      : runner.finishingPosition >= 1 && runner.finishingPosition <= 3,
+    startingPrice: runner.odds,
+    startingPriceDecimal: runner.oddsDecimal,
+  };
+}
+
+function resultLabelForTodayRunner(runner: TodayRunner): string {
+  if (runner.resultStatus === "non_runner") {
+    return "NR";
+  }
+  if (runner.finishingPosition !== null) {
+    return String(runner.finishingPosition);
+  }
+  if (!runner.resultStatus) {
+    return "—";
+  }
+  return resultStatusLabel(runner.resultStatus);
+}
+
+function resultStatusLabel(value: string): string {
+  const labels: Record<string, string> = {
+    fell: "F",
+    pulled_up: "PU",
+    refused: "REF",
+    unseated_rider: "UR",
+  };
+  return labels[value] ?? value.replaceAll("_", " ").toUpperCase();
+}
+
+function compareTodayRuleSelectionRows(
+  left: TodayRuleSelectionRow,
+  right: TodayRuleSelectionRow,
+): number {
+  return compareNullableStrings(selectionTimeSortKey(left), selectionTimeSortKey(right)) ||
+    left.courseName.localeCompare(right.courseName) ||
+    (left.raceName ?? "").localeCompare(right.raceName ?? "") ||
+    left.horseName.localeCompare(right.horseName);
+}
+
+function selectionTimeSortKey(row: Pick<TodayRuleSelectionRow, "raceDateTime" | "scheduledTime">): string | null {
+  return row.raceDateTime?.toISOString() ?? row.scheduledTime ?? null;
+}
+
+function compareNullableStrings(left: string | null, right: string | null): number {
+  if (left === right) {
+    return 0;
+  }
+  if (left === null) {
+    return 1;
+  }
+  if (right === null) {
+    return -1;
+  }
+  return left.localeCompare(right);
 }
 
 function speedFieldsForFamily(

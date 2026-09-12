@@ -1,6 +1,7 @@
 import { desc, eq } from "drizzle-orm";
 import { createDbConnection } from "@/db";
 import { savedResearchRules } from "@/db/schema";
+import { evaluateHoldoutForSavedRule } from "./research-holdout";
 import {
   RESEARCH_RULE_VERSION,
   parseResearchRule,
@@ -41,6 +42,22 @@ export type ResearchRuleCacheMetadata = {
   calculationVersions: Record<string, string>;
 };
 
+export type HoldoutResultStatus =
+  | "completed"
+  | "no_settled_holdout_selections"
+  | "insufficient_holdout_sample";
+
+export type HoldoutResultSnapshot = DevelopmentResultSnapshot & {
+  holdoutYear: "2026";
+  holdoutFrom: string;
+  holdoutTo: string;
+  validatedAt: string;
+  ruleSchemaVersion: string;
+  ruleIdentity: string;
+  cacheMetadata: ResearchRuleCacheMetadata;
+  status: HoldoutResultStatus;
+};
+
 export type SavedResearchRule = {
   id: string;
   name: string;
@@ -53,6 +70,7 @@ export type SavedResearchRule = {
   developmentFrom: string;
   developmentTo: string;
   developmentSnapshot: DevelopmentResultSnapshot;
+  holdoutSnapshot: HoldoutResultSnapshot | null;
   cacheMetadata: ResearchRuleCacheMetadata | null;
   createdAt: Date;
   updatedAt: Date;
@@ -97,6 +115,10 @@ export async function freezeSavedResearchRule(id: string): Promise<SavedResearch
 
 export async function deleteSavedResearchRule(id: string, input: { confirmFrozenDelete?: boolean } = {}): Promise<void> {
   return withSavedResearchRulesDb((db) => deleteSavedResearchRuleWithDb(db, id, input));
+}
+
+export async function validateSavedResearchRuleHoldout(id: string): Promise<SavedResearchRule> {
+  return withSavedResearchRulesDb((db) => validateSavedResearchRuleHoldoutWithDb(db, id));
 }
 
 export async function replaceDraftResearchRule(input: {
@@ -221,6 +243,24 @@ export async function replaceDraftResearchRuleWithDb(
   return savedResearchRuleFromRow(updated);
 }
 
+export async function validateSavedResearchRuleHoldoutWithDb(db: Db, id: string): Promise<SavedResearchRule> {
+  const existing = savedResearchRuleFromRow(await findSavedResearchRuleRow(db, id));
+  assertCanValidateHoldout(existing);
+  const holdoutSnapshot = await evaluateHoldoutForSavedRule(existing);
+
+  const [updated] = await db.update(savedResearchRules)
+    .set({
+      holdoutSnapshot,
+      updatedAt: new Date(),
+    })
+    .where(eq(savedResearchRules.id, id))
+    .returning();
+  if (!updated) {
+    throw new Error(`Saved research rule not found: ${id}`);
+  }
+  return savedResearchRuleFromRow(updated);
+}
+
 export function prepareSavedResearchRule(input: SaveResearchRuleSnapshotInput): PreparedSavedResearchRule {
   const name = input.name.trim();
   if (!name) {
@@ -232,8 +272,22 @@ export function prepareSavedResearchRule(input: SaveResearchRuleSnapshotInput): 
     notes: normalizedNotes(input.notes),
     status: "draft",
     ...preparedRuleDefinitionFieldsFromSnapshot(input),
+    holdoutSnapshot: null,
     frozenAt: null,
   };
+}
+
+export function canValidateHoldout(rule: SavedResearchRule): boolean {
+  return rule.status === "frozen" && rule.holdoutSnapshot === null;
+}
+
+export function assertCanValidateHoldout(rule: SavedResearchRule): void {
+  if (rule.status !== "frozen") {
+    throw new Error("Only frozen research rules can be validated on the 2026 holdout");
+  }
+  if (rule.holdoutSnapshot) {
+    throw new Error("2026 holdout has already been completed for this research rule");
+  }
 }
 
 export function developmentSnapshotFromResult(result: ResearchResult): DevelopmentResultSnapshot {
@@ -279,6 +333,7 @@ export function savedResearchRuleFromRow(row: SavedResearchRuleRow): SavedResear
     developmentFrom: row.developmentFrom,
     developmentTo: row.developmentTo,
     developmentSnapshot: row.developmentSnapshot as DevelopmentResultSnapshot,
+    holdoutSnapshot: row.holdoutSnapshot as HoldoutResultSnapshot | null,
     cacheMetadata: row.cacheMetadata as ResearchRuleCacheMetadata | null,
     createdAt: row.createdAt,
     updatedAt: row.updatedAt,

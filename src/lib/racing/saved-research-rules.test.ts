@@ -12,6 +12,8 @@ import {
 } from "./research-rule-identity";
 import {
   developmentSnapshotFromResult,
+  assertCanValidateHoldout,
+  canValidateHoldout,
   freezeSavedResearchRuleRecord,
   prepareFrozenSavedResearchRule,
   prepareSavedResearchRule,
@@ -108,6 +110,7 @@ describe("saved research rules", () => {
       developmentFrom: "2025-01-01",
       developmentTo: "2025-12-31",
       developmentSnapshot: developmentSnapshotFromResult(researchResult(defaultResearchRule("jump"))),
+      holdoutSnapshot: null,
       cacheMetadata: null,
       createdAt: new Date("2026-09-11T10:00:00.000Z"),
       updatedAt: new Date("2026-09-11T10:00:00.000Z"),
@@ -141,6 +144,7 @@ describe("saved research rules", () => {
       ...prepared,
       notes: prepared.notes ?? null,
       status: prepared.status ?? "draft",
+      holdoutSnapshot: prepared.holdoutSnapshot ?? null,
       cacheMetadata: prepared.cacheMetadata ?? null,
       frozenAt: prepared.frozenAt ?? null,
     });
@@ -191,6 +195,21 @@ describe("saved research rules", () => {
       /Frozen research rule definitions cannot be replaced/,
     );
     assert.equal(frozen.ruleIdentity, researchRuleKey(defaultResearchRule("jump")));
+  });
+
+  test("holdout validation is only available for frozen rules without a snapshot", () => {
+    const draft = savedRuleFor(defaultResearchRule("jump"), "draft");
+    const frozen = savedRuleFor(defaultResearchRule("jump"), "frozen");
+    const alreadyValidated = {
+      ...frozen,
+      holdoutSnapshot: holdoutSnapshotFor(frozen),
+    };
+
+    assert.equal(canValidateHoldout(draft), false);
+    assert.equal(canValidateHoldout(frozen), true);
+    assert.equal(canValidateHoldout(alreadyValidated), false);
+    assert.throws(() => assertCanValidateHoldout(draft), /Only frozen research rules/);
+    assert.throws(() => assertCanValidateHoldout(alreadyValidated), /already been completed/);
   });
 
   test("equivalent canonical rules retain identity and material changes alter it", () => {
@@ -251,10 +270,40 @@ function savedRuleFor(rule: ResearchRuleV1, status: SavedResearchRule["status"])
     developmentFrom: rule.dateRange.from,
     developmentTo: rule.dateRange.to,
     developmentSnapshot: developmentSnapshotFromResult(researchResult(rule)),
+    holdoutSnapshot: null,
     cacheMetadata: null,
     createdAt: new Date("2026-09-11T10:00:00.000Z"),
     updatedAt: new Date("2026-09-11T10:00:00.000Z"),
     frozenAt: status === "frozen" ? new Date("2026-09-11T10:30:00.000Z") : null,
+  };
+}
+
+function holdoutSnapshotFor(rule: SavedResearchRule): NonNullable<SavedResearchRule["holdoutSnapshot"]> {
+  return {
+    holdoutYear: "2026",
+    holdoutFrom: "2026-01-01",
+    holdoutTo: "2026-12-31",
+    validatedAt: "2026-09-12T10:00:00.000Z",
+    ruleSchemaVersion: RESEARCH_RULE_VERSION,
+    ruleIdentity: rule.ruleIdentity,
+    cacheMetadata: {
+      featureSchemaVersion: "backtest_features_v2",
+      sourceFeatureVersion: "historical_target_metrics_v2",
+      cacheFamily: rule.family,
+      cacheGeneratedAt: "2026-09-12T09:00:00.000Z",
+      calculationVersions: {},
+    },
+    status: "completed",
+    eligibleRunners: 10,
+    selections: 3,
+    settledSelections: 3,
+    winners: 1,
+    strikeRate: 33.333,
+    places: 2,
+    placeStrikeRate: 66.667,
+    profitLoss: 1.5,
+    roiPercentage: 50,
+    maxConsecutiveLosers: 1,
   };
 }
 
