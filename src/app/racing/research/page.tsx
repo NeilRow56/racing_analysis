@@ -33,6 +33,7 @@ import {
 import {
   saveResearchRuleAction,
 } from "./actions";
+import { holdoutRangeText } from "./holdout-display";
 import { ResearchWorkspace } from "./research-form-client";
 import { ResearchHorseNameLink } from "./research-horse-link";
 import { SaveRuleSubmitButton } from "./save-rule-submit-button";
@@ -433,7 +434,7 @@ function HoldoutSummary({ rule }: { rule: SavedResearchRule }) {
     <div className="max-w-52 text-xs">
       <div className="font-semibold text-slate-700">{holdoutStatusLabel(snapshot.status)}</div>
       <div className="mt-1 text-slate-500">
-        {snapshot.holdoutFrom} to {snapshot.holdoutTo}
+        {holdoutRangeText(snapshot)}
       </div>
       <div className="mt-1 text-slate-700">
         {snapshot.selections} selections · {formatPct(snapshot.roiPercentage)} ROI
@@ -477,7 +478,7 @@ function SavedRuleResultComparison({ rule }: { rule: SavedResearchRule }) {
           />
           <ResultComparisonRow
             label="2026 Holdout"
-            range={`${holdout.holdoutFrom} to ${holdout.holdoutTo}`}
+            range={holdoutRangeText(holdout)}
             snapshot={holdout}
           />
         </tbody>

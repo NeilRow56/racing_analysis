@@ -28,6 +28,7 @@ import {
   isSaveRuleSubmitDisabled,
   saveRuleSubmitButtonLabel,
 } from "./save-rule-submit-button";
+import { holdoutRangeText } from "./holdout-display";
 
 describe("research filters page", () => {
   test("renders racing-friendly weight, handicap and speed-rating labels", async () => {
@@ -380,6 +381,40 @@ describe("research filter freshness state", () => {
     assert.equal(saveRuleSubmitButtonLabel(true), "Saving...");
     assert.equal(isSaveRuleSubmitDisabled(false), false);
     assert.equal(isSaveRuleSubmitDisabled(true), true);
+  });
+
+  test("holdout range display uses actual cache row coverage, not requested cache window", () => {
+    assert.equal(
+      holdoutRangeText({
+        holdoutYear: "2026",
+        holdoutFrom: "2026-01-01",
+        holdoutTo: "2026-09-11",
+        requestedCacheFrom: "2026-01-01",
+        requestedCacheTo: "2026-12-31",
+        validatedAt: "2026-09-12T10:00:00.000Z",
+        ruleSchemaVersion: "research_rule_v1",
+        ruleIdentity: "rule",
+        cacheMetadata: {
+          featureSchemaVersion: "backtest_features_v2",
+          sourceFeatureVersion: "historical_target_metrics_v2",
+          cacheFamily: "jump",
+          cacheGeneratedAt: "2026-09-12T09:00:00.000Z",
+          calculationVersions: {},
+        },
+        status: "completed",
+        eligibleRunners: 10,
+        selections: 3,
+        settledSelections: 3,
+        winners: 1,
+        strikeRate: 33.333,
+        places: 2,
+        placeStrikeRate: 66.667,
+        profitLoss: 1.5,
+        roiPercentage: 50,
+        maxConsecutiveLosers: 1,
+      }),
+      "2026-01-01 to 2026-09-11",
+    );
   });
 });
 

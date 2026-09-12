@@ -24,13 +24,18 @@ import {
   calculateWeightAdjustedPerformance,
   type WeightAdjustedPerformance,
 } from "./weight-performance";
+import {
+  calculateTrainerPriorMetricsForTargets,
+  getTrainerPriorMetricsForTargets,
+  type TrainerPriorMetrics,
+} from "./trainer-quality";
 
 type Db = ReturnType<typeof createDbConnection>["db"];
 
 const QUERY_CHUNK_SIZE = 5_000;
 const RESULT_SOURCE_TYPE = "full-result-next-data";
 
-export const BACKTEST_FEATURE_SOURCE_VERSION = "historical_target_metrics_v2";
+export const BACKTEST_FEATURE_SOURCE_VERSION = "historical_target_metrics_v3";
 const RETURN_FROM_BREAK_THRESHOLD_DAYS = 90;
 
 export type HistoricalRaceCode = "jump" | "aw" | "turf" | "unsupported";
@@ -49,6 +54,9 @@ export type HistoricalPreRaceFeatureRow = {
   horseName: string;
   trainerId: string | null;
   trainerName: string | null;
+  trainerPriorRuns: number;
+  trainerPriorWins: number;
+  trainerPriorWinRate: number | null;
   raceDateTime: Date;
   raceDate: string;
   courseId: string;
@@ -175,6 +183,7 @@ export type HistoricalTargetRow = {
 
 export type HistoricalCandidateRun = HistoricalRunInput & {
   runnerId: string;
+  trainerId: string | null;
   raceTypeCode?: string | null;
   surface?: string | null;
   weightCarriedLbs?: number | null;
@@ -200,6 +209,7 @@ export async function getHistoricalTargetRunnerMetrics(
   }
 
   const candidateRuns = await loadCandidateRuns(db, source, targets);
+  const trainerMetrics = await getTrainerPriorMetricsForTargets(db, targets, source);
   const runnerIds = candidateRuns.map((run) => run.runnerId);
   const ratingFamily = input.ratingFamily ?? "all";
   const [jumpRatings, awRatings, turfRatings] = await Promise.all([
@@ -216,6 +226,7 @@ export async function getHistoricalTargetRunnerMetrics(
 
   return buildHistoricalTargetRunnerMetricRows({
     targets,
+    trainerMetrics,
     candidateRuns: candidateRuns.map((run) => ({
       ...run,
       jumpSpeedRating: jumpRatings.get(run.runnerId) ?? null,
@@ -228,9 +239,11 @@ export async function getHistoricalTargetRunnerMetrics(
 export function buildHistoricalTargetRunnerMetricRows({
   targets,
   candidateRuns,
+  trainerMetrics,
 }: {
   targets: HistoricalTargetRow[];
   candidateRuns: HistoricalCandidateRun[];
+  trainerMetrics?: Map<string, TrainerPriorMetrics>;
 }): HistoricalTargetRunnerMetricsRow[] {
   const runsByHorse = new Map<string, HistoricalCandidateRun[]>();
   for (const run of candidateRuns) {
@@ -238,6 +251,7 @@ export function buildHistoricalTargetRunnerMetricRows({
     runs.push(run);
     runsByHorse.set(run.horseId, runs);
   }
+  const trainerPriorMetrics = trainerMetrics ?? calculateTrainerPriorMetricsForTargets(targets, candidateRuns);
 
   return targets.map((target) => {
     const raceCode = classifyHistoricalRaceCode(target);
@@ -265,6 +279,11 @@ export function buildHistoricalTargetRunnerMetricRows({
       target.weightCarriedLbs,
     );
     const latestSpeedMeta = latestSpeedMetaForRaceCode(raceCode, priorRuns);
+    const trainerMetricsForTarget = trainerPriorMetrics.get(target.targetRunnerId) ?? {
+      trainerPriorRuns: 0,
+      trainerPriorWins: 0,
+      trainerPriorWinRate: null,
+    };
 
     return {
       features: {
@@ -275,6 +294,9 @@ export function buildHistoricalTargetRunnerMetricRows({
         horseName: target.horseName,
         trainerId: target.trainerId,
         trainerName: target.trainerName,
+        trainerPriorRuns: trainerMetricsForTarget.trainerPriorRuns,
+        trainerPriorWins: trainerMetricsForTarget.trainerPriorWins,
+        trainerPriorWinRate: trainerMetricsForTarget.trainerPriorWinRate,
         raceDateTime: target.raceDateTime,
         raceDate: target.raceDate,
         courseId: target.courseId,
@@ -451,6 +473,7 @@ async function loadCandidateRuns(
           .select({
             source: raceRunners.source,
             runnerId: raceRunners.id,
+            trainerId: raceRunners.trainerId,
             horseId: raceRunners.horseId,
             raceDateTime: races.raceDatetime,
             raceDate: races.raceDate,

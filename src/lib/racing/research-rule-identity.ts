@@ -47,6 +47,8 @@ export function canonicalResearchRule(rule: ResearchRuleV1) {
       weightCarriedLbs: canonicalRange(rule.runner.weightCarriedLbs),
       daysSinceRun: canonicalRange(rule.runner.daysSinceRun),
       priorRuns: canonicalRange(rule.runner.priorRuns),
+      trainerPriorRuns: canonicalRange(rule.runner.trainerPriorRuns),
+      trainerPriorWinRate: canonicalRange(rule.runner.trainerPriorWinRate),
     }),
     ratings: rule.ratings.map(canonicalRatingCondition),
     relatives: rule.relatives.map(canonicalRelativeCondition),

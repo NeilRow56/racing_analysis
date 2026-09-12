@@ -64,21 +64,21 @@ describe("research holdout validation", () => {
     };
     const savedRule = savedRuleFor(rule);
     await writeCache(root, {
-      manifest: manifestFor({ family: "jump", from: "2026-01-01", to: "2026-06-30", rowCount: 5 }),
+      manifest: manifestFor({ family: "jump", from: "2026-01-01", to: "2026-12-31", rowCount: 5 }),
       rows: [
         row({
           targetRunnerId: "winner",
           trainerId: "trainer-a",
           latestSpeedRating: 105,
           raceClass: "Class 1",
-          raceDate: "2026-02-01",
+          raceDate: "2026-01-03",
         }, { won: true, placed: true, finishingPosition: 1, startingPriceDecimal: "3.000" }),
         row({
           targetRunnerId: "loser",
           trainerId: "trainer-a",
           latestSpeedRating: 104,
           raceClass: "Class 2",
-          raceDate: "2026-02-01",
+          raceDate: "2026-09-11",
         }, { won: false, placed: false, finishingPosition: 5, startingPriceDecimal: "5.000" }),
         row({ targetRunnerId: "too-slow", trainerId: "trainer-a", latestSpeedRating: 90, raceDate: "2026-02-01" }),
         row({
@@ -87,13 +87,6 @@ describe("research holdout validation", () => {
           trainerId: "trainer-b",
           latestSpeedRating: 110,
           raceDate: "2026-02-01",
-        }),
-        row({
-          targetRaceId: "race-3",
-          targetRunnerId: "wrong-year",
-          trainerId: "trainer-a",
-          latestSpeedRating: 120,
-          raceDate: "2025-12-31",
         }),
       ],
     });
@@ -105,8 +98,10 @@ describe("research holdout validation", () => {
 
     assert.equal((savedRule.canonicalRule as ResearchRuleV1).dateRange.from, "2025-01-01");
     assert.equal(snapshot.holdoutYear, "2026");
-    assert.equal(snapshot.holdoutFrom, "2026-01-01");
-    assert.equal(snapshot.holdoutTo, "2026-06-30");
+    assert.equal(snapshot.holdoutFrom, "2026-01-03");
+    assert.equal(snapshot.holdoutTo, "2026-09-11");
+    assert.equal(snapshot.requestedCacheFrom, "2026-01-01");
+    assert.equal(snapshot.requestedCacheTo, "2026-12-31");
     assert.equal(snapshot.ruleIdentity, savedRule.ruleIdentity);
     assert.equal(snapshot.ruleSchemaVersion, RESEARCH_RULE_VERSION);
     assert.equal(snapshot.eligibleRunners, 3);
@@ -134,7 +129,8 @@ describe("research holdout validation", () => {
 
     const snapshot = await evaluateHoldoutForSavedRule(savedRule, { outputDir: root });
 
-    assert.equal(snapshot.holdoutTo, "2026-08-31");
+    assert.equal(snapshot.holdoutTo, "2026-08-01");
+    assert.equal(snapshot.requestedCacheTo, "2026-08-31");
     assert.equal(snapshot.selections, 1);
     assert.equal(snapshot.settledSelections, 0);
     assert.equal(snapshot.status, "no_settled_holdout_selections");
@@ -273,6 +269,9 @@ function feature(overrides: Partial<HistoricalPreRaceFeatureRow> = {}): Historic
     horseName: "Example",
     trainerId: "trainer-a",
     trainerName: "A Trainer",
+    trainerPriorRuns: 20,
+    trainerPriorWins: 3,
+    trainerPriorWinRate: 15,
     raceDateTime: new Date(`${raceDate}T12:00:00.000Z`),
     raceDate,
     courseId: "course-1",

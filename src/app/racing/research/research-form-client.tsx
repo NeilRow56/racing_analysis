@@ -234,6 +234,13 @@ export const ResearchForm = ({
         <InputField label="Days since run max" name="daysMax" type="number" value={rule.runner.daysSinceRun?.max} />
         <InputField label="Prior runs min" name="priorRunsMin" type="number" value={rule.runner.priorRuns?.min} />
         <InputField label="Prior runs max" name="priorRunsMax" type="number" value={rule.runner.priorRuns?.max} />
+        <InputField label="Trainer prior runners min" name="trainerPriorRunsMin" type="number" value={rule.runner.trainerPriorRuns?.min} />
+        <InputField label="Trainer prior runners max" name="trainerPriorRunsMax" type="number" value={rule.runner.trainerPriorRuns?.max} />
+        <InputField label="Trainer prior strike rate min %" name="trainerPriorWinRateMin" step="0.1" type="number" value={rule.runner.trainerPriorWinRate?.min} />
+        <InputField label="Trainer prior strike rate max %" name="trainerPriorWinRateMax" step="0.1" type="number" value={rule.runner.trainerPriorWinRate?.max} />
+        <div className="md:col-span-2 rounded border border-slate-200 bg-slate-50 p-3 text-sm text-slate-600">
+          Calculated from the trainer&apos;s settled runs before each race. No future races are used.
+        </div>
       </FilterGroup>
 
       <FilterGroup title="Speed Rating And OR-Relative Filters">
@@ -342,6 +349,8 @@ export function researchRuleFromFormData(formData: FormData): ResearchRuleV1 {
       weightCarriedLbs: rangeFromFormData(formData, "weightMin", "weightMax"),
       daysSinceRun: rangeFromFormData(formData, "daysMin", "daysMax"),
       priorRuns: rangeFromFormData(formData, "priorRunsMin", "priorRunsMax"),
+      trainerPriorRuns: rangeFromFormData(formData, "trainerPriorRunsMin", "trainerPriorRunsMax"),
+      trainerPriorWinRate: rangeFromFormData(formData, "trainerPriorWinRateMin", "trainerPriorWinRateMax"),
     },
     ratings: ratingMetric && ratingRange ? [{ metric: ratingMetric, range: ratingRange }] : [],
     relatives: relativeMetric && relativeRange ? [{ metric: relativeMetric, range: relativeRange }] : [],
@@ -563,11 +572,13 @@ function raceClassSelectionLabel(classes: number[]): string {
 function InputField({
   label,
   name,
+  step,
   type = "text",
   value,
 }: {
   label: string;
   name: string;
+  step?: string;
   type?: string;
   value?: string | number;
 }) {
@@ -578,6 +589,7 @@ function InputField({
         className="mt-1 w-full border border-slate-300 bg-white px-3 py-2 text-sm"
         defaultValue={value ?? ""}
         name={name}
+        step={step}
         type={type}
       />
     </label>

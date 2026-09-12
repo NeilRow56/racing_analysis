@@ -15,6 +15,7 @@ import {
   assertCanValidateHoldout,
   canValidateHoldout,
   freezeSavedResearchRuleRecord,
+  holdoutSnapshotWithActualCoverage,
   prepareFrozenSavedResearchRule,
   prepareSavedResearchRule,
   replaceDraftResearchRuleRecord,
@@ -210,6 +211,48 @@ describe("saved research rules", () => {
     assert.equal(canValidateHoldout(alreadyValidated), false);
     assert.throws(() => assertCanValidateHoldout(draft), /Only frozen research rules/);
     assert.throws(() => assertCanValidateHoldout(alreadyValidated), /already been completed/);
+  });
+
+  test("backfilled holdout coverage updates dates without changing performance numbers", () => {
+    const frozen = savedRuleFor(defaultResearchRule("jump"), "frozen");
+    const original = holdoutSnapshotFor(frozen);
+
+    const corrected = holdoutSnapshotWithActualCoverage(original, {
+      actualFrom: "2026-01-01",
+      actualTo: "2026-09-11",
+    }, {
+      from: "2026-01-01",
+      to: "2026-12-31",
+    });
+
+    assert.equal(corrected.holdoutFrom, "2026-01-01");
+    assert.equal(corrected.holdoutTo, "2026-09-11");
+    assert.equal(corrected.requestedCacheFrom, "2026-01-01");
+    assert.equal(corrected.requestedCacheTo, "2026-12-31");
+    assert.deepEqual(
+      {
+        selections: corrected.selections,
+        settledSelections: corrected.settledSelections,
+        winners: corrected.winners,
+        strikeRate: corrected.strikeRate,
+        places: corrected.places,
+        placeStrikeRate: corrected.placeStrikeRate,
+        profitLoss: corrected.profitLoss,
+        roiPercentage: corrected.roiPercentage,
+        maxConsecutiveLosers: corrected.maxConsecutiveLosers,
+      },
+      {
+        selections: original.selections,
+        settledSelections: original.settledSelections,
+        winners: original.winners,
+        strikeRate: original.strikeRate,
+        places: original.places,
+        placeStrikeRate: original.placeStrikeRate,
+        profitLoss: original.profitLoss,
+        roiPercentage: original.roiPercentage,
+        maxConsecutiveLosers: original.maxConsecutiveLosers,
+      },
+    );
   });
 
   test("equivalent canonical rules retain identity and material changes alter it", () => {

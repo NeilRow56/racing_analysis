@@ -22,7 +22,7 @@ import type { BacktestRaceSegment } from "./backtest";
 
 type Db = ReturnType<typeof createDbConnection>["db"];
 
-export const BACKTEST_FEATURE_CACHE_VERSION = "backtest_features_v2";
+export const BACKTEST_FEATURE_CACHE_VERSION = "backtest_features_v3";
 export const DEFAULT_BACKTEST_CACHE_DIR = "data/research/backtest-cache";
 
 export type BacktestCacheFamily = BacktestRaceSegment | "all";
@@ -73,6 +73,12 @@ export type LoadedBacktestFeatureCache = {
   manifest: BacktestFeatureCacheManifest;
   rows: HistoricalTargetRunnerMetricsRow[];
   directory: string;
+  actualCoverage: BacktestFeatureCacheActualCoverage | null;
+};
+
+export type BacktestFeatureCacheActualCoverage = {
+  actualFrom: string;
+  actualTo: string;
 };
 
 const DEFAULT_SOURCE = "sporting_life";
@@ -214,13 +220,16 @@ export async function loadBacktestFeatureCache(input: {
     return null;
   }
 
+  const rows = features.map((feature, index) => ({
+    features: feature,
+    outcome: outcomes[index]!,
+  }));
+
   return {
     manifest,
-    rows: features.map((feature, index) => ({
-      features: feature,
-      outcome: outcomes[index]!,
-    })),
+    rows,
     directory,
+    actualCoverage: actualCoverageForRows(rows),
   };
 }
 
@@ -313,6 +322,18 @@ export function rowsFromCachedParts(input: {
     features,
     outcome: input.outcomes[index]!,
   }));
+}
+
+export function actualCoverageForRows(
+  rows: HistoricalTargetRunnerMetricsRow[],
+): BacktestFeatureCacheActualCoverage | null {
+  const dates = rows
+    .map((row) => row.features.raceDate)
+    .filter((date) => /^\d{4}-\d{2}-\d{2}$/.test(date))
+    .sort();
+  const actualFrom = dates[0];
+  const actualTo = dates.at(-1);
+  return actualFrom && actualTo ? { actualFrom, actualTo } : null;
 }
 
 type SerializedHistoricalPreRaceFeatureRow =

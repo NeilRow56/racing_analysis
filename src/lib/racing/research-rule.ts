@@ -44,6 +44,8 @@ export type ResearchRuleV1 = {
     weightCarriedLbs?: NumericCondition;
     daysSinceRun?: NumericCondition;
     priorRuns?: NumericCondition;
+    trainerPriorRuns?: NumericCondition;
+    trainerPriorWinRate?: NumericCondition;
   };
   ratings: RatingCondition[];
   relatives: RelativeCondition[];
@@ -133,6 +135,7 @@ export type ResearchMissingData = {
   noTodaysRating: number;
   noOr: number;
   noWeight: number;
+  noTrainerPriorHistory: number;
   noSettlementSp: number;
   nonRunnerOrUnsettled: number;
 };
@@ -421,6 +424,8 @@ export function ruleFromSearchParams(params: URLSearchParams): ResearchRuleV1 {
     weightCarriedLbs: weightRangeFromParams(params, "weightMin", "weightMax"),
     daysSinceRun: rangeFromParams(params, "daysMin", "daysMax"),
     priorRuns: rangeFromParams(params, "priorRunsMin", "priorRunsMax"),
+    trainerPriorRuns: rangeFromParams(params, "trainerPriorRunsMin", "trainerPriorRunsMax"),
+    trainerPriorWinRate: rangeFromParams(params, "trainerPriorWinRateMin", "trainerPriorWinRateMax"),
   };
 
   const ratingMetric = metricParam<RatingMetric>(params.get("ratingMetric"), RATING_METRIC_OPTIONS);
@@ -638,7 +643,9 @@ export function matchesRunnerConditions(features: HistoricalPreRaceFeatureRow, r
     rangeMatches(features.officialRating, rule.runner.officialRating) &&
     rangeMatches(features.weightCarriedLbs, rule.runner.weightCarriedLbs) &&
     rangeMatches(features.daysSinceLastRun, rule.runner.daysSinceRun) &&
-    rangeMatches(features.priorRuns, rule.runner.priorRuns);
+    rangeMatches(features.priorRuns, rule.runner.priorRuns) &&
+    rangeMatches(features.trainerPriorRuns, rule.runner.trainerPriorRuns) &&
+    rangeMatches(features.trainerPriorWinRate, rule.runner.trainerPriorWinRate);
 }
 
 export function matchesRatingConditions(features: HistoricalPreRaceFeatureRow, rule: ResearchRuleV1): boolean {
@@ -682,6 +689,7 @@ function missingDataFor(rows: RankedResearchRow[]): ResearchMissingData {
     noTodaysRating: rows.filter((row) => row.features.latestTodaysRating === null).length,
     noOr: rows.filter((row) => row.features.officialRating === null).length,
     noWeight: rows.filter((row) => row.features.weightCarriedLbs === null).length,
+    noTrainerPriorHistory: rows.filter((row) => row.features.trainerPriorRuns === 0).length,
     noSettlementSp: rows.filter((row) => row.outcome.startingPriceDecimal === null).length,
     nonRunnerOrUnsettled: rows.filter((row) => settleSelection(row.outcome) === null).length,
   };
@@ -707,6 +715,8 @@ export function strategySummary(rule: ResearchRuleV1): string[] {
   pushWeightRange(lines, "Weight", rule.runner.weightCarriedLbs);
   pushRange(lines, "Days since run", rule.runner.daysSinceRun);
   pushRange(lines, "Prior runs", rule.runner.priorRuns);
+  pushRange(lines, "Trainer prior runners", rule.runner.trainerPriorRuns);
+  pushRange(lines, "Trainer prior strike rate", rule.runner.trainerPriorWinRate, "%");
   for (const condition of rule.ratings) {
     pushRange(lines, labelForMetric(condition.metric), condition.range);
   }

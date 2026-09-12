@@ -1,6 +1,7 @@
 import { desc, eq } from "drizzle-orm";
 import { createDbConnection } from "@/db";
 import { savedResearchRules } from "@/db/schema";
+import type { BacktestFeatureCacheActualCoverage } from "./backtest-cache";
 import { evaluateHoldoutForSavedRule } from "./research-holdout";
 import {
   RESEARCH_RULE_VERSION,
@@ -51,6 +52,8 @@ export type HoldoutResultSnapshot = DevelopmentResultSnapshot & {
   holdoutYear: "2026";
   holdoutFrom: string;
   holdoutTo: string;
+  requestedCacheFrom?: string;
+  requestedCacheTo?: string;
   validatedAt: string;
   ruleSchemaVersion: string;
   ruleIdentity: string;
@@ -288,6 +291,20 @@ export function assertCanValidateHoldout(rule: SavedResearchRule): void {
   if (rule.holdoutSnapshot) {
     throw new Error("2026 holdout has already been completed for this research rule");
   }
+}
+
+export function holdoutSnapshotWithActualCoverage(
+  snapshot: HoldoutResultSnapshot,
+  coverage: BacktestFeatureCacheActualCoverage,
+  requestedCacheRange: { from: string; to: string },
+): HoldoutResultSnapshot {
+  return {
+    ...snapshot,
+    holdoutFrom: coverage.actualFrom,
+    holdoutTo: coverage.actualTo,
+    requestedCacheFrom: snapshot.requestedCacheFrom ?? requestedCacheRange.from,
+    requestedCacheTo: snapshot.requestedCacheTo ?? requestedCacheRange.to,
+  };
 }
 
 export function developmentSnapshotFromResult(result: ResearchResult): DevelopmentResultSnapshot {

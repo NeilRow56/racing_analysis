@@ -17,6 +17,10 @@ import {
   isCurrentAllWeatherRace,
   isCurrentOrdinaryFlatTurfRace,
 } from "./current-race-classification";
+import {
+  getTrainerPriorMetricsForTargets,
+  type TrainerPriorMetrics,
+} from "./trainer-quality";
 
 type Db = ReturnType<typeof createDbConnection>["db"];
 
@@ -45,6 +49,7 @@ export type TodayRunner = {
   resultStatus: string | null;
   finishingPosition: number | null;
   metrics: HorseMetricsAsOf | null;
+  trainerMetrics?: TrainerPriorMetrics;
   savedRuleMatches?: TodaySavedRuleMatch[];
 };
 
@@ -266,13 +271,24 @@ export async function getTodaysRacingData(
   const metricsByRunnerId = new Map(
     metricRows.map((row) => [row.target.runnerId, row.metrics]),
   );
+  const trainerMetricsByRunnerId = await getTrainerPriorMetricsForTargets(
+    db,
+    rows
+      .filter((row): row is TodayRacecardRow & { raceDateTime: Date } => row.raceDateTime !== null)
+      .map((row) => ({
+        targetRunnerId: row.runnerId,
+        trainerId: row.trainerId,
+        raceDateTime: row.raceDateTime,
+      })),
+    SPORTING_LIFE_SOURCE,
+  );
 
   return {
     status: "ok",
     raceDate,
     displayDate,
     refreshedAt,
-    meetings: groupTodaysRacingRows(rows, meetingOrder, metricsByRunnerId),
+    meetings: groupTodaysRacingRows(rows, meetingOrder, metricsByRunnerId, trainerMetricsByRunnerId),
   };
 }
 
@@ -280,6 +296,7 @@ export function groupTodaysRacingRows(
   rows: TodayRacecardRow[],
   meetingOrder: Map<string, number> = new Map(),
   metricsByRunnerId: Map<string, HorseMetricsAsOf> = new Map(),
+  trainerMetricsByRunnerId: Map<string, TrainerPriorMetrics> = new Map(),
 ): TodayMeeting[] {
   const meetingsByCourseId = new Map<string, TodayMeeting>();
   const racesById = new Map<string, TodayRace>();
@@ -343,6 +360,7 @@ export function groupTodaysRacingRows(
       resultStatus: row.resultStatus,
       finishingPosition: row.finishingPosition,
       metrics: metricsByRunnerId.get(row.runnerId) ?? null,
+      trainerMetrics: trainerMetricsByRunnerId.get(row.runnerId),
     });
   }
 

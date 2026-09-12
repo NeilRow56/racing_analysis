@@ -12,6 +12,7 @@ import {
 import {
   BACKTEST_FEATURE_CACHE_VERSION,
   cacheDirectory,
+  actualCoverageForRows,
   isCompatibleManifest,
   loadBacktestFeatureCache,
   rowsFromCachedParts,
@@ -88,6 +89,19 @@ describe("backtest feature cache", () => {
     assert.equal(cached?.rows[0]?.features.raceDateTime instanceof Date, true);
     assert.equal(cached?.rows[0]?.features.latestSpeedRating, null);
     assert.equal(cached?.rows[0]?.outcome.startingPriceDecimal, null);
+  });
+
+  test("derives actual race-date coverage from cache rows when requested range is wider", async () => {
+    const rows = [
+      row({ targetRunnerId: "middle", raceDate: "2026-05-01" }),
+      row({ targetRunnerId: "first", raceDate: "2026-01-03" }),
+      row({ targetRunnerId: "last", raceDate: "2026-09-11" }),
+    ];
+
+    assert.deepEqual(actualCoverageForRows(rows), {
+      actualFrom: "2026-01-03",
+      actualTo: "2026-09-11",
+    });
   });
 
   test("cached feature parity gives identical selections to live rows", () => {
@@ -239,6 +253,9 @@ function feature(
     horseName: "Example",
     trainerId: "trainer-1",
     trainerName: "A Trainer",
+    trainerPriorRuns: 20,
+    trainerPriorWins: 3,
+    trainerPriorWinRate: 15,
     raceDateTime: new Date("2025-01-01T12:00:00.000Z"),
     raceDate: "2025-01-01",
     courseId: "course-1",

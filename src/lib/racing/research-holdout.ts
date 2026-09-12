@@ -33,6 +33,9 @@ export async function evaluateHoldoutForSavedRule(
   if (!cached) {
     throw new Error(HOLDOUT_CACHE_MISSING_MESSAGE);
   }
+  if (!cached.actualCoverage) {
+    throw new Error("2026 holdout cache contains no dated race rows.");
+  }
 
   const canonicalRule = parseResearchRule(JSON.stringify(savedRule.canonicalRule));
   if (!canonicalRule) {
@@ -41,8 +44,8 @@ export async function evaluateHoldoutForSavedRule(
   const rule: ResearchRuleV1 = {
     ...canonicalRule,
     dateRange: {
-      from: cached.manifest.from,
-      to: cached.manifest.to,
+      from: cached.actualCoverage.actualFrom,
+      to: cached.actualCoverage.actualTo,
     },
   };
   const result = evaluateResearchRule({
@@ -53,16 +56,24 @@ export async function evaluateHoldoutForSavedRule(
 
   return holdoutSnapshotFromResult(result, {
     ruleIdentity: savedRule.ruleIdentity,
+    requestedCacheFrom: cached.manifest.from,
+    requestedCacheTo: cached.manifest.to,
     validatedAt: input.validatedAt ?? new Date(),
   });
 }
 
 export function holdoutSnapshotFromResult(
   result: ResearchResult,
-  input: { ruleIdentity?: string; validatedAt: Date },
+  input: {
+    ruleIdentity?: string;
+    requestedCacheFrom?: string;
+    requestedCacheTo?: string;
+    validatedAt: Date;
+  },
 ): HoldoutResultSnapshot {
   const cacheMetadata = cacheMetadataFromHoldoutResult(result);
-  if (!cacheMetadata) {
+  const cache = result.cache;
+  if (!cacheMetadata || !cache) {
     throw new Error(HOLDOUT_CACHE_MISSING_MESSAGE);
   }
 
@@ -70,6 +81,8 @@ export function holdoutSnapshotFromResult(
     holdoutYear: HOLDOUT_YEAR,
     holdoutFrom: result.rule.dateRange.from,
     holdoutTo: result.rule.dateRange.to,
+    requestedCacheFrom: input.requestedCacheFrom ?? cache.manifest.from,
+    requestedCacheTo: input.requestedCacheTo ?? cache.manifest.to,
     validatedAt: input.validatedAt.toISOString(),
     ruleSchemaVersion: RESEARCH_RULE_VERSION,
     ruleIdentity: input.ruleIdentity ?? researchRuleKey(result.rule),

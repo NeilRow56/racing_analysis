@@ -53,6 +53,7 @@ function run(
   return {
     source: "sporting_life",
     horseId: "horse-1",
+    trainerId: "trainer-1",
     courseId: "course-perth",
     courseName: "Perth",
     raceName: "Handicap Chase",
