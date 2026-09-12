@@ -21,6 +21,7 @@ import {
   type TodayRace,
   type TodayRunner,
 } from "@/lib/racing/todays-racing";
+import { todayRaceStatusLabel } from "@/lib/racing/today-race-status";
 import { refreshTodaySelectionResultsAction } from "./actions";
 import { RefreshResultsButton } from "./refresh-results-button";
 
@@ -272,7 +273,7 @@ function RaceBlock({ race }: { race: TodayRace }) {
   const isJumpRace = isJumpRaceForDisplay(race);
   const isAllWeatherRace = isAllWeatherRaceForDisplay(race);
   const isTurfRace = isOrdinaryFlatTurfRaceForDisplay(race);
-  const completed = isCompletedRace(race);
+  const statusLabel = todayRaceStatusLabel(race);
 
   return (
     <section className="border-b border-slate-200 pb-7">
@@ -282,9 +283,9 @@ function RaceBlock({ race }: { race: TodayRace }) {
             <time className="text-lg font-semibold">
               {formatRaceTimeForDisplay(race)}
             </time>
-            {completed ? (
+            {statusLabel ? (
               <span className="border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-xs font-semibold text-emerald-800">
-                Result
+                {statusLabel}
               </span>
             ) : null}
           </div>
@@ -597,12 +598,4 @@ function formatCountry(value: string): string {
     return "Wales";
   }
   return value;
-}
-
-function isCompletedRace(race: TodayRace): boolean {
-  return Boolean(
-    race.winningTime ||
-      race.actualRunnerCount !== null ||
-      race.runners.some((runner) => runner.finishingPosition !== null),
-  );
 }

@@ -11,8 +11,10 @@ import {
 } from "./backtest";
 import {
   BACKTEST_FEATURE_CACHE_VERSION,
+  DEFAULT_CACHE_BUILD_BATCH_SIZE,
   cacheDirectory,
   actualCoverageForRows,
+  featureTargetBatches,
   isCompatibleManifest,
   loadBacktestFeatureCache,
   rowsFromCachedParts,
@@ -141,6 +143,21 @@ describe("backtest feature cache", () => {
     const chunkA = [selection("a", "2025-01-01", false), selection("b", "2025-01-02", false)];
     const chunkB = [selection("c", "2025-01-03", false), selection("d", "2025-01-04", true)];
     assert.equal(summarizeSelections([...chunkB, ...chunkA]).maxConsecutiveLosers, 3);
+  });
+
+  test("splits feature targets into bounded batches without losing or duplicating IDs", () => {
+    const ids = Array.from(
+      { length: DEFAULT_CACHE_BUILD_BATCH_SIZE + 1 },
+      (_, index) => `runner-${index}`,
+    );
+    const batches = featureTargetBatches(ids);
+    const flattened = batches.flat();
+
+    assert.equal(batches.length, 2);
+    assert.equal(batches[0]?.length, DEFAULT_CACHE_BUILD_BATCH_SIZE);
+    assert.equal(batches[1]?.length, 1);
+    assert.deepEqual(flattened, ids);
+    assert.equal(new Set(flattened).size, ids.length);
   });
 
   test("stale cache is rejected before feature files are used", async () => {

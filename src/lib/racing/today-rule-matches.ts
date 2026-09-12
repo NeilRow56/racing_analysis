@@ -192,11 +192,19 @@ function canEvaluateRuleForTodayRunner(rule: ResearchRuleV1, runner: TodayRunner
   if (runner.resultStatus === "non_runner") {
     return false;
   }
+  if (hasTrainerMetricDependentConditions(rule) && !runner.trainerMetrics) {
+    return false;
+  }
   if (runner.metrics !== null) {
     return true;
   }
 
   return !hasMetricDependentConditions(rule);
+}
+
+function hasTrainerMetricDependentConditions(rule: ResearchRuleV1): boolean {
+  return Boolean(rule.runner.trainerPriorRuns) ||
+    Boolean(rule.runner.trainerPriorWinRate);
 }
 
 function hasMetricDependentConditions(rule: ResearchRuleV1): boolean {

@@ -1,6 +1,12 @@
 import assert from "node:assert/strict";
 import { describe, test } from "node:test";
 import {
+  BACKTEST_FEATURE_CACHE_VERSION,
+} from "./backtest-cache";
+import {
+  BACKTEST_FEATURE_SOURCE_VERSION,
+} from "./historical-target-metrics";
+import {
   RESEARCH_RULE_VERSION,
   defaultResearchRule,
   type ResearchResult,
@@ -384,6 +390,7 @@ function researchResult(
       noTodaysRating: 0,
       noOr: 0,
       noWeight: 0,
+      noTrainerPriorHistory: 0,
       noSettlementSp: 0,
       nonRunnerOrUnsettled: 1,
     },
@@ -391,8 +398,8 @@ function researchResult(
     cache: {
       directory: "data/research/backtest-cache/test",
       manifest: {
-        featureSchemaVersion: "backtest_features_v2",
-        sourceFeatureVersion: "historical_target_metrics_v2",
+        featureSchemaVersion: BACKTEST_FEATURE_CACHE_VERSION,
+        sourceFeatureVersion: BACKTEST_FEATURE_SOURCE_VERSION,
         source: "sporting_life",
         from: "2025-01-01",
         to: "2025-12-31",

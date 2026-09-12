@@ -92,6 +92,32 @@ describe("Today frozen rule matching", () => {
     assert.deepEqual(matched, []);
   });
 
+  test("matches trainer-quality rules only when current trainer metrics satisfy them", () => {
+    const rule = exampleFrozenRule({
+      runner: {
+        trainerId: "trainer-burke",
+        trainerPriorRuns: { min: 50 },
+        trainerPriorWinRate: { min: 10, max: 20 },
+      },
+      ratings: [],
+      ranks: [],
+    });
+
+    assert.deepEqual(
+      matchIds(rule, {}, { trainerMetrics: { trainerPriorRuns: 80, trainerPriorWins: 12, trainerPriorWinRate: 15 } }),
+      ["runner-rank-1", "runner-rank-2", "runner-rank-3", "runner-rank-4"],
+    );
+    assert.deepEqual(
+      matchIds(rule, {}, { trainerMetrics: { trainerPriorRuns: 49, trainerPriorWins: 8, trainerPriorWinRate: 16.3265306122449 } }),
+      [],
+    );
+    assert.deepEqual(
+      matchIds(rule, {}, { trainerMetrics: { trainerPriorRuns: 80, trainerPriorWins: 0, trainerPriorWinRate: null } }),
+      [],
+    );
+    assert.deepEqual(matchIds(rule), []);
+  });
+
   test("summarizes zero frozen rules and zero matches", () => {
     const [displayMeeting] = attachFrozenRuleMatchesToToday(
       [meetingWithRace(race(), [runner("runner-rank-2", { latestPerformanceRating: 95 })])],

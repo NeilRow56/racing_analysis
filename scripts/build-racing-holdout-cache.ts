@@ -25,6 +25,7 @@ async function main() {
       rows.push({
         directory: result.directory,
         targetRunnerIds: result.counts.targetRunnerIds,
+        batches: result.counts.featureBatches,
         rows: result.manifest.rowCount,
         family: result.manifest.family,
         from: result.manifest.from,

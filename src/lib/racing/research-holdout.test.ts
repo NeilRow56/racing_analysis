@@ -111,7 +111,7 @@ describe("research holdout validation", () => {
     assert.equal(snapshot.places, 1);
     assert.equal(snapshot.profitLoss, 1);
     assert.equal(snapshot.roiPercentage, 50);
-    assert.equal(snapshot.maxConsecutiveLosers, 0);
+    assert.equal(snapshot.maxConsecutiveLosers, 1);
     assert.equal(snapshot.status, "insufficient_holdout_sample");
   });
 
@@ -206,6 +206,7 @@ function savedRuleFor(rule: ResearchRuleV1): SavedResearchRule {
         noTodaysRating: 0,
         noOr: 0,
         noWeight: 0,
+        noTrainerPriorHistory: 0,
         noSettlementSp: 0,
         nonRunnerOrUnsettled: 0,
       },

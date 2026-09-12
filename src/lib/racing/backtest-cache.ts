@@ -24,6 +24,7 @@ type Db = ReturnType<typeof createDbConnection>["db"];
 
 export const BACKTEST_FEATURE_CACHE_VERSION = "backtest_features_v3";
 export const DEFAULT_BACKTEST_CACHE_DIR = "data/research/backtest-cache";
+export const DEFAULT_CACHE_BUILD_BATCH_SIZE = 5_000;
 
 export type BacktestCacheFamily = BacktestRaceSegment | "all";
 
@@ -67,6 +68,7 @@ export type BacktestCacheBuildTimings = {
 export type BacktestCacheBuildCounts = {
   targetRunnerIds: number;
   featureRows: number;
+  featureBatches: number;
 };
 
 export type LoadedBacktestFeatureCache = {
@@ -118,9 +120,12 @@ export async function buildBacktestFeatureCache(input: {
   const featureStart = performance.now();
   input.onProgress?.("building backtest-safe feature rows");
   const allRows: HistoricalTargetRunnerMetricsRow[] = [];
-  const buildBatchSize = input.batchSize ?? targetRunnerIds.length;
+  const featureBatches = featureTargetBatches(
+    targetRunnerIds,
+    input.batchSize ?? DEFAULT_CACHE_BUILD_BATCH_SIZE,
+  );
   let processedTargets = 0;
-  for (const chunk of chunks(targetRunnerIds, Math.max(1, buildBatchSize))) {
+  for (const [batchIndex, chunk] of featureBatches.entries()) {
     allRows.push(
       ...(await getHistoricalTargetRunnerMetrics(input.db, {
         source,
@@ -129,9 +134,10 @@ export async function buildBacktestFeatureCache(input: {
       })),
     );
     processedTargets += chunk.length;
-    if (targetRunnerIds.length > buildBatchSize) {
+    if (featureBatches.length > 1) {
       input.onProgress?.(
-        `built features for ${processedTargets}/${targetRunnerIds.length} targets`,
+        `built features for ${processedTargets}/${targetRunnerIds.length} targets ` +
+          `(${batchIndex + 1}/${featureBatches.length} batches)`,
       );
     }
   }
@@ -190,6 +196,7 @@ export async function buildBacktestFeatureCache(input: {
     counts: {
       targetRunnerIds: targetRunnerIds.length,
       featureRows: rows.length,
+      featureBatches: featureBatches.length,
     },
     heapUsedMb: heapUsedMb(),
   };
@@ -322,6 +329,13 @@ export function rowsFromCachedParts(input: {
     features,
     outcome: input.outcomes[index]!,
   }));
+}
+
+export function featureTargetBatches<T>(
+  targetRunnerIds: T[],
+  batchSize = DEFAULT_CACHE_BUILD_BATCH_SIZE,
+): T[][] {
+  return chunks(targetRunnerIds, Math.max(1, batchSize));
 }
 
 export function actualCoverageForRows(

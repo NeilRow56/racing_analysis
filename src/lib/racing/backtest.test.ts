@@ -351,41 +351,46 @@ describe("backtest scoring", () => {
     assert.equal(settleSelection(outcome({ startingPriceDecimal: null })), null);
   });
 
-  test("calculates max consecutive losing races in chronological order", () => {
-    const selections: BacktestSelection[] = [
-      selection("r1-a", "2025-01-01", true, 3, "race-1"),
-      selection("r2-a", "2025-01-02", false, -1, "race-2"),
-      selection("r3-a", "2025-01-03", false, -1, "race-3"),
-      selection("r4-a", "2025-01-04", true, 3, "race-4"),
-      selection("r5-a", "2025-01-05", false, -1, "race-5"),
-    ];
+  test("max losing run is zero with no settled selections", () => {
+    const unsettled = selection("unsettled", "2025-01-01", false, -1, "race-1");
 
-    assert.equal(summarizeSelections(selections).maxConsecutiveLosers, 2);
+    assert.equal(
+      summarizeSelections([
+        { ...unsettled, settlement: null, outcome: { ...unsettled.outcome, startingPriceDecimal: null } },
+      ]).maxConsecutiveLosers,
+      0,
+    );
   });
 
-  test("max losing run is zero when every settled race has a selected winner", () => {
+  test("max losing run is zero when every settled selection wins", () => {
     const selections: BacktestSelection[] = [
-      selection("r1-a", "2025-01-01", false, -1, "race-1"),
-      selection("r1-b", "2025-01-01", true, 3, "race-1"),
-      selection("r2-a", "2025-01-02", false, -1, "race-2"),
-      selection("r2-b", "2025-01-02", true, 2, "race-2"),
+      selection("r1-a", "2025-01-01", true, 3, "race-1"),
+      selection("r2-a", "2025-01-02", true, 2, "race-2"),
     ];
 
     assert.equal(summarizeSelections(selections).maxConsecutiveLosers, 0);
   });
 
-  test("a winning selection in a multi-selection race resets race-level losing run", () => {
-    const selections: BacktestSelection[] = [
-      selection("r1-a", "2025-01-01", false, -1, "race-1"),
-      selection("r1-b", "2025-01-01", true, 3, "race-1"),
-      selection("r2-a", "2025-01-02", false, -1, "race-2"),
-      selection("r3-a", "2025-01-03", false, -1, "race-3"),
-    ];
-
-    assert.equal(summarizeSelections(selections).maxConsecutiveLosers, 2);
+  test("one losing selection gives max losing run one", () => {
+    assert.equal(
+      summarizeSelections([selection("r1-a", "2025-01-01", false, -1, "race-1")])
+        .maxConsecutiveLosers,
+      1,
+    );
   });
 
-  test("max losing run ignores races with no settled selected runners", () => {
+  test("three losing selections then a winner gives max losing run three", () => {
+    const selections: BacktestSelection[] = [
+      selection("r1-a", "2025-01-01", false, -1, "race-1"),
+      selection("r2-a", "2025-01-02", false, -1, "race-2"),
+      selection("r3-a", "2025-01-03", false, -1, "race-3"),
+      selection("r4-a", "2025-01-04", true, 3, "race-4"),
+    ];
+
+    assert.equal(summarizeSelections(selections).maxConsecutiveLosers, 3);
+  });
+
+  test("unsettled selections are skipped and do not reset a losing run", () => {
     const unsettled = selection("r2-a", "2025-01-02", false, -1, "race-2");
     const selections: BacktestSelection[] = [
       selection("r1-a", "2025-01-01", false, -1, "race-1"),
@@ -394,6 +399,49 @@ describe("backtest scoring", () => {
     ];
 
     assert.equal(summarizeSelections(selections).maxConsecutiveLosers, 2);
+  });
+
+  test("winning selection resets max losing run even within the same race", () => {
+    const selections: BacktestSelection[] = [
+      selection("r1-a", "2025-01-01", false, -1, "race-1"),
+      selection("r1-b", "2025-01-01", true, 3, "race-1"),
+      selection("r2-a", "2025-01-02", false, -1, "race-2"),
+    ];
+
+    assert.equal(summarizeSelections(selections).maxConsecutiveLosers, 1);
+  });
+
+  test("max losing run uses deterministic chronological selection ordering", () => {
+    const selections: BacktestSelection[] = [
+      selection("late-loss", "2025-01-03", false, -1, "race-3"),
+      selection("early-loss", "2025-01-01", false, -1, "race-1"),
+      selection("middle-loss", "2025-01-02", false, -1, "race-2"),
+      selection("late-win", "2025-01-04", true, 3, "race-4"),
+    ];
+
+    assert.equal(summarizeSelections(selections).maxConsecutiveLosers, 3);
+  });
+
+  test("large mixed fixture returns non-zero max losing run when losses are present", () => {
+    const baseTime = new Date("2025-02-01T12:00:00.000Z").getTime();
+    const selections = Array.from({ length: 100 }, (_, index) => {
+      const entry = selection(
+        `runner-${index}`,
+        "2025-02-01",
+        index === 75,
+        index === 75 ? 10 : -1,
+        `race-${index}`,
+      );
+      return {
+        ...entry,
+        features: {
+          ...entry.features,
+          raceDateTime: new Date(baseTime + index * 60_000),
+        },
+      };
+    });
+
+    assert.equal(summarizeSelections(selections).maxConsecutiveLosers, 75);
   });
 
   test("assigns fixed odds bands", () => {

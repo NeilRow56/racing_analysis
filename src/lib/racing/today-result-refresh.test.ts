@@ -74,6 +74,22 @@ describe("Today result refresh eligibility", () => {
 
     assert.equal(eligible.length, 0);
   });
+
+  test("force retry bypasses the retry interval for manual refresh", async () => {
+    const meetings = [meeting(race())];
+    const now = new Date("2026-09-12T14:00:00.000Z");
+    await refreshEligibleTodaySelectionResults(meetings, "2026-09-12", {
+      now,
+      refreshRaceResult: async (refreshRace) => outcome(refreshRace, "not_ready"),
+    });
+
+    const eligible = getEligibleResultRefreshRaces(meetings, "2026-09-12", {
+      forceRetry: true,
+      now: new Date("2026-09-12T14:01:00.000Z"),
+    });
+
+    assert.equal(eligible.length, 1);
+  });
 });
 
 describe("Today result refresh", () => {
