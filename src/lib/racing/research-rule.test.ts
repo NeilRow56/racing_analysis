@@ -14,6 +14,7 @@ import {
   classifyHandicapStatus,
   researchFilterOptionsForRows,
   serializeResearchRule,
+  strategySummary,
   trainerOptionsForRows,
   weightOptions,
   type ResearchRuleV1,
@@ -180,6 +181,42 @@ describe("research rule evaluation", () => {
     assert.ok(result.strategySummary.includes("Distance: 2m to 2m4f"));
   });
 
+  test("filters multiple race classes with OR semantics", () => {
+    const rows = [
+      row({ targetRunnerId: "class-1", raceClass: "Class 1" }),
+      row({ targetRunnerId: "class-2", raceClass: "2" }),
+      row({ targetRunnerId: "class-3", raceClass: "Class 3" }),
+      row({ targetRunnerId: "class-5", raceClass: "5" }),
+      row({ targetRunnerId: "unknown", raceClass: null }),
+    ];
+
+    assert.deepEqual(
+      evaluateResearchRule({
+        rows,
+        rule: { ...defaultResearchRule("jump"), race: {} },
+      }).selectedRunners.map((selection) => selection.id).sort(),
+      ["class-1", "class-2", "class-3", "class-5", "unknown"],
+    );
+    assert.deepEqual(
+      evaluateResearchRule({
+        rows,
+        rule: { ...defaultResearchRule("jump"), race: { raceClasses: [3] } },
+      }).selectedRunners.map((selection) => selection.id),
+      ["class-3"],
+    );
+    assert.deepEqual(
+      evaluateResearchRule({
+        rows,
+        rule: { ...defaultResearchRule("jump"), race: { raceClasses: [1, 2, 5] } },
+      }).selectedRunners.map((selection) => selection.id).sort(),
+      ["class-1", "class-2", "class-5"],
+    );
+    assert.ok(strategySummary({
+      ...defaultResearchRule("jump"),
+      race: { raceClasses: [5, 1, 2] },
+    }).includes("Classes 1, 2 & 5"));
+  });
+
   test("outcome changes do not alter ranks or selected runner IDs", () => {
     const features = [
       row({ targetRunnerId: "selected", latestSpeedRating: 100 }),
@@ -209,6 +246,7 @@ describe("research rule evaluation", () => {
       ...defaultResearchRule("turf_flat"),
       race: {
         courseId: "course-1",
+        raceClasses: [1, 2, 5],
         distanceBucketFrom: distanceBucketIdForYards(1760),
         distanceBucketTo: distanceBucketIdForYards(2200),
         distanceYards: { min: 1760, max: 2200 },
@@ -217,6 +255,34 @@ describe("research rule evaluation", () => {
     };
 
     assert.deepEqual(parseResearchRule(serializeResearchRule(rule)), rule);
+  });
+
+  test("parses old single-class rules as multi-class rules", () => {
+    const parsed = parseResearchRule(JSON.stringify({
+      version: "research_rule_v1",
+      family: "jump",
+      dateRange: { from: "2025-01-01", to: "2025-12-31" },
+      race: { raceClass: "Class 3" },
+      runner: {},
+      ratings: [],
+      relatives: [],
+      ranks: [],
+    }));
+
+    assert.deepEqual(parsed?.race.raceClasses, [3]);
+    assert.equal("raceClass" in (parsed?.race ?? {}), false);
+  });
+
+  test("parses repeated race class URL params", () => {
+    const rule = ruleFromSearchParams(new URLSearchParams([
+      ["family", "jump"],
+      ["class", "5"],
+      ["class", "1"],
+      ["class", "2"],
+      ["class", "2"],
+    ]));
+
+    assert.deepEqual(rule.race.raceClasses, [1, 2, 5]);
   });
 });
 
@@ -364,8 +430,8 @@ describe("research filter options", () => {
     assert.deepEqual(
       options.classes.map((option) => [option.value, option.label, option.count]),
       [
-        ["1", "Class 1", 1],
-        ["3", "Class 3", 2],
+        [1, "Class 1", 1],
+        [3, "Class 3", 2],
       ],
     );
     assert.deepEqual(

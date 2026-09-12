@@ -1,5 +1,11 @@
 import Link from "next/link";
 import { createDbConnection } from "@/db";
+import { listSavedResearchRulesWithDb } from "@/lib/racing/saved-research-rules";
+import {
+  attachFrozenRuleMatchesToToday,
+  summarizeTodayFrozenRuleMatches,
+  type TodayFrozenRuleMatchSummary,
+} from "@/lib/racing/today-rule-matches";
 import {
   formatRaceTimeForDisplay,
   getTodaysRacingData,
@@ -31,8 +37,20 @@ export default async function TodaysRacingPage({ searchParams }: PageProps) {
   try {
     connection = createDbConnection();
     const data = await getTodaysRacingData(connection.db, raceDate);
+    const savedRules = await listSavedResearchRulesWithDb(connection.db);
     await connection.client.end();
     connection = null;
+    const frozenRulesChecked = savedRules.filter((rule) => rule.status === "frozen").length;
+    const displayData = data.status === "ok"
+      ? {
+          ...data,
+          meetings: attachFrozenRuleMatchesToToday(data.meetings, savedRules, raceDate),
+        }
+      : data;
+    const matchSummary = summarizeTodayFrozenRuleMatches(
+      displayData.status === "ok" ? displayData.meetings : [],
+      frozenRulesChecked,
+    );
 
     return (
       <main className="min-h-full bg-stone-50 px-4 py-8 text-slate-950 sm:px-6 lg:px-8">
@@ -49,28 +67,29 @@ export default async function TodaysRacingPage({ searchParams }: PageProps) {
                 <h1 className="text-3xl font-semibold tracking-normal sm:text-4xl">
                   {racingPageTitle({ raceDate })}
                 </h1>
-                <p className="mt-2 text-lg text-slate-700">{data.displayDate}</p>
+                <p className="mt-2 text-lg text-slate-700">{displayData.displayDate}</p>
                 {invalidDateParam ? (
                   <p className="mt-2 text-sm text-amber-700">
                     Ignoring invalid date parameter: {invalidDateParam}
                   </p>
                 ) : null}
               </div>
-              {data.refreshedAt ? (
+              {displayData.refreshedAt ? (
                 <p className="text-sm text-slate-600">
                   Racecard data last refreshed:{" "}
-                  {formatFreshnessTime(data.refreshedAt)}
+                  {formatFreshnessTime(displayData.refreshedAt)}
                 </p>
               ) : null}
             </div>
           </header>
+          <FrozenRuleMatchSummary summary={matchSummary} />
 
-          {data.status === "empty" ? (
+          {displayData.status === "empty" ? (
             <p className="mt-8 text-sm leading-6 text-slate-700">
-              {data.message}
+              {displayData.message}
             </p>
           ) : (
-            <TodaysRacing meetings={data.meetings} />
+            <TodaysRacing meetings={displayData.meetings} />
           )}
         </section>
       </main>
@@ -80,6 +99,22 @@ export default async function TodaysRacingPage({ searchParams }: PageProps) {
       await connection.client.end();
     }
   }
+}
+
+function FrozenRuleMatchSummary({ summary }: { summary: TodayFrozenRuleMatchSummary }) {
+  return (
+    <div className="mt-4 text-sm text-slate-600">
+      <span>
+        Frozen rules checked: {summary.frozenRulesChecked} · Matches today: {summary.matchingRunners}
+      </span>
+      {summary.ruleMatches > summary.matchingRunners ? (
+        <span> · Rule matches: {summary.ruleMatches}</span>
+      ) : null}
+      {summary.frozenRulesChecked === 0 ? (
+        <span className="ml-2 text-slate-500">Save and freeze a Research rule to enable Today matching.</span>
+      ) : null}
+    </div>
+  );
 }
 
 function TodaysRacing({ meetings }: { meetings: TodayMeeting[] }) {
@@ -295,6 +330,7 @@ function RunnerRow({
             </span>
           ) : null}
         </div>
+        <SavedRuleMatches matches={runner.savedRuleMatches ?? []} />
       </td>
       <td className="py-3 pr-3">{runner.horseAge ?? "-"}</td>
       <td className="py-3 pr-3">{runner.weight ?? "-"}</td>
@@ -313,6 +349,44 @@ function RunnerRow({
       </td>
       <td className="py-3 pr-3">{runner.odds ?? "-"}</td>
     </tr>
+  );
+}
+
+function SavedRuleMatches({ matches }: { matches: NonNullable<TodayRunner["savedRuleMatches"]> }) {
+  if (matches.length === 0) {
+    return null;
+  }
+
+  const label = matches.length === 1 ? "Saved rule match" : `${matches.length} saved rule matches`;
+  return (
+    <details className="mt-2 max-w-sm text-xs no-underline">
+      <summary className="cursor-pointer font-semibold text-emerald-800">{label}</summary>
+      <div className="mt-2 space-y-2 border border-emerald-100 bg-emerald-50 p-2 text-slate-700">
+        {matches.map((match) => (
+          <div key={match.ruleId}>
+            <div className="font-semibold text-slate-900">{match.ruleName}</div>
+            <div className="mt-1 font-medium text-amber-800">Development rule — not holdout validated</div>
+            <dl className="mt-1 grid grid-cols-2 gap-x-3 gap-y-1">
+              <RuleEvidence label="Selections" value={match.development.selections} />
+              <RuleEvidence label="Winners" value={match.development.winners} />
+              <RuleEvidence label="Strike" value={formatPercent(match.development.strikeRate)} />
+              <RuleEvidence label="ROI" value={formatPercent(match.development.roiPercentage)} />
+              <RuleEvidence label="P/L" value={formatMoney(match.development.profitLoss)} />
+              <RuleEvidence label="Max losing run" value={match.development.maxConsecutiveLosers} />
+            </dl>
+          </div>
+        ))}
+      </div>
+    </details>
+  );
+}
+
+function RuleEvidence({ label, value }: { label: string; value: string | number }) {
+  return (
+    <div>
+      <dt className="text-slate-500">{label}</dt>
+      <dd className="font-medium text-slate-800">{value}</dd>
+    </div>
   );
 }
 
@@ -392,6 +466,15 @@ function formatFreshnessTime(value: Date): string {
 
 function formatRating(value: number | null | undefined): string {
   return value === null || value === undefined ? "-" : Math.round(value).toString();
+}
+
+function formatPercent(value: number | null): string {
+  return value === null ? "-" : `${value.toFixed(1)}%`;
+}
+
+function formatMoney(value: number | null): string {
+  if (value === null) return "-";
+  return value < 0 ? `-£${Math.abs(value).toFixed(2)}` : `£${value.toFixed(2)}`;
 }
 
 function formatCountry(value: string): string {

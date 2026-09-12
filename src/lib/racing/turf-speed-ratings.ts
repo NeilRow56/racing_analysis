@@ -58,6 +58,13 @@ type RaceContextData = {
 const QUERY_CHUNK_SIZE = 5_000;
 const CONTEXT_KEY_CHUNK_SIZE = 200;
 const RESULT_SOURCE_TYPE = "full-result-next-data";
+const TURF_CONTEXT_CACHE_VERSION = "turf_speed_v1_context_v1";
+const TURF_CONTEXT_CACHE_MAX_ENTRIES = 24;
+
+type TurfContextCacheKind = "standard" | "same-day";
+type TurfContextCacheValue = Promise<RaceContextRow[]>;
+
+const turfContextCache = new Map<string, TurfContextCacheValue>();
 
 export async function getTurfSpeedRatingsForRunners(
   db: Db,
@@ -238,25 +245,35 @@ async function loadRaceContextsForStandardKeys(
   if (keys.length === 0) {
     return [];
   }
-  const rows = await Promise.all(
-    chunks(keys, CONTEXT_KEY_CHUNK_SIZE).map((keyChunk) =>
-      db
-        .select(raceContextSelection)
-        .from(races)
-        .innerJoin(sourceImports, sourceImportJoinCondition(source))
-        .where(
-          and(
-            eq(races.source, source),
-            completedTimingCondition(),
-            turfRaceCondition(),
-            cutoffCondition(calculationCutoffDateTime),
-            or(...keyChunk.map(standardKeyCondition)),
-          ),
-        )
-        .orderBy(races.raceDate, races.scheduledTime, sql`coalesce(${races.sourceId}, '')`),
-    ),
+  return cachedTurfContextRows(
+    turfContextCacheKey({
+      kind: "standard",
+      source,
+      cutoff: calculationCutoffDateTime,
+      keys: keys.map(standardContextKey),
+    }),
+    async () => {
+      const rows = await Promise.all(
+        chunks(keys, CONTEXT_KEY_CHUNK_SIZE).map((keyChunk) =>
+          db
+            .select(raceContextSelection)
+            .from(races)
+            .innerJoin(sourceImports, sourceImportJoinCondition(source))
+            .where(
+              and(
+                eq(races.source, source),
+                completedTimingCondition(),
+                turfRaceCondition(),
+                cutoffCondition(calculationCutoffDateTime),
+                or(...keyChunk.map(standardKeyCondition)),
+              ),
+            )
+            .orderBy(races.raceDate, races.scheduledTime, sql`coalesce(${races.sourceId}, '')`),
+        ),
+      );
+      return rows.flat().filter(isOrdinaryFlatTurfRace);
+    },
   );
-  return rows.flat().filter(isOrdinaryFlatTurfRace);
 }
 
 async function loadRaceContextsForSameDayKeys(
@@ -268,25 +285,88 @@ async function loadRaceContextsForSameDayKeys(
   if (keys.length === 0) {
     return [];
   }
-  const rows = await Promise.all(
-    chunks(keys, CONTEXT_KEY_CHUNK_SIZE).map((keyChunk) =>
-      db
-        .select(raceContextSelection)
-        .from(races)
-        .innerJoin(sourceImports, sourceImportJoinCondition(source))
-        .where(
-          and(
-            eq(races.source, source),
-            completedTimingCondition(),
-            turfRaceCondition(),
-            cutoffCondition(calculationCutoffDateTime),
-            or(...keyChunk.map(sameDayKeyCondition)),
-          ),
-        )
-        .orderBy(races.raceDate, races.scheduledTime, sql`coalesce(${races.sourceId}, '')`),
-    ),
+  return cachedTurfContextRows(
+    turfContextCacheKey({
+      kind: "same-day",
+      source,
+      cutoff: calculationCutoffDateTime,
+      keys: keys.map(sameDayContextKey),
+    }),
+    async () => {
+      const rows = await Promise.all(
+        chunks(keys, CONTEXT_KEY_CHUNK_SIZE).map((keyChunk) =>
+          db
+            .select(raceContextSelection)
+            .from(races)
+            .innerJoin(sourceImports, sourceImportJoinCondition(source))
+            .where(
+              and(
+                eq(races.source, source),
+                completedTimingCondition(),
+                turfRaceCondition(),
+                cutoffCondition(calculationCutoffDateTime),
+                or(...keyChunk.map(sameDayKeyCondition)),
+              ),
+            )
+            .orderBy(races.raceDate, races.scheduledTime, sql`coalesce(${races.sourceId}, '')`),
+        ),
+      );
+      return rows.flat().filter(isOrdinaryFlatTurfRace);
+    },
   );
-  return rows.flat().filter(isOrdinaryFlatTurfRace);
+}
+
+async function cachedTurfContextRows(
+  cacheKey: string,
+  loadRows: () => Promise<RaceContextRow[]>,
+): Promise<RaceContextRow[]> {
+  const cached = turfContextCache.get(cacheKey);
+  if (cached) {
+    return cached;
+  }
+
+  const promise = loadRows()
+    .catch((error) => {
+      turfContextCache.delete(cacheKey);
+      throw error;
+    });
+  turfContextCache.set(cacheKey, promise);
+  evictOldestTurfContextCacheEntry();
+  return promise;
+}
+
+function turfContextCacheKey(input: {
+  kind: TurfContextCacheKind;
+  source: string;
+  cutoff: Date | null;
+  keys: string[];
+}): string {
+  return JSON.stringify({
+    version: TURF_CONTEXT_CACHE_VERSION,
+    kind: input.kind,
+    source: input.source,
+    cutoff: input.cutoff?.toISOString() ?? null,
+    keys: [...new Set(input.keys)].sort(),
+  });
+}
+
+function evictOldestTurfContextCacheEntry() {
+  if (turfContextCache.size <= TURF_CONTEXT_CACHE_MAX_ENTRIES) {
+    return;
+  }
+  const oldestKey = turfContextCache.keys().next().value;
+  if (oldestKey) {
+    turfContextCache.delete(oldestKey);
+  }
+}
+
+export function turfContextCacheKeyForTest(input: {
+  kind: TurfContextCacheKind;
+  source: string;
+  cutoff: Date | null;
+  keys: string[];
+}): string {
+  return turfContextCacheKey(input);
 }
 
 const raceContextSelection = {

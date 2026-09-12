@@ -1,3 +1,4 @@
+import { normalizeRaceClasses } from "./research-rule-classes";
 import type {
   NumericCondition,
   RankCondition,
@@ -14,7 +15,7 @@ export function researchRuleKey(rule: ResearchRuleV1): string {
   return JSON.stringify(canonicalResearchRule(rule));
 }
 
-function canonicalResearchRule(rule: ResearchRuleV1) {
+export function canonicalResearchRule(rule: ResearchRuleV1) {
   return compactObject({
     version: rule.version,
     family: rule.family,
@@ -25,7 +26,7 @@ function canonicalResearchRule(rule: ResearchRuleV1) {
     race: compactObject({
       courseId: textValue(rule.race.courseId),
       courseName: rule.race.courseId ? undefined : textValue(rule.race.courseName),
-      raceClass: textValue(rule.race.raceClass),
+      raceClasses: normalizeRaceClasses(rule.race.raceClasses),
       handicapStatus: !rule.race.handicapStatus || rule.race.handicapStatus === "all"
         ? undefined
         : rule.race.handicapStatus,

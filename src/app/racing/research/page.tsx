@@ -13,25 +13,41 @@ import {
   evaluateResearchRule,
   formatExactDistance,
   hydrateResearchRuleMetadata,
+  parseResearchRule,
   researchFilterOptionsForRows,
   ruleFromSearchParams,
+  serializeResearchRule,
+  strategySummary,
   type ResearchFilterOptions,
   type ResearchResult,
   type ResearchRuleV1,
 } from "@/lib/racing/research-rule";
 import { researchRuleKey } from "@/lib/racing/research-rule-identity";
+import {
+  cacheMetadataFromResult,
+  developmentSnapshotFromResult,
+  listSavedResearchRules,
+  type SavedResearchRule,
+} from "@/lib/racing/saved-research-rules";
+import {
+  saveResearchRuleAction,
+} from "./actions";
 import { ResearchWorkspace } from "./research-form-client";
+import { ResearchHorseNameLink } from "./research-horse-link";
+import { SaveRuleSubmitButton } from "./save-rule-submit-button";
+import { SavedRuleActionForms } from "./saved-rule-actions-client";
 
 export default async function ResearchPage({
   searchParams,
 }: {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  const params = new URLSearchParams(await normalizedSearchParams(searchParams));
+  const params = await normalizedSearchParams(searchParams);
   const rule = ruleFromSearchParams(params);
   const data = await loadResearchData(rule);
   const displayRule = data?.rule ?? rule;
   const filterOptions = data?.filterOptions ?? emptyFilterOptions();
+  const savedRules = await loadSavedRules();
 
   return (
     <main className="min-h-screen bg-stone-50 px-5 py-6 text-slate-950">
@@ -68,6 +84,8 @@ export default async function ResearchPage({
           returnBucketOptions={RETURN_BUCKET_OPTIONS}
           relativeMetricOptions={RELATIVE_METRIC_OPTIONS}
           runAfterBreakOptions={RUN_AFTER_BREAK_OPTIONS}
+          saveRulePanel={data?.result ? <SaveExecutedRulePanel result={data.result} /> : null}
+          staleSaveRulePanel={<StaleSaveRulePanel />}
         >
           {data?.result ? (
             <ResearchResults result={data.result} />
@@ -78,6 +96,8 @@ export default async function ResearchPage({
             </section>
           )}
         </ResearchWorkspace>
+
+        <SavedRulesSection savedRules={savedRules} />
       </div>
     </main>
   );
@@ -110,6 +130,72 @@ async function loadResearchData(rule: ResearchRuleV1): Promise<ResearchPageData 
         elapsedMs: performance.now() - startedAt,
       }),
   };
+}
+
+async function loadSavedRules(): Promise<SavedResearchRule[]> {
+  try {
+    return await listSavedResearchRules();
+  } catch (error) {
+    console.error("Failed to load saved research rules", error);
+    return [];
+  }
+}
+
+function SaveExecutedRulePanel({ result }: { result: ResearchResult }) {
+  const snapshot = developmentSnapshotFromResult(result);
+  const cacheMetadata = cacheMetadataFromResult(result);
+  return (
+    <section className="mt-6 border border-emerald-200 bg-white p-5 shadow-sm">
+      <div className="grid gap-4 lg:grid-cols-[1fr_1.4fr]">
+        <div>
+          <h2 className="text-lg font-semibold">Save & freeze executed rule</h2>
+          <p className="mt-1 text-sm text-slate-600">
+            This saves the currently displayed 2025 result and freezes the canonical rule definition.
+          </p>
+          <ul className="mt-3 space-y-1 text-sm text-slate-700">
+            {result.strategySummary.slice(0, 8).map((line) => (
+              <li key={line}>{line}</li>
+            ))}
+          </ul>
+        </div>
+        <form action={saveResearchRuleAction} className="grid gap-3 sm:grid-cols-[1fr_auto]">
+          <input name="rule" type="hidden" value={serializeResearchRule(result.rule)} />
+          <input name="developmentSnapshot" type="hidden" value={JSON.stringify(snapshot)} />
+          <input name="cacheMetadata" type="hidden" value={JSON.stringify(cacheMetadata)} />
+          <label className="block text-sm sm:col-span-2">
+            <span className="font-medium text-slate-700">Rule name</span>
+            <input
+              className="mt-1 w-full border border-slate-300 bg-white px-3 py-2 text-sm"
+              maxLength={160}
+              name="name"
+              required
+              type="text"
+            />
+          </label>
+          <label className="block text-sm sm:col-span-2">
+            <span className="font-medium text-slate-700">Notes</span>
+            <textarea
+              className="mt-1 min-h-20 w-full border border-slate-300 bg-white px-3 py-2 text-sm"
+              name="notes"
+            />
+          </label>
+          <div className="text-xs text-slate-500">
+            Identity: <code>{researchRuleKey(result.rule)}</code>
+          </div>
+          <SaveRuleSubmitButton />
+        </form>
+      </div>
+    </section>
+  );
+}
+
+function StaleSaveRulePanel() {
+  return (
+    <section className="mt-6 border border-slate-200 bg-slate-100 p-5 text-sm text-slate-600">
+      <h2 className="text-base font-semibold text-slate-700">Save & freeze executed rule</h2>
+      <p className="mt-1">Run Research with the current filters before saving this rule.</p>
+    </section>
+  );
 }
 
 function ResearchResults({ result }: { result: ResearchResult }) {
@@ -208,7 +294,9 @@ function ResearchResults({ result }: { result: ResearchResult }) {
                   <td className="py-2 pr-3">{selection.features.courseName}</td>
                   <td className="py-2 pr-3">{formatExactDistance(selection.features.distanceYards)}</td>
                   <td className="py-2 pr-3">{selection.features.raceName ?? "-"}</td>
-                  <td className="py-2 pr-3 font-medium text-emerald-800">{selection.features.horseName}</td>
+                  <td className="py-2 pr-3">
+                    <ResearchHorseNameLink horseId={selection.features.horseId} horseName={selection.features.horseName} />
+                  </td>
                   <td className="py-2 pr-3">{selection.features.officialRating ?? "-"}</td>
                   <td className="py-2 pr-3">{selection.features.weight ?? "-"}</td>
                   <td className="py-2 pr-3">{formatNumber(selection.features.latestSpeedRating)}</td>
@@ -230,6 +318,122 @@ function ResearchResults({ result }: { result: ResearchResult }) {
   );
 }
 
+function SavedRulesSection({ savedRules }: { savedRules: SavedResearchRule[] }) {
+  return (
+    <section className="mt-6 border border-slate-200 bg-white p-5 shadow-sm">
+      <div className="mb-4">
+        <h2 className="text-xl font-semibold">Saved research rules</h2>
+        <p className="mt-1 text-sm text-slate-600">
+          Frozen rules preserve their strategy definition for future holdout validation.
+        </p>
+      </div>
+      {savedRules.length === 0 ? (
+        <div className="border border-dashed border-slate-300 bg-slate-50 p-4 text-sm text-slate-600">
+          No saved rules yet.
+        </div>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[1120px] text-left text-sm">
+            <thead className="border-y border-slate-200 text-xs uppercase text-slate-500">
+              <tr>
+                <th className="py-2 pr-3 font-medium">Name</th>
+                <th className="py-2 pr-3 font-medium">Status</th>
+                <th className="py-2 pr-3 font-medium">Family</th>
+                <th className="py-2 pr-3 font-medium">Created</th>
+                <th className="py-2 pr-3 font-medium">Rule summary</th>
+                <th className="py-2 pr-3 font-medium">Selections</th>
+                <th className="py-2 pr-3 font-medium">ROI</th>
+                <th className="py-2 pr-3 font-medium">Strike</th>
+                <th className="py-2 pr-3 font-medium">Max losing run</th>
+                <th className="py-2 pr-3 font-medium">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {savedRules.map((rule) => (
+                <tr key={rule.id}>
+                  <td className="py-3 pr-3 align-top font-medium text-emerald-800">{rule.name}</td>
+                  <td className="py-3 pr-3 align-top">{statusLabel(rule.status)}</td>
+                  <td className="py-3 pr-3 align-top">{familyLabel(rule.family)}</td>
+                  <td className="py-3 pr-3 align-top">{formatDateTime(rule.createdAt)}</td>
+                  <td className="py-3 pr-3 align-top">
+                    <details>
+                      <summary className="cursor-pointer font-medium text-slate-700">View</summary>
+                      <SavedRuleDetails rule={rule} />
+                    </details>
+                  </td>
+                  <td className="py-3 pr-3 align-top">{rule.developmentSnapshot.selections}</td>
+                  <td className="py-3 pr-3 align-top">{formatPct(rule.developmentSnapshot.roiPercentage)}</td>
+                  <td className="py-3 pr-3 align-top">{formatPct(rule.developmentSnapshot.strikeRate)}</td>
+                  <td className="py-3 pr-3 align-top">{rule.developmentSnapshot.maxConsecutiveLosers}</td>
+                  <td className="py-3 pr-3 align-top">
+                    <SavedRuleActions rule={rule} />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </section>
+  );
+}
+
+function SavedRuleDetails({ rule }: { rule: SavedResearchRule }) {
+  const summary = strategySummaryFromSavedRule(rule);
+  return (
+    <div className="mt-3 max-w-xl space-y-3 border border-slate-100 bg-slate-50 p-3 text-xs text-slate-700">
+      {rule.notes ? <p>{rule.notes}</p> : null}
+      <ul className="space-y-1">
+        {summary.map((line) => (
+          <li key={line}>{line}</li>
+        ))}
+      </ul>
+      <dl className="grid gap-2 sm:grid-cols-2">
+        <Detail label="Development period" value={`${rule.developmentFrom} to ${rule.developmentTo}`} />
+        <Detail label="Eligible runners" value={rule.developmentSnapshot.eligibleRunners} />
+        <Detail label="Settled" value={rule.developmentSnapshot.settledSelections} />
+        <Detail label="Winners" value={rule.developmentSnapshot.winners} />
+        <Detail label="Places" value={rule.developmentSnapshot.places} />
+        <Detail label="P/L" value={formatMoney(rule.developmentSnapshot.profitLoss)} />
+        <Detail label="Rule identity" value={rule.ruleIdentity} />
+        <Detail label="Frozen" value={rule.frozenAt ? formatDateTime(rule.frozenAt) : "-"} />
+        <Detail label="Feature schema" value={rule.cacheMetadata?.featureSchemaVersion ?? "-"} />
+        <Detail label="Source features" value={rule.cacheMetadata?.sourceFeatureVersion ?? "-"} />
+        <Detail
+          label="Rating versions"
+          value={Object.entries(rule.cacheMetadata?.calculationVersions ?? {}).map(([key, value]) => `${key}=${value}`).join(", ") || "-"}
+        />
+      </dl>
+      <Link
+        className="inline-block font-medium text-emerald-800 hover:underline"
+        href={`/racing/research?rule=${encodeURIComponent(JSON.stringify(rule.canonicalRule))}`}
+      >
+        Load into Research
+      </Link>
+    </div>
+  );
+}
+
+function SavedRuleActions({ rule }: { rule: SavedResearchRule }) {
+  return (
+    <>
+      <SavedRuleActionForms id={rule.id} status={rule.status} />
+      {rule.status === "draft" ? (
+        <p className="mt-1 max-w-48 text-xs text-slate-500">Freeze before future holdout validation.</p>
+      ) : null}
+    </>
+  );
+}
+
+function Detail({ label, value }: { label: string; value: string | number }) {
+  return (
+    <div>
+      <dt className="font-medium text-slate-500">{label}</dt>
+      <dd className="break-words">{value}</dd>
+    </div>
+  );
+}
+
 function emptyFilterOptions(): ResearchFilterOptions {
   return { courses: [], classes: [], distances: [], trainers: [], weights: [] };
 }
@@ -245,14 +449,16 @@ function Metric({ label, value }: { label: string; value: string | number }) {
 
 async function normalizedSearchParams(
   searchParams?: Promise<Record<string, string | string[] | undefined>>,
-): Promise<Record<string, string>> {
+): Promise<URLSearchParams> {
   const raw = await searchParams;
-  const output: Record<string, string> = {};
+  const output = new URLSearchParams();
   for (const [key, value] of Object.entries(raw ?? {})) {
     if (typeof value === "string") {
-      output[key] = value;
+      output.append(key, value);
     } else if (Array.isArray(value) && typeof value[0] === "string") {
-      output[key] = value[0];
+      for (const item of value) {
+        output.append(key, item);
+      }
     }
   }
   return output;
@@ -260,6 +466,22 @@ async function normalizedSearchParams(
 
 function familyLabel(family: ResearchRuleV1["family"]) {
   return FAMILY_OPTIONS.find((option) => option.value === family)?.label ?? family;
+}
+
+function statusLabel(status: SavedResearchRule["status"]) {
+  return status === "frozen" ? "Frozen" : "Draft";
+}
+
+function formatDateTime(value: Date) {
+  return new Intl.DateTimeFormat("en-GB", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  }).format(value);
+}
+
+function strategySummaryFromSavedRule(rule: SavedResearchRule) {
+  const parsedRule = parseResearchRule(JSON.stringify(rule.canonicalRule));
+  return parsedRule ? strategySummary(parsedRule) : [`Family: ${familyLabel(rule.family)}`];
 }
 
 function formatPct(value: number | null) {

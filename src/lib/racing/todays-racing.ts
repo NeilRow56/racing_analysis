@@ -37,6 +37,7 @@ export type TodayRunner = {
   weightCarriedLbs: number | null;
   draw: number | null;
   jockeyName: string | null;
+  trainerId: string | null;
   trainerName: string | null;
   officialRating: number | null;
   odds: string | null;
@@ -44,6 +45,20 @@ export type TodayRunner = {
   resultStatus: string | null;
   finishingPosition: number | null;
   metrics: HorseMetricsAsOf | null;
+  savedRuleMatches?: TodaySavedRuleMatch[];
+};
+
+export type TodaySavedRuleMatch = {
+  ruleId: string;
+  ruleName: string;
+  development: {
+    selections: number;
+    winners: number;
+    strikeRate: number | null;
+    roiPercentage: number | null;
+    profitLoss: number;
+    maxConsecutiveLosers: number;
+  };
 };
 
 export type TodayRace = {
@@ -130,6 +145,7 @@ export type TodayRacecardRow = {
   weightCarriedLbs: number | null;
   draw: number | null;
   jockeyName: string | null;
+  trainerId: string | null;
   trainerName: string | null;
   officialRating: number | null;
   odds: string | null;
@@ -319,6 +335,7 @@ export function groupTodaysRacingRows(
       weightCarriedLbs: row.weightCarriedLbs,
       draw: row.draw,
       jockeyName: row.jockeyName,
+      trainerId: row.trainerId,
       trainerName: row.trainerName,
       officialRating: row.officialRating,
       odds: row.odds,
@@ -541,6 +558,7 @@ async function getRacecardRows(
       weightCarriedLbs: raceRunners.weightCarriedLbs,
       draw: raceRunners.draw,
       jockeyName: jockeys.displayName,
+      trainerId: trainers.id,
       trainerName: trainers.displayName,
       officialRating: raceRunners.officialRating,
       odds: raceRunners.startingPrice,

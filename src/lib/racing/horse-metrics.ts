@@ -25,6 +25,8 @@ import { calculateWeightAdjustedPerformance } from "./weight-performance";
 
 type Db = ReturnType<typeof createDbConnection>["db"];
 
+const RETURN_FROM_BREAK_THRESHOLD_DAYS = 90;
+
 export type HistoricalRunInput = {
   source?: string | null;
   runnerId?: string;
@@ -113,6 +115,8 @@ export type HorseMetricsAsOf = {
   latestRprMinusLatestOr: number | null;
   latestRunDate: string | null;
   daysSinceLastRun: number | null;
+  breakLengthDays: number | null;
+  runAfterBreakNumber: number | null;
   runsAtCourse: number | null;
   winsAtCourse: number | null;
   placesAtCourse: number | null;
@@ -454,6 +458,7 @@ export function calculateHorseMetricsAsOf({
     priorRuns.find((run) => run.officialRating !== null)?.officialRating ??
     null;
   const latestRun = priorRuns[0] ?? null;
+  const breakSequence = breakSequenceBeforeTarget(priorRuns, beforeDateTime);
 
   return {
     priorRuns: priorRuns.length,
@@ -519,14 +524,64 @@ export function calculateHorseMetricsAsOf({
             86_400_000,
         )
       : null,
+    breakLengthDays: breakSequence.breakLengthDays,
+    runAfterBreakNumber: breakSequence.runAfterBreakNumber,
     ...courseRecord(priorRuns, targetCourseId),
     ...exactDistanceRecord(priorRuns, targetDistanceYards),
     ...goingRecord(priorRuns, targetGoing),
   };
 }
 
+export function breakSequenceBeforeTarget(
+  priorRuns: HistoricalRunInput[],
+  targetRaceDateTime: Date,
+): { breakLengthDays: number | null; runAfterBreakNumber: number | null } {
+  const completed = priorRuns
+    .filter(
+      (run) =>
+        run.resultStatus !== "non_runner" &&
+        (run.resultStatus !== null || run.finishingPosition !== null) &&
+        run.raceDateTime < targetRaceDateTime,
+    )
+    .sort((left, right) => left.raceDateTime.getTime() - right.raceDateTime.getTime());
+  if (completed.length === 0) {
+    return { breakLengthDays: null, runAfterBreakNumber: null };
+  }
+
+  let latestBreakLengthDays: number | null = null;
+  let runAfterBreakNumber: number | null = null;
+  let previousRun = completed[0]!;
+  for (let index = 1; index < completed.length; index += 1) {
+    const run = completed[index]!;
+    const gapDays = daysBetween(previousRun.raceDateTime, run.raceDateTime);
+    if (gapDays >= RETURN_FROM_BREAK_THRESHOLD_DAYS) {
+      latestBreakLengthDays = gapDays;
+      runAfterBreakNumber = 1;
+    } else if (runAfterBreakNumber !== null) {
+      runAfterBreakNumber += 1;
+    }
+    previousRun = run;
+  }
+
+  const targetGapDays = daysBetween(previousRun.raceDateTime, targetRaceDateTime);
+  if (targetGapDays >= RETURN_FROM_BREAK_THRESHOLD_DAYS) {
+    return {
+      breakLengthDays: targetGapDays,
+      runAfterBreakNumber: 1,
+    };
+  }
+  return {
+    breakLengthDays: latestBreakLengthDays,
+    runAfterBreakNumber: runAfterBreakNumber === null ? null : runAfterBreakNumber + 1,
+  };
+}
+
 function countWins(runs: HistoricalRunInput[]): number {
   return runs.filter((run) => run.finishingPosition === 1).length;
+}
+
+function daysBetween(previous: Date, next: Date): number {
+  return Math.floor((next.getTime() - previous.getTime()) / 86_400_000);
 }
 
 function countPlaces(runs: HistoricalRunInput[]): number {

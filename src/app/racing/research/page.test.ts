@@ -15,12 +15,19 @@ import {
 import { researchRuleKey, researchRulesEqual } from "@/lib/racing/research-rule-identity";
 import {
   ResearchForm,
+  canSaveExecutedRule,
+  clearResearchRuleFilters,
   filterTrainerOptions,
   isResearchSubmitDisabled,
   researchRuleFromFormData,
   researchRunButtonLabel,
   selectedTrainerOption,
 } from "./research-form-client";
+import { ResearchHorseNameLink } from "./research-horse-link";
+import {
+  isSaveRuleSubmitDisabled,
+  saveRuleSubmitButtonLabel,
+} from "./save-rule-submit-button";
 
 describe("research filters page", () => {
   test("renders racing-friendly weight, handicap and speed-rating labels", async () => {
@@ -38,6 +45,7 @@ describe("research filters page", () => {
         isPending: false,
         isStale: false,
         onChange: () => {},
+        onClearFilters: () => {},
         onSubmit: () => {},
         rankMetricOptions: RANK_METRIC_OPTIONS,
         ratingMetricOptions: RATING_METRIC_OPTIONS,
@@ -54,6 +62,8 @@ describe("research filters page", () => {
     assert.match(text, /8-11/);
     assert.match(text, /12-7/);
     assert.match(text, /Race type/);
+    assert.match(text, /Race class/);
+    assert.match(text, /All classes/);
     assert.match(text, /Handicap/);
     assert.match(text, /Non-handicap/);
     assert.match(text, /Speed rating metric/);
@@ -67,6 +77,23 @@ describe("research filters page", () => {
     assert.match(text, /1st run/);
     assert.equal(text.includes("Rating metric"), false);
     assert.equal(text.includes("Weight min (lb)"), false);
+    assert.equal(text.includes("Saving/freezing rules comes after this v1 research layer."), false);
+    assert.match(text, /Run a 2025 research result before saving or freezing rules/);
+    assert.match(text, /Clear all filters/);
+  });
+
+  test("renders selected Research horses as links when IDs are available", () => {
+    const linked = renderToStaticMarkup(
+      ResearchHorseNameLink({ horseId: "horse-123", horseName: "Fast Example" }),
+    );
+    const plain = renderToStaticMarkup(
+      ResearchHorseNameLink({ horseId: "", horseName: "Readable Example" }),
+    );
+
+    assert.match(linked, /href="\/horses\/horse-123"/);
+    assert.match(linked, /Fast Example/);
+    assert.doesNotMatch(plain, /href=/);
+    assert.match(plain, /Readable Example/);
   });
 
   test("renders disabled trainer selector message when no compatible cache options exist", () => {
@@ -78,6 +105,7 @@ describe("research filters page", () => {
         isPending: false,
         isStale: false,
         onChange: () => {},
+        onClearFilters: () => {},
         onSubmit: () => {},
         rankMetricOptions: RANK_METRIC_OPTIONS,
         ratingMetricOptions: RATING_METRIC_OPTIONS,
@@ -91,6 +119,41 @@ describe("research filters page", () => {
 
     assert.match(text, /Trainer options available after the 2025 cache is built/);
     assert.match(text, /disabled=""/);
+  });
+
+  test("renders loaded multi-class rules with all selected classes checked", () => {
+    const text = renderToStaticMarkup(
+      ResearchForm({
+        familyOptions: FAMILY_OPTIONS,
+        filterOptions: {
+          courses: [],
+          classes: [
+            { value: 1, label: "Class 1", count: 2 },
+            { value: 2, label: "Class 2", count: 3 },
+            { value: 5, label: "Class 5", count: 1 },
+          ],
+          distances: [],
+          trainers: [],
+          weights: weightOptions(),
+        },
+        handicapStatusOptions: HANDICAP_STATUS_OPTIONS,
+        isPending: false,
+        isStale: false,
+        onChange: () => {},
+        onClearFilters: () => {},
+        onSubmit: () => {},
+        rankMetricOptions: RANK_METRIC_OPTIONS,
+        ratingMetricOptions: RATING_METRIC_OPTIONS,
+        returnBucketOptions: RETURN_BUCKET_OPTIONS,
+        ref: null,
+        relativeMetricOptions: RELATIVE_METRIC_OPTIONS,
+        runAfterBreakOptions: RUN_AFTER_BREAK_OPTIONS,
+        rule: { ...defaultResearchRule("jump"), race: { raceClasses: [5, 1, 2] } },
+      }),
+    );
+
+    assert.match(text, /3 classes selected/);
+    assert.equal((text.match(/checked=""/g) ?? []).length, 3);
   });
 });
 
@@ -178,6 +241,31 @@ describe("research filter freshness state", () => {
     }))), false);
   });
 
+  test("changing race classes marks results stale but equivalent ordering does not", () => {
+    const executed = researchRuleFromFormData(formData({
+      family: "jump",
+      from: "2025-01-01",
+      to: "2025-12-31",
+      class: ["1", "2", "5"],
+    }));
+    const sameClassesDifferentOrder = researchRuleFromFormData(formData({
+      family: "jump",
+      from: "2025-01-01",
+      to: "2025-12-31",
+      class: ["5", "1", "2", "2"],
+    }));
+    const changed = researchRuleFromFormData(formData({
+      family: "jump",
+      from: "2025-01-01",
+      to: "2025-12-31",
+      class: ["1", "2"],
+    }));
+
+    assert.deepEqual(executed.race.raceClasses, [1, 2, 5]);
+    assert.equal(researchRuleKey(executed), researchRuleKey(sameClassesDifferentOrder));
+    assert.notEqual(researchRuleKey(executed), researchRuleKey(changed));
+  });
+
   test("choosing Latest Speed alone is not a filter, but thresholds affect rule identity", () => {
     const executed = researchRuleFromFormData(formData({
       family: "jump",
@@ -236,12 +324,75 @@ describe("research filter freshness state", () => {
     assert.equal(isResearchSubmitDisabled(false), false);
     assert.equal(isResearchSubmitDisabled(true), true);
   });
+
+  test("saving is available only for fresh executed results", () => {
+    assert.equal(canSaveExecutedRule({ hasResults: false, isStale: false }), false);
+    assert.equal(canSaveExecutedRule({ hasResults: true, isStale: true }), false);
+    assert.equal(canSaveExecutedRule({ hasResults: true, isStale: false }), true);
+  });
+
+  test("clear all filters resets strategy filters while preserving development baseline", () => {
+    const cleared = clearResearchRuleFilters({
+      ...defaultResearchRule("turf_flat"),
+      dateRange: { from: "2025-02-01", to: "2025-03-01" },
+      race: {
+        courseId: "course-1",
+        raceClasses: [1, 2],
+        handicapStatus: "non_handicap",
+        distanceBucketFrom: "d_1100",
+        distanceBucketTo: "d_3080",
+        fieldSize: { min: 7, max: 12 },
+      },
+      runner: {
+        trainerId: "trainer-1",
+        returnBucket: "days_0_30",
+        runAfterBreak: "run_2",
+        officialRating: { min: 80, max: 100 },
+        weightCarriedLbs: { min: 126, max: 140 },
+        daysSinceRun: { min: 1, max: 30 },
+        priorRuns: { min: 2, max: 8 },
+      },
+      ratings: [{ metric: "bestSpeedLast3", range: { min: 80, max: 120 } }],
+      relatives: [{ metric: "latestSpeedMinusOR", range: { min: 5, max: 20 } }],
+      ranks: [{ metric: "latestPerformanceRating", range: { min: 2, max: 3 } }],
+    });
+
+    assert.deepEqual(cleared, {
+      ...defaultResearchRule("turf_flat"),
+      dateRange: { from: "2025-01-01", to: "2025-12-31" },
+    });
+  });
+
+  test("cleared filters mark existing results stale and keep saving blocked until rerun", () => {
+    const executed = {
+      ...defaultResearchRule("jump"),
+      runner: { trainerId: "trainer-1" },
+    };
+    const cleared = clearResearchRuleFilters(executed);
+    const isStale = !researchRulesEqual(executed, cleared);
+
+    assert.equal(isStale, true);
+    assert.equal(canSaveExecutedRule({ hasResults: true, isStale }), false);
+  });
+
+  test("save and freeze pending state disables duplicate submission", () => {
+    assert.equal(saveRuleSubmitButtonLabel(false), "Save & freeze rule");
+    assert.equal(saveRuleSubmitButtonLabel(true), "Saving...");
+    assert.equal(isSaveRuleSubmitDisabled(false), false);
+    assert.equal(isSaveRuleSubmitDisabled(true), true);
+  });
 });
 
-function formData(values: Record<string, string>): FormData {
+function formData(values: Record<string, string | string[]>): FormData {
   const form = new FormData();
   for (const [key, value] of Object.entries(values)) {
-    form.set(key, value);
+    if (Array.isArray(value)) {
+      for (const item of value) {
+        form.append(key, item);
+      }
+    } else {
+      form.set(key, value);
+    }
   }
   return form;
 }

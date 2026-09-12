@@ -184,3 +184,28 @@ export const sourceImports = pgTable(
     ),
   ],
 );
+
+export const savedResearchRules = pgTable(
+  "saved_research_rules",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    name: text("name").notNull(),
+    notes: text("notes"),
+    status: text("status").notNull().default("draft"),
+    ruleSchemaVersion: text("rule_schema_version").notNull(),
+    ruleIdentity: text("rule_identity").notNull(),
+    canonicalRule: jsonb("canonical_rule").notNull(),
+    family: text("family").notNull(),
+    developmentFrom: date("development_from").notNull(),
+    developmentTo: date("development_to").notNull(),
+    developmentSnapshot: jsonb("development_snapshot").notNull(),
+    cacheMetadata: jsonb("cache_metadata"),
+    frozenAt: timestamp("frozen_at", { withTimezone: true }),
+    ...timestamps(),
+  },
+  (table) => [
+    index("saved_research_rules_status_idx").on(table.status),
+    index("saved_research_rules_family_idx").on(table.family),
+    index("saved_research_rules_rule_identity_idx").on(table.ruleIdentity),
+  ],
+);

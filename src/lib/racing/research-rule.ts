@@ -10,6 +10,8 @@ import type {
   HistoricalPreRaceFeatureRow,
   HistoricalTargetRunnerMetricsRow,
 } from "./historical-target-metrics";
+import { normalizeRaceClasses, raceClassNumber } from "./research-rule-classes";
+export { normalizeRaceClasses } from "./research-rule-classes";
 
 export const RESEARCH_RULE_VERSION = "research_rule_v1";
 export const DEVELOPMENT_DATASET_YEAR = "2025";
@@ -26,7 +28,7 @@ export type ResearchRuleV1 = {
   race: {
     courseId?: string;
     courseName?: string;
-    raceClass?: string;
+    raceClasses?: number[];
     handicapStatus?: HandicapStatusFilter;
     distanceBucketFrom?: string;
     distanceBucketTo?: string;
@@ -160,7 +162,7 @@ export type ResearchCourseOption = {
 };
 
 export type ResearchClassOption = {
-  value: string;
+  value: number;
   label: string;
   count: number;
 };
@@ -377,7 +379,7 @@ export function parseResearchRule(value: string): ResearchRuleV1 | null {
         from: safeDevelopmentDate(parsed.dateRange?.from, DEVELOPMENT_FROM),
         to: safeDevelopmentDate(parsed.dateRange?.to, DEVELOPMENT_TO),
       },
-      race: parsed.race ?? {},
+      race: normalizeRaceRule(parsed.race),
       runner: parsed.runner ?? {},
       ratings: parsed.ratings ?? [],
       relatives: parsed.relatives ?? [],
@@ -404,7 +406,7 @@ export function ruleFromSearchParams(params: URLSearchParams): ResearchRuleV1 {
   rule.race = {
     courseId: textValue(params.get("courseId")),
     courseName: textValue(params.get("course")),
-    raceClass: textValue(params.get("class")),
+    raceClasses: raceClassesFromParams(params),
     handicapStatus: handicapStatusValue(params.get("handicapStatus")),
     distanceBucketFrom: textValue(params.get("distanceFrom")),
     distanceBucketTo: textValue(params.get("distanceTo")),
@@ -462,16 +464,15 @@ export function courseOptionsForRows(rows: HistoricalTargetRunnerMetricsRow[]): 
 }
 
 export function classOptionsForRows(rows: HistoricalTargetRunnerMetricsRow[]): ResearchClassOption[] {
-  const counts = new Map<string, number>();
+  const counts = new Map<number, number>();
   for (const row of rows) {
-    const value = row.features.raceClass?.trim();
-    if (!value) continue;
+    const value = raceClassNumber(row.features.raceClass);
+    if (value === null) continue;
     counts.set(value, (counts.get(value) ?? 0) + 1);
   }
   return [...counts.entries()]
     .map(([value, count]) => ({ value, label: raceClassLabel(value), count }))
-    .sort((left, right) => raceClassSortValue(left.value) - raceClassSortValue(right.value) ||
-      left.label.localeCompare(right.label));
+    .sort((left, right) => left.value - right.value);
 }
 
 export function distanceBucketOptionsForRows(rows: HistoricalTargetRunnerMetricsRow[]): ResearchDistanceBucketOption[] {
@@ -619,18 +620,18 @@ function researchSelection(row: RankedResearchRow, rule: ResearchRuleV1): Resear
   };
 }
 
-function matchesRaceConditions(features: HistoricalPreRaceFeatureRow, rule: ResearchRuleV1): boolean {
+export function matchesRaceConditions(features: HistoricalPreRaceFeatureRow, rule: ResearchRuleV1): boolean {
   const fieldSize = features.actualRunnerCount ?? features.declaredRunnerCount;
   const distanceRange = distanceRangeForRule(rule) ?? rule.race.distanceYards;
   return (!rule.race.courseId || features.courseId === rule.race.courseId) &&
     (!!rule.race.courseId || !rule.race.courseName || features.courseName === rule.race.courseName) &&
-    (!rule.race.raceClass || features.raceClass === rule.race.raceClass) &&
+    raceClassesMatch(features.raceClass, rule.race.raceClasses) &&
     handicapStatusMatches(features, rule.race.handicapStatus) &&
     rangeMatches(features.distanceYards, distanceRange) &&
     rangeMatches(fieldSize, rule.race.fieldSize);
 }
 
-function matchesRunnerConditions(features: HistoricalPreRaceFeatureRow, rule: ResearchRuleV1): boolean {
+export function matchesRunnerConditions(features: HistoricalPreRaceFeatureRow, rule: ResearchRuleV1): boolean {
   return (!rule.runner.trainerId || features.trainerId === rule.runner.trainerId) &&
     returnBucketMatches(features.daysSinceLastRun, rule.runner.returnBucket) &&
     runAfterBreakMatches(features.runAfterBreakNumber, rule.runner.runAfterBreak) &&
@@ -640,20 +641,20 @@ function matchesRunnerConditions(features: HistoricalPreRaceFeatureRow, rule: Re
     rangeMatches(features.priorRuns, rule.runner.priorRuns);
 }
 
-function matchesRatingConditions(features: HistoricalPreRaceFeatureRow, rule: ResearchRuleV1): boolean {
+export function matchesRatingConditions(features: HistoricalPreRaceFeatureRow, rule: ResearchRuleV1): boolean {
   return rule.ratings.every((condition) =>
     rangeMatches(metricValue(features, condition.metric), condition.range),
   );
 }
 
-function matchesRelativeConditions(features: HistoricalPreRaceFeatureRow, rule: ResearchRuleV1): boolean {
+export function matchesRelativeConditions(features: HistoricalPreRaceFeatureRow, rule: ResearchRuleV1): boolean {
   const derived = deriveBacktestFeatureValues(features);
   return rule.relatives.every((condition) =>
     rangeMatches(derived[condition.metric], condition.range),
   );
 }
 
-function matchesRankConditions(row: RankedResearchRow, rule: ResearchRuleV1): boolean {
+export function matchesRankConditions(row: RankedResearchRow, rule: ResearchRuleV1): boolean {
   return rule.ranks.every((condition) =>
     rangeMatches(row.ranks[condition.metric] ?? null, condition.range),
   );
@@ -686,7 +687,7 @@ function missingDataFor(rows: RankedResearchRow[]): ResearchMissingData {
   };
 }
 
-function strategySummary(rule: ResearchRuleV1): string[] {
+export function strategySummary(rule: ResearchRuleV1): string[] {
   const lines = [
     `Family: ${familyLabel(rule.family)}`,
     `Dates: ${rule.dateRange.from} to ${rule.dateRange.to}`,
@@ -697,7 +698,7 @@ function strategySummary(rule: ResearchRuleV1): string[] {
   }
   pushRange(lines, "Field size", rule.race.fieldSize);
   if (rule.race.courseName) lines.push(`Course: ${rule.race.courseName}`);
-  if (rule.race.raceClass) lines.push(`Class: ${rule.race.raceClass}`);
+  pushRaceClasses(lines, rule.race.raceClasses);
   pushHandicapStatus(lines, rule.race.handicapStatus);
   if (rule.runner.trainerName) lines.push(`Trainer: ${rule.runner.trainerName}`);
   pushReturnBucket(lines, rule.runner.returnBucket);
@@ -803,10 +804,31 @@ function rankLabelForMetric(metric: RankMetric): string {
   return RANK_METRIC_OPTIONS.find((option) => option.value === metric)?.label ?? `${metric} rank`;
 }
 
+function normalizeRaceRule(race: Partial<ResearchRuleV1["race"]> | undefined): ResearchRuleV1["race"] {
+  const { raceClass: legacyRaceClass, ...rest } = (race ?? {}) as Partial<ResearchRuleV1["race"]> & {
+    raceClass?: unknown;
+  };
+  return {
+    ...rest,
+    raceClasses: normalizeRaceClasses([
+      ...(Array.isArray(rest.raceClasses) ? rest.raceClasses : []),
+      raceClassNumber(legacyRaceClass),
+    ]),
+  };
+}
+
 function rangeFromParams(params: URLSearchParams, minKey: string, maxKey: string): NumericCondition | undefined {
   const min = numberValue(params.get(minKey));
   const max = numberValue(params.get(maxKey));
   return min === undefined && max === undefined ? undefined : { min, max };
+}
+
+function raceClassesFromParams(params: URLSearchParams): number[] | undefined {
+  return normalizeRaceClasses([
+    ...params.getAll("class"),
+    params.get("raceClass"),
+    ...params.getAll("raceClasses"),
+  ]);
 }
 
 function weightRangeFromParams(params: URLSearchParams, minKey: string, maxKey: string): NumericCondition | undefined {
@@ -833,6 +855,15 @@ function numberValue(value: string | null): number | undefined {
 function textValue(value: string | null): string | undefined {
   const text = value?.trim();
   return text ? text : undefined;
+}
+
+function raceClassesMatch(value: string | null, selected: number[] | undefined): boolean {
+  const classes = normalizeRaceClasses(selected);
+  if (!classes) {
+    return true;
+  }
+  const actual = raceClassNumber(value);
+  return actual !== null && classes.includes(actual);
 }
 
 function handicapStatusValue(value: string | null): HandicapStatusFilter | undefined {
@@ -972,12 +1003,27 @@ function formatRacingDistance(distanceYards: number): string {
   return parts.join("");
 }
 
-function raceClassLabel(value: string): string {
-  return /^\d+$/.test(value) ? `Class ${value}` : value;
+function raceClassLabel(value: number): string {
+  return `Class ${value}`;
 }
 
-function raceClassSortValue(value: string): number {
-  return /^\d+$/.test(value) ? Number(value) : Number.MAX_SAFE_INTEGER;
+function pushRaceClasses(lines: string[], values: number[] | undefined) {
+  const classes = normalizeRaceClasses(values);
+  if (!classes) {
+    return;
+  }
+  if (classes.length === 1) {
+    lines.push(`Class ${classes[0]}`);
+    return;
+  }
+  lines.push(`Classes ${humanList(classes.map(String))}`);
+}
+
+function humanList(values: string[]): string {
+  if (values.length <= 1) {
+    return values[0] ?? "";
+  }
+  return `${values.slice(0, -1).join(", ")} & ${values.at(-1)}`;
 }
 
 function safeDevelopmentDate(value: string | null | undefined, fallback: string): string {

@@ -3,6 +3,7 @@
 import type React from "react";
 import { useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { normalizeRaceClasses } from "@/lib/racing/research-rule-classes";
 import { researchRuleKey } from "@/lib/racing/research-rule-identity";
 import type {
   HandicapStatusFilter,
@@ -30,6 +31,8 @@ export function ResearchWorkspace({
   returnBucketOptions,
   relativeMetricOptions,
   runAfterBreakOptions,
+  saveRulePanel,
+  staleSaveRulePanel,
 }: {
   children: React.ReactNode;
   executedRule: ResearchRuleV1;
@@ -42,25 +45,40 @@ export function ResearchWorkspace({
   returnBucketOptions: Array<Option<ReturnBucket>>;
   relativeMetricOptions: Array<Option<RelativeMetric>>;
   runAfterBreakOptions: Array<Option<RunAfterBreakFilter>>;
+  saveRulePanel?: React.ReactNode;
+  staleSaveRulePanel?: React.ReactNode;
 }) {
   const router = useRouter();
   const formRef = useRef<HTMLFormElement>(null);
   const executedRuleKey = researchRuleKey(executedRule);
+  const [editedRule, setEditedRule] = useState(executedRule);
   const [editedRuleKey, setEditedRuleKey] = useState(executedRuleKey);
+  const [formVersion, setFormVersion] = useState(0);
   const [isPending, startTransition] = useTransition();
   const isStale = hasResults && editedRuleKey !== executedRuleKey;
 
   function updateEditedRule(form: HTMLFormElement) {
-    setEditedRuleKey(researchRuleKey(researchRuleFromFormData(new FormData(form))));
+    const nextRule = researchRuleFromFormData(new FormData(form));
+    setEditedRule(nextRule);
+    setEditedRuleKey(researchRuleKey(nextRule));
   }
 
   function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    setEditedRuleKey(researchRuleKey(researchRuleFromFormData(formData)));
+    const nextRule = researchRuleFromFormData(formData);
+    setEditedRule(nextRule);
+    setEditedRuleKey(researchRuleKey(nextRule));
     startTransition(() => {
       router.push(`/racing/research?${searchParamsFromFormData(formData).toString()}`);
     });
+  }
+
+  function clearFilters() {
+    const nextRule = clearResearchRuleFilters(editedRule);
+    setEditedRule(nextRule);
+    setEditedRuleKey(researchRuleKey(nextRule));
+    setFormVersion((version) => version + 1);
   }
 
   return (
@@ -72,9 +90,11 @@ export function ResearchWorkspace({
           handicapStatusOptions={handicapStatusOptions}
           isPending={isPending}
           isStale={isStale}
+          key={formVersion}
           onChange={() => {
             if (formRef.current) updateEditedRule(formRef.current);
           }}
+          onClearFilters={clearFilters}
           onSubmit={onSubmit}
           rankMetricOptions={rankMetricOptions}
           ratingMetricOptions={ratingMetricOptions}
@@ -82,7 +102,7 @@ export function ResearchWorkspace({
           ref={formRef}
           relativeMetricOptions={relativeMetricOptions}
           runAfterBreakOptions={runAfterBreakOptions}
-          rule={executedRule}
+          rule={editedRule}
         />
       </section>
 
@@ -91,6 +111,10 @@ export function ResearchWorkspace({
           <div className="font-semibold">Filters have changed — the results below are from the previous research run.</div>
           <div className="mt-1 text-amber-800">Run Research to update the results.</div>
         </section>
+      ) : null}
+
+      {hasResults ? (
+        isStale ? staleSaveRulePanel : saveRulePanel
       ) : null}
 
       {children}
@@ -105,6 +129,7 @@ export const ResearchForm = ({
   isPending,
   isStale,
   onChange,
+  onClearFilters,
   onSubmit,
   rankMetricOptions,
   ratingMetricOptions,
@@ -120,6 +145,7 @@ export const ResearchForm = ({
   isPending: boolean;
   isStale: boolean;
   onChange: () => void;
+  onClearFilters: () => void;
   onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
   rankMetricOptions: Array<Option<RankMetric>>;
   ratingMetricOptions: RatingOption[];
@@ -168,12 +194,7 @@ export const ResearchForm = ({
             <option key={option.id} value={option.id}>{option.label}</option>
           ))}
         </SelectField>
-        <SelectField label="Race class" name="class" value={rule.race.raceClass ?? ""}>
-          <option value="">All classes</option>
-          {filterOptions.classes.map((option) => (
-            <option key={option.value} value={option.value}>{option.label}</option>
-          ))}
-        </SelectField>
+        <RaceClassField filterOptions={filterOptions} rule={rule} />
         <SelectField label="Race type" name="handicapStatus" value={rule.race.handicapStatus ?? "all"}>
           {handicapStatusOptions.map((option) => (
             <option key={option.value} value={option.value}>{option.label}</option>
@@ -261,14 +282,35 @@ export const ResearchForm = ({
           {isPending ? <span aria-hidden="true" className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" /> : null}
           {buttonLabel}
         </button>
-        <button className="border border-slate-300 bg-slate-100 px-5 py-2.5 text-sm font-semibold text-slate-500" disabled type="button">
-          Save Rule
+        <button
+          className="border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 hover:border-slate-400 hover:bg-slate-50"
+          onClick={onClearFilters}
+          type="button"
+        >
+          Clear all filters
         </button>
-        <span className="text-sm text-slate-500">Saving/freezing rules comes after this v1 research layer.</span>
+        <span className="text-sm text-slate-500">Run a 2025 research result before saving or freezing rules.</span>
       </div>
     </form>
   );
 };
+
+export function canSaveExecutedRule(input: { hasResults: boolean; isStale: boolean }): boolean {
+  return input.hasResults && !input.isStale;
+}
+
+export function clearResearchRuleFilters(rule: ResearchRuleV1): ResearchRuleV1 {
+  return {
+    version: "research_rule_v1",
+    family: rule.family,
+    dateRange: { from: "2025-01-01", to: "2025-12-31" },
+    race: {},
+    runner: {},
+    ratings: [],
+    relatives: [],
+    ranks: [],
+  };
+}
 
 export function researchRuleFromFormData(formData: FormData): ResearchRuleV1 {
   const ratingMetric = textValue(formData.get("ratingMetric")) as RatingMetric | undefined;
@@ -286,7 +328,7 @@ export function researchRuleFromFormData(formData: FormData): ResearchRuleV1 {
     },
     race: {
       courseId: textValue(formData.get("courseId")),
-      raceClass: textValue(formData.get("class")),
+      raceClasses: normalizeRaceClasses(formData.getAll("class")),
       handicapStatus: handicapStatusValue(textValue(formData.get("handicapStatus"))),
       distanceBucketFrom: textValue(formData.get("distanceFrom")),
       distanceBucketTo: textValue(formData.get("distanceTo")),
@@ -453,6 +495,71 @@ function TrainerField({
   );
 }
 
+function RaceClassField({
+  filterOptions,
+  rule,
+}: {
+  filterOptions: ResearchFilterOptions;
+  rule: ResearchRuleV1;
+}) {
+  const selected = new Set(normalizeRaceClasses(rule.race.raceClasses) ?? []);
+  const detailsRef = useRef<HTMLDetailsElement>(null);
+
+  function clearClasses() {
+    const inputs = detailsRef.current?.querySelectorAll<HTMLInputElement>("input[name='class']");
+    inputs?.forEach((input) => {
+      input.checked = false;
+    });
+    detailsRef.current?.dispatchEvent(new Event("change", { bubbles: true }));
+  }
+
+  return (
+    <details className="relative block text-sm" ref={detailsRef}>
+      <summary className="cursor-pointer font-medium text-slate-700">
+        Race class
+        <span className="mt-1 block border border-slate-300 bg-white px-3 py-2 font-normal text-slate-950">
+          {selected.size === 0 ? "All classes" : raceClassSelectionLabel([...selected])}
+        </span>
+      </summary>
+      <div className="absolute z-20 mt-1 max-h-64 w-full overflow-y-auto border border-slate-300 bg-white p-2 shadow-lg">
+        {filterOptions.classes.length === 0 ? (
+          <div className="px-2 py-1 text-sm text-slate-500">Class options available after the 2025 cache is built.</div>
+        ) : (
+          <>
+            <div className="mb-2 text-xs text-slate-500">Clear by unticking all classes.</div>
+            <button
+              className="mb-2 px-2 py-1 text-xs font-medium text-emerald-800 hover:underline"
+              onClick={clearClasses}
+              type="button"
+            >
+              Clear classes
+            </button>
+            {filterOptions.classes.map((option) => (
+              <label className="flex items-center gap-2 px-2 py-1 hover:bg-slate-50" key={option.value}>
+                <input
+                  defaultChecked={selected.has(option.value)}
+                  name="class"
+                  type="checkbox"
+                  value={option.value}
+                />
+                <span>{option.label}</span>
+              </label>
+            ))}
+          </>
+        )}
+      </div>
+    </details>
+  );
+}
+
+function raceClassSelectionLabel(classes: number[]): string {
+  const sorted = normalizeRaceClasses(classes) ?? [];
+  if (sorted.length === 1) {
+    return `Class ${sorted[0]}`;
+  }
+  return `${sorted.length} classes selected`;
+}
+
 function InputField({
   label,
   name,
@@ -540,7 +647,12 @@ function searchParamsFromFormData(formData: FormData): URLSearchParams {
   for (const [key, value] of formData.entries()) {
     if (key === "trainerSearch") continue;
     const text = typeof value === "string" ? value.trim() : "";
-    if (text) params.set(key, text);
+    if (!text) continue;
+    if (key === "class") {
+      params.append(key, text);
+    } else {
+      params.set(key, text);
+    }
   }
   return params;
 }
