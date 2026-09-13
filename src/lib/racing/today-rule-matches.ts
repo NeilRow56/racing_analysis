@@ -17,7 +17,7 @@ import {
   type ResearchRuleV1,
 } from "./research-rule";
 import type { SavedResearchRule } from "./saved-research-rules";
-import type { ResolvedTrainerCohort } from "./trainer-cohorts";
+import type { ResolvedTrainerCohort } from "./trainer-cohort-mode";
 import type {
   TodayMeeting,
   TodayRace,

@@ -3,44 +3,30 @@ import { createDbConnection } from "@/db";
 import { courses, raceRunners, races, sourceImports, trainers } from "@/db/schema";
 import { targetFamilyCondition, type BacktestCacheFamily } from "./backtest-cache";
 import type { ResearchRuleV1 } from "./research-rule";
+import {
+  TRAINER_COHORT_MIN_SETTLED_RUNNERS,
+  type ResolvedTrainerCohort,
+  type TrainerCohortMember,
+  type TrainerCohortRule,
+} from "./trainer-cohort-mode";
+
+export {
+  TRAINER_COHORT_MIN_SETTLED_RUNNERS,
+  TRAINER_COHORT_PERIOD,
+  TRAINER_COHORT_RANKING_METRIC,
+  TRAINER_COHORT_TOP_OPTIONS,
+  isTrainerCohortTop,
+  parseTrainerCohortTop,
+  trainerCohortLabel,
+  trainerCohortRule,
+  type ResolvedTrainerCohort,
+  type TrainerCohortMember,
+  type TrainerCohortPeriod,
+  type TrainerCohortRankingMetric,
+  type TrainerCohortTop,
+} from "./trainer-cohort-mode";
 
 type Db = ReturnType<typeof createDbConnection>["db"];
-
-export const TRAINER_COHORT_MIN_SETTLED_RUNNERS = 50;
-export const TRAINER_COHORT_RANKING_METRIC = "wins";
-export const TRAINER_COHORT_PERIOD = "prior_calendar_year";
-export const TRAINER_COHORT_TOP_OPTIONS = [10, 20, 30] as const;
-
-export type TrainerCohortTop = typeof TRAINER_COHORT_TOP_OPTIONS[number];
-export type TrainerCohortRankingMetric = typeof TRAINER_COHORT_RANKING_METRIC;
-export type TrainerCohortPeriod = typeof TRAINER_COHORT_PERIOD;
-
-export type TrainerCohortRule = {
-  top: TrainerCohortTop;
-  period: TrainerCohortPeriod;
-  rankingMetric: TrainerCohortRankingMetric;
-};
-
-export type TrainerCohortMember = {
-  cohortYear: number;
-  referenceYear: number;
-  family: Exclude<BacktestCacheFamily, "all">;
-  rank: number;
-  trainerId: string;
-  trainerName: string;
-  priorYearRuns: number;
-  priorYearWins: number;
-  priorYearWinRate: number;
-};
-
-export type ResolvedTrainerCohort = {
-  definition: TrainerCohortRule;
-  cohortYear: number;
-  referenceYear: number;
-  family: Exclude<BacktestCacheFamily, "all">;
-  members: TrainerCohortMember[];
-  trainerIds: Set<string>;
-};
 
 export type TrainerCohortStandingInput = {
   trainerId: string | null;
@@ -50,23 +36,6 @@ export type TrainerCohortStandingInput = {
   finishingPosition: number | null;
   resultStatus: string | null;
 };
-
-export function trainerCohortRule(top: TrainerCohortTop): TrainerCohortRule {
-  return {
-    top,
-    period: TRAINER_COHORT_PERIOD,
-    rankingMetric: TRAINER_COHORT_RANKING_METRIC,
-  };
-}
-
-export function isTrainerCohortTop(value: unknown): value is TrainerCohortTop {
-  return TRAINER_COHORT_TOP_OPTIONS.includes(value as TrainerCohortTop);
-}
-
-export function parseTrainerCohortTop(value: string | null | undefined): TrainerCohortTop | undefined {
-  const parsed = Number(value);
-  return isTrainerCohortTop(parsed) ? parsed : undefined;
-}
 
 export function resolveTrainerCohortFromStandings(input: {
   rows: TrainerCohortStandingInput[];
@@ -217,20 +186,6 @@ export async function getTrainerCohortForRule(
   };
 }
 
-export function trainerCohortLabel(input: {
-  top: TrainerCohortTop;
-  referenceYear: number;
-  family: Exclude<BacktestCacheFamily, "all">;
-}) {
-  return `Top ${input.top} by ${input.referenceYear} ${familyLabel(input.family)} wins`;
-}
-
 function isSettledRunner(row: TrainerCohortStandingInput) {
   return row.finishingPosition !== null && row.resultStatus !== "non_runner";
-}
-
-function familyLabel(family: Exclude<BacktestCacheFamily, "all">) {
-  if (family === "all_weather_flat") return "All Weather";
-  if (family === "turf_flat") return "Turf";
-  return "Jump";
 }

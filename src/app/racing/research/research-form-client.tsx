@@ -10,7 +10,7 @@ import {
   parseDevelopmentSettlementMode,
   type DevelopmentSettlementMode,
 } from "@/lib/racing/development-settlement-mode";
-import { TRAINER_COHORT_TOP_OPTIONS, trainerCohortRule } from "@/lib/racing/trainer-cohorts";
+import { TRAINER_COHORT_TOP_OPTIONS, trainerCohortRule } from "@/lib/racing/trainer-cohort-mode";
 import type {
   HandicapStatusFilter,
   RankMetric,

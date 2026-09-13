@@ -17,7 +17,7 @@ import {
   trainerCohortRule,
   type ResolvedTrainerCohort,
   type TrainerCohortRule,
-} from "./trainer-cohorts";
+} from "./trainer-cohort-mode";
 export { normalizeRaceClasses } from "./research-rule-classes";
 
 export const RESEARCH_RULE_VERSION = "research_rule_v1";
