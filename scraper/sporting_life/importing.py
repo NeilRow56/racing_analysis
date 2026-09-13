@@ -2,15 +2,17 @@ from __future__ import annotations
 
 import json
 import re
-from datetime import datetime, time, timezone
+from datetime import date, datetime, time, timezone
 from pathlib import Path
 from typing import Any
+from zoneinfo import ZoneInfo
 
 import psycopg
 from psycopg.types.json import Jsonb
 
 
 SOURCE = "sporting_life"
+RACING_TIME_ZONE = ZoneInfo("Europe/London")
 FULL_RESULT_SOURCE_TYPE = "full-result-next-data"
 RESULTS_INDEX_SOURCE_TYPE = "results-index-next-data"
 NO_RACE_PAYLOAD_SOURCE_TYPE = "full-result-no-race-payload"
@@ -646,9 +648,12 @@ def parse_race_datetime(race_date: str, race_time: str | None) -> datetime | Non
     parsed_time = parse_time(race_time)
     if parsed_time is None:
         return None
-    return datetime.fromisoformat(f"{race_date}T{parsed_time.isoformat()}").replace(
-        tzinfo=timezone.utc,
+    local_race_datetime = datetime.combine(
+        date.fromisoformat(race_date),
+        parsed_time,
+        tzinfo=RACING_TIME_ZONE,
     )
+    return local_race_datetime.astimezone(timezone.utc)
 
 
 def parse_time(value: str | None) -> time | None:

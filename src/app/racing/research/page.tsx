@@ -24,6 +24,14 @@ import {
 } from "@/lib/racing/research-rule";
 import { researchRuleKey } from "@/lib/racing/research-rule-identity";
 import {
+  evaluateResearchRuleStability,
+  type ResearchRuleStabilityResult,
+} from "@/lib/racing/research-rule-stability";
+import {
+  evaluateResearchTimeSliceStability,
+  type ResearchTimeSliceStabilityResult,
+} from "@/lib/racing/research-time-slice-stability";
+import {
   cacheMetadataFromResult,
   canValidateHoldout,
   developmentSnapshotFromResult,
@@ -36,8 +44,10 @@ import {
 import { holdoutRangeText } from "./holdout-display";
 import { ResearchWorkspace } from "./research-form-client";
 import { ResearchHorseNameLink } from "./research-horse-link";
+import { RuleStabilityPanel } from "./rule-stability-panel";
 import { SaveRuleSubmitButton } from "./save-rule-submit-button";
 import { SavedRuleActionForms } from "./saved-rule-actions-client";
+import { TimeSliceStabilityPanel } from "./time-slice-stability-panel";
 
 export default async function ResearchPage({
   searchParams,
@@ -90,7 +100,11 @@ export default async function ResearchPage({
           staleSaveRulePanel={<StaleSaveRulePanel />}
         >
           {data?.result ? (
-            <ResearchResults result={data.result} />
+            <ResearchResults
+              result={data.result}
+              stability={data.stability}
+              timeSlice={data.timeSlice}
+            />
           ) : (
             <section className="mt-6 border border-amber-200 bg-amber-50 p-5 text-sm text-amber-900">
               Compatible 2025 cache not found for {familyLabel(rule.family)}.
@@ -109,6 +123,8 @@ type ResearchPageData = {
   filterOptions: ResearchFilterOptions;
   result: ResearchResult;
   rule: ResearchRuleV1;
+  stability: ResearchRuleStabilityResult;
+  timeSlice: ResearchTimeSliceStabilityResult;
 };
 
 async function loadResearchData(rule: ResearchRuleV1): Promise<ResearchPageData | null> {
@@ -122,15 +138,24 @@ async function loadResearchData(rule: ResearchRuleV1): Promise<ResearchPageData 
     return null;
   }
   const hydratedRule = hydrateResearchRuleMetadata(rule, cached.rows);
+  const result = evaluateResearchRule({
+    rows: cached.rows,
+    rule: hydratedRule,
+    cache: { manifest: cached.manifest, directory: cached.directory },
+    elapsedMs: performance.now() - startedAt,
+  });
   return {
     filterOptions: researchFilterOptionsForRows(cached.rows),
     rule: hydratedRule,
-    result: evaluateResearchRule({
-        rows: cached.rows,
-        rule: hydratedRule,
-        cache: { manifest: cached.manifest, directory: cached.directory },
-        elapsedMs: performance.now() - startedAt,
-      }),
+    result,
+    stability: evaluateResearchRuleStability({
+      rows: cached.rows,
+      result,
+    }),
+    timeSlice: evaluateResearchTimeSliceStability({
+      rows: cached.rows,
+      result,
+    }),
   };
 }
 
@@ -200,7 +225,15 @@ function StaleSaveRulePanel() {
   );
 }
 
-function ResearchResults({ result }: { result: ResearchResult }) {
+function ResearchResults({
+  result,
+  stability,
+  timeSlice,
+}: {
+  result: ResearchResult;
+  stability: ResearchRuleStabilityResult;
+  timeSlice: ResearchTimeSliceStabilityResult;
+}) {
   const rankMetric = result.rule.ranks[0]?.metric ?? null;
   const relativeMetric = result.rule.relatives[0]?.metric ?? null;
   const sample = result.selectedRunners.slice(0, 100);
@@ -232,6 +265,10 @@ function ResearchResults({ result }: { result: ResearchResult }) {
           Baseline for filtered race/runner population: {result.baselineRows} runners, {result.baselineWins} winners, {formatPct(result.baselineWinStrikeRate)} win strike rate.
         </div>
       </section>
+
+      <RuleStabilityPanel stability={stability} />
+
+      <TimeSliceStabilityPanel timeSlice={timeSlice} />
 
       <section className="grid gap-6 lg:grid-cols-[1fr_1fr]">
         <div className="border border-slate-200 bg-white p-5 shadow-sm">

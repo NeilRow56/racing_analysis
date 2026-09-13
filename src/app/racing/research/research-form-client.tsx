@@ -232,12 +232,15 @@ export const ResearchForm = ({
         </SelectField>
         <InputField label="Days since run min" name="daysMin" type="number" value={rule.runner.daysSinceRun?.min} />
         <InputField label="Days since run max" name="daysMax" type="number" value={rule.runner.daysSinceRun?.max} />
-        <InputField label="Prior runs min" name="priorRunsMin" type="number" value={rule.runner.priorRuns?.min} />
-        <InputField label="Prior runs max" name="priorRunsMax" type="number" value={rule.runner.priorRuns?.max} />
+        <InputField label="Career prior runs min" name="priorRunsMin" type="number" value={rule.runner.priorRuns?.min} />
+        <InputField label="Career prior runs max" name="priorRunsMax" type="number" value={rule.runner.priorRuns?.max} />
         <InputField label="Trainer prior runners min" name="trainerPriorRunsMin" type="number" value={rule.runner.trainerPriorRuns?.min} />
         <InputField label="Trainer prior runners max" name="trainerPriorRunsMax" type="number" value={rule.runner.trainerPriorRuns?.max} />
         <InputField label="Trainer prior strike rate min %" name="trainerPriorWinRateMin" step="0.1" type="number" value={rule.runner.trainerPriorWinRate?.min} />
         <InputField label="Trainer prior strike rate max %" name="trainerPriorWinRateMax" step="0.1" type="number" value={rule.runner.trainerPriorWinRate?.max} />
+        <div className="md:col-span-2 rounded border border-slate-200 bg-slate-50 p-3 text-sm text-slate-600">
+          Career prior runs are completed runs before this race. No future races are used.
+        </div>
         <div className="md:col-span-2 rounded border border-slate-200 bg-slate-50 p-3 text-sm text-slate-600">
           Calculated from the trainer&apos;s settled runs before each race. No future races are used.
         </div>

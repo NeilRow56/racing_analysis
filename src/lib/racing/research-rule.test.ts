@@ -734,6 +734,27 @@ describe("research trainer and return filters", () => {
     assert.deepEqual(idsFor("run_3"), ["run3"]);
     assert.deepEqual(idsFor("run_4_plus"), ["run4"]);
   });
+
+  test("filters career prior runs inclusively and treats zero as a real value", () => {
+    const rows = [
+      row({ targetRunnerId: "debutant", priorRuns: 0 }),
+      row({ targetRunnerId: "one-run", priorRuns: 1 }),
+      row({ targetRunnerId: "two-runs", priorRuns: 2 }),
+      row({ targetRunnerId: "many-runs", priorRuns: 7 }),
+      row({ targetRunnerId: "missing", priorRuns: null as unknown as number }),
+    ];
+    const idsFor = (priorRuns: ResearchRuleV1["runner"]["priorRuns"]) =>
+      evaluateResearchRule({
+        rows,
+        rule: { ...defaultResearchRule("jump"), runner: { priorRuns } },
+      }).selectedRunners.map((selection) => selection.id).sort();
+
+    assert.deepEqual(idsFor(undefined), ["debutant", "many-runs", "missing", "one-run", "two-runs"]);
+    assert.deepEqual(idsFor({ min: 1 }), ["many-runs", "one-run", "two-runs"]);
+    assert.deepEqual(idsFor({ min: 1, max: 1 }), ["one-run"]);
+    assert.deepEqual(idsFor({ min: 2 }), ["many-runs", "two-runs"]);
+    assert.deepEqual(idsFor({ max: 0 }), ["debutant"]);
+  });
 });
 
 function row(

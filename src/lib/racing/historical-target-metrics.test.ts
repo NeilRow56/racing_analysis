@@ -152,6 +152,62 @@ describe("buildHistoricalTargetRunnerMetricRows", () => {
     assert.equal(row.features.speedCalculationVersion, "jump_speed_v1");
   });
 
+  test("counts career prior runs before each target as zero, one or multiple without future leakage", () => {
+    const [debutant, secondRun, experienced] = buildHistoricalTargetRunnerMetricRows({
+      targets: [
+        target({
+          targetRunnerId: "debutant-target",
+          horseId: "horse-debutant",
+          raceDateTime: new Date("2026-09-10T14:00:00.000Z"),
+        }),
+        target({
+          targetRunnerId: "second-run-target",
+          horseId: "horse-second-run",
+          raceDateTime: new Date("2026-09-10T14:00:00.000Z"),
+        }),
+        target({
+          targetRunnerId: "experienced-target",
+          horseId: "horse-experienced",
+          raceDateTime: new Date("2026-09-10T14:00:00.000Z"),
+        }),
+      ],
+      candidateRuns: [
+        run({
+          horseId: "horse-second-run",
+          runnerId: "second-run-prior",
+          raceDate: "2026-08-15",
+          raceDateTime: new Date("2026-08-15T14:00:00.000Z"),
+          finishingPosition: 2,
+        }),
+        run({
+          horseId: "horse-second-run",
+          runnerId: "second-run-future",
+          raceDate: "2026-09-11",
+          raceDateTime: new Date("2026-09-11T14:00:00.000Z"),
+          finishingPosition: 1,
+        }),
+        run({
+          horseId: "horse-experienced",
+          runnerId: "experienced-prior-1",
+          raceDate: "2026-07-01",
+          raceDateTime: new Date("2026-07-01T14:00:00.000Z"),
+          finishingPosition: 1,
+        }),
+        run({
+          horseId: "horse-experienced",
+          runnerId: "experienced-prior-2",
+          raceDate: "2026-08-01",
+          raceDateTime: new Date("2026-08-01T14:00:00.000Z"),
+          finishingPosition: 3,
+        }),
+      ],
+    });
+
+    assert.equal(debutant.features.priorRuns, 0);
+    assert.equal(secondRun.features.priorRuns, 1);
+    assert.equal(experienced.features.priorRuns, 2);
+  });
+
   test("derives performance from the historical run weight, not target weight", () => {
     const [result] = buildHistoricalTargetRunnerMetricRows({
       targets: [

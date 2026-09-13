@@ -6,6 +6,7 @@ const execFileAsync = promisify(execFile);
 
 export const RESULT_REFRESH_BUFFER_MINUTES = 10;
 export const RESULT_REFRESH_RETRY_MINUTES = 15;
+const RACING_TIME_ZONE = "Europe/London";
 
 export type EligibleResultRefreshRace = {
   race: TodayRace;
@@ -189,7 +190,7 @@ function todayRaceHasStoredResult(race: TodayRace): boolean {
 }
 
 function isPastRefreshBuffer(race: TodayRace, raceDate: string, now: Date): boolean {
-  const scheduledAt = race.raceDateTime ?? dateTimeFromRaceDateAndScheduledTime(
+  const scheduledAt = race.raceDateTime ?? raceDateTimeFromLondonScheduledTime(
     raceDate,
     race.scheduledTime,
   );
@@ -211,7 +212,7 @@ function markChecked(sourceId: string, now: Date) {
   recentResultChecks.set(sourceId, now);
 }
 
-function dateTimeFromRaceDateAndScheduledTime(
+export function raceDateTimeFromLondonScheduledTime(
   raceDate: string,
   scheduledTime: string | null,
 ): Date | null {
@@ -222,7 +223,47 @@ function dateTimeFromRaceDateAndScheduledTime(
   if (!Number.isFinite(hour) || !Number.isFinite(minute)) {
     return null;
   }
-  return new Date(`${raceDate}T${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}:00.000Z`);
+  const [year, month, day] = raceDate.split("-").map(Number);
+  if (
+    !Number.isInteger(year) ||
+    !Number.isInteger(month) ||
+    !Number.isInteger(day)
+  ) {
+    return null;
+  }
+
+  const utcGuess = new Date(Date.UTC(year, month - 1, day, hour, minute, 0));
+  const offsetMinutes = timeZoneOffsetMinutes(utcGuess, RACING_TIME_ZONE);
+  const firstCandidate = new Date(utcGuess.getTime() - offsetMinutes * 60_000);
+  const resolvedOffsetMinutes = timeZoneOffsetMinutes(firstCandidate, RACING_TIME_ZONE);
+  return new Date(utcGuess.getTime() - resolvedOffsetMinutes * 60_000);
+}
+
+function timeZoneOffsetMinutes(date: Date, timeZone: string): number {
+  const parts = new Intl.DateTimeFormat("en-GB", {
+    timeZone,
+    hourCycle: "h23",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  }).formatToParts(date);
+  const values = Object.fromEntries(
+    parts
+      .filter((part) => part.type !== "literal")
+      .map((part) => [part.type, Number(part.value)]),
+  );
+  const zonedAsUtc = Date.UTC(
+    values.year,
+    values.month - 1,
+    values.day,
+    values.hour,
+    values.minute,
+    values.second,
+  );
+  return (zonedAsUtc - date.getTime()) / 60_000;
 }
 
 function sportingLifeResultUrl(

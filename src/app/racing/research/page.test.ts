@@ -29,6 +29,8 @@ import {
   saveRuleSubmitButtonLabel,
 } from "./save-rule-submit-button";
 import { holdoutRangeText } from "./holdout-display";
+import { RuleStabilityPanel } from "./rule-stability-panel";
+import { TimeSliceStabilityPanel } from "./time-slice-stability-panel";
 
 describe("research filters page", () => {
   test("renders racing-friendly weight, handicap and speed-rating labels", async () => {
@@ -95,6 +97,93 @@ describe("research filters page", () => {
     assert.match(linked, /Fast Example/);
     assert.doesNotMatch(plain, /href=/);
     assert.match(plain, /Readable Example/);
+  });
+
+  test("renders rule stability as a 2025-only collapsed panel", () => {
+    const text = renderToStaticMarkup(
+      RuleStabilityPanel({
+        stability: {
+          summaryLabel: "Mixed nearby results",
+          elapsedMs: 12,
+          rows: [
+            {
+              id: "current",
+              label: "Current",
+              isCurrent: true,
+              rule: defaultResearchRule("jump"),
+              eligibleRunners: 10,
+              summary: {
+                totalEligibleRunners: 3,
+                selections: 3,
+                settledSelections: 3,
+                wins: 1,
+                winStrikeRate: 33.333,
+                places: 2,
+                placeStrikeRate: 66.667,
+                averageOdds: 4,
+                totalStakes: 3,
+                grossReturn: 6,
+                profitLoss: 3,
+                roiPercentage: 100,
+                maxConsecutiveLosers: 2,
+              },
+            },
+          ],
+        },
+      }),
+    );
+
+    assert.match(text, /Rule stability/);
+    assert.match(text, /Tests small one-at-a-time changes to the current 2025 rule/);
+    assert.match(text, /2026 holdout data is not used/);
+    assert.match(text, /Current/);
+    assert.doesNotMatch(text, /2026 Holdout completed/);
+  });
+
+  test("renders time-slice stability as a 2025-only collapsed panel", () => {
+    const text = renderToStaticMarkup(
+      TimeSliceStabilityPanel({
+        timeSlice: {
+          summaryLabel: "Profitable in 4 of 4 periods",
+          concentrationLabel: "Development profit is spread across profitable periods.",
+          elapsedMs: 9,
+          rows: [
+            {
+              id: "2025-01-01:2025-03-31",
+              label: "Jan-Mar",
+              from: "2025-01-01",
+              to: "2025-03-31",
+              isFullPeriod: false,
+              smallSample: true,
+              eligibleRunners: 10,
+              rule: defaultResearchRule("jump"),
+              summary: {
+                totalEligibleRunners: 3,
+                selections: 3,
+                settledSelections: 3,
+                wins: 1,
+                winStrikeRate: 33.333,
+                places: 2,
+                placeStrikeRate: 66.667,
+                averageOdds: 4,
+                totalStakes: 3,
+                grossReturn: 6,
+                profitLoss: 3,
+                roiPercentage: 100,
+                maxConsecutiveLosers: 2,
+              },
+            },
+          ],
+        },
+      }),
+    );
+
+    assert.match(text, /Time-slice stability/);
+    assert.match(text, /exact executed rule performed across separate parts of the 2025 development period/);
+    assert.match(text, /2026 holdout data is not used/);
+    assert.match(text, /Jan-Mar/);
+    assert.match(text, /Small sample/);
+    assert.doesNotMatch(text, /2026 Holdout completed/);
   });
 
   test("renders disabled trainer selector message when no compatible cache options exist", () => {
@@ -299,6 +388,17 @@ describe("research filter freshness state", () => {
     assert.deepEqual(minZero.ratings, [{ metric: "latestSpeedRating", range: { min: 0, max: undefined } }]);
     assert.notEqual(researchRuleKey(minZero), researchRuleKey(executed));
     assert.notEqual(researchRuleKey(maxHundred), researchRuleKey(minZero));
+  });
+
+  test("prior runs form parsing preserves zero as a threshold", () => {
+    const maxZero = researchRuleFromFormData(formData({
+      family: "jump",
+      from: "2025-01-01",
+      to: "2025-12-31",
+      priorRunsMax: "0",
+    }));
+
+    assert.deepEqual(maxZero.runner.priorRuns, { min: undefined, max: 0 });
   });
 
   test("newly executed rule matches edited filters and clears stale state", () => {

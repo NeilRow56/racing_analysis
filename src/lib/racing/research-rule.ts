@@ -714,7 +714,7 @@ export function strategySummary(rule: ResearchRuleV1): string[] {
   pushRange(lines, "Current OR", rule.runner.officialRating);
   pushWeightRange(lines, "Weight", rule.runner.weightCarriedLbs);
   pushRange(lines, "Days since run", rule.runner.daysSinceRun);
-  pushRange(lines, "Prior runs", rule.runner.priorRuns);
+  pushRange(lines, "Career prior runs", rule.runner.priorRuns);
   pushRange(lines, "Trainer prior runners", rule.runner.trainerPriorRuns);
   pushRange(lines, "Trainer prior strike rate", rule.runner.trainerPriorWinRate, "%");
   for (const condition of rule.ratings) {

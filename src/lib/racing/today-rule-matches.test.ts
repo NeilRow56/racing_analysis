@@ -118,6 +118,29 @@ describe("Today frozen rule matching", () => {
     assert.deepEqual(matchIds(rule), []);
   });
 
+  test("uses the same career prior-runs numeric semantics for frozen rules", () => {
+    const rule = exampleFrozenRule({
+      runner: { priorRuns: { min: 1, max: 1 } },
+      ratings: [],
+      ranks: [],
+    });
+    const matched = matchIds(
+      rule,
+      {},
+      {},
+      {},
+      "2026-09-11",
+      [
+        runner("debutant", { priorRuns: 0 }),
+        runner("one-run", { priorRuns: 1 }),
+        runner("two-runs", { priorRuns: 2 }),
+        runner("missing-metrics", {}, { metrics: null }),
+      ],
+    );
+
+    assert.deepEqual(matched, ["one-run"]);
+  });
+
   test("summarizes zero frozen rules and zero matches", () => {
     const [displayMeeting] = attachFrozenRuleMatchesToToday(
       [meetingWithRace(race(), [runner("runner-rank-2", { latestPerformanceRating: 95 })])],

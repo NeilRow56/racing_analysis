@@ -3,6 +3,7 @@ import { beforeEach, describe, test } from "node:test";
 import {
   clearTodayResultRefreshChecksForTest,
   getEligibleResultRefreshRaces,
+  raceDateTimeFromLondonScheduledTime,
   refreshEligibleTodaySelectionResults,
   type EligibleResultRefreshRace,
 } from "./today-result-refresh";
@@ -89,6 +90,134 @@ describe("Today result refresh eligibility", () => {
     });
 
     assert.equal(eligible.length, 1);
+  });
+
+  test("race scheduled-time fallback uses Europe/London during BST", () => {
+    assert.equal(
+      raceDateTimeFromLondonScheduledTime("2026-09-12", "16:00:00")?.toISOString(),
+      "2026-09-12T15:00:00.000Z",
+    );
+
+    const eligibleBeforeBuffer = getEligibleResultRefreshRaces(
+      [meeting(race({ scheduledTime: "16:00:00", raceDateTime: null }))],
+      "2026-09-12",
+      { now: new Date("2026-09-12T15:09:59.000Z") },
+    );
+    const eligibleAtBuffer = getEligibleResultRefreshRaces(
+      [meeting(race({ scheduledTime: "16:00:00", raceDateTime: null }))],
+      "2026-09-12",
+      { now: new Date("2026-09-12T15:10:00.000Z") },
+    );
+
+    assert.equal(eligibleBeforeBuffer.length, 0);
+    assert.equal(eligibleAtBuffer.length, 1);
+  });
+
+  test("race scheduled-time fallback uses Europe/London during GMT", () => {
+    assert.equal(
+      raceDateTimeFromLondonScheduledTime("2026-12-05", "16:00:00")?.toISOString(),
+      "2026-12-05T16:00:00.000Z",
+    );
+
+    const eligible = getEligibleResultRefreshRaces(
+      [meeting(race({ scheduledTime: "16:00:00", raceDateTime: null }))],
+      "2026-12-05",
+      { now: new Date("2026-12-05T16:10:00.000Z") },
+    );
+
+    assert.equal(eligible.length, 1);
+  });
+
+  test("BST afternoon races become eligible exactly ten minutes after local off time", () => {
+    const raceTimes = [
+      ["15:30:00", "2026-09-12T14:30:00.000Z"],
+      ["16:00:00", "2026-09-12T15:00:00.000Z"],
+      ["16:30:00", "2026-09-12T15:30:00.000Z"],
+      ["17:00:00", "2026-09-12T16:00:00.000Z"],
+      ["18:00:00", "2026-09-12T17:00:00.000Z"],
+    ] as const;
+
+    for (const [scheduledTime, instant] of raceTimes) {
+      const scheduledAt = new Date(instant);
+      const beforeBuffer = getEligibleResultRefreshRaces(
+        [meeting(race({ scheduledTime, raceDateTime: scheduledAt }))],
+        "2026-09-12",
+        { now: new Date(scheduledAt.getTime() + 9 * 60_000) },
+      );
+      const atBuffer = getEligibleResultRefreshRaces(
+        [meeting(race({ scheduledTime, raceDateTime: scheduledAt }))],
+        "2026-09-12",
+        { now: new Date(scheduledAt.getTime() + 10 * 60_000) },
+      );
+      const afterBuffer = getEligibleResultRefreshRaces(
+        [meeting(race({ scheduledTime, raceDateTime: scheduledAt }))],
+        "2026-09-12",
+        { now: new Date(scheduledAt.getTime() + 20 * 60_000) },
+      );
+
+      assert.equal(beforeBuffer.length, 0, `${scheduledTime} should not refresh after 9 minutes`);
+      assert.equal(atBuffer.length, 1, `${scheduledTime} should refresh after 10 minutes`);
+      assert.equal(afterBuffer.length, 1, `${scheduledTime} should refresh after 20 minutes`);
+    }
+  });
+
+  test("retry throttle expires after fifteen minutes", async () => {
+    const meetings = [meeting(race())];
+    await refreshEligibleTodaySelectionResults(meetings, "2026-09-12", {
+      now: new Date("2026-09-12T14:00:00.000Z"),
+      refreshRaceResult: async (refreshRace) => outcome(refreshRace, "not_ready"),
+    });
+
+    const eligible = getEligibleResultRefreshRaces(meetings, "2026-09-12", {
+      now: new Date("2026-09-12T14:15:00.000Z"),
+    });
+
+    assert.equal(eligible.length, 1);
+  });
+
+  test("retry throttle is independent per source race", async () => {
+    const checkedRace = race({ sourceId: "937435" });
+    const uncheckedRace = race({
+      raceId: "race-2",
+      sourceId: "937436",
+      raceName: "Carlisle Handicap",
+    });
+    await refreshEligibleTodaySelectionResults(
+      [meeting(checkedRace), meeting(uncheckedRace)],
+      "2026-09-12",
+      {
+        now: new Date("2026-09-12T14:00:00.000Z"),
+        refreshRaceResult: async (refreshRace) =>
+          refreshRace.race.sourceId === "937435"
+            ? outcome(refreshRace, "not_ready")
+            : outcome(refreshRace, "imported"),
+      },
+    );
+
+    const eligible = getEligibleResultRefreshRaces(
+      [meeting(checkedRace), meeting(uncheckedRace)],
+      "2026-09-12",
+      { now: new Date("2026-09-12T14:01:00.000Z") },
+    );
+
+    assert.deepEqual(
+      eligible.map((refreshRace) => refreshRace.race.sourceId),
+      [],
+    );
+
+    const nextRaceEligible = getEligibleResultRefreshRaces(
+      [
+        meeting(checkedRace),
+        meeting(race({ raceId: "race-3", sourceId: "937437", raceName: "Carlisle Stakes" })),
+      ],
+      "2026-09-12",
+      { now: new Date("2026-09-12T14:01:00.000Z") },
+    );
+
+    assert.deepEqual(
+      nextRaceEligible.map((refreshRace) => refreshRace.race.sourceId),
+      ["937437"],
+    );
   });
 });
 
