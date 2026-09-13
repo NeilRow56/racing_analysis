@@ -162,22 +162,28 @@ export function calculateJumpSpeedRating(
 export function isJumpRace(input: {
   raceName?: string | null;
   raceType?: string | null;
+  raceTypeCode?: string | null;
+  courseName?: string | null;
 }): boolean {
   const subtype = classifyJumpRaceSubtype(input);
   if (subtype !== "unknown_other") {
     return true;
   }
-  const text = `${input.raceName ?? ""} ${input.raceType ?? ""}`.toLowerCase();
-  return text.includes("hurdle") || text.includes("chase") || text.includes("national hunt");
+  const metadata = normalizedRaceText([input.raceType, input.raceTypeCode]);
+  const title = normalizedRaceText([input.raceName]);
+  const text = normalizedRaceText([input.raceName, input.raceType, input.raceTypeCode]);
+  if (text.includes("hurdle") || text.includes("chase") || text.includes("national hunt")) {
+    return true;
+  }
+  return !hasExplicitFlatRaceType(metadata) && isKnownJumpRaceTitleWithoutType(title);
 }
 
 export function classifyJumpRaceSubtype(input: {
   raceName?: string | null;
   raceType?: string | null;
+  raceTypeCode?: string | null;
 }): JumpRaceSubtype {
-  const raceType = input.raceType?.toLowerCase() ?? "";
-  const raceName = input.raceName?.toLowerCase() ?? "";
-  const text = `${raceType} ${raceName}`;
+  const text = normalizedRaceText([input.raceType, input.raceTypeCode, input.raceName]);
 
   if (text.includes("hurdle")) {
     return "hurdle";
@@ -193,6 +199,25 @@ export function classifyJumpRaceSubtype(input: {
     return "nh_flat";
   }
   return "unknown_other";
+}
+
+function isKnownJumpRaceTitleWithoutType(title: string): boolean {
+  return /\birish gold cup\b/.test(title) ||
+    /\bpunchestown gold cup\b/.test(title) ||
+    /\bwillowwarm gold cup\b/.test(title);
+}
+
+function hasExplicitFlatRaceType(metadata: string): boolean {
+  return /\bflat\b/.test(metadata) || /\bgroup\b/.test(metadata) || /\blisted\b/.test(metadata);
+}
+
+function normalizedRaceText(values: Array<string | null | undefined>): string {
+  return values
+    .filter((value): value is string => typeof value === "string")
+    .join(" ")
+    .toLowerCase()
+    .replaceAll(".", "")
+    .replace(/[’']/g, "'");
 }
 
 export function ratingForStandard(input: {

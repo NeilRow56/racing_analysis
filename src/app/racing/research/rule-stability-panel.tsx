@@ -8,7 +8,7 @@ export function RuleStabilityPanel({ stability }: { stability: ResearchRuleStabi
       <div className="mt-3 flex flex-col gap-1 md:flex-row md:items-start md:justify-between">
         <div>
           <p className="text-sm text-slate-600">
-            Tests small one-at-a-time changes to the current 2025 rule. 2026 holdout data is not used.
+            Tests small one-at-a-time changes to the current 2025 rule. 2026 holdout data is not used. Settlement: {stability.settlementModeLabel}.
           </p>
           <p className="mt-2 text-sm font-medium text-slate-700">{stability.summaryLabel}</p>
         </div>

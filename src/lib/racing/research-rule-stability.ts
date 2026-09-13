@@ -12,6 +12,11 @@ import {
   type ResearchRuleV1,
 } from "./research-rule";
 import { researchRuleKey } from "./research-rule-identity";
+import {
+  developmentSettlementModeDescription,
+  summarizeSelectionsForDevelopmentSettlementMode,
+  type DevelopmentSettlementMode,
+} from "./research-settlement-mode";
 
 export type ResearchRuleStabilityRow = {
   id: string;
@@ -25,6 +30,8 @@ export type ResearchRuleStabilityRow = {
 export type ResearchRuleStabilityResult = {
   rows: ResearchRuleStabilityRow[];
   summaryLabel: string;
+  settlementMode: DevelopmentSettlementMode;
+  settlementModeLabel: string;
   elapsedMs: number;
 };
 
@@ -46,26 +53,34 @@ const RANK_STEP = 1;
 export function evaluateResearchRuleStability(input: {
   rows: HistoricalTargetRunnerMetricsRow[];
   result: ResearchResult;
+  settlementMode?: DevelopmentSettlementMode;
 }): ResearchRuleStabilityResult {
   const startedAt = performance.now();
+  const settlementMode = input.settlementMode ?? "actual";
   const candidates = researchRuleStabilityVariants(input.result.rule);
   const rows = candidates.map((candidate, index): ResearchRuleStabilityRow => {
     const result = index === 0
       ? input.result
-      : evaluateResearchRule({ rows: input.rows, rule: candidate.rule });
+      : evaluateResearchRule({
+          rows: input.rows,
+          rule: candidate.rule,
+          trainerCohort: input.result.trainerCohort,
+        });
     return {
       id: researchRuleKey(candidate.rule),
       label: candidate.label,
       isCurrent: index === 0,
       rule: candidate.rule,
       eligibleRunners: result.baselineRows,
-      summary: result.summary,
+      summary: summarizeSelectionsForDevelopmentSettlementMode(result.selectedRunners, settlementMode),
     };
   });
 
   return {
     rows,
     summaryLabel: stabilitySummaryLabel(rows),
+    settlementMode,
+    settlementModeLabel: developmentSettlementModeDescription(settlementMode),
     elapsedMs: performance.now() - startedAt,
   };
 }

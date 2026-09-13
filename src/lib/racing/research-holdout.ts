@@ -1,6 +1,7 @@
 import {
   loadLatestBacktestFeatureCacheForYear,
 } from "./backtest-cache";
+import { createDbConnection } from "@/db";
 import {
   RESEARCH_RULE_VERSION,
   evaluateResearchRule,
@@ -15,6 +16,7 @@ import type {
   ResearchRuleCacheMetadata,
   SavedResearchRule,
 } from "./saved-research-rules";
+import { getTrainerCohortForRule, type ResolvedTrainerCohort } from "./trainer-cohorts";
 
 export const HOLDOUT_YEAR = "2026";
 export const MIN_SETTLED_HOLDOUT_SAMPLE = 30;
@@ -23,7 +25,7 @@ export const HOLDOUT_CACHE_MISSING_MESSAGE =
 
 export async function evaluateHoldoutForSavedRule(
   savedRule: Pick<SavedResearchRule, "canonicalRule" | "family" | "ruleIdentity" | "ruleSchemaVersion">,
-  input: { validatedAt?: Date; outputDir?: string } = {},
+  input: { trainerCohort?: ResolvedTrainerCohort | null; validatedAt?: Date; outputDir?: string } = {},
 ): Promise<HoldoutResultSnapshot> {
   const cached = await loadLatestBacktestFeatureCacheForYear({
     year: HOLDOUT_YEAR,
@@ -48,10 +50,14 @@ export async function evaluateHoldoutForSavedRule(
       to: cached.actualCoverage.actualTo,
     },
   };
+  const trainerCohort = input.trainerCohort !== undefined
+    ? input.trainerCohort
+    : await loadTrainerCohortForHoldoutRule(rule);
   const result = evaluateResearchRule({
     rows: cached.rows,
     rule,
     cache: { manifest: cached.manifest, directory: cached.directory },
+    trainerCohort,
   });
 
   return holdoutSnapshotFromResult(result, {
@@ -60,6 +66,18 @@ export async function evaluateHoldoutForSavedRule(
     requestedCacheTo: cached.manifest.to,
     validatedAt: input.validatedAt ?? new Date(),
   });
+}
+
+async function loadTrainerCohortForHoldoutRule(rule: ResearchRuleV1): Promise<ResolvedTrainerCohort | null> {
+  if (!rule.runner.trainerCohort) {
+    return null;
+  }
+  const { client, db } = createDbConnection();
+  try {
+    return await getTrainerCohortForRule(db, rule, Number(HOLDOUT_YEAR));
+  } finally {
+    await client.end();
+  }
 }
 
 export function holdoutSnapshotFromResult(

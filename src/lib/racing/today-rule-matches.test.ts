@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { describe, test } from "node:test";
 import { defaultResearchRule, type ResearchRuleV1 } from "./research-rule";
 import type { SavedResearchRule } from "./saved-research-rules";
+import { trainerCohortRule, type ResolvedTrainerCohort } from "./trainer-cohorts";
 import {
   attachFrozenRuleMatchesToToday,
   buildTodayRuleSelections,
@@ -139,6 +140,28 @@ describe("Today frozen rule matching", () => {
     );
 
     assert.deepEqual(matched, ["one-run"]);
+  });
+
+  test("matches trainer cohort rules using supplied 2026 prior-year membership", () => {
+    const rule = exampleFrozenRule({
+      runner: { trainerCohort: trainerCohortRule(20) },
+      ratings: [],
+      ranks: [],
+    });
+    const matched = matchIds(
+      rule,
+      {},
+      {},
+      {},
+      "2026-09-11",
+      [
+        runner("cohort-runner", {}, { trainerId: "trainer-2025" }),
+        runner("old-dev-runner", {}, { trainerId: "trainer-2024" }),
+      ],
+      new Map([[rule.id, resolvedCohort(rule, ["trainer-2025"], 2026)]]),
+    );
+
+    assert.deepEqual(matched, ["cohort-runner"]);
   });
 
   test("summarizes zero frozen rules and zero matches", () => {
@@ -410,11 +433,13 @@ function matchIds(
     runner("runner-rank-3", { latestPerformanceRating: 90 }, runnerOverrides, metricOverrides),
     runner("runner-rank-4", { latestPerformanceRating: 80 }, runnerOverrides, metricOverrides),
   ],
+  trainerCohortsByRule = new Map<string, ResolvedTrainerCohort | null>(),
 ): string[] {
   const [displayMeeting] = attachFrozenRuleMatchesToToday(
     [meetingWithRace(race(raceOverrides), runners)],
     [rule],
     raceDate,
+    trainerCohortsByRule,
   );
   return displayMeeting!.races[0]!.runners
     .filter((item) => (item.savedRuleMatches?.length ?? 0) > 0)
@@ -478,6 +503,28 @@ function savedRule(
     createdAt: new Date("2026-09-11T10:00:00.000Z"),
     updatedAt: new Date("2026-09-11T10:00:00.000Z"),
     frozenAt: status === "frozen" ? new Date("2026-09-11T10:30:00.000Z") : null,
+  };
+}
+
+function resolvedCohort(rule: SavedResearchRule, trainerIds: string[], cohortYear: number): ResolvedTrainerCohort {
+  const parsed = rule.canonicalRule as ResearchRuleV1;
+  return {
+    definition: parsed.runner.trainerCohort ?? trainerCohortRule(10),
+    cohortYear,
+    referenceYear: cohortYear - 1,
+    family: parsed.family,
+    members: trainerIds.map((trainerId, index) => ({
+      cohortYear,
+      referenceYear: cohortYear - 1,
+      family: parsed.family,
+      rank: index + 1,
+      trainerId,
+      trainerName: `Trainer ${index + 1}`,
+      priorYearRuns: 50,
+      priorYearWins: 10 - index,
+      priorYearWinRate: 20 - index,
+    })),
+    trainerIds: new Set(trainerIds),
   };
 }
 

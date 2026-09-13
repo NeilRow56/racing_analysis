@@ -160,6 +160,32 @@ describe("research time-slice stability evaluation", () => {
     assert.equal(losing.summaryLabel, "Mixed results across periods");
     assert.equal(losing.concentrationLabel, null);
   });
+
+  test("applies the active development settlement mode to every time slice", () => {
+    const rule = defaultResearchRule("jump");
+    const rows = [
+      profitableRow("q1-big", "2025-02-01", "41.000"),
+      losingRow("q1-loss", "2025-02-02"),
+      profitableRow("q2-big", "2025-05-01", "41.000"),
+    ];
+    const result = evaluateResearchRule({ rows, rule });
+    const timeSlice = evaluateResearchTimeSliceStability({
+      rows,
+      result,
+      settlementMode: "cap_20_1",
+    });
+    const q1 = timeSlice.rows.find((slice) => slice.label === "Jan-Mar")!;
+    const full = timeSlice.rows.find((slice) => slice.isFullPeriod)!;
+
+    assert.equal(timeSlice.settlementMode, "cap_20_1");
+    assert.equal(timeSlice.settlementModeLabel, "Winner returns capped at 20/1");
+    assert.equal(result.summary.profitLoss, 79);
+    assert.equal(q1.summary.profitLoss, 19);
+    assert.equal(full.summary.profitLoss, 39);
+    assert.equal(full.summary.selections, result.summary.selections);
+    assert.equal(full.summary.wins, result.summary.wins);
+    assert.equal(full.summary.maxConsecutiveLosers, result.summary.maxConsecutiveLosers);
+  });
 });
 
 function profitableRow(id: string, raceDate: string, odds: string) {

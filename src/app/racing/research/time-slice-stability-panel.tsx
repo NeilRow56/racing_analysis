@@ -11,7 +11,7 @@ export function TimeSliceStabilityPanel({
       <div className="mt-3 flex flex-col gap-1 md:flex-row md:items-start md:justify-between">
         <div>
           <p className="text-sm text-slate-600">
-            Shows how the exact executed rule performed across separate parts of the 2025 development period. 2026 holdout data is not used.
+            Shows how the exact executed rule performed across separate parts of the 2025 development period. 2026 holdout data is not used. Settlement: {timeSlice.settlementModeLabel}.
           </p>
           <p className="mt-2 text-sm font-medium text-slate-700">{timeSlice.summaryLabel}</p>
           {timeSlice.concentrationLabel ? (

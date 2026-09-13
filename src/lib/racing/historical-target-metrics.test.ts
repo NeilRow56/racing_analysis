@@ -152,6 +152,33 @@ describe("buildHistoricalTargetRunnerMetricRows", () => {
     assert.equal(row.features.speedCalculationVersion, "jump_speed_v1");
   });
 
+  test("2026 targets can use legitimate December 2025 horse history", () => {
+    const [row] = buildHistoricalTargetRunnerMetricRows({
+      targets: [
+        target({
+          raceDate: "2026-01-10",
+          raceDateTime: new Date("2026-01-10T14:00:00.000Z"),
+        }),
+      ],
+      candidateRuns: [
+        run({
+          runnerId: "december-prior",
+          raceDate: "2025-12-20",
+          raceDateTime: new Date("2025-12-20T14:00:00.000Z"),
+          officialRating: 125,
+          finishingPosition: 1,
+          jumpSpeedRating: jumpRating(131),
+        }),
+      ],
+    });
+
+    assert.equal(row.features.priorRuns, 1);
+    assert.equal(row.features.priorWins, 1);
+    assert.equal(row.features.latestRunDate, "2025-12-20");
+    assert.equal(row.features.latestOr, 125);
+    assert.equal(row.features.latestSpeedRating, 131);
+  });
+
   test("counts career prior runs before each target as zero, one or multiple without future leakage", () => {
     const [debutant, secondRun, experienced] = buildHistoricalTargetRunnerMetricRows({
       targets: [
@@ -387,6 +414,83 @@ describe("buildHistoricalTargetRunnerMetricRows", () => {
     assert.equal(row.features.latestTurfSpeedRating, 104);
     assert.equal(row.features.latestJumpSpeedRating, null);
     assert.equal(row.features.latestSpeedMethod, "same_day");
+  });
+
+  test("classifies confirmed missing-type Irish Gold Cup examples as jump, not turf", () => {
+    const rows = buildHistoricalTargetRunnerMetricRows({
+      targets: [
+        target({
+          targetRaceId: "irish-gold-cup",
+          targetRunnerId: "irish-gold-cup-runner",
+          courseName: "Leopardstown",
+          raceName: "Paddy Power Irish Gold Cup (Grade 1)",
+          raceType: null,
+          raceTypeCode: null,
+          surface: "TURF",
+          distanceYards: 5380,
+        }),
+        target({
+          targetRaceId: "punchestown-gold-cup",
+          targetRunnerId: "punchestown-gold-cup-runner",
+          courseName: "Punchestown",
+          raceName: "Ladbrokes Punchestown Gold Cup (Grade 1)",
+          raceType: null,
+          raceTypeCode: null,
+          surface: "TURF",
+          distanceYards: 5493,
+        }),
+      ],
+      candidateRuns: [],
+    });
+
+    assert.deepEqual(rows.map((row) => row.features.raceCode), ["jump", "jump"]);
+  });
+
+  test("preserves ordinary flat turf classification for Group, Listed, maiden and handicap races", () => {
+    const rows = buildHistoricalTargetRunnerMetricRows({
+      targets: [
+        target({
+          targetRaceId: "royal-ascot-gold-cup",
+          targetRunnerId: "royal-ascot-gold-cup-runner",
+          courseName: "Ascot",
+          raceName: "Gold Cup (Group 1)",
+          raceType: null,
+          raceTypeCode: null,
+          surface: "TURF",
+          distanceYards: 4390,
+        }),
+        target({
+          targetRaceId: "listed-stakes",
+          targetRunnerId: "listed-stakes-runner",
+          raceName: "Fillies' Listed Stakes",
+          raceType: "Listed",
+          raceTypeCode: null,
+          surface: "TURF",
+          distanceYards: 1540,
+        }),
+        target({
+          targetRaceId: "flat-handicap",
+          targetRunnerId: "flat-handicap-runner",
+          raceName: "Summer Handicap",
+          raceType: "handicap",
+          raceTypeCode: null,
+          surface: "TURF",
+          distanceYards: 1760,
+        }),
+        target({
+          targetRaceId: "flat-maiden",
+          targetRunnerId: "flat-maiden-runner",
+          raceName: "Irish European Breeders Fund Maiden",
+          raceType: "maiden",
+          raceTypeCode: null,
+          surface: "TURF",
+          distanceYards: 1100,
+        }),
+      ],
+      candidateRuns: [],
+    });
+
+    assert.deepEqual(rows.map((row) => row.features.raceCode), ["turf", "turf", "turf", "turf"]);
   });
 
   test("derives run number after 90-day break from prior completed runs only", () => {

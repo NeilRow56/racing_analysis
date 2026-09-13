@@ -13,6 +13,10 @@ import {
   canonicalResearchRule,
   researchRuleKey,
 } from "./research-rule-identity";
+import type { BacktestSummary } from "./backtest";
+import {
+  type DevelopmentSettlementMode,
+} from "./development-settlement-mode";
 
 type Db = ReturnType<typeof createDbConnection>["db"];
 type DbConnection = ReturnType<typeof createDbConnection>;
@@ -33,6 +37,7 @@ export type DevelopmentResultSnapshot = {
   profitLoss: number;
   roiPercentage: number | null;
   maxConsecutiveLosers: number;
+  developmentSettlementMode?: DevelopmentSettlementMode;
 };
 
 export type ResearchRuleCacheMetadata = {
@@ -307,18 +312,28 @@ export function holdoutSnapshotWithActualCoverage(
   };
 }
 
-export function developmentSnapshotFromResult(result: ResearchResult): DevelopmentResultSnapshot {
+export function developmentSnapshotFromResult(
+  result: ResearchResult,
+  input: {
+    summary?: BacktestSummary;
+    settlementMode?: DevelopmentSettlementMode;
+  } = {},
+): DevelopmentResultSnapshot {
+  const summary = input.summary ?? result.summary;
   return {
     eligibleRunners: result.baselineRows,
-    selections: result.summary.selections,
-    settledSelections: result.summary.settledSelections,
-    winners: result.summary.wins,
-    strikeRate: result.summary.winStrikeRate,
-    places: result.summary.places,
-    placeStrikeRate: result.summary.placeStrikeRate,
-    profitLoss: result.summary.profitLoss,
-    roiPercentage: result.summary.roiPercentage,
-    maxConsecutiveLosers: result.summary.maxConsecutiveLosers,
+    selections: summary.selections,
+    settledSelections: summary.settledSelections,
+    winners: summary.wins,
+    strikeRate: summary.winStrikeRate,
+    places: summary.places,
+    placeStrikeRate: summary.placeStrikeRate,
+    profitLoss: summary.profitLoss,
+    roiPercentage: summary.roiPercentage,
+    maxConsecutiveLosers: summary.maxConsecutiveLosers,
+    ...(input.settlementMode && input.settlementMode !== "actual"
+      ? { developmentSettlementMode: input.settlementMode }
+      : {}),
   };
 }
 

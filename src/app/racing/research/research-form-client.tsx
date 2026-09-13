@@ -5,6 +5,12 @@ import { useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { normalizeRaceClasses } from "@/lib/racing/research-rule-classes";
 import { researchRuleKey } from "@/lib/racing/research-rule-identity";
+import {
+  DEVELOPMENT_SETTLEMENT_MODE_OPTIONS,
+  parseDevelopmentSettlementMode,
+  type DevelopmentSettlementMode,
+} from "@/lib/racing/development-settlement-mode";
+import { TRAINER_COHORT_TOP_OPTIONS, trainerCohortRule } from "@/lib/racing/trainer-cohorts";
 import type {
   HandicapStatusFilter,
   RankMetric,
@@ -32,6 +38,7 @@ export function ResearchWorkspace({
   relativeMetricOptions,
   runAfterBreakOptions,
   saveRulePanel,
+  settlementMode,
   staleSaveRulePanel,
 }: {
   children: React.ReactNode;
@@ -45,6 +52,7 @@ export function ResearchWorkspace({
   returnBucketOptions: Array<Option<ReturnBucket>>;
   relativeMetricOptions: Array<Option<RelativeMetric>>;
   runAfterBreakOptions: Array<Option<RunAfterBreakFilter>>;
+  settlementMode: DevelopmentSettlementMode;
   saveRulePanel?: React.ReactNode;
   staleSaveRulePanel?: React.ReactNode;
 }) {
@@ -53,14 +61,18 @@ export function ResearchWorkspace({
   const executedRuleKey = researchRuleKey(executedRule);
   const [editedRule, setEditedRule] = useState(executedRule);
   const [editedRuleKey, setEditedRuleKey] = useState(executedRuleKey);
+  const [editedSettlementMode, setEditedSettlementMode] = useState(settlementMode);
   const [formVersion, setFormVersion] = useState(0);
   const [isPending, startTransition] = useTransition();
-  const isStale = hasResults && editedRuleKey !== executedRuleKey;
+  const isStale = hasResults &&
+    (editedRuleKey !== executedRuleKey || editedSettlementMode !== settlementMode);
 
   function updateEditedRule(form: HTMLFormElement) {
-    const nextRule = researchRuleFromFormData(new FormData(form));
+    const formData = new FormData(form);
+    const nextRule = researchRuleFromFormData(formData);
     setEditedRule(nextRule);
     setEditedRuleKey(researchRuleKey(nextRule));
+    setEditedSettlementMode(settlementModeFromFormData(formData));
   }
 
   function onSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -69,6 +81,7 @@ export function ResearchWorkspace({
     const nextRule = researchRuleFromFormData(formData);
     setEditedRule(nextRule);
     setEditedRuleKey(researchRuleKey(nextRule));
+    setEditedSettlementMode(settlementModeFromFormData(formData));
     startTransition(() => {
       router.push(`/racing/research?${searchParamsFromFormData(formData).toString()}`);
     });
@@ -103,6 +116,7 @@ export function ResearchWorkspace({
           relativeMetricOptions={relativeMetricOptions}
           runAfterBreakOptions={runAfterBreakOptions}
           rule={editedRule}
+          settlementMode={editedSettlementMode}
         />
       </section>
 
@@ -137,6 +151,7 @@ export const ResearchForm = ({
   relativeMetricOptions,
   runAfterBreakOptions,
   rule,
+  settlementMode,
   ref,
 }: {
   familyOptions: Array<Option<ResearchRuleV1["family"]>>;
@@ -153,12 +168,16 @@ export const ResearchForm = ({
   relativeMetricOptions: Array<Option<RelativeMetric>>;
   runAfterBreakOptions: Array<Option<RunAfterBreakFilter>>;
   rule: ResearchRuleV1;
+  settlementMode: DevelopmentSettlementMode;
   ref: React.Ref<HTMLFormElement>;
 }) => {
   const rating = rule.ratings[0];
   const relative = rule.relatives[0];
   const rank = rule.ranks[0];
   const buttonLabel = researchRunButtonLabel({ isPending, isStale });
+  const optionsMatchSelectedFamily = !filterOptions.family || filterOptions.family === rule.family;
+  const courseOptions = optionsMatchSelectedFamily ? filterOptions.courses : [];
+  const specificTrainerSelected = Boolean(rule.runner.trainerId);
   return (
     <form action="/racing/research" className="space-y-6" method="get" onChange={onChange} onSubmit={onSubmit} ref={ref}>
       <div className="grid gap-4 md:grid-cols-4">
@@ -176,9 +195,21 @@ export const ResearchForm = ({
       </div>
 
       <FilterGroup title="Race Filters">
-        <SelectField label="Course" name="courseId" value={rule.race.courseId ?? ""}>
+        <SelectField
+          disabled={!optionsMatchSelectedFamily || courseOptions.length === 0}
+          helpText={
+            !optionsMatchSelectedFamily
+              ? "Run Research to load course options for this family."
+              : courseOptions.length === 0
+                ? "Course options available after the 2025 cache is built."
+                : undefined
+          }
+          label="Course"
+          name="courseId"
+          value={rule.race.courseId ?? ""}
+        >
           <option value="">All courses</option>
-          {filterOptions.courses.map((option) => (
+          {courseOptions.map((option) => (
             <option key={option.courseId} value={option.courseId}>{option.courseName}</option>
           ))}
         </SelectField>
@@ -207,7 +238,33 @@ export const ResearchForm = ({
       <FilterGroup title="Runner Filters">
         <InputField label="OR min" name="orMin" type="number" value={rule.runner.officialRating?.min} />
         <InputField label="OR max" name="orMax" type="number" value={rule.runner.officialRating?.max} />
-        <TrainerField filterOptions={filterOptions} onSelectionChange={onChange} rule={rule} />
+        <TrainerField
+          disabled={!optionsMatchSelectedFamily || Boolean(rule.runner.trainerCohort)}
+          disabledReason={
+            rule.runner.trainerCohort
+              ? "Set Trainer cohort to All trainers to select one trainer."
+              : "Run Research to load trainer options for this family."
+          }
+          filterOptions={filterOptions}
+          onSelectionChange={onChange}
+          rule={rule}
+        />
+        <SelectField
+          disabled={specificTrainerSelected}
+          helpText={
+            specificTrainerSelected
+              ? "Clear the specific Trainer filter to use a cohort."
+              : "Top trainers are ranked by prior-year wins within the selected race family. No current-year results are used."
+          }
+          label="Trainer cohort"
+          name="trainerCohort"
+          value={rule.runner.trainerCohort ? String(rule.runner.trainerCohort.top) : ""}
+        >
+          <option value="">All trainers</option>
+          {TRAINER_COHORT_TOP_OPTIONS.map((top) => (
+            <option key={top} value={top}>Top {top}</option>
+          ))}
+        </SelectField>
         <SelectField label="Weight min" name="weightMin" value={String(rule.runner.weightCarriedLbs?.min ?? "")}>
           <option value="">No minimum</option>
           {filterOptions.weights.map((option) => (
@@ -284,6 +341,11 @@ export const ResearchForm = ({
       </FilterGroup>
 
       <div className="flex flex-wrap items-center gap-3">
+        <SelectField label="Development settlement" name="settlementMode" value={settlementMode}>
+          {DEVELOPMENT_SETTLEMENT_MODE_OPTIONS.map((option) => (
+            <option key={option.value} value={option.value}>{option.label}</option>
+          ))}
+        </SelectField>
         <button
           className="inline-flex items-center gap-2 bg-emerald-800 px-5 py-2.5 text-sm font-semibold text-white hover:bg-emerald-900 disabled:cursor-wait disabled:bg-emerald-950/70"
           disabled={isResearchSubmitDisabled(isPending)}
@@ -299,7 +361,9 @@ export const ResearchForm = ({
         >
           Clear all filters
         </button>
-        <span className="text-sm text-slate-500">Run a 2025 research result before saving or freezing rules.</span>
+        <span className="max-w-xl text-sm text-slate-500">
+          For development analysis only. This does not change which horses are selected or the frozen rule.
+        </span>
       </div>
     </form>
   );
@@ -346,6 +410,7 @@ export function researchRuleFromFormData(formData: FormData): ResearchRuleV1 {
     },
     runner: {
       trainerId: textValue(formData.get("trainerId")),
+      trainerCohort: trainerCohortFromFormData(formData),
       returnBucket: returnBucketValue(textValue(formData.get("returnBucket"))),
       runAfterBreak: runAfterBreakValue(textValue(formData.get("runAfterBreak"))),
       officialRating: rangeFromFormData(formData, "orMin", "orMax"),
@@ -359,6 +424,20 @@ export function researchRuleFromFormData(formData: FormData): ResearchRuleV1 {
     relatives: relativeMetric && relativeRange ? [{ metric: relativeMetric, range: relativeRange }] : [],
     ranks: rankMetric && rankRange ? [{ metric: rankMetric, range: rankRange }] : [],
   };
+}
+
+function trainerCohortFromFormData(formData: FormData) {
+  if (textValue(formData.get("trainerId"))) {
+    return undefined;
+  }
+  const top = Number(textValue(formData.get("trainerCohort")));
+  return TRAINER_COHORT_TOP_OPTIONS.includes(top as typeof TRAINER_COHORT_TOP_OPTIONS[number])
+    ? trainerCohortRule(top as typeof TRAINER_COHORT_TOP_OPTIONS[number])
+    : undefined;
+}
+
+export function settlementModeFromFormData(formData: FormData): DevelopmentSettlementMode {
+  return parseDevelopmentSettlementMode(textValue(formData.get("settlementMode")));
 }
 
 export function researchRunButtonLabel(input: { isPending: boolean; isStale: boolean }): string {
@@ -382,22 +461,26 @@ function FilterGroup({ children, title }: { children: React.ReactNode; title: st
 }
 
 function TrainerField({
+  disabled = false,
+  disabledReason = "Run Research to load trainer options for this family.",
   filterOptions,
   onSelectionChange,
   rule,
 }: {
+  disabled?: boolean;
+  disabledReason?: string;
   filterOptions: ResearchFilterOptions;
   onSelectionChange: () => void;
   rule: ResearchRuleV1;
 }) {
   const hiddenInputRef = useRef<HTMLInputElement>(null);
-  const selectedTrainer = selectedTrainerOption(filterOptions.trainers, rule.runner.trainerId);
+  const selectedTrainer = disabled ? null : selectedTrainerOption(filterOptions.trainers, rule.runner.trainerId);
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState(selectedTrainer?.trainerName ?? "");
   const [selectedId, setSelectedId] = useState(selectedTrainer?.trainerId ?? "");
   const normalizedQuery = query.trim().toLowerCase();
   const visibleTrainers = filterTrainerOptions(filterOptions.trainers, normalizedQuery);
-  const hasTrainerOptions = filterOptions.trainers.length > 0;
+  const hasTrainerOptions = !disabled && filterOptions.trainers.length > 0;
   const listboxId = "trainer-options";
 
   function setTrainer(trainerId: string, trainerName: string) {
@@ -427,14 +510,14 @@ function TrainerField({
   return (
     <div className="relative block text-sm">
       <label className="font-medium text-slate-700" htmlFor="trainerCombobox">Trainer</label>
-      <input name="trainerId" ref={hiddenInputRef} type="hidden" value={selectedId} />
+      <input disabled={disabled} name="trainerId" ref={hiddenInputRef} type="hidden" value={selectedId} />
       <input
         aria-autocomplete="list"
         aria-controls={listboxId}
         aria-expanded={isOpen}
         autoComplete="off"
         className="mt-1 w-full border border-slate-300 bg-white px-3 py-2 text-sm disabled:bg-slate-100 disabled:text-slate-500"
-        disabled={!hasTrainerOptions}
+        disabled={disabled || filterOptions.trainers.length === 0}
         id="trainerCombobox"
         onBlur={() => {
           window.setTimeout(() => setIsOpen(false), 120);
@@ -456,7 +539,7 @@ function TrainerField({
         placeholder="All trainers"
         role="combobox"
         type="search"
-        value={query}
+        value={disabled ? "" : query}
       />
       {selectedId ? (
         <button
@@ -468,7 +551,9 @@ function TrainerField({
           Clear trainer
         </button>
       ) : null}
-      {!hasTrainerOptions ? (
+      {disabled ? (
+        <p className="mt-1 text-xs text-amber-800">{disabledReason}</p>
+      ) : filterOptions.trainers.length === 0 ? (
         <p className="mt-1 text-xs text-amber-800">Trainer options available after the 2025 cache is built.</p>
       ) : null}
       {isOpen && hasTrainerOptions ? (
@@ -601,11 +686,15 @@ function InputField({
 
 function SelectField({
   children,
+  disabled = false,
+  helpText,
   label,
   name,
   value,
 }: {
   children: React.ReactNode;
+  disabled?: boolean;
+  helpText?: string;
   label: string;
   name: string;
   value: string;
@@ -616,10 +705,12 @@ function SelectField({
       <select
         className="mt-1 w-full border border-slate-300 bg-white px-3 py-2 text-sm"
         defaultValue={value}
+        disabled={disabled}
         name={name}
       >
         {children}
       </select>
+      {helpText ? <p className="mt-1 text-xs text-amber-800">{helpText}</p> : null}
     </label>
   );
 }

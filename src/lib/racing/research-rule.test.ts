@@ -12,6 +12,7 @@ import {
   rankRows,
   ruleFromSearchParams,
   classifyHandicapStatus,
+  courseOptionsForRows,
   researchFilterOptionsForRows,
   serializeResearchRule,
   strategySummary,
@@ -20,6 +21,7 @@ import {
   type ResearchRuleV1,
 } from "./research-rule";
 import { researchRuleKey } from "./research-rule-identity";
+import { trainerCohortRule, type ResolvedTrainerCohort } from "./trainer-cohorts";
 import type {
   HistoricalPostRaceOutcome,
   HistoricalPreRaceFeatureRow,
@@ -134,6 +136,33 @@ describe("research rule evaluation", () => {
       }).selectedRunners.map((selection) => selection.id).sort(),
       ["rejected", "selected"],
     );
+  });
+
+  test("filters by resolved trainer cohort membership and changes canonical identity by cohort size", () => {
+    const rows = [
+      row({ targetRunnerId: "cohort-trainer", trainerId: "trainer-a" }),
+      row({ targetRunnerId: "outside-trainer", trainerId: "trainer-b" }),
+      row({ targetRunnerId: "missing-trainer", trainerId: null }),
+    ];
+    const rule = {
+      ...defaultResearchRule("jump"),
+      runner: { trainerCohort: trainerCohortRule(20) },
+    };
+    const cohort = resolvedCohort(rule, ["trainer-a"]);
+
+    assert.deepEqual(
+      evaluateResearchRule({ rows, rule, trainerCohort: cohort }).selectedRunners.map((selection) => selection.id),
+      ["cohort-trainer"],
+    );
+    assert.deepEqual(
+      evaluateResearchRule({ rows, rule, trainerCohort: null }).selectedRunners.map((selection) => selection.id),
+      [],
+    );
+    assert.notEqual(
+      researchRuleKey(rule),
+      researchRuleKey({ ...rule, runner: { trainerCohort: trainerCohortRule(30) } }),
+    );
+    assert.ok(strategySummary(rule).includes("Trainer cohort: Top 20 by 2024 Jump wins"));
   });
 
   test("filters distance buckets using racing-distance tolerance", () => {
@@ -473,6 +502,40 @@ describe("research filter options", () => {
         rows,
       ).runner.trainerId,
       undefined,
+    );
+  });
+
+  test("keeps duplicate trainer names as separate stable ID options in alphabetical order", () => {
+    const rows = [
+      row({ targetRunnerId: "a", trainerId: "trainer-b", trainerName: "Shared Name" }),
+      row({ targetRunnerId: "b", trainerId: "trainer-a", trainerName: "Shared Name" }),
+      row({ targetRunnerId: "c", trainerId: "trainer-c", trainerName: "Another Trainer" }),
+    ];
+
+    assert.deepEqual(
+      trainerOptionsForRows(rows).map((option) => [option.trainerId, option.trainerName, option.count]),
+      [
+        ["trainer-c", "Another Trainer", 1],
+        ["trainer-a", "Shared Name", 1],
+        ["trainer-b", "Shared Name", 1],
+      ],
+    );
+  });
+
+  test("derives trainer and course options from the current family rows only", () => {
+    const rows = [
+      row({ targetRunnerId: "jump", raceCode: "jump", trainerId: "trainer-jump", trainerName: "Jump Trainer", courseId: "course-jump", courseName: "Worcester" }),
+      row({ targetRunnerId: "turf", raceCode: "turf", trainerId: "trainer-turf", trainerName: "Turf Trainer", courseId: "course-turf", courseName: "Ascot" }),
+    ];
+    const turfRows = rows.filter((entry) => entry.features.raceCode === "turf");
+
+    assert.deepEqual(
+      trainerOptionsForRows(turfRows).map((option) => [option.trainerId, option.trainerName]),
+      [["trainer-turf", "Turf Trainer"]],
+    );
+    assert.deepEqual(
+      courseOptionsForRows(turfRows).map((option) => [option.courseId, option.courseName]),
+      [["course-turf", "Ascot"]],
     );
   });
 
@@ -877,5 +940,26 @@ function outcome(
     startingPrice: "5/1",
     startingPriceDecimal: "6.000",
     ...overrides,
+  };
+}
+
+function resolvedCohort(rule: ResearchRuleV1, trainerIds: string[]): ResolvedTrainerCohort {
+  return {
+    definition: rule.runner.trainerCohort ?? trainerCohortRule(10),
+    cohortYear: 2025,
+    referenceYear: 2024,
+    family: rule.family,
+    members: trainerIds.map((trainerId, index) => ({
+      cohortYear: 2025,
+      referenceYear: 2024,
+      family: rule.family,
+      rank: index + 1,
+      trainerId,
+      trainerName: `Trainer ${index + 1}`,
+      priorYearRuns: 50,
+      priorYearWins: 10 - index,
+      priorYearWinRate: 20 - index,
+    })),
+    trainerIds: new Set(trainerIds),
   };
 }

@@ -94,6 +94,35 @@ describe("saved research rules", () => {
     assert.equal(prepared.ruleIdentity, researchRuleKey(rule));
   });
 
+  test("records development settlement mode metadata without changing frozen rule identity", () => {
+    const rule = defaultResearchRule("jump");
+    const result = researchResult(rule);
+    const cappedSummary = {
+      ...result.summary,
+      profitLoss: 3.5,
+      roiPercentage: 87.5,
+    };
+    const prepared = prepareFrozenSavedResearchRule({
+      name: "Capped analysis",
+      rule,
+      developmentSnapshot: developmentSnapshotFromResult(result, {
+        summary: cappedSummary,
+        settlementMode: "cap_20_1",
+      }),
+    });
+
+    assert.equal(prepared.ruleIdentity, researchRuleKey(rule));
+    assert.deepEqual(prepared.canonicalRule, canonicalResearchRule(rule));
+    assert.equal(
+      (prepared.developmentSnapshot as { developmentSettlementMode?: string }).developmentSettlementMode,
+      "cap_20_1",
+    );
+    assert.equal(
+      (prepared.developmentSnapshot as { profitLoss: number }).profitLoss,
+      3.5,
+    );
+  });
+
   test("existing single-class saved representation normalizes on load", () => {
     const legacyRule = {
       version: "research_rule_v1",
@@ -418,5 +447,6 @@ function researchResult(
       },
     },
     elapsedMs: 10,
+    trainerCohort: null,
   };
 }

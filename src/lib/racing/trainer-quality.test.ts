@@ -98,6 +98,23 @@ describe("trainer prior metrics", () => {
     });
   });
 
+  test("2026 targets include settled trainer runs from December 2025", () => {
+    const metrics = calculateTrainerPriorMetricsForTargets(
+      [target("jan-2026-target", "2026-01-10T12:00:00.000Z")],
+      [
+        run("2025-12-20T12:00:00.000Z", 1),
+        run("2025-12-27T12:00:00.000Z", 3),
+        run("2026-01-10T12:00:00.000Z", 1),
+      ],
+    );
+
+    assert.deepEqual(metrics.get("jan-2026-target"), {
+      trainerPriorRuns: 2,
+      trainerPriorWins: 1,
+      trainerPriorWinRate: 50,
+    });
+  });
+
   test("trainer metrics are identical when targets are split across feature batches", () => {
     const targets = [
       target("target-1", "2025-01-02T12:00:00.000Z"),

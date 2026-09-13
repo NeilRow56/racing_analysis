@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { describe, test } from "node:test";
 import {
   calculateJumpSpeedRating,
+  isJumpRace,
   JUMP_SPEED_RATING_CALCULATION_VERSION,
 } from "./jump-speed-rating";
 
@@ -114,5 +115,30 @@ describe("calculateJumpSpeedRating", () => {
     assert.equal(rating.method, "unavailable");
     assert.equal(rating.rating, null);
     assert.equal(rating.withheldReason, "not_jump_race");
+  });
+});
+
+describe("isJumpRace", () => {
+  test("recognizes obvious jump titles when source type metadata is missing", () => {
+    assert.equal(isJumpRace({ raceName: "Novices' Chase", raceType: null, raceTypeCode: null }), true);
+    assert.equal(isJumpRace({ raceName: "Mares' Hurdle", raceType: null, raceTypeCode: null }), true);
+    assert.equal(isJumpRace({ raceName: "National Hunt Flat Race", raceType: null, raceTypeCode: null }), true);
+  });
+
+  test("keeps confirmed Irish Grade 1 chase titles out of turf-flat when metadata is missing", () => {
+    assert.equal(isJumpRace({ raceName: "Paddy Power Irish Gold Cup (Grade 1)", raceType: null, raceTypeCode: null }), true);
+    assert.equal(isJumpRace({ raceName: "WillowWarm Gold Cup (Grade 1)", raceType: null, raceTypeCode: null }), true);
+    assert.equal(isJumpRace({ raceName: "Ladbrokes Punchestown Gold Cup (Grade 1)", raceType: null, raceTypeCode: null }), true);
+  });
+
+  test("does not treat ordinary flat Group, Listed or handicap races as jumps", () => {
+    assert.equal(isJumpRace({ raceName: "Tattersalls Gold Cup (Group 1)", raceType: null, raceTypeCode: null }), false);
+    assert.equal(isJumpRace({ raceName: "Royal Ascot Gold Cup (Group 1)", raceType: null, raceTypeCode: null }), false);
+    assert.equal(isJumpRace({ raceName: "Fillies' Listed Stakes", raceType: "Listed", raceTypeCode: null }), false);
+    assert.equal(isJumpRace({ raceName: "William Hill NRMB On The Grand National Handicap", raceType: "handicap", raceTypeCode: null }), false);
+  });
+
+  test("explicit flat metadata prevents known-title fallback", () => {
+    assert.equal(isJumpRace({ raceName: "Irish Gold Cup (Group 1)", raceType: "Flat", raceTypeCode: null }), false);
   });
 });

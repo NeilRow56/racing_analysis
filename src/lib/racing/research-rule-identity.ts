@@ -37,6 +37,13 @@ export function canonicalResearchRule(rule: ResearchRuleV1) {
     }),
     runner: compactObject({
       trainerId: textValue(rule.runner.trainerId),
+      trainerCohort: rule.runner.trainerCohort
+        ? {
+            top: rule.runner.trainerCohort.top,
+            period: rule.runner.trainerCohort.period,
+            rankingMetric: rule.runner.trainerCohort.rankingMetric,
+          }
+        : undefined,
       returnBucket: !rule.runner.returnBucket || rule.runner.returnBucket === "all"
         ? undefined
         : rule.runner.returnBucket,

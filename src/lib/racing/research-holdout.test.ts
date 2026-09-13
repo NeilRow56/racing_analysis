@@ -24,6 +24,7 @@ import {
   type ResearchRuleV1,
 } from "./research-rule";
 import { canonicalResearchRule, researchRuleKey } from "./research-rule-identity";
+import { trainerCohortRule, type ResolvedTrainerCohort } from "./trainer-cohorts";
 import {
   developmentSnapshotFromResult,
   type SavedResearchRule,
@@ -135,6 +136,50 @@ describe("research holdout validation", () => {
     assert.equal(snapshot.settledSelections, 0);
     assert.equal(snapshot.status, "no_settled_holdout_selections");
   });
+
+  test("resolves frozen trainer cohort concept against the supplied 2026 holdout cohort", async () => {
+    const root = await mkdtemp(join(tmpdir(), "racing-holdout-cohort-"));
+    const rule: ResearchRuleV1 = {
+      ...defaultResearchRule("jump"),
+      runner: { trainerCohort: trainerCohortRule(20) },
+    };
+    await writeCache(root, {
+      manifest: manifestFor({ family: "jump", from: "2026-01-01", to: "2026-12-31", rowCount: 2 }),
+      rows: [
+        row({ targetRunnerId: "matched", trainerId: "trainer-2025", raceDate: "2026-01-03" }),
+        row({ targetRunnerId: "old-dev-member", trainerId: "trainer-2024", raceDate: "2026-01-03" }),
+      ],
+    });
+
+    const snapshot = await evaluateHoldoutForSavedRule(savedRuleFor(rule), {
+      outputDir: root,
+      trainerCohort: resolvedCohort(rule, ["trainer-2025"], 2026),
+    });
+
+    assert.equal(snapshot.selections, 1);
+    assert.equal(snapshot.settledSelections, 1);
+  });
+
+  test("uses actual result SP for holdout even when development snapshot was capped", async () => {
+    const root = await mkdtemp(join(tmpdir(), "racing-holdout-actual-sp-"));
+    const savedRule = savedRuleFor(defaultResearchRule("jump"));
+    savedRule.developmentSnapshot.developmentSettlementMode = "cap_20_1";
+    await writeCache(root, {
+      manifest: manifestFor({ family: "jump", from: "2026-01-01", to: "2026-12-31", rowCount: 1 }),
+      rows: [
+        row(
+          { targetRunnerId: "huge-price-winner", raceDate: "2026-03-01" },
+          { won: true, placed: true, finishingPosition: 1, startingPriceDecimal: "201.000" },
+        ),
+      ],
+    });
+
+    const snapshot = await evaluateHoldoutForSavedRule(savedRule, { outputDir: root });
+
+    assert.equal(snapshot.profitLoss, 200);
+    assert.equal(snapshot.roiPercentage, 20000);
+    assert.equal(snapshot.developmentSettlementMode, undefined);
+  });
 });
 
 async function writeCache(
@@ -213,12 +258,34 @@ function savedRuleFor(rule: ResearchRuleV1): SavedResearchRule {
       strategySummary: [],
       cache: null,
       elapsedMs: 0,
+      trainerCohort: null,
     }),
     holdoutSnapshot: null,
     cacheMetadata: null,
     createdAt: new Date("2026-09-11T10:00:00.000Z"),
     updatedAt: new Date("2026-09-11T10:00:00.000Z"),
     frozenAt: new Date("2026-09-11T10:30:00.000Z"),
+  };
+}
+
+function resolvedCohort(rule: ResearchRuleV1, trainerIds: string[], cohortYear: number): ResolvedTrainerCohort {
+  return {
+    definition: rule.runner.trainerCohort ?? trainerCohortRule(10),
+    cohortYear,
+    referenceYear: cohortYear - 1,
+    family: rule.family,
+    members: trainerIds.map((trainerId, index) => ({
+      cohortYear,
+      referenceYear: cohortYear - 1,
+      family: rule.family,
+      rank: index + 1,
+      trainerId,
+      trainerName: `Trainer ${index + 1}`,
+      priorYearRuns: 50,
+      priorYearWins: 10 - index,
+      priorYearWinRate: 20 - index,
+    })),
+    trainerIds: new Set(trainerIds),
   };
 }
 

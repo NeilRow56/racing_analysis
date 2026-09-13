@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { createDbConnection } from "@/db";
 import { loadBacktestFeatureCache } from "@/lib/racing/backtest-cache";
 import {
   DEVELOPMENT_FROM,
@@ -32,6 +33,24 @@ import {
   type ResearchTimeSliceStabilityResult,
 } from "@/lib/racing/research-time-slice-stability";
 import {
+  evaluateResearchPriceSensitivity,
+  type ResearchPriceSensitivityResult,
+} from "@/lib/racing/research-price-sensitivity";
+import {
+  developmentSettlementModeDescription,
+  parseDevelopmentSettlementMode,
+  selectionForDevelopmentSettlementMode,
+  summarizeSelectionsForDevelopmentSettlementMode,
+  type DevelopmentSettlementMode,
+} from "@/lib/racing/research-settlement-mode";
+import type { BacktestSummary } from "@/lib/racing/backtest";
+import {
+  TRAINER_COHORT_MIN_SETTLED_RUNNERS,
+  getTrainerCohortForRule,
+  trainerCohortLabel,
+  type ResolvedTrainerCohort,
+} from "@/lib/racing/trainer-cohorts";
+import {
   cacheMetadataFromResult,
   canValidateHoldout,
   developmentSnapshotFromResult,
@@ -44,6 +63,7 @@ import {
 import { holdoutRangeText } from "./holdout-display";
 import { ResearchWorkspace } from "./research-form-client";
 import { ResearchHorseNameLink } from "./research-horse-link";
+import { PriceSensitivityPanel } from "./price-sensitivity-panel";
 import { RuleStabilityPanel } from "./rule-stability-panel";
 import { SaveRuleSubmitButton } from "./save-rule-submit-button";
 import { SavedRuleActionForms } from "./saved-rule-actions-client";
@@ -56,7 +76,8 @@ export default async function ResearchPage({
 }) {
   const params = await normalizedSearchParams(searchParams);
   const rule = ruleFromSearchParams(params);
-  const data = await loadResearchData(rule);
+  const settlementMode = parseDevelopmentSettlementMode(params.get("settlementMode"));
+  const data = await loadResearchData(rule, settlementMode);
   const displayRule = data?.rule ?? rule;
   const filterOptions = data?.filterOptions ?? emptyFilterOptions();
   const savedRules = await loadSavedRules();
@@ -90,20 +111,31 @@ export default async function ResearchPage({
           filterOptions={filterOptions}
           handicapStatusOptions={HANDICAP_STATUS_OPTIONS}
           hasResults={data?.result !== undefined}
-          key={researchRuleKey(displayRule)}
+          key={`${researchRuleKey(displayRule)}:${data?.settlementMode ?? settlementMode}`}
           rankMetricOptions={RANK_METRIC_OPTIONS}
           ratingMetricOptions={RATING_METRIC_OPTIONS}
           returnBucketOptions={RETURN_BUCKET_OPTIONS}
           relativeMetricOptions={RELATIVE_METRIC_OPTIONS}
           runAfterBreakOptions={RUN_AFTER_BREAK_OPTIONS}
-          saveRulePanel={data?.result ? <SaveExecutedRulePanel result={data.result} /> : null}
+          settlementMode={data?.settlementMode ?? settlementMode}
+          saveRulePanel={data?.result ? (
+            <SaveExecutedRulePanel
+              developmentSummary={data.developmentSummary}
+              result={data.result}
+              settlementMode={data.settlementMode}
+            />
+          ) : null}
           staleSaveRulePanel={<StaleSaveRulePanel />}
         >
           {data?.result ? (
             <ResearchResults
+              developmentSummary={data.developmentSummary}
+              priceSensitivity={data.priceSensitivity}
               result={data.result}
+              settlementMode={data.settlementMode}
               stability={data.stability}
               timeSlice={data.timeSlice}
+              trainerCohort={data.trainerCohort}
             />
           ) : (
             <section className="mt-6 border border-amber-200 bg-amber-50 p-5 text-sm text-amber-900">
@@ -123,11 +155,18 @@ type ResearchPageData = {
   filterOptions: ResearchFilterOptions;
   result: ResearchResult;
   rule: ResearchRuleV1;
+  priceSensitivity: ResearchPriceSensitivityResult;
+  settlementMode: DevelopmentSettlementMode;
+  developmentSummary: BacktestSummary;
   stability: ResearchRuleStabilityResult;
   timeSlice: ResearchTimeSliceStabilityResult;
+  trainerCohort: ResolvedTrainerCohort | null;
 };
 
-async function loadResearchData(rule: ResearchRuleV1): Promise<ResearchPageData | null> {
+async function loadResearchData(
+  rule: ResearchRuleV1,
+  settlementMode: DevelopmentSettlementMode,
+): Promise<ResearchPageData | null> {
   const startedAt = performance.now();
   const cached = await loadBacktestFeatureCache({
     from: DEVELOPMENT_FROM,
@@ -138,25 +177,55 @@ async function loadResearchData(rule: ResearchRuleV1): Promise<ResearchPageData 
     return null;
   }
   const hydratedRule = hydrateResearchRuleMetadata(rule, cached.rows);
+  const trainerCohort = await loadTrainerCohortForResearchRule(hydratedRule, Number(DEVELOPMENT_FROM.slice(0, 4)));
   const result = evaluateResearchRule({
     rows: cached.rows,
     rule: hydratedRule,
     cache: { manifest: cached.manifest, directory: cached.directory },
     elapsedMs: performance.now() - startedAt,
+    trainerCohort,
   });
+  const developmentSummary = summarizeSelectionsForDevelopmentSettlementMode(
+    result.selectedRunners,
+    settlementMode,
+  );
   return {
-    filterOptions: researchFilterOptionsForRows(cached.rows),
+    filterOptions: {
+      ...researchFilterOptionsForRows(cached.rows),
+      family: rule.family,
+    },
     rule: hydratedRule,
     result,
+    settlementMode,
+    developmentSummary,
+    priceSensitivity: evaluateResearchPriceSensitivity(result),
     stability: evaluateResearchRuleStability({
       rows: cached.rows,
       result,
+      settlementMode,
     }),
     timeSlice: evaluateResearchTimeSliceStability({
       rows: cached.rows,
       result,
+      settlementMode,
     }),
+    trainerCohort,
   };
+}
+
+async function loadTrainerCohortForResearchRule(
+  rule: ResearchRuleV1,
+  cohortYear: number,
+): Promise<ResolvedTrainerCohort | null> {
+  if (!rule.runner.trainerCohort) {
+    return null;
+  }
+  const { client, db } = createDbConnection();
+  try {
+    return await getTrainerCohortForRule(db, rule, cohortYear);
+  } finally {
+    await client.end();
+  }
 }
 
 async function loadSavedRules(): Promise<SavedResearchRule[]> {
@@ -168,8 +237,19 @@ async function loadSavedRules(): Promise<SavedResearchRule[]> {
   }
 }
 
-function SaveExecutedRulePanel({ result }: { result: ResearchResult }) {
-  const snapshot = developmentSnapshotFromResult(result);
+function SaveExecutedRulePanel({
+  developmentSummary,
+  result,
+  settlementMode,
+}: {
+  developmentSummary: BacktestSummary;
+  result: ResearchResult;
+  settlementMode: DevelopmentSettlementMode;
+}) {
+  const snapshot = developmentSnapshotFromResult(result, {
+    settlementMode,
+    summary: developmentSummary,
+  });
   const cacheMetadata = cacheMetadataFromResult(result);
   return (
     <section className="mt-6 border border-emerald-200 bg-white p-5 shadow-sm">
@@ -226,13 +306,21 @@ function StaleSaveRulePanel() {
 }
 
 function ResearchResults({
+  developmentSummary,
+  priceSensitivity,
   result,
+  settlementMode,
   stability,
   timeSlice,
+  trainerCohort,
 }: {
+  developmentSummary: BacktestSummary;
+  priceSensitivity: ResearchPriceSensitivityResult;
   result: ResearchResult;
+  settlementMode: DevelopmentSettlementMode;
   stability: ResearchRuleStabilityResult;
   timeSlice: ResearchTimeSliceStabilityResult;
+  trainerCohort: ResolvedTrainerCohort | null;
 }) {
   const rankMetric = result.rule.ranks[0]?.metric ?? null;
   const relativeMetric = result.rule.relatives[0]?.metric ?? null;
@@ -246,20 +334,23 @@ function ResearchResults({
             <p className="text-sm text-slate-600">
               Cache {result.cache?.manifest.featureSchemaVersion ?? "-"} · {result.cache?.manifest.family ?? "-"} · evaluated in {Math.round(result.elapsedMs)}ms
             </p>
+            <p className="mt-1 text-sm font-medium text-slate-700">
+              Settlement: {developmentSettlementModeDescription(settlementMode)}
+            </p>
           </div>
           <p className="text-sm text-slate-500">No strategy confidence score is assigned in v1.</p>
         </div>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
           <Metric label="Eligible runners" value={result.baselineRows} />
-          <Metric label="Selections" value={result.summary.selections} />
-          <Metric label="Settled" value={result.summary.settledSelections} />
-          <Metric label="Winners" value={result.summary.wins} />
-          <Metric label="Strike rate" value={formatPct(result.summary.winStrikeRate)} />
-          <Metric label="Places" value={result.summary.places} />
-          <Metric label="Place strike" value={formatPct(result.summary.placeStrikeRate)} />
-          <Metric label="£1 P/L" value={formatMoney(result.summary.profitLoss)} />
-          <Metric label="ROI" value={formatPct(result.summary.roiPercentage)} />
-          <Metric label="Max losing run" value={result.summary.maxConsecutiveLosers} />
+          <Metric label="Selections" value={developmentSummary.selections} />
+          <Metric label="Settled" value={developmentSummary.settledSelections} />
+          <Metric label="Winners" value={developmentSummary.wins} />
+          <Metric label="Strike rate" value={formatPct(developmentSummary.winStrikeRate)} />
+          <Metric label="Places" value={developmentSummary.places} />
+          <Metric label="Place strike" value={formatPct(developmentSummary.placeStrikeRate)} />
+          <Metric label="£1 P/L" value={formatMoney(developmentSummary.profitLoss)} />
+          <Metric label="ROI" value={formatPct(developmentSummary.roiPercentage)} />
+          <Metric label="Max losing run" value={developmentSummary.maxConsecutiveLosers} />
         </div>
         <div className="mt-4 rounded border border-slate-200 bg-slate-50 p-3 text-sm text-slate-700">
           Baseline for filtered race/runner population: {result.baselineRows} runners, {result.baselineWins} winners, {formatPct(result.baselineWinStrikeRate)} win strike rate.
@@ -269,6 +360,10 @@ function ResearchResults({
       <RuleStabilityPanel stability={stability} />
 
       <TimeSliceStabilityPanel timeSlice={timeSlice} />
+
+      <PriceSensitivityPanel priceSensitivity={priceSensitivity} />
+
+      <TrainerCohortPanel trainerCohort={trainerCohort} />
 
       <section className="grid gap-6 lg:grid-cols-[1fr_1fr]">
         <div className="border border-slate-200 bg-white p-5 shadow-sm">
@@ -346,7 +441,7 @@ function ResearchResults({
                   <td className="py-2 pr-3">{selection.features.daysSinceLastRun ?? "-"}</td>
                   <td className="py-2 pr-3">{selection.outcome.finishingPosition ?? "-"}</td>
                   <td className="py-2 pr-3">{selection.outcome.startingPrice ?? "-"}</td>
-                  <td className="py-2 pr-3">{formatMoney(selection.settlement?.profitLoss ?? null)}</td>
+                  <td className="py-2 pr-3">{formatMoney(selectionForDevelopmentSettlementMode(selection, settlementMode).settlement?.profitLoss ?? null)}</td>
                 </tr>
               ))}
             </tbody>
@@ -354,6 +449,50 @@ function ResearchResults({
         </div>
       </section>
     </div>
+  );
+}
+
+function TrainerCohortPanel({ trainerCohort }: { trainerCohort: ResolvedTrainerCohort | null }) {
+  if (!trainerCohort) {
+    return null;
+  }
+  return (
+    <details className="border border-slate-200 bg-white p-5 shadow-sm">
+      <summary className="cursor-pointer text-lg font-semibold">
+        View {trainerCohortLabel({
+          top: trainerCohort.definition.top,
+          referenceYear: trainerCohort.referenceYear,
+          family: trainerCohort.family,
+        })} trainers
+      </summary>
+      <p className="mt-2 text-sm text-slate-600">
+        Ranked by prior-year wins with at least {TRAINER_COHORT_MIN_SETTLED_RUNNERS} settled runners.
+      </p>
+      <div className="mt-4 overflow-x-auto">
+        <table className="w-full text-left text-sm">
+          <thead className="border-y border-slate-200 text-xs uppercase text-slate-500">
+            <tr>
+              <th className="py-2 pr-3 font-medium">Rank</th>
+              <th className="py-2 pr-3 font-medium">Trainer</th>
+              <th className="py-2 pr-3 font-medium">Runs</th>
+              <th className="py-2 pr-3 font-medium">Wins</th>
+              <th className="py-2 pr-3 font-medium">Win rate</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-100">
+            {trainerCohort.members.map((member) => (
+              <tr key={member.trainerId}>
+                <td className="py-2 pr-3">{member.rank}</td>
+                <td className="py-2 pr-3">{member.trainerName}</td>
+                <td className="py-2 pr-3">{member.priorYearRuns}</td>
+                <td className="py-2 pr-3">{member.priorYearWins}</td>
+                <td className="py-2 pr-3">{formatPct(member.priorYearWinRate)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </details>
   );
 }
 
@@ -438,6 +577,7 @@ function SavedRuleDetails({ rule }: { rule: SavedResearchRule }) {
         <Detail label="Winners" value={rule.developmentSnapshot.winners} />
         <Detail label="Places" value={rule.developmentSnapshot.places} />
         <Detail label="P/L" value={formatMoney(rule.developmentSnapshot.profitLoss)} />
+        <Detail label="Development settlement" value={snapshotSettlementLabel(rule.developmentSnapshot)} />
         <Detail label="Rule identity" value={rule.ruleIdentity} />
         <Detail label="Frozen" value={rule.frozenAt ? formatDateTime(rule.frozenAt) : "-"} />
         <Detail label="Feature schema" value={rule.cacheMetadata?.featureSchemaVersion ?? "-"} />
@@ -496,6 +636,7 @@ function SavedRuleResultComparison({ rule }: { rule: SavedResearchRule }) {
           <tr>
             <th className="py-1 pr-2 font-medium">Sample</th>
             <th className="py-1 pr-2 font-medium">Range</th>
+            <th className="py-1 pr-2 font-medium">Settlement</th>
             <th className="py-1 pr-2 font-medium">Selections</th>
             <th className="py-1 pr-2 font-medium">Settled</th>
             <th className="py-1 pr-2 font-medium">Winners</th>
@@ -540,6 +681,7 @@ function ResultComparisonRow({
     <tr>
       <td className="py-1 pr-2 font-medium text-slate-700">{label}</td>
       <td className="py-1 pr-2">{range}</td>
+      <td className="py-1 pr-2">{snapshotSettlementLabel(snapshot)}</td>
       <td className="py-1 pr-2">{snapshot.selections}</td>
       <td className="py-1 pr-2">{snapshot.settledSelections}</td>
       <td className="py-1 pr-2">{snapshot.winners}</td>
@@ -571,6 +713,10 @@ function Detail({ label, value }: { label: string; value: string | number }) {
       <dd className="break-words">{value}</dd>
     </div>
   );
+}
+
+function snapshotSettlementLabel(snapshot: SavedResearchRule["developmentSnapshot"]) {
+  return developmentSettlementModeDescription(snapshot.developmentSettlementMode ?? "actual");
 }
 
 function emptyFilterOptions(): ResearchFilterOptions {

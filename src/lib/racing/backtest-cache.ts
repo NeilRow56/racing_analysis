@@ -510,19 +510,35 @@ async function loadTargetRunnerIds(
   return rows.map((row) => row.runnerId);
 }
 
-function targetFamilyCondition(family: BacktestCacheFamily): SQL | undefined {
+export function targetFamilyCondition(family: BacktestCacheFamily): SQL | undefined {
   if (family === "all") {
     return undefined;
   }
   const courseName = sql`lower(${courses.displayName})`;
   const going = sql`lower(coalesce(${races.going}, ''))`;
+  const raceNameText = sql`lower(coalesce(${races.raceName}, ''))`;
+  const raceMetadataText = sql`lower(coalesce(${races.raceType}, '') || ' ' || coalesce(${races.raceTypeCode}, ''))`;
   const raceText = sql`lower(coalesce(${races.raceName}, '') || ' ' || coalesce(${races.raceType}, '') || ' ' || coalesce(${races.raceTypeCode}, ''))`;
+  const explicitFlatMetadata = or(
+    sql`${raceMetadataText} like '%flat%'`,
+    sql`${raceMetadataText} like '%group%'`,
+    sql`${raceMetadataText} like '%listed%'`,
+  )!;
+  const knownJumpTitleWithoutType = and(
+    sql`not (${explicitFlatMetadata})`,
+    or(
+      sql`${raceNameText} like '%irish gold cup%'`,
+      sql`${raceNameText} like '%punchestown gold cup%'`,
+      sql`${raceNameText} like '%willowwarm gold cup%'`,
+    ),
+  )!;
   const jumpText = or(
     sql`${raceText} like '%hurdle%'`,
     sql`${raceText} like '%chase%'`,
     sql`${raceText} like '%national hunt%'`,
     sql`${raceText} like '%nh flat%'`,
     sql`${raceText} like '%bumper%'`,
+    knownJumpTitleWithoutType,
   )!;
 
   if (family === "jump") {

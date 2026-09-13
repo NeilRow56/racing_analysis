@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { createDbConnection } from "@/db";
 import { listSavedResearchRulesWithDb } from "@/lib/racing/saved-research-rules";
+import { parseResearchRule } from "@/lib/racing/research-rule";
 import { refreshEligibleTodaySelectionResults } from "@/lib/racing/today-result-refresh";
 import {
   attachFrozenRuleMatchesToToday,
@@ -8,7 +9,9 @@ import {
   summarizeTodayFrozenRuleMatches,
   type TodayFrozenRuleMatchSummary,
   type TodayRuleSelections,
+  type TodayTrainerCohortsByRule,
 } from "@/lib/racing/today-rule-matches";
+import { getTrainerCohortForRule } from "@/lib/racing/trainer-cohorts";
 import {
   formatRaceTimeForDisplay,
   getTodaysRacingData,
@@ -44,10 +47,15 @@ export default async function TodaysRacingPage({ searchParams }: PageProps) {
     connection = createDbConnection();
     let data = await getTodaysRacingData(connection.db, raceDate);
     const savedRules = await listSavedResearchRulesWithDb(connection.db);
+    const trainerCohortsByRule = await resolveTodayTrainerCohorts(
+      connection.db,
+      savedRules,
+      raceDate,
+    );
     const attachMatches = () => data.status === "ok"
       ? {
           ...data,
-          meetings: attachFrozenRuleMatchesToToday(data.meetings, savedRules, raceDate),
+          meetings: attachFrozenRuleMatchesToToday(data.meetings, savedRules, raceDate, trainerCohortsByRule),
         }
       : data;
     let displayData = attachMatches();
@@ -122,6 +130,26 @@ export default async function TodaysRacingPage({ searchParams }: PageProps) {
       await connection.client.end();
     }
   }
+}
+
+async function resolveTodayTrainerCohorts(
+  db: ReturnType<typeof createDbConnection>["db"],
+  savedRules: Awaited<ReturnType<typeof listSavedResearchRulesWithDb>>,
+  raceDate: string,
+): Promise<TodayTrainerCohortsByRule> {
+  const cohortYear = Number(raceDate.slice(0, 4));
+  const entries = await Promise.all(
+    savedRules
+      .filter((savedRule) => savedRule.status === "frozen")
+      .map(async (savedRule) => {
+        const rule = parseResearchRule(JSON.stringify(savedRule.canonicalRule));
+        if (!rule?.runner.trainerCohort) {
+          return [savedRule.id, null] as const;
+        }
+        return [savedRule.id, await getTrainerCohortForRule(db, rule, cohortYear)] as const;
+      }),
+  );
+  return new Map(entries);
 }
 
 function FrozenRuleMatchSummary({ summary }: { summary: TodayFrozenRuleMatchSummary }) {

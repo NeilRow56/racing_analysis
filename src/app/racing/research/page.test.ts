@@ -21,6 +21,7 @@ import {
   isResearchSubmitDisabled,
   researchRuleFromFormData,
   researchRunButtonLabel,
+  settlementModeFromFormData,
   selectedTrainerOption,
 } from "./research-form-client";
 import { ResearchHorseNameLink } from "./research-horse-link";
@@ -29,6 +30,7 @@ import {
   saveRuleSubmitButtonLabel,
 } from "./save-rule-submit-button";
 import { holdoutRangeText } from "./holdout-display";
+import { PriceSensitivityPanel } from "./price-sensitivity-panel";
 import { RuleStabilityPanel } from "./rule-stability-panel";
 import { TimeSliceStabilityPanel } from "./time-slice-stability-panel";
 
@@ -57,6 +59,7 @@ describe("research filters page", () => {
         relativeMetricOptions: RELATIVE_METRIC_OPTIONS,
         runAfterBreakOptions: RUN_AFTER_BREAK_OPTIONS,
         rule: { ...defaultResearchRule("jump"), runner: { trainerId: "trainer-1", trainerName: "A Trainer" } },
+        settlementMode: "actual",
       }),
     );
 
@@ -81,8 +84,97 @@ describe("research filters page", () => {
     assert.equal(text.includes("Rating metric"), false);
     assert.equal(text.includes("Weight min (lb)"), false);
     assert.equal(text.includes("Saving/freezing rules comes after this v1 research layer."), false);
-    assert.match(text, /Run a 2025 research result before saving or freezing rules/);
+    assert.match(text, /Development settlement/);
+    assert.match(text, /Actual result SP/);
+    assert.match(text, /Cap winners at 20\/1/);
+    assert.match(text, /development analysis only/i);
     assert.match(text, /Clear all filters/);
+  });
+
+  test("renders current-family trainer and course options from stable IDs", () => {
+    const text = renderToStaticMarkup(
+      ResearchForm({
+        familyOptions: FAMILY_OPTIONS,
+        filterOptions: {
+          family: "turf_flat",
+          courses: [
+            { courseId: "course-ascot", courseName: "Ascot", count: 10 },
+            { courseId: "course-york", courseName: "York", count: 8 },
+          ],
+          classes: [],
+          distances: [],
+          trainers: [
+            { trainerId: "trainer-a", trainerName: "A Trainer", count: 2 },
+            { trainerId: "trainer-b", trainerName: "B Trainer", count: 1 },
+          ],
+          weights: weightOptions(),
+        },
+        handicapStatusOptions: HANDICAP_STATUS_OPTIONS,
+        isPending: false,
+        isStale: false,
+        onChange: () => {},
+        onClearFilters: () => {},
+        onSubmit: () => {},
+        rankMetricOptions: RANK_METRIC_OPTIONS,
+        ratingMetricOptions: RATING_METRIC_OPTIONS,
+        returnBucketOptions: RETURN_BUCKET_OPTIONS,
+        ref: null,
+        relativeMetricOptions: RELATIVE_METRIC_OPTIONS,
+        runAfterBreakOptions: RUN_AFTER_BREAK_OPTIONS,
+        rule: {
+          ...defaultResearchRule("turf_flat"),
+          race: { courseId: "course-york", courseName: "York" },
+          runner: { trainerId: "trainer-a", trainerName: "A Trainer" },
+        },
+        settlementMode: "actual",
+      }),
+    );
+
+    assert.match(text, /All courses/);
+    assert.match(text, /value="course-ascot"/);
+    assert.match(text, /value="course-york" selected=""/);
+    assert.match(text, /name="trainerId"/);
+    assert.match(text, /value="trainer-a"/);
+    assert.match(text, /A Trainer/);
+  });
+
+  test("does not render stale trainer or course options after family changes", () => {
+    const text = renderToStaticMarkup(
+      ResearchForm({
+        familyOptions: FAMILY_OPTIONS,
+        filterOptions: {
+          family: "jump",
+          courses: [{ courseId: "course-worcester", courseName: "Worcester", count: 10 }],
+          classes: [],
+          distances: [],
+          trainers: [{ trainerId: "trainer-jump", trainerName: "Jump Trainer", count: 2 }],
+          weights: weightOptions(),
+        },
+        handicapStatusOptions: HANDICAP_STATUS_OPTIONS,
+        isPending: false,
+        isStale: true,
+        onChange: () => {},
+        onClearFilters: () => {},
+        onSubmit: () => {},
+        rankMetricOptions: RANK_METRIC_OPTIONS,
+        ratingMetricOptions: RATING_METRIC_OPTIONS,
+        returnBucketOptions: RETURN_BUCKET_OPTIONS,
+        ref: null,
+        relativeMetricOptions: RELATIVE_METRIC_OPTIONS,
+        runAfterBreakOptions: RUN_AFTER_BREAK_OPTIONS,
+        rule: {
+          ...defaultResearchRule("turf_flat"),
+          race: { courseId: "course-worcester" },
+          runner: { trainerId: "trainer-jump" },
+        },
+        settlementMode: "actual",
+      }),
+    );
+
+    assert.match(text, /Run Research to load course options for this family/);
+    assert.match(text, /Run Research to load trainer options for this family/);
+    assert.doesNotMatch(text, /Worcester/);
+    assert.doesNotMatch(text, /Jump Trainer/);
   });
 
   test("renders selected Research horses as links when IDs are available", () => {
@@ -104,6 +196,8 @@ describe("research filters page", () => {
       RuleStabilityPanel({
         stability: {
           summaryLabel: "Mixed nearby results",
+          settlementMode: "cap_20_1",
+          settlementModeLabel: "Winner returns capped at 20/1",
           elapsedMs: 12,
           rows: [
             {
@@ -136,6 +230,7 @@ describe("research filters page", () => {
     assert.match(text, /Rule stability/);
     assert.match(text, /Tests small one-at-a-time changes to the current 2025 rule/);
     assert.match(text, /2026 holdout data is not used/);
+    assert.match(text, /Settlement: Winner returns capped at 20\/1/);
     assert.match(text, /Current/);
     assert.doesNotMatch(text, /2026 Holdout completed/);
   });
@@ -146,6 +241,8 @@ describe("research filters page", () => {
         timeSlice: {
           summaryLabel: "Profitable in 4 of 4 periods",
           concentrationLabel: "Development profit is spread across profitable periods.",
+          settlementMode: "cap_33_1",
+          settlementModeLabel: "Winner returns capped at 33/1",
           elapsedMs: 9,
           rows: [
             {
@@ -181,8 +278,54 @@ describe("research filters page", () => {
     assert.match(text, /Time-slice stability/);
     assert.match(text, /exact executed rule performed across separate parts of the 2025 development period/);
     assert.match(text, /2026 holdout data is not used/);
+    assert.match(text, /Settlement: Winner returns capped at 33\/1/);
     assert.match(text, /Jan-Mar/);
     assert.match(text, /Small sample/);
+    assert.doesNotMatch(text, /2026 Holdout completed/);
+  });
+
+  test("renders result price sensitivity as a 2025-only diagnostic panel", () => {
+    const text = renderToStaticMarkup(
+      PriceSensitivityPanel({
+        priceSensitivity: {
+          summaryLabel: "Mixed price sensitivity",
+          diagnostics: {
+            largestWinningDecimalSp: 41,
+            largestWinnerProfit: 40,
+            top1WinnerProfitShare: 52.6,
+            top3WinnerProfitShare: 100,
+            top5WinnerProfitShare: 100,
+          },
+          scenarios: [
+            {
+              id: "actual",
+              label: "Actual result SP",
+              summary: {
+                totalEligibleRunners: 3,
+                selections: 3,
+                settledSelections: 3,
+                wins: 1,
+                winStrikeRate: 33.333,
+                places: 1,
+                placeStrikeRate: 33.333,
+                averageOdds: 15,
+                totalStakes: 3,
+                grossReturn: 41,
+                profitLoss: 38,
+                roiPercentage: 1266.667,
+                maxConsecutiveLosers: 2,
+              },
+            },
+          ],
+        },
+      }),
+    );
+
+    assert.match(text, /Result price sensitivity/);
+    assert.match(text, /Actual result SP/);
+    assert.match(text, /Result SP is post-race data/);
+    assert.match(text, /not part of the frozen selection rule/);
+    assert.match(text, /strictly above the named result SP threshold/);
     assert.doesNotMatch(text, /2026 Holdout completed/);
   });
 
@@ -204,6 +347,7 @@ describe("research filters page", () => {
         relativeMetricOptions: RELATIVE_METRIC_OPTIONS,
         runAfterBreakOptions: RUN_AFTER_BREAK_OPTIONS,
         rule: defaultResearchRule("jump"),
+        settlementMode: "actual",
       }),
     );
 
@@ -239,6 +383,7 @@ describe("research filters page", () => {
         relativeMetricOptions: RELATIVE_METRIC_OPTIONS,
         runAfterBreakOptions: RUN_AFTER_BREAK_OPTIONS,
         rule: { ...defaultResearchRule("jump"), race: { raceClasses: [5, 1, 2] } },
+        settlementMode: "actual",
       }),
     );
 
@@ -273,6 +418,18 @@ describe("trainer selector helpers", () => {
   test("form data stores trainer ID and blank clears back to all trainers", () => {
     assert.equal(researchRuleFromFormData(formData({ trainerId: "trainer-1" })).runner.trainerId, "trainer-1");
     assert.equal(researchRuleFromFormData(formData({ trainerId: "" })).runner.trainerId, undefined);
+  });
+
+  test("form data stores trainer cohort concept and single trainer takes precedence", () => {
+    assert.deepEqual(researchRuleFromFormData(formData({ trainerCohort: "20" })).runner.trainerCohort, {
+      top: 20,
+      period: "prior_calendar_year",
+      rankingMetric: "wins",
+    });
+    assert.equal(
+      researchRuleFromFormData(formData({ trainerId: "trainer-1", trainerCohort: "20" })).runner.trainerCohort,
+      undefined,
+    );
   });
 });
 
@@ -328,6 +485,12 @@ describe("research filter freshness state", () => {
       from: "2025-01-01",
       to: "2025-12-31",
       runAfterBreak: "run_1",
+    }))), false);
+    assert.equal(researchRulesEqual(executed, researchRuleFromFormData(formData({
+      family: "jump",
+      from: "2025-01-01",
+      to: "2025-12-31",
+      trainerCohort: "20",
     }))), false);
   });
 
@@ -401,6 +564,21 @@ describe("research filter freshness state", () => {
     assert.deepEqual(maxZero.runner.priorRuns, { min: undefined, max: 0 });
   });
 
+  test("development settlement mode is parsed outside ResearchRuleV1 identity", () => {
+    const actualRule = researchRuleFromFormData(formData({
+      family: "jump",
+      settlementMode: "actual",
+    }));
+    const cappedRule = researchRuleFromFormData(formData({
+      family: "jump",
+      settlementMode: "cap_20_1",
+    }));
+
+    assert.equal(settlementModeFromFormData(formData({ settlementMode: "cap_20_1" })), "cap_20_1");
+    assert.equal(researchRuleKey(actualRule), researchRuleKey(cappedRule));
+    assert.equal("settlementMode" in cappedRule, false);
+  });
+
   test("newly executed rule matches edited filters and clears stale state", () => {
     const edited = researchRuleFromFormData(formData({
       family: "jump",
@@ -452,6 +630,7 @@ describe("research filter freshness state", () => {
         weightCarriedLbs: { min: 126, max: 140 },
         daysSinceRun: { min: 1, max: 30 },
         priorRuns: { min: 2, max: 8 },
+        trainerCohort: { top: 20, period: "prior_calendar_year", rankingMetric: "wins" },
       },
       ratings: [{ metric: "bestSpeedLast3", range: { min: 80, max: 120 } }],
       relatives: [{ metric: "latestSpeedMinusOR", range: { min: 5, max: 20 } }],

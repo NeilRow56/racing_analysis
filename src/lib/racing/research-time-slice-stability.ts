@@ -5,6 +5,11 @@ import {
   type ResearchResult,
   type ResearchRuleV1,
 } from "./research-rule";
+import {
+  developmentSettlementModeDescription,
+  summarizeSelectionsForDevelopmentSettlementMode,
+  type DevelopmentSettlementMode,
+} from "./research-settlement-mode";
 
 export type ResearchTimeSliceRow = {
   id: string;
@@ -22,6 +27,8 @@ export type ResearchTimeSliceStabilityResult = {
   rows: ResearchTimeSliceRow[];
   summaryLabel: string;
   concentrationLabel: string | null;
+  settlementMode: DevelopmentSettlementMode;
+  settlementModeLabel: string;
   elapsedMs: number;
 };
 
@@ -45,8 +52,10 @@ const CONCENTRATION_THRESHOLD = 0.6;
 export function evaluateResearchTimeSliceStability(input: {
   rows: HistoricalTargetRunnerMetricsRow[];
   result: ResearchResult;
+  settlementMode?: DevelopmentSettlementMode;
 }): ResearchTimeSliceStabilityResult {
   const startedAt = performance.now();
+  const settlementMode = input.settlementMode ?? "actual";
   const slices = researchTimeSlices(input.result.rule);
   const rows = slices.map((slice): ResearchTimeSliceRow => {
     const rule = slice.isFullPeriod
@@ -54,7 +63,11 @@ export function evaluateResearchTimeSliceStability(input: {
       : { ...input.result.rule, dateRange: { from: slice.from, to: slice.to } };
     const result = slice.isFullPeriod
       ? input.result
-      : evaluateResearchRule({ rows: input.rows, rule });
+      : evaluateResearchRule({
+          rows: input.rows,
+          rule,
+          trainerCohort: input.result.trainerCohort,
+        });
 
     return {
       id: `${slice.from}:${slice.to}`,
@@ -65,7 +78,7 @@ export function evaluateResearchTimeSliceStability(input: {
       smallSample: result.summary.settledSelections > 0 &&
         result.summary.settledSelections < SMALL_SETTLED_SAMPLE,
       eligibleRunners: result.baselineRows,
-      summary: result.summary,
+      summary: summarizeSelectionsForDevelopmentSettlementMode(result.selectedRunners, settlementMode),
       rule,
     };
   });
@@ -74,6 +87,8 @@ export function evaluateResearchTimeSliceStability(input: {
     rows,
     summaryLabel: timeSliceSummaryLabel(rows),
     concentrationLabel: profitConcentrationLabel(rows),
+    settlementMode,
+    settlementModeLabel: developmentSettlementModeDescription(settlementMode),
     elapsedMs: performance.now() - startedAt,
   };
 }

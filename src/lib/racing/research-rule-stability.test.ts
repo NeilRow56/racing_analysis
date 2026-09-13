@@ -111,6 +111,43 @@ describe("research rule stability evaluation", () => {
     assert.equal(softened.summary.roiPercentage, 200);
     assert.equal(softened.summary.maxConsecutiveLosers, 1);
   });
+
+  test("applies the active development settlement mode to variant summaries", () => {
+    const rows = [
+      row({ targetRunnerId: "big-winner", latestSpeedRating: 100 }, {
+        finishingPosition: 1,
+        won: true,
+        placed: true,
+        startingPriceDecimal: "41.000",
+      }),
+      row({ targetRunnerId: "loser", latestSpeedRating: 100 }, {
+        finishingPosition: 5,
+        won: false,
+        placed: false,
+        startingPriceDecimal: "5.000",
+      }),
+    ];
+    const rule: ResearchRuleV1 = {
+      ...defaultResearchRule("jump"),
+      ratings: [{ metric: "latestSpeedRating", range: { min: 100 } }],
+    };
+    const result = evaluateResearchRule({ rows, rule });
+    const stability = evaluateResearchRuleStability({
+      rows,
+      result,
+      settlementMode: "cap_20_1",
+    });
+    const current = stability.rows.find((item) => item.isCurrent)!;
+
+    assert.equal(stability.settlementMode, "cap_20_1");
+    assert.equal(stability.settlementModeLabel, "Winner returns capped at 20/1");
+    assert.equal(result.summary.profitLoss, 39);
+    assert.equal(current.summary.profitLoss, 19);
+    assert.equal(current.summary.roiPercentage, 950);
+    assert.equal(current.summary.selections, result.summary.selections);
+    assert.equal(current.summary.wins, result.summary.wins);
+    assert.equal(current.summary.maxConsecutiveLosers, result.summary.maxConsecutiveLosers);
+  });
 });
 
 function numberOfChangedRuleSections(left: ResearchRuleV1, right: ResearchRuleV1): number {

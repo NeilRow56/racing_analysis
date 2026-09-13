@@ -11,6 +11,13 @@ import type {
   HistoricalTargetRunnerMetricsRow,
 } from "./historical-target-metrics";
 import { normalizeRaceClasses, raceClassNumber } from "./research-rule-classes";
+import {
+  isTrainerCohortTop,
+  trainerCohortLabel,
+  trainerCohortRule,
+  type ResolvedTrainerCohort,
+  type TrainerCohortRule,
+} from "./trainer-cohorts";
 export { normalizeRaceClasses } from "./research-rule-classes";
 
 export const RESEARCH_RULE_VERSION = "research_rule_v1";
@@ -38,6 +45,7 @@ export type ResearchRuleV1 = {
   runner: {
     trainerId?: string;
     trainerName?: string;
+    trainerCohort?: TrainerCohortRule;
     returnBucket?: ReturnBucket;
     runAfterBreak?: RunAfterBreakFilter;
     officialRating?: NumericCondition;
@@ -156,6 +164,7 @@ export type ResearchResult = {
     directory: string;
   } | null;
   elapsedMs: number;
+  trainerCohort: ResolvedTrainerCohort | null;
 };
 
 export type ResearchCourseOption = {
@@ -180,6 +189,7 @@ export type ResearchDistanceBucketOption = {
 };
 
 export type ResearchFilterOptions = {
+  family?: ResearchRuleV1["family"];
   courses: ResearchCourseOption[];
   classes: ResearchClassOption[];
   distances: ResearchDistanceBucketOption[];
@@ -296,6 +306,7 @@ export function evaluateResearchRule(input: {
   rule: ResearchRuleV1;
   cache?: { manifest: BacktestFeatureCacheManifest; directory: string } | null;
   elapsedMs?: number;
+  trainerCohort?: ResolvedTrainerCohort | null;
 }): ResearchResult {
   const rows = input.rows.filter((row) => row.features.raceCode === raceCodeForFamily(input.rule.family));
   const rankedRows = rankRows(rows);
@@ -303,7 +314,7 @@ export function evaluateResearchRule(input: {
     .filter((row) => row.features.raceDate >= input.rule.dateRange.from)
     .filter((row) => row.features.raceDate <= input.rule.dateRange.to)
     .filter((row) => matchesRaceConditions(row.features, input.rule))
-    .filter((row) => matchesRunnerConditions(row.features, input.rule));
+    .filter((row) => matchesRunnerConditions(row.features, input.rule, input.trainerCohort ?? null));
   const selectedRows = baseline
     .filter((row) => matchesRatingConditions(row.features, input.rule))
     .filter((row) => matchesRelativeConditions(row.features, input.rule))
@@ -329,6 +340,7 @@ export function evaluateResearchRule(input: {
     strategySummary: strategySummary(input.rule),
     cache: input.cache ?? null,
     elapsedMs: input.elapsedMs ?? 0,
+    trainerCohort: input.trainerCohort ?? null,
   };
 }
 
@@ -383,7 +395,7 @@ export function parseResearchRule(value: string): ResearchRuleV1 | null {
         to: safeDevelopmentDate(parsed.dateRange?.to, DEVELOPMENT_TO),
       },
       race: normalizeRaceRule(parsed.race),
-      runner: parsed.runner ?? {},
+      runner: normalizeRunnerRule(parsed.runner),
       ratings: parsed.ratings ?? [],
       relatives: parsed.relatives ?? [],
       ranks: parsed.ranks ?? [],
@@ -418,6 +430,7 @@ export function ruleFromSearchParams(params: URLSearchParams): ResearchRuleV1 {
   };
   rule.runner = {
     trainerId: textValue(params.get("trainerId")),
+    trainerCohort: trainerCohortFromTop(params.get("trainerCohort")),
     returnBucket: returnBucketValue(params.get("returnBucket")),
     runAfterBreak: runAfterBreakValue(params.get("runAfterBreak")),
     officialRating: rangeFromParams(params, "orMin", "orMax"),
@@ -636,8 +649,13 @@ export function matchesRaceConditions(features: HistoricalPreRaceFeatureRow, rul
     rangeMatches(fieldSize, rule.race.fieldSize);
 }
 
-export function matchesRunnerConditions(features: HistoricalPreRaceFeatureRow, rule: ResearchRuleV1): boolean {
+export function matchesRunnerConditions(
+  features: HistoricalPreRaceFeatureRow,
+  rule: ResearchRuleV1,
+  trainerCohort: ResolvedTrainerCohort | null = null,
+): boolean {
   return (!rule.runner.trainerId || features.trainerId === rule.runner.trainerId) &&
+    trainerCohortMatches(features.trainerId, rule, trainerCohort) &&
     returnBucketMatches(features.daysSinceLastRun, rule.runner.returnBucket) &&
     runAfterBreakMatches(features.runAfterBreakNumber, rule.runner.runAfterBreak) &&
     rangeMatches(features.officialRating, rule.runner.officialRating) &&
@@ -682,6 +700,20 @@ function rangeMatches(value: number | null, range: NumericCondition | undefined)
     (range.max === undefined || value <= range.max);
 }
 
+function trainerCohortMatches(
+  trainerId: string | null,
+  rule: ResearchRuleV1,
+  trainerCohort: ResolvedTrainerCohort | null,
+): boolean {
+  if (!rule.runner.trainerCohort) {
+    return true;
+  }
+  if (!trainerId || !trainerCohort) {
+    return false;
+  }
+  return trainerCohort.trainerIds.has(trainerId);
+}
+
 function missingDataFor(rows: RankedResearchRow[]): ResearchMissingData {
   return {
     noSpeed: rows.filter((row) => row.features.latestSpeedRating === null).length,
@@ -709,6 +741,7 @@ export function strategySummary(rule: ResearchRuleV1): string[] {
   pushRaceClasses(lines, rule.race.raceClasses);
   pushHandicapStatus(lines, rule.race.handicapStatus);
   if (rule.runner.trainerName) lines.push(`Trainer: ${rule.runner.trainerName}`);
+  pushTrainerCohort(lines, rule);
   pushReturnBucket(lines, rule.runner.returnBucket);
   pushRunAfterBreak(lines, rule.runner.runAfterBreak);
   pushRange(lines, "Current OR", rule.runner.officialRating);
@@ -727,6 +760,19 @@ export function strategySummary(rule: ResearchRuleV1): string[] {
     pushRange(lines, rankLabelForMetric(condition.metric), condition.range);
   }
   return lines;
+}
+
+function pushTrainerCohort(lines: string[], rule: ResearchRuleV1) {
+  const cohort = rule.runner.trainerCohort;
+  if (!cohort) {
+    return;
+  }
+  const referenceYear = Number(rule.dateRange.from.slice(0, 4)) - 1;
+  lines.push(`Trainer cohort: ${trainerCohortLabel({
+    top: cohort.top,
+    referenceYear,
+    family: rule.family,
+  })}`);
 }
 
 function pushDistanceSummary(lines: string[], rule: ResearchRuleV1) {
@@ -825,6 +871,32 @@ function normalizeRaceRule(race: Partial<ResearchRuleV1["race"]> | undefined): R
       raceClassNumber(legacyRaceClass),
     ]),
   };
+}
+
+function normalizeRunnerRule(runner: Partial<ResearchRuleV1["runner"]> | undefined): ResearchRuleV1["runner"] {
+  const trainerCohort = normalizeTrainerCohortRule(runner?.trainerCohort);
+  if (trainerCohort) {
+    return {
+      ...runner,
+      trainerCohort,
+    };
+  }
+  const normalized = { ...(runner ?? {}) };
+  delete normalized.trainerCohort;
+  return normalized;
+}
+
+function normalizeTrainerCohortRule(value: unknown): TrainerCohortRule | undefined {
+  if (!value || typeof value !== "object") {
+    return undefined;
+  }
+  const top = (value as Partial<TrainerCohortRule>).top;
+  return isTrainerCohortTop(top) ? trainerCohortRule(top) : undefined;
+}
+
+function trainerCohortFromTop(value: string | null): TrainerCohortRule | undefined {
+  const top = Number(value);
+  return isTrainerCohortTop(top) ? trainerCohortRule(top) : undefined;
 }
 
 function rangeFromParams(params: URLSearchParams, minKey: string, maxKey: string): NumericCondition | undefined {

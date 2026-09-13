@@ -17,6 +17,7 @@ import {
   type ResearchRuleV1,
 } from "./research-rule";
 import type { SavedResearchRule } from "./saved-research-rules";
+import type { ResolvedTrainerCohort } from "./trainer-cohorts";
 import type {
   TodayMeeting,
   TodayRace,
@@ -48,10 +49,13 @@ export type TodayRuleSelections = {
   };
 };
 
+export type TodayTrainerCohortsByRule = Map<string, ResolvedTrainerCohort | null>;
+
 export function attachFrozenRuleMatchesToToday(
   meetings: TodayMeeting[],
   savedRules: SavedResearchRule[],
   raceDate: string,
+  trainerCohortsByRule: TodayTrainerCohortsByRule = new Map(),
 ): TodayMeeting[] {
   const frozenRules = savedRules.filter((rule) => rule.status === "frozen");
   if (frozenRules.length === 0) {
@@ -61,7 +65,7 @@ export function attachFrozenRuleMatchesToToday(
   return meetings.map((meeting) => ({
     ...meeting,
     races: meeting.races.map((race) =>
-      raceWithFrozenRuleMatches(meeting, race, frozenRules, raceDate),
+      raceWithFrozenRuleMatches(meeting, race, frozenRules, raceDate, trainerCohortsByRule),
     ),
   }));
 }
@@ -141,6 +145,7 @@ function raceWithFrozenRuleMatches(
   race: TodayRace,
   rules: SavedResearchRule[],
   raceDate: string,
+  trainerCohortsByRule: TodayTrainerCohortsByRule = new Map(),
 ): TodayRace {
   const rows = rankRows(
     race.runners.map((runner) => todayRunnerResearchRow(meeting, race, runner, raceDate)),
@@ -152,7 +157,7 @@ function raceWithFrozenRuleMatches(
     runners: race.runners.map((runner) => {
       const row = rowsByRunnerId.get(runner.runnerId);
       const savedRuleMatches = row
-        ? matchingRulesForRow(row, runner, rules)
+        ? matchingRulesForRow(row, runner, rules, trainerCohortsByRule)
         : [];
       return { ...runner, savedRuleMatches };
     }),
@@ -163,9 +168,10 @@ function matchingRulesForRow(
   row: RankedResearchRow,
   runner: TodayRunner,
   rules: SavedResearchRule[],
+  trainerCohortsByRule: TodayTrainerCohortsByRule,
 ): TodaySavedRuleMatch[] {
   return rules
-    .filter((rule) => frozenRuleMatchesTodayRow(row, runner, rule))
+    .filter((rule) => frozenRuleMatchesTodayRow(row, runner, rule, trainerCohortsByRule.get(rule.id) ?? null))
     .map(savedRuleMatch);
 }
 
@@ -173,6 +179,7 @@ export function frozenRuleMatchesTodayRow(
   row: RankedResearchRow,
   runner: TodayRunner,
   savedRule: SavedResearchRule,
+  trainerCohort: ResolvedTrainerCohort | null = null,
 ): boolean {
   const rule = parseResearchRule(JSON.stringify(savedRule.canonicalRule));
   if (!rule) {
@@ -182,7 +189,7 @@ export function frozenRuleMatchesTodayRow(
     row.features.raceCode !== "unsupported" &&
     familyMatches(row.features.raceCode, rule.family) &&
     matchesRaceConditions(row.features, rule) &&
-    matchesRunnerConditions(row.features, rule) &&
+    matchesRunnerConditions(row.features, rule, trainerCohort) &&
     matchesRatingConditions(row.features, rule) &&
     matchesRelativeConditions(row.features, rule) &&
     matchesRankConditions(row, rule);
