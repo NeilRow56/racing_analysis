@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { createDbConnection } from "@/db";
-import { loadBacktestFeatureCache } from "@/lib/racing/backtest-cache";
+import { loadBacktestFeatureCache, type LoadedBacktestFeatureCache } from "@/lib/racing/backtest-cache";
 import {
   DEVELOPMENT_FROM,
   DEVELOPMENT_TO,
@@ -45,9 +45,7 @@ import {
 } from "@/lib/racing/research-settlement-mode";
 import type { BacktestSummary } from "@/lib/racing/backtest";
 import {
-  TRAINER_COHORT_MIN_SETTLED_RUNNERS,
   getTrainerCohortForRule,
-  trainerCohortLabel,
   type ResolvedTrainerCohort,
 } from "@/lib/racing/trainer-cohorts";
 import {
@@ -68,6 +66,7 @@ import { RuleStabilityPanel } from "./rule-stability-panel";
 import { SaveRuleSubmitButton } from "./save-rule-submit-button";
 import { SavedRuleActionForms } from "./saved-rule-actions-client";
 import { TimeSliceStabilityPanel } from "./time-slice-stability-panel";
+import { TrainerCohortPanel, type TrainerCohortDiagnostics } from "./trainer-cohort-panel";
 
 export default async function ResearchPage({
   searchParams,
@@ -136,6 +135,7 @@ export default async function ResearchPage({
               stability={data.stability}
               timeSlice={data.timeSlice}
               trainerCohort={data.trainerCohort}
+              trainerCohortDiagnostics={data.trainerCohortDiagnostics}
             />
           ) : (
             <section className="mt-6 border border-amber-200 bg-amber-50 p-5 text-sm text-amber-900">
@@ -161,6 +161,7 @@ type ResearchPageData = {
   stability: ResearchRuleStabilityResult;
   timeSlice: ResearchTimeSliceStabilityResult;
   trainerCohort: ResolvedTrainerCohort | null;
+  trainerCohortDiagnostics: TrainerCohortDiagnostics | null;
 };
 
 async function loadResearchData(
@@ -178,6 +179,9 @@ async function loadResearchData(
   }
   const hydratedRule = hydrateResearchRuleMetadata(rule, cached.rows);
   const trainerCohort = await loadTrainerCohortForResearchRule(hydratedRule, Number(DEVELOPMENT_FROM.slice(0, 4)));
+  const trainerCohortDiagnostics = trainerCohort
+    ? trainerCohortDiagnosticsForRows(cached.rows, trainerCohort)
+    : null;
   const result = evaluateResearchRule({
     rows: cached.rows,
     rule: hydratedRule,
@@ -210,6 +214,7 @@ async function loadResearchData(
       settlementMode,
     }),
     trainerCohort,
+    trainerCohortDiagnostics,
   };
 }
 
@@ -226,6 +231,26 @@ async function loadTrainerCohortForResearchRule(
   } finally {
     await client.end();
   }
+}
+
+function trainerCohortDiagnosticsForRows(
+  rows: LoadedBacktestFeatureCache["rows"],
+  trainerCohort: ResolvedTrainerCohort,
+): TrainerCohortDiagnostics {
+  const matchedTrainerIds = new Set<string>();
+  let currentYearRunnerCount = 0;
+  for (const row of rows) {
+    const trainerId = row.features.trainerId;
+    if (!trainerId || !trainerCohort.trainerIds.has(trainerId)) {
+      continue;
+    }
+    matchedTrainerIds.add(trainerId);
+    currentYearRunnerCount += 1;
+  }
+  return {
+    currentYearMatchedTrainerCount: matchedTrainerIds.size,
+    currentYearRunnerCount,
+  };
 }
 
 async function loadSavedRules(): Promise<SavedResearchRule[]> {
@@ -313,6 +338,7 @@ function ResearchResults({
   stability,
   timeSlice,
   trainerCohort,
+  trainerCohortDiagnostics,
 }: {
   developmentSummary: BacktestSummary;
   priceSensitivity: ResearchPriceSensitivityResult;
@@ -321,6 +347,7 @@ function ResearchResults({
   stability: ResearchRuleStabilityResult;
   timeSlice: ResearchTimeSliceStabilityResult;
   trainerCohort: ResolvedTrainerCohort | null;
+  trainerCohortDiagnostics: TrainerCohortDiagnostics | null;
 }) {
   const rankMetric = result.rule.ranks[0]?.metric ?? null;
   const relativeMetric = result.rule.relatives[0]?.metric ?? null;
@@ -363,7 +390,7 @@ function ResearchResults({
 
       <PriceSensitivityPanel priceSensitivity={priceSensitivity} />
 
-      <TrainerCohortPanel trainerCohort={trainerCohort} />
+      <TrainerCohortPanel diagnostics={trainerCohortDiagnostics} trainerCohort={trainerCohort} />
 
       <section className="grid gap-6 lg:grid-cols-[1fr_1fr]">
         <div className="border border-slate-200 bg-white p-5 shadow-sm">
@@ -449,50 +476,6 @@ function ResearchResults({
         </div>
       </section>
     </div>
-  );
-}
-
-function TrainerCohortPanel({ trainerCohort }: { trainerCohort: ResolvedTrainerCohort | null }) {
-  if (!trainerCohort) {
-    return null;
-  }
-  return (
-    <details className="border border-slate-200 bg-white p-5 shadow-sm">
-      <summary className="cursor-pointer text-lg font-semibold">
-        View {trainerCohortLabel({
-          top: trainerCohort.definition.top,
-          referenceYear: trainerCohort.referenceYear,
-          family: trainerCohort.family,
-        })} trainers
-      </summary>
-      <p className="mt-2 text-sm text-slate-600">
-        Ranked by prior-year wins with at least {TRAINER_COHORT_MIN_SETTLED_RUNNERS} settled runners.
-      </p>
-      <div className="mt-4 overflow-x-auto">
-        <table className="w-full text-left text-sm">
-          <thead className="border-y border-slate-200 text-xs uppercase text-slate-500">
-            <tr>
-              <th className="py-2 pr-3 font-medium">Rank</th>
-              <th className="py-2 pr-3 font-medium">Trainer</th>
-              <th className="py-2 pr-3 font-medium">Runs</th>
-              <th className="py-2 pr-3 font-medium">Wins</th>
-              <th className="py-2 pr-3 font-medium">Win rate</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-100">
-            {trainerCohort.members.map((member) => (
-              <tr key={member.trainerId}>
-                <td className="py-2 pr-3">{member.rank}</td>
-                <td className="py-2 pr-3">{member.trainerName}</td>
-                <td className="py-2 pr-3">{member.priorYearRuns}</td>
-                <td className="py-2 pr-3">{member.priorYearWins}</td>
-                <td className="py-2 pr-3">{formatPct(member.priorYearWinRate)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </details>
   );
 }
 

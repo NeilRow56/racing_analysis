@@ -61,6 +61,24 @@ describe("trainer cohorts", () => {
         [3, "trainer-c", 80, 18],
       ],
     );
+    assert.equal(cohort.qualifiedTrainerCount, 3);
+  });
+
+  test("empty prior-year source data resolves with an explicit zero qualifying count", () => {
+    const cohort = resolveTrainerCohortFromStandings({
+      rows: [
+        ...runs("trainer-current", "Current Trainer", "jump", "2025-01-01", 60, 20),
+        ...runs("trainer-wrong-family", "Wrong Family", "turf_flat", "2024-01-01", 60, 20),
+        ...runs("trainer-low-runs", "Low Runs", "jump", "2024-01-01", TRAINER_COHORT_MIN_SETTLED_RUNNERS - 1, 20),
+      ],
+      definition: trainerCohortRule(20),
+      family: "jump",
+      cohortYear: 2025,
+    });
+
+    assert.equal(cohort.qualifiedTrainerCount, 0);
+    assert.equal(cohort.members.length, 0);
+    assert.equal(cohort.trainerIds.size, 0);
   });
 
   test("Top 10/20/30 membership uses stable trainer IDs", () => {

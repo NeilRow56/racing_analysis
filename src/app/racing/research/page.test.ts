@@ -33,6 +33,8 @@ import { holdoutRangeText } from "./holdout-display";
 import { PriceSensitivityPanel } from "./price-sensitivity-panel";
 import { RuleStabilityPanel } from "./rule-stability-panel";
 import { TimeSliceStabilityPanel } from "./time-slice-stability-panel";
+import { TrainerCohortPanel } from "./trainer-cohort-panel";
+import { trainerCohortRule, type ResolvedTrainerCohort } from "@/lib/racing/trainer-cohorts";
 
 describe("research filters page", () => {
   test("renders racing-friendly weight, handicap and speed-rating labels", async () => {
@@ -643,6 +645,30 @@ describe("research filter freshness state", () => {
     });
   });
 
+  test("trainer cohort panel explains empty prior-year resolution", () => {
+    const html = renderToStaticMarkup(
+      TrainerCohortPanel({
+        diagnostics: { currentYearMatchedTrainerCount: 0, currentYearRunnerCount: 0 },
+        trainerCohort: resolvedTrainerCohort([]),
+      }),
+    );
+
+    assert.match(html, /Qualifying prior-year trainers/);
+    assert.match(html, /No eligible prior-year trainer cohort could be resolved for this family/);
+  });
+
+  test("trainer cohort panel distinguishes resolved cohorts with no current-year cache matches", () => {
+    const html = renderToStaticMarkup(
+      TrainerCohortPanel({
+        diagnostics: { currentYearMatchedTrainerCount: 0, currentYearRunnerCount: 0 },
+        trainerCohort: resolvedTrainerCohort(["trainer-a"]),
+      }),
+    );
+
+    assert.match(html, /Resolved cohort trainers/);
+    assert.match(html, /none of its stable trainer IDs matched runners in the 2025 cache/);
+  });
+
   test("cleared filters mark existing results stale and keep saving blocked until rerun", () => {
     const executed = {
       ...defaultResearchRule("jump"),
@@ -696,6 +722,28 @@ describe("research filter freshness state", () => {
     );
   });
 });
+
+function resolvedTrainerCohort(trainerIds: string[]): ResolvedTrainerCohort {
+  return {
+    definition: trainerCohortRule(20),
+    cohortYear: 2025,
+    referenceYear: 2024,
+    family: "jump",
+    qualifiedTrainerCount: trainerIds.length,
+    members: trainerIds.map((trainerId, index) => ({
+      cohortYear: 2025,
+      referenceYear: 2024,
+      family: "jump",
+      rank: index + 1,
+      trainerId,
+      trainerName: `Trainer ${index + 1}`,
+      priorYearRuns: 60,
+      priorYearWins: 20 - index,
+      priorYearWinRate: ((20 - index) / 60) * 100,
+    })),
+    trainerIds: new Set(trainerIds),
+  };
+}
 
 function formData(values: Record<string, string | string[]>): FormData {
   const form = new FormData();

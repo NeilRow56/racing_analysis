@@ -31,6 +31,7 @@ export type ResolvedTrainerCohort = {
   cohortYear: number;
   referenceYear: number;
   family: TrainerCohortFamily;
+  qualifiedTrainerCount?: number;
   members: TrainerCohortMember[];
   trainerIds: Set<string>;
 };

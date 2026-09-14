@@ -78,14 +78,15 @@ export function resolveTrainerCohortFromStandings(input: {
     standings.set(row.trainerId, standing);
   }
 
-  const members = [...standings.values()]
+  const qualifiedStandings = [...standings.values()]
     .filter((standing) => standing.runs >= (input.minimumSettledRuns ?? TRAINER_COHORT_MIN_SETTLED_RUNNERS))
     .sort((left, right) =>
       right.wins - left.wins ||
       right.runs - left.runs ||
       left.trainerName.localeCompare(right.trainerName) ||
       left.trainerId.localeCompare(right.trainerId),
-    )
+    );
+  const members = qualifiedStandings
     .slice(0, input.definition.top)
     .map((standing, index): TrainerCohortMember => ({
       cohortYear: input.cohortYear,
@@ -104,6 +105,7 @@ export function resolveTrainerCohortFromStandings(input: {
     cohortYear: input.cohortYear,
     referenceYear,
     family: input.family,
+    qualifiedTrainerCount: qualifiedStandings.length,
     members,
     trainerIds: new Set(members.map((member) => member.trainerId)),
   };
@@ -154,7 +156,7 @@ export async function getTrainerCohortForRule(
     ))
     .groupBy(raceRunners.trainerId, trainers.displayName);
 
-  const members = rows
+  const qualifiedRows = rows
     .filter((row) => row.trainerId !== null && row.trainerName !== null)
     .filter((row) => row.priorYearRuns >= TRAINER_COHORT_MIN_SETTLED_RUNNERS)
     .sort((left, right) =>
@@ -162,7 +164,8 @@ export async function getTrainerCohortForRule(
       right.priorYearRuns - left.priorYearRuns ||
       (left.trainerName ?? "").localeCompare(right.trainerName ?? "") ||
       (left.trainerId ?? "").localeCompare(right.trainerId ?? ""),
-    )
+    );
+  const members = qualifiedRows
     .slice(0, definition.top)
     .map((row, index): TrainerCohortMember => ({
       cohortYear,
@@ -181,6 +184,7 @@ export async function getTrainerCohortForRule(
     cohortYear,
     referenceYear,
     family: rule.family,
+    qualifiedTrainerCount: qualifiedRows.length,
     members,
     trainerIds: new Set(members.map((member) => member.trainerId)),
   };
