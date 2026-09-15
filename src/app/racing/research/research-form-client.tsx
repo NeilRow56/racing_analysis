@@ -11,6 +11,7 @@ import {
   type DevelopmentSettlementMode,
 } from "@/lib/racing/development-settlement-mode";
 import { TRAINER_COHORT_TOP_OPTIONS, trainerCohortRule } from "@/lib/racing/trainer-cohort-mode";
+import { TURF_PERFORMANCE_RATING_VERSION } from "@/lib/racing/turf-performance-rating";
 import type {
   HandicapStatusFilter,
   RankMetric,
@@ -175,7 +176,9 @@ export const ResearchForm = ({
 }) => {
   const rating = rule.ratings[0];
   const relative = rule.relatives[0];
-  const rank = rule.ranks[0];
+  const rank = rule.ranks.find((condition) => condition.metric !== "officialRating");
+  const officialRatingRank = rule.ranks.find((condition) => condition.metric === "officialRating");
+  const turfPerformance = rule.turfPerformance;
   const buttonLabel = researchRunButtonLabel({ isPending, isStale });
   const optionsMatchSelectedFamily = !filterOptions.family || filterOptions.family === rule.family;
   const courseOptions = optionsMatchSelectedFamily ? filterOptions.courses : [];
@@ -313,7 +316,7 @@ export const ResearchForm = ({
         </div>
       </FilterGroup>
 
-      <FilterGroup title="Speed Rating And OR-Relative Filters">
+      <FilterGroup title="Speed / Performance vs OR">
         <SelectField label="Speed rating metric" name="ratingMetric" value={rating?.metric ?? ""}>
           <option value="">No speed rating filter</option>
           {groupedRatingOptions(ratingMetricOptions).map(([group, options]) => (
@@ -336,10 +339,18 @@ export const ResearchForm = ({
         <InputField label="Relative max" name="relativeMax" type="number" value={relative?.range.max} />
       </FilterGroup>
 
-      <FilterGroup title="Within-Race Ranking">
+      <FilterGroup title="Official Rating Rank">
+        <InputField label="OR rank min" name="orRankMin" type="number" value={officialRatingRank?.range.min} />
+        <InputField label="OR rank max" name="orRankMax" type="number" value={officialRatingRank?.range.max} />
+        <div className="md:col-span-3 rounded border border-slate-200 bg-slate-50 p-3 text-sm text-slate-600">
+          Ranks are within the race, highest Official Rating first. Equal ratings share the same competition rank. Missing OR is excluded.
+        </div>
+      </FilterGroup>
+
+      <FilterGroup title="Within-Race Rating Ranking">
         <SelectField label="Rank metric" name="rankMetric" value={rank?.metric ?? ""}>
           <option value="">No rank filter</option>
-          {rankMetricOptions.map((option) => (
+          {rankMetricOptions.filter((option) => option.value !== "officialRating").map((option) => (
             <option key={option.value} value={option.value}>{option.label}</option>
           ))}
         </SelectField>
@@ -349,6 +360,20 @@ export const ResearchForm = ({
           Ranks are per race, highest value first. Missing values and non-runners are excluded. Equal values share the same competition rank.
         </div>
       </FilterGroup>
+
+      {rule.family === "turf_flat" ? (
+        <FilterGroup title="Turf Performance Rating — Diagnostic">
+          <InputField label="TPR min" name="tprMin" step="0.1" type="number" value={turfPerformance?.rating?.min} />
+          <InputField label="TPR max" name="tprMax" step="0.1" type="number" value={turfPerformance?.rating?.max} />
+          <InputField label="TPR rank min" name="tprRankMin" type="number" value={turfPerformance?.rank?.min} />
+          <InputField label="TPR rank max" name="tprRankMax" type="number" value={turfPerformance?.rank?.max} />
+          <InputField label="TPR lead min" name="tprLeadMin" step="0.1" type="number" value={turfPerformance?.lead?.min} />
+          <InputField label="TPR lead max" name="tprLeadMax" step="0.1" type="number" value={turfPerformance?.lead?.max} />
+          <div className="md:col-span-3 rounded border border-slate-200 bg-slate-50 p-3 text-sm text-slate-600">
+            Uses frozen {TURF_PERFORMANCE_RATING_VERSION}. TPR rank is within race, highest TPR first. TPR lead is only defined for the rank-1 horse as its points advantage over rank 2.
+          </div>
+        </FilterGroup>
+      ) : null}
 
       <div className="flex flex-wrap items-center gap-3">
         <SelectField label="Development settlement" name="settlementMode" value={settlementMode}>
@@ -400,12 +425,17 @@ export function researchRuleFromFormData(formData: FormData): ResearchRuleV1 {
   const ratingMetric = textValue(formData.get("ratingMetric")) as RatingMetric | undefined;
   const relativeMetric = textValue(formData.get("relativeMetric")) as RelativeMetric | undefined;
   const rankMetric = textValue(formData.get("rankMetric")) as RankMetric | undefined;
+  const family = familyValue(textValue(formData.get("family")));
   const ratingRange = rangeFromFormData(formData, "ratingMin", "ratingMax");
   const relativeRange = rangeFromFormData(formData, "relativeMin", "relativeMax");
   const rankRange = rangeFromFormData(formData, "rankMin", "rankMax");
+  const officialRatingRankRange = rangeFromFormData(formData, "orRankMin", "orRankMax");
+  const tprRatingRange = rangeFromFormData(formData, "tprMin", "tprMax");
+  const tprRankRange = rangeFromFormData(formData, "tprRankMin", "tprRankMax");
+  const tprLeadRange = rangeFromFormData(formData, "tprLeadMin", "tprLeadMax");
   return {
     version: "research_rule_v1",
-    family: familyValue(textValue(formData.get("family"))),
+    family,
     dateRange: {
       from: textValue(formData.get("from")) ?? "2025-01-01",
       to: textValue(formData.get("to")) ?? "2025-12-31",
@@ -432,7 +462,18 @@ export function researchRuleFromFormData(formData: FormData): ResearchRuleV1 {
     },
     ratings: ratingMetric && ratingRange ? [{ metric: ratingMetric, range: ratingRange }] : [],
     relatives: relativeMetric && relativeRange ? [{ metric: relativeMetric, range: relativeRange }] : [],
-    ranks: rankMetric && rankRange ? [{ metric: rankMetric, range: rankRange }] : [],
+    ranks: [
+      ...(rankMetric && rankRange ? [{ metric: rankMetric, range: rankRange }] : []),
+      ...(officialRatingRankRange ? [{ metric: "officialRating" as const, range: officialRatingRankRange }] : []),
+    ],
+    turfPerformance: family === "turf_flat" && (tprRatingRange || tprRankRange || tprLeadRange)
+      ? {
+          version: TURF_PERFORMANCE_RATING_VERSION,
+          rating: tprRatingRange,
+          rank: tprRankRange,
+          lead: tprLeadRange,
+        }
+      : undefined,
   };
 }
 

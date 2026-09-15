@@ -38,6 +38,7 @@ import { RuleStabilityPanel } from "./rule-stability-panel";
 import { TimeSliceStabilityPanel } from "./time-slice-stability-panel";
 import { TrainerCohortPanel } from "./trainer-cohort-panel";
 import { trainerCohortRule, type ResolvedTrainerCohort } from "@/lib/racing/trainer-cohorts";
+import { TURF_PERFORMANCE_RATING_VERSION } from "@/lib/racing/turf-performance-rating";
 
 describe("research filters page", () => {
   test("renders racing-friendly weight, handicap and speed-rating labels", async () => {
@@ -80,6 +81,14 @@ describe("research filters page", () => {
     assert.match(text, /Speed rating metric/);
     assert.match(text, /Speed rating min/);
     assert.match(text, /Speed rating max/);
+    assert.match(text, /Speed \/ Performance vs OR/);
+    assert.match(text, /Official Rating Rank/);
+    assert.match(text, /OR rank min/);
+    assert.match(text, /OR rank max/);
+    assert.match(text, /Missing OR is excluded/);
+    assert.match(text, /Within-Race Rating Ranking/);
+    assert.equal(text.includes("OR rank</option>"), false);
+    assert.equal(text.includes("Turf Performance Rating"), false);
     assert.match(text, /Trainer/);
     assert.match(text, /A Trainer/);
     assert.match(text, /Return \/ layoff/);
@@ -94,6 +103,78 @@ describe("research filters page", () => {
     assert.match(text, /Cap winners at 20\/1/);
     assert.match(text, /development analysis only/i);
     assert.match(text, /Clear all filters/);
+  });
+
+  test("renders Turf Performance Rating diagnostic filters for Turf only", () => {
+    const turfText = renderToStaticMarkup(
+      ResearchForm({
+        familyOptions: FAMILY_OPTIONS,
+        filterOptions: {
+          courses: [],
+          classes: [],
+          distances: [],
+          trainers: [],
+          weights: weightOptions(),
+        },
+        handicapStatusOptions: HANDICAP_STATUS_OPTIONS,
+        isPending: false,
+        isStale: false,
+        onChange: () => {},
+        onClearFilters: () => {},
+        onSubmit: () => {},
+        rankMetricOptions: RANK_METRIC_OPTIONS,
+        ratingMetricOptions: RATING_METRIC_OPTIONS,
+        returnBucketOptions: RETURN_BUCKET_OPTIONS,
+        ref: null,
+        relativeMetricOptions: RELATIVE_METRIC_OPTIONS,
+        runAfterBreakOptions: RUN_AFTER_BREAK_OPTIONS,
+        rule: {
+          ...defaultResearchRule("turf_flat"),
+          turfPerformance: {
+            version: TURF_PERFORMANCE_RATING_VERSION,
+            rating: { min: 110 },
+            rank: { min: 1, max: 1 },
+            lead: { min: 4 },
+          },
+        },
+        settlementMode: "actual",
+      }),
+    );
+    const jumpText = renderToStaticMarkup(
+      ResearchForm({
+        familyOptions: FAMILY_OPTIONS,
+        filterOptions: {
+          courses: [],
+          classes: [],
+          distances: [],
+          trainers: [],
+          weights: weightOptions(),
+        },
+        handicapStatusOptions: HANDICAP_STATUS_OPTIONS,
+        isPending: false,
+        isStale: false,
+        onChange: () => {},
+        onClearFilters: () => {},
+        onSubmit: () => {},
+        rankMetricOptions: RANK_METRIC_OPTIONS,
+        ratingMetricOptions: RATING_METRIC_OPTIONS,
+        returnBucketOptions: RETURN_BUCKET_OPTIONS,
+        ref: null,
+        relativeMetricOptions: RELATIVE_METRIC_OPTIONS,
+        runAfterBreakOptions: RUN_AFTER_BREAK_OPTIONS,
+        rule: defaultResearchRule("jump"),
+        settlementMode: "actual",
+      }),
+    );
+
+    assert.match(turfText, /Turf Performance Rating — Diagnostic/);
+    assert.match(turfText, /TPR min/);
+    assert.match(turfText, /TPR rank min/);
+    assert.match(turfText, /TPR lead min/);
+    assert.match(turfText, new RegExp(TURF_PERFORMANCE_RATING_VERSION));
+    assert.match(turfText, /value="110"/);
+    assert.match(turfText, /value="4"/);
+    assert.equal(jumpText.includes("Turf Performance Rating"), false);
   });
 
   test("renders current-family trainer and course options from stable IDs", () => {
@@ -645,6 +726,29 @@ describe("trainer selector helpers", () => {
       researchRuleFromFormData(formData({ trainerId: "trainer-1", trainerCohort: "20" })).runner.trainerCohort,
       undefined,
     );
+  });
+
+  test("form data stores Turf Performance Rating filters with the frozen version", () => {
+    const turfRule = researchRuleFromFormData(formData({
+      family: "turf_flat",
+      tprMin: "110",
+      tprRankMin: "1",
+      tprRankMax: "1",
+      tprLeadMin: "4",
+    }));
+    const jumpRule = researchRuleFromFormData(formData({
+      family: "jump",
+      tprMin: "110",
+      tprRankMin: "1",
+    }));
+
+    assert.deepEqual(turfRule.turfPerformance, {
+      version: TURF_PERFORMANCE_RATING_VERSION,
+      rating: { min: 110, max: undefined },
+      rank: { min: 1, max: 1 },
+      lead: { min: 4, max: undefined },
+    });
+    assert.equal(jumpRule.turfPerformance, undefined);
   });
 });
 

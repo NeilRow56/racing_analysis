@@ -210,3 +210,32 @@ export const savedResearchRules = pgTable(
     index("saved_research_rules_rule_identity_idx").on(table.ruleIdentity),
   ],
 );
+
+export const turfPerformanceRatingSnapshots = pgTable(
+  "turf_performance_rating_snapshots",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    raceId: uuid("race_id")
+      .notNull()
+      .references(() => races.id, { onDelete: "cascade" }),
+    runnerId: uuid("runner_id")
+      .notNull()
+      .references(() => raceRunners.id, { onDelete: "cascade" }),
+    horseId: uuid("horse_id")
+      .notNull()
+      .references(() => horses.id),
+    raceDate: date("race_date").notNull(),
+    rating: numeric("rating", { precision: 8, scale: 3 }).notNull(),
+    rawRating: numeric("raw_rating", { precision: 10, scale: 6 }).notNull(),
+    rank: integer("rank").notNull(),
+    gap: numeric("gap", { precision: 8, scale: 3 }),
+    historyDepth: integer("history_depth").notNull(),
+    formulaVersion: text("formula_version").notNull(),
+    ...timestamps(),
+  },
+  (table) => [
+    uniqueIndex("tpr_snapshots_runner_version_idx").on(table.runnerId, table.formulaVersion),
+    index("tpr_snapshots_race_date_idx").on(table.raceDate),
+    index("tpr_snapshots_race_idx").on(table.raceId),
+  ],
+);

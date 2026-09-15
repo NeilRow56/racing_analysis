@@ -72,6 +72,14 @@ export function canonicalResearchRule(rule: ResearchRuleV1) {
     ratings: rule.ratings.map(canonicalRatingCondition),
     relatives: rule.relatives.map(canonicalRelativeCondition),
     ranks: rule.ranks.map(canonicalRankCondition),
+    turfPerformance: rule.turfPerformance
+      ? compactObject({
+          version: rule.turfPerformance.version,
+          rating: canonicalRange(rule.turfPerformance.rating),
+          rank: canonicalRange(rule.turfPerformance.rank),
+          lead: canonicalRange(rule.turfPerformance.lead),
+        })
+      : undefined,
   });
 }
 

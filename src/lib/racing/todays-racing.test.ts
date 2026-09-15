@@ -237,6 +237,92 @@ describe("Today racing grouping", () => {
     assert.equal(grouped[0].races[0].runners[1].metrics, null);
   });
 
+  test("attaches diagnostic TPR to ordinary Flat Turf runners only", () => {
+    const grouped = groupTodaysRacingRows(
+      [
+        row({
+          runnerId: "runner-top",
+          horseName: "Top",
+          saddleclothNumber: 1,
+          weightCarriedLbs: 130,
+          odds: "2/1",
+        }),
+        row({
+          runnerId: "runner-second",
+          horseName: "Second",
+          saddleclothNumber: 2,
+          weightCarriedLbs: 126,
+          odds: "3/1",
+        }),
+      ],
+      new Map(),
+      new Map([
+        ["runner-top", metric({
+          latestPerformanceRating: 70,
+          previousPerformanceRating: 64,
+          averagePerformanceLast3: 62,
+          latestTurfSpeedRating: 105,
+          previousTurfSpeedRating: 100,
+          averageTurfSpeedLast3: 98,
+        })],
+        ["runner-second", metric({
+          latestPerformanceRating: 61,
+          previousPerformanceRating: 58,
+          averagePerformanceLast3: 56,
+          latestTurfSpeedRating: 95,
+          previousTurfSpeedRating: 92,
+          averageTurfSpeedLast3: 90,
+        })],
+      ]),
+    );
+
+    const [top, second] = grouped[0].races[0].runners;
+    assert.equal(top.turfPerformanceRating?.rank, 1);
+    assert.equal(top.turfPerformanceRating?.historyDepth, 3);
+    assert.equal(top.turfPerformanceRating?.version, "TPR_S2_V1");
+    assert.equal(second.turfPerformanceRating?.rank, 2);
+    assert.equal(second.turfPerformanceRating?.gap !== null, true);
+    assert.equal((second.turfPerformanceRating?.gap ?? 0) < 0, true);
+  });
+
+  test("does not attach diagnostic TPR to AW or Jump races", () => {
+    const metrics = metric({
+      latestPerformanceRating: 70,
+      previousPerformanceRating: 64,
+      averagePerformanceLast3: 62,
+      latestTurfSpeedRating: 105,
+      previousTurfSpeedRating: 100,
+      averageTurfSpeedLast3: 98,
+    });
+    const grouped = groupTodaysRacingRows(
+      [
+        row({
+          raceId: "race-aw",
+          runnerId: "runner-aw",
+          courseName: "Kempton",
+          going: "Standard",
+          surface: "POLYTRACK",
+        }),
+        row({
+          raceId: "race-jump",
+          runnerId: "runner-jump",
+          saddleclothNumber: 2,
+          raceName: "Novices' Hurdle",
+          raceType: "hurdle",
+          surface: "TURF",
+        }),
+      ],
+      new Map(),
+      new Map([
+        ["runner-aw", metrics],
+        ["runner-jump", metrics],
+      ]),
+    );
+
+    assert.equal(grouped[0].races[0].runners[0].turfPerformanceRating, undefined);
+    assert.equal(grouped[0].races[1].runners[0].turfPerformanceRating, undefined);
+  });
+
   test("classifies current AW racecards from explicit surface when going is blank", () => {
     assert.equal(
       isAllWeatherRaceForDisplay({
@@ -394,33 +480,89 @@ describe("Today racing display helpers", () => {
     assert.equal(formatRacingDate("2026-09-09"), "Wednesday 9 September 2026");
   });
 
-  test("formats UK race times in BST from UTC race datetimes", () => {
+  test("converts UK BST race times from the absolute race instant", () => {
     assert.equal(
       formatRaceTimeForDisplay({
-        raceDateTime: new Date("2026-09-10T13:00:00.000Z"),
+        raceDateTime: new Date("2026-09-16T12:45:00.000Z"),
+        scheduledTime: "12:45:00",
+        courseCountry: "ENG",
+      }),
+      "13:45",
+    );
+  });
+
+  test("keeps a 14:00 UK BST clock as 14:00 from a 13:00Z race instant", () => {
+    assert.equal(
+      formatRaceTimeForDisplay({
+        raceDateTime: new Date("2026-09-15T13:00:00.000Z"),
         scheduledTime: "13:00:00",
+        courseCountry: "ENG",
       }),
       "14:00",
+    );
+  });
+
+  test("keeps non-whole-hour UK BST race times from the race instant", () => {
+    assert.equal(
+      formatRaceTimeForDisplay({
+        raceDateTime: new Date("2026-09-15T12:53:00.000Z"),
+        scheduledTime: "12:53:00",
+        courseCountry: "ENG",
+      }),
+      "13:53",
     );
   });
 
   test("keeps UK winter race times on GMT", () => {
     assert.equal(
       formatRaceTimeForDisplay({
-        raceDateTime: new Date("2026-12-05T14:00:00.000Z"),
-        scheduledTime: "14:00:00",
+        raceDateTime: new Date("2026-12-16T12:45:00.000Z"),
+        scheduledTime: "13:00:00",
+        courseCountry: "ENG",
       }),
-      "14:00",
+      "12:45",
     );
   });
 
-  test("formats Irish race times with the same local daylight offset", () => {
+  test("displays Irish BST race times with the Dublin timezone", () => {
     assert.equal(
       formatRaceTimeForDisplay({
-        raceDateTime: new Date("2026-09-10T15:30:00.000Z"),
-        scheduledTime: "15:30:00",
+        raceDateTime: new Date("2026-09-16T12:45:00.000Z"),
+        scheduledTime: "12:45:00",
+        courseCountry: "EIRE",
       }),
-      "16:30",
+      "13:45",
+    );
+  });
+
+  test("race time display is independent of the server timezone", () => {
+    const previousTimezone = process.env.TZ;
+    process.env.TZ = "America/New_York";
+    try {
+      assert.equal(
+        formatRaceTimeForDisplay({
+          raceDateTime: new Date("2026-09-16T12:45:00.000Z"),
+          scheduledTime: "12:45:00",
+          courseCountry: "ENG",
+        }),
+        "13:45",
+      );
+    } finally {
+      if (previousTimezone === undefined) {
+        delete process.env.TZ;
+      } else {
+        process.env.TZ = previousTimezone;
+      }
+    }
+  });
+
+  test("falls back to Europe/London formatting when no scheduled time exists", () => {
+    assert.equal(
+      formatRaceTimeForDisplay({
+        raceDateTime: new Date("2026-09-12T15:00:00.000Z"),
+        scheduledTime: null,
+      }),
+      "16:00",
     );
   });
 
@@ -431,6 +573,16 @@ describe("Today racing display helpers", () => {
         scheduledTime: "14:05:00",
       }),
       "14:05",
+    );
+  });
+
+  test("falls back to placeholder when no display time exists", () => {
+    assert.equal(
+      formatRaceTimeForDisplay({
+        raceDateTime: null,
+        scheduledTime: null,
+      }),
+      "--:--",
     );
   });
 });

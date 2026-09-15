@@ -3,6 +3,7 @@ import { describe, test } from "node:test";
 import { defaultResearchRule, type ResearchRuleV1 } from "./research-rule";
 import type { SavedResearchRule } from "./saved-research-rules";
 import { trainerCohortRule, type ResolvedTrainerCohort } from "./trainer-cohorts";
+import { TURF_PERFORMANCE_RATING_VERSION } from "./turf-performance-rating";
 import {
   attachFrozenRuleMatchesToToday,
   buildTodayRuleSelections,
@@ -55,6 +56,77 @@ describe("Today frozen rule matching", () => {
     );
 
     assert.deepEqual(matched, ["runner-rank-2"]);
+  });
+
+  test("matches official rating rank alongside the generic rank filter", () => {
+    const matched = matchIds(
+      exampleFrozenRule({
+        ranks: [
+          { metric: "latestPerformanceRating", range: { min: 3 } },
+          { metric: "officialRating", range: { min: 3 } },
+        ],
+      }),
+      {},
+      {},
+      {},
+      "2026-09-11",
+      [
+        runner("runner-rank-1", { latestPerformanceRating: 100 }, { officialRating: 120 }),
+        runner("runner-rank-2", { latestPerformanceRating: 95 }, { officialRating: 115 }),
+        runner("runner-rank-3", { latestPerformanceRating: 90 }, { officialRating: 110 }),
+        runner("runner-rank-4", { latestPerformanceRating: 80 }, { officialRating: 105 }),
+      ],
+    );
+
+    assert.deepEqual(matched, ["runner-rank-3", "runner-rank-4"]);
+  });
+
+  test("matches frozen TPR version rules using current Today TPR inputs", () => {
+    const matched = matchIds(
+      exampleFrozenRule({
+        race: {},
+        runner: {},
+        ratings: [],
+        ranks: [],
+        turfPerformance: {
+          version: TURF_PERFORMANCE_RATING_VERSION,
+          rank: { min: 1, max: 1 },
+          lead: { min: 10 },
+        },
+      }),
+      {},
+      {},
+      {},
+      "2026-09-11",
+      [
+        runner("tpr-top", {
+          latestPerformanceRating: 120,
+          previousPerformanceRating: null,
+          averagePerformanceLast3: null,
+          latestTurfSpeedRating: 135,
+          previousTurfSpeedRating: null,
+          averageTurfSpeedLast3: null,
+        }, { weightCarriedLbs: 126 }),
+        runner("tpr-second", {
+          latestPerformanceRating: 85,
+          previousPerformanceRating: null,
+          averagePerformanceLast3: null,
+          latestTurfSpeedRating: 100,
+          previousTurfSpeedRating: null,
+          averageTurfSpeedLast3: null,
+        }, { weightCarriedLbs: 126 }),
+        runner("tpr-third", {
+          latestPerformanceRating: 75,
+          previousPerformanceRating: null,
+          averagePerformanceLast3: null,
+          latestTurfSpeedRating: 90,
+          previousTurfSpeedRating: null,
+          averageTurfSpeedLast3: null,
+        }, { weightCarriedLbs: 126 }),
+      ],
+    );
+
+    assert.deepEqual(matched, ["tpr-top"]);
   });
 
   test("supports multiple frozen matches and ignores drafts", () => {
@@ -585,6 +657,7 @@ function race(overrides: Partial<TodayRace> = {}): TodayRace {
     sourceId: "race-source-1",
     scheduledTime: "13:40:00",
     raceDateTime: new Date("2026-09-11T12:40:00.000Z"),
+    courseCountry: "ENG",
     raceName: "Class 3 Fillies Stakes",
     raceClass: "Class 3",
     raceType: "Flat",

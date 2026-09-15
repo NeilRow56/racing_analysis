@@ -59,6 +59,7 @@ function race(overrides: Partial<TodayRace> = {}): TodayRace {
     sourceId: "937435",
     scheduledTime: "15:00:00",
     raceDateTime: new Date("2026-09-12T15:00:00.000Z"),
+    courseCountry: "ENG",
     raceName: "Carlisle Novice Stakes",
     raceClass: "Class 3",
     raceType: "Flat",

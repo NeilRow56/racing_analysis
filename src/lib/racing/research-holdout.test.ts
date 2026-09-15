@@ -25,6 +25,7 @@ import {
 } from "./research-rule";
 import { canonicalResearchRule, researchRuleKey } from "./research-rule-identity";
 import { trainerCohortRule, type ResolvedTrainerCohort } from "./trainer-cohorts";
+import { TURF_PERFORMANCE_RATING_VERSION } from "./turf-performance-rating";
 import {
   developmentSnapshotFromResult,
   type SavedResearchRule,
@@ -181,6 +182,57 @@ describe("research holdout validation", () => {
 
     assert.equal(snapshot.selections, 2);
     assert.equal(snapshot.settledSelections, 2);
+  });
+
+  test("evaluates official rating rank alongside a generic rank in holdout", async () => {
+    const root = await mkdtemp(join(tmpdir(), "racing-holdout-or-rank-"));
+    const rule: ResearchRuleV1 = {
+      ...defaultResearchRule("jump"),
+      ranks: [
+        { metric: "latestSpeedRating", range: { min: 3 } },
+        { metric: "officialRating", range: { min: 3 } },
+      ],
+    };
+    await writeCache(root, {
+      manifest: manifestFor({ family: "jump", from: "2026-01-01", to: "2026-12-31", rowCount: 5 }),
+      rows: [
+        row({ targetRunnerId: "top-speed-top-or", latestSpeedRating: 120, officialRating: 150, raceDate: "2026-01-03" }),
+        row({ targetRunnerId: "second-speed-second-or", latestSpeedRating: 110, officialRating: 140, raceDate: "2026-01-03" }),
+        row({ targetRunnerId: "selected-third", latestSpeedRating: 100, officialRating: 130, raceDate: "2026-01-03" }),
+        row({ targetRunnerId: "selected-fourth", latestSpeedRating: 90, officialRating: 120, raceDate: "2026-01-03" }),
+        row({ targetRunnerId: "missing-or", latestSpeedRating: 80, officialRating: null, raceDate: "2026-01-03" }),
+      ],
+    });
+
+    const snapshot = await evaluateHoldoutForSavedRule(savedRuleFor(rule), { outputDir: root });
+
+    assert.equal(snapshot.selections, 2);
+    assert.equal(snapshot.settledSelections, 2);
+  });
+
+  test("evaluates frozen TPR version filters against the 2026 holdout cache", async () => {
+    const root = await mkdtemp(join(tmpdir(), "racing-holdout-tpr-"));
+    const rule: ResearchRuleV1 = {
+      ...defaultResearchRule("turf_flat"),
+      turfPerformance: {
+        version: TURF_PERFORMANCE_RATING_VERSION,
+        rank: { min: 1, max: 1 },
+        lead: { min: 10 },
+      },
+    };
+    await writeCache(root, {
+      manifest: manifestFor({ family: "turf_flat", from: "2026-01-01", to: "2026-12-31", rowCount: 3 }),
+      rows: [
+        row(turfPerformanceFeature("tpr-top", 120, 135, "2026-01-03")),
+        row(turfPerformanceFeature("tpr-second", 85, 100, "2026-01-03")),
+        row(turfPerformanceFeature("tpr-third", 75, 90, "2026-01-03")),
+      ],
+    });
+
+    const snapshot = await evaluateHoldoutForSavedRule(savedRuleFor(rule), { outputDir: root });
+
+    assert.equal(snapshot.selections, 1);
+    assert.equal(snapshot.settledSelections, 1);
   });
 
   test("uses actual result SP for holdout even when development snapshot was capped", async () => {
@@ -438,6 +490,30 @@ function feature(overrides: Partial<HistoricalPreRaceFeatureRow> = {}): Historic
     latestSpeedConfidence: "medium",
     speedCalculationVersion: "jump_speed_v1",
     ...overrides,
+  };
+}
+
+function turfPerformanceFeature(
+  targetRunnerId: string,
+  latestPerformanceRating: number,
+  latestTurfSpeedRating: number,
+  raceDate: string,
+): Partial<HistoricalPreRaceFeatureRow> {
+  return {
+    targetRunnerId,
+    raceDate,
+    raceCode: "turf",
+    raceName: "Turf Handicap",
+    raceClass: "Class 4",
+    raceType: "Flat",
+    distanceYards: 1760,
+    weightCarriedLbs: 126,
+    latestPerformanceRating,
+    previousPerformanceRating: null,
+    averagePerformanceLast3: null,
+    latestTurfSpeedRating,
+    previousTurfSpeedRating: null,
+    averageTurfSpeedLast3: null,
   };
 }
 

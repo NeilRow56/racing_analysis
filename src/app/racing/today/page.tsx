@@ -12,6 +12,8 @@ import {
   type TodayTrainerCohortsByRule,
 } from "@/lib/racing/today-rule-matches";
 import { getTrainerCohortForRule } from "@/lib/racing/trainer-cohorts";
+import { saveTurfPerformanceRatingSnapshots } from "@/lib/racing/turf-performance-rating-snapshots";
+import { turfPerformanceHistoryDepthLabel } from "@/lib/racing/turf-performance-rating";
 import {
   formatRaceTimeForDisplay,
   getTodaysRacingData,
@@ -67,6 +69,9 @@ export default async function TodaysRacingPage({ searchParams }: PageProps) {
       if (refreshSummary.imported > 0) {
         data = await getTodaysRacingData(connection.db, raceDate);
         displayData = attachMatches();
+      }
+      if (displayData.status === "ok") {
+        await saveTurfPerformanceRatingSnapshots(connection.db, displayData.meetings, raceDate);
       }
     }
     await connection.client.end();
@@ -191,6 +196,10 @@ function TodaysRacing({ meetings }: { meetings: TodayMeeting[] }) {
       </nav>
 
       <div className="mt-8 space-y-10">
+        <p className="max-w-4xl text-sm leading-6 text-slate-600">
+          TPR is an experimental Turf Performance Rating based on recent RPR/Topspeed, class and weight.
+          It is being forward-tested and is not a betting recommendation.
+        </p>
         {meetings.map((meeting) => (
           <MeetingSection key={meeting.courseId} meeting={meeting} />
         ))}
@@ -392,6 +401,14 @@ function RunnerTable({
             >
               Today&apos;s Rating
             </th>
+            {isTurfRace ? (
+              <th
+                className="w-32 py-2 pr-3 font-medium"
+                title="Experimental Turf Performance Rating. Diagnostic forward test only."
+              >
+                TPR (diagnostic)
+              </th>
+            ) : null}
             <th className="w-16 py-2 pr-3 font-medium">Days</th>
             <th className="w-20 py-2 pr-3 font-medium">Odds</th>
           </tr>
@@ -472,11 +489,40 @@ function RunnerRow({
       <td className="py-3 pr-3">{formatRating(speedMetrics.previous)}</td>
       <td className="py-3 pr-3">{formatRating(speedMetrics.bestLast3)}</td>
       <td className="py-3 pr-3">{formatRating(todaysRating)}</td>
+      {isTurfRace ? (
+        <td className="py-3 pr-3">
+          <TurfPerformanceRatingCell runner={runner} />
+        </td>
+      ) : null}
       <td className="py-3 pr-3">
         {runner.metrics?.daysSinceLastRun ?? "-"}
       </td>
       <td className="py-3 pr-3">{runner.odds ?? "-"}</td>
     </tr>
+  );
+}
+
+function TurfPerformanceRatingCell({ runner }: { runner: TodayRunner }) {
+  const rating = runner.turfPerformanceRating;
+  if (!rating) {
+    return <span className="text-slate-400">—</span>;
+  }
+
+  return (
+    <div className="space-y-0.5">
+      <div className="font-semibold text-slate-900">
+        TPR {Math.round(rating.rating)}
+      </div>
+      <div className="text-xs text-slate-600">
+        Rank {rating.rank}
+        {rating.gap !== null ? ` · ${formatTprGap(rating.gap)}` : ""}
+      </div>
+      {rating.historyDepth < 3 ? (
+        <div className="text-xs text-amber-700">
+          {turfPerformanceHistoryDepthLabel(rating.historyDepth)}
+        </div>
+      ) : null}
+    </div>
   );
 }
 
@@ -594,6 +640,12 @@ function formatFreshnessTime(value: Date): string {
 
 function formatRating(value: number | null | undefined): string {
   return value === null || value === undefined ? "-" : Math.round(value).toString();
+}
+
+function formatTprGap(value: number): string {
+  const rounded = Math.abs(value).toFixed(1);
+  if (Math.abs(value) < 0.05) return "0.0";
+  return value > 0 ? `+${rounded}` : `-${rounded}`;
 }
 
 function formatPercent(value: number | null): string {

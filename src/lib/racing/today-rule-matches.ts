@@ -11,6 +11,7 @@ import {
   matchesRatingConditions,
   matchesRelativeConditions,
   matchesRunnerConditions,
+  matchesTurfPerformanceConditions,
   parseResearchRule,
   rankRows,
   type RankedResearchRow,
@@ -31,6 +32,7 @@ export type TodayRuleSelectionRow = {
   horseId: string;
   horseName: string;
   courseName: string;
+  courseCountry: string | null;
   raceName: string | null;
   scheduledTime: string | null;
   raceDateTime: Date | null;
@@ -112,6 +114,7 @@ export function buildTodayRuleSelections(meetings: TodayMeeting[]): TodayRuleSel
           horseId: runner.horseId,
           horseName: runner.horseName,
           courseName: meeting.courseName,
+          courseCountry: meeting.country,
           raceName: race.raceName,
           scheduledTime: race.scheduledTime,
           raceDateTime: race.raceDateTime,
@@ -192,7 +195,8 @@ export function frozenRuleMatchesTodayRow(
     matchesRunnerConditions(row.features, rule, trainerCohort) &&
     matchesRatingConditions(row.features, rule) &&
     matchesRelativeConditions(row.features, rule) &&
-    matchesRankConditions(row, rule);
+    matchesRankConditions(row, rule) &&
+    matchesTurfPerformanceConditions(row, rule);
 }
 
 function canEvaluateRuleForTodayRunner(rule: ResearchRuleV1, runner: TodayRunner): boolean {
@@ -218,6 +222,7 @@ function hasMetricDependentConditions(rule: ResearchRuleV1): boolean {
   return rule.ratings.length > 0 ||
     rule.relatives.length > 0 ||
     rule.ranks.length > 0 ||
+    Boolean(rule.turfPerformance) ||
     Boolean(rule.runner.returnBucket && rule.runner.returnBucket !== "all") ||
     Boolean(rule.runner.runAfterBreak && rule.runner.runAfterBreak !== "all") ||
     Boolean(rule.runner.daysSinceRun) ||

@@ -16,6 +16,7 @@ import {
   canonicalResearchRule,
   researchRuleKey,
 } from "./research-rule-identity";
+import { TURF_PERFORMANCE_RATING_VERSION } from "./turf-performance-rating";
 import {
   developmentSnapshotFromResult,
   assertCanValidateHoldout,
@@ -309,6 +310,27 @@ describe("saved research rules", () => {
 
     assert.equal(researchRuleKey(base), researchRuleKey(equivalent));
     assert.notEqual(researchRuleKey(base), researchRuleKey(different));
+  });
+
+  test("canonical saved rules preserve frozen TPR filter version and ranges", () => {
+    const rule: ResearchRuleV1 = {
+      ...defaultResearchRule("turf_flat"),
+      turfPerformance: {
+        version: TURF_PERFORMANCE_RATING_VERSION,
+        rating: { min: 110 },
+        rank: { min: 1, max: 1 },
+        lead: { min: 4 },
+      },
+    };
+    const saved = savedRuleFor(rule, "frozen");
+
+    assert.deepEqual((saved.canonicalRule as ResearchRuleV1).turfPerformance, {
+      version: TURF_PERFORMANCE_RATING_VERSION,
+      rating: { min: 110 },
+      rank: { min: 1, max: 1 },
+      lead: { min: 4 },
+    });
+    assert.equal(saved.ruleIdentity, researchRuleKey(rule));
   });
 
   test("database helper keeps the client open until the operation settles", async () => {

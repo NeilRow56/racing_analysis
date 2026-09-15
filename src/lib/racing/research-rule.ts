@@ -18,6 +18,12 @@ import {
   type ResolvedTrainerCohort,
   type TrainerCohortRule,
 } from "./trainer-cohort-mode";
+import {
+  calculateTurfPerformanceRating,
+  rankTurfPerformanceRatings,
+  TURF_PERFORMANCE_RATING_VERSION,
+  type RankedTurfPerformanceRating,
+} from "./turf-performance-rating";
 export { normalizeRaceClasses } from "./research-rule-classes";
 
 export const RESEARCH_RULE_VERSION = "research_rule_v1";
@@ -69,6 +75,7 @@ export type ResearchRuleV1 = {
   ratings: RatingCondition[];
   relatives: RelativeCondition[];
   ranks: RankCondition[];
+  turfPerformance?: TurfPerformanceCondition;
 };
 
 export type NumericCondition = {
@@ -118,6 +125,7 @@ export type RelativeMetric =
   | "bestTodaysRatingL3MinusOR";
 
 export type RankMetric =
+  | "officialRating"
   | "latestSpeedRating"
   | "latestPerformanceRating"
   | "latestTodaysRating"
@@ -140,12 +148,21 @@ export type RankCondition = {
   range: NumericCondition;
 };
 
+export type TurfPerformanceCondition = {
+  version: typeof TURF_PERFORMANCE_RATING_VERSION;
+  rating?: NumericCondition;
+  rank?: NumericCondition;
+  lead?: NumericCondition;
+};
+
 export type RankedResearchRow = HistoricalTargetRunnerMetricsRow & {
   ranks: Partial<Record<RankMetric, number>>;
+  turfPerformance: RankedTurfPerformanceRating | null;
 };
 
 export type ResearchSelection = BacktestSelection & {
   ranks: Partial<Record<RankMetric, number>>;
+  turfPerformance: RankedTurfPerformanceRating | null;
 };
 
 export type ResearchMissingData = {
@@ -289,6 +306,7 @@ export const RELATIVE_METRIC_OPTIONS: Array<{ value: RelativeMetric; label: stri
 ];
 
 export const RANK_METRIC_OPTIONS: Array<{ value: RankMetric; label: string }> = [
+  { value: "officialRating", label: "OR rank" },
   { value: "latestSpeedRating", label: "Latest Speed rank" },
   { value: "latestPerformanceRating", label: "Latest Performance rank" },
   { value: "latestTodaysRating", label: "Latest Today's Rating rank" },
@@ -329,7 +347,8 @@ export function evaluateResearchRule(input: {
   const selectedRows = baseline
     .filter((row) => matchesRatingConditions(row.features, input.rule))
     .filter((row) => matchesRelativeConditions(row.features, input.rule))
-    .filter((row) => matchesRankConditions(row, input.rule));
+    .filter((row) => matchesRankConditions(row, input.rule))
+    .filter((row) => matchesTurfPerformanceConditions(row, input.rule));
   const selectedRunners = selectedRows
     .map((row) => researchSelection(row, input.rule))
     .sort(compareSelections);
@@ -356,7 +375,11 @@ export function evaluateResearchRule(input: {
 }
 
 export function rankRows(rows: HistoricalTargetRunnerMetricsRow[]): RankedResearchRow[] {
-  const ranked = rows.map((row) => ({ ...row, ranks: {} as Partial<Record<RankMetric, number>> }));
+  const ranked = rows.map((row) => ({
+    ...row,
+    ranks: {} as Partial<Record<RankMetric, number>>,
+    turfPerformance: null,
+  }));
   const rowsByRace = new Map<string, RankedResearchRow[]>();
   for (const row of ranked) {
     rowsByRace.set(row.features.targetRaceId, [...(rowsByRace.get(row.features.targetRaceId) ?? []), row]);
@@ -385,6 +408,10 @@ export function rankRows(rows: HistoricalTargetRunnerMetricsRow[]): RankedResear
     }
   }
 
+  for (const raceRows of rowsByRace.values()) {
+    attachTurfPerformanceRatings(raceRows);
+  }
+
   return ranked;
 }
 
@@ -410,6 +437,7 @@ export function parseResearchRule(value: string): ResearchRuleV1 | null {
       ratings: parsed.ratings ?? [],
       relatives: parsed.relatives ?? [],
       ranks: parsed.ranks ?? [],
+      turfPerformance: normalizeTurfPerformanceCondition(parsed.turfPerformance),
     };
   } catch {
     return null;
@@ -464,7 +492,12 @@ export function ruleFromSearchParams(params: URLSearchParams): ResearchRuleV1 {
 
   const rankMetric = metricParam<RankMetric>(params.get("rankMetric"), RANK_METRIC_OPTIONS);
   const rankRange = rangeFromParams(params, "rankMin", "rankMax");
-  rule.ranks = rankMetric && rankRange ? [{ metric: rankMetric, range: rankRange }] : [];
+  const officialRatingRankRange = rangeFromParams(params, "orRankMin", "orRankMax");
+  rule.ranks = [
+    ...(rankMetric && rankRange ? [{ metric: rankMetric, range: rankRange }] : []),
+    ...(officialRatingRankRange ? [{ metric: "officialRating" as const, range: officialRatingRankRange }] : []),
+  ];
+  rule.turfPerformance = turfPerformanceFromParams(params, rule.family);
 
   return rule;
 }
@@ -643,6 +676,7 @@ function researchSelection(row: RankedResearchRow, rule: ResearchRuleV1): Resear
     outcome: row.outcome,
     settlement: settleSelection(row.outcome),
     ranks: row.ranks,
+    turfPerformance: row.turfPerformance,
   };
 }
 
@@ -690,6 +724,73 @@ export function matchesRankConditions(row: RankedResearchRow, rule: ResearchRule
   return rule.ranks.every((condition) =>
     rangeMatches(row.ranks[condition.metric] ?? null, condition.range),
   );
+}
+
+export function matchesTurfPerformanceConditions(row: RankedResearchRow, rule: ResearchRuleV1): boolean {
+  const condition = rule.turfPerformance;
+  if (!condition) {
+    return true;
+  }
+  if (rule.family !== "turf_flat" || condition.version !== TURF_PERFORMANCE_RATING_VERSION) {
+    return false;
+  }
+  const rating = row.turfPerformance;
+  return rangeMatches(rating?.rating ?? null, condition.rating) &&
+    rangeMatches(rating?.rank ?? null, condition.rank) &&
+    rangeMatches(turfPerformanceLead(rating), condition.lead);
+}
+
+function attachTurfPerformanceRatings(raceRows: RankedResearchRow[]) {
+  if (raceRows[0]?.features.raceCode !== "turf") {
+    return;
+  }
+  const raceMedianWeight = median(
+    raceRows
+      .filter((row) => row.outcome.resultStatus !== "non_runner")
+      .map((row) => row.features.weightCarriedLbs)
+      .filter(isNumber),
+  );
+  const ratings = rankTurfPerformanceRatings(
+    raceRows.map((row) => ({
+      id: row.features.targetRunnerId,
+      rating: row.outcome.resultStatus === "non_runner"
+        ? null
+        : calculateTurfPerformanceRating({
+            latestPerformanceRating: row.features.latestPerformanceRating,
+            previousPerformanceRating: row.features.previousPerformanceRating,
+            averagePerformanceLast3: row.features.averagePerformanceLast3,
+            latestSpeedRating: row.features.latestTurfSpeedRating,
+            previousSpeedRating: row.features.previousTurfSpeedRating,
+            averageSpeedLast3: row.features.averageTurfSpeedLast3,
+            raceClass: row.features.raceClass,
+            weightCarriedLbs: row.features.weightCarriedLbs,
+            raceMedianWeightCarriedLbs: raceMedianWeight,
+          }),
+    })),
+  );
+  for (const row of raceRows) {
+    row.turfPerformance = ratings.get(row.features.targetRunnerId) ?? null;
+  }
+}
+
+function turfPerformanceLead(rating: RankedTurfPerformanceRating | null | undefined): number | null {
+  if (!rating || rating.rank !== 1) {
+    return null;
+  }
+  return rating.gap;
+}
+
+function median(values: number[]): number | null {
+  if (values.length === 0) {
+    return null;
+  }
+  const sorted = [...values].sort((left, right) => left - right);
+  const middle = Math.floor(sorted.length / 2);
+  return sorted.length % 2 === 1 ? sorted[middle]! : (sorted[middle - 1]! + sorted[middle]!) / 2;
+}
+
+function isNumber(value: number | null | undefined): value is number {
+  return value !== null && value !== undefined && Number.isFinite(value);
 }
 
 function metricValue(features: HistoricalPreRaceFeatureRow, metric: RatingMetric | RankMetric): number | null {
@@ -769,6 +870,7 @@ export function strategySummary(rule: ResearchRuleV1): string[] {
   for (const condition of rule.ranks) {
     pushRange(lines, rankLabelForMetric(condition.metric), condition.range);
   }
+  pushTurfPerformanceSummary(lines, rule);
   return lines;
 }
 
@@ -843,6 +945,17 @@ function pushRunAfterBreak(lines: string[], value: RunAfterBreakFilter | undefin
   }
   const label = RUN_AFTER_BREAK_OPTIONS.find((option) => option.value === value)?.label ?? value;
   lines.push(`Run after break: ${label}`);
+}
+
+function pushTurfPerformanceSummary(lines: string[], rule: ResearchRuleV1) {
+  const condition = rule.turfPerformance;
+  if (!condition) {
+    return;
+  }
+  lines.push(`TPR version: ${condition.version}`);
+  pushRange(lines, "TPR", condition.rating);
+  pushRange(lines, "TPR rank", condition.rank);
+  pushRange(lines, "TPR lead", condition.lead);
 }
 
 function pushWeightRange(lines: string[], label: string, range: NumericCondition | undefined) {
@@ -948,6 +1061,22 @@ function normalizeRunnerRule(runner: Partial<ResearchRuleV1["runner"]> | undefin
   };
 }
 
+function normalizeTurfPerformanceCondition(value: unknown): TurfPerformanceCondition | undefined {
+  if (!isRecord(value)) {
+    return undefined;
+  }
+  const version = value.version === TURF_PERFORMANCE_RATING_VERSION
+    ? TURF_PERFORMANCE_RATING_VERSION
+    : undefined;
+  const rating = normalizeRange(value.rating);
+  const rank = normalizeRange(value.rank);
+  const lead = normalizeRange(value.lead);
+  if (!version || (!rating && !rank && !lead)) {
+    return undefined;
+  }
+  return { version, rating, rank, lead };
+}
+
 function normalizeTrainerCohortRule(value: unknown): TrainerCohortRule | undefined {
   if (!value || typeof value !== "object") {
     return undefined;
@@ -961,10 +1090,36 @@ function trainerCohortFromTop(value: string | null): TrainerCohortRule | undefin
   return isTrainerCohortTop(top) ? trainerCohortRule(top) : undefined;
 }
 
+function turfPerformanceFromParams(
+  params: URLSearchParams,
+  family: ResearchRuleV1["family"],
+): TurfPerformanceCondition | undefined {
+  const rating = rangeFromParams(params, "tprMin", "tprMax");
+  const rank = rangeFromParams(params, "tprRankMin", "tprRankMax");
+  const lead = rangeFromParams(params, "tprLeadMin", "tprLeadMax");
+  if (family !== "turf_flat" || (!rating && !rank && !lead)) {
+    return undefined;
+  }
+  return { version: TURF_PERFORMANCE_RATING_VERSION, rating, rank, lead };
+}
+
 function rangeFromParams(params: URLSearchParams, minKey: string, maxKey: string): NumericCondition | undefined {
   const min = numberValue(params.get(minKey));
   const max = numberValue(params.get(maxKey));
   return min === undefined && max === undefined ? undefined : { min, max };
+}
+
+function normalizeRange(value: unknown): NumericCondition | undefined {
+  if (!isRecord(value)) {
+    return undefined;
+  }
+  const min = typeof value.min === "number" && Number.isFinite(value.min) ? value.min : undefined;
+  const max = typeof value.max === "number" && Number.isFinite(value.max) ? value.max : undefined;
+  return min === undefined && max === undefined ? undefined : { min, max };
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
 }
 
 function raceClassesFromParams(params: URLSearchParams): number[] | undefined {

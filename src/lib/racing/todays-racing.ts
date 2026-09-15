@@ -21,13 +21,18 @@ import {
   getTrainerPriorMetricsForTargets,
   type TrainerPriorMetrics,
 } from "./trainer-quality";
+import {
+  calculateTurfPerformanceRating,
+  rankTurfPerformanceRatings,
+  type RankedTurfPerformanceRating,
+} from "./turf-performance-rating";
 
 type Db = ReturnType<typeof createDbConnection>["db"];
 
 const SPORTING_LIFE_SOURCE = "sporting_life";
 const RACECARD_INDEX_SOURCE_TYPE = "racecard-index-next-data";
 const RACECARD_SOURCE_TYPE = "racecard-next-data";
-const RACING_DISPLAY_TIME_ZONE = "Europe/London";
+const DEFAULT_RACING_DISPLAY_TIME_ZONE = "Europe/London";
 
 export type TodayRunner = {
   runnerId: string;
@@ -49,6 +54,7 @@ export type TodayRunner = {
   resultStatus: string | null;
   finishingPosition: number | null;
   metrics: HorseMetricsAsOf | null;
+  turfPerformanceRating?: RankedTurfPerformanceRating;
   trainerMetrics?: TrainerPriorMetrics;
   savedRuleMatches?: TodaySavedRuleMatch[];
 };
@@ -71,6 +77,7 @@ export type TodayRace = {
   sourceId: string | null;
   scheduledTime: string | null;
   raceDateTime: Date | null;
+  courseCountry: string | null;
   raceName: string | null;
   raceClass: string | null;
   raceType: string | null;
@@ -224,21 +231,24 @@ export function formatRacingDate(raceDate: string): string {
 export function formatRaceTimeForDisplay(input: {
   raceDateTime: Date | null;
   scheduledTime: string | null;
+  courseCountry?: string | null;
 }): string {
-  if (input.raceDateTime) {
-    return new Intl.DateTimeFormat("en-GB", {
-      timeZone: RACING_DISPLAY_TIME_ZONE,
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-    }).format(input.raceDateTime);
-  }
+  if (!input.raceDateTime) return input.scheduledTime?.slice(0, 5) ?? "--:--";
 
-  if (!input.scheduledTime) {
-    return "--:--";
-  }
+  return new Intl.DateTimeFormat("en-GB", {
+    timeZone: raceDisplayTimeZone(input.courseCountry),
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).format(input.raceDateTime);
+}
 
-  return input.scheduledTime.slice(0, 5);
+function raceDisplayTimeZone(country: string | null | undefined): string {
+  const normalized = country?.trim().toLowerCase();
+  if (normalized === "eire" || normalized === "ire" || normalized === "ireland") {
+    return "Europe/Dublin";
+  }
+  return DEFAULT_RACING_DISPLAY_TIME_ZONE;
 }
 
 export async function getTodaysRacingData(
@@ -323,6 +333,7 @@ export function groupTodaysRacingRows(
         sourceId: row.raceSourceId,
         scheduledTime: row.scheduledTime,
         raceDateTime: row.raceDateTime,
+        courseCountry: row.country,
         raceName: row.raceName,
         raceClass: row.raceClass,
         raceType: row.raceType,
@@ -368,13 +379,55 @@ export function groupTodaysRacingRows(
     .map((meeting) => ({
       ...meeting,
       races: meeting.races
-        .map((race) => ({
-          ...race,
-          runners: race.runners.sort(compareRunners),
-        }))
+        .map((race) => {
+          const raceWithTpr = attachTurfPerformanceRatings(race);
+          return {
+            ...raceWithTpr,
+            runners: raceWithTpr.runners.sort(compareRunners),
+          };
+        })
         .sort(compareRaces),
     }))
     .sort(compareMeetings);
+}
+
+export function attachTurfPerformanceRatings(race: TodayRace): TodayRace {
+  if (!isOrdinaryFlatTurfRaceForDisplay(race)) {
+    return race;
+  }
+
+  const medianWeight = median(
+    race.runners
+      .filter((runner) => runner.resultStatus !== "non_runner")
+      .map((runner) => runner.weightCarriedLbs)
+      .filter(isNumber),
+  );
+  const ratings = rankTurfPerformanceRatings(
+    race.runners.map((runner) => ({
+      id: runner.runnerId,
+      rating: runner.metrics === null
+        ? null
+        : calculateTurfPerformanceRating({
+            latestPerformanceRating: runner.metrics.latestPerformanceRating,
+            previousPerformanceRating: runner.metrics.previousPerformanceRating,
+            averagePerformanceLast3: runner.metrics.averagePerformanceLast3,
+            latestSpeedRating: runner.metrics.latestTurfSpeedRating,
+            previousSpeedRating: runner.metrics.previousTurfSpeedRating,
+            averageSpeedLast3: runner.metrics.averageTurfSpeedLast3,
+            raceClass: race.raceClass,
+            weightCarriedLbs: runner.weightCarriedLbs,
+            raceMedianWeightCarriedLbs: medianWeight,
+          }),
+    })),
+  );
+
+  return {
+    ...race,
+    runners: race.runners.map((runner) => ({
+      ...runner,
+      turfPerformanceRating: ratings.get(runner.runnerId),
+    })),
+  };
 }
 
 export function meetingOrderFromIndexPayload(
@@ -548,7 +601,12 @@ async function getRacecardRows(
       raceId: races.id,
       raceSourceId: races.sourceId,
       raceDate: races.raceDate,
-      raceDateTime: races.raceDatetime,
+      raceDateTime: sql<Date | null>`
+        case
+          when races.scheduled_time is null then races.race_datetime
+          else ((races.race_date + races.scheduled_time) at time zone 'UTC')
+        end
+      `.mapWith(races.raceDatetime),
       scheduledTime: races.scheduledTime,
       raceName: races.raceName,
       raceClass: races.raceClass,
@@ -657,6 +715,17 @@ function latestDate(values: Date[]): Date | null {
     return null;
   }
   return values.reduce((latest, value) => (value > latest ? value : latest));
+}
+
+function median(values: number[]) {
+  if (values.length === 0) return null;
+  const sorted = [...values].sort((left, right) => left - right);
+  const middle = Math.floor(sorted.length / 2);
+  return sorted.length % 2 === 1 ? sorted[middle]! : (sorted[middle - 1]! + sorted[middle]!) / 2;
+}
+
+function isNumber(value: number | null | undefined): value is number {
+  return value !== null && value !== undefined && Number.isFinite(value);
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
