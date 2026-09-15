@@ -25,6 +25,9 @@ export const DEVELOPMENT_DATASET_YEAR = "2025";
 export const DEVELOPMENT_FROM = "2025-01-01";
 export const DEVELOPMENT_TO = "2025-12-31";
 
+const courseIdSetCache = new WeakMap<ResearchRuleV1, { key: string; set: Set<string> }>();
+const trainerIdSetCache = new WeakMap<ResearchRuleV1, { key: string; set: Set<string> }>();
+
 export type ResearchRuleV1 = {
   version: typeof RESEARCH_RULE_VERSION;
   family: Exclude<BacktestCacheFamily, "all">;
@@ -33,7 +36,11 @@ export type ResearchRuleV1 = {
     to: string;
   };
   race: {
+    courseIds?: string[];
+    courseNames?: string[];
+    /** @deprecated Use courseIds. Kept so older saved rules and URLs parse safely. */
     courseId?: string;
+    /** @deprecated Use courseNames. Kept so older saved rules and URLs parse safely. */
     courseName?: string;
     raceClasses?: number[];
     handicapStatus?: HandicapStatusFilter;
@@ -43,7 +50,11 @@ export type ResearchRuleV1 = {
     fieldSize?: NumericCondition;
   };
   runner: {
+    trainerIds?: string[];
+    trainerNames?: string[];
+    /** @deprecated Use trainerIds. Kept so older saved rules and URLs parse safely. */
     trainerId?: string;
+    /** @deprecated Use trainerNames. Kept so older saved rules and URLs parse safely. */
     trainerName?: string;
     trainerCohort?: TrainerCohortRule;
     returnBucket?: ReturnBucket;
@@ -419,7 +430,7 @@ export function ruleFromSearchParams(params: URLSearchParams): ResearchRuleV1 {
     to: safeDevelopmentDate(params.get("to"), DEVELOPMENT_TO),
   };
   rule.race = {
-    courseId: textValue(params.get("courseId")),
+    courseIds: textValues(params.getAll("courseId")),
     courseName: textValue(params.get("course")),
     raceClasses: raceClassesFromParams(params),
     handicapStatus: handicapStatusValue(params.get("handicapStatus")),
@@ -428,8 +439,9 @@ export function ruleFromSearchParams(params: URLSearchParams): ResearchRuleV1 {
     distanceYards: rangeFromParams(params, "distanceMin", "distanceMax"),
     fieldSize: rangeFromParams(params, "fieldMin", "fieldMax"),
   };
+  rule.race = normalizeRaceRule(rule.race);
   rule.runner = {
-    trainerId: textValue(params.get("trainerId")),
+    trainerIds: textValues(params.getAll("trainerId")),
     trainerCohort: trainerCohortFromTop(params.get("trainerCohort")),
     returnBucket: returnBucketValue(params.get("returnBucket")),
     runAfterBreak: runAfterBreakValue(params.get("runAfterBreak")),
@@ -440,6 +452,7 @@ export function ruleFromSearchParams(params: URLSearchParams): ResearchRuleV1 {
     trainerPriorRuns: rangeFromParams(params, "trainerPriorRunsMin", "trainerPriorRunsMax"),
     trainerPriorWinRate: rangeFromParams(params, "trainerPriorWinRateMin", "trainerPriorWinRateMax"),
   };
+  rule.runner = normalizeRunnerRule(rule.runner);
 
   const ratingMetric = metricParam<RatingMetric>(params.get("ratingMetric"), RATING_METRIC_OPTIONS);
   const ratingRange = rangeFromParams(params, "ratingMin", "ratingMax");
@@ -528,52 +541,47 @@ export function hydrateResearchRuleMetadata(
   rows: HistoricalTargetRunnerMetricsRow[],
 ): ResearchRuleV1 {
   const courses = courseOptionsForRows(rows);
-  if (!rule.race.courseId && rule.race.courseName) {
+  let courseIds = selectedCourseIds(rule);
+  if (courseIds.length === 0 && rule.race.courseName) {
     const matchingCourses = courses.filter((option) => option.courseName === rule.race.courseName);
     if (matchingCourses.length === 1) {
-      return {
-        ...rule,
-        race: {
-          ...rule.race,
-          courseId: matchingCourses[0].courseId,
-          courseName: matchingCourses[0].courseName,
-        },
-      };
+      courseIds = [matchingCourses[0].courseId];
     }
   }
-  if (!rule.race.courseId) {
-    return hydrateTrainerMetadata(rule, rows);
-  }
-  const course = courses.find((option) => option.courseId === rule.race.courseId);
-  return hydrateTrainerMetadata({
+  const coursesById = new Map(courses.map((option) => [option.courseId, option]));
+  const validCourses = courseIds
+    .map((courseId) => coursesById.get(courseId))
+    .filter((option): option is ResearchCourseOption => Boolean(option));
+  const hydratedRule = {
     ...rule,
     race: {
       ...rule.race,
-      courseName: course?.courseName ?? rule.race.courseName,
+      courseIds: validCourses.map((option) => option.courseId),
+      courseNames: validCourses.length > 0
+        ? validCourses.map((option) => option.courseName)
+        : selectedCourseNames(rule),
+      courseId: undefined,
+      courseName: undefined,
     },
-  }, rows);
+  };
+  return hydrateTrainerMetadata(hydratedRule, rows);
 }
 
 function hydrateTrainerMetadata(rule: ResearchRuleV1, rows: HistoricalTargetRunnerMetricsRow[]): ResearchRuleV1 {
-  if (!rule.runner.trainerId) {
-    return rule;
-  }
-  const trainer = trainerOptionsForRows(rows).find((option) => option.trainerId === rule.runner.trainerId);
-  if (!trainer) {
-    return {
-      ...rule,
-      runner: {
-        ...rule.runner,
-        trainerId: undefined,
-        trainerName: undefined,
-      },
-    };
-  }
+  const trainerIds = selectedTrainerIds(rule);
+  const trainersById = new Map(trainerOptionsForRows(rows).map((option) => [option.trainerId, option]));
+  const validTrainers = trainerIds
+    .map((trainerId) => trainersById.get(trainerId))
+    .filter((option): option is ResearchTrainerOption => Boolean(option));
   return {
     ...rule,
     runner: {
       ...rule.runner,
-      trainerName: trainer.trainerName,
+      trainerIds: validTrainers.map((option) => option.trainerId),
+      trainerNames: validTrainers.map((option) => option.trainerName),
+      trainerId: undefined,
+      trainerName: undefined,
+      trainerCohort: validTrainers.length > 0 ? undefined : rule.runner.trainerCohort,
     },
   };
 }
@@ -641,8 +649,7 @@ function researchSelection(row: RankedResearchRow, rule: ResearchRuleV1): Resear
 export function matchesRaceConditions(features: HistoricalPreRaceFeatureRow, rule: ResearchRuleV1): boolean {
   const fieldSize = features.actualRunnerCount ?? features.declaredRunnerCount;
   const distanceRange = distanceRangeForRule(rule) ?? rule.race.distanceYards;
-  return (!rule.race.courseId || features.courseId === rule.race.courseId) &&
-    (!!rule.race.courseId || !rule.race.courseName || features.courseName === rule.race.courseName) &&
+  return courseMatches(features, rule) &&
     raceClassesMatch(features.raceClass, rule.race.raceClasses) &&
     handicapStatusMatches(features, rule.race.handicapStatus) &&
     rangeMatches(features.distanceYards, distanceRange) &&
@@ -654,7 +661,7 @@ export function matchesRunnerConditions(
   rule: ResearchRuleV1,
   trainerCohort: ResolvedTrainerCohort | null = null,
 ): boolean {
-  return (!rule.runner.trainerId || features.trainerId === rule.runner.trainerId) &&
+  return trainerMatches(features, rule) &&
     trainerCohortMatches(features.trainerId, rule, trainerCohort) &&
     returnBucketMatches(features.daysSinceLastRun, rule.runner.returnBucket) &&
     runAfterBreakMatches(features.runAfterBreakNumber, rule.runner.runAfterBreak) &&
@@ -705,6 +712,9 @@ function trainerCohortMatches(
   rule: ResearchRuleV1,
   trainerCohort: ResolvedTrainerCohort | null,
 ): boolean {
+  if (selectedTrainerIds(rule).length > 0) {
+    return true;
+  }
   if (!rule.runner.trainerCohort) {
     return true;
   }
@@ -737,10 +747,10 @@ export function strategySummary(rule: ResearchRuleV1): string[] {
     pushRange(lines, "Distance", rule.race.distanceYards, "y");
   }
   pushRange(lines, "Field size", rule.race.fieldSize);
-  if (rule.race.courseName) lines.push(`Course: ${rule.race.courseName}`);
+  pushSelectionSummary(lines, "Course", "Courses", selectedCourseNames(rule), selectedCourseIds(rule));
   pushRaceClasses(lines, rule.race.raceClasses);
   pushHandicapStatus(lines, rule.race.handicapStatus);
-  if (rule.runner.trainerName) lines.push(`Trainer: ${rule.runner.trainerName}`);
+  pushSelectionSummary(lines, "Trainer", "Trainers", selectedTrainerNames(rule), selectedTrainerIds(rule));
   pushTrainerCohort(lines, rule);
   pushReturnBucket(lines, rule.runner.returnBucket);
   pushRunAfterBreak(lines, rule.runner.runAfterBreak);
@@ -764,7 +774,7 @@ export function strategySummary(rule: ResearchRuleV1): string[] {
 
 function pushTrainerCohort(lines: string[], rule: ResearchRuleV1) {
   const cohort = rule.runner.trainerCohort;
-  if (!cohort) {
+  if (!cohort || selectedTrainerIds(rule).length > 0) {
     return;
   }
   const referenceYear = Number(rule.dateRange.from.slice(0, 4)) - 1;
@@ -773,6 +783,28 @@ function pushTrainerCohort(lines: string[], rule: ResearchRuleV1) {
     referenceYear,
     family: rule.family,
   })}`);
+}
+
+function pushSelectionSummary(
+  lines: string[],
+  singularLabel: string,
+  pluralLabel: string,
+  names: string[],
+  ids: string[],
+) {
+  const selectedCount = Math.max(names.length, ids.length);
+  if (selectedCount === 0) {
+    return;
+  }
+  if (names.length === 1) {
+    lines.push(`${singularLabel}: ${names[0]}`);
+    return;
+  }
+  if (names.length > 1 && names.length <= 5) {
+    lines.push(`${pluralLabel}: ${names.join("; ")}`);
+    return;
+  }
+  lines.push(`${pluralLabel}: ${selectedCount} selected`);
 }
 
 function pushDistanceSummary(lines: string[], rule: ResearchRuleV1) {
@@ -864,8 +896,20 @@ function normalizeRaceRule(race: Partial<ResearchRuleV1["race"]> | undefined): R
   const { raceClass: legacyRaceClass, ...rest } = (race ?? {}) as Partial<ResearchRuleV1["race"]> & {
     raceClass?: unknown;
   };
+  const courseIds = normalizedTextValues([
+    ...(Array.isArray(rest.courseIds) ? rest.courseIds : []),
+    rest.courseId,
+  ]);
+  const courseNames = normalizedTextValues(Array.isArray(rest.courseNames) ? rest.courseNames : []);
+  if (courseIds.length === 0 && rest.courseName) {
+    courseNames.push(rest.courseName.trim());
+  }
   return {
     ...rest,
+    courseIds,
+    courseNames,
+    courseId: undefined,
+    courseName: undefined,
     raceClasses: normalizeRaceClasses([
       ...(Array.isArray(rest.raceClasses) ? rest.raceClasses : []),
       raceClassNumber(legacyRaceClass),
@@ -874,16 +918,34 @@ function normalizeRaceRule(race: Partial<ResearchRuleV1["race"]> | undefined): R
 }
 
 function normalizeRunnerRule(runner: Partial<ResearchRuleV1["runner"]> | undefined): ResearchRuleV1["runner"] {
+  const trainerIds = normalizedTextValues([
+    ...(Array.isArray(runner?.trainerIds) ? runner.trainerIds : []),
+    runner?.trainerId,
+  ]);
+  const trainerNames = normalizedTextValues([
+    ...(Array.isArray(runner?.trainerNames) ? runner.trainerNames : []),
+    runner?.trainerName,
+  ]);
   const trainerCohort = normalizeTrainerCohortRule(runner?.trainerCohort);
-  if (trainerCohort) {
+  if (trainerCohort && trainerIds.length === 0) {
     return {
       ...runner,
+      trainerIds,
+      trainerNames,
+      trainerId: undefined,
+      trainerName: undefined,
       trainerCohort,
     };
   }
   const normalized = { ...(runner ?? {}) };
   delete normalized.trainerCohort;
-  return normalized;
+  return {
+    ...normalized,
+    trainerIds,
+    trainerNames,
+    trainerId: undefined,
+    trainerName: undefined,
+  };
 }
 
 function normalizeTrainerCohortRule(value: unknown): TrainerCohortRule | undefined {
@@ -937,6 +999,88 @@ function numberValue(value: string | null): number | undefined {
 function textValue(value: string | null): string | undefined {
   const text = value?.trim();
   return text ? text : undefined;
+}
+
+function textValues(values: Array<string | null>): string[] {
+  return normalizedTextValues(values);
+}
+
+function normalizedTextValues(values: unknown[]): string[] {
+  const unique = new Set<string>();
+  for (const value of values) {
+    if (typeof value !== "string") continue;
+    const text = value.trim();
+    if (text) unique.add(text);
+  }
+  return [...unique].sort((left, right) => left.localeCompare(right));
+}
+
+function selectedCourseIds(rule: ResearchRuleV1): string[] {
+  return normalizedTextValues([
+    ...(Array.isArray(rule.race.courseIds) ? rule.race.courseIds : []),
+    rule.race.courseId,
+  ]);
+}
+
+function selectedCourseNames(rule: ResearchRuleV1): string[] {
+  return normalizedTextValues([
+    ...(Array.isArray(rule.race.courseNames) ? rule.race.courseNames : []),
+    rule.race.courseName,
+  ]);
+}
+
+function selectedTrainerIds(rule: ResearchRuleV1): string[] {
+  return normalizedTextValues([
+    ...(Array.isArray(rule.runner.trainerIds) ? rule.runner.trainerIds : []),
+    rule.runner.trainerId,
+  ]);
+}
+
+function selectedTrainerNames(rule: ResearchRuleV1): string[] {
+  return normalizedTextValues([
+    ...(Array.isArray(rule.runner.trainerNames) ? rule.runner.trainerNames : []),
+    rule.runner.trainerName,
+  ]);
+}
+
+function courseMatches(features: HistoricalPreRaceFeatureRow, rule: ResearchRuleV1): boolean {
+  const courseIds = selectedCourseIds(rule);
+  if (courseIds.length > 0) {
+    return selectedCourseIdSet(rule, courseIds).has(features.courseId);
+  }
+  const courseNames = selectedCourseNames(rule);
+  return courseNames.length === 0 || courseNames.includes(features.courseName);
+}
+
+function trainerMatches(features: HistoricalPreRaceFeatureRow, rule: ResearchRuleV1): boolean {
+  const trainerIds = selectedTrainerIds(rule);
+  if (trainerIds.length === 0) {
+    return true;
+  }
+  return features.trainerId !== null && selectedTrainerIdSet(rule, trainerIds).has(features.trainerId);
+}
+
+function selectedCourseIdSet(rule: ResearchRuleV1, ids = selectedCourseIds(rule)): Set<string> {
+  return selectedIdSet(rule, ids, courseIdSetCache);
+}
+
+function selectedTrainerIdSet(rule: ResearchRuleV1, ids = selectedTrainerIds(rule)): Set<string> {
+  return selectedIdSet(rule, ids, trainerIdSetCache);
+}
+
+function selectedIdSet(
+  rule: ResearchRuleV1,
+  ids: string[],
+  cache: WeakMap<ResearchRuleV1, { key: string; set: Set<string> }>,
+): Set<string> {
+  const key = ids.join("\0");
+  const cached = cache.get(rule);
+  if (cached?.key === key) {
+    return cached.set;
+  }
+  const next = { key, set: new Set(ids) };
+  cache.set(rule, next);
+  return next.set;
 }
 
 function raceClassesMatch(value: string | null, selected: number[] | undefined): boolean {

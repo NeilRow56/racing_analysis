@@ -17,12 +17,15 @@ import {
   ResearchForm,
   canSaveExecutedRule,
   clearResearchRuleFilters,
+  filterMultiSelectOptions,
   filterTrainerOptions,
   isResearchSubmitDisabled,
   researchRuleFromFormData,
   researchRunButtonLabel,
   settlementModeFromFormData,
   selectedTrainerOption,
+  toggleSelectedId,
+  removeSelectedId,
 } from "./research-form-client";
 import { ResearchHorseNameLink } from "./research-horse-link";
 import {
@@ -60,7 +63,7 @@ describe("research filters page", () => {
         ref: null,
         relativeMetricOptions: RELATIVE_METRIC_OPTIONS,
         runAfterBreakOptions: RUN_AFTER_BREAK_OPTIONS,
-        rule: { ...defaultResearchRule("jump"), runner: { trainerId: "trainer-1", trainerName: "A Trainer" } },
+        rule: { ...defaultResearchRule("jump"), runner: { trainerIds: ["trainer-1"], trainerNames: ["A Trainer"] } },
         settlementMode: "actual",
       }),
     );
@@ -125,19 +128,179 @@ describe("research filters page", () => {
         runAfterBreakOptions: RUN_AFTER_BREAK_OPTIONS,
         rule: {
           ...defaultResearchRule("turf_flat"),
-          race: { courseId: "course-york", courseName: "York" },
-          runner: { trainerId: "trainer-a", trainerName: "A Trainer" },
+          race: { courseIds: ["course-york"], courseNames: ["York"] },
+          runner: { trainerIds: ["trainer-a"], trainerNames: ["A Trainer"] },
         },
         settlementMode: "actual",
       }),
     );
 
-    assert.match(text, /All courses/);
-    assert.match(text, /value="course-ascot"/);
-    assert.match(text, /value="course-york" selected=""/);
+    assert.match(text, /aria-controls="courseId-multi-select-options"/);
+    assert.match(text, /aria-expanded="false"/);
+    assert.match(text, /value="course-york"/);
+    assert.match(text, /Remove York/);
     assert.match(text, /name="trainerId"/);
+    assert.match(text, /aria-controls="trainerId-multi-select-options"/);
     assert.match(text, /value="trainer-a"/);
     assert.match(text, /A Trainer/);
+    assert.match(text, /Remove A Trainer/);
+  });
+
+  test("renders selected trainer and course chips with repeated hidden submitted IDs", () => {
+    const text = renderToStaticMarkup(
+      ResearchForm({
+        familyOptions: FAMILY_OPTIONS,
+        filterOptions: {
+          family: "turf_flat",
+          courses: [
+            { courseId: "course-ascot", courseName: "Ascot", count: 10 },
+            { courseId: "course-york", courseName: "York", count: 8 },
+          ],
+          classes: [],
+          distances: [],
+          trainers: [
+            { trainerId: "trainer-a", trainerName: "A Trainer", count: 2 },
+            { trainerId: "trainer-b", trainerName: "B Trainer", count: 1 },
+          ],
+          weights: weightOptions(),
+        },
+        handicapStatusOptions: HANDICAP_STATUS_OPTIONS,
+        isPending: false,
+        isStale: false,
+        onChange: () => {},
+        onClearFilters: () => {},
+        onSubmit: () => {},
+        rankMetricOptions: RANK_METRIC_OPTIONS,
+        ratingMetricOptions: RATING_METRIC_OPTIONS,
+        returnBucketOptions: RETURN_BUCKET_OPTIONS,
+        ref: null,
+        relativeMetricOptions: RELATIVE_METRIC_OPTIONS,
+        runAfterBreakOptions: RUN_AFTER_BREAK_OPTIONS,
+        rule: {
+          ...defaultResearchRule("turf_flat"),
+          race: { courseIds: ["course-ascot", "course-york"], courseNames: ["Ascot", "York"] },
+          runner: { trainerIds: ["trainer-a", "trainer-b"], trainerNames: ["A Trainer", "B Trainer"] },
+        },
+        settlementMode: "actual",
+      }),
+    );
+
+    assert.match(text, /name="courseId" value="course-ascot"/);
+    assert.match(text, /name="courseId" value="course-york"/);
+    assert.match(text, /name="trainerId" value="trainer-a"/);
+    assert.match(text, /name="trainerId" value="trainer-b"/);
+    assert.match(text, /Remove Ascot/);
+    assert.match(text, /Remove York/);
+    assert.match(text, /Remove A Trainer/);
+    assert.match(text, /Remove B Trainer/);
+    assert.match(text, /Ascot/);
+    assert.match(text, /York/);
+    assert.match(text, /A Trainer/);
+    assert.match(text, /B Trainer/);
+  });
+
+  test("renders compact chips while preserving all selected trainer and course submitted IDs", () => {
+    const trainers = numberedOptions("trainer", 20);
+    const courses = numberedOptions("course", 20);
+    const text = renderToStaticMarkup(
+      ResearchForm({
+        familyOptions: FAMILY_OPTIONS,
+        filterOptions: {
+          family: "jump",
+          courses: courses.map((option) => ({
+            courseId: option.id,
+            courseName: option.label,
+            count: 1,
+          })),
+          classes: [],
+          distances: [],
+          trainers: trainers.map((option) => ({
+            trainerId: option.id,
+            trainerName: option.label,
+            count: 1,
+          })),
+          weights: weightOptions(),
+        },
+        handicapStatusOptions: HANDICAP_STATUS_OPTIONS,
+        isPending: false,
+        isStale: false,
+        onChange: () => {},
+        onClearFilters: () => {},
+        onSubmit: () => {},
+        rankMetricOptions: RANK_METRIC_OPTIONS,
+        ratingMetricOptions: RATING_METRIC_OPTIONS,
+        returnBucketOptions: RETURN_BUCKET_OPTIONS,
+        ref: null,
+        relativeMetricOptions: RELATIVE_METRIC_OPTIONS,
+        runAfterBreakOptions: RUN_AFTER_BREAK_OPTIONS,
+        rule: {
+          ...defaultResearchRule("jump"),
+          race: {
+            courseIds: courses.map((option) => option.id),
+            courseNames: courses.map((option) => option.label),
+          },
+          runner: {
+            trainerIds: trainers.map((option) => option.id),
+            trainerNames: trainers.map((option) => option.label),
+          },
+        },
+        settlementMode: "actual",
+      }),
+    );
+
+    assert.equal((text.match(/name="trainerId" value="trainer-/g) ?? []).length, 20);
+    assert.equal((text.match(/name="courseId" value="course-/g) ?? []).length, 20);
+    assert.match(text, /20 trainers selected/);
+    assert.match(text, /20 courses selected/);
+    assert.equal((text.match(/Remove Trainer/g) ?? []).length, 6);
+    assert.equal((text.match(/Remove Course/g) ?? []).length, 6);
+    assert.equal((text.match(/\+14 more selected/g) ?? []).length, 2);
+  });
+
+  test("renders twelve selected trainers like courses with six visible chips and six hidden summary", () => {
+    const trainers = numberedOptions("trainer", 12);
+    const text = renderToStaticMarkup(
+      ResearchForm({
+        familyOptions: FAMILY_OPTIONS,
+        filterOptions: {
+          family: "jump",
+          courses: [],
+          classes: [],
+          distances: [],
+          trainers: trainers.map((option) => ({
+            trainerId: option.id,
+            trainerName: option.label,
+            count: 1,
+          })),
+          weights: weightOptions(),
+        },
+        handicapStatusOptions: HANDICAP_STATUS_OPTIONS,
+        isPending: false,
+        isStale: false,
+        onChange: () => {},
+        onClearFilters: () => {},
+        onSubmit: () => {},
+        rankMetricOptions: RANK_METRIC_OPTIONS,
+        ratingMetricOptions: RATING_METRIC_OPTIONS,
+        returnBucketOptions: RETURN_BUCKET_OPTIONS,
+        ref: null,
+        relativeMetricOptions: RELATIVE_METRIC_OPTIONS,
+        runAfterBreakOptions: RUN_AFTER_BREAK_OPTIONS,
+        rule: {
+          ...defaultResearchRule("jump"),
+          runner: {
+            trainerIds: trainers.map((option) => option.id),
+            trainerNames: trainers.map((option) => option.label),
+          },
+        },
+        settlementMode: "actual",
+      }),
+    );
+
+    assert.equal((text.match(/name="trainerId" value="trainer-/g) ?? []).length, 12);
+    assert.match(text, /12 trainers selected/);
+    assert.equal((text.match(/Remove Trainer/g) ?? []).length, 6);
+    assert.match(text, /\+6 more selected/);
   });
 
   test("does not render stale trainer or course options after family changes", () => {
@@ -166,8 +329,8 @@ describe("research filters page", () => {
         runAfterBreakOptions: RUN_AFTER_BREAK_OPTIONS,
         rule: {
           ...defaultResearchRule("turf_flat"),
-          race: { courseId: "course-worcester" },
-          runner: { trainerId: "trainer-jump" },
+          race: { courseIds: ["course-worcester"] },
+          runner: { trainerIds: ["trainer-jump"] },
         },
         settlementMode: "actual",
       }),
@@ -175,8 +338,8 @@ describe("research filters page", () => {
 
     assert.match(text, /Run Research to load course options for this family/);
     assert.match(text, /Run Research to load trainer options for this family/);
-    assert.doesNotMatch(text, /Worcester/);
-    assert.doesNotMatch(text, /Jump Trainer/);
+    assert.doesNotMatch(text, /value="course-worcester"/);
+    assert.doesNotMatch(text, /value="trainer-jump"/);
   });
 
   test("renders selected Research horses as links when IDs are available", () => {
@@ -354,7 +517,7 @@ describe("research filters page", () => {
     );
 
     assert.match(text, /Trainer options available after the 2025 cache is built/);
-    assert.match(text, /disabled=""/);
+    assert.match(text, /All trainers/);
   });
 
   test("renders loaded multi-class rules with all selected classes checked", () => {
@@ -412,14 +575,64 @@ describe("trainer selector helpers", () => {
     );
   });
 
+  test("long trainer option lists are not truncated before late alphabet entries", () => {
+    const longTrainerList = alphabeticTrainerOptions(120);
+    const allVisible = filterTrainerOptions(longTrainerList, "");
+    const lateAlphabet = filterTrainerOptions(longTrainerList, "walker");
+
+    assert.equal(longTrainerList.length, 120);
+    assert.equal(allVisible.length, 120);
+    assert.equal(allVisible.at(-1)?.trainerId, "trainer-z-last");
+    assert.deepEqual(lateAlphabet.map((option) => option.trainerId), ["trainer-walker"]);
+  });
+
+  test("long course option lists are not truncated and search finds late alphabet entries", () => {
+    const longCourseList = alphabeticMultiSelectOptions("course", 120);
+    const allVisible = filterMultiSelectOptions(longCourseList, "");
+    const lateAlphabet = filterMultiSelectOptions(longCourseList, "wetherby");
+
+    assert.equal(longCourseList.length, 120);
+    assert.equal(allVisible.length, 120);
+    assert.equal(allVisible.at(-1)?.id, "course-z-last");
+    assert.deepEqual(lateAlphabet.map((option) => option.id), ["course-wetherby"]);
+  });
+
   test("selected trainer lookup uses stable trainer ID", () => {
     assert.equal(selectedTrainerOption(trainers, "trainer-2")?.trainerName, "B Trainer");
     assert.equal(selectedTrainerOption(trainers, "missing"), null);
   });
 
-  test("form data stores trainer ID and blank clears back to all trainers", () => {
-    assert.equal(researchRuleFromFormData(formData({ trainerId: "trainer-1" })).runner.trainerId, "trainer-1");
-    assert.equal(researchRuleFromFormData(formData({ trainerId: "" })).runner.trainerId, undefined);
+  test("multi-select helper toggles, adds a second value and removes values", () => {
+    assert.deepEqual(toggleSelectedId([], "trainer-2"), ["trainer-2"]);
+    assert.deepEqual(toggleSelectedId(["trainer-2"], "trainer-1"), ["trainer-1", "trainer-2"]);
+    assert.deepEqual(toggleSelectedId(["trainer-1", "trainer-2"], "trainer-1"), ["trainer-2"]);
+    assert.deepEqual(removeSelectedId(["trainer-1", "trainer-2"], "trainer-2"), ["trainer-1"]);
+  });
+
+  test("multi-select helper keeps selections beyond six for trainers and courses", () => {
+    const sevenTrainers = selectSequentialIds("trainer", 7);
+    const twelveTrainers = selectSequentialIds("trainer", 12);
+    const twentyTrainers = selectSequentialIds("trainer", 20);
+    const twentyCourses = selectSequentialIds("course", 20);
+
+    assert.equal(sevenTrainers.length, 7);
+    assert.equal(twelveTrainers.length, 12);
+    assert.equal(twentyTrainers.length, 20);
+    assert.equal(twentyCourses.length, 20);
+    assert.ok(twentyTrainers.includes("trainer-20"));
+    assert.ok(twentyCourses.includes("course-20"));
+  });
+
+  test("form data stores trainer and course ID arrays and blanks clear back to all", () => {
+    assert.deepEqual(
+      researchRuleFromFormData(formData({ trainerId: ["trainer-2", "trainer-1"], courseId: ["course-b", "course-a"] })).runner.trainerIds,
+      ["trainer-1", "trainer-2"],
+    );
+    assert.deepEqual(
+      researchRuleFromFormData(formData({ trainerId: ["trainer-2", "trainer-1"], courseId: ["course-b", "course-a"] })).race.courseIds,
+      ["course-a", "course-b"],
+    );
+    assert.deepEqual(researchRuleFromFormData(formData({ trainerId: "" })).runner.trainerIds, []);
   });
 
   test("form data stores trainer cohort concept and single trainer takes precedence", () => {
@@ -617,7 +830,7 @@ describe("research filter freshness state", () => {
       ...defaultResearchRule("turf_flat"),
       dateRange: { from: "2025-02-01", to: "2025-03-01" },
       race: {
-        courseId: "course-1",
+        courseIds: ["course-1"],
         raceClasses: [1, 2],
         handicapStatus: "non_handicap",
         distanceBucketFrom: "d_1100",
@@ -625,7 +838,7 @@ describe("research filter freshness state", () => {
         fieldSize: { min: 7, max: 12 },
       },
       runner: {
-        trainerId: "trainer-1",
+        trainerIds: ["trainer-1"],
         returnBucket: "days_0_30",
         runAfterBreak: "run_2",
         officialRating: { min: 80, max: 100 },
@@ -672,7 +885,7 @@ describe("research filter freshness state", () => {
   test("cleared filters mark existing results stale and keep saving blocked until rerun", () => {
     const executed = {
       ...defaultResearchRule("jump"),
-      runner: { trainerId: "trainer-1" },
+      runner: { trainerIds: ["trainer-1"] },
     };
     const cleared = clearResearchRuleFilters(executed);
     const isStale = !researchRulesEqual(executed, cleared);
@@ -743,6 +956,45 @@ function resolvedTrainerCohort(trainerIds: string[]): ResolvedTrainerCohort {
     })),
     trainerIds: new Set(trainerIds),
   };
+}
+
+function numberedOptions(prefix: "trainer" | "course", count: number): Array<{ id: string; label: string }> {
+  return Array.from({ length: count }, (_, index) => {
+    const ordinal = String(index + 1).padStart(2, "0");
+    return {
+      id: `${prefix}-${ordinal}`,
+      label: `${prefix === "trainer" ? "Trainer" : "Course"} ${ordinal}`,
+    };
+  });
+}
+
+function selectSequentialIds(prefix: string, count: number): string[] {
+  let selected: string[] = [];
+  for (let index = 1; index <= count; index += 1) {
+    selected = toggleSelectedId(selected, `${prefix}-${index}`);
+  }
+  return selected;
+}
+
+function alphabeticTrainerOptions(count: number): Array<{ trainerId: string; trainerName: string; count: number }> {
+  return alphabeticMultiSelectOptions("trainer", count).map((option) => ({
+    trainerId: option.id,
+    trainerName: option.label,
+    count: option.count ?? 1,
+  }));
+}
+
+function alphabeticMultiSelectOptions(prefix: string, count: number): Array<{ id: string; label: string; count: number }> {
+  const earlyCount = Math.max(0, count - 2);
+  return [
+    ...Array.from({ length: earlyCount }, (_, index) => ({
+      id: `${prefix}-a-${String(index + 1).padStart(3, "0")}`,
+      label: `A ${prefix} ${String(index + 1).padStart(3, "0")}`,
+      count: 1,
+    })),
+    { id: prefix === "course" ? `${prefix}-wetherby` : `${prefix}-walker`, label: prefix === "course" ? "Wetherby" : "Walker Yard", count: 1 },
+    { id: `${prefix}-z-last`, label: `Z ${prefix} Last`, count: 1 },
+  ];
 }
 
 function formData(values: Record<string, string | string[]>): FormData {

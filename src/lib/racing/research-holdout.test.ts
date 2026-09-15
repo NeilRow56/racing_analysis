@@ -160,6 +160,29 @@ describe("research holdout validation", () => {
     assert.equal(snapshot.settledSelections, 1);
   });
 
+  test("evaluates frozen trainer and course arrays against the 2026 holdout cache", async () => {
+    const root = await mkdtemp(join(tmpdir(), "racing-holdout-multi-"));
+    const rule: ResearchRuleV1 = {
+      ...defaultResearchRule("jump"),
+      race: { courseIds: ["course-1", "course-2"] },
+      runner: { trainerIds: ["trainer-a", "trainer-c"] },
+    };
+    await writeCache(root, {
+      manifest: manifestFor({ family: "jump", from: "2026-01-01", to: "2026-12-31", rowCount: 4 }),
+      rows: [
+        row({ targetRunnerId: "trainer-a-course-1", trainerId: "trainer-a", courseId: "course-1", raceDate: "2026-01-03" }),
+        row({ targetRunnerId: "trainer-c-course-2", trainerId: "trainer-c", courseId: "course-2", raceDate: "2026-01-04" }),
+        row({ targetRunnerId: "wrong-trainer", trainerId: "trainer-b", courseId: "course-1", raceDate: "2026-01-05" }),
+        row({ targetRunnerId: "wrong-course", trainerId: "trainer-a", courseId: "course-3", raceDate: "2026-01-06" }),
+      ],
+    });
+
+    const snapshot = await evaluateHoldoutForSavedRule(savedRuleFor(rule), { outputDir: root });
+
+    assert.equal(snapshot.selections, 2);
+    assert.equal(snapshot.settledSelections, 2);
+  });
+
   test("uses actual result SP for holdout even when development snapshot was capped", async () => {
     const root = await mkdtemp(join(tmpdir(), "racing-holdout-actual-sp-"));
     const savedRule = savedRuleFor(defaultResearchRule("jump"));

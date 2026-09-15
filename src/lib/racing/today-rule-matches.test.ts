@@ -142,6 +142,31 @@ describe("Today frozen rule matching", () => {
     assert.deepEqual(matched, ["one-run"]);
   });
 
+  test("matches manual trainer and course arrays with OR semantics for frozen rules", () => {
+    const rule = exampleFrozenRule({
+      race: { courseIds: ["course-carlisle", "course-york"] },
+      runner: { trainerIds: ["trainer-burke", "trainer-other"] },
+      ratings: [],
+      ranks: [],
+    });
+    const [displayMeeting] = attachFrozenRuleMatchesToToday(
+      [meetingWithRace(race(), [
+        runner("burke-runner", {}, { trainerId: "trainer-burke" }),
+        runner("other-runner", {}, { trainerId: "trainer-other" }),
+        runner("rejected-runner", {}, { trainerId: "trainer-missing" }),
+      ])],
+      [rule],
+      "2026-09-11",
+    );
+
+    assert.deepEqual(
+      displayMeeting!.races[0]!.runners
+        .filter((item) => (item.savedRuleMatches?.length ?? 0) > 0)
+        .map((item) => item.runnerId),
+      ["burke-runner", "other-runner"],
+    );
+  });
+
   test("matches trainer cohort rules using supplied 2026 prior-year membership", () => {
     const rule = exampleFrozenRule({
       runner: { trainerCohort: trainerCohortRule(20) },

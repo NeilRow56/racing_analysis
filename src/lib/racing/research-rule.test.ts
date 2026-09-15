@@ -119,6 +119,7 @@ describe("research rule evaluation", () => {
     const rows = [
       row({ targetRunnerId: "selected", courseId: "course-a", courseName: "Lingfield" }),
       row({ targetRunnerId: "rejected", courseId: "course-b", courseName: "Lingfield" }),
+      row({ targetRunnerId: "also-selected", courseId: "course-c", courseName: "Ascot" }),
     ];
 
     assert.deepEqual(
@@ -132,9 +133,76 @@ describe("research rule evaluation", () => {
     assert.deepEqual(
       evaluateResearchRule({
         rows,
+        rule: { ...defaultResearchRule("jump"), race: { courseIds: ["course-c", "course-a"] } },
+      }).selectedRunners.map((selection) => selection.id).sort(),
+      ["also-selected", "selected"],
+    );
+
+    assert.deepEqual(
+      evaluateResearchRule({
+        rows,
         rule: { ...defaultResearchRule("jump"), race: { courseName: "Lingfield" } },
       }).selectedRunners.map((selection) => selection.id).sort(),
       ["rejected", "selected"],
+    );
+  });
+
+  test("filters manual trainers by stable IDs with OR semantics and suppresses cohort intersection", () => {
+    const rows = [
+      row({ targetRunnerId: "trainer-a", trainerId: "trainer-a" }),
+      row({ targetRunnerId: "trainer-b", trainerId: "trainer-b" }),
+      row({ targetRunnerId: "trainer-c", trainerId: "trainer-c" }),
+      row({ targetRunnerId: "missing", trainerId: null }),
+    ];
+    const rule = {
+      ...defaultResearchRule("jump"),
+      runner: { trainerIds: ["trainer-b", "trainer-a"], trainerCohort: trainerCohortRule(20) },
+    };
+
+    assert.deepEqual(
+      evaluateResearchRule({
+        rows,
+        rule,
+        trainerCohort: resolvedCohort(rule, ["trainer-c"]),
+      }).selectedRunners.map((selection) => selection.id).sort(),
+      ["trainer-a", "trainer-b"],
+    );
+    assert.ok(strategySummary(rule).includes("Trainers: 2 selected"));
+    assert.equal(strategySummary(rule).some((line) => line.startsWith("Trainer cohort:")), false);
+  });
+
+  test("matches trainer and course selections beyond six selected IDs", () => {
+    const trainerIds = numberedIds("trainer", 20);
+    const courseIds = numberedIds("course", 20);
+    const rows = [
+      row({
+        targetRunnerId: "first-selected",
+        trainerId: "trainer-01",
+        courseId: "course-01",
+      }),
+      row({
+        targetRunnerId: "twentieth-selected",
+        trainerId: "trainer-20",
+        courseId: "course-20",
+      }),
+      row({
+        targetRunnerId: "wrong-trainer",
+        trainerId: "trainer-21",
+        courseId: "course-20",
+      }),
+      row({
+        targetRunnerId: "wrong-course",
+        trainerId: "trainer-20",
+        courseId: "course-21",
+      }),
+    ];
+
+    assert.deepEqual(
+      evaluateResearchRule({
+        rows,
+        rule: { ...defaultResearchRule("jump"), race: { courseIds }, runner: { trainerIds } },
+      }).selectedRunners.map((selection) => selection.id).sort(),
+      ["first-selected", "twentieth-selected"],
     );
   });
 
@@ -274,7 +342,7 @@ describe("research rule evaluation", () => {
     const rule: ResearchRuleV1 = {
       ...defaultResearchRule("turf_flat"),
       race: {
-        courseId: "course-1",
+        courseIds: ["course-1"],
         raceClasses: [1, 2, 5],
         distanceBucketFrom: distanceBucketIdForYards(1760),
         distanceBucketTo: distanceBucketIdForYards(2200),
@@ -283,7 +351,27 @@ describe("research rule evaluation", () => {
       ranks: [{ metric: "bestPerformanceLast3", range: { max: 2 } }],
     };
 
-    assert.deepEqual(parseResearchRule(serializeResearchRule(rule)), rule);
+    const parsed = parseResearchRule(serializeResearchRule(rule));
+    assert.deepEqual(parsed?.race.courseIds, ["course-1"]);
+    assert.equal(researchRuleKey(parsed!), researchRuleKey(rule));
+  });
+
+  test("parses old single trainer/course values into arrays", () => {
+    const parsed = parseResearchRule(JSON.stringify({
+      version: "research_rule_v1",
+      family: "jump",
+      dateRange: { from: "2025-01-01", to: "2025-12-31" },
+      race: { courseId: "course-a" },
+      runner: { trainerId: "trainer-a" },
+      ratings: [],
+      relatives: [],
+      ranks: [],
+    }));
+
+    assert.deepEqual(parsed?.race.courseIds, ["course-a"]);
+    assert.equal(parsed?.race.courseId, undefined);
+    assert.deepEqual(parsed?.runner.trainerIds, ["trainer-a"]);
+    assert.equal(parsed?.runner.trainerId, undefined);
   });
 
   test("parses old single-class rules as multi-class rules", () => {
@@ -312,6 +400,27 @@ describe("research rule evaluation", () => {
     ]));
 
     assert.deepEqual(rule.race.raceClasses, [1, 2, 5]);
+  });
+
+  test("parses repeated trainer and course URL params and sorts canonical identity", () => {
+    const left = ruleFromSearchParams(new URLSearchParams([
+      ["family", "jump"],
+      ["trainerId", "trainer-b"],
+      ["trainerId", "trainer-a"],
+      ["courseId", "course-b"],
+      ["courseId", "course-a"],
+    ]));
+    const right = ruleFromSearchParams(new URLSearchParams([
+      ["family", "jump"],
+      ["trainerId", "trainer-a"],
+      ["trainerId", "trainer-b"],
+      ["courseId", "course-a"],
+      ["courseId", "course-b"],
+    ]));
+
+    assert.deepEqual(left.runner.trainerIds, ["trainer-a", "trainer-b"]);
+    assert.deepEqual(left.race.courseIds, ["course-a", "course-b"]);
+    assert.equal(researchRuleKey(left), researchRuleKey(right));
   });
 });
 
@@ -493,15 +602,22 @@ describe("research filter options", () => {
       hydrateResearchRuleMetadata(
         { ...defaultResearchRule("jump"), runner: { trainerId: "trainer-b" } },
         rows,
-      ).runner.trainerName,
+      ).runner.trainerNames?.[0],
       "B Trainer",
     );
-    assert.equal(
+    assert.deepEqual(
+      hydrateResearchRuleMetadata(
+        { ...defaultResearchRule("jump"), runner: { trainerIds: ["trainer-b", "trainer-a"] } },
+        rows,
+      ).runner.trainerNames,
+      ["A Trainer", "B Trainer"],
+    );
+    assert.deepEqual(
       hydrateResearchRuleMetadata(
         { ...defaultResearchRule("jump"), runner: { trainerId: "trainer-missing" } },
         rows,
-      ).runner.trainerId,
-      undefined,
+      ).runner.trainerIds,
+      [],
     );
   });
 
@@ -546,7 +662,7 @@ describe("research filter options", () => {
       hydrateResearchRuleMetadata(
         { ...defaultResearchRule("jump"), race: { courseId: "course-a" } },
         rows,
-      ).race.courseName,
+      ).race.courseNames?.[0],
       "Ascot",
     );
 
@@ -554,7 +670,7 @@ describe("research filter options", () => {
       hydrateResearchRuleMetadata(
         { ...defaultResearchRule("jump"), race: { courseName: "Ascot" } },
         rows,
-      ).race.courseId,
+      ).race.courseIds?.[0],
       "course-a",
     );
   });
@@ -962,4 +1078,8 @@ function resolvedCohort(rule: ResearchRuleV1, trainerIds: string[]): ResolvedTra
     })),
     trainerIds: new Set(trainerIds),
   };
+}
+
+function numberedIds(prefix: string, count: number): string[] {
+  return Array.from({ length: count }, (_, index) => `${prefix}-${String(index + 1).padStart(2, "0")}`);
 }

@@ -34,8 +34,8 @@ describe("saved research rules", () => {
   test("prepares an executed rule for persistence with canonical rule and identity", () => {
     const rule: ResearchRuleV1 = {
       ...defaultResearchRule("all_weather_flat"),
-      race: { raceClasses: [5, 1, 2, 2] },
-      runner: { officialRating: { min: 0, max: 100 } },
+      race: { courseIds: ["course-b", "course-a"], raceClasses: [5, 1, 2, 2] },
+      runner: { trainerIds: ["trainer-b", "trainer-a"], officialRating: { min: 0, max: 100 } },
       ratings: [{ metric: "latestSpeedRating", range: { min: 72 } }],
       ranks: [{ metric: "latestSpeedRating", range: { max: 2 } }],
     };
@@ -61,7 +61,9 @@ describe("saved research rules", () => {
     assert.equal(prepared.ruleSchemaVersion, RESEARCH_RULE_VERSION);
     assert.equal(prepared.ruleIdentity, researchRuleKey(rule));
     assert.deepEqual(prepared.canonicalRule, canonicalResearchRule(rule));
+    assert.deepEqual((prepared.canonicalRule as { race?: { courseIds?: string[] } }).race?.courseIds, ["course-a", "course-b"]);
     assert.deepEqual((prepared.canonicalRule as { race?: { raceClasses?: number[] } }).race?.raceClasses, [1, 2, 5]);
+    assert.deepEqual((prepared.canonicalRule as { runner?: { trainerIds?: string[] } }).runner?.trainerIds, ["trainer-a", "trainer-b"]);
     assert.deepEqual(prepared.developmentSnapshot, {
       eligibleRunners: 20,
       selections: 5,

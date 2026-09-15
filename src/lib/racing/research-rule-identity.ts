@@ -16,6 +16,18 @@ export function researchRuleKey(rule: ResearchRuleV1): string {
 }
 
 export function canonicalResearchRule(rule: ResearchRuleV1) {
+  const courseIds = sortedTextValues([
+    ...(Array.isArray(rule.race.courseIds) ? rule.race.courseIds : []),
+    rule.race.courseId,
+  ]);
+  const courseNames = sortedTextValues([
+    ...(Array.isArray(rule.race.courseNames) ? rule.race.courseNames : []),
+    rule.race.courseName,
+  ]);
+  const trainerIds = sortedTextValues([
+    ...(Array.isArray(rule.runner.trainerIds) ? rule.runner.trainerIds : []),
+    rule.runner.trainerId,
+  ]);
   return compactObject({
     version: rule.version,
     family: rule.family,
@@ -24,8 +36,8 @@ export function canonicalResearchRule(rule: ResearchRuleV1) {
       to: rule.dateRange.to,
     },
     race: compactObject({
-      courseId: textValue(rule.race.courseId),
-      courseName: rule.race.courseId ? undefined : textValue(rule.race.courseName),
+      courseIds,
+      courseName: courseIds.length > 0 ? undefined : courseNames[0],
       raceClasses: normalizeRaceClasses(rule.race.raceClasses),
       handicapStatus: !rule.race.handicapStatus || rule.race.handicapStatus === "all"
         ? undefined
@@ -36,8 +48,8 @@ export function canonicalResearchRule(rule: ResearchRuleV1) {
       fieldSize: canonicalRange(rule.race.fieldSize),
     }),
     runner: compactObject({
-      trainerId: textValue(rule.runner.trainerId),
-      trainerCohort: rule.runner.trainerCohort
+      trainerIds,
+      trainerCohort: trainerIds.length === 0 && rule.runner.trainerCohort
         ? {
             top: rule.runner.trainerCohort.top,
             period: rule.runner.trainerCohort.period,
@@ -92,6 +104,16 @@ function numericValue(value: number | undefined): number | undefined {
 function textValue(value: string | undefined): string | undefined {
   const text = value?.trim();
   return text ? text : undefined;
+}
+
+function sortedTextValues(values: unknown[]): string[] {
+  const unique = new Set<string>();
+  for (const value of values) {
+    if (typeof value !== "string") continue;
+    const text = value.trim();
+    if (text) unique.add(text);
+  }
+  return [...unique].sort((left, right) => left.localeCompare(right));
 }
 
 function compactObject<T extends Record<string, unknown>>(input: T): Record<string, unknown> {

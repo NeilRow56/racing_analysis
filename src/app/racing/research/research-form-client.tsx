@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { useRef, useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { normalizeRaceClasses } from "@/lib/racing/research-rule-classes";
 import { researchRuleKey } from "@/lib/racing/research-rule-identity";
@@ -24,6 +24,8 @@ import type {
 
 type Option<T extends string = string> = { value: T; label: string };
 type RatingOption = Option<RatingMetric> & { group: string };
+type MultiSelectOption = { id: string; label: string; count?: number };
+const VISIBLE_SELECTED_CHIP_LIMIT = 6;
 
 export function ResearchWorkspace({
   children,
@@ -177,7 +179,9 @@ export const ResearchForm = ({
   const buttonLabel = researchRunButtonLabel({ isPending, isStale });
   const optionsMatchSelectedFamily = !filterOptions.family || filterOptions.family === rule.family;
   const courseOptions = optionsMatchSelectedFamily ? filterOptions.courses : [];
-  const specificTrainerSelected = Boolean(rule.runner.trainerId);
+  const selectedCourseIds = selectedRuleIds(rule.race.courseIds, rule.race.courseId);
+  const selectedTrainerIds = selectedRuleIds(rule.runner.trainerIds, rule.runner.trainerId);
+  const specificTrainerSelected = selectedTrainerIds.length > 0;
   return (
     <form action="/racing/research" className="space-y-6" method="get" onChange={onChange} onSubmit={onSubmit} ref={ref}>
       <div className="grid gap-4 md:grid-cols-4">
@@ -195,7 +199,7 @@ export const ResearchForm = ({
       </div>
 
       <FilterGroup title="Race Filters">
-        <SelectField
+        <MultiSelectField
           disabled={!optionsMatchSelectedFamily || courseOptions.length === 0}
           helpText={
             !optionsMatchSelectedFamily
@@ -204,15 +208,21 @@ export const ResearchForm = ({
                 ? "Course options available after the 2025 cache is built."
                 : undefined
           }
+          clearLabel="Clear courses"
+          key={`course-${optionsMatchSelectedFamily}`}
           label="Course"
           name="courseId"
-          value={rule.race.courseId ?? ""}
-        >
-          <option value="">All courses</option>
-          {courseOptions.map((option) => (
-            <option key={option.courseId} value={option.courseId}>{option.courseName}</option>
-          ))}
-        </SelectField>
+          onSelectionChange={onChange}
+          options={courseOptions.map((option) => ({
+            id: option.courseId,
+            label: option.courseName,
+            count: option.count,
+          }))}
+          placeholder="All courses"
+          searchPlaceholder="Search courses"
+          selectedIds={optionsMatchSelectedFamily ? selectedCourseIds : []}
+          summaryLabel="courses"
+        />
         <SelectField label="Distance from" name="distanceFrom" value={rule.race.distanceBucketFrom ?? ""}>
           <option value="">Any distance</option>
           {filterOptions.distances.map((option) => (
@@ -242,7 +252,7 @@ export const ResearchForm = ({
           disabled={!optionsMatchSelectedFamily || Boolean(rule.runner.trainerCohort)}
           disabledReason={
             rule.runner.trainerCohort
-              ? "Set Trainer cohort to All trainers to select one trainer."
+              ? "Set Trainer cohort to All trainers to select manual trainers."
               : "Run Research to load trainer options for this family."
           }
           filterOptions={filterOptions}
@@ -401,7 +411,7 @@ export function researchRuleFromFormData(formData: FormData): ResearchRuleV1 {
       to: textValue(formData.get("to")) ?? "2025-12-31",
     },
     race: {
-      courseId: textValue(formData.get("courseId")),
+      courseIds: textValues(formData.getAll("courseId")),
       raceClasses: normalizeRaceClasses(formData.getAll("class")),
       handicapStatus: handicapStatusValue(textValue(formData.get("handicapStatus"))),
       distanceBucketFrom: textValue(formData.get("distanceFrom")),
@@ -409,7 +419,7 @@ export function researchRuleFromFormData(formData: FormData): ResearchRuleV1 {
       fieldSize: rangeFromFormData(formData, "fieldMin", "fieldMax"),
     },
     runner: {
-      trainerId: textValue(formData.get("trainerId")),
+      trainerIds: textValues(formData.getAll("trainerId")),
       trainerCohort: trainerCohortFromFormData(formData),
       returnBucket: returnBucketValue(textValue(formData.get("returnBucket"))),
       runAfterBreak: runAfterBreakValue(textValue(formData.get("runAfterBreak"))),
@@ -427,7 +437,7 @@ export function researchRuleFromFormData(formData: FormData): ResearchRuleV1 {
 }
 
 function trainerCohortFromFormData(formData: FormData) {
-  if (textValue(formData.get("trainerId"))) {
+  if (textValues(formData.getAll("trainerId")).length > 0) {
     return undefined;
   }
   const top = Number(textValue(formData.get("trainerCohort")));
@@ -473,120 +483,209 @@ function TrainerField({
   onSelectionChange: () => void;
   rule: ResearchRuleV1;
 }) {
-  const hiddenInputRef = useRef<HTMLInputElement>(null);
-  const selectedTrainer = disabled ? null : selectedTrainerOption(filterOptions.trainers, rule.runner.trainerId);
-  const [isOpen, setIsOpen] = useState(false);
-  const [query, setQuery] = useState(selectedTrainer?.trainerName ?? "");
-  const [selectedId, setSelectedId] = useState(selectedTrainer?.trainerId ?? "");
-  const normalizedQuery = query.trim().toLowerCase();
-  const visibleTrainers = filterTrainerOptions(filterOptions.trainers, normalizedQuery);
-  const hasTrainerOptions = !disabled && filterOptions.trainers.length > 0;
-  const listboxId = "trainer-options";
+  return (
+    <MultiSelectField
+      clearLabel="Clear trainers"
+      disabled={disabled}
+      helpText={
+        disabled
+          ? disabledReason
+          : filterOptions.trainers.length === 0
+            ? "Trainer options available after the 2025 cache is built."
+            : undefined
+      }
+      label="Trainer"
+      key={`trainer-${disabled}`}
+      name="trainerId"
+      onSelectionChange={onSelectionChange}
+      options={filterOptions.trainers.map((option) => ({
+        id: option.trainerId,
+        label: option.trainerName,
+        count: option.count,
+      }))}
+      placeholder="All trainers"
+      searchPlaceholder="Search trainers"
+      selectedIds={disabled ? [] : selectedRuleIds(rule.runner.trainerIds, rule.runner.trainerId)}
+      summaryLabel="trainers"
+    />
+  );
+}
 
-  function setTrainer(trainerId: string, trainerName: string) {
-    setSelectedId(trainerId);
-    setQuery(trainerName);
-    setIsOpen(false);
-    if (hiddenInputRef.current) {
-      hiddenInputRef.current.value = trainerId;
-      hiddenInputRef.current.dispatchEvent(new Event("change", { bubbles: true }));
-    } else {
-      onSelectionChange();
+function MultiSelectField({
+  clearLabel,
+  disabled = false,
+  helpText,
+  label,
+  name,
+  onSelectionChange,
+  options,
+  placeholder,
+  searchPlaceholder,
+  selectedIds,
+  summaryLabel,
+}: {
+  clearLabel: string;
+  disabled?: boolean;
+  helpText?: string;
+  label: string;
+  name: string;
+  onSelectionChange: () => void;
+  options: MultiSelectOption[];
+  placeholder: string;
+  searchPlaceholder: string;
+  selectedIds: string[];
+  summaryLabel: string;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const [selected, setSelected] = useState(() => selectedRuleIds(selectedIds));
+  const hasMountedRef = useRef(false);
+  const onSelectionChangeRef = useRef(onSelectionChange);
+  const selectedKey = selected.join("\0");
+  const selectedSet = new Set(selected);
+  const optionById = new Map(options.map((option) => [option.id, option]));
+  const visibleOptions = filterMultiSelectOptions(options, query);
+  const hasOptions = !disabled && options.length > 0;
+  const summary = selectionSummary(selected, optionById, placeholder, summaryLabel);
+  const visibleSelectedChips = selected.slice(0, VISIBLE_SELECTED_CHIP_LIMIT);
+  const hiddenSelectedCount = selected.length - visibleSelectedChips.length;
+  const listboxId = `${name}-multi-select-options`;
+
+  useEffect(() => {
+    onSelectionChangeRef.current = onSelectionChange;
+  }, [onSelectionChange]);
+
+  useEffect(() => {
+    if (!hasMountedRef.current) {
+      hasMountedRef.current = true;
+      return;
     }
+    onSelectionChangeRef.current();
+  }, [selectedKey]);
+
+  function toggle(id: string) {
+    setSelected((current) => toggleSelectedId(current, id));
   }
 
-  function clearTrainer() {
-    setSelectedId("");
+  function remove(id: string) {
+    setSelected((current) => removeSelectedId(current, id));
+  }
+
+  function clear() {
+    setSelected([]);
     setQuery("");
-    setIsOpen(false);
-    if (hiddenInputRef.current) {
-      hiddenInputRef.current.value = "";
-      hiddenInputRef.current.dispatchEvent(new Event("change", { bubbles: true }));
-    } else {
-      onSelectionChange();
-    }
   }
 
   return (
     <div className="relative block text-sm">
-      <label className="font-medium text-slate-700" htmlFor="trainerCombobox">Trainer</label>
-      <input disabled={disabled} name="trainerId" ref={hiddenInputRef} type="hidden" value={selectedId} />
-      <input
-        aria-autocomplete="list"
+      <div className="font-medium text-slate-700">{label}</div>
+      {selected.map((id) => (
+        <input disabled={disabled} key={id} name={name} type="hidden" value={id} />
+      ))}
+      <button
         aria-controls={listboxId}
-        aria-expanded={isOpen}
-        autoComplete="off"
-        className="mt-1 w-full border border-slate-300 bg-white px-3 py-2 text-sm disabled:bg-slate-100 disabled:text-slate-500"
-        disabled={disabled || filterOptions.trainers.length === 0}
-        id="trainerCombobox"
-        onBlur={() => {
-          window.setTimeout(() => setIsOpen(false), 120);
-        }}
-        onChange={(event) => {
-          setQuery(event.currentTarget.value);
-          setSelectedId("");
-          setIsOpen(true);
-          if (hiddenInputRef.current) {
-            hiddenInputRef.current.value = "";
-            hiddenInputRef.current.dispatchEvent(new Event("change", { bubbles: true }));
-          }
-        }}
-        onFocus={() => setIsOpen(hasTrainerOptions)}
-        onKeyDown={(event) => {
-          if (event.key === "Escape") setIsOpen(false);
-          if (event.key === "ArrowDown") setIsOpen(hasTrainerOptions);
-        }}
-        placeholder="All trainers"
-        role="combobox"
-        type="search"
-        value={disabled ? "" : query}
-      />
-      {selectedId ? (
-        <button
-          className="mt-1 text-xs font-medium text-emerald-800 hover:underline"
-          onMouseDown={(event) => event.preventDefault()}
-          onClick={clearTrainer}
-          type="button"
-        >
-          Clear trainer
-        </button>
+        aria-expanded={isOpen && hasOptions}
+        className="mt-1 w-full cursor-pointer border border-slate-300 bg-white px-3 py-2 text-left text-slate-950 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-500"
+        disabled={!hasOptions}
+        onClick={() => setIsOpen((open) => !open)}
+        type="button"
+      >
+        {summary}
+      </button>
+      {selected.length > 0 ? (
+        <div className="mt-2 flex flex-wrap gap-1.5">
+          {visibleSelectedChips.map((id) => {
+            const option = optionById.get(id);
+            return (
+              <span className="inline-flex max-w-full items-center gap-1 border border-emerald-200 bg-emerald-50 px-2 py-1 text-xs text-emerald-950" key={id}>
+                <span className="truncate">{option?.label ?? id}</span>
+                <button
+                  aria-label={`Remove ${option?.label ?? id}`}
+                  className="font-semibold text-emerald-800 hover:text-emerald-950"
+                  onClick={() => remove(id)}
+                  type="button"
+                >
+                  ×
+                </button>
+              </span>
+            );
+          })}
+          {hiddenSelectedCount > 0 ? (
+            <span className="inline-flex items-center border border-slate-200 bg-slate-50 px-2 py-1 text-xs text-slate-700">
+              +{hiddenSelectedCount} more selected
+            </span>
+          ) : null}
+        </div>
       ) : null}
-      {disabled ? (
-        <p className="mt-1 text-xs text-amber-800">{disabledReason}</p>
-      ) : filterOptions.trainers.length === 0 ? (
-        <p className="mt-1 text-xs text-amber-800">Trainer options available after the 2025 cache is built.</p>
-      ) : null}
-      {isOpen && hasTrainerOptions ? (
+      {isOpen && hasOptions ? (
         <div
-          className="absolute z-20 mt-1 max-h-64 w-full overflow-y-auto border border-slate-300 bg-white shadow-lg"
+          aria-multiselectable="true"
+          className="absolute z-20 mt-1 w-full border border-slate-300 bg-white p-2 shadow-lg"
           id={listboxId}
           role="listbox"
         >
+          <input
+            autoComplete="off"
+            className="mb-2 w-full border border-slate-300 px-2 py-1 text-sm"
+            onChange={(event) => setQuery(event.currentTarget.value)}
+            onKeyDown={(event) => {
+              if (event.key === "Escape") setIsOpen(false);
+            }}
+            placeholder={searchPlaceholder}
+            type="search"
+            value={query}
+          />
           <button
-            className="block w-full px-3 py-2 text-left text-sm hover:bg-slate-100"
-            onMouseDown={(event) => event.preventDefault()}
-            onClick={clearTrainer}
+            className="mb-2 px-2 py-1 text-xs font-medium text-emerald-800 hover:underline"
+            onClick={clear}
             type="button"
           >
-            All trainers
+            {clearLabel}
           </button>
-          {visibleTrainers.map((option) => (
-            <button
-              aria-selected={option.trainerId === selectedId}
-              className="block w-full px-3 py-2 text-left text-sm hover:bg-emerald-50"
-              key={option.trainerId}
-              onMouseDown={(event) => event.preventDefault()}
-              onClick={() => setTrainer(option.trainerId, option.trainerName)}
-              role="option"
-              type="button"
-            >
-              {option.trainerName}
-            </button>
-          ))}
-          {visibleTrainers.length === 0 ? (
-            <div className="px-3 py-2 text-sm text-slate-500">No trainers match.</div>
-          ) : null}
+          <div className="max-h-96 overflow-y-auto">
+            {visibleOptions.map((option) => (
+              <button
+                aria-checked={selectedSet.has(option.id)}
+                className={[
+                  "flex w-full items-center justify-between gap-3 px-2 py-1.5 text-left outline-offset-2",
+                  selectedSet.has(option.id)
+                    ? "bg-emerald-50 font-medium text-emerald-950 hover:bg-emerald-100"
+                    : "hover:bg-slate-50",
+                ].join(" ")}
+                key={option.id}
+                onClick={() => toggle(option.id)}
+                role="checkbox"
+                type="button"
+              >
+                <span className="flex min-w-0 items-center gap-2">
+                  <span
+                    aria-hidden="true"
+                    className={[
+                      "inline-flex h-4 w-4 shrink-0 items-center justify-center border text-[10px] leading-none",
+                      selectedSet.has(option.id)
+                        ? "border-emerald-700 bg-emerald-700 text-white"
+                        : "border-slate-400 bg-white text-transparent",
+                    ].join(" ")}
+                  >
+                    ✓
+                  </span>
+                  <span className="min-w-0 truncate">{option.label}</span>
+                </span>
+                <span className="shrink-0 text-xs text-slate-500">
+                  {selectedSet.has(option.id) ? "Selected" : option.count?.toLocaleString() ?? ""}
+                </span>
+              </button>
+            ))}
+            {visibleOptions.length === 0 ? (
+              <div className="px-2 py-1.5 text-sm text-slate-500">No matches.</div>
+            ) : null}
+          </div>
         </div>
+      ) : null}
+      {disabled ? (
+        <p className="mt-1 text-xs text-amber-800">{helpText}</p>
+      ) : helpText ? (
+        <p className="mt-1 text-xs text-amber-800">{helpText}</p>
       ) : null}
     </div>
   );
@@ -726,13 +825,17 @@ function groupedRatingOptions(options: RatingOption[]) {
 export function filterTrainerOptions(
   options: ResearchFilterOptions["trainers"],
   query: string,
-  limit = 80,
+  limit?: number,
 ) {
-  const normalizedQuery = query.trim().toLowerCase();
-  const filtered = normalizedQuery
-    ? options.filter((option) => option.trainerName.toLowerCase().includes(normalizedQuery))
-    : options;
-  return filtered.slice(0, limit);
+  return filterMultiSelectOptions(
+    options.map((option) => ({ id: option.trainerId, label: option.trainerName, count: option.count })),
+    query,
+    limit,
+  ).map((option) => ({
+    trainerId: option.id,
+    trainerName: option.label,
+    count: option.count ?? 0,
+  }));
 }
 
 export function selectedTrainerOption(
@@ -740,6 +843,44 @@ export function selectedTrainerOption(
   trainerId: string | undefined,
 ) {
   return trainerId ? options.find((option) => option.trainerId === trainerId) ?? null : null;
+}
+
+export function filterMultiSelectOptions(
+  options: MultiSelectOption[],
+  query: string,
+  limit?: number,
+) {
+  const normalizedQuery = query.trim().toLowerCase();
+  const filtered = normalizedQuery
+    ? options.filter((option) => option.label.toLowerCase().includes(normalizedQuery))
+    : options;
+  return limit === undefined ? filtered : filtered.slice(0, limit);
+}
+
+function selectionSummary(
+  selected: string[],
+  optionById: Map<string, MultiSelectOption>,
+  placeholder: string,
+  summaryLabel: string,
+) {
+  if (selected.length === 0) {
+    return placeholder;
+  }
+  const names = selected.map((id) => optionById.get(id)?.label ?? id);
+  if (names.length <= 2) {
+    return names.join("; ");
+  }
+  return `${names.length} ${summaryLabel} selected`;
+}
+
+export function toggleSelectedId(current: readonly string[], id: string): string[] {
+  return current.includes(id)
+    ? removeSelectedId(current, id)
+    : selectedRuleIds([...current, id]);
+}
+
+export function removeSelectedId(current: readonly string[], id: string): string[] {
+  return current.filter((value) => value !== id);
 }
 
 function rangeFromFormData(formData: FormData, minKey: string, maxKey: string) {
@@ -751,10 +892,10 @@ function rangeFromFormData(formData: FormData, minKey: string, maxKey: string) {
 function searchParamsFromFormData(formData: FormData): URLSearchParams {
   const params = new URLSearchParams();
   for (const [key, value] of formData.entries()) {
-    if (key === "trainerSearch") continue;
+    if (key.endsWith("Search")) continue;
     const text = typeof value === "string" ? value.trim() : "";
     if (!text) continue;
-    if (key === "class") {
+    if (key === "class" || key === "trainerId" || key === "courseId") {
       params.append(key, text);
     } else {
       params.set(key, text);
@@ -774,6 +915,20 @@ function numberValue(value: FormDataEntryValue | null): number | undefined {
 function textValue(value: FormDataEntryValue | null): string | undefined {
   const text = typeof value === "string" ? value.trim() : "";
   return text ? text : undefined;
+}
+
+function textValues(values: FormDataEntryValue[]): string[] {
+  return selectedRuleIds(values.filter((value): value is string => typeof value === "string"));
+}
+
+function selectedRuleIds(values: readonly unknown[] | undefined, legacyValue?: string | undefined): string[] {
+  const unique = new Set<string>();
+  for (const value of [...(values ?? []), legacyValue]) {
+    if (typeof value !== "string") continue;
+    const text = value.trim();
+    if (text) unique.add(text);
+  }
+  return [...unique].sort((left, right) => left.localeCompare(right));
 }
 
 function familyValue(value: string | undefined): ResearchRuleV1["family"] {
