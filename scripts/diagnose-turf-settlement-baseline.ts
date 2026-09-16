@@ -82,7 +82,8 @@ async function main() {
 }
 
 async function loadContext(year: Year): Promise<Context> {
-  const cache = await loadLatestBacktestFeatureCacheForYear({ family: "turf_flat", year });
+  const cache = await loadLatestBacktestFeatureCacheForYear({ family: "turf_flat", year }) ??
+    await loadLatestBacktestFeatureCacheForYear({ family: "all", year });
   if (!cache) {
     throw new Error(`Missing compatible Turf cache for ${year}. Rebuild the v4 Turf cache before running this diagnostic.`);
   }
