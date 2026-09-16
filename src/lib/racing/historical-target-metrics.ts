@@ -1,6 +1,6 @@
 import { and, desc, eq, inArray, lt, sql, type SQL } from "drizzle-orm";
 import { createDbConnection } from "@/db";
-import { courses, horses, raceRunners, races, sourceImports, trainers } from "@/db/schema";
+import { courses, horses, jockeys, raceRunners, races, sourceImports, trainers } from "@/db/schema";
 import {
   getAwSpeedRatingsAsOfRuns,
 } from "./aw-speed-ratings";
@@ -26,7 +26,10 @@ import {
 } from "./weight-performance";
 import {
   calculateTrainerPriorMetricsForTargets,
+  calculateJockeyPriorMetricsForTargets,
+  getJockeyPriorMetricsForTargets,
   getTrainerPriorMetricsForTargets,
+  type JockeyPriorMetrics,
   type TrainerPriorMetrics,
 } from "./trainer-quality";
 
@@ -35,7 +38,7 @@ type Db = ReturnType<typeof createDbConnection>["db"];
 const QUERY_CHUNK_SIZE = 5_000;
 const RESULT_SOURCE_TYPE = "full-result-next-data";
 
-export const BACKTEST_FEATURE_SOURCE_VERSION = "historical_target_metrics_v3";
+export const BACKTEST_FEATURE_SOURCE_VERSION = "historical_target_metrics_v4";
 const RETURN_FROM_BREAK_THRESHOLD_DAYS = 90;
 
 export type HistoricalRaceCode = "jump" | "aw" | "turf" | "unsupported";
@@ -54,9 +57,14 @@ export type HistoricalPreRaceFeatureRow = {
   horseName: string;
   trainerId: string | null;
   trainerName: string | null;
+  jockeyId?: string | null;
+  jockeyName?: string | null;
   trainerPriorRuns: number;
   trainerPriorWins: number;
   trainerPriorWinRate: number | null;
+  jockeyPriorRuns?: number;
+  jockeyPriorWins?: number;
+  jockeyPriorWinRate?: number | null;
   raceDateTime: Date;
   raceDate: string;
   courseId: string;
@@ -157,6 +165,8 @@ export type HistoricalTargetRow = {
   horseName: string;
   trainerId: string | null;
   trainerName: string | null;
+  jockeyId?: string | null;
+  jockeyName?: string | null;
   raceDateTime: Date;
   raceDate: string;
   courseId: string;
@@ -184,6 +194,7 @@ export type HistoricalTargetRow = {
 export type HistoricalCandidateRun = HistoricalRunInput & {
   runnerId: string;
   trainerId: string | null;
+  jockeyId?: string | null;
   raceTypeCode?: string | null;
   surface?: string | null;
   weightCarriedLbs?: number | null;
@@ -209,7 +220,10 @@ export async function getHistoricalTargetRunnerMetrics(
   }
 
   const candidateRuns = await loadCandidateRuns(db, source, targets);
-  const trainerMetrics = await getTrainerPriorMetricsForTargets(db, targets, source);
+  const [trainerMetrics, jockeyMetrics] = await Promise.all([
+    getTrainerPriorMetricsForTargets(db, targets, source),
+    getJockeyPriorMetricsForTargets(db, targets, source),
+  ]);
   const runnerIds = candidateRuns.map((run) => run.runnerId);
   const ratingFamily = input.ratingFamily ?? "all";
   const [jumpRatings, awRatings, turfRatings] = await Promise.all([
@@ -227,6 +241,7 @@ export async function getHistoricalTargetRunnerMetrics(
   return buildHistoricalTargetRunnerMetricRows({
     targets,
     trainerMetrics,
+    jockeyMetrics,
     candidateRuns: candidateRuns.map((run) => ({
       ...run,
       jumpSpeedRating: jumpRatings.get(run.runnerId) ?? null,
@@ -240,10 +255,12 @@ export function buildHistoricalTargetRunnerMetricRows({
   targets,
   candidateRuns,
   trainerMetrics,
+  jockeyMetrics,
 }: {
   targets: HistoricalTargetRow[];
   candidateRuns: HistoricalCandidateRun[];
   trainerMetrics?: Map<string, TrainerPriorMetrics>;
+  jockeyMetrics?: Map<string, JockeyPriorMetrics>;
 }): HistoricalTargetRunnerMetricsRow[] {
   const runsByHorse = new Map<string, HistoricalCandidateRun[]>();
   for (const run of candidateRuns) {
@@ -252,6 +269,7 @@ export function buildHistoricalTargetRunnerMetricRows({
     runsByHorse.set(run.horseId, runs);
   }
   const trainerPriorMetrics = trainerMetrics ?? calculateTrainerPriorMetricsForTargets(targets, candidateRuns);
+  const jockeyPriorMetrics = jockeyMetrics ?? calculateJockeyPriorMetricsForTargets(targets, candidateRuns);
 
   return targets.map((target) => {
     const raceCode = classifyHistoricalRaceCode(target);
@@ -284,6 +302,11 @@ export function buildHistoricalTargetRunnerMetricRows({
       trainerPriorWins: 0,
       trainerPriorWinRate: null,
     };
+    const jockeyMetricsForTarget = jockeyPriorMetrics.get(target.targetRunnerId) ?? {
+      jockeyPriorRuns: 0,
+      jockeyPriorWins: 0,
+      jockeyPriorWinRate: null,
+    };
 
     return {
       features: {
@@ -294,9 +317,14 @@ export function buildHistoricalTargetRunnerMetricRows({
         horseName: target.horseName,
         trainerId: target.trainerId,
         trainerName: target.trainerName,
+        jockeyId: target.jockeyId,
+        jockeyName: target.jockeyName,
         trainerPriorRuns: trainerMetricsForTarget.trainerPriorRuns,
         trainerPriorWins: trainerMetricsForTarget.trainerPriorWins,
         trainerPriorWinRate: trainerMetricsForTarget.trainerPriorWinRate,
+        jockeyPriorRuns: jockeyMetricsForTarget.jockeyPriorRuns,
+        jockeyPriorWins: jockeyMetricsForTarget.jockeyPriorWins,
+        jockeyPriorWinRate: jockeyMetricsForTarget.jockeyPriorWinRate,
         raceDateTime: target.raceDateTime,
         raceDate: target.raceDate,
         courseId: target.courseId,
@@ -421,6 +449,8 @@ async function loadTargets(
         horseName: horses.displayName,
         trainerId: raceRunners.trainerId,
         trainerName: trainers.displayName,
+        jockeyId: raceRunners.jockeyId,
+        jockeyName: jockeys.displayName,
         raceDateTime: races.raceDatetime,
         raceDate: races.raceDate,
         courseId: races.courseId,
@@ -449,6 +479,7 @@ async function loadTargets(
       .innerJoin(courses, eq(races.courseId, courses.id))
       .innerJoin(horses, eq(raceRunners.horseId, horses.id))
       .leftJoin(trainers, eq(raceRunners.trainerId, trainers.id))
+      .leftJoin(jockeys, eq(raceRunners.jockeyId, jockeys.id))
       .leftJoin(sourceImports, sourceImportJoinCondition(input.source))
       .where(and(...conditions))
       .orderBy(desc(races.raceDatetime))
@@ -474,6 +505,7 @@ async function loadCandidateRuns(
             source: raceRunners.source,
             runnerId: raceRunners.id,
             trainerId: raceRunners.trainerId,
+            jockeyId: raceRunners.jockeyId,
             horseId: raceRunners.horseId,
             raceDateTime: races.raceDatetime,
             raceDate: races.raceDate,

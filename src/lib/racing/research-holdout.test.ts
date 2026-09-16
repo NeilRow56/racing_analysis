@@ -184,6 +184,54 @@ describe("research holdout validation", () => {
     assert.equal(snapshot.settledSelections, 2);
   });
 
+  test("evaluates frozen jockey filters against the 2026 holdout cache", async () => {
+    const root = await mkdtemp(join(tmpdir(), "racing-holdout-jockey-"));
+    const rule: ResearchRuleV1 = {
+      ...defaultResearchRule("jump"),
+      runner: {
+        jockeyIds: ["jockey-a", "jockey-c"],
+        jockeyPriorRuns: { min: 50 },
+        jockeyPriorWinRate: { min: 15 },
+      },
+    };
+    await writeCache(root, {
+      manifest: manifestFor({ family: "jump", from: "2026-01-01", to: "2026-12-31", rowCount: 4 }),
+      rows: [
+        row({ targetRunnerId: "selected", jockeyId: "jockey-a", jockeyName: "A Jockey", jockeyPriorRuns: 80, jockeyPriorWins: 16, jockeyPriorWinRate: 20, raceDate: "2026-01-03" }),
+        row({ targetRunnerId: "low-runs", jockeyId: "jockey-a", jockeyName: "A Jockey", jockeyPriorRuns: 49, jockeyPriorWins: 10, jockeyPriorWinRate: 20.4, raceDate: "2026-01-04" }),
+        row({ targetRunnerId: "wrong-jockey", jockeyId: "jockey-b", jockeyName: "B Jockey", jockeyPriorRuns: 80, jockeyPriorWins: 16, jockeyPriorWinRate: 20, raceDate: "2026-01-05" }),
+        row({ targetRunnerId: "missing-rate", jockeyId: "jockey-c", jockeyName: "C Jockey", jockeyPriorRuns: 0, jockeyPriorWins: 0, jockeyPriorWinRate: null, raceDate: "2026-01-06" }),
+      ],
+    });
+
+    const snapshot = await evaluateHoldoutForSavedRule(savedRuleFor(rule), { outputDir: root });
+
+    assert.equal(snapshot.selections, 1);
+    assert.equal(snapshot.settledSelections, 1);
+  });
+
+  test("evaluates frozen Starting Price filters against the 2026 holdout cache", async () => {
+    const root = await mkdtemp(join(tmpdir(), "racing-holdout-sp-"));
+    const rule: ResearchRuleV1 = {
+      ...defaultResearchRule("jump"),
+      startingPrice: { minDecimal: 4, maxDecimalExclusive: 7 },
+    };
+    await writeCache(root, {
+      manifest: manifestFor({ family: "jump", from: "2026-01-01", to: "2026-12-31", rowCount: 4 }),
+      rows: [
+        row({ targetRunnerId: "below", raceDate: "2026-01-03" }, { won: false, placed: false, finishingPosition: 4, startingPriceDecimal: "3.999" }),
+        row({ targetRunnerId: "lower-bound", raceDate: "2026-01-04" }, { won: false, placed: false, finishingPosition: 4, startingPriceDecimal: "4.000" }),
+        row({ targetRunnerId: "upper-band", raceDate: "2026-01-05" }, { won: false, placed: false, finishingPosition: 4, startingPriceDecimal: "6.999" }),
+        row({ targetRunnerId: "upper-exclusive", raceDate: "2026-01-06" }, { won: false, placed: false, finishingPosition: 4, startingPriceDecimal: "7.000" }),
+      ],
+    });
+
+    const snapshot = await evaluateHoldoutForSavedRule(savedRuleFor(rule), { outputDir: root });
+
+    assert.equal(snapshot.selections, 2);
+    assert.equal(snapshot.settledSelections, 2);
+  });
+
   test("evaluates official rating rank alongside a generic rank in holdout", async () => {
     const root = await mkdtemp(join(tmpdir(), "racing-holdout-or-rank-"));
     const rule: ResearchRuleV1 = {

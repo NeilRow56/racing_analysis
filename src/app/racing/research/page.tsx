@@ -703,7 +703,7 @@ function snapshotSettlementLabel(snapshot: SavedResearchRule["developmentSnapsho
 }
 
 function emptyFilterOptions(): ResearchFilterOptions {
-  return { courses: [], classes: [], distances: [], trainers: [], weights: [] };
+  return { courses: [], classes: [], distances: [], trainers: [], jockeys: [], weights: [] };
 }
 
 function Metric({ label, value }: { label: string; value: string | number }) {

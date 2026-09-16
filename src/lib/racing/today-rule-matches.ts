@@ -11,9 +11,11 @@ import {
   matchesRatingConditions,
   matchesRelativeConditions,
   matchesRunnerConditions,
+  matchesStartingPriceCondition,
   matchesTurfPerformanceConditions,
   parseResearchRule,
   rankRows,
+  hasStartingPriceCondition,
   type RankedResearchRow,
   type ResearchRuleV1,
 } from "./research-rule";
@@ -196,14 +198,18 @@ export function frozenRuleMatchesTodayRow(
     matchesRatingConditions(row.features, rule) &&
     matchesRelativeConditions(row.features, rule) &&
     matchesRankConditions(row, rule) &&
-    matchesTurfPerformanceConditions(row, rule);
+    matchesTurfPerformanceConditions(row, rule) &&
+    matchesStartingPriceCondition(row, rule);
 }
 
 function canEvaluateRuleForTodayRunner(rule: ResearchRuleV1, runner: TodayRunner): boolean {
   if (runner.resultStatus === "non_runner") {
     return false;
   }
-  if (hasTrainerMetricDependentConditions(rule) && !runner.trainerMetrics) {
+  if (hasStartingPriceCondition(rule) && settleSelection(todayRunnerSettlementOutcomeForRunner(runner)) === null) {
+    return false;
+  }
+  if (hasParticipantMetricDependentConditions(rule, runner)) {
     return false;
   }
   if (runner.metrics !== null) {
@@ -213,9 +219,11 @@ function canEvaluateRuleForTodayRunner(rule: ResearchRuleV1, runner: TodayRunner
   return !hasMetricDependentConditions(rule);
 }
 
-function hasTrainerMetricDependentConditions(rule: ResearchRuleV1): boolean {
-  return Boolean(rule.runner.trainerPriorRuns) ||
-    Boolean(rule.runner.trainerPriorWinRate);
+function hasParticipantMetricDependentConditions(rule: ResearchRuleV1, runner: TodayRunner): boolean {
+  if ((Boolean(rule.runner.trainerPriorRuns) || Boolean(rule.runner.trainerPriorWinRate)) && !runner.trainerMetrics) {
+    return true;
+  }
+  return (Boolean(rule.runner.jockeyPriorRuns) || Boolean(rule.runner.jockeyPriorWinRate)) && !runner.jockeyMetrics;
 }
 
 function hasMetricDependentConditions(rule: ResearchRuleV1): boolean {
@@ -237,7 +245,7 @@ function todayRunnerResearchRow(
 ): HistoricalTargetRunnerMetricsRow {
   return {
     features: todayRunnerFeatures(meeting, race, runner, raceDate),
-    outcome: todayRunnerOutcome(race, runner),
+    outcome: todayRunnerSettlementOutcome(race, runner),
   };
 }
 
@@ -274,9 +282,14 @@ function todayRunnerFeatures(
     horseName: runner.horseName,
     trainerId: runner.trainerId,
     trainerName: runner.trainerName,
+    jockeyId: runner.jockeyId,
+    jockeyName: runner.jockeyName,
     trainerPriorRuns: runner.trainerMetrics?.trainerPriorRuns ?? 0,
     trainerPriorWins: runner.trainerMetrics?.trainerPriorWins ?? 0,
     trainerPriorWinRate: runner.trainerMetrics?.trainerPriorWinRate ?? null,
+    jockeyPriorRuns: runner.jockeyMetrics?.jockeyPriorRuns ?? 0,
+    jockeyPriorWins: runner.jockeyMetrics?.jockeyPriorWins ?? 0,
+    jockeyPriorWinRate: runner.jockeyMetrics?.jockeyPriorWinRate ?? null,
     raceDateTime: race.raceDateTime ?? new Date(`${raceDate}T12:00:00.000Z`),
     raceDate,
     courseId: meeting.courseId,
@@ -354,28 +367,27 @@ function todayRunnerFeatures(
   };
 }
 
-function todayRunnerOutcome(
-  race: TodayRace,
-  runner: TodayRunner,
-): HistoricalPostRaceOutcome {
-  return {
-    targetRaceId: race.raceId,
-    targetRunnerId: runner.runnerId,
-    finishingPosition: null,
-    resultStatus: runner.resultStatus,
-    won: null,
-    placed: null,
-    startingPrice: null,
-    startingPriceDecimal: null,
-  };
-}
-
 function todayRunnerSettlementOutcome(
   race: TodayRace,
   runner: TodayRunner,
 ): HistoricalPostRaceOutcome {
   return {
     targetRaceId: race.raceId,
+    targetRunnerId: runner.runnerId,
+    finishingPosition: runner.finishingPosition,
+    resultStatus: runner.resultStatus,
+    won: runner.finishingPosition === null ? null : runner.finishingPosition === 1,
+    placed: runner.finishingPosition === null
+      ? null
+      : runner.finishingPosition >= 1 && runner.finishingPosition <= 3,
+    startingPrice: runner.odds,
+    startingPriceDecimal: runner.oddsDecimal,
+  };
+}
+
+function todayRunnerSettlementOutcomeForRunner(runner: TodayRunner): HistoricalPostRaceOutcome {
+  return {
+    targetRaceId: "",
     targetRunnerId: runner.runnerId,
     finishingPosition: runner.finishingPosition,
     resultStatus: runner.resultStatus,

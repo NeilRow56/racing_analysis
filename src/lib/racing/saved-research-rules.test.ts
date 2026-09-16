@@ -36,7 +36,12 @@ describe("saved research rules", () => {
     const rule: ResearchRuleV1 = {
       ...defaultResearchRule("all_weather_flat"),
       race: { courseIds: ["course-b", "course-a"], raceClasses: [5, 1, 2, 2] },
-      runner: { trainerIds: ["trainer-b", "trainer-a"], officialRating: { min: 0, max: 100 } },
+      runner: {
+        trainerIds: ["trainer-b", "trainer-a"],
+        jockeyIds: ["jockey-b", "jockey-a"],
+        jockeyPriorRuns: { min: 50 },
+        officialRating: { min: 0, max: 100 },
+      },
       ratings: [{ metric: "latestSpeedRating", range: { min: 72 } }],
       ranks: [{ metric: "latestSpeedRating", range: { max: 2 } }],
     };
@@ -65,6 +70,8 @@ describe("saved research rules", () => {
     assert.deepEqual((prepared.canonicalRule as { race?: { courseIds?: string[] } }).race?.courseIds, ["course-a", "course-b"]);
     assert.deepEqual((prepared.canonicalRule as { race?: { raceClasses?: number[] } }).race?.raceClasses, [1, 2, 5]);
     assert.deepEqual((prepared.canonicalRule as { runner?: { trainerIds?: string[] } }).runner?.trainerIds, ["trainer-a", "trainer-b"]);
+    assert.deepEqual((prepared.canonicalRule as { runner?: { jockeyIds?: string[] } }).runner?.jockeyIds, ["jockey-a", "jockey-b"]);
+    assert.deepEqual((prepared.canonicalRule as { runner?: { jockeyPriorRuns?: { min?: number } } }).runner?.jockeyPriorRuns, { min: 50 });
     assert.deepEqual(prepared.developmentSnapshot, {
       eligibleRunners: 20,
       selections: 5,

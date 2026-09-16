@@ -5,6 +5,7 @@ import type {
   RatingCondition,
   RelativeCondition,
   ResearchRuleV1,
+  StartingPriceCondition,
 } from "./research-rule";
 
 export function researchRulesEqual(left: ResearchRuleV1, right: ResearchRuleV1): boolean {
@@ -28,6 +29,10 @@ export function canonicalResearchRule(rule: ResearchRuleV1) {
     ...(Array.isArray(rule.runner.trainerIds) ? rule.runner.trainerIds : []),
     rule.runner.trainerId,
   ]);
+  const jockeyIds = sortedTextValues([
+    ...(Array.isArray(rule.runner.jockeyIds) ? rule.runner.jockeyIds : []),
+    rule.runner.jockeyId,
+  ]);
   return compactObject({
     version: rule.version,
     family: rule.family,
@@ -49,6 +54,7 @@ export function canonicalResearchRule(rule: ResearchRuleV1) {
     }),
     runner: compactObject({
       trainerIds,
+      jockeyIds,
       trainerCohort: trainerIds.length === 0 && rule.runner.trainerCohort
         ? {
             top: rule.runner.trainerCohort.top,
@@ -68,6 +74,8 @@ export function canonicalResearchRule(rule: ResearchRuleV1) {
       priorRuns: canonicalRange(rule.runner.priorRuns),
       trainerPriorRuns: canonicalRange(rule.runner.trainerPriorRuns),
       trainerPriorWinRate: canonicalRange(rule.runner.trainerPriorWinRate),
+      jockeyPriorRuns: canonicalRange(rule.runner.jockeyPriorRuns),
+      jockeyPriorWinRate: canonicalRange(rule.runner.jockeyPriorWinRate),
     }),
     ratings: rule.ratings.map(canonicalRatingCondition),
     relatives: rule.relatives.map(canonicalRelativeCondition),
@@ -80,6 +88,7 @@ export function canonicalResearchRule(rule: ResearchRuleV1) {
           lead: canonicalRange(rule.turfPerformance.lead),
         })
       : undefined,
+    startingPrice: canonicalStartingPriceCondition(rule.startingPrice),
   });
 }
 
@@ -102,6 +111,19 @@ function canonicalRange(range: NumericCondition | undefined) {
   return compactObject({
     min: numericValue(range.min),
     max: numericValue(range.max),
+  });
+}
+
+function canonicalStartingPriceCondition(condition: StartingPriceCondition | undefined) {
+  if (
+    !condition ||
+    (condition.minDecimal === undefined && condition.maxDecimalExclusive === undefined)
+  ) {
+    return undefined;
+  }
+  return compactObject({
+    minDecimal: numericValue(condition.minDecimal),
+    maxDecimalExclusive: numericValue(condition.maxDecimalExclusive),
   });
 }
 

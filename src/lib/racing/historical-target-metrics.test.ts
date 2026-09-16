@@ -17,6 +17,8 @@ function target(overrides: Partial<HistoricalTargetRow> = {}): HistoricalTargetR
     horseName: "Example Horse",
     trainerId: "trainer-1",
     trainerName: "A Trainer",
+    jockeyId: "jockey-1",
+    jockeyName: "A Jockey",
     raceDateTime: targetTime,
     raceDate: "2026-09-10",
     courseId: "course-worcester",
@@ -54,6 +56,7 @@ function run(
     source: "sporting_life",
     horseId: "horse-1",
     trainerId: "trainer-1",
+    jockeyId: "jockey-1",
     courseId: "course-perth",
     courseName: "Perth",
     raceName: "Handicap Chase",
@@ -99,6 +102,11 @@ describe("buildHistoricalTargetRunnerMetricRows", () => {
     assert.equal(row.features.oddsDecimal, null);
     assert.equal(row.features.trainerId, "trainer-1");
     assert.equal(row.features.trainerName, "A Trainer");
+    assert.equal(row.features.jockeyId, "jockey-1");
+    assert.equal(row.features.jockeyName, "A Jockey");
+    assert.equal(row.features.jockeyPriorRuns, 0);
+    assert.equal(row.features.jockeyPriorWins, 0);
+    assert.equal(row.features.jockeyPriorWinRate, null);
     assert.equal(row.outcome.won, true);
     assert.equal(row.outcome.startingPrice, "6/4");
     assert.equal(row.outcome.startingPriceDecimal, "2.500");
@@ -150,6 +158,53 @@ describe("buildHistoricalTargetRunnerMetricRows", () => {
     assert.equal(row.features.latestSpeedMethod, "base");
     assert.equal(row.features.latestSpeedConfidence, "medium");
     assert.equal(row.features.speedCalculationVersion, "jump_speed_v1");
+  });
+
+  test("calculates jockey prior metrics as of the target race time", () => {
+    const [row] = buildHistoricalTargetRunnerMetricRows({
+      targets: [target()],
+      candidateRuns: [
+        run({
+          runnerId: "prior-win",
+          raceDate: "2026-08-15",
+          raceDateTime: new Date("2026-08-15T14:00:00.000Z"),
+          jockeyId: "jockey-1",
+          finishingPosition: 1,
+        }),
+        run({
+          runnerId: "prior-loss",
+          raceDate: "2026-08-20",
+          raceDateTime: new Date("2026-08-20T14:00:00.000Z"),
+          jockeyId: "jockey-1",
+          finishingPosition: 3,
+        }),
+        run({
+          runnerId: "target-time",
+          raceDate: "2026-09-10",
+          raceDateTime: targetTime,
+          jockeyId: "jockey-1",
+          finishingPosition: 1,
+        }),
+        run({
+          runnerId: "future",
+          raceDate: "2026-09-11",
+          raceDateTime: new Date("2026-09-11T14:00:00.000Z"),
+          jockeyId: "jockey-1",
+          finishingPosition: 1,
+        }),
+        run({
+          runnerId: "other-jockey",
+          raceDate: "2026-08-20",
+          raceDateTime: new Date("2026-08-20T14:00:00.000Z"),
+          jockeyId: "jockey-2",
+          finishingPosition: 1,
+        }),
+      ],
+    });
+
+    assert.equal(row.features.jockeyPriorRuns, 2);
+    assert.equal(row.features.jockeyPriorWins, 1);
+    assert.equal(row.features.jockeyPriorWinRate, 50);
   });
 
   test("2026 targets can use legitimate December 2025 horse history", () => {

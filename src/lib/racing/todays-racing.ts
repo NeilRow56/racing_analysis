@@ -18,7 +18,9 @@ import {
   isCurrentOrdinaryFlatTurfRace,
 } from "./current-race-classification";
 import {
+  getJockeyPriorMetricsForTargets,
   getTrainerPriorMetricsForTargets,
+  type JockeyPriorMetrics,
   type TrainerPriorMetrics,
 } from "./trainer-quality";
 import {
@@ -45,6 +47,7 @@ export type TodayRunner = {
   weight: string | null;
   weightCarriedLbs: number | null;
   draw: number | null;
+  jockeyId?: string | null;
   jockeyName: string | null;
   trainerId: string | null;
   trainerName: string | null;
@@ -56,6 +59,7 @@ export type TodayRunner = {
   metrics: HorseMetricsAsOf | null;
   turfPerformanceRating?: RankedTurfPerformanceRating;
   trainerMetrics?: TrainerPriorMetrics;
+  jockeyMetrics?: JockeyPriorMetrics;
   savedRuleMatches?: TodaySavedRuleMatch[];
 };
 
@@ -156,6 +160,7 @@ export type TodayRacecardRow = {
   weight: string | null;
   weightCarriedLbs: number | null;
   draw: number | null;
+  jockeyId?: string | null;
   jockeyName: string | null;
   trainerId: string | null;
   trainerName: string | null;
@@ -281,24 +286,41 @@ export async function getTodaysRacingData(
   const metricsByRunnerId = new Map(
     metricRows.map((row) => [row.target.runnerId, row.metrics]),
   );
-  const trainerMetricsByRunnerId = await getTrainerPriorMetricsForTargets(
+  const targetsWithRaceDateTime = rows
+    .filter((row): row is TodayRacecardRow & { raceDateTime: Date } => row.raceDateTime !== null);
+  const [trainerMetricsByRunnerId, jockeyMetricsByRunnerId] = await Promise.all([
+    getTrainerPriorMetricsForTargets(
     db,
-    rows
-      .filter((row): row is TodayRacecardRow & { raceDateTime: Date } => row.raceDateTime !== null)
-      .map((row) => ({
+    targetsWithRaceDateTime.map((row) => ({
         targetRunnerId: row.runnerId,
         trainerId: row.trainerId,
         raceDateTime: row.raceDateTime,
       })),
     SPORTING_LIFE_SOURCE,
-  );
+    ),
+    getJockeyPriorMetricsForTargets(
+      db,
+      targetsWithRaceDateTime.map((row) => ({
+        targetRunnerId: row.runnerId,
+        jockeyId: row.jockeyId,
+        raceDateTime: row.raceDateTime,
+      })),
+      SPORTING_LIFE_SOURCE,
+    ),
+  ]);
 
   return {
     status: "ok",
     raceDate,
     displayDate,
     refreshedAt,
-    meetings: groupTodaysRacingRows(rows, meetingOrder, metricsByRunnerId, trainerMetricsByRunnerId),
+    meetings: groupTodaysRacingRows(
+      rows,
+      meetingOrder,
+      metricsByRunnerId,
+      trainerMetricsByRunnerId,
+      jockeyMetricsByRunnerId,
+    ),
   };
 }
 
@@ -307,6 +329,7 @@ export function groupTodaysRacingRows(
   meetingOrder: Map<string, number> = new Map(),
   metricsByRunnerId: Map<string, HorseMetricsAsOf> = new Map(),
   trainerMetricsByRunnerId: Map<string, TrainerPriorMetrics> = new Map(),
+  jockeyMetricsByRunnerId: Map<string, JockeyPriorMetrics> = new Map(),
 ): TodayMeeting[] {
   const meetingsByCourseId = new Map<string, TodayMeeting>();
   const racesById = new Map<string, TodayRace>();
@@ -362,6 +385,7 @@ export function groupTodaysRacingRows(
       weight: row.weight,
       weightCarriedLbs: row.weightCarriedLbs,
       draw: row.draw,
+      jockeyId: row.jockeyId,
       jockeyName: row.jockeyName,
       trainerId: row.trainerId,
       trainerName: row.trainerName,
@@ -372,6 +396,7 @@ export function groupTodaysRacingRows(
       finishingPosition: row.finishingPosition,
       metrics: metricsByRunnerId.get(row.runnerId) ?? null,
       trainerMetrics: trainerMetricsByRunnerId.get(row.runnerId),
+      jockeyMetrics: jockeyMetricsByRunnerId.get(row.runnerId),
     });
   }
 
@@ -633,6 +658,7 @@ async function getRacecardRows(
       weight: raceRunners.weight,
       weightCarriedLbs: raceRunners.weightCarriedLbs,
       draw: raceRunners.draw,
+      jockeyId: jockeys.id,
       jockeyName: jockeys.displayName,
       trainerId: trainers.id,
       trainerName: trainers.displayName,

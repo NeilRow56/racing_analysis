@@ -12,6 +12,14 @@ import {
 } from "@/lib/racing/development-settlement-mode";
 import { TRAINER_COHORT_TOP_OPTIONS, trainerCohortRule } from "@/lib/racing/trainer-cohort-mode";
 import { TURF_PERFORMANCE_RATING_VERSION } from "@/lib/racing/turf-performance-rating";
+import {
+  STARTING_PRICE_MAX_OPTIONS,
+  STARTING_PRICE_MIN_OPTIONS,
+  isImpossibleStartingPriceCondition,
+  startingPriceConditionFromValues,
+  startingPriceMaxValue,
+  startingPriceMinValue,
+} from "@/lib/racing/starting-price-filter";
 import type {
   HandicapStatusFilter,
   RankMetric,
@@ -27,6 +35,8 @@ type Option<T extends string = string> = { value: T; label: string };
 type RatingOption = Option<RatingMetric> & { group: string };
 type MultiSelectOption = { id: string; label: string; count?: number };
 const VISIBLE_SELECTED_CHIP_LIMIT = 6;
+export const STARTING_PRICE_INFO_HEADING = "Historical Starting Price";
+export const STARTING_PRICE_INFO_HELP_TEXT = "Uses final result SP for historical research and holdout settlement.";
 
 export function ResearchWorkspace({
   children,
@@ -185,6 +195,7 @@ export const ResearchForm = ({
   const selectedCourseIds = selectedRuleIds(rule.race.courseIds, rule.race.courseId);
   const selectedTrainerIds = selectedRuleIds(rule.runner.trainerIds, rule.runner.trainerId);
   const specificTrainerSelected = selectedTrainerIds.length > 0;
+  const impossibleStartingPriceRange = isImpossibleStartingPriceCondition(rule.startingPrice);
   return (
     <form action="/racing/research" className="space-y-6" method="get" onChange={onChange} onSubmit={onSubmit} ref={ref}>
       <div className="grid gap-4 md:grid-cols-4">
@@ -196,8 +207,8 @@ export const ResearchForm = ({
         <InputField label="Date from" name="from" type="date" value={rule.dateRange.from} />
         <InputField label="Date to" name="to" type="date" value={rule.dateRange.to} />
         <div className="rounded border border-slate-200 bg-slate-50 p-3 text-sm text-slate-600">
-          <div className="font-semibold text-slate-700">Historical pre-race odds</div>
-          <div className="mt-1">Not yet available. Result SP is used only after selection for settlement.</div>
+          <div className="font-semibold text-slate-700">{STARTING_PRICE_INFO_HEADING}</div>
+          <div className="mt-1">{STARTING_PRICE_INFO_HELP_TEXT}</div>
         </div>
       </div>
 
@@ -246,6 +257,29 @@ export const ResearchForm = ({
         </SelectField>
         <InputField label="Field min" name="fieldMin" type="number" value={rule.race.fieldSize?.min} />
         <InputField label="Field max" name="fieldMax" type="number" value={rule.race.fieldSize?.max} />
+      </FilterGroup>
+
+      <FilterGroup title="Starting Price">
+        <SelectField label="Minimum price" name="spMin" value={startingPriceMinValue(rule.startingPrice)}>
+          <option value="">Any minimum</option>
+          {STARTING_PRICE_MIN_OPTIONS.map((option) => (
+            <option key={option.value} value={option.value}>{option.label}</option>
+          ))}
+        </SelectField>
+        <SelectField label="Maximum price" name="spMax" value={startingPriceMaxValue(rule.startingPrice)}>
+          <option value="">Any maximum</option>
+          {STARTING_PRICE_MAX_OPTIONS.map((option) => (
+            <option key={option.value} value={option.value}>{option.label}</option>
+          ))}
+        </SelectField>
+        <div className="md:col-span-4 rounded border border-slate-200 bg-slate-50 p-3 text-sm text-slate-600">
+          Uses final SP. Max 5/1 means decimal SP below 7.0, so 5/1 is included and 6/1 is excluded.
+          {impossibleStartingPriceRange ? (
+            <span className="mt-1 block font-medium text-amber-800">
+              Minimum price is above the selected maximum price.
+            </span>
+          ) : null}
+        </div>
       </FilterGroup>
 
       <FilterGroup title="Runner Filters">
@@ -313,6 +347,22 @@ export const ResearchForm = ({
         </div>
         <div className="md:col-span-2 rounded border border-slate-200 bg-slate-50 p-3 text-sm text-slate-600">
           Calculated from the trainer&apos;s settled runs before each race. No future races are used.
+        </div>
+      </FilterGroup>
+
+      <FilterGroup title="Jockey">
+        <JockeyField
+          disabled={!optionsMatchSelectedFamily}
+          filterOptions={filterOptions}
+          onSelectionChange={onChange}
+          rule={rule}
+        />
+        <InputField label="Jockey prior runs min" name="jockeyPriorRunsMin" type="number" value={rule.runner.jockeyPriorRuns?.min} />
+        <InputField label="Jockey prior runs max" name="jockeyPriorRunsMax" type="number" value={rule.runner.jockeyPriorRuns?.max} />
+        <InputField label="Jockey prior win rate min %" name="jockeyPriorWinRateMin" step="0.1" type="number" value={rule.runner.jockeyPriorWinRate?.min} />
+        <InputField label="Jockey prior win rate max %" name="jockeyPriorWinRateMax" step="0.1" type="number" value={rule.runner.jockeyPriorWinRate?.max} />
+        <div className="md:col-span-6 rounded border border-slate-200 bg-slate-50 p-3 text-sm text-slate-600">
+          Jockey statistics use settled rides before this race. No future races are used.
         </div>
       </FilterGroup>
 
@@ -450,6 +500,7 @@ export function researchRuleFromFormData(formData: FormData): ResearchRuleV1 {
     },
     runner: {
       trainerIds: textValues(formData.getAll("trainerId")),
+      jockeyIds: textValues(formData.getAll("jockeyId")),
       trainerCohort: trainerCohortFromFormData(formData),
       returnBucket: returnBucketValue(textValue(formData.get("returnBucket"))),
       runAfterBreak: runAfterBreakValue(textValue(formData.get("runAfterBreak"))),
@@ -459,6 +510,8 @@ export function researchRuleFromFormData(formData: FormData): ResearchRuleV1 {
       priorRuns: rangeFromFormData(formData, "priorRunsMin", "priorRunsMax"),
       trainerPriorRuns: rangeFromFormData(formData, "trainerPriorRunsMin", "trainerPriorRunsMax"),
       trainerPriorWinRate: rangeFromFormData(formData, "trainerPriorWinRateMin", "trainerPriorWinRateMax"),
+      jockeyPriorRuns: rangeFromFormData(formData, "jockeyPriorRunsMin", "jockeyPriorRunsMax"),
+      jockeyPriorWinRate: rangeFromFormData(formData, "jockeyPriorWinRateMin", "jockeyPriorWinRateMax"),
     },
     ratings: ratingMetric && ratingRange ? [{ metric: ratingMetric, range: ratingRange }] : [],
     relatives: relativeMetric && relativeRange ? [{ metric: relativeMetric, range: relativeRange }] : [],
@@ -474,6 +527,10 @@ export function researchRuleFromFormData(formData: FormData): ResearchRuleV1 {
           lead: tprLeadRange,
         }
       : undefined,
+    startingPrice: startingPriceConditionFromValues(
+      textValue(formData.get("spMin")),
+      textValue(formData.get("spMax")),
+    ),
   };
 }
 
@@ -548,6 +605,44 @@ function TrainerField({
       searchPlaceholder="Search trainers"
       selectedIds={disabled ? [] : selectedRuleIds(rule.runner.trainerIds, rule.runner.trainerId)}
       summaryLabel="trainers"
+    />
+  );
+}
+
+function JockeyField({
+  disabled = false,
+  filterOptions,
+  onSelectionChange,
+  rule,
+}: {
+  disabled?: boolean;
+  filterOptions: ResearchFilterOptions;
+  onSelectionChange: () => void;
+  rule: ResearchRuleV1;
+}) {
+  return (
+    <MultiSelectField
+      clearLabel="Clear jockeys"
+      disabled={disabled || (filterOptions.jockeys ?? []).length === 0}
+      helpText={
+        disabled
+          ? "Run Research to load jockey options for this family."
+          : (filterOptions.jockeys ?? []).length === 0
+            ? "Jockey options available after the v4 cache is built."
+            : undefined
+      }
+      label="Jockey"
+      name="jockeyId"
+      onSelectionChange={onSelectionChange}
+      options={(filterOptions.jockeys ?? []).map((option) => ({
+        id: option.jockeyId,
+        label: option.jockeyName,
+        count: option.count,
+      }))}
+      placeholder="Any jockey"
+      searchPlaceholder="Search jockeys"
+      selectedIds={disabled ? [] : selectedRuleIds(rule.runner.jockeyIds, rule.runner.jockeyId)}
+      summaryLabel="jockeys"
     />
   );
 }
@@ -936,7 +1031,7 @@ function searchParamsFromFormData(formData: FormData): URLSearchParams {
     if (key.endsWith("Search")) continue;
     const text = typeof value === "string" ? value.trim() : "";
     if (!text) continue;
-    if (key === "class" || key === "trainerId" || key === "courseId") {
+    if (key === "class" || key === "trainerId" || key === "courseId" || key === "jockeyId") {
       params.append(key, text);
     } else {
       params.set(key, text);

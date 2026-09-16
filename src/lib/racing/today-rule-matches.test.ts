@@ -239,6 +239,96 @@ describe("Today frozen rule matching", () => {
     );
   });
 
+  test("matches manual jockey arrays and jockey prior metrics for frozen rules", () => {
+    const rule = exampleFrozenRule({
+      race: {},
+      runner: {
+        jockeyIds: ["jockey-a", "jockey-c"],
+        jockeyPriorRuns: { min: 50 },
+        jockeyPriorWinRate: { min: 15 },
+      },
+      ratings: [],
+      ranks: [],
+    });
+    const matched = matchIds(
+      rule,
+      {},
+      {},
+      {},
+      "2026-09-11",
+      [
+        runner("selected", {}, {
+          jockeyId: "jockey-a",
+          jockeyName: "A Jockey",
+          jockeyMetrics: { jockeyPriorRuns: 80, jockeyPriorWins: 16, jockeyPriorWinRate: 20 },
+        }),
+        runner("low-runs", {}, {
+          jockeyId: "jockey-a",
+          jockeyName: "A Jockey",
+          jockeyMetrics: { jockeyPriorRuns: 49, jockeyPriorWins: 10, jockeyPriorWinRate: 20.4 },
+        }),
+        runner("wrong-jockey", {}, {
+          jockeyId: "jockey-b",
+          jockeyName: "B Jockey",
+          jockeyMetrics: { jockeyPriorRuns: 80, jockeyPriorWins: 16, jockeyPriorWinRate: 20 },
+        }),
+        runner("missing-rate", {}, {
+          jockeyId: "jockey-c",
+          jockeyName: "C Jockey",
+          jockeyMetrics: { jockeyPriorRuns: 0, jockeyPriorWins: 0, jockeyPriorWinRate: null },
+        }),
+      ],
+    );
+
+    assert.deepEqual(matched, ["selected"]);
+  });
+
+  test("does not confirm SP-filtered frozen matches before final SP settlement is available", () => {
+    const rule = exampleFrozenRule({
+      race: {},
+      runner: {},
+      ratings: [],
+      ranks: [],
+      startingPrice: { minDecimal: 4, maxDecimalExclusive: 7 },
+    });
+
+    assert.deepEqual(matchIds(rule), []);
+  });
+
+  test("matches SP-filtered frozen rules once Today final SP settlement is available", () => {
+    const rule = exampleFrozenRule({
+      race: {},
+      runner: {},
+      ratings: [],
+      ranks: [],
+      startingPrice: { minDecimal: 4, maxDecimalExclusive: 7 },
+    });
+
+    assert.deepEqual(
+      matchIds(rule, {}, {}, {}, "2026-09-11", [
+        runner("below", {}, {
+          finishingPosition: 4,
+          odds: "2/1",
+          oddsDecimal: "3",
+          resultStatus: "finished",
+        }),
+        runner("selected", {}, {
+          finishingPosition: 4,
+          odds: "5/1",
+          oddsDecimal: "6",
+          resultStatus: "finished",
+        }),
+        runner("above", {}, {
+          finishingPosition: 4,
+          odds: "6/1",
+          oddsDecimal: "7",
+          resultStatus: "finished",
+        }),
+      ]),
+      ["selected"],
+    );
+  });
+
   test("matches trainer cohort rules using supplied 2026 prior-year membership", () => {
     const rule = exampleFrozenRule({
       runner: { trainerCohort: trainerCohortRule(20) },

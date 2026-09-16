@@ -1,7 +1,10 @@
 import assert from "node:assert/strict";
 import { describe, test } from "node:test";
 import {
+  calculateJockeyPriorMetricsForTargets,
   calculateTrainerPriorMetricsForTargets,
+  type JockeyMetricTarget,
+  type JockeyPriorRun,
   type TrainerMetricTarget,
   type TrainerPriorMetrics,
   type TrainerPriorRun,
@@ -149,6 +152,43 @@ describe("trainer prior metrics", () => {
   });
 });
 
+describe("jockey prior metrics", () => {
+  test("uses only settled rides before each target race by stable jockey ID", () => {
+    const metrics = calculateJockeyPriorMetricsForTargets(
+      [
+        jockeyTarget("no-history", "2025-01-01T12:00:00.000Z", "jockey-a"),
+        jockeyTarget("later-a", "2025-01-10T12:00:00.000Z", "jockey-a"),
+        jockeyTarget("later-b", "2025-01-10T12:00:00.000Z", "jockey-b"),
+      ],
+      [
+        jockeyRun("2025-01-01T12:00:00.000Z", 1, "finished", "jockey-a"),
+        jockeyRun("2025-01-03T12:00:00.000Z", 2, "finished", "jockey-a"),
+        jockeyRun("2025-01-04T12:00:00.000Z", 1, "finished", "jockey-b"),
+        jockeyRun("2025-01-05T12:00:00.000Z", null, "non_runner", "jockey-a"),
+        jockeyRun("2025-01-06T12:00:00.000Z", null, null, "jockey-a"),
+        jockeyRun("2025-01-10T12:00:00.000Z", 1, "finished", "jockey-a"),
+        jockeyRun("2025-01-12T12:00:00.000Z", 1, "finished", "jockey-a"),
+      ],
+    );
+
+    assert.deepEqual(metrics.get("no-history"), {
+      jockeyPriorRuns: 0,
+      jockeyPriorWins: 0,
+      jockeyPriorWinRate: null,
+    });
+    assert.deepEqual(metrics.get("later-a"), {
+      jockeyPriorRuns: 2,
+      jockeyPriorWins: 1,
+      jockeyPriorWinRate: 50,
+    });
+    assert.deepEqual(metrics.get("later-b"), {
+      jockeyPriorRuns: 1,
+      jockeyPriorWins: 1,
+      jockeyPriorWinRate: 100,
+    });
+  });
+});
+
 function target(
   targetRunnerId: string,
   raceDateTime: string,
@@ -169,6 +209,32 @@ function run(
 ): TrainerPriorRun {
   return {
     trainerId,
+    raceDateTime: new Date(raceDateTime),
+    finishingPosition,
+    resultStatus,
+  };
+}
+
+function jockeyTarget(
+  targetRunnerId: string,
+  raceDateTime: string,
+  jockeyId = "jockey-1",
+): JockeyMetricTarget {
+  return {
+    targetRunnerId,
+    jockeyId,
+    raceDateTime: new Date(raceDateTime),
+  };
+}
+
+function jockeyRun(
+  raceDateTime: string,
+  finishingPosition: number | null,
+  resultStatus: string | null = "finished",
+  jockeyId = "jockey-1",
+): JockeyPriorRun {
+  return {
+    jockeyId,
     raceDateTime: new Date(raceDateTime),
     finishingPosition,
     resultStatus,

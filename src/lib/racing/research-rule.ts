@@ -19,12 +19,31 @@ import {
   type TrainerCohortRule,
 } from "./trainer-cohort-mode";
 import {
+  isImpossibleStartingPriceCondition,
+  startingPriceConditionFromValues,
+  startingPriceDecimalMatches,
+  type StartingPriceCondition,
+} from "./starting-price-filter";
+import {
   calculateTurfPerformanceRating,
   rankTurfPerformanceRatings,
   TURF_PERFORMANCE_RATING_VERSION,
   type RankedTurfPerformanceRating,
 } from "./turf-performance-rating";
 export { normalizeRaceClasses } from "./research-rule-classes";
+export {
+  STARTING_PRICE_MAX_OPTIONS,
+  STARTING_PRICE_MIN_OPTIONS,
+  isImpossibleStartingPriceCondition,
+  startingPriceConditionFromValues,
+  startingPriceMaxValue,
+  startingPriceMinValue,
+} from "./starting-price-filter";
+export type {
+  StartingPriceCondition,
+  StartingPriceFilterOption,
+  StartingPriceFilterValue,
+} from "./starting-price-filter";
 
 export const RESEARCH_RULE_VERSION = "research_rule_v1";
 export const DEVELOPMENT_DATASET_YEAR = "2025";
@@ -33,6 +52,7 @@ export const DEVELOPMENT_TO = "2025-12-31";
 
 const courseIdSetCache = new WeakMap<ResearchRuleV1, { key: string; set: Set<string> }>();
 const trainerIdSetCache = new WeakMap<ResearchRuleV1, { key: string; set: Set<string> }>();
+const jockeyIdSetCache = new WeakMap<ResearchRuleV1, { key: string; set: Set<string> }>();
 
 export type ResearchRuleV1 = {
   version: typeof RESEARCH_RULE_VERSION;
@@ -58,10 +78,16 @@ export type ResearchRuleV1 = {
   runner: {
     trainerIds?: string[];
     trainerNames?: string[];
+    jockeyIds?: string[];
+    jockeyNames?: string[];
     /** @deprecated Use trainerIds. Kept so older saved rules and URLs parse safely. */
     trainerId?: string;
     /** @deprecated Use trainerNames. Kept so older saved rules and URLs parse safely. */
     trainerName?: string;
+    /** @deprecated Use jockeyIds. Kept so older saved rules and URLs parse safely. */
+    jockeyId?: string;
+    /** @deprecated Use jockeyNames. Kept so older saved rules and URLs parse safely. */
+    jockeyName?: string;
     trainerCohort?: TrainerCohortRule;
     returnBucket?: ReturnBucket;
     runAfterBreak?: RunAfterBreakFilter;
@@ -71,11 +97,14 @@ export type ResearchRuleV1 = {
     priorRuns?: NumericCondition;
     trainerPriorRuns?: NumericCondition;
     trainerPriorWinRate?: NumericCondition;
+    jockeyPriorRuns?: NumericCondition;
+    jockeyPriorWinRate?: NumericCondition;
   };
   ratings: RatingCondition[];
   relatives: RelativeCondition[];
   ranks: RankCondition[];
   turfPerformance?: TurfPerformanceCondition;
+  startingPrice?: StartingPriceCondition;
 };
 
 export type NumericCondition = {
@@ -223,6 +252,7 @@ export type ResearchFilterOptions = {
   distances: ResearchDistanceBucketOption[];
   weights: ResearchWeightOption[];
   trainers: ResearchTrainerOption[];
+  jockeys?: ResearchJockeyOption[];
 };
 
 export const DISTANCE_BUCKET_TOLERANCE_YARDS = 100;
@@ -237,6 +267,12 @@ export type ResearchWeightOption = {
 export type ResearchTrainerOption = {
   trainerId: string;
   trainerName: string;
+  count: number;
+};
+
+export type ResearchJockeyOption = {
+  jockeyId: string;
+  jockeyName: string;
   count: number;
 };
 
@@ -348,7 +384,8 @@ export function evaluateResearchRule(input: {
     .filter((row) => matchesRatingConditions(row.features, input.rule))
     .filter((row) => matchesRelativeConditions(row.features, input.rule))
     .filter((row) => matchesRankConditions(row, input.rule))
-    .filter((row) => matchesTurfPerformanceConditions(row, input.rule));
+    .filter((row) => matchesTurfPerformanceConditions(row, input.rule))
+    .filter((row) => matchesStartingPriceCondition(row, input.rule));
   const selectedRunners = selectedRows
     .map((row) => researchSelection(row, input.rule))
     .sort(compareSelections);
@@ -438,6 +475,7 @@ export function parseResearchRule(value: string): ResearchRuleV1 | null {
       relatives: parsed.relatives ?? [],
       ranks: parsed.ranks ?? [],
       turfPerformance: normalizeTurfPerformanceCondition(parsed.turfPerformance),
+      startingPrice: normalizeStartingPriceCondition(parsed.startingPrice),
     };
   } catch {
     return null;
@@ -479,6 +517,9 @@ export function ruleFromSearchParams(params: URLSearchParams): ResearchRuleV1 {
     priorRuns: rangeFromParams(params, "priorRunsMin", "priorRunsMax"),
     trainerPriorRuns: rangeFromParams(params, "trainerPriorRunsMin", "trainerPriorRunsMax"),
     trainerPriorWinRate: rangeFromParams(params, "trainerPriorWinRateMin", "trainerPriorWinRateMax"),
+    jockeyIds: textValues(params.getAll("jockeyId")),
+    jockeyPriorRuns: rangeFromParams(params, "jockeyPriorRunsMin", "jockeyPriorRunsMax"),
+    jockeyPriorWinRate: rangeFromParams(params, "jockeyPriorWinRateMin", "jockeyPriorWinRateMax"),
   };
   rule.runner = normalizeRunnerRule(rule.runner);
 
@@ -498,6 +539,7 @@ export function ruleFromSearchParams(params: URLSearchParams): ResearchRuleV1 {
     ...(officialRatingRankRange ? [{ metric: "officialRating" as const, range: officialRatingRankRange }] : []),
   ];
   rule.turfPerformance = turfPerformanceFromParams(params, rule.family);
+  rule.startingPrice = startingPriceFromParams(params);
 
   return rule;
 }
@@ -509,6 +551,7 @@ export function researchFilterOptionsForRows(rows: HistoricalTargetRunnerMetrics
     distances: distanceBucketOptionsForRows(rows),
     weights: weightOptions(),
     trainers: trainerOptionsForRows(rows),
+    jockeys: jockeyOptionsForRows(rows),
   };
 }
 
@@ -569,6 +612,24 @@ export function trainerOptionsForRows(rows: HistoricalTargetRunnerMetricsRow[]):
   );
 }
 
+export function jockeyOptionsForRows(rows: HistoricalTargetRunnerMetricsRow[]): ResearchJockeyOption[] {
+  const options = new Map<string, ResearchJockeyOption>();
+  for (const row of rows) {
+    const jockeyId = row.features.jockeyId;
+    const jockeyName = row.features.jockeyName;
+    if (!jockeyId || !jockeyName) continue;
+    const existing = options.get(jockeyId);
+    options.set(jockeyId, {
+      jockeyId,
+      jockeyName,
+      count: (existing?.count ?? 0) + 1,
+    });
+  }
+  return [...options.values()].sort((left, right) =>
+    left.jockeyName.localeCompare(right.jockeyName) || left.jockeyId.localeCompare(right.jockeyId),
+  );
+}
+
 export function hydrateResearchRuleMetadata(
   rule: ResearchRuleV1,
   rows: HistoricalTargetRunnerMetricsRow[],
@@ -606,7 +667,7 @@ function hydrateTrainerMetadata(rule: ResearchRuleV1, rows: HistoricalTargetRunn
   const validTrainers = trainerIds
     .map((trainerId) => trainersById.get(trainerId))
     .filter((option): option is ResearchTrainerOption => Boolean(option));
-  return {
+  const hydratedRule = {
     ...rule,
     runner: {
       ...rule.runner,
@@ -615,6 +676,25 @@ function hydrateTrainerMetadata(rule: ResearchRuleV1, rows: HistoricalTargetRunn
       trainerId: undefined,
       trainerName: undefined,
       trainerCohort: validTrainers.length > 0 ? undefined : rule.runner.trainerCohort,
+    },
+  };
+  return hydrateJockeyMetadata(hydratedRule, rows);
+}
+
+function hydrateJockeyMetadata(rule: ResearchRuleV1, rows: HistoricalTargetRunnerMetricsRow[]): ResearchRuleV1 {
+  const jockeyIds = selectedJockeyIds(rule);
+  const jockeysById = new Map(jockeyOptionsForRows(rows).map((option) => [option.jockeyId, option]));
+  const validJockeys = jockeyIds
+    .map((jockeyId) => jockeysById.get(jockeyId))
+    .filter((option): option is ResearchJockeyOption => Boolean(option));
+  return {
+    ...rule,
+    runner: {
+      ...rule.runner,
+      jockeyIds: validJockeys.map((option) => option.jockeyId),
+      jockeyNames: validJockeys.map((option) => option.jockeyName),
+      jockeyId: undefined,
+      jockeyName: undefined,
     },
   };
 }
@@ -696,6 +776,7 @@ export function matchesRunnerConditions(
   trainerCohort: ResolvedTrainerCohort | null = null,
 ): boolean {
   return trainerMatches(features, rule) &&
+    jockeyMatches(features, rule) &&
     trainerCohortMatches(features.trainerId, rule, trainerCohort) &&
     returnBucketMatches(features.daysSinceLastRun, rule.runner.returnBucket) &&
     runAfterBreakMatches(features.runAfterBreakNumber, rule.runner.runAfterBreak) &&
@@ -704,7 +785,9 @@ export function matchesRunnerConditions(
     rangeMatches(features.daysSinceLastRun, rule.runner.daysSinceRun) &&
     rangeMatches(features.priorRuns, rule.runner.priorRuns) &&
     rangeMatches(features.trainerPriorRuns, rule.runner.trainerPriorRuns) &&
-    rangeMatches(features.trainerPriorWinRate, rule.runner.trainerPriorWinRate);
+    rangeMatches(features.trainerPriorWinRate, rule.runner.trainerPriorWinRate) &&
+    rangeMatches(features.jockeyPriorRuns ?? 0, rule.runner.jockeyPriorRuns) &&
+    rangeMatches(features.jockeyPriorWinRate ?? null, rule.runner.jockeyPriorWinRate);
 }
 
 export function matchesRatingConditions(features: HistoricalPreRaceFeatureRow, rule: ResearchRuleV1): boolean {
@@ -738,6 +821,26 @@ export function matchesTurfPerformanceConditions(row: RankedResearchRow, rule: R
   return rangeMatches(rating?.rating ?? null, condition.rating) &&
     rangeMatches(rating?.rank ?? null, condition.rank) &&
     rangeMatches(turfPerformanceLead(rating), condition.lead);
+}
+
+export function matchesStartingPriceCondition(row: RankedResearchRow, rule: ResearchRuleV1): boolean {
+  const condition = rule.startingPrice;
+  if (!hasStartingPriceCondition(rule)) {
+    return true;
+  }
+  const settlement = settleSelection(row.outcome);
+  if (!settlement) {
+    return false;
+  }
+  return startingPriceDecimalMatches(settlement.settlementOddsDecimal, condition);
+}
+
+export function hasStartingPriceCondition(rule: ResearchRuleV1): boolean {
+  const condition = rule.startingPrice;
+  return Boolean(
+    condition &&
+      (condition.minDecimal !== undefined || condition.maxDecimalExclusive !== undefined),
+  );
 }
 
 function attachTurfPerformanceRatings(raceRows: RankedResearchRow[]) {
@@ -853,6 +956,7 @@ export function strategySummary(rule: ResearchRuleV1): string[] {
   pushHandicapStatus(lines, rule.race.handicapStatus);
   pushSelectionSummary(lines, "Trainer", "Trainers", selectedTrainerNames(rule), selectedTrainerIds(rule));
   pushTrainerCohort(lines, rule);
+  pushSelectionSummary(lines, "Jockey", "Jockeys", selectedJockeyNames(rule), selectedJockeyIds(rule));
   pushReturnBucket(lines, rule.runner.returnBucket);
   pushRunAfterBreak(lines, rule.runner.runAfterBreak);
   pushRange(lines, "Current OR", rule.runner.officialRating);
@@ -861,6 +965,9 @@ export function strategySummary(rule: ResearchRuleV1): string[] {
   pushRange(lines, "Career prior runs", rule.runner.priorRuns);
   pushRange(lines, "Trainer prior runners", rule.runner.trainerPriorRuns);
   pushRange(lines, "Trainer prior strike rate", rule.runner.trainerPriorWinRate, "%");
+  pushRange(lines, "Jockey prior rides", rule.runner.jockeyPriorRuns);
+  pushRange(lines, "Jockey prior win rate", rule.runner.jockeyPriorWinRate, "%");
+  pushStartingPriceSummary(lines, rule.startingPrice);
   for (const condition of rule.ratings) {
     pushRange(lines, labelForMetric(condition.metric), condition.range);
   }
@@ -958,6 +1065,46 @@ function pushTurfPerformanceSummary(lines: string[], rule: ResearchRuleV1) {
   pushRange(lines, "TPR lead", condition.lead);
 }
 
+function pushStartingPriceSummary(lines: string[], condition: StartingPriceCondition | undefined) {
+  if (!condition || (condition.minDecimal === undefined && condition.maxDecimalExclusive === undefined)) {
+    return;
+  }
+  if (isImpossibleStartingPriceCondition(condition)) {
+    lines.push("Starting price: invalid range");
+    return;
+  }
+  const minLabel = startingPriceMinLabel(condition.minDecimal);
+  const maxLabel = startingPriceMaxLabel(condition.maxDecimalExclusive);
+  if (condition.minDecimal === undefined && condition.maxDecimalExclusive === 2) {
+    lines.push("Starting price: under 1/1");
+    return;
+  }
+  if (minLabel && maxLabel) {
+    lines.push(`Starting price: ${minLabel} to ${maxLabel}`);
+    return;
+  }
+  if (minLabel) {
+    lines.push(`Starting price: ${minLabel}+`);
+  }
+  if (maxLabel) {
+    lines.push(`Starting price: up to ${maxLabel}`);
+  }
+}
+
+function startingPriceMinLabel(value: number | undefined): string | null {
+  if (value === undefined) {
+    return null;
+  }
+  return value >= 21 ? "20/1" : `${value - 1}/1`;
+}
+
+function startingPriceMaxLabel(value: number | undefined): string | null {
+  if (value === undefined) {
+    return null;
+  }
+  return value === 2 ? "under 1/1" : `${value - 2}/1`;
+}
+
 function pushWeightRange(lines: string[], label: string, range: NumericCondition | undefined) {
   if (!range || (range.min === undefined && range.max === undefined)) {
     return;
@@ -1039,14 +1186,26 @@ function normalizeRunnerRule(runner: Partial<ResearchRuleV1["runner"]> | undefin
     ...(Array.isArray(runner?.trainerNames) ? runner.trainerNames : []),
     runner?.trainerName,
   ]);
+  const jockeyIds = normalizedTextValues([
+    ...(Array.isArray(runner?.jockeyIds) ? runner.jockeyIds : []),
+    runner?.jockeyId,
+  ]);
+  const jockeyNames = normalizedTextValues([
+    ...(Array.isArray(runner?.jockeyNames) ? runner.jockeyNames : []),
+    runner?.jockeyName,
+  ]);
   const trainerCohort = normalizeTrainerCohortRule(runner?.trainerCohort);
   if (trainerCohort && trainerIds.length === 0) {
     return {
       ...runner,
       trainerIds,
       trainerNames,
+      jockeyIds,
+      jockeyNames,
       trainerId: undefined,
       trainerName: undefined,
+      jockeyId: undefined,
+      jockeyName: undefined,
       trainerCohort,
     };
   }
@@ -1056,8 +1215,12 @@ function normalizeRunnerRule(runner: Partial<ResearchRuleV1["runner"]> | undefin
     ...normalized,
     trainerIds,
     trainerNames,
+    jockeyIds,
+    jockeyNames,
     trainerId: undefined,
     trainerName: undefined,
+    jockeyId: undefined,
+    jockeyName: undefined,
   };
 }
 
@@ -1075,6 +1238,21 @@ function normalizeTurfPerformanceCondition(value: unknown): TurfPerformanceCondi
     return undefined;
   }
   return { version, rating, rank, lead };
+}
+
+function normalizeStartingPriceCondition(value: unknown): StartingPriceCondition | undefined {
+  if (!isRecord(value)) {
+    return undefined;
+  }
+  const minDecimal = numericField(value.minDecimal);
+  const maxDecimalExclusive = numericField(value.maxDecimalExclusive);
+  return minDecimal === undefined && maxDecimalExclusive === undefined
+    ? undefined
+    : { minDecimal, maxDecimalExclusive };
+}
+
+function numericField(value: unknown): number | undefined {
+  return typeof value === "number" && Number.isFinite(value) ? value : undefined;
 }
 
 function normalizeTrainerCohortRule(value: unknown): TrainerCohortRule | undefined {
@@ -1101,6 +1279,10 @@ function turfPerformanceFromParams(
     return undefined;
   }
   return { version: TURF_PERFORMANCE_RATING_VERSION, rating, rank, lead };
+}
+
+export function startingPriceFromParams(params: URLSearchParams): StartingPriceCondition | undefined {
+  return startingPriceConditionFromValues(params.get("spMin"), params.get("spMax"));
 }
 
 function rangeFromParams(params: URLSearchParams, minKey: string, maxKey: string): NumericCondition | undefined {
@@ -1198,6 +1380,20 @@ function selectedTrainerNames(rule: ResearchRuleV1): string[] {
   ]);
 }
 
+function selectedJockeyIds(rule: ResearchRuleV1): string[] {
+  return normalizedTextValues([
+    ...(Array.isArray(rule.runner.jockeyIds) ? rule.runner.jockeyIds : []),
+    rule.runner.jockeyId,
+  ]);
+}
+
+function selectedJockeyNames(rule: ResearchRuleV1): string[] {
+  return normalizedTextValues([
+    ...(Array.isArray(rule.runner.jockeyNames) ? rule.runner.jockeyNames : []),
+    rule.runner.jockeyName,
+  ]);
+}
+
 function courseMatches(features: HistoricalPreRaceFeatureRow, rule: ResearchRuleV1): boolean {
   const courseIds = selectedCourseIds(rule);
   if (courseIds.length > 0) {
@@ -1215,12 +1411,25 @@ function trainerMatches(features: HistoricalPreRaceFeatureRow, rule: ResearchRul
   return features.trainerId !== null && selectedTrainerIdSet(rule, trainerIds).has(features.trainerId);
 }
 
+function jockeyMatches(features: HistoricalPreRaceFeatureRow, rule: ResearchRuleV1): boolean {
+  const jockeyIds = selectedJockeyIds(rule);
+  if (jockeyIds.length === 0) {
+    return true;
+  }
+  const jockeyId = features.jockeyId;
+  return jockeyId ? selectedJockeyIdSet(rule, jockeyIds).has(jockeyId) : false;
+}
+
 function selectedCourseIdSet(rule: ResearchRuleV1, ids = selectedCourseIds(rule)): Set<string> {
   return selectedIdSet(rule, ids, courseIdSetCache);
 }
 
 function selectedTrainerIdSet(rule: ResearchRuleV1, ids = selectedTrainerIds(rule)): Set<string> {
   return selectedIdSet(rule, ids, trainerIdSetCache);
+}
+
+function selectedJockeyIdSet(rule: ResearchRuleV1, ids = selectedJockeyIds(rule)): Set<string> {
+  return selectedIdSet(rule, ids, jockeyIdSetCache);
 }
 
 function selectedIdSet(

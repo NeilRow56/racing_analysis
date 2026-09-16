@@ -7,6 +7,7 @@ import {
   formatExactDistance,
   formatWeightLbsAsStonePounds,
   hydrateResearchRuleMetadata,
+  jockeyOptionsForRows,
   parseWeightOptionToLbs,
   parseResearchRule,
   rankRows,
@@ -472,13 +473,13 @@ describe("research rule evaluation", () => {
     assert.equal(researchRuleKey(parsed!), researchRuleKey(rule));
   });
 
-  test("parses old single trainer/course values into arrays", () => {
+  test("parses old single trainer, jockey and course values into arrays", () => {
     const parsed = parseResearchRule(JSON.stringify({
       version: "research_rule_v1",
       family: "jump",
       dateRange: { from: "2025-01-01", to: "2025-12-31" },
       race: { courseId: "course-a" },
-      runner: { trainerId: "trainer-a" },
+      runner: { trainerId: "trainer-a", jockeyId: "jockey-a" },
       ratings: [],
       relatives: [],
       ranks: [],
@@ -488,6 +489,8 @@ describe("research rule evaluation", () => {
     assert.equal(parsed?.race.courseId, undefined);
     assert.deepEqual(parsed?.runner.trainerIds, ["trainer-a"]);
     assert.equal(parsed?.runner.trainerId, undefined);
+    assert.deepEqual(parsed?.runner.jockeyIds, ["jockey-a"]);
+    assert.equal(parsed?.runner.jockeyId, undefined);
   });
 
   test("parses old single-class rules as multi-class rules", () => {
@@ -518,23 +521,34 @@ describe("research rule evaluation", () => {
     assert.deepEqual(rule.race.raceClasses, [1, 2, 5]);
   });
 
-  test("parses repeated trainer and course URL params and sorts canonical identity", () => {
+  test("parses repeated trainer, jockey and course URL params and sorts canonical identity", () => {
     const left = ruleFromSearchParams(new URLSearchParams([
       ["family", "jump"],
       ["trainerId", "trainer-b"],
       ["trainerId", "trainer-a"],
+      ["jockeyId", "jockey-b"],
+      ["jockeyId", "jockey-a"],
       ["courseId", "course-b"],
       ["courseId", "course-a"],
+      ["jockeyPriorRunsMin", "50"],
+      ["jockeyPriorWinRateMin", "15"],
     ]));
     const right = ruleFromSearchParams(new URLSearchParams([
       ["family", "jump"],
       ["trainerId", "trainer-a"],
       ["trainerId", "trainer-b"],
+      ["jockeyId", "jockey-a"],
+      ["jockeyId", "jockey-b"],
       ["courseId", "course-a"],
       ["courseId", "course-b"],
+      ["jockeyPriorRunsMin", "50"],
+      ["jockeyPriorWinRateMin", "15"],
     ]));
 
     assert.deepEqual(left.runner.trainerIds, ["trainer-a", "trainer-b"]);
+    assert.deepEqual(left.runner.jockeyIds, ["jockey-a", "jockey-b"]);
+    assert.deepEqual(left.runner.jockeyPriorRuns, { min: 50, max: undefined });
+    assert.deepEqual(left.runner.jockeyPriorWinRate, { min: 15, max: undefined });
     assert.deepEqual(left.race.courseIds, ["course-a", "course-b"]);
     assert.equal(researchRuleKey(left), researchRuleKey(right));
   });
@@ -705,6 +719,88 @@ describe("research latest speed filters", () => {
   });
 });
 
+describe("research Starting Price filters", () => {
+  const priceRows = [
+    row({ targetRunnerId: "sp-1-99" }, { startingPriceDecimal: "1.99", won: false, placed: false, finishingPosition: 4 }),
+    row({ targetRunnerId: "sp-2-00" }, { startingPriceDecimal: "2.00", won: false, placed: false, finishingPosition: 4 }),
+    row({ targetRunnerId: "sp-2-99" }, { startingPriceDecimal: "2.99", won: false, placed: false, finishingPosition: 4 }),
+    row({ targetRunnerId: "sp-3-00" }, { startingPriceDecimal: "3.00", won: false, placed: false, finishingPosition: 4 }),
+    row({ targetRunnerId: "sp-5-99" }, { startingPriceDecimal: "5.99", won: false, placed: false, finishingPosition: 4 }),
+    row({ targetRunnerId: "sp-6-00" }, { startingPriceDecimal: "6.00", won: false, placed: false, finishingPosition: 4 }),
+    row({ targetRunnerId: "sp-6-99" }, { startingPriceDecimal: "6.99", won: false, placed: false, finishingPosition: 4 }),
+    row({ targetRunnerId: "sp-20-99" }, { startingPriceDecimal: "20.99", won: false, placed: false, finishingPosition: 4 }),
+    row({ targetRunnerId: "sp-21-00" }, { startingPriceDecimal: "21.00", won: false, placed: false, finishingPosition: 4 }),
+    row({ targetRunnerId: "missing-sp" }, { startingPriceDecimal: null, won: false, placed: false, finishingPosition: 4 }),
+  ];
+
+  function idsFor(startingPrice: ResearchRuleV1["startingPrice"]) {
+    return evaluateResearchRule({
+      rows: priceRows,
+      rule: { ...defaultResearchRule("jump"), startingPrice },
+    }).selectedRunners.map((selection) => selection.id);
+  }
+
+  test("does not filter when no price filter is active", () => {
+    assert.deepEqual(idsFor(undefined), [
+      "missing-sp",
+      "sp-1-99",
+      "sp-2-00",
+      "sp-2-99",
+      "sp-20-99",
+      "sp-21-00",
+      "sp-3-00",
+      "sp-5-99",
+      "sp-6-00",
+      "sp-6-99",
+    ]);
+  });
+
+  test("applies under-evens, minimum, range and 20/1+ boundaries", () => {
+    assert.deepEqual(idsFor({ maxDecimalExclusive: 2 }), ["sp-1-99"]);
+    assert.deepEqual(idsFor({ minDecimal: 2 }), [
+      "sp-2-00",
+      "sp-2-99",
+      "sp-20-99",
+      "sp-21-00",
+      "sp-3-00",
+      "sp-5-99",
+      "sp-6-00",
+      "sp-6-99",
+    ]);
+    assert.deepEqual(idsFor({ minDecimal: 4, maxDecimalExclusive: 7 }), [
+      "sp-5-99",
+      "sp-6-00",
+      "sp-6-99",
+    ]);
+    assert.deepEqual(idsFor({ minDecimal: 21 }), ["sp-21-00"]);
+  });
+
+  test("rejects missing SP when an active price filter is present", () => {
+    assert.equal(idsFor({ minDecimal: 1 }).includes("missing-sp"), false);
+  });
+
+  test("treats invalid min-greater-than-max filters as matching no runners", () => {
+    assert.deepEqual(idsFor({ minDecimal: 7, maxDecimalExclusive: 4 }), []);
+  });
+
+  test("parses URLs, round-trips saved JSON and changes canonical identity", () => {
+    const rule = ruleFromSearchParams(new URLSearchParams([
+      ["family", "jump"],
+      ["spMin", "3_1"],
+      ["spMax", "5_1"],
+    ]));
+    const serialized = parseResearchRule(serializeResearchRule(rule));
+
+    assert.deepEqual(rule.startingPrice, { minDecimal: 4, maxDecimalExclusive: 7 });
+    assert.deepEqual(serialized?.startingPrice, rule.startingPrice);
+    assert.notEqual(
+      researchRuleKey({ ...defaultResearchRule("jump"), startingPrice: { minDecimal: 4 } }),
+      researchRuleKey({ ...defaultResearchRule("jump"), startingPrice: { minDecimal: 5 } }),
+    );
+    assert.ok(strategySummary(rule).includes("Starting price: 3/1 to 5/1"));
+  });
+});
+
 describe("research filter options", () => {
   test("derives course, class and distance dropdown options from cached rows", () => {
     const options = researchFilterOptionsForRows([
@@ -775,6 +871,30 @@ describe("research filter options", () => {
         rows,
       ).runner.trainerIds,
       [],
+    );
+  });
+
+  test("derives jockey options from stable IDs and hydrates jockey display names", () => {
+    const rows = [
+      row({ targetRunnerId: "a", jockeyId: "jockey-b", jockeyName: "B Jockey" }),
+      row({ targetRunnerId: "b", jockeyId: "jockey-a", jockeyName: "A Jockey" }),
+      row({ targetRunnerId: "c", jockeyId: "jockey-b", jockeyName: "B Jockey" }),
+      row({ targetRunnerId: "missing", jockeyId: null, jockeyName: null }),
+    ];
+
+    assert.deepEqual(
+      jockeyOptionsForRows(rows).map((option) => [option.jockeyId, option.jockeyName, option.count]),
+      [
+        ["jockey-a", "A Jockey", 1],
+        ["jockey-b", "B Jockey", 2],
+      ],
+    );
+    assert.equal(
+      hydrateResearchRuleMetadata(
+        { ...defaultResearchRule("jump"), runner: { jockeyId: "jockey-b" } },
+        rows,
+      ).runner.jockeyNames?.[0],
+      "B Jockey",
     );
   });
 
@@ -999,6 +1119,60 @@ describe("research trainer and return filters", () => {
 
     assert.deepEqual(result.selectedRunners.map((selection) => selection.id), ["selected"]);
     assert.ok(result.strategySummary.includes("Trainer: A Trainer"));
+  });
+
+  test("filters by stable jockey ID and jockey prior metrics", () => {
+    const rows = [
+      row({
+        targetRunnerId: "selected",
+        jockeyId: "jockey-a",
+        jockeyName: "A Jockey",
+        jockeyPriorRuns: 50,
+        jockeyPriorWins: 10,
+        jockeyPriorWinRate: 20,
+      }),
+      row({
+        targetRunnerId: "low-rate",
+        jockeyId: "jockey-a",
+        jockeyName: "A Jockey",
+        jockeyPriorRuns: 50,
+        jockeyPriorWins: 5,
+        jockeyPriorWinRate: 10,
+      }),
+      row({
+        targetRunnerId: "wrong-jockey",
+        jockeyId: "jockey-b",
+        jockeyName: "B Jockey",
+        jockeyPriorRuns: 80,
+        jockeyPriorWins: 20,
+        jockeyPriorWinRate: 25,
+      }),
+      row({
+        targetRunnerId: "missing-rate",
+        jockeyId: "jockey-a",
+        jockeyName: "A Jockey",
+        jockeyPriorRuns: 0,
+        jockeyPriorWins: 0,
+        jockeyPriorWinRate: null,
+      }),
+    ];
+    const rule = hydrateResearchRuleMetadata(
+      {
+        ...defaultResearchRule("jump"),
+        runner: {
+          jockeyId: "jockey-a",
+          jockeyPriorRuns: { min: 50 },
+          jockeyPriorWinRate: { min: 15 },
+        },
+      },
+      rows,
+    );
+    const result = evaluateResearchRule({ rows, rule });
+
+    assert.deepEqual(result.selectedRunners.map((selection) => selection.id), ["selected"]);
+    assert.ok(result.strategySummary.includes("Jockey: A Jockey"));
+    assert.ok(result.strategySummary.includes("Jockey prior rides: >= 50"));
+    assert.ok(result.strategySummary.includes("Jockey prior win rate: >= 15%"));
   });
 
   test("return bucket boundaries and first career run remain distinct", () => {

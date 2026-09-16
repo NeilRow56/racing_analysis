@@ -15,6 +15,8 @@ import {
 import { researchRuleKey, researchRulesEqual } from "@/lib/racing/research-rule-identity";
 import {
   ResearchForm,
+  STARTING_PRICE_INFO_HEADING,
+  STARTING_PRICE_INFO_HELP_TEXT,
   canSaveExecutedRule,
   clearResearchRuleFilters,
   filterMultiSelectOptions,
@@ -50,6 +52,7 @@ describe("research filters page", () => {
           classes: [],
           distances: [],
           trainers: [{ trainerId: "trainer-1", trainerName: "A Trainer", count: 1 }],
+          jockeys: [{ jockeyId: "jockey-1", jockeyName: "A Jockey", count: 1 }],
           weights: weightOptions(),
         },
         handicapStatusOptions: HANDICAP_STATUS_OPTIONS,
@@ -64,7 +67,10 @@ describe("research filters page", () => {
         ref: null,
         relativeMetricOptions: RELATIVE_METRIC_OPTIONS,
         runAfterBreakOptions: RUN_AFTER_BREAK_OPTIONS,
-        rule: { ...defaultResearchRule("jump"), runner: { trainerIds: ["trainer-1"], trainerNames: ["A Trainer"] } },
+        rule: {
+          ...defaultResearchRule("jump"),
+          runner: { trainerIds: ["trainer-1"], trainerNames: ["A Trainer"], jockeyIds: ["jockey-1"], jockeyNames: ["A Jockey"] },
+        },
         settlementMode: "actual",
       }),
     );
@@ -91,6 +97,10 @@ describe("research filters page", () => {
     assert.equal(text.includes("Turf Performance Rating"), false);
     assert.match(text, /Trainer/);
     assert.match(text, /A Trainer/);
+    assert.match(text, /Jockey/);
+    assert.match(text, /A Jockey/);
+    assert.match(text, /Jockey prior runs min/);
+    assert.match(text, /Jockey prior win rate min %/);
     assert.match(text, /Return \/ layoff/);
     assert.match(text, /91-180 days/);
     assert.match(text, /Run after break/);
@@ -101,8 +111,61 @@ describe("research filters page", () => {
     assert.match(text, /Development settlement/);
     assert.match(text, /Actual result SP/);
     assert.match(text, /Cap winners at 20\/1/);
+    assert.match(text, new RegExp(STARTING_PRICE_INFO_HEADING));
+    assert.match(text, new RegExp(STARTING_PRICE_INFO_HELP_TEXT.replaceAll(".", "\\.")));
+    assert.doesNotMatch(text, /Historical pre-race odds/);
+    assert.match(text, /Minimum price/);
+    assert.match(text, /Maximum price/);
+    assert.match(text, /20\/1\+/);
     assert.match(text, /development analysis only/i);
     assert.match(text, /Clear all filters/);
+  });
+
+  test("renders and parses Starting Price dropdown filters", () => {
+    const text = renderToStaticMarkup(
+      ResearchForm({
+        familyOptions: FAMILY_OPTIONS,
+        filterOptions: {
+          courses: [],
+          classes: [],
+          distances: [],
+          trainers: [],
+          weights: weightOptions(),
+        },
+        handicapStatusOptions: HANDICAP_STATUS_OPTIONS,
+        isPending: false,
+        isStale: false,
+        onChange: () => {},
+        onClearFilters: () => {},
+        onSubmit: () => {},
+        rankMetricOptions: RANK_METRIC_OPTIONS,
+        ratingMetricOptions: RATING_METRIC_OPTIONS,
+        returnBucketOptions: RETURN_BUCKET_OPTIONS,
+        ref: null,
+        relativeMetricOptions: RELATIVE_METRIC_OPTIONS,
+        runAfterBreakOptions: RUN_AFTER_BREAK_OPTIONS,
+        rule: {
+          ...defaultResearchRule("jump"),
+          startingPrice: { minDecimal: 4, maxDecimalExclusive: 7 },
+        },
+        settlementMode: "actual",
+      }),
+    );
+    const formData = new FormData();
+    formData.set("family", "jump");
+    formData.set("from", "2025-01-01");
+    formData.set("to", "2025-12-31");
+    formData.set("spMin", "3_1");
+    formData.set("spMax", "5_1");
+
+    assert.match(text, /name="spMin"/);
+    assert.match(text, /name="spMax"/);
+    assert.match(text, /<option value="3_1" selected="">3\/1<\/option>/);
+    assert.match(text, /<option value="5_1" selected="">5\/1<\/option>/);
+    assert.deepEqual(researchRuleFromFormData(formData).startingPrice, {
+      minDecimal: 4,
+      maxDecimalExclusive: 7,
+    });
   });
 
   test("renders Turf Performance Rating diagnostic filters for Turf only", () => {
@@ -706,14 +769,28 @@ describe("trainer selector helpers", () => {
 
   test("form data stores trainer and course ID arrays and blanks clear back to all", () => {
     assert.deepEqual(
-      researchRuleFromFormData(formData({ trainerId: ["trainer-2", "trainer-1"], courseId: ["course-b", "course-a"] })).runner.trainerIds,
+      researchRuleFromFormData(formData({ trainerId: ["trainer-2", "trainer-1"], courseId: ["course-b", "course-a"], jockeyId: ["jockey-b", "jockey-a"] })).runner.trainerIds,
       ["trainer-1", "trainer-2"],
     );
     assert.deepEqual(
-      researchRuleFromFormData(formData({ trainerId: ["trainer-2", "trainer-1"], courseId: ["course-b", "course-a"] })).race.courseIds,
+      researchRuleFromFormData(formData({ trainerId: ["trainer-2", "trainer-1"], courseId: ["course-b", "course-a"], jockeyId: ["jockey-b", "jockey-a"] })).race.courseIds,
       ["course-a", "course-b"],
     );
+    assert.deepEqual(
+      researchRuleFromFormData(formData({ trainerId: ["trainer-2", "trainer-1"], courseId: ["course-b", "course-a"], jockeyId: ["jockey-b", "jockey-a"] })).runner.jockeyIds,
+      ["jockey-a", "jockey-b"],
+    );
     assert.deepEqual(researchRuleFromFormData(formData({ trainerId: "" })).runner.trainerIds, []);
+  });
+
+  test("form data stores jockey prior metric filters", () => {
+    const rule = researchRuleFromFormData(formData({
+      jockeyPriorRunsMin: "50",
+      jockeyPriorWinRateMin: "15",
+    }));
+
+    assert.deepEqual(rule.runner.jockeyPriorRuns, { min: 50, max: undefined });
+    assert.deepEqual(rule.runner.jockeyPriorWinRate, { min: 15, max: undefined });
   });
 
   test("form data stores trainer cohort concept and single trainer takes precedence", () => {
