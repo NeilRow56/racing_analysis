@@ -283,6 +283,28 @@ describe("research holdout validation", () => {
     assert.equal(snapshot.settledSelections, 1);
   });
 
+  test("evaluates generic TPR rank against the production TPR field in the 2026 holdout", async () => {
+    const root = await mkdtemp(join(tmpdir(), "racing-holdout-generic-tpr-rank-"));
+    const rule: ResearchRuleV1 = {
+      ...defaultResearchRule("turf_flat"),
+      ranks: [{ metric: "turfPerformanceRating", range: { min: 1, max: 2 } }],
+    };
+    await writeCache(root, {
+      manifest: manifestFor({ family: "turf_flat", from: "2026-01-01", to: "2026-12-31", rowCount: 4 }),
+      rows: [
+        row(turfPerformanceFeature("tpr-top", 120, 135, "2026-01-03")),
+        row(turfPerformanceFeature("tpr-second", 85, 100, "2026-01-03")),
+        row(turfPerformanceFeature("tpr-third", 75, 90, "2026-01-03")),
+        row(turfPerformanceFeature("missing-tpr", null, null, "2026-01-03")),
+      ],
+    });
+
+    const snapshot = await evaluateHoldoutForSavedRule(savedRuleFor(rule), { outputDir: root });
+
+    assert.equal(snapshot.eligibleRunners, 4);
+    assert.equal(snapshot.selections, 2);
+  });
+
   test("uses actual result SP for holdout even when development snapshot was capped", async () => {
     const root = await mkdtemp(join(tmpdir(), "racing-holdout-actual-sp-"));
     const savedRule = savedRuleFor(defaultResearchRule("jump"));
@@ -543,8 +565,8 @@ function feature(overrides: Partial<HistoricalPreRaceFeatureRow> = {}): Historic
 
 function turfPerformanceFeature(
   targetRunnerId: string,
-  latestPerformanceRating: number,
-  latestTurfSpeedRating: number,
+  latestPerformanceRating: number | null,
+  latestTurfSpeedRating: number | null,
   raceDate: string,
 ): Partial<HistoricalPreRaceFeatureRow> {
   return {

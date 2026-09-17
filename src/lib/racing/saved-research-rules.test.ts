@@ -104,6 +104,22 @@ describe("saved research rules", () => {
     assert.equal(prepared.ruleIdentity, researchRuleKey(rule));
   });
 
+  test("preserves generic TPR rank in frozen rule identity and canonical data", () => {
+    const rule: ResearchRuleV1 = {
+      ...defaultResearchRule("turf_flat"),
+      ranks: [{ metric: "turfPerformanceRating", range: { min: 1, max: 2 } }],
+    };
+
+    const prepared = prepareFrozenSavedResearchRule({
+      name: "TPR top two",
+      rule,
+      developmentSnapshot: developmentSnapshotFromResult(researchResult(rule)),
+    });
+
+    assert.deepEqual((prepared.canonicalRule as ResearchRuleV1).ranks, rule.ranks);
+    assert.equal(prepared.ruleIdentity, researchRuleKey(rule));
+  });
+
   test("records development settlement mode metadata without changing frozen rule identity", () => {
     const rule = defaultResearchRule("jump");
     const result = researchResult(rule);

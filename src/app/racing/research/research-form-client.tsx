@@ -20,16 +20,16 @@ import {
   startingPriceMaxValue,
   startingPriceMinValue,
 } from "@/lib/racing/starting-price-filter";
-import type {
-  HandicapStatusFilter,
-  RankMetric,
-  RatingMetric,
-  RelativeMetric,
-  ResearchFilterOptions,
-  ResearchRuleV1,
-  ReturnBucket,
-  RunAfterBreakFilter,
+import {
+  type HandicapStatusFilter,
+  type RatingMetric,
+  type RelativeMetric,
+  type ResearchFilterOptions,
+  type ResearchRuleV1,
+  type ReturnBucket,
+  type RunAfterBreakFilter,
 } from "@/lib/racing/research-rule";
+import { RANK_METRIC_OPTIONS, type RankMetric } from "@/lib/racing/research-rank-metrics";
 
 type Option<T extends string = string> = { value: T; label: string };
 type RatingOption = Option<RatingMetric> & { group: string };
@@ -186,9 +186,18 @@ export const ResearchForm = ({
 }) => {
   const rating = rule.ratings[0];
   const relative = rule.relatives[0];
-  const rank = rule.ranks.find((condition) => condition.metric !== "officialRating");
+  const rank = rule.ranks.find((condition) =>
+    condition.metric !== "officialRating" && condition.metric !== "turfPerformanceRating"
+  );
   const officialRatingRank = rule.ranks.find((condition) => condition.metric === "officialRating");
-  const turfPerformance = rule.turfPerformance;
+  const legacyTprRank = rule.ranks.find((condition) => condition.metric === "turfPerformanceRating")?.range;
+  const turfPerformance = legacyTprRank
+    ? {
+        version: TURF_PERFORMANCE_RATING_VERSION,
+        ...rule.turfPerformance,
+        rank: intersectFormRanges(rule.turfPerformance?.rank, legacyTprRank),
+      }
+    : rule.turfPerformance;
   const buttonLabel = researchRunButtonLabel({ isPending, isStale });
   const optionsMatchSelectedFamily = !filterOptions.family || filterOptions.family === rule.family;
   const courseOptions = optionsMatchSelectedFamily ? filterOptions.courses : [];
@@ -413,8 +422,8 @@ export const ResearchForm = ({
 
       {rule.family === "turf_flat" ? (
         <FilterGroup title="Turf Performance Rating — Diagnostic">
-          <InputField label="TPR min" name="tprMin" step="0.1" type="number" value={turfPerformance?.rating?.min} />
-          <InputField label="TPR max" name="tprMax" step="0.1" type="number" value={turfPerformance?.rating?.max} />
+          <InputField label="TPR score min" name="tprMin" step="0.1" type="number" value={turfPerformance?.rating?.min} />
+          <InputField label="TPR score max" name="tprMax" step="0.1" type="number" value={turfPerformance?.rating?.max} />
           <InputField label="TPR rank min" name="tprRankMin" type="number" value={turfPerformance?.rank?.min} />
           <InputField label="TPR rank max" name="tprRankMax" type="number" value={turfPerformance?.rank?.max} />
           <InputField label="TPR lead min" name="tprLeadMin" step="0.1" type="number" value={turfPerformance?.lead?.min} />
@@ -474,7 +483,10 @@ export function clearResearchRuleFilters(rule: ResearchRuleV1): ResearchRuleV1 {
 export function researchRuleFromFormData(formData: FormData): ResearchRuleV1 {
   const ratingMetric = textValue(formData.get("ratingMetric")) as RatingMetric | undefined;
   const relativeMetric = textValue(formData.get("relativeMetric")) as RelativeMetric | undefined;
-  const rankMetric = textValue(formData.get("rankMetric")) as RankMetric | undefined;
+  const rankMetricValue = textValue(formData.get("rankMetric"));
+  const rankMetric = RANK_METRIC_OPTIONS.some((option) => option.value === rankMetricValue)
+    ? rankMetricValue as RankMetric
+    : undefined;
   const family = familyValue(textValue(formData.get("family")));
   const ratingRange = rangeFromFormData(formData, "ratingMin", "ratingMax");
   const relativeRange = rangeFromFormData(formData, "relativeMin", "relativeMax");
@@ -1051,6 +1063,18 @@ function numberValue(value: FormDataEntryValue | null): number | undefined {
 function textValue(value: FormDataEntryValue | null): string | undefined {
   const text = typeof value === "string" ? value.trim() : "";
   return text ? text : undefined;
+}
+
+function intersectFormRanges(
+  left: { min?: number; max?: number } | undefined,
+  right: { min?: number; max?: number },
+) {
+  const mins = [left?.min, right.min].filter((value): value is number => value !== undefined);
+  const maxes = [left?.max, right.max].filter((value): value is number => value !== undefined);
+  return {
+    min: mins.length > 0 ? Math.max(...mins) : undefined,
+    max: maxes.length > 0 ? Math.min(...maxes) : undefined,
+  };
 }
 
 function textValues(values: FormDataEntryValue[]): string[] {

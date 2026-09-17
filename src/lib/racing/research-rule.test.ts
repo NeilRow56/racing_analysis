@@ -219,6 +219,76 @@ describe("research rule evaluation", () => {
     );
   });
 
+  test("filters generic TPR rank ranges using the existing production TPR rank", () => {
+    const rows = [
+      ...turfPerformanceRows(),
+      row({
+        targetRunnerId: "missing-tpr",
+        raceCode: "turf",
+        latestPerformanceRating: null,
+        latestTurfSpeedRating: null,
+      }),
+    ];
+    const idsFor = (range: { min?: number; max?: number }) =>
+      evaluateResearchRule({
+        rows,
+        rule: {
+          ...defaultResearchRule("turf_flat"),
+          ranks: [{ metric: "turfPerformanceRating", range }],
+        },
+      }).selectedRunners.map((selection) => selection.id);
+
+    assert.deepEqual(idsFor({ min: 1, max: 1 }), ["tpr-top"]);
+    assert.deepEqual(idsFor({ min: 1, max: 2 }), ["tpr-second", "tpr-top"]);
+    assert.deepEqual(idsFor({ min: 3 }), ["tpr-third"]);
+
+    const ranked = rankRows(rows);
+    for (const entry of ranked) {
+      assert.equal(entry.ranks.turfPerformanceRating, entry.turfPerformance?.rank);
+    }
+    assert.equal(
+      ranked.find((entry) => entry.features.targetRunnerId === "missing-tpr")?.ranks.turfPerformanceRating,
+      undefined,
+    );
+  });
+
+  test("keeps legacy generic and dedicated TPR rank filters with AND semantics", () => {
+    const result = evaluateResearchRule({
+      rows: turfPerformanceRows(),
+      rule: {
+        ...defaultResearchRule("turf_flat"),
+        ranks: [{ metric: "turfPerformanceRating", range: { min: 1, max: 2 } }],
+        turfPerformance: {
+          version: TURF_PERFORMANCE_RATING_VERSION,
+          rank: { min: 2, max: 3 },
+        },
+      },
+    });
+
+    assert.deepEqual(result.selectedRunners.map((selection) => selection.id), ["tpr-second"]);
+  });
+
+  test("combines Latest Performance rank 2-5 with dedicated TPR rank 1", () => {
+    const rows = [
+      row(turfPerformanceFeature("performance-first", 120, 80)),
+      row(turfPerformanceFeature("tpr-first", 110, 180)),
+      row(turfPerformanceFeature("third", 90, 90)),
+    ];
+    const result = evaluateResearchRule({
+      rows,
+      rule: {
+        ...defaultResearchRule("turf_flat"),
+        ranks: [{ metric: "latestPerformanceRating", range: { min: 2, max: 5 } }],
+        turfPerformance: {
+          version: TURF_PERFORMANCE_RATING_VERSION,
+          rank: { min: 1, max: 1 },
+        },
+      },
+    });
+
+    assert.deepEqual(result.selectedRunners.map((selection) => selection.id), ["tpr-first"]);
+  });
+
   test("keeps Jump, AW and Turf isolated", () => {
     const result = evaluateResearchRule({
       rows: [
@@ -465,11 +535,12 @@ describe("research rule evaluation", () => {
         distanceBucketTo: distanceBucketIdForYards(2200),
         distanceYards: { min: 1760, max: 2200 },
       },
-      ranks: [{ metric: "bestPerformanceLast3", range: { max: 2 } }],
+      ranks: [{ metric: "turfPerformanceRating", range: { min: 1, max: 2 } }],
     };
 
     const parsed = parseResearchRule(serializeResearchRule(rule));
     assert.deepEqual(parsed?.race.courseIds, ["course-1"]);
+    assert.deepEqual(parsed?.ranks, [{ metric: "turfPerformanceRating", range: { min: 1, max: 2 } }]);
     assert.equal(researchRuleKey(parsed!), researchRuleKey(rule));
   });
 
@@ -592,6 +663,20 @@ describe("research rule evaluation", () => {
     assert.ok(strategySummary(rule).includes("TPR: >= 110"));
     assert.ok(strategySummary(rule).includes("TPR rank: 1"));
     assert.ok(strategySummary(rule).includes("TPR lead: >= 4"));
+  });
+
+  test("maps legacy generic TPR rank URL params to the dedicated TPR condition", () => {
+    const rule = ruleFromSearchParams(new URLSearchParams([
+      ["family", "turf_flat"],
+      ["rankMetric", "turfPerformanceRating"],
+      ["rankMin", "1"],
+      ["rankMax", "2"],
+      ["tprRankMax", "1"],
+    ]));
+
+    assert.deepEqual(rule.ranks, []);
+    assert.deepEqual(rule.turfPerformance?.rank, { min: 1, max: 1 });
+    assert.equal(strategySummary(rule).filter((line) => line.startsWith("TPR rank:")).length, 1);
   });
 });
 

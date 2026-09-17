@@ -129,6 +129,45 @@ describe("Today frozen rule matching", () => {
     assert.deepEqual(matched, ["tpr-top"]);
   });
 
+  test("matches generic TPR rank rules using production W100 Today inputs", () => {
+    const matched = matchIds(
+      exampleFrozenRule({
+        race: {},
+        runner: {},
+        ratings: [],
+        ranks: [{ metric: "turfPerformanceRating", range: { min: 1, max: 1 } }],
+      }),
+      {},
+      {},
+      {},
+      "2026-09-11",
+      [
+        runner("tpr-top", {
+          latestPerformanceRating: 120,
+          previousPerformanceRating: null,
+          averagePerformanceLast3: null,
+          latestTurfSpeedRating: 135,
+          previousTurfSpeedRating: null,
+          averageTurfSpeedLast3: null,
+        }, { weightCarriedLbs: 126 }),
+        runner("tpr-second", {
+          latestPerformanceRating: 85,
+          previousPerformanceRating: null,
+          averagePerformanceLast3: null,
+          latestTurfSpeedRating: 100,
+          previousTurfSpeedRating: null,
+          averageTurfSpeedLast3: null,
+        }, { weightCarriedLbs: 126 }),
+        runner("missing-tpr", {
+          latestPerformanceRating: null,
+          latestTurfSpeedRating: null,
+        }, { weightCarriedLbs: 126 }),
+      ],
+    );
+
+    assert.deepEqual(matched, ["tpr-top"]);
+  });
+
   test("supports multiple frozen matches and ignores drafts", () => {
     const extraRule = savedRule("rule-extra", "Extra frozen rule", exampleRule({
       ranks: [],

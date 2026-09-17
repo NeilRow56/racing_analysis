@@ -10,6 +10,8 @@ import {
   RETURN_BUCKET_OPTIONS,
   RUN_AFTER_BREAK_OPTIONS,
   defaultResearchRule,
+  strategySummary,
+  type ResearchRuleV1,
   weightOptions,
 } from "@/lib/racing/research-rule";
 import { researchRuleKey, researchRulesEqual } from "@/lib/racing/research-rule-identity";
@@ -36,6 +38,7 @@ import {
 } from "./save-rule-submit-button";
 import { holdoutRangeText } from "./holdout-display";
 import { PriceSensitivityPanel } from "./price-sensitivity-panel";
+import { keyedStrategySummary } from "./strategy-summary-items";
 import { RuleStabilityPanel } from "./rule-stability-panel";
 import { TimeSliceStabilityPanel } from "./time-slice-stability-panel";
 import { TrainerCohortPanel } from "./trainer-cohort-panel";
@@ -43,6 +46,22 @@ import { trainerCohortRule, type ResolvedTrainerCohort } from "@/lib/racing/trai
 import { TURF_PERFORMANCE_RATING_VERSION } from "@/lib/racing/turf-performance-rating";
 
 describe("research filters page", () => {
+  test("gives generic rating and dedicated TPR rank summaries unique React keys", () => {
+    const combinedRule: ResearchRuleV1 = {
+      ...defaultResearchRule("turf_flat"),
+      ranks: [{ metric: "latestPerformanceRating", range: { min: 2, max: 5 } }],
+      turfPerformance: {
+        version: TURF_PERFORMANCE_RATING_VERSION,
+        rank: { min: 1, max: 1 },
+      },
+    };
+    const combined = keyedStrategySummary(strategySummary(combinedRule));
+
+    assert.equal(combined.filter((item) => item.label.startsWith("Latest Performance rank:")).length, 2);
+    assert.equal(combined.filter((item) => item.label === "TPR rank: 1").length, 1);
+    assert.equal(new Set(combined.map((item) => item.key)).size, combined.length);
+  });
+
   test("renders racing-friendly weight, handicap and speed-rating labels", async () => {
     const text = renderToStaticMarkup(
       ResearchForm({
@@ -93,6 +112,7 @@ describe("research filters page", () => {
     assert.match(text, /OR rank max/);
     assert.match(text, /Missing OR is excluded/);
     assert.match(text, /Within-Race Rating Ranking/);
+    assert.equal(text.includes('value="turfPerformanceRating"'), false);
     assert.equal(text.includes("OR rank</option>"), false);
     assert.equal(text.includes("Turf Performance Rating"), false);
     assert.match(text, /Trainer/);
@@ -231,9 +251,12 @@ describe("research filters page", () => {
     );
 
     assert.match(turfText, /Turf Performance Rating — Diagnostic/);
-    assert.match(turfText, /TPR min/);
+    assert.match(turfText, /TPR score min/);
+    assert.match(turfText, /TPR score max/);
     assert.match(turfText, /TPR rank min/);
+    assert.match(turfText, /TPR rank max/);
     assert.match(turfText, /TPR lead min/);
+    assert.match(turfText, /TPR lead max/);
     assert.match(turfText, new RegExp(TURF_PERFORMANCE_RATING_VERSION));
     assert.match(turfText, /value="110"/);
     assert.match(turfText, /value="4"/);
@@ -826,6 +849,34 @@ describe("trainer selector helpers", () => {
       lead: { min: 4, max: undefined },
     });
     assert.equal(jumpRule.turfPerformance, undefined);
+  });
+
+  test("form data stores generic performance rank and dedicated TPR rank together", () => {
+    const rule = researchRuleFromFormData(formData({
+      family: "turf_flat",
+      rankMetric: "latestPerformanceRating",
+      rankMin: "2",
+      rankMax: "5",
+      tprRankMin: "1",
+      tprRankMax: "1",
+    }));
+
+    assert.deepEqual(rule.ranks, [{
+      metric: "latestPerformanceRating",
+      range: { min: 2, max: 5 },
+    }]);
+    assert.deepEqual(rule.turfPerformance?.rank, { min: 1, max: 1 });
+  });
+
+  test("form data does not create new generic TPR rank criteria", () => {
+    const rule = researchRuleFromFormData(formData({
+      family: "turf_flat",
+      rankMetric: "turfPerformanceRating",
+      rankMin: "1",
+      rankMax: "2",
+    }));
+
+    assert.deepEqual(rule.ranks, []);
   });
 });
 

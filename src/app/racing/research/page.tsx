@@ -67,6 +67,7 @@ import { SaveRuleSubmitButton } from "./save-rule-submit-button";
 import { SavedRuleActionForms } from "./saved-rule-actions-client";
 import { TimeSliceStabilityPanel } from "./time-slice-stability-panel";
 import { TrainerCohortPanel, type TrainerCohortDiagnostics } from "./trainer-cohort-panel";
+import { keyedStrategySummary } from "./strategy-summary-items";
 
 export default async function ResearchPage({
   searchParams,
@@ -285,8 +286,8 @@ function SaveExecutedRulePanel({
             This saves the currently displayed 2025 result and freezes the canonical rule definition.
           </p>
           <ul className="mt-3 space-y-1 text-sm text-slate-700">
-            {result.strategySummary.slice(0, 8).map((line) => (
-              <li key={line}>{line}</li>
+            {keyedStrategySummary(result.strategySummary.slice(0, 8)).map((item) => (
+              <li key={item.key}>{item.label}</li>
             ))}
           </ul>
         </div>
@@ -396,8 +397,8 @@ function ResearchResults({
         <div className="border border-slate-200 bg-white p-5 shadow-sm">
           <h2 className="text-lg font-semibold">Strategy Definition</h2>
           <ul className="mt-3 space-y-1 text-sm text-slate-700">
-            {result.strategySummary.map((line) => (
-              <li key={line}>{line}</li>
+            {keyedStrategySummary(result.strategySummary).map((item) => (
+              <li key={item.key}>{item.label}</li>
             ))}
           </ul>
           <div className="mt-4 text-xs text-slate-500">
@@ -549,8 +550,8 @@ function SavedRuleDetails({ rule }: { rule: SavedResearchRule }) {
     <div className="mt-3 max-w-xl space-y-3 border border-slate-100 bg-slate-50 p-3 text-xs text-slate-700">
       {rule.notes ? <p>{rule.notes}</p> : null}
       <ul className="space-y-1">
-        {summary.map((line) => (
-          <li key={line}>{line}</li>
+        {keyedStrategySummary(summary).map((item) => (
+          <li key={item.key}>{item.label}</li>
         ))}
       </ul>
       <dl className="grid gap-2 sm:grid-cols-2">
