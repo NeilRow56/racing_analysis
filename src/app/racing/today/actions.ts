@@ -20,6 +20,7 @@ import {
   TIMEWISE_NON_RUNNER_VALUE,
   timewiseTimingForSave,
 } from "@/lib/racing/tpr-timewise-forward-context";
+import { enrichTodayForwardTrackerResults } from "@/lib/racing/tpr-timewise-forward-settlement";
 import {
   createRecord,
   forwardRaceKey,
@@ -50,9 +51,17 @@ export async function refreshTodaySelectionResultsAction(formData: FormData) {
         data.raceDate,
         trainerCohortsByRule,
       );
-      await refreshEligibleTodaySelectionResults(meetings, data.raceDate, {
+      const refreshSummary = await refreshEligibleTodaySelectionResults(meetings, data.raceDate, {
         forceRetry: true,
       });
+      if (refreshSummary.imported > 0) {
+        const refreshed = await getTodaysRacingData(connection.db, data.raceDate);
+        if (refreshed.status === "ok") {
+          await enrichTodayForwardTrackerResults(refreshed.meetings, data.raceDate);
+        }
+      } else {
+        await enrichTodayForwardTrackerResults(data.meetings, data.raceDate);
+      }
     }
   } finally {
     if (connection) {

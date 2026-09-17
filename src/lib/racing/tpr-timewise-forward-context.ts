@@ -1,6 +1,7 @@
-import type {
-  ForwardRaceInput,
-  ForwardRaceRecord,
+import {
+  createRecord,
+  type ForwardRaceInput,
+  type ForwardRaceRecord,
 } from "../../../scripts/diagnose-tpr-vs-timewise-forward";
 import {
   isOrdinaryFlatTurfRaceForDisplay,
@@ -56,11 +57,8 @@ export function buildTodayForwardInput({
   timewiseRank2NonRunner?: boolean;
 }): ForwardRaceInput {
   const raceTime = trackerRaceTime(race.scheduledTime);
-  const tprRank1 = rankedRunner(race.runners, (runner) => runner.turfPerformanceRating?.rank, 1);
-  const tprRank2 = rankedRunner(race.runners, (runner) => runner.turfPerformanceRating?.rank, 2);
-  if (!raceTime || !tprRank1 || !tprRank2) {
-    throw new Error("This race does not have a complete W100 TPR top two.");
-  }
+  if (!raceTime) throw new Error("This race does not have a valid scheduled time.");
+  const [tprRank1, tprRank2] = orderedTprRunners(race.runners);
 
   const winner = race.runners.find((runner) => runner.finishingPosition === 1) ?? null;
   const orRanks = competitionRanks(race.runners, (runner) => runner.officialRating);
@@ -70,8 +68,8 @@ export function buildTodayForwardInput({
     raceTime,
     winner: winner?.horseName ?? null,
     winnerSp: parseDecimalOdds(winner?.oddsDecimal ?? null),
-    tprRank1: tprRank1.horseName,
-    tprRank2: tprRank2.horseName,
+    tprRank1: tprRank1?.horseName ?? null,
+    tprRank2: tprRank2?.horseName ?? null,
     timewiseRank1,
     timewiseRank2,
     timewiseRank1NonRunner,
@@ -82,6 +80,36 @@ export function buildTodayForwardInput({
     orRank1: rankedRunner(race.runners, (runner) => orRanks.get(runner.runnerId), 1)?.horseName ?? null,
     winnerOrRank: winner ? orRanks.get(winner.runnerId) ?? null : null,
   };
+}
+
+export function orderedTprRunners(runners: TodayRunner[]) {
+  return runners
+    .filter((runner) => runner.resultStatus !== "non_runner" && runner.turfPerformanceRating !== undefined)
+    .sort((left, right) =>
+      right.turfPerformanceRating!.rating - left.turfPerformanceRating!.rating ||
+      left.runnerId.localeCompare(right.runnerId)
+    )
+    .slice(0, 2);
+}
+
+export function enrichForwardRecordResult(
+  record: ForwardRaceRecord,
+  race: TodayRace,
+): ForwardRaceRecord {
+  const winner = race.runners.find((runner) => runner.finishingPosition === 1);
+  if (!winner) return record;
+  const orRanks = competitionRanks(race.runners, (runner) => runner.officialRating);
+  const winnerSp = parseDecimalOdds(winner.oddsDecimal);
+  const winnerOrRank = orRanks.get(winner.runnerId) ?? null;
+  if (record.winner === winner.horseName && record.winnerSp === winnerSp && record.winnerOrRank === winnerOrRank) {
+    return record;
+  }
+  return createRecord({
+    ...record,
+    winner: winner.horseName,
+    winnerSp,
+    winnerOrRank,
+  });
 }
 
 function rankedRunner(

@@ -61,6 +61,14 @@ bun run backup:daily
 
 Completed backups are written under `backups/YYYY-MM-DD_HHMMSS/` and are excluded from Git. Verify the newest backup without restoring it using `bun run backup:verify`. Cleanup is deliberately separate from backup creation; `bun run backup:cleanup` keeps the newest 30 completed backups.
 
+Create a fresh, verified weekly archive for manual upload to Google Drive with:
+
+```bash
+bun run backup:weekly
+```
+
+The command writes `racing-analysis-weekly-YYYY-MM-DD_HHMMSS.tar.gz` to the current user's `Documents` directory. It contains only the PostgreSQL custom-format dump, forward tracker JSON, and backup manifest.
+
 To test a restore, create an empty test database and restore the custom-format dump into it:
 
 ```bash

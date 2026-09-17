@@ -28,7 +28,7 @@ type BackupManifest = {
   latestMigration: string | null;
 };
 
-async function createBackup() {
+export async function createBackup() {
   const databaseUrl = process.env.DATABASE_URL;
   if (!databaseUrl) throw new Error("DATABASE_URL is not set. Run through `bun run backup:daily` so .env.local is loaded.");
 
@@ -72,6 +72,7 @@ async function createBackup() {
     await writeFile(join(stagingDirectory, MANIFEST_FILENAME), `${JSON.stringify(manifest, null, 2)}\n`, "utf8");
     await rename(stagingDirectory, finalDirectory);
     console.log(`Backup complete: ${finalDirectory}`);
+    return finalDirectory;
   } catch (error) {
     await rm(stagingDirectory, { force: true, recursive: true });
     console.error("Backup failed; incomplete backup files were removed.");
@@ -83,7 +84,10 @@ async function verifyLatestBackup() {
   const directories = await completeBackupDirectories();
   const latest = directories.at(-1);
   if (!latest) throw new Error(`No completed backups found in ${BACKUP_ROOT}`);
-  const directory = join(BACKUP_ROOT, latest);
+  await verifyBackup(join(BACKUP_ROOT, latest));
+}
+
+export async function verifyBackup(directory: string) {
   const manifest = JSON.parse(await readFile(join(directory, MANIFEST_FILENAME), "utf8")) as BackupManifest;
   const dumpPath = join(directory, manifest.databaseBackup.filename);
   const trackerPath = join(directory, manifest.tracker.filename);

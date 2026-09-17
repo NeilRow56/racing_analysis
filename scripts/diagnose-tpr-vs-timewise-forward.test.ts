@@ -60,6 +60,22 @@ describe("TPR vs Timewise forward tracker", () => {
     assert.equal(summary.rank1DisagreementRaces, 0);
   });
 
+  test("handles partial and missing W100 context without inventing losses", () => {
+    const oneTpr = race({ winner: "Alpha", tprRank2: null });
+    const noTpr = race({ raceTime: "15:20", tprRank1: null, tprRank2: null });
+    const summary = summarize([oneTpr, noTpr]);
+    assert.equal(oneTpr.winnerWasTprRank1, true);
+    assert.equal(oneTpr.winnerWasTprTop2, true);
+    assert.equal(noTpr.winnerWasTprRank1, null);
+    assert.equal(noTpr.winnerWasTprTop2, null);
+    assert.equal(noTpr.rank1Agree, null);
+    assert.equal(summary.tprRank1Races, 1);
+    assert.equal(summary.tprTop2Races, 1);
+    assert.equal(summary.tprRank1Strike, 1);
+    assert.equal(summary.tprTop2Capture, 1);
+    assert.equal(summary.rank1DisagreementRaces, 1);
+  });
+
   test("reports timing coverage and excludes known post-race backfills from clean comparisons", () => {
     const preRace = race({ timewiseRecordedAt: "2026-09-17T12:00:00.000Z", timewiseRecordedPreRace: true });
     const postRace = race({ raceTime: "15:20", winner: "Charlie", timewiseRecordedAt: "2026-09-17T16:00:00.000Z", timewiseRecordedPreRace: false });

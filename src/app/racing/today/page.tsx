@@ -33,6 +33,7 @@ import {
 } from "@/lib/racing/todays-racing";
 import { todayRaceStatusLabel } from "@/lib/racing/today-race-status";
 import { trackerRaceTime } from "@/lib/racing/tpr-timewise-forward-context";
+import { enrichTodayForwardTrackerResults } from "@/lib/racing/tpr-timewise-forward-settlement";
 import {
   forwardRaceKey,
   loadTrackerData,
@@ -96,6 +97,9 @@ export default async function TodaysRacingPage({ searchParams }: PageProps) {
       displayData.status === "ok" ? displayData.meetings : [],
       frozenRulesChecked,
     );
+    if (displayData.status === "ok") {
+      await enrichTodayForwardTrackerResults(displayData.meetings, raceDate);
+    }
     const trackerData = await loadTrackerData();
     const trackedRaces = new Map(trackerData.races
       .filter((race) => race.raceDate === raceDate)
