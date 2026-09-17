@@ -51,6 +51,25 @@ bun run db:push
 bun run db:studio
 ```
 
+### Local backups
+
+Create a timestamped PostgreSQL and forward-tracker backup with:
+
+```bash
+bun run backup:daily
+```
+
+Completed backups are written under `backups/YYYY-MM-DD_HHMMSS/` and are excluded from Git. Verify the newest backup without restoring it using `bun run backup:verify`. Cleanup is deliberately separate from backup creation; `bun run backup:cleanup` keeps the newest 30 completed backups.
+
+To test a restore, create an empty test database and restore the custom-format dump into it:
+
+```bash
+createdb racing_analysis_restore_test
+pg_restore --dbname=racing_analysis_restore_test backups/YYYY-MM-DD_HHMMSS/postgres.dump
+```
+
+Verify expected tables and row counts in that test database first. Restoring over a working database should only be done deliberately, with an additional current backup and explicit `pg_restore` options appropriate to the target database.
+
 The initial schema covers courses, horses, trainers, jockeys, races, and race runners/results. Imported entity tables include optional `source` and `source_id` fields because historical racing data may contain repeated or inconsistently formatted names. Display names alone should not be treated as permanent identifiers.
 
 ## Future Python Ingestion

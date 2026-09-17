@@ -34,7 +34,10 @@
     "backtest:build-holdout": "bun run scripts/build-racing-holdout-cache.ts",
     "backtest:backfill-holdout-coverage": "bun run scripts/backfill-research-holdout-coverage.ts",
     "racing:build-backtest-cache": "bun run scripts/build-racing-backtest-cache.ts",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "backup:daily": "bun --env-file=.env.local run scripts/backup-project.ts create",
+    "backup:verify": "bun run scripts/backup-project.ts verify",
+    "backup:cleanup": "bun run scripts/backup-project.ts cleanup --keep 30"
   },
   "dependencies": {
     "drizzle-orm": "^0.45.2",

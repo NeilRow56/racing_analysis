@@ -50,3 +50,6 @@ next-env.d.ts
 data/raw/
 data/research/backtest-cache/
 data/research/backtest-cache/
+
+# Local project backups (database dumps and user-generated data)
+/backups/
