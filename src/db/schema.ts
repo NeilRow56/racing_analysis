@@ -231,11 +231,51 @@ export const turfPerformanceRatingSnapshots = pgTable(
     gap: numeric("gap", { precision: 8, scale: 3 }),
     historyDepth: integer("history_depth").notNull(),
     formulaVersion: text("formula_version").notNull(),
+    ratingBasis: text("rating_basis").notNull().default("turf"),
+    isCrossSurfaceFallback: boolean("is_cross_surface_fallback").notNull().default(false),
+    fallbackSourceSurface: text("fallback_source_surface"),
     ...timestamps(),
   },
   (table) => [
     uniqueIndex("tpr_snapshots_runner_version_idx").on(table.runnerId, table.formulaVersion),
     index("tpr_snapshots_race_date_idx").on(table.raceDate),
     index("tpr_snapshots_race_idx").on(table.raceId),
+  ],
+);
+
+export const turfPerformanceRatingShadowSnapshots = pgTable(
+  "turf_performance_rating_shadow_snapshots",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    raceId: uuid("race_id")
+      .notNull()
+      .references(() => races.id, { onDelete: "cascade" }),
+    runnerId: uuid("runner_id")
+      .notNull()
+      .references(() => raceRunners.id, { onDelete: "cascade" }),
+    horseId: uuid("horse_id")
+      .notNull()
+      .references(() => horses.id),
+    raceDate: date("race_date").notNull(),
+    raceDatetime: timestamp("race_datetime", { withTimezone: true }),
+    formulaVersion: text("formula_version").notNull(),
+    ratingBasis: text("rating_basis").notNull().default("turf"),
+    isCrossSurfaceFallback: boolean("is_cross_surface_fallback").notNull().default(false),
+    fallbackSourceSurface: text("fallback_source_surface"),
+    w100Rating: numeric("w100_rating", { precision: 8, scale: 3 }),
+    w100RawRating: numeric("w100_raw_rating", { precision: 10, scale: 6 }),
+    w100Rank: integer("w100_rank"),
+    w50Rating: numeric("w50_rating", { precision: 8, scale: 3 }),
+    w50RawRating: numeric("w50_raw_rating", { precision: 10, scale: 6 }),
+    w50Rank: integer("w50_rank"),
+    isW100Rank1: boolean("is_w100_rank_1").notNull().default(false),
+    isW50Rank1: boolean("is_w50_rank_1").notNull().default(false),
+    shadowAgreement: boolean("shadow_agreement"),
+    ...timestamps(),
+  },
+  (table) => [
+    uniqueIndex("tpr_shadow_snapshots_runner_version_idx").on(table.runnerId, table.formulaVersion),
+    index("tpr_shadow_snapshots_race_date_idx").on(table.raceDate),
+    index("tpr_shadow_snapshots_race_idx").on(table.raceId),
   ],
 );

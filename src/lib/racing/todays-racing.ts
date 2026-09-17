@@ -24,9 +24,11 @@ import {
   type TrainerPriorMetrics,
 } from "./trainer-quality";
 import {
+  calculateCrossSurfaceTurfFallbackTpr,
   calculateTurfPerformanceRating,
   rankTurfPerformanceRatings,
   type RankedTurfPerformanceRating,
+  TURF_PERFORMANCE_RATING_W50_WEIGHT_MULTIPLIER,
 } from "./turf-performance-rating";
 
 type Db = ReturnType<typeof createDbConnection>["db"];
@@ -58,6 +60,7 @@ export type TodayRunner = {
   finishingPosition: number | null;
   metrics: HorseMetricsAsOf | null;
   turfPerformanceRating?: RankedTurfPerformanceRating;
+  turfPerformanceShadowRating?: RankedTurfPerformanceRating;
   trainerMetrics?: TrainerPriorMetrics;
   jockeyMetrics?: JockeyPriorMetrics;
   savedRuleMatches?: TodaySavedRuleMatch[];
@@ -93,7 +96,17 @@ export type TodayRace = {
   declaredRunnerCount: number | null;
   actualRunnerCount: number | null;
   winningTime: string | null;
+  turfPerformanceShadow?: TodayTurfPerformanceShadow;
   runners: TodayRunner[];
+};
+
+export type TodayTurfPerformanceShadow = {
+  checked: boolean;
+  agreement: boolean | null;
+  w100RunnerId: string | null;
+  w100HorseName: string | null;
+  w50RunnerId: string | null;
+  w50HorseName: string | null;
 };
 
 export type TodayMeeting = {
@@ -427,32 +440,106 @@ export function attachTurfPerformanceRatings(race: TodayRace): TodayRace {
       .map((runner) => runner.weightCarriedLbs)
       .filter(isNumber),
   );
-  const ratings = rankTurfPerformanceRatings(
-    race.runners.map((runner) => ({
-      id: runner.runnerId,
-      rating: runner.metrics === null
-        ? null
-        : calculateTurfPerformanceRating({
-            latestPerformanceRating: runner.metrics.latestPerformanceRating,
-            previousPerformanceRating: runner.metrics.previousPerformanceRating,
-            averagePerformanceLast3: runner.metrics.averagePerformanceLast3,
-            latestSpeedRating: runner.metrics.latestTurfSpeedRating,
-            previousSpeedRating: runner.metrics.previousTurfSpeedRating,
-            averageSpeedLast3: runner.metrics.averageTurfSpeedLast3,
-            raceClass: race.raceClass,
-            weightCarriedLbs: runner.weightCarriedLbs,
-            raceMedianWeightCarriedLbs: medianWeight,
-          }),
-    })),
-  );
+  const productionInputs = race.runners.map((runner) => ({
+    id: runner.runnerId,
+    rating: turfPerformanceRatingForRunner({
+      runner,
+      raceClass: race.raceClass,
+      medianWeight,
+      weightCoefficientMultiplier: 1,
+    }),
+  }));
+  const shadowInputs = race.runners.map((runner) => ({
+    id: runner.runnerId,
+    rating: turfPerformanceRatingForRunner({
+      runner,
+      raceClass: race.raceClass,
+      medianWeight,
+      weightCoefficientMultiplier: TURF_PERFORMANCE_RATING_W50_WEIGHT_MULTIPLIER,
+    }),
+  }));
+  const ratings = rankTurfPerformanceRatings(productionInputs);
+  const shadowRatings = rankTurfPerformanceRatings(shadowInputs);
+  const shadow = turfPerformanceShadowForRace(race.runners, ratings, shadowRatings);
 
   return {
     ...race,
+    turfPerformanceShadow: shadow,
     runners: race.runners.map((runner) => ({
       ...runner,
       turfPerformanceRating: ratings.get(runner.runnerId),
+      turfPerformanceShadowRating: shadowRatings.get(runner.runnerId),
     })),
   };
+}
+
+function turfPerformanceRatingForRunner(input: {
+  runner: TodayRunner;
+  raceClass: string | null;
+  medianWeight: number | null;
+  weightCoefficientMultiplier: number;
+}) {
+  const metrics = input.runner.metrics;
+  if (metrics === null) {
+    return null;
+  }
+  const normal = calculateTurfPerformanceRating({
+    latestPerformanceRating: metrics.latestPerformanceRating,
+    previousPerformanceRating: metrics.previousPerformanceRating,
+    averagePerformanceLast3: metrics.averagePerformanceLast3,
+    latestSpeedRating: metrics.latestTurfSpeedRating,
+    previousSpeedRating: metrics.previousTurfSpeedRating,
+    averageSpeedLast3: metrics.averageTurfSpeedLast3,
+    raceClass: input.raceClass,
+    weightCarriedLbs: input.runner.weightCarriedLbs,
+    raceMedianWeightCarriedLbs: input.medianWeight,
+    weightCoefficientMultiplier: input.weightCoefficientMultiplier,
+    basis: "turf",
+  });
+  if (normal !== null) {
+    return normal;
+  }
+  return calculateCrossSurfaceTurfFallbackTpr({
+    latestAwSpeedRating: metrics.latestAwSpeedRating,
+    previousAwSpeedRating: metrics.previousAwSpeedRating,
+    averageAwSpeedLast3: metrics.averageAwSpeedLast3,
+    raceClass: input.raceClass,
+    weightCarriedLbs: input.runner.weightCarriedLbs,
+    raceMedianWeightCarriedLbs: input.medianWeight,
+    weightCoefficientMultiplier: input.weightCoefficientMultiplier,
+  });
+}
+
+function turfPerformanceShadowForRace(
+  runners: TodayRunner[],
+  productionRatings: Map<string, RankedTurfPerformanceRating>,
+  shadowRatings: Map<string, RankedTurfPerformanceRating>,
+): TodayTurfPerformanceShadow {
+  const productionTop = topRatedRunner(runners, productionRatings);
+  const shadowTop = topRatedRunner(runners, shadowRatings);
+  return {
+    checked: productionRatings.size > 0 || shadowRatings.size > 0,
+    agreement: productionTop === null || shadowTop === null
+      ? null
+      : productionTop.runner.runnerId === shadowTop.runner.runnerId,
+    w100RunnerId: productionTop?.runner.runnerId ?? null,
+    w100HorseName: productionTop?.runner.horseName ?? null,
+    w50RunnerId: shadowTop?.runner.runnerId ?? null,
+    w50HorseName: shadowTop?.runner.horseName ?? null,
+  };
+}
+
+function topRatedRunner(
+  runners: TodayRunner[],
+  ratings: Map<string, RankedTurfPerformanceRating>,
+) {
+  const ranked = runners
+    .map((runner) => ({ runner, rating: ratings.get(runner.runnerId) }))
+    .filter((entry): entry is { runner: TodayRunner; rating: RankedTurfPerformanceRating } =>
+      entry.rating !== undefined && entry.rating.rank === 1,
+    )
+    .sort((left, right) => left.runner.runnerId.localeCompare(right.runner.runnerId));
+  return ranked[0] ?? null;
 }
 
 export function meetingOrderFromIndexPayload(

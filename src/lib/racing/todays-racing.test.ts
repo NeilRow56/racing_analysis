@@ -283,6 +283,96 @@ describe("Today racing grouping", () => {
     assert.equal(second.turfPerformanceRating?.rank, 2);
     assert.equal(second.turfPerformanceRating?.gap !== null, true);
     assert.equal((second.turfPerformanceRating?.gap ?? 0) < 0, true);
+    assert.equal(top.turfPerformanceShadowRating?.rank, 1);
+    assert.equal(grouped[0].races[0].turfPerformanceShadow?.agreement, true);
+  });
+
+  test("uses AW fallback only when Turf TPR is unavailable", () => {
+    const grouped = groupTodaysRacingRows(
+      [
+        row({
+          runnerId: "runner-aw-fallback",
+          horseName: "AW Fallback",
+          saddleclothNumber: 1,
+          weightCarriedLbs: 130,
+        }),
+        row({
+          runnerId: "runner-unrated",
+          horseName: "Unrated",
+          saddleclothNumber: 2,
+          weightCarriedLbs: 128,
+        }),
+      ],
+      new Map(),
+      new Map([
+        ["runner-aw-fallback", metric({
+          latestAwSpeedRating: 100,
+        })],
+        ["runner-unrated", metric()],
+      ]),
+    );
+
+    const rated = grouped[0].races[0].runners[0];
+    assert.equal(rated.turfPerformanceRating?.basis, "aw_fallback");
+    assert.equal(rated.turfPerformanceRating?.fallbackSourceSurface, "all_weather");
+    assert.equal(rated.turfPerformanceRating?.historyDepth, 1);
+    assert.equal(grouped[0].races[0].runners[1].turfPerformanceRating, undefined);
+  });
+
+  test("keeps same-surface Turf TPR when AW history also exists", () => {
+    const grouped = groupTodaysRacingRows(
+      [row({ runnerId: "runner-both", weightCarriedLbs: 130 })],
+      new Map(),
+      new Map([
+        ["runner-both", metric({
+          latestPerformanceRating: 70,
+          latestTurfSpeedRating: 105,
+          latestAwSpeedRating: 120,
+        })],
+      ]),
+    );
+
+    assert.equal(grouped[0].races[0].runners[0].turfPerformanceRating?.basis, "turf");
+    assert.equal(grouped[0].races[0].runners[0].turfPerformanceRating?.isCrossSurfaceFallback, false);
+  });
+
+  test("records W50/W100 rank-1 disagreement without changing production rank", () => {
+    const grouped = groupTodaysRacingRows(
+      [
+        row({
+          runnerId: "runner-production",
+          horseName: "Production Pick",
+          saddleclothNumber: 1,
+          weightCarriedLbs: 150,
+        }),
+        row({
+          runnerId: "runner-shadow",
+          horseName: "Shadow Pick",
+          saddleclothNumber: 2,
+          weightCarriedLbs: 120,
+        }),
+      ],
+      new Map(),
+      new Map([
+        ["runner-production", metric({
+          latestPerformanceRating: 40,
+          latestTurfSpeedRating: 85,
+        })],
+        ["runner-shadow", metric({
+          latestPerformanceRating: 65,
+          latestTurfSpeedRating: 115,
+        })],
+      ]),
+    );
+
+    const race = grouped[0].races[0];
+    const productionPick = race.runners.find((runner) => runner.runnerId === "runner-production");
+    const shadowPick = race.runners.find((runner) => runner.runnerId === "runner-shadow");
+    assert.equal(productionPick?.turfPerformanceRating?.rank, 1);
+    assert.equal(shadowPick?.turfPerformanceShadowRating?.rank, 1);
+    assert.equal(race.turfPerformanceShadow?.agreement, false);
+    assert.equal(race.turfPerformanceShadow?.w100RunnerId, "runner-production");
+    assert.equal(race.turfPerformanceShadow?.w50RunnerId, "runner-shadow");
   });
 
   test("does not attach diagnostic TPR to AW or Jump races", () => {

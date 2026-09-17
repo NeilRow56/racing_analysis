@@ -1,4 +1,4 @@
-import { writeFile } from "node:fs/promises";
+import { readFile, writeFile } from "node:fs/promises";
 import { and, eq, sql } from "drizzle-orm";
 import { createDbConnection } from "@/db";
 import { sourceImports } from "@/db/schema";
@@ -514,12 +514,13 @@ async function coverageForDate(db: Db, raceDate: string) {
 
 async function coverageForRecentTurfCache() {
   const path = "data/research/backtest-cache/backtest_features_v4-sporting_life-turf_flat-2026-01-01-2026-12-31/features.ndjson";
-  const file = Bun.file(path);
-  if (!(await file.exists())) {
+  let text: string;
+  try {
+    text = await readFile(path, "utf8");
+  } catch {
     return { noLatestSpeed: "not run", noTpr: "not available", missingSourceRating: "not available" };
   }
   let noLatestSpeed = 0;
-  const text = await file.text();
   for (const line of text.split("\n")) {
     if (!line.trim()) continue;
     const row = JSON.parse(line);

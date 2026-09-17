@@ -1,6 +1,8 @@
 import { raceClassNumber } from "./research-rule-classes";
 
 export const TURF_PERFORMANCE_RATING_VERSION = "TPR_S2_V1";
+export const TURF_PERFORMANCE_RATING_W50_SHADOW_VERSION = `${TURF_PERFORMANCE_RATING_VERSION}_W50_SHADOW`;
+export const TURF_PERFORMANCE_RATING_W50_WEIGHT_MULTIPLIER = 0.5;
 
 const B3_WEIGHTS: [number, number, number] = [0.6, 0.25, 0.15];
 
@@ -19,9 +21,11 @@ const CLASS_OFFSETS_2025: Record<string, number> = {
   unknown: -0.05486729600240039,
 };
 
-const WEIGHT_COEFFICIENT_RAW_POINTS_PER_LB = 0.1216065319677862;
+export const TURF_PERFORMANCE_RATING_WEIGHT_COEFFICIENT_RAW_POINTS_PER_LB = 0.1216065319677862;
 const TPR_DEVELOPMENT_MEAN = -0.103;
 const TPR_DEVELOPMENT_STDEV = 1.223;
+
+export type TurfPerformanceRatingBasis = "turf" | "aw_fallback";
 
 export type TurfPerformanceRatingInput = {
   latestPerformanceRating: number | null;
@@ -33,6 +37,9 @@ export type TurfPerformanceRatingInput = {
   raceClass: string | null;
   weightCarriedLbs: number | null;
   raceMedianWeightCarriedLbs: number | null;
+  weightCoefficientMultiplier?: number;
+  basis?: TurfPerformanceRatingBasis;
+  fallbackSourceSurface?: "all_weather" | null;
 };
 
 export type TurfPerformanceRating = {
@@ -40,6 +47,9 @@ export type TurfPerformanceRating = {
   rawRating: number;
   historyDepth: 1 | 2 | 3;
   version: typeof TURF_PERFORMANCE_RATING_VERSION;
+  basis?: TurfPerformanceRatingBasis;
+  isCrossSurfaceFallback?: boolean;
+  fallbackSourceSurface?: "all_weather" | null;
 };
 
 export type RankedTurfPerformanceRating = TurfPerformanceRating & {
@@ -74,13 +84,48 @@ export function calculateTurfPerformanceRating(
     robustScore(speed, SPEED_MEDIAN_2025, SPEED_IQR_2025)
   ) / 2;
   const classAdjusted = base - classOffset(input.raceClass);
-  const rawRating = classAdjusted + (WEIGHT_COEFFICIENT_RAW_POINTS_PER_LB * weightDiff);
+  const weightMultiplier = input.weightCoefficientMultiplier ?? 1;
+  const rawRating = classAdjusted + (
+    TURF_PERFORMANCE_RATING_WEIGHT_COEFFICIENT_RAW_POINTS_PER_LB *
+    weightMultiplier *
+    weightDiff
+  );
   return {
     rating: 100 + (10 * ((rawRating - TPR_DEVELOPMENT_MEAN) / TPR_DEVELOPMENT_STDEV)),
     rawRating,
     historyDepth: historyDepth as 1 | 2 | 3,
     version: TURF_PERFORMANCE_RATING_VERSION,
+    basis: input.basis ?? "turf",
+    isCrossSurfaceFallback: input.basis === "aw_fallback",
+    fallbackSourceSurface: input.fallbackSourceSurface ?? null,
   };
+}
+
+export function calculateCrossSurfaceTurfFallbackTpr(
+  input: {
+    latestAwSpeedRating: number | null;
+    previousAwSpeedRating: number | null;
+    averageAwSpeedLast3: number | null;
+    raceClass: string | null;
+    weightCarriedLbs: number | null;
+    raceMedianWeightCarriedLbs: number | null;
+    weightCoefficientMultiplier?: number;
+  },
+): TurfPerformanceRating | null {
+  return calculateTurfPerformanceRating({
+    latestPerformanceRating: input.latestAwSpeedRating,
+    previousPerformanceRating: input.previousAwSpeedRating,
+    averagePerformanceLast3: input.averageAwSpeedLast3,
+    latestSpeedRating: input.latestAwSpeedRating,
+    previousSpeedRating: input.previousAwSpeedRating,
+    averageSpeedLast3: input.averageAwSpeedLast3,
+    raceClass: input.raceClass,
+    weightCarriedLbs: input.weightCarriedLbs,
+    raceMedianWeightCarriedLbs: input.raceMedianWeightCarriedLbs,
+    weightCoefficientMultiplier: input.weightCoefficientMultiplier,
+    basis: "aw_fallback",
+    fallbackSourceSurface: "all_weather",
+  });
 }
 
 export function rankTurfPerformanceRatings<T extends { id: string; rating: TurfPerformanceRating | null }>(

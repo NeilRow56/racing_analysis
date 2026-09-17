@@ -12,7 +12,12 @@ import {
   type TodayTrainerCohortsByRule,
 } from "@/lib/racing/today-rule-matches";
 import { getTrainerCohortForRule } from "@/lib/racing/trainer-cohorts";
-import { saveTurfPerformanceRatingSnapshots } from "@/lib/racing/turf-performance-rating-snapshots";
+import {
+  saveTurfPerformanceRatingShadowSnapshots,
+  saveTurfPerformanceRatingSnapshots,
+  summarizeTurfPerformanceShadowSnapshots,
+  type TurfPerformanceShadowSummary,
+} from "@/lib/racing/turf-performance-rating-snapshots";
 import { turfPerformanceHistoryDepthLabel } from "@/lib/racing/turf-performance-rating";
 import {
   formatRaceTimeForDisplay,
@@ -54,6 +59,7 @@ export default async function TodaysRacingPage({ searchParams }: PageProps) {
       savedRules,
       raceDate,
     );
+    let shadowSummary: TurfPerformanceShadowSummary | null = null;
     const attachMatches = () => data.status === "ok"
       ? {
           ...data,
@@ -62,6 +68,8 @@ export default async function TodaysRacingPage({ searchParams }: PageProps) {
       : data;
     let displayData = attachMatches();
     if (displayData.status === "ok") {
+      await saveTurfPerformanceRatingSnapshots(connection.db, displayData.meetings, raceDate);
+      await saveTurfPerformanceRatingShadowSnapshots(connection.db, displayData.meetings, raceDate);
       const refreshSummary = await refreshEligibleTodaySelectionResults(
         displayData.meetings,
         raceDate,
@@ -71,7 +79,7 @@ export default async function TodaysRacingPage({ searchParams }: PageProps) {
         displayData = attachMatches();
       }
       if (displayData.status === "ok") {
-        await saveTurfPerformanceRatingSnapshots(connection.db, displayData.meetings, raceDate);
+        shadowSummary = await summarizeTurfPerformanceShadowSnapshots(connection.db, raceDate);
       }
     }
     await connection.client.end();
@@ -125,7 +133,7 @@ export default async function TodaysRacingPage({ searchParams }: PageProps) {
               {displayData.message}
             </p>
           ) : (
-            <TodaysRacing meetings={displayData.meetings} />
+            <TodaysRacing meetings={displayData.meetings} shadowSummary={shadowSummary} />
           )}
         </section>
       </main>
@@ -173,7 +181,13 @@ function FrozenRuleMatchSummary({ summary }: { summary: TodayFrozenRuleMatchSumm
   );
 }
 
-function TodaysRacing({ meetings }: { meetings: TodayMeeting[] }) {
+function TodaysRacing({
+  meetings,
+  shadowSummary,
+}: {
+  meetings: TodayMeeting[];
+  shadowSummary: TurfPerformanceShadowSummary | null;
+}) {
   const ruleSelections = buildTodayRuleSelections(meetings);
 
   return (
@@ -200,6 +214,19 @@ function TodaysRacing({ meetings }: { meetings: TodayMeeting[] }) {
           TPR is an experimental Turf Performance Rating based on recent RPR/Topspeed, class and weight.
           It is being forward-tested and is not a betting recommendation.
         </p>
+        {shadowSummary ? (
+          <p className="max-w-4xl text-sm leading-6 text-slate-600">
+            W50 shadow: {shadowSummary.turfRacesChecked} Turf races checked ·{" "}
+            {shadowSummary.agreements} agreements · {shadowSummary.disagreements} disagreements
+            {shadowSummary.settledDisagreementRaces > 0 ? (
+              <>
+                {" "}· settled disagreements {shadowSummary.settledDisagreementRaces}
+                {" "}· W50 winners {shadowSummary.w50DisagreementWinners}
+                {" "}· W100 winners {shadowSummary.w100DisagreementWinners}
+              </>
+            ) : null}
+          </p>
+        ) : null}
         {meetings.map((meeting) => (
           <MeetingSection key={meeting.courseId} meeting={meeting} />
         ))}
@@ -332,6 +359,11 @@ function RaceBlock({ race }: { race: TodayRace }) {
         </div>
         <RaceMeta race={race} />
       </header>
+      {race.turfPerformanceShadow?.agreement === false && race.turfPerformanceShadow.w50HorseName ? (
+        <p className="mt-2 text-sm font-medium text-amber-700">
+          W50 differs: {race.turfPerformanceShadow.w50HorseName}
+        </p>
+      ) : null}
 
       <RunnerTable
         isAllWeatherRace={isAllWeatherRace}
@@ -517,6 +549,11 @@ function TurfPerformanceRatingCell({ runner }: { runner: TodayRunner }) {
         Rank {rating.rank}
         {rating.gap !== null ? ` · ${formatTprGap(rating.gap)}` : ""}
       </div>
+      {rating.isCrossSurfaceFallback ? (
+        <div className="text-xs font-medium text-sky-700">
+          {rating.historyDepth}-run AW fallback
+        </div>
+      ) : null}
       {rating.historyDepth < 3 ? (
         <div className="text-xs text-amber-700">
           {turfPerformanceHistoryDepthLabel(rating.historyDepth)}
