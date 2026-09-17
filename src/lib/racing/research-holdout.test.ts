@@ -184,6 +184,29 @@ describe("research holdout validation", () => {
     assert.equal(snapshot.settledSelections, 2);
   });
 
+  test("evaluates frozen Jump subtype against the 2026 holdout cache", async () => {
+    const root = await mkdtemp(join(tmpdir(), "racing-holdout-jump-subtype-"));
+    const rule: ResearchRuleV1 = {
+      ...defaultResearchRule("jump"),
+      race: { jumpSubtype: "hurdle" },
+    };
+    await writeCache(root, {
+      manifest: manifestFor({ family: "jump", from: "2026-01-01", to: "2026-12-31", rowCount: 4 }),
+      rows: [
+        row({ targetRunnerId: "hurdle", raceName: "Mares Hurdle", raceType: "Hurdle", raceDate: "2026-01-03" }),
+        row({ targetRunnerId: "chase", raceName: "Novices Chase", raceType: "Chase", raceDate: "2026-01-04" }),
+        row({ targetRunnerId: "bumper", raceName: "National Hunt Flat Race", raceType: "NH Flat", raceDate: "2026-01-05" }),
+        row({ targetRunnerId: "unknown", raceName: "Unclassified Jump Race", raceType: null, raceDate: "2026-01-06" }),
+      ],
+    });
+
+    const snapshot = await evaluateHoldoutForSavedRule(savedRuleFor(rule), { outputDir: root });
+
+    assert.equal(snapshot.eligibleRunners, 1);
+    assert.equal(snapshot.selections, 1);
+    assert.equal(snapshot.settledSelections, 1);
+  });
+
   test("evaluates frozen jockey filters against the 2026 holdout cache", async () => {
     const root = await mkdtemp(join(tmpdir(), "racing-holdout-jockey-"));
     const rule: ResearchRuleV1 = {

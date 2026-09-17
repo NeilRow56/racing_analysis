@@ -1189,6 +1189,56 @@ describe("research handicap filters", () => {
   });
 });
 
+describe("research Jump subtype filters", () => {
+  const jumpRows = [
+    row({ targetRunnerId: "hurdle", raceName: "Mares Hurdle", raceType: "Hurdle", raceTypeCode: "HURDLE" }),
+    row({ targetRunnerId: "chase", raceName: "Novices Chase", raceType: "Chase", raceTypeCode: "CHASE" }),
+    row({ targetRunnerId: "bumper", raceName: "National Hunt Flat Race", raceType: "NH Flat", raceTypeCode: "NHF" }),
+    row({ targetRunnerId: "unknown", raceName: "Unclassified Jump Race", raceType: null, raceTypeCode: null }),
+  ];
+
+  test("defaults legacy and explicit All rules to every Jump subtype", () => {
+    const legacy = defaultResearchRule("jump");
+    const explicit = { ...defaultResearchRule("jump"), race: { jumpSubtype: "all" as const } };
+
+    assert.deepEqual(evaluateResearchRule({ rows: jumpRows, rule: legacy }).selectedRunners.map((item) => item.id).sort(), ["bumper", "chase", "hurdle", "unknown"]);
+    assert.deepEqual(evaluateResearchRule({ rows: jumpRows, rule: explicit }).selectedRunners.map((item) => item.id).sort(), ["bumper", "chase", "hurdle", "unknown"]);
+    assert.equal(researchRuleKey(legacy), researchRuleKey(explicit));
+  });
+
+  test("filters hurdles and chases into disjoint subsets while excluding NH Flat and unknown", () => {
+    const hurdles = evaluateResearchRule({ rows: jumpRows, rule: { ...defaultResearchRule("jump"), race: { jumpSubtype: "hurdle" } } }).selectedRunners.map((item) => item.id);
+    const chases = evaluateResearchRule({ rows: jumpRows, rule: { ...defaultResearchRule("jump"), race: { jumpSubtype: "chase" } } }).selectedRunners.map((item) => item.id);
+
+    assert.deepEqual(hurdles, ["hurdle"]);
+    assert.deepEqual(chases, ["chase"]);
+    assert.equal(hurdles.some((id) => chases.includes(id)), false);
+    assert.ok(hurdles.length + chases.length <= jumpRows.length);
+  });
+
+  test("round-trips URL and saved JSON and omits the All default from summaries", () => {
+    const hurdle = ruleFromSearchParams(new URLSearchParams("family=jump&jumpSubtype=hurdle"));
+    const chase = parseResearchRule(serializeResearchRule({ ...defaultResearchRule("jump"), race: { jumpSubtype: "chase" } }));
+    const legacy = parseResearchRule(JSON.stringify(defaultResearchRule("jump")));
+
+    assert.equal(hurdle.race.jumpSubtype, "hurdle");
+    assert.equal(chase?.race.jumpSubtype, "chase");
+    assert.equal(legacy?.race.jumpSubtype, undefined);
+    assert.ok(strategySummary(hurdle).includes("Jump subtype: Hurdles"));
+    assert.ok(strategySummary(chase!).includes("Jump subtype: Chases"));
+    assert.equal(strategySummary(defaultResearchRule("jump")).some((line) => line.startsWith("Jump subtype:")), false);
+    assert.notEqual(researchRuleKey(hurdle), researchRuleKey(chase!));
+  });
+
+  test("ignores Jump subtype outside the Jump family", () => {
+    const turfRows = [row({ targetRunnerId: "turf", raceCode: "turf", raceName: "Flat Stakes", raceType: "Flat" })];
+    const rule = { ...defaultResearchRule("turf_flat"), race: { jumpSubtype: "hurdle" as const } };
+
+    assert.deepEqual(evaluateResearchRule({ rows: turfRows, rule }).selectedRunners.map((item) => item.id), ["turf"]);
+    assert.equal(researchRuleKey(rule), researchRuleKey(defaultResearchRule("turf_flat")));
+  });
+});
+
 describe("research trainer and return filters", () => {
   test("filters by stable trainer ID and shows trainer name in summary", () => {
     const rows = [

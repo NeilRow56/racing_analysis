@@ -10,6 +10,7 @@ import type {
   HistoricalPreRaceFeatureRow,
   HistoricalTargetRunnerMetricsRow,
 } from "./historical-target-metrics";
+import { classifyJumpRaceSubtype } from "./jump-speed-rating";
 import { normalizeRaceClasses, raceClassNumber } from "./research-rule-classes";
 import { RANK_METRIC_OPTIONS, type RankMetric } from "./research-rank-metrics";
 import {
@@ -72,6 +73,7 @@ export type ResearchRuleV1 = {
     courseName?: string;
     raceClasses?: number[];
     handicapStatus?: HandicapStatusFilter;
+    jumpSubtype?: JumpSubtypeFilter;
     distanceBucketFrom?: string;
     distanceBucketTo?: string;
     distanceYards?: NumericCondition;
@@ -116,6 +118,7 @@ export type NumericCondition = {
 
 export type HandicapStatus = "handicap" | "non_handicap" | "unknown";
 export type HandicapStatusFilter = "all" | HandicapStatus;
+export type JumpSubtypeFilter = "all" | "hurdle" | "chase";
 export type ReturnBucket =
   | "all"
   | "days_0_30"
@@ -274,6 +277,12 @@ export const HANDICAP_STATUS_OPTIONS: Array<{ value: HandicapStatusFilter; label
   { value: "handicap", label: "Handicap" },
   { value: "non_handicap", label: "Non-handicap" },
   { value: "unknown", label: "Unknown" },
+];
+
+export const JUMP_SUBTYPE_OPTIONS: Array<{ value: JumpSubtypeFilter; label: string }> = [
+  { value: "all", label: "All jump races" },
+  { value: "hurdle", label: "Hurdles" },
+  { value: "chase", label: "Chases" },
 ];
 
 export const RETURN_BUCKET_OPTIONS: Array<{ value: ReturnBucket; label: string }> = [
@@ -494,6 +503,7 @@ export function ruleFromSearchParams(params: URLSearchParams): ResearchRuleV1 {
     courseName: textValue(params.get("course")),
     raceClasses: raceClassesFromParams(params),
     handicapStatus: handicapStatusValue(params.get("handicapStatus")),
+    jumpSubtype: family === "jump" ? jumpSubtypeValue(params.get("jumpSubtype")) : undefined,
     distanceBucketFrom: textValue(params.get("distanceFrom")),
     distanceBucketTo: textValue(params.get("distanceTo")),
     distanceYards: rangeFromParams(params, "distanceMin", "distanceMax"),
@@ -767,6 +777,7 @@ export function matchesRaceConditions(features: HistoricalPreRaceFeatureRow, rul
   return courseMatches(features, rule) &&
     raceClassesMatch(features.raceClass, rule.race.raceClasses) &&
     handicapStatusMatches(features, rule.race.handicapStatus) &&
+    jumpSubtypeMatches(features, rule) &&
     rangeMatches(features.distanceYards, distanceRange) &&
     rangeMatches(fieldSize, rule.race.fieldSize);
 }
@@ -958,6 +969,7 @@ export function strategySummary(rule: ResearchRuleV1): string[] {
   pushSelectionSummary(lines, "Course", "Courses", selectedCourseNames(rule), selectedCourseIds(rule));
   pushRaceClasses(lines, rule.race.raceClasses);
   pushHandicapStatus(lines, rule.race.handicapStatus);
+  pushJumpSubtype(lines, rule);
   pushSelectionSummary(lines, "Trainer", "Trainers", selectedTrainerNames(rule), selectedTrainerIds(rule));
   pushTrainerCohort(lines, rule);
   pushSelectionSummary(lines, "Jockey", "Jockeys", selectedJockeyNames(rule), selectedJockeyIds(rule));
@@ -1040,6 +1052,15 @@ function pushHandicapStatus(lines: string[], status: HandicapStatusFilter | unde
   }
   const label = HANDICAP_STATUS_OPTIONS.find((option) => option.value === status)?.label ?? status;
   lines.push(`Race type: ${label}`);
+}
+
+function pushJumpSubtype(lines: string[], rule: ResearchRuleV1) {
+  const subtype = rule.race.jumpSubtype;
+  if (rule.family !== "jump" || !subtype || subtype === "all") {
+    return;
+  }
+  const label = JUMP_SUBTYPE_OPTIONS.find((option) => option.value === subtype)?.label ?? subtype;
+  lines.push(`Jump subtype: ${label}`);
 }
 
 function pushReturnBucket(lines: string[], bucket: ReturnBucket | undefined) {
@@ -1180,6 +1201,7 @@ function normalizeRaceRule(race: Partial<ResearchRuleV1["race"]> | undefined): R
       ...(Array.isArray(rest.raceClasses) ? rest.raceClasses : []),
       raceClassNumber(legacyRaceClass),
     ]),
+    jumpSubtype: jumpSubtypeValue(rest.jumpSubtype),
   };
 }
 
@@ -1477,6 +1499,12 @@ function handicapStatusValue(value: string | null): HandicapStatusFilter | undef
     : undefined;
 }
 
+function jumpSubtypeValue(value: unknown): JumpSubtypeFilter | undefined {
+  return JUMP_SUBTYPE_OPTIONS.some((option) => option.value === value)
+    ? value as JumpSubtypeFilter
+    : undefined;
+}
+
 function returnBucketValue(value: string | null): ReturnBucket | undefined {
   return RETURN_BUCKET_OPTIONS.some((option) => option.value === value)
     ? value as ReturnBucket
@@ -1497,6 +1525,17 @@ function handicapStatusMatches(
     return true;
   }
   return classifyHandicapStatus(features) === filter;
+}
+
+function jumpSubtypeMatches(
+  features: HistoricalPreRaceFeatureRow,
+  rule: ResearchRuleV1,
+): boolean {
+  const filter = rule.race.jumpSubtype;
+  if (rule.family !== "jump" || !filter || filter === "all") {
+    return true;
+  }
+  return classifyJumpRaceSubtype(features) === filter;
 }
 
 function returnBucketMatches(daysSinceLastRun: number | null, bucket: ReturnBucket | undefined): boolean {

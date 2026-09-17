@@ -17,6 +17,24 @@ import type {
 } from "./todays-racing";
 
 describe("Today frozen rule matching", () => {
+  test("matches frozen Jump subtype rules and keeps legacy Jump rules broad", () => {
+    const hurdleRule = savedRule("hurdles", "Hurdles", {
+      ...defaultResearchRule("jump"),
+      race: { jumpSubtype: "hurdle" },
+    }, "frozen");
+    const chaseRule = savedRule("chases", "Chases", {
+      ...defaultResearchRule("jump"),
+      race: { jumpSubtype: "chase" },
+    }, "frozen");
+    const legacyRule = savedRule("all-jump", "All Jump", defaultResearchRule("jump"), "frozen");
+
+    assert.equal(matchIds(hurdleRule, { raceName: "Mares Hurdle", raceType: "Hurdle", surface: null }).length, 4);
+    assert.deepEqual(matchIds(hurdleRule, { raceName: "Novices Chase", raceType: "Chase", surface: null }), []);
+    assert.equal(matchIds(chaseRule, { raceName: "Novices Chase", raceType: "Chase", surface: null }).length, 4);
+    assert.deepEqual(matchIds(chaseRule, { raceName: "National Hunt Flat Race", raceType: "NH Flat", surface: null }), []);
+    assert.equal(matchIds(legacyRule, { raceName: "National Hunt Flat Race", raceType: "NH Flat", surface: null }).length, 4);
+  });
+
   test("matches only runners satisfying the full frozen rule with race-wide ranks", () => {
     const matched = matchIds(exampleFrozenRule());
 

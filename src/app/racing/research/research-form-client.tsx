@@ -22,6 +22,7 @@ import {
 } from "@/lib/racing/starting-price-filter";
 import {
   type HandicapStatusFilter,
+  type JumpSubtypeFilter,
   type RatingMetric,
   type RelativeMetric,
   type ResearchFilterOptions,
@@ -264,6 +265,13 @@ export const ResearchForm = ({
             <option key={option.value} value={option.value}>{option.label}</option>
           ))}
         </SelectField>
+        {rule.family === "jump" ? (
+          <SelectField label="Jump subtype" name="jumpSubtype" value={rule.race.jumpSubtype ?? "all"}>
+            <option value="all">All jump races</option>
+            <option value="hurdle">Hurdles</option>
+            <option value="chase">Chases</option>
+          </SelectField>
+        ) : null}
         <InputField label="Field min" name="fieldMin" type="number" value={rule.race.fieldSize?.min} />
         <InputField label="Field max" name="fieldMax" type="number" value={rule.race.fieldSize?.max} />
       </FilterGroup>
@@ -506,6 +514,7 @@ export function researchRuleFromFormData(formData: FormData): ResearchRuleV1 {
       courseIds: textValues(formData.getAll("courseId")),
       raceClasses: normalizeRaceClasses(formData.getAll("class")),
       handicapStatus: handicapStatusValue(textValue(formData.get("handicapStatus"))),
+      jumpSubtype: family === "jump" ? jumpSubtypeValue(textValue(formData.get("jumpSubtype"))) : undefined,
       distanceBucketFrom: textValue(formData.get("distanceFrom")),
       distanceBucketTo: textValue(formData.get("distanceTo")),
       fieldSize: rangeFromFormData(formData, "fieldMin", "fieldMax"),
@@ -1043,6 +1052,7 @@ function searchParamsFromFormData(formData: FormData): URLSearchParams {
     if (key.endsWith("Search")) continue;
     const text = typeof value === "string" ? value.trim() : "";
     if (!text) continue;
+    if (key === "jumpSubtype" && text === "all") continue;
     if (key === "class" || key === "trainerId" || key === "courseId" || key === "jockeyId") {
       params.append(key, text);
     } else {
@@ -1100,6 +1110,13 @@ function familyValue(value: string | undefined): ResearchRuleV1["family"] {
 
 function handicapStatusValue(value: string | undefined): HandicapStatusFilter | undefined {
   if (value === "handicap" || value === "non_handicap" || value === "unknown") {
+    return value;
+  }
+  return value === "all" ? "all" : undefined;
+}
+
+function jumpSubtypeValue(value: string | undefined): JumpSubtypeFilter | undefined {
+  if (value === "hurdle" || value === "chase") {
     return value;
   }
   return value === "all" ? "all" : undefined;

@@ -99,6 +99,10 @@ describe("research filters page", () => {
     assert.match(text, /8-11/);
     assert.match(text, /12-7/);
     assert.match(text, /Race type/);
+    assert.match(text, /Jump subtype/);
+    assert.match(text, /All jump races/);
+    assert.match(text, /Hurdles/);
+    assert.match(text, /Chases/);
     assert.match(text, /Race class/);
     assert.match(text, /All classes/);
     assert.match(text, /Handicap/);
@@ -251,6 +255,7 @@ describe("research filters page", () => {
     );
 
     assert.match(turfText, /Turf Performance Rating — Diagnostic/);
+    assert.equal(turfText.includes("Jump subtype"), false);
     assert.match(turfText, /TPR score min/);
     assert.match(turfText, /TPR score max/);
     assert.match(turfText, /TPR rank min/);
@@ -261,6 +266,13 @@ describe("research filters page", () => {
     assert.match(turfText, /value="110"/);
     assert.match(turfText, /value="4"/);
     assert.equal(jumpText.includes("Turf Performance Rating"), false);
+  });
+
+  test("parses Jump subtype from the form and ignores it for Turf", () => {
+    assert.equal(researchRuleFromFormData(formData({ family: "jump", jumpSubtype: "hurdle" })).race.jumpSubtype, "hurdle");
+    assert.equal(researchRuleFromFormData(formData({ family: "jump", jumpSubtype: "chase" })).race.jumpSubtype, "chase");
+    assert.equal(researchRuleFromFormData(formData({ family: "jump", jumpSubtype: "all" })).race.jumpSubtype, "all");
+    assert.equal(researchRuleFromFormData(formData({ family: "turf_flat", jumpSubtype: "hurdle" })).race.jumpSubtype, undefined);
   });
 
   test("renders current-family trainer and course options from stable IDs", () => {

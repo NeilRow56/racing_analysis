@@ -120,6 +120,23 @@ describe("saved research rules", () => {
     assert.equal(prepared.ruleIdentity, researchRuleKey(rule));
   });
 
+  test("preserves Jump subtype in frozen rule identity and canonical data", () => {
+    const rule: ResearchRuleV1 = {
+      ...defaultResearchRule("jump"),
+      race: { jumpSubtype: "chase" },
+    };
+
+    const prepared = prepareFrozenSavedResearchRule({
+      name: "Chases only",
+      rule,
+      developmentSnapshot: developmentSnapshotFromResult(researchResult(rule)),
+    });
+
+    assert.equal((prepared.canonicalRule as ResearchRuleV1).race.jumpSubtype, "chase");
+    assert.equal(prepared.ruleIdentity, researchRuleKey(rule));
+    assert.notEqual(prepared.ruleIdentity, researchRuleKey(defaultResearchRule("jump")));
+  });
+
   test("records development settlement mode metadata without changing frozen rule identity", () => {
     const rule = defaultResearchRule("jump");
     const result = researchResult(rule);

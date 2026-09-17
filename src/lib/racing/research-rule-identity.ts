@@ -47,6 +47,9 @@ export function canonicalResearchRule(rule: ResearchRuleV1) {
       handicapStatus: !rule.race.handicapStatus || rule.race.handicapStatus === "all"
         ? undefined
         : rule.race.handicapStatus,
+      jumpSubtype: rule.family === "jump" && rule.race.jumpSubtype !== "all"
+        ? rule.race.jumpSubtype
+        : undefined,
       distanceBucketFrom: textValue(rule.race.distanceBucketFrom),
       distanceBucketTo: textValue(rule.race.distanceBucketTo),
       distanceYards: canonicalRange(rule.race.distanceYards),
