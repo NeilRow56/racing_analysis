@@ -1237,6 +1237,31 @@ describe("research Jump subtype filters", () => {
     assert.deepEqual(evaluateResearchRule({ rows: turfRows, rule }).selectedRunners.map((item) => item.id), ["turf"]);
     assert.equal(researchRuleKey(rule), researchRuleKey(defaultResearchRule("turf_flat")));
   });
+
+  test("applies the frozen Chase 31-60 days definition with inclusive boundaries", () => {
+    const rule: ResearchRuleV1 = {
+      ...defaultResearchRule("jump"),
+      race: { jumpSubtype: "chase" },
+      runner: { daysSinceRun: { min: 31, max: 60 } },
+    };
+    const rows = [
+      row({ targetRunnerId: "day-30", daysSinceLastRun: 30, raceName: "Handicap Chase", raceType: "Chase" }),
+      row({ targetRunnerId: "day-31", daysSinceLastRun: 31, raceName: "Handicap Chase", raceType: "Chase" }),
+      row({ targetRunnerId: "day-60", daysSinceLastRun: 60, raceName: "Novices Chase", raceType: "Chase" }),
+      row({ targetRunnerId: "day-61", daysSinceLastRun: 61, raceName: "Handicap Chase", raceType: "Chase" }),
+      row({ targetRunnerId: "hurdle-day-45", daysSinceLastRun: 45, raceName: "Mares Hurdle", raceType: "Hurdle" }),
+      row({ targetRunnerId: "missing-days", daysSinceLastRun: null, raceName: "Handicap Chase", raceType: "Chase" }),
+    ];
+
+    assert.deepEqual(
+      evaluateResearchRule({ rows, rule }).selectedRunners.map((selection) => selection.id),
+      ["day-31", "day-60"],
+    );
+    assert.ok(strategySummary(rule).includes("Family: Jump"));
+    assert.ok(strategySummary(rule).includes("Jump subtype: Chases"));
+    assert.ok(strategySummary(rule).includes("Days since run: >= 31"));
+    assert.ok(strategySummary(rule).includes("Days since run: <= 60"));
+  });
 });
 
 describe("research trainer and return filters", () => {

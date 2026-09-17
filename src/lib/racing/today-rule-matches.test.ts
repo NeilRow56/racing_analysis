@@ -35,6 +35,47 @@ describe("Today frozen rule matching", () => {
     assert.equal(matchIds(legacyRule, { raceName: "National Hunt Flat Race", raceType: "NH Flat", surface: null }).length, 4);
   });
 
+  test("matches the frozen Chase 31-60 days rule on Today with inclusive boundaries", () => {
+    const rule = savedRule("chase-days-31-60", "Chase 31-60 days", {
+      ...defaultResearchRule("jump"),
+      race: { jumpSubtype: "chase" },
+      runner: { daysSinceRun: { min: 31, max: 60 } },
+    }, "frozen");
+    const runners = [
+      runner("day-30", { daysSinceLastRun: 30 }),
+      runner("day-31", { daysSinceLastRun: 31 }),
+      runner("day-60", { daysSinceLastRun: 60 }),
+      runner("day-61", { daysSinceLastRun: 61 }),
+    ];
+
+    assert.deepEqual(
+      matchIds(rule, { raceName: "Handicap Chase", raceType: "Chase", surface: null }, {}, {}, "2026-09-11", runners),
+      ["day-31", "day-60"],
+    );
+    assert.deepEqual(
+      matchIds(rule, { raceName: "Mares Hurdle", raceType: "Hurdle", surface: null }, {}, {}, "2026-09-11", runners),
+      [],
+    );
+  });
+
+  test("selects the Chase 31-60 rule from pre-race history regardless of outcome or SP", () => {
+    const rule = savedRule("chase-days-31-60", "Chase 31-60 days", {
+      ...defaultResearchRule("jump"),
+      race: { jumpSubtype: "chase" },
+      runner: { daysSinceRun: { min: 31, max: 60 } },
+    }, "frozen");
+    const runners = [
+      runner("unsettled", { daysSinceLastRun: 45 }),
+      runner("winner", { daysSinceLastRun: 45 }, { resultStatus: "finished", finishingPosition: 1, odds: "20/1", oddsDecimal: "21" }),
+      runner("loser", { daysSinceLastRun: 45 }, { resultStatus: "finished", finishingPosition: 8, odds: "2/1", oddsDecimal: "3" }),
+    ];
+
+    assert.deepEqual(
+      matchIds(rule, { raceName: "Handicap Chase", raceType: "Chase", surface: null }, {}, {}, "2026-09-11", runners),
+      ["unsettled", "winner", "loser"],
+    );
+  });
+
   test("matches only runners satisfying the full frozen rule with race-wide ranks", () => {
     const matched = matchIds(exampleFrozenRule());
 

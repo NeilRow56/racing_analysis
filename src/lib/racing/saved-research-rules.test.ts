@@ -137,6 +137,27 @@ describe("saved research rules", () => {
     assert.notEqual(prepared.ruleIdentity, researchRuleKey(defaultResearchRule("jump")));
   });
 
+  test("round-trips the exact frozen Chase 31-60 days rule", () => {
+    const rule: ResearchRuleV1 = {
+      ...defaultResearchRule("jump"),
+      race: { jumpSubtype: "chase" },
+      runner: { daysSinceRun: { min: 31, max: 60 } },
+    };
+
+    const prepared = prepareFrozenSavedResearchRule({
+      name: "Chase 31-60 days",
+      rule,
+      developmentSnapshot: developmentSnapshotFromResult(researchResult(rule)),
+    });
+
+    assert.equal(prepared.status, "frozen");
+    assert.equal(prepared.family, "jump");
+    assert.deepEqual(prepared.canonicalRule, canonicalResearchRule(rule));
+    assert.equal((prepared.canonicalRule as ResearchRuleV1).race.jumpSubtype, "chase");
+    assert.deepEqual((prepared.canonicalRule as ResearchRuleV1).runner.daysSinceRun, { min: 31, max: 60 });
+    assert.equal(prepared.ruleIdentity, researchRuleKey(rule));
+  });
+
   test("records development settlement mode metadata without changing frozen rule identity", () => {
     const rule = defaultResearchRule("jump");
     const result = researchResult(rule);
