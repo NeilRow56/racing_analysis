@@ -36,6 +36,11 @@ type Db = ReturnType<typeof createDbConnection>["db"];
 const SPORTING_LIFE_SOURCE = "sporting_life";
 const RACECARD_INDEX_SOURCE_TYPE = "racecard-index-next-data";
 const RACECARD_SOURCE_TYPE = "racecard-next-data";
+const FULL_RESULT_SOURCE_TYPE = "full-result-next-data";
+export const TODAY_RACE_SOURCE_TYPES = [
+  RACECARD_SOURCE_TYPE,
+  FULL_RESULT_SOURCE_TYPE,
+] as const;
 const DEFAULT_RACING_DISPLAY_TIME_ZONE = "Europe/London";
 
 export type TodayRunner = {
@@ -263,7 +268,11 @@ export function formatRaceTimeForDisplay(input: {
 
 function raceDisplayTimeZone(country: string | null | undefined): string {
   const normalized = country?.trim().toLowerCase();
-  if (normalized === "eire" || normalized === "ire" || normalized === "ireland") {
+  if (
+    normalized === "eire" ||
+    normalized === "ire" ||
+    normalized === "ireland"
+  ) {
     return "Europe/Dublin";
   }
   return DEFAULT_RACING_DISPLAY_TIME_ZONE;
@@ -727,7 +736,21 @@ async function getRacecardRows(
       distance: races.distance,
       distanceYards: races.distanceYards,
       going: races.going,
-      surface: sql<string | null>`${sourceImports.payload} #>> '{props,pageProps,race,race_summary,course_surface,surface}'`,
+      surface: sql<string | null>`(
+        select ${sourceImports.payload} #>> '{props,pageProps,race,race_summary,course_surface,surface}'
+        from ${sourceImports}
+        where ${sourceImports.source} = ${SPORTING_LIFE_SOURCE}
+          and ${sourceImports.sourceType} in (${sql.join(
+            TODAY_RACE_SOURCE_TYPES.map((sourceType) => sql`${sourceType}`),
+            sql`, `,
+          )})
+          and ${sourceImports.sourceId} = ${races.sourceId}
+        order by case
+          when ${sourceImports.sourceType} = ${RACECARD_SOURCE_TYPE} then 0
+          else 1
+        end
+        limit 1
+      )`,
       declaredRunnerCount: races.declaredRunnerCount,
       actualRunnerCount: races.actualRunnerCount,
       winningTime: races.winningTime,
@@ -761,19 +784,21 @@ async function getRacecardRows(
     .innerJoin(horses, eq(raceRunners.horseId, horses.id))
     .leftJoin(jockeys, eq(raceRunners.jockeyId, jockeys.id))
     .leftJoin(trainers, eq(raceRunners.trainerId, trainers.id))
-    .innerJoin(
-      sourceImports,
-      and(
-        eq(sourceImports.source, SPORTING_LIFE_SOURCE),
-        eq(sourceImports.sourceType, RACECARD_SOURCE_TYPE),
-        eq(sourceImports.sourceId, races.sourceId),
-      ),
-    )
     .where(
       and(
         eq(races.source, SPORTING_LIFE_SOURCE),
         eq(raceRunners.source, SPORTING_LIFE_SOURCE),
         eq(races.raceDate, raceDate),
+        sql`exists (
+          select 1
+          from ${sourceImports}
+          where ${sourceImports.source} = ${SPORTING_LIFE_SOURCE}
+            and ${sourceImports.sourceType} in (${sql.join(
+              TODAY_RACE_SOURCE_TYPES.map((sourceType) => sql`${sourceType}`),
+              sql`, `,
+            )})
+            and ${sourceImports.sourceId} = ${races.sourceId}
+        )`,
       ),
     )
     .orderBy(

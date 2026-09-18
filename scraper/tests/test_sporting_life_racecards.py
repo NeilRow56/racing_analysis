@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from pathlib import Path
 import unittest
 from typing import Any
 
@@ -13,6 +14,9 @@ from sporting_life.extract import (
 )
 from sporting_life.client import SportingLifeRequestError
 from sporting_life.importing import import_full_result, import_racecard, racecard_result_status
+
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
 
 
 class RacecardExtractionTest(unittest.TestCase):
@@ -48,6 +52,59 @@ class RacecardExtractionTest(unittest.TestCase):
         self.assertEqual(
             links[1].url,
             "https://www.sportinglife.com/racing/racecards/2026-09-09/cork/racecard/937407/irish-ebf-auction-series-race",
+        )
+
+    def test_all_supported_uk_and_ireland_country_aliases_are_discovered(self) -> None:
+        country_names = [
+            ("ENG", "England"),
+            ("Scot", "Scotland"),
+            ("WAL", "Wales"),
+            ("Eire", "Eire"),
+            ("XX", "Ireland"),
+            ("Nort", "Northern Ireland"),
+            ("Nort", "Unknown"),
+        ]
+        meetings = [
+            sample_index_meeting(
+                str(121500 + index),
+                str(400 + index),
+                f"Course {index}",
+                short_name,
+                long_name,
+                str(940000 + index),
+            )
+            for index, (short_name, long_name) in enumerate(country_names)
+        ]
+        meetings.append(sample_index_meeting("121599", "499", "Longchamp", "FR", "France", "940099"))
+        payload = {"props": {"pageProps": {"meetings": meetings}}}
+
+        links = discover_uk_ire_racecard_links(
+            RacecardsIndexPayload(page_url="https://example.test/racecards", payload=payload),
+        )
+
+        self.assertEqual([link.course_name for link in links], [f"Course {index}" for index in range(7)])
+
+    def test_downpatrick_2026_09_18_racecard_fixture_is_discovered(self) -> None:
+        fixture = (
+            REPO_ROOT
+            / "data"
+            / "raw"
+            / "sporting-life"
+            / "2026-09-18-racecards-index-2026-09-18-racecard-index-next-data.json"
+        )
+        payload = json.loads(fixture.read_text(encoding="utf-8"))
+
+        links = discover_uk_ire_racecard_links(
+            RacecardsIndexPayload(page_url="file://2026-09-18", payload=payload),
+        )
+        downpatrick_links = [link for link in links if link.course_name == "Downpatrick"]
+
+        self.assertEqual(len(downpatrick_links), 8)
+        self.assertEqual(downpatrick_links[0].meeting_id, "121475")
+        self.assertEqual(downpatrick_links[0].course_id, "354")
+        self.assertEqual(
+            [link.race_id for link in downpatrick_links],
+            ["939524", "939225", "939226", "939227", "939228", "939229", "939230", "939231"],
         )
 
     def test_hidden_and_abandoned_racecards_are_not_discovered(self) -> None:

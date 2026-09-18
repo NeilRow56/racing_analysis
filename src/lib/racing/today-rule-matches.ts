@@ -122,7 +122,7 @@ export function buildTodayRuleSelections(meetings: TodayMeeting[]): TodayRuleSel
           raceDateTime: race.raceDateTime,
           ruleNames: matches.map((match) => match.ruleName),
           odds: runner.odds,
-          result: resultLabelForTodayRunner(runner),
+          result: resultLabelForTodayRunner(race, runner),
           settlement: settleSelection(todayRunnerSettlementOutcome(race, runner)),
         });
       }
@@ -400,17 +400,21 @@ function todayRunnerSettlementOutcomeForRunner(runner: TodayRunner): HistoricalP
   };
 }
 
-function resultLabelForTodayRunner(runner: TodayRunner): string {
+function resultLabelForTodayRunner(race: TodayRace, runner: TodayRunner): string {
   if (runner.resultStatus === "non_runner") {
     return "NR";
   }
   if (runner.finishingPosition !== null) {
     return String(runner.finishingPosition);
   }
-  if (!runner.resultStatus) {
-    return "—";
+  if (!runner.resultStatus || (runner.resultStatus === "other" && !nonBlank(race.winningTime))) {
+    return "Pending";
   }
   return resultStatusLabel(runner.resultStatus);
+}
+
+function nonBlank(value: string | null | undefined): boolean {
+  return typeof value === "string" && value.trim().length > 0;
 }
 
 function resultStatusLabel(value: string): string {

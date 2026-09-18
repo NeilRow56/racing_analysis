@@ -11,11 +11,44 @@ import {
   meetingOrderFromIndexPayload,
   racingPageTitle,
   resolveRacingDate,
+  TODAY_RACE_SOURCE_TYPES,
   type TodayRacecardRow,
 } from "./todays-racing";
 import type { HorseMetricsAsOf } from "./horse-metrics";
 
 describe("Today racing grouping", () => {
+  test("accepts racecard or full-result provenance without duplicate source types", () => {
+    assert.deepEqual(TODAY_RACE_SOURCE_TYPES, [
+      "racecard-next-data",
+      "full-result-next-data",
+    ]);
+    assert.equal(new Set(TODAY_RACE_SOURCE_TYPES).size, TODAY_RACE_SOURCE_TYPES.length);
+  });
+
+  test("groups the eight imported Downpatrick result races into Today", () => {
+    const raceIds = ["939524", "939225", "939226", "939227", "939228", "939229", "939230", "939231"];
+    const grouped = groupTodaysRacingRows(
+      raceIds.map((raceId, index) => row({
+        raceId,
+        raceSourceId: raceId,
+        runnerId: `runner-${raceId}`,
+        courseId: "course-downpatrick",
+        courseSourceId: "354",
+        courseName: "Downpatrick",
+        country: "Nort",
+        scheduledTime: `${String(12 + Math.floor(index / 2)).padStart(2, "0")}:${index % 2 === 0 ? "37" : "12"}:00`,
+      })),
+      meetingOrderFromIndexPayload(indexPayload(["354"])),
+    );
+
+    assert.equal(grouped.length, 1);
+    assert.equal(grouped[0].courseName, "Downpatrick");
+    assert.deepEqual(
+      new Set(grouped[0].races.map((race) => race.sourceId)),
+      new Set(raceIds),
+    );
+  });
+
   test("groups UK and Ireland meetings in racecard index order", () => {
     const grouped = groupTodaysRacingRows(
       [
@@ -622,6 +655,17 @@ describe("Today racing display helpers", () => {
         courseCountry: "EIRE",
       }),
       "13:45",
+    );
+  });
+
+  test("displays Northern Irish summer race times with the UK timezone", () => {
+    assert.equal(
+      formatRaceTimeForDisplay({
+        raceDateTime: new Date("2026-09-18T12:37:00.000Z"),
+        scheduledTime: "12:37:00",
+        courseCountry: "Nort",
+      }),
+      "13:37",
     );
   });
 

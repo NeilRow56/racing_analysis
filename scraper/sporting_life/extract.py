@@ -20,6 +20,8 @@ UK_IRELAND_COUNTRY_ALIASES = {
     "Wales",
     "Ireland",
     "Eire",
+    "Northern Ireland",
+    "Nort",
 }
 
 

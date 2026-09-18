@@ -76,6 +76,12 @@ class CountryFilterTest(unittest.TestCase):
     def test_eire_race_country_short_name_is_accepted(self) -> None:
         self.assertTrue(is_uk_or_ireland({}, [{"country_short_name": "Eire"}]))
 
+    def test_northern_ireland_long_name_is_accepted(self) -> None:
+        self.assertTrue(is_uk_or_ireland({"long_name": "Northern Ireland"}, []))
+
+    def test_northern_ireland_race_country_short_name_is_accepted(self) -> None:
+        self.assertTrue(is_uk_or_ireland({}, [{"country_short_name": "Nort"}]))
+
     def test_unrelated_foreign_country_is_rejected(self) -> None:
         self.assertFalse(is_uk_or_ireland({"long_name": "France"}, []))
 
@@ -125,6 +131,29 @@ class ResultDiscoveryTest(unittest.TestCase):
         self.assertEqual(by_course["Leicester"], 8)
         self.assertEqual(by_course["Catterick"], 8)
         self.assertEqual(by_course["Bangor-on-Dee"], 6)
+
+    def test_downpatrick_2026_09_18_fixture_is_discovered(self) -> None:
+        fixture = (
+            REPO_ROOT
+            / "data"
+            / "raw"
+            / "sporting-life"
+            / "2026-09-18-results-index-2026-09-18-next-data.json"
+        )
+        payload = json.loads(fixture.read_text(encoding="utf-8"))
+
+        links = discover_uk_ire_result_links(
+            ResultsIndexPayload(page_url="file://2026-09-18", payload=payload),
+        )
+        downpatrick_links = [link for link in links if link.course_name == "Downpatrick"]
+
+        self.assertEqual(len(downpatrick_links), 8)
+        self.assertEqual(downpatrick_links[0].meeting_id, "121475")
+        self.assertEqual(downpatrick_links[0].course_id, "354")
+        self.assertEqual(
+            [link.race_id for link in downpatrick_links],
+            ["939524", "939225", "939226", "939227", "939228", "939229", "939230", "939231"],
+        )
 
 
 if __name__ == "__main__":

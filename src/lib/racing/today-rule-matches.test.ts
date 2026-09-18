@@ -560,13 +560,47 @@ describe("Today rule selections", () => {
     ]);
 
     assert.equal(selections.rows.length, 1);
-    assert.equal(selections.rows[0]?.result, "—");
+    assert.equal(selections.rows[0]?.result, "Pending");
     assert.equal(selections.rows[0]?.settlement, null);
     assert.deepEqual(selections.summary, {
       selections: 1,
       settled: 0,
       profitLoss: 0,
     });
+  });
+
+  test("shows incomplete fallback OTHER as pending", () => {
+    const selections = buildTodayRuleSelections([
+      meetingWithRace(race({ actualRunnerCount: 4 }), [
+        runner("runner-pending", {}, {
+          resultStatus: "other",
+          savedRuleMatches: [todayMatch("rule-a", "Rule A")],
+        }),
+      ]),
+    ]);
+
+    assert.equal(selections.rows[0]?.result, "Pending");
+    assert.equal(selections.rows[0]?.settlement, null);
+  });
+
+  test("preserves genuine OTHER after a conclusive race result", () => {
+    const selections = buildTodayRuleSelections([
+      meetingWithRace(race({ winningTime: "1m 12.00s" }), [
+        runner("runner-other", {}, {
+          resultStatus: "other",
+          oddsDecimal: "6",
+          savedRuleMatches: [todayMatch("rule-a", "Rule A")],
+        }),
+        runner("runner-winner", {}, {
+          finishingPosition: 1,
+          resultStatus: "finished",
+          oddsDecimal: "3",
+        }),
+      ]),
+    ]);
+
+    assert.equal(selections.rows[0]?.result, "OTHER");
+    assert.equal(selections.rows[0]?.settlement, null);
   });
 
   test("settles a winning selection at 5/1 as plus five pounds", () => {

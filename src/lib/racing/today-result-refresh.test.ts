@@ -5,6 +5,7 @@ import {
   getEligibleResultRefreshRaces,
   raceDateTimeFromLondonScheduledTime,
   refreshEligibleTodaySelectionResults,
+  todayRaceHasConclusiveResult,
   type EligibleResultRefreshRace,
 } from "./today-result-refresh";
 import { buildTodayRuleSelections } from "./today-rule-matches";
@@ -43,8 +44,33 @@ describe("Today result refresh eligibility", () => {
 
   test("already settled races are not eligible", () => {
     const eligible = getEligibleResultRefreshRaces(
-      [meeting(race({ winningTime: "1m 12.00s" }))],
+      [meeting(race({ winningTime: "1m 12.00s" }), [runner({
+        finishingPosition: 1,
+        resultStatus: "finished",
+      })])],
       "2026-09-12",
+      { now: new Date("2026-09-12T14:00:00.000Z") },
+    );
+
+    assert.equal(eligible.length, 0);
+  });
+
+  test("partial result metadata and fallback OTHER status remain eligible", () => {
+    const partialRace = race({ actualRunnerCount: 4 });
+    const eligible = getEligibleResultRefreshRaces(
+      [meeting(partialRace, [runner({ resultStatus: "other" })])],
+      "2026-09-12",
+      { now: new Date("2026-09-12T14:00:00.000Z") },
+    );
+
+    assert.equal(todayRaceHasConclusiveResult(partialRace), false);
+    assert.equal(eligible.length, 1);
+  });
+
+  test("historical dates are not refreshed", () => {
+    const eligible = getEligibleResultRefreshRaces(
+      [meeting(race())],
+      "2026-09-11",
       { now: new Date("2026-09-12T14:00:00.000Z") },
     );
 
@@ -241,6 +267,9 @@ describe("Today result refresh", () => {
     assert.equal(summary.imported, 1);
     assert.equal(summary.notReady, 0);
     assert.equal(summary.failed, 0);
+    assert.equal(summary.totalRaces, 1);
+    assert.equal(summary.scheduledToHaveFinished, 1);
+    assert.equal(summary.alreadySettled, 0);
   });
 
   test("incomplete result leaves race unsettled", async () => {
@@ -277,7 +306,10 @@ describe("Today result refresh", () => {
   test("repeated refresh is idempotent for races already settled locally", async () => {
     let calls = 0;
     const summary = await refreshEligibleTodaySelectionResults(
-      [meeting(race({ winningTime: "1m 12.00s" }))],
+      [meeting(race({ winningTime: "1m 12.00s" }), [runner({
+        finishingPosition: 1,
+        resultStatus: "finished",
+      })])],
       "2026-09-12",
       {
         now: new Date("2026-09-12T14:00:00.000Z"),
@@ -290,6 +322,42 @@ describe("Today result refresh", () => {
 
     assert.equal(summary.eligible, 0);
     assert.equal(calls, 0);
+  });
+
+  test("successful refresh changes a rule selection from pending to settled", async () => {
+    const selectedRunner = runner();
+    const selectedRace = race();
+    const meetings = [meeting(selectedRace, [selectedRunner])];
+    let refreshCalls = 0;
+
+    assert.equal(buildTodayRuleSelections(meetings).rows[0]?.result, "Pending");
+    assert.equal(buildTodayRuleSelections(meetings).rows[0]?.settlement, null);
+
+    await refreshEligibleTodaySelectionResults(meetings, "2026-09-12", {
+      now: new Date("2026-09-12T14:00:00.000Z"),
+      refreshRaceResult: async (refreshRace) => {
+        refreshCalls += 1;
+        refreshRace.race.winningTime = "1m 12.00s";
+        selectedRunner.finishingPosition = 1;
+        selectedRunner.resultStatus = "finished";
+        return outcome(refreshRace, "imported");
+      },
+    });
+
+    const selections = buildTodayRuleSelections(meetings);
+    assert.equal(selections.rows[0]?.result, "1");
+    assert.equal(selections.rows[0]?.settlement?.profitLoss, 5);
+
+    const repeated = await refreshEligibleTodaySelectionResults(meetings, "2026-09-12", {
+      forceRetry: true,
+      now: new Date("2026-09-12T14:01:00.000Z"),
+      refreshRaceResult: async (refreshRace) => {
+        refreshCalls += 1;
+        return outcome(refreshRace, "imported");
+      },
+    });
+    assert.equal(repeated.eligible, 0);
+    assert.equal(refreshCalls, 1);
   });
 });
 

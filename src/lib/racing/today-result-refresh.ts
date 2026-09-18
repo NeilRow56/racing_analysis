@@ -1,6 +1,6 @@
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
-import type { TodayMeeting, TodayRace } from "./todays-racing";
+import { getLocalRacingDate, type TodayMeeting, type TodayRace } from "./todays-racing";
 
 const execFileAsync = promisify(execFile);
 
@@ -22,6 +22,9 @@ export type TodayResultRefreshOutcome = {
 };
 
 export type TodayResultRefreshSummary = {
+  totalRaces: number;
+  scheduledToHaveFinished: number;
+  alreadySettled: number;
   eligible: number;
   attempted: number;
   imported: number;
@@ -50,11 +53,14 @@ export function getEligibleResultRefreshRaces(
 ): EligibleResultRefreshRace[] {
   const now = options.now ?? new Date();
   const eligible: EligibleResultRefreshRace[] = [];
+  if (raceDate !== getLocalRacingDate(now)) {
+    return eligible;
+  }
 
   for (const meeting of meetings) {
     for (const race of meeting.races) {
       if (!raceHasFrozenRuleSelection(race) ||
-          todayRaceHasStoredResult(race) ||
+          todayRaceHasConclusiveResult(race) ||
           !race.sourceId ||
           !isPastRefreshBuffer(race, raceDate, now) ||
           (!options.forceRetry && checkedRecently(race.sourceId, now))) {
@@ -82,6 +88,12 @@ export async function refreshEligibleTodaySelectionResults(
 ): Promise<TodayResultRefreshSummary> {
   const now = options.now ?? new Date();
   const refreshRaceResult = options.refreshRaceResult ?? refreshSportingLifeRaceResult;
+  const races = meetings.flatMap((meeting) => meeting.races);
+  const isToday = raceDate === getLocalRacingDate(now);
+  const scheduledToHaveFinished = isToday
+    ? races.filter((race) => isPastRefreshBuffer(race, raceDate, now)).length
+    : 0;
+  const alreadySettled = races.filter(todayRaceHasConclusiveResult).length;
   const eligible = getEligibleResultRefreshRaces(meetings, raceDate, {
     now,
     forceRetry: options.forceRetry,
@@ -108,7 +120,10 @@ export async function refreshEligibleTodaySelectionResults(
     }
   }
 
-  return {
+  const summary: TodayResultRefreshSummary = {
+    totalRaces: races.length,
+    scheduledToHaveFinished,
+    alreadySettled,
     eligible: eligible.length,
     attempted: outcomes.length,
     imported: outcomes.filter((outcome) => outcome.status === "imported").length,
@@ -116,6 +131,15 @@ export async function refreshEligibleTodaySelectionResults(
     failed: outcomes.filter((outcome) => outcome.status === "failed").length,
     outcomes,
   };
+  console.info(
+    "TODAY_RESULT_REFRESH " +
+      `date=${raceDate} total_races=${summary.totalRaces} ` +
+      `scheduled_to_have_finished=${summary.scheduledToHaveFinished} ` +
+      `already_settled=${summary.alreadySettled} eligible=${summary.eligible} ` +
+      `attempted=${summary.attempted} imported=${summary.imported} ` +
+      `still_unavailable=${summary.notReady} failed=${summary.failed}`,
+  );
+  return summary;
 }
 
 export async function refreshSportingLifeRaceResult(
@@ -178,15 +202,19 @@ function raceHasFrozenRuleSelection(race: TodayRace): boolean {
   return race.runners.some((runner) => (runner.savedRuleMatches?.length ?? 0) > 0);
 }
 
-function todayRaceHasStoredResult(race: TodayRace): boolean {
-  return Boolean(
-    nonBlank(race.winningTime) ||
-      race.actualRunnerCount !== null ||
-      race.runners.some((runner) =>
-        runner.finishingPosition !== null ||
-        Boolean(runner.resultStatus && runner.resultStatus !== "non_runner"),
-      ),
-  );
+export function todayRaceHasConclusiveResult(race: TodayRace): boolean {
+  if (!nonBlank(race.winningTime) || !race.runners.some((runner) => runner.finishingPosition === 1)) {
+    return false;
+  }
+  return race.runners.every((runner) => {
+    if (runner.resultStatus === "non_runner") {
+      return true;
+    }
+    return Boolean(
+      nonBlank(runner.oddsDecimal) &&
+      (runner.finishingPosition !== null || nonBlank(runner.resultStatus)),
+    );
+  });
 }
 
 function isPastRefreshBuffer(race: TodayRace, raceDate: string, now: Date): boolean {
