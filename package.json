@@ -39,7 +39,8 @@
     "backup:weekly": "bun --env-file=.env.local run scripts/backup-weekly.ts",
     "backup:verify": "bun run scripts/backup-project.ts verify",
     "backup:cleanup": "bun run scripts/backup-project.ts cleanup --keep 30",
-    "timewise:summary": "bun scripts/diagnose-tpr-vs-timewise-forward.ts summary"
+    "timewise:summary": "bun scripts/diagnose-tpr-vs-timewise-forward.ts summary",
+    "aw:summary": "bun scripts/track-aw-forward-comparisons.ts summary"
   },
   "dependencies": {
     "drizzle-orm": "^0.45.2",

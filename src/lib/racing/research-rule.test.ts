@@ -418,6 +418,10 @@ describe("research rule evaluation", () => {
       researchRuleKey({ ...rule, runner: { trainerCohort: trainerCohortRule(30) } }),
     );
     assert.ok(strategySummary(rule).includes("Trainer cohort: Top 20 by 2024 Jump wins"));
+    assert.ok(strategySummary({
+      ...rule,
+      dateRange: { from: "2026-03-01", to: "2026-12-31" },
+    }).includes("Trainer cohort: Top 20 by 2025 Jump wins"));
   });
 
   test("filters distance buckets using racing-distance tolerance", () => {
@@ -871,18 +875,69 @@ describe("research Starting Price filters", () => {
   test("parses URLs, round-trips saved JSON and changes canonical identity", () => {
     const rule = ruleFromSearchParams(new URLSearchParams([
       ["family", "jump"],
+      ["trainerCohort", "30"],
       ["spMin", "3_1"],
       ["spMax", "5_1"],
     ]));
     const serialized = parseResearchRule(serializeResearchRule(rule));
 
     assert.deepEqual(rule.startingPrice, { minDecimal: 4, maxDecimalExclusive: 7 });
+    assert.deepEqual(rule.runner.trainerCohort, trainerCohortRule(30));
     assert.deepEqual(serialized?.startingPrice, rule.startingPrice);
+    assert.deepEqual(serialized?.runner.trainerCohort, trainerCohortRule(30));
     assert.notEqual(
       researchRuleKey({ ...defaultResearchRule("jump"), startingPrice: { minDecimal: 4 } }),
       researchRuleKey({ ...defaultResearchRule("jump"), startingPrice: { minDecimal: 5 } }),
     );
     assert.ok(strategySummary(rule).includes("Starting price: 3/1 to 5/1"));
+    assert.ok(strategySummary(rule).includes("Trainer cohort: Top 30 by 2024 Jump wins"));
+  });
+});
+
+describe("research Draw filters", () => {
+  const rows = [
+    row({ targetRunnerId: "draw-1", raceCode: "aw", draw: 1 }),
+    row({ targetRunnerId: "draw-3", raceCode: "aw", draw: 3 }),
+    row({ targetRunnerId: "draw-4", raceCode: "aw", draw: 4 }),
+    row({ targetRunnerId: "draw-8", raceCode: "aw", draw: 8 }),
+    row({ targetRunnerId: "missing", raceCode: "aw", draw: null }),
+  ];
+  const idsFor = (draw: ResearchRuleV1["runner"]["draw"]) => evaluateResearchRule({
+    rows,
+    rule: { ...defaultResearchRule("all_weather_flat"), runner: { draw } },
+  }).selectedRunners.map((selection) => selection.id);
+
+  test("supports inclusive ranges, one-sided ranges, missing values and an inactive criterion", () => {
+    assert.deepEqual(idsFor({ min: 1, max: 3 }), ["draw-1", "draw-3"]);
+    assert.deepEqual(idsFor({ min: 8 }), ["draw-8"]);
+    assert.deepEqual(idsFor({ max: 3 }), ["draw-1", "draw-3"]);
+    assert.deepEqual(idsFor(undefined), ["draw-1", "draw-3", "draw-4", "draw-8", "missing"]);
+  });
+
+  test("round-trips flat URL and JSON rules, summarizes ranges and changes identity", () => {
+    const rule = ruleFromSearchParams(new URLSearchParams("family=all_weather_flat&drawMin=1&drawMax=3"));
+    const serialized = parseResearchRule(serializeResearchRule(rule));
+
+    assert.deepEqual(rule.runner.draw, { min: 1, max: 3 });
+    assert.deepEqual(serialized?.runner.draw, { min: 1, max: 3 });
+    assert.ok(strategySummary(rule).includes("Draw: 1–3"));
+    assert.ok(strategySummary({ ...rule, runner: { draw: { min: 8 } } }).includes("Draw: >= 8"));
+    assert.ok(strategySummary({ ...rule, runner: { draw: { max: 3 } } }).includes("Draw: <= 3"));
+    assert.notEqual(
+      researchRuleKey({ ...defaultResearchRule("turf_flat"), runner: { draw: { min: 1, max: 3 } } }),
+      researchRuleKey({ ...defaultResearchRule("turf_flat"), runner: { draw: { min: 4, max: 6 } } }),
+    );
+  });
+
+  test("legacy and Jump rules ignore Draw while Turf retains it", () => {
+    const legacy = parseResearchRule(serializeResearchRule(defaultResearchRule("all_weather_flat")));
+    const jump = parseResearchRule(JSON.stringify({ ...defaultResearchRule("jump"), runner: { draw: { min: 1, max: 3 } } }));
+    const turf = parseResearchRule(JSON.stringify({ ...defaultResearchRule("turf_flat"), runner: { draw: { min: 1, max: 3 } } }));
+
+    assert.equal(legacy?.runner.draw, undefined);
+    assert.equal(jump?.runner.draw, undefined);
+    assert.deepEqual(turf?.runner.draw, { min: 1, max: 3 });
+    assert.equal(researchRuleKey({ ...defaultResearchRule("jump"), runner: { draw: { min: 1 } } }), researchRuleKey(defaultResearchRule("jump")));
   });
 });
 

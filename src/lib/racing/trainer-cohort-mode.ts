@@ -44,6 +44,25 @@ export function trainerCohortRule(top: TrainerCohortTop): TrainerCohortRule {
   };
 }
 
+/**
+ * Trainer cohorts are anchored to the evaluated range's from-date year.
+ * A nonstandard range such as 2026-03-01 to 2026-12-31 still uses only 2025 results.
+ */
+export function trainerCohortYearFromDate(date: string): number {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+    throw new Error(`Invalid trainer cohort date: ${date}`);
+  }
+  const year = Number(date.slice(0, 4));
+  if (!Number.isInteger(year)) {
+    throw new Error(`Invalid trainer cohort date: ${date}`);
+  }
+  return year;
+}
+
+export function trainerCohortReferenceYearFromDate(date: string): number {
+  return trainerCohortYearFromDate(date) - 1;
+}
+
 export function isTrainerCohortTop(value: unknown): value is TrainerCohortTop {
   return TRAINER_COHORT_TOP_OPTIONS.includes(value as TrainerCohortTop);
 }

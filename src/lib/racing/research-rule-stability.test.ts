@@ -154,6 +154,7 @@ function numberOfChangedRuleSections(left: ResearchRuleV1, right: ResearchRuleV1
   const sections = [
     ["race.fieldSize", left.race.fieldSize, right.race.fieldSize],
     ["runner.officialRating", left.runner.officialRating, right.runner.officialRating],
+    ["runner.draw", left.runner.draw, right.runner.draw],
     ["runner.daysSinceRun", left.runner.daysSinceRun, right.runner.daysSinceRun],
     ["runner.priorRuns", left.runner.priorRuns, right.runner.priorRuns],
     ["runner.trainerPriorRuns", left.runner.trainerPriorRuns, right.runner.trainerPriorRuns],

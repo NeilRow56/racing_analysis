@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { createDbConnection } from "@/db";
+import { syncAwForwardComparisons } from "@/lib/racing/aw-forward-comparisons";
 import { listSavedResearchRulesWithDb } from "@/lib/racing/saved-research-rules";
 import { parseResearchRule } from "@/lib/racing/research-rule";
 import { refreshEligibleTodaySelectionResults } from "@/lib/racing/today-result-refresh";
@@ -11,7 +12,7 @@ import {
   type TodayRuleSelections,
   type TodayTrainerCohortsByRule,
 } from "@/lib/racing/today-rule-matches";
-import { getTrainerCohortForRule } from "@/lib/racing/trainer-cohorts";
+import { getTrainerCohortForRule, trainerCohortYearFromDate } from "@/lib/racing/trainer-cohorts";
 import {
   saveTurfPerformanceRatingShadowSnapshots,
   saveTurfPerformanceRatingSnapshots,
@@ -76,6 +77,7 @@ export default async function TodaysRacingPage({ searchParams }: PageProps) {
       : data;
     let displayData = attachMatches();
     if (displayData.status === "ok") {
+      await syncAwForwardComparisons(displayData.meetings, raceDate);
       await saveTurfPerformanceRatingSnapshots(connection.db, displayData.meetings, raceDate);
       await saveTurfPerformanceRatingShadowSnapshots(connection.db, displayData.meetings, raceDate);
       const refreshSummary = await refreshEligibleTodaySelectionResults(
@@ -98,6 +100,7 @@ export default async function TodaysRacingPage({ searchParams }: PageProps) {
       frozenRulesChecked,
     );
     if (displayData.status === "ok") {
+      await syncAwForwardComparisons(displayData.meetings, raceDate);
       await enrichTodayForwardTrackerResults(displayData.meetings, raceDate);
     }
     const trackerData = await loadTrackerData();
@@ -170,7 +173,7 @@ async function resolveTodayTrainerCohorts(
   savedRules: Awaited<ReturnType<typeof listSavedResearchRulesWithDb>>,
   raceDate: string,
 ): Promise<TodayTrainerCohortsByRule> {
-  const cohortYear = Number(raceDate.slice(0, 4));
+  const cohortYear = trainerCohortYearFromDate(raceDate);
   const entries = await Promise.all(
     savedRules
       .filter((savedRule) => savedRule.status === "frozen")

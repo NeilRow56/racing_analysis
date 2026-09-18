@@ -72,6 +72,7 @@ export function canonicalResearchRule(rule: ResearchRuleV1) {
         ? undefined
         : rule.runner.runAfterBreak,
       officialRating: canonicalRange(rule.runner.officialRating),
+      draw: rule.family === "jump" ? undefined : canonicalRange(rule.runner.draw),
       weightCarriedLbs: canonicalRange(rule.runner.weightCarriedLbs),
       daysSinceRun: canonicalRange(rule.runner.daysSinceRun),
       priorRuns: canonicalRange(rule.runner.priorRuns),

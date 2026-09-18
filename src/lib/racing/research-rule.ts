@@ -16,6 +16,7 @@ import { RANK_METRIC_OPTIONS, type RankMetric } from "./research-rank-metrics";
 import {
   isTrainerCohortTop,
   trainerCohortLabel,
+  trainerCohortReferenceYearFromDate,
   trainerCohortRule,
   type ResolvedTrainerCohort,
   type TrainerCohortRule,
@@ -96,6 +97,7 @@ export type ResearchRuleV1 = {
     returnBucket?: ReturnBucket;
     runAfterBreak?: RunAfterBreakFilter;
     officialRating?: NumericCondition;
+    draw?: NumericCondition;
     weightCarriedLbs?: NumericCondition;
     daysSinceRun?: NumericCondition;
     priorRuns?: NumericCondition;
@@ -456,7 +458,13 @@ export function rankRows(rows: HistoricalTargetRunnerMetricsRow[]): RankedResear
 }
 
 export function serializeResearchRule(rule: ResearchRuleV1): string {
-  return JSON.stringify(rule);
+  return JSON.stringify({
+    ...rule,
+    runner: {
+      ...rule.runner,
+      draw: rule.family === "jump" ? undefined : rule.runner.draw,
+    },
+  });
 }
 
 export function parseResearchRule(value: string): ResearchRuleV1 | null {
@@ -473,7 +481,7 @@ export function parseResearchRule(value: string): ResearchRuleV1 | null {
         to: safeDevelopmentDate(parsed.dateRange?.to, DEVELOPMENT_TO),
       },
       race: normalizeRaceRule(parsed.race),
-      runner: normalizeRunnerRule(parsed.runner),
+      runner: normalizeRunnerRule(parsed.runner, parsed.family),
       ratings: parsed.ratings ?? [],
       relatives: parsed.relatives ?? [],
       ranks: parsed.ranks ?? [],
@@ -516,6 +524,7 @@ export function ruleFromSearchParams(params: URLSearchParams): ResearchRuleV1 {
     returnBucket: returnBucketValue(params.get("returnBucket")),
     runAfterBreak: runAfterBreakValue(params.get("runAfterBreak")),
     officialRating: rangeFromParams(params, "orMin", "orMax"),
+    draw: family === "jump" ? undefined : rangeFromParams(params, "drawMin", "drawMax"),
     weightCarriedLbs: weightRangeFromParams(params, "weightMin", "weightMax"),
     daysSinceRun: rangeFromParams(params, "daysMin", "daysMax"),
     priorRuns: rangeFromParams(params, "priorRunsMin", "priorRunsMax"),
@@ -525,7 +534,7 @@ export function ruleFromSearchParams(params: URLSearchParams): ResearchRuleV1 {
     jockeyPriorRuns: rangeFromParams(params, "jockeyPriorRunsMin", "jockeyPriorRunsMax"),
     jockeyPriorWinRate: rangeFromParams(params, "jockeyPriorWinRateMin", "jockeyPriorWinRateMax"),
   };
-  rule.runner = normalizeRunnerRule(rule.runner);
+  rule.runner = normalizeRunnerRule(rule.runner, family);
 
   const ratingMetric = metricParam<RatingMetric>(params.get("ratingMetric"), RATING_METRIC_OPTIONS);
   const ratingRange = rangeFromParams(params, "ratingMin", "ratingMax");
@@ -793,6 +802,7 @@ export function matchesRunnerConditions(
     returnBucketMatches(features.daysSinceLastRun, rule.runner.returnBucket) &&
     runAfterBreakMatches(features.runAfterBreakNumber, rule.runner.runAfterBreak) &&
     rangeMatches(features.officialRating, rule.runner.officialRating) &&
+    rangeMatches(features.draw, rule.family === "jump" ? undefined : rule.runner.draw) &&
     rangeMatches(features.weightCarriedLbs, rule.runner.weightCarriedLbs) &&
     rangeMatches(features.daysSinceLastRun, rule.runner.daysSinceRun) &&
     rangeMatches(features.priorRuns, rule.runner.priorRuns) &&
@@ -976,6 +986,9 @@ export function strategySummary(rule: ResearchRuleV1): string[] {
   pushReturnBucket(lines, rule.runner.returnBucket);
   pushRunAfterBreak(lines, rule.runner.runAfterBreak);
   pushRange(lines, "Current OR", rule.runner.officialRating);
+  if (rule.family !== "jump") {
+    pushDrawRange(lines, rule.runner.draw);
+  }
   pushWeightRange(lines, "Weight", rule.runner.weightCarriedLbs);
   pushRange(lines, "Days since run", rule.runner.daysSinceRun);
   pushRange(lines, "Career prior runs", rule.runner.priorRuns);
@@ -1002,7 +1015,7 @@ function pushTrainerCohort(lines: string[], rule: ResearchRuleV1) {
   if (!cohort || selectedTrainerIds(rule).length > 0) {
     return;
   }
-  const referenceYear = Number(rule.dateRange.from.slice(0, 4)) - 1;
+  const referenceYear = trainerCohortReferenceYearFromDate(rule.dateRange.from);
   lines.push(`Trainer cohort: ${trainerCohortLabel({
     top: cohort.top,
     referenceYear,
@@ -1152,6 +1165,17 @@ function pushWeightRange(lines: string[], label: string, range: NumericCondition
   }
 }
 
+function pushDrawRange(lines: string[], range: NumericCondition | undefined) {
+  if (!range || (range.min === undefined && range.max === undefined)) return;
+  if (range.min !== undefined && range.max !== undefined) {
+    lines.push(`Draw: ${range.min === range.max ? range.min : `${range.min}–${range.max}`}`);
+  } else if (range.min !== undefined) {
+    lines.push(`Draw: >= ${range.min}`);
+  } else if (range.max !== undefined) {
+    lines.push(`Draw: <= ${range.max}`);
+  }
+}
+
 function pushRange(lines: string[], label: string, range: NumericCondition | undefined, suffix = "") {
   if (!range || (range.min === undefined && range.max === undefined)) {
     return;
@@ -1205,7 +1229,10 @@ function normalizeRaceRule(race: Partial<ResearchRuleV1["race"]> | undefined): R
   };
 }
 
-function normalizeRunnerRule(runner: Partial<ResearchRuleV1["runner"]> | undefined): ResearchRuleV1["runner"] {
+function normalizeRunnerRule(
+  runner: Partial<ResearchRuleV1["runner"]> | undefined,
+  family: ResearchRuleV1["family"],
+): ResearchRuleV1["runner"] {
   const trainerIds = normalizedTextValues([
     ...(Array.isArray(runner?.trainerIds) ? runner.trainerIds : []),
     runner?.trainerId,
@@ -1223,6 +1250,7 @@ function normalizeRunnerRule(runner: Partial<ResearchRuleV1["runner"]> | undefin
     runner?.jockeyName,
   ]);
   const trainerCohort = normalizeTrainerCohortRule(runner?.trainerCohort);
+  const draw = family === "jump" ? undefined : normalizeRange(runner?.draw);
   if (trainerCohort && trainerIds.length === 0) {
     return {
       ...runner,
@@ -1235,6 +1263,7 @@ function normalizeRunnerRule(runner: Partial<ResearchRuleV1["runner"]> | undefin
       jockeyId: undefined,
       jockeyName: undefined,
       trainerCohort,
+      draw,
     };
   }
   const normalized = { ...(runner ?? {}) };
@@ -1245,6 +1274,7 @@ function normalizeRunnerRule(runner: Partial<ResearchRuleV1["runner"]> | undefin
     trainerNames,
     jockeyIds,
     jockeyNames,
+    draw,
     trainerId: undefined,
     trainerName: undefined,
     jockeyId: undefined,

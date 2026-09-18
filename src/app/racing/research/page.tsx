@@ -46,6 +46,7 @@ import {
 import type { BacktestSummary } from "@/lib/racing/backtest";
 import {
   getTrainerCohortForRule,
+  trainerCohortYearFromDate,
   type ResolvedTrainerCohort,
 } from "@/lib/racing/trainer-cohorts";
 import {
@@ -58,7 +59,7 @@ import {
 import {
   saveResearchRuleAction,
 } from "./actions";
-import { holdoutRangeText } from "./holdout-display";
+import { holdoutRangeText, savedRuleTrainerCohortText } from "./holdout-display";
 import { ResearchWorkspace } from "./research-form-client";
 import { ResearchHorseNameLink } from "./research-horse-link";
 import { PriceSensitivityPanel } from "./price-sensitivity-panel";
@@ -179,7 +180,10 @@ async function loadResearchData(
     return null;
   }
   const hydratedRule = hydrateResearchRuleMetadata(rule, cached.rows);
-  const trainerCohort = await loadTrainerCohortForResearchRule(hydratedRule, Number(DEVELOPMENT_FROM.slice(0, 4)));
+  const trainerCohort = await loadTrainerCohortForResearchRule(
+    hydratedRule,
+    trainerCohortYearFromDate(hydratedRule.dateRange.from),
+  );
   const trainerCohortDiagnostics = trainerCohort
     ? trainerCohortDiagnosticsForRows(cached.rows, trainerCohort)
     : null;
@@ -591,6 +595,7 @@ function HoldoutSummary({ rule }: { rule: SavedResearchRule }) {
       </div>
     );
   }
+  const trainerCohortText = savedRuleTrainerCohortText(rule, snapshot.holdoutFrom);
   return (
     <div className="max-w-52 text-xs">
       <div className="font-semibold text-slate-700">{holdoutStatusLabel(snapshot.status)}</div>
@@ -600,6 +605,9 @@ function HoldoutSummary({ rule }: { rule: SavedResearchRule }) {
       <div className="mt-1 text-slate-700">
         {snapshot.selections} selections · {formatPct(snapshot.roiPercentage)} ROI
       </div>
+      {trainerCohortText ? (
+        <div className="mt-1 text-slate-600">Trainer cohort used: {trainerCohortText}</div>
+      ) : null}
     </div>
   );
 }
@@ -613,6 +621,8 @@ function SavedRuleResultComparison({ rule }: { rule: SavedResearchRule }) {
       </p>
     );
   }
+  const developmentTrainerCohortText = savedRuleTrainerCohortText(rule, rule.developmentFrom);
+  const holdoutTrainerCohortText = savedRuleTrainerCohortText(rule, holdout.holdoutFrom);
   return (
     <div className="overflow-x-auto">
       <table className="w-full min-w-[600px] text-left text-xs">
@@ -645,6 +655,16 @@ function SavedRuleResultComparison({ rule }: { rule: SavedResearchRule }) {
           />
         </tbody>
       </table>
+      {developmentTrainerCohortText ? (
+        <p className="mt-2 text-xs text-slate-600">
+          Development trainer cohort: {developmentTrainerCohortText}
+        </p>
+      ) : null}
+      {holdoutTrainerCohortText ? (
+        <p className="mt-1 text-xs text-slate-600">
+          Holdout trainer cohort used: {holdoutTrainerCohortText}
+        </p>
+      ) : null}
       <p className="mt-2 text-xs text-slate-500">
         Holdout cache {holdout.cacheMetadata.featureSchemaVersion ?? "-"} · validated {formatDateTime(new Date(holdout.validatedAt))}
       </p>

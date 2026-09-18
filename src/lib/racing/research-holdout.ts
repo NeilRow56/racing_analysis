@@ -16,7 +16,7 @@ import type {
   ResearchRuleCacheMetadata,
   SavedResearchRule,
 } from "./saved-research-rules";
-import { getTrainerCohortForRule, type ResolvedTrainerCohort } from "./trainer-cohorts";
+import { getTrainerCohortForRule, trainerCohortYearFromDate, type ResolvedTrainerCohort } from "./trainer-cohorts";
 
 export const HOLDOUT_YEAR = "2026";
 export const MIN_SETTLED_HOLDOUT_SAMPLE = 30;
@@ -74,7 +74,7 @@ async function loadTrainerCohortForHoldoutRule(rule: ResearchRuleV1): Promise<Re
   }
   const { client, db } = createDbConnection();
   try {
-    return await getTrainerCohortForRule(db, rule, Number(HOLDOUT_YEAR));
+    return await getTrainerCohortForRule(db, rule, trainerCohortYearFromDate(rule.dateRange.from));
   } finally {
     await client.end();
   }

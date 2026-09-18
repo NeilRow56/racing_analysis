@@ -58,6 +58,24 @@ describe("Today frozen rule matching", () => {
     );
   });
 
+  test("matches frozen flat Draw ranges using the stored pre-race stall", () => {
+    const rule = savedRule("aw-draw", "AW Draw 1-3", {
+      ...defaultResearchRule("all_weather_flat"),
+      runner: { draw: { min: 1, max: 3 } },
+    }, "frozen");
+    const runners = [
+      runner("draw-1", {}, { draw: 1 }),
+      runner("draw-3", {}, { draw: 3 }),
+      runner("draw-4", {}, { draw: 4 }),
+      runner("missing", {}, { draw: null }),
+    ];
+
+    assert.deepEqual(
+      matchIds(rule, { raceName: "AW Handicap", raceType: "Flat", surface: "ALLWEATHER" }, {}, {}, "2026-09-11", runners),
+      ["draw-1", "draw-3"],
+    );
+  });
+
   test("selects the Chase 31-60 rule from pre-race history regardless of outcome or SP", () => {
     const rule = savedRule("chase-days-31-60", "Chase 31-60 days", {
       ...defaultResearchRule("jump"),

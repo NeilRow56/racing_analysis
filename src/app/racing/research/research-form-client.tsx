@@ -302,6 +302,12 @@ export const ResearchForm = ({
       <FilterGroup title="Runner Filters">
         <InputField label="OR min" name="orMin" type="number" value={rule.runner.officialRating?.min} />
         <InputField label="OR max" name="orMax" type="number" value={rule.runner.officialRating?.max} />
+        {rule.family !== "jump" ? (
+          <>
+            <InputField label="Draw min" name="drawMin" step="1" type="number" value={rule.runner.draw?.min} />
+            <InputField label="Draw max" name="drawMax" step="1" type="number" value={rule.runner.draw?.max} />
+          </>
+        ) : null}
         <TrainerField
           disabled={!optionsMatchSelectedFamily || Boolean(rule.runner.trainerCohort)}
           disabledReason={
@@ -526,6 +532,7 @@ export function researchRuleFromFormData(formData: FormData): ResearchRuleV1 {
       returnBucket: returnBucketValue(textValue(formData.get("returnBucket"))),
       runAfterBreak: runAfterBreakValue(textValue(formData.get("runAfterBreak"))),
       officialRating: rangeFromFormData(formData, "orMin", "orMax"),
+      draw: family === "jump" ? undefined : integerRangeFromFormData(formData, "drawMin", "drawMax"),
       weightCarriedLbs: rangeFromFormData(formData, "weightMin", "weightMax"),
       daysSinceRun: rangeFromFormData(formData, "daysMin", "daysMax"),
       priorRuns: rangeFromFormData(formData, "priorRunsMin", "priorRunsMax"),
@@ -1044,6 +1051,14 @@ function rangeFromFormData(formData: FormData, minKey: string, maxKey: string) {
   const min = numberValue(formData.get(minKey));
   const max = numberValue(formData.get(maxKey));
   return min === undefined && max === undefined ? undefined : { min, max };
+}
+
+function integerRangeFromFormData(formData: FormData, minKey: string, maxKey: string) {
+  const range = rangeFromFormData(formData, minKey, maxKey);
+  if (!range) return undefined;
+  const min = range.min !== undefined ? Math.trunc(range.min) : undefined;
+  const max = range.max !== undefined ? Math.trunc(range.max) : undefined;
+  return { min, max };
 }
 
 function searchParamsFromFormData(formData: FormData): URLSearchParams {

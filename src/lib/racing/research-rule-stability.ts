@@ -46,6 +46,7 @@ const CAREER_PRIOR_RUNS_STEP = 1;
 const DAYS_SINCE_RUN_STEP = 5;
 const FIELD_SIZE_STEP = 1;
 const OFFICIAL_RATING_STEP = 5;
+const DRAW_STEP = 1;
 const RATING_STEP = 5;
 const RELATIVE_STEP = 5;
 const RANK_STEP = 1;
@@ -114,6 +115,16 @@ export function researchRuleStabilityVariants(rule: ResearchRuleV1): VariantCand
     minValue: 0,
     update: (next) => ({ ...rule, runner: { ...rule.runner, officialRating: next } }),
   });
+  if (rule.family !== "jump") {
+    addRangeVariants({
+      add,
+      label: "Draw",
+      range: rule.runner.draw,
+      step: DRAW_STEP,
+      minValue: 1,
+      update: (next) => ({ ...rule, runner: { ...rule.runner, draw: next } }),
+    });
+  }
   addRangeVariants({
     add,
     label: "Days since run",

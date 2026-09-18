@@ -3,7 +3,10 @@ import { describe, test } from "node:test";
 import {
   TRAINER_COHORT_MIN_SETTLED_RUNNERS,
   resolveTrainerCohortFromStandings,
+  trainerCohortLabel,
+  trainerCohortReferenceYearFromDate,
   trainerCohortRule,
+  trainerCohortYearFromDate,
   type TrainerCohortStandingInput,
 } from "./trainer-cohorts";
 
@@ -37,6 +40,38 @@ describe("trainer cohorts", () => {
 
     assert.equal(cohort.referenceYear, 2025);
     assert.deepEqual(cohort.members.map((member) => member.trainerId), ["trainer-2025"]);
+  });
+
+  test("2027 cohort uses 2026 races and derives from nonstandard from dates", () => {
+    const cohort = resolveTrainerCohortFromStandings({
+      rows: [
+        ...runs("trainer-2025", "Old Trainer", "jump", "2025-01-01", 60, 30),
+        ...runs("trainer-2026", "Live Trainer", "jump", "2026-06-01", 60, 20),
+        ...runs("trainer-2027", "Leak Trainer", "jump", "2027-01-01", 60, 50),
+      ],
+      definition: trainerCohortRule(10),
+      family: "jump",
+      cohortYear: trainerCohortYearFromDate("2027-03-01"),
+    });
+
+    assert.equal(trainerCohortReferenceYearFromDate("2027-03-01"), 2026);
+    assert.equal(cohort.referenceYear, 2026);
+    assert.deepEqual(cohort.members.map((member) => member.trainerId), ["trainer-2026"]);
+  });
+
+  test("labels include dynamic prior year and selected race family", () => {
+    assert.equal(
+      trainerCohortLabel({ top: 30, referenceYear: 2024, family: "turf_flat" }),
+      "Top 30 by 2024 Turf wins",
+    );
+    assert.equal(
+      trainerCohortLabel({ top: 30, referenceYear: 2025, family: "all_weather_flat" }),
+      "Top 30 by 2025 All Weather wins",
+    );
+    assert.equal(
+      trainerCohortLabel({ top: 30, referenceYear: 2025, family: "jump" }),
+      "Top 30 by 2025 Jump wins",
+    );
   });
 
   test("ranking is family-specific with minimum runners and deterministic tie-breaks", () => {

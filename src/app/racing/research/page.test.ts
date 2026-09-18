@@ -36,7 +36,7 @@ import {
   isSaveRuleSubmitDisabled,
   saveRuleSubmitButtonLabel,
 } from "./save-rule-submit-button";
-import { holdoutRangeText } from "./holdout-display";
+import { holdoutRangeText, savedRuleTrainerCohortText } from "./holdout-display";
 import { PriceSensitivityPanel } from "./price-sensitivity-panel";
 import { keyedStrategySummary } from "./strategy-summary-items";
 import { RuleStabilityPanel } from "./rule-stability-panel";
@@ -828,6 +828,29 @@ describe("trainer selector helpers", () => {
     assert.deepEqual(rule.runner.jockeyPriorWinRate, { min: 15, max: undefined });
   });
 
+  test("Draw controls and form values are available only for flat families", () => {
+    const renderFamily = (family: ResearchRuleV1["family"]) => renderToStaticMarkup(ResearchForm({
+      familyOptions: FAMILY_OPTIONS,
+      filterOptions: { courses: [], classes: [], distances: [], trainers: [], jockeys: [], weights: weightOptions() },
+      handicapStatusOptions: HANDICAP_STATUS_OPTIONS,
+      isPending: false, isStale: false, onChange: () => {}, onClearFilters: () => {}, onSubmit: () => {},
+      rankMetricOptions: RANK_METRIC_OPTIONS, ratingMetricOptions: RATING_METRIC_OPTIONS,
+      returnBucketOptions: RETURN_BUCKET_OPTIONS, ref: null, relativeMetricOptions: RELATIVE_METRIC_OPTIONS,
+      runAfterBreakOptions: RUN_AFTER_BREAK_OPTIONS, rule: defaultResearchRule(family), settlementMode: "actual",
+    }));
+    const turf = renderFamily("turf_flat");
+    const awMarkup = renderFamily("all_weather_flat");
+    const jumpMarkup = renderFamily("jump");
+    const aw = researchRuleFromFormData(formData({ family: "all_weather_flat", drawMin: "1", drawMax: "3" }));
+    const jump = researchRuleFromFormData(formData({ family: "jump", drawMin: "1", drawMax: "3" }));
+
+    assert.match(turf, /name="drawMin"/);
+    assert.match(awMarkup, /name="drawMax"/);
+    assert.doesNotMatch(jumpMarkup, /name="drawMin"/);
+    assert.deepEqual(aw.runner.draw, { min: 1, max: 3 });
+    assert.equal(jump.runner.draw, undefined);
+  });
+
   test("form data stores trainer cohort concept and single trainer takes precedence", () => {
     assert.deepEqual(researchRuleFromFormData(formData({ trainerCohort: "20" })).runner.trainerCohort, {
       top: 20,
@@ -1178,7 +1201,42 @@ describe("research filter freshness state", () => {
       "2026-01-01 to 2026-09-11",
     );
   });
+
+  test("saved trainer cohort display uses each evaluation period's prior year", () => {
+    const rule = savedTrainerCohortRule("turf_flat");
+
+    assert.equal(
+      savedRuleTrainerCohortText(rule, rule.developmentFrom),
+      "Top 30 by 2024 Turf wins",
+    );
+    assert.equal(
+      savedRuleTrainerCohortText(rule, "2026-01-01"),
+      "Top 30 by 2025 Turf wins",
+    );
+  });
+
+  test("saved trainer cohort display uses the relevant family label", () => {
+    assert.equal(
+      savedRuleTrainerCohortText(savedTrainerCohortRule("all_weather_flat"), "2026-01-01"),
+      "Top 30 by 2025 All Weather wins",
+    );
+    assert.equal(
+      savedRuleTrainerCohortText(savedTrainerCohortRule("jump"), "2026-01-01"),
+      "Top 30 by 2025 Jump wins",
+    );
+  });
 });
+
+function savedTrainerCohortRule(family: ResearchRuleV1["family"]) {
+  const rule: ResearchRuleV1 = {
+    ...defaultResearchRule(family),
+    runner: { trainerCohort: trainerCohortRule(30) },
+  };
+  return {
+    canonicalRule: rule,
+    developmentFrom: "2025-01-01",
+  };
+}
 
 function resolvedTrainerCohort(trainerIds: string[]): ResolvedTrainerCohort {
   return {

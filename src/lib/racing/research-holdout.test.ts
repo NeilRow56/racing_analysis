@@ -184,6 +184,28 @@ describe("research holdout validation", () => {
     assert.equal(snapshot.settledSelections, 2);
   });
 
+  test("evaluates a frozen AW Draw range against stored stalls", async () => {
+    const root = await mkdtemp(join(tmpdir(), "racing-holdout-draw-"));
+    const rule: ResearchRuleV1 = {
+      ...defaultResearchRule("all_weather_flat"),
+      runner: { draw: { min: 1, max: 3 } },
+    };
+    await writeCache(root, {
+      manifest: manifestFor({ family: "all_weather_flat", from: "2026-01-01", to: "2026-12-31", rowCount: 4 }),
+      rows: [
+        row({ targetRunnerId: "draw-1", raceCode: "aw", draw: 1, raceDate: "2026-01-03" }),
+        row({ targetRunnerId: "draw-3", raceCode: "aw", draw: 3, raceDate: "2026-01-03" }),
+        row({ targetRunnerId: "draw-4", raceCode: "aw", draw: 4, raceDate: "2026-01-03" }),
+        row({ targetRunnerId: "missing", raceCode: "aw", draw: null, raceDate: "2026-01-03" }),
+      ],
+    });
+
+    const snapshot = await evaluateHoldoutForSavedRule(savedRuleFor(rule), { outputDir: root });
+
+    assert.equal(snapshot.selections, 2);
+    assert.equal(snapshot.settledSelections, 2);
+  });
+
   test("evaluates frozen Jump subtype against the 2026 holdout cache", async () => {
     const root = await mkdtemp(join(tmpdir(), "racing-holdout-jump-subtype-"));
     const rule: ResearchRuleV1 = {

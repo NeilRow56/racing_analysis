@@ -19,6 +19,8 @@ export {
   parseTrainerCohortTop,
   trainerCohortLabel,
   trainerCohortRule,
+  trainerCohortReferenceYearFromDate,
+  trainerCohortYearFromDate,
   type ResolvedTrainerCohort,
   type TrainerCohortMember,
   type TrainerCohortPeriod,

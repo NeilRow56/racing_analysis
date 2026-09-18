@@ -16,6 +16,7 @@ import {
   canonicalResearchRule,
   researchRuleKey,
 } from "./research-rule-identity";
+import { trainerCohortRule } from "./trainer-cohorts";
 import { TURF_PERFORMANCE_RATING_VERSION } from "./turf-performance-rating";
 import {
   developmentSnapshotFromResult,
@@ -41,6 +42,7 @@ describe("saved research rules", () => {
         jockeyIds: ["jockey-b", "jockey-a"],
         jockeyPriorRuns: { min: 50 },
         officialRating: { min: 0, max: 100 },
+        draw: { min: 1, max: 3 },
       },
       ratings: [{ metric: "latestSpeedRating", range: { min: 72 } }],
       ranks: [{ metric: "latestSpeedRating", range: { max: 2 } }],
@@ -392,6 +394,34 @@ describe("saved research rules", () => {
       lead: { min: 4 },
     });
     assert.equal(saved.ruleIdentity, researchRuleKey(rule));
+  });
+
+  test("canonical saved trainer cohort rules preserve the dynamic concept, not a literal year", () => {
+    const rule: ResearchRuleV1 = {
+      ...defaultResearchRule("turf_flat"),
+      runner: { trainerCohort: trainerCohortRule(30) },
+    };
+    const saved = savedRuleFor(rule, "frozen");
+
+    assert.deepEqual((saved.canonicalRule as ResearchRuleV1).runner.trainerCohort, {
+      top: 30,
+      period: "prior_calendar_year",
+      rankingMetric: "wins",
+    });
+    assert.equal("referenceYear" in ((saved.canonicalRule as ResearchRuleV1).runner.trainerCohort ?? {}), false);
+    assert.equal(saved.ruleIdentity, researchRuleKey(rule));
+  });
+
+  test("saved and frozen flat rules preserve Draw without changing legacy rules", () => {
+    const rule: ResearchRuleV1 = {
+      ...defaultResearchRule("all_weather_flat"),
+      runner: { draw: { min: 1, max: 3 } },
+    };
+    const saved = savedRuleFor(rule, "frozen");
+
+    assert.deepEqual((saved.canonicalRule as ResearchRuleV1).runner.draw, { min: 1, max: 3 });
+    assert.equal(saved.ruleIdentity, researchRuleKey(rule));
+    assert.equal((savedRuleFor(defaultResearchRule("all_weather_flat"), "frozen").canonicalRule as Partial<ResearchRuleV1>).runner?.draw, undefined);
   });
 
   test("database helper keeps the client open until the operation settles", async () => {

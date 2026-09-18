@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createDbConnection } from "@/db";
+import { syncAwForwardComparisons } from "@/lib/racing/aw-forward-comparisons";
 import { listSavedResearchRulesWithDb } from "@/lib/racing/saved-research-rules";
 import { parseResearchRule } from "@/lib/racing/research-rule";
 import {
@@ -9,7 +10,7 @@ import {
   type TodayTrainerCohortsByRule,
 } from "@/lib/racing/today-rule-matches";
 import { refreshEligibleTodaySelectionResults } from "@/lib/racing/today-result-refresh";
-import { getTrainerCohortForRule } from "@/lib/racing/trainer-cohorts";
+import { getTrainerCohortForRule, trainerCohortYearFromDate } from "@/lib/racing/trainer-cohorts";
 import {
   getTodaysRacingData,
   isValidRacingDate,
@@ -51,15 +52,18 @@ export async function refreshTodaySelectionResultsAction(formData: FormData) {
         data.raceDate,
         trainerCohortsByRule,
       );
+      await syncAwForwardComparisons(meetings, data.raceDate);
       const refreshSummary = await refreshEligibleTodaySelectionResults(meetings, data.raceDate, {
         forceRetry: true,
       });
       if (refreshSummary.imported > 0) {
         const refreshed = await getTodaysRacingData(connection.db, data.raceDate);
         if (refreshed.status === "ok") {
+          await syncAwForwardComparisons(refreshed.meetings, data.raceDate);
           await enrichTodayForwardTrackerResults(refreshed.meetings, data.raceDate);
         }
       } else {
+        await syncAwForwardComparisons(data.meetings, data.raceDate);
         await enrichTodayForwardTrackerResults(data.meetings, data.raceDate);
       }
     }
@@ -126,7 +130,7 @@ async function resolveTodayTrainerCohorts(
   savedRules: Awaited<ReturnType<typeof listSavedResearchRulesWithDb>>,
   raceDate: string,
 ): Promise<TodayTrainerCohortsByRule> {
-  const cohortYear = Number(raceDate.slice(0, 4));
+  const cohortYear = trainerCohortYearFromDate(raceDate);
   const entries = await Promise.all(
     savedRules
       .filter((savedRule) => savedRule.status === "frozen")
