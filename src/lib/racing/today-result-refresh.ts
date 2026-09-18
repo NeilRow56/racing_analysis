@@ -1,6 +1,9 @@
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { getLocalRacingDate, type TodayMeeting, type TodayRace } from "./todays-racing";
+import { todayRaceHasConclusiveResult } from "./today-race-status";
+
+export { todayRaceHasConclusiveResult } from "./today-race-status";
 
 const execFileAsync = promisify(execFile);
 
@@ -202,21 +205,6 @@ function raceHasFrozenRuleSelection(race: TodayRace): boolean {
   return race.runners.some((runner) => (runner.savedRuleMatches?.length ?? 0) > 0);
 }
 
-export function todayRaceHasConclusiveResult(race: TodayRace): boolean {
-  if (!nonBlank(race.winningTime) || !race.runners.some((runner) => runner.finishingPosition === 1)) {
-    return false;
-  }
-  return race.runners.every((runner) => {
-    if (runner.resultStatus === "non_runner") {
-      return true;
-    }
-    return Boolean(
-      nonBlank(runner.oddsDecimal) &&
-      (runner.finishingPosition !== null || nonBlank(runner.resultStatus)),
-    );
-  });
-}
-
 function isPastRefreshBuffer(race: TodayRace, raceDate: string, now: Date): boolean {
   const scheduledAt = race.raceDateTime ?? raceDateTimeFromLondonScheduledTime(
     raceDate,
@@ -308,8 +296,4 @@ function slugify(value: string): string {
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
   return slug || "race";
-}
-
-function nonBlank(value: string | null): boolean {
-  return typeof value === "string" && value.trim().length > 0;
 }

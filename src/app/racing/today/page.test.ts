@@ -1,6 +1,9 @@
 import assert from "node:assert/strict";
 import { describe, test } from "node:test";
-import { todayRaceStatusLabel } from "@/lib/racing/today-race-status";
+import {
+  getTodayRaceState,
+  todayRaceStatusLabel,
+} from "@/lib/racing/today-race-status";
 import type { TodayRace, TodayRunner } from "@/lib/racing/todays-racing";
 
 describe("Today race status label", () => {
@@ -14,13 +17,27 @@ describe("Today race status label", () => {
     );
   });
 
-  test("past race without result settlement is labelled Race over", () => {
+  test("past race without result settlement is awaiting result", () => {
     assert.equal(
       todayRaceStatusLabel(
         race({ raceDateTime: new Date("2026-09-12T15:00:00.000Z") }),
         new Date("2026-09-12T15:00:00.000Z"),
       ),
-      "Race over",
+      "Awaiting result",
+    );
+  });
+
+  test("past partial result metadata is awaiting result rather than race over", () => {
+    assert.equal(
+      todayRaceStatusLabel(
+        race({
+          actualRunnerCount: 7,
+          raceDateTime: new Date("2026-09-18T15:22:00.000Z"),
+          runners: [runner({ resultStatus: "other" })],
+        }),
+        new Date("2026-09-18T15:24:00.000Z"),
+      ),
+      "Awaiting result",
     );
   });
 
@@ -39,16 +56,56 @@ describe("Today race status label", () => {
     );
   });
 
-  test("stored result metadata labels race over even without a race datetime", () => {
+  test("future full-result payload with actual runner count remains upcoming", () => {
+    assert.equal(
+      getTodayRaceState(
+        race({
+          actualRunnerCount: 6,
+          raceDateTime: new Date("2026-09-18T17:45:00.000Z"),
+          runners: [runner({ resultStatus: "other" })],
+        }),
+        new Date("2026-09-18T15:24:00.000Z"),
+      ),
+      "upcoming",
+    );
+  });
+
+  test("future race with actual runner count is not race over", () => {
     assert.equal(
       todayRaceStatusLabel(
         race({
-          raceDateTime: null,
-          runners: [runner({ finishingPosition: 2, resultStatus: "finished" })],
+          actualRunnerCount: 12,
+          raceDateTime: new Date("2026-09-18T18:15:00.000Z"),
         }),
-        new Date("2026-09-12T12:00:00.000Z"),
+        new Date("2026-09-18T15:24:00.000Z"),
       ),
-      "Race over",
+      null,
+    );
+  });
+
+  test("future race with fallback OTHER statuses is not race over", () => {
+    assert.equal(
+      todayRaceStatusLabel(
+        race({
+          raceDateTime: new Date("2026-09-18T17:45:00.000Z"),
+          runners: [runner({ resultStatus: "other" })],
+        }),
+        new Date("2026-09-18T15:24:00.000Z"),
+      ),
+      null,
+    );
+  });
+
+  test("BST comparison uses absolute instants for an evening race", () => {
+    const eveningRace = race({ raceDateTime: new Date("2026-09-18T17:45:00.000Z") });
+
+    assert.equal(
+      getTodayRaceState(eveningRace, new Date("2026-09-18T18:44:59+01:00")),
+      "upcoming",
+    );
+    assert.equal(
+      getTodayRaceState(eveningRace, new Date("2026-09-18T18:45:00+01:00")),
+      "past_due_pending_result",
     );
   });
 });
