@@ -313,12 +313,7 @@ function capWinnerAt20(row: RankedResearchRow, settlement: BacktestSettlement): 
   if (!row.outcome.won || settlement.settlementOddsDecimal <= WINNER_CAP_20_DECIMAL) {
     return settlement;
   }
-  return {
-    ...settlement,
-    settlementOddsDecimal: WINNER_CAP_20_DECIMAL,
-    grossReturn: WINNER_CAP_20_DECIMAL,
-    profitLoss: WINNER_CAP_20_DECIMAL - settlement.stake,
-  };
+  return settleSelection(row.outcome, { maxFractionalOdds: WINNER_CAP_20_DECIMAL - 1 })!;
 }
 
 function baselineColumns(metrics: Metrics) {

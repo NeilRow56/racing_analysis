@@ -1,7 +1,8 @@
 import type { TodayMeeting } from "./todays-racing";
-import { isOrdinaryFlatTurfRaceForDisplay } from "./todays-racing";
 import {
   enrichForwardRecordResult,
+  isTimewiseEligibleRace,
+  timewiseRaceFamily,
   trackerRaceTime,
 } from "./tpr-timewise-forward-context";
 import {
@@ -22,11 +23,12 @@ export async function enrichTodayForwardTrackerResults(
 
   for (const meeting of meetings) {
     for (const race of meeting.races) {
-      if (!isOrdinaryFlatTurfRaceForDisplay(race)) continue;
+      if (!isTimewiseEligibleRace(race)) continue;
       const raceTime = trackerRaceTime(race.scheduledTime);
       if (!raceTime) continue;
       const record = records.get(forwardRaceKey({ raceDate, course: meeting.courseName, raceTime }));
       if (!record) continue;
+      if (record.family !== timewiseRaceFamily(race)) continue;
       const enriched = enrichForwardRecordResult(record, race);
       if (enriched === record) continue;
       await saveTrackerRace(enriched, true);

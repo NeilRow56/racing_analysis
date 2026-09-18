@@ -1,17 +1,20 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
+import { winGrossReturn } from "../src/lib/racing/win-settlement";
 
-export const TRACKER_VERSION = "tpr_timewise_forward_v2" as const;
+export const TRACKER_VERSION = "tpr_timewise_forward_v3" as const;
 export const DEFAULT_DATA_PATH = "data/research/tpr-vs-timewise-forward.json";
 export const DEFAULT_REPORT_PATH = "/tmp/tpr-vs-timewise-forward.md";
 
 export type ForwardRaceInput = {
+  family?: "turf" | "all_weather";
   raceDate: string;
   course: string;
   raceTime: string;
   winner: string | null;
   winnerSp: number | null;
+  winners?: ForwardWinner[];
   tprRank1: string | null;
   tprRank2: string | null;
   timewiseRank1: string | null;
@@ -19,6 +22,8 @@ export type ForwardRaceInput = {
   timewiseRank1NonRunner?: boolean;
   timewiseRank2NonRunner?: boolean;
   w50Rank1: string | null;
+  awBestL3SpeedRank1?: string | null;
+  awBestL3PerformanceRank1?: string | null;
   orRank1: string | null;
   winnerOrRank: number | null;
   timewiseRecordedAt?: string | null;
@@ -26,7 +31,13 @@ export type ForwardRaceInput = {
   timewiseUpdatedAt?: string | null;
 };
 
-export type ForwardRaceRecord = ForwardRaceInput & {
+export type ForwardWinner = { horseName: string; decimalOdds: number | null };
+
+export type ForwardRaceRecord = Omit<ForwardRaceInput, "winners" | "family" | "awBestL3SpeedRank1" | "awBestL3PerformanceRank1"> & {
+  family: "turf" | "all_weather";
+  winners: ForwardWinner[];
+  awBestL3SpeedRank1: string | null;
+  awBestL3PerformanceRank1: string | null;
   winnerWasTprRank1: boolean | null;
   winnerWasTprTop2: boolean | null;
   winnerWasTimewiseRank1: boolean | null;
@@ -49,31 +60,37 @@ export type TrackerData = {
 
 export function createRecord(input: ForwardRaceInput): ForwardRaceRecord {
   validateInput(input);
+  const family = input.family ?? "turf";
+  const winners = winnerEntries(input);
   const timewiseRank1Active = input.timewiseRank1 !== null && !input.timewiseRank1NonRunner;
   const timewiseRank2Active = input.timewiseRank2 !== null && !input.timewiseRank2NonRunner;
   const timewiseTop2Available = timewiseRank1Active || timewiseRank2Active;
   const tprRank1Active = input.tprRank1 !== null;
   const tprTop2Available = tprRank1Active || input.tprRank2 !== null;
-  const winnerWasTprRank1 = input.winner === null || !tprRank1Active ? null : sameHorse(input.winner, input.tprRank1);
-  const winnerWasTprTop2 = input.winner === null || !tprTop2Available
+  const winnerWasTprRank1 = winners.length === 0 || !tprRank1Active ? null : hasWinner(winners, input.tprRank1);
+  const winnerWasTprTop2 = winners.length === 0 || !tprTop2Available
     ? null
-    : (tprRank1Active && sameHorse(input.winner, input.tprRank1)) || sameHorse(input.winner, input.tprRank2);
-  const winnerWasTimewiseRank1 = input.winner === null || !timewiseRank1Active ? null : sameHorse(input.winner, input.timewiseRank1);
-  const winnerWasTimewiseTop2 = input.winner === null || !timewiseTop2Available
+    : (tprRank1Active && hasWinner(winners, input.tprRank1)) || hasWinner(winners, input.tprRank2);
+  const winnerWasTimewiseRank1 = winners.length === 0 || !timewiseRank1Active ? null : hasWinner(winners, input.timewiseRank1);
+  const winnerWasTimewiseTop2 = winners.length === 0 || !timewiseTop2Available
     ? null
-    : (timewiseRank1Active && sameHorse(input.winner, input.timewiseRank1)) ||
-      (timewiseRank2Active && sameHorse(input.winner, input.timewiseRank2));
+    : (timewiseRank1Active && hasWinner(winners, input.timewiseRank1)) ||
+      (timewiseRank2Active && hasWinner(winners, input.timewiseRank2));
   return {
     ...input,
+    family,
+    awBestL3SpeedRank1: input.awBestL3SpeedRank1 ?? null,
+    awBestL3PerformanceRank1: input.awBestL3PerformanceRank1 ?? null,
+    winners,
     winnerWasTprRank1,
     winnerWasTprTop2,
     winnerWasTimewiseRank1,
     winnerWasTimewiseTop2,
     rank1Agree: !tprRank1Active || !timewiseRank1Active ? null : sameHorse(input.tprRank1, input.timewiseRank1),
-    winnerWasTprOnlyTop2: input.winner === null || !tprTop2Available || !timewiseTop2Available ? null : winnerWasTprTop2! && !winnerWasTimewiseTop2,
-    winnerWasTimewiseOnlyTop2: input.winner === null || !tprTop2Available || !timewiseTop2Available ? null : winnerWasTimewiseTop2! && !winnerWasTprTop2,
-    bothTop2CapturedWinner: input.winner === null || !tprTop2Available || !timewiseTop2Available ? null : winnerWasTprTop2! && winnerWasTimewiseTop2!,
-    neitherTop2CapturedWinner: input.winner === null || !tprTop2Available || !timewiseTop2Available ? null : !winnerWasTprTop2 && !winnerWasTimewiseTop2,
+    winnerWasTprOnlyTop2: winners.length === 0 || !tprTop2Available || !timewiseTop2Available ? null : winnerWasTprTop2! && !winnerWasTimewiseTop2,
+    winnerWasTimewiseOnlyTop2: winners.length === 0 || !tprTop2Available || !timewiseTop2Available ? null : winnerWasTimewiseTop2! && !winnerWasTprTop2,
+    bothTop2CapturedWinner: winners.length === 0 || !tprTop2Available || !timewiseTop2Available ? null : winnerWasTprTop2! && winnerWasTimewiseTop2!,
+    neitherTop2CapturedWinner: winners.length === 0 || !tprTop2Available || !timewiseTop2Available ? null : !winnerWasTprTop2 && !winnerWasTimewiseTop2,
     tpr1AgreesWithOr1: !tprRank1Active ? null : agreement(input.tprRank1, input.orRank1),
     w50AgreesWithOr1: agreement(input.w50Rank1, input.orRank1),
     timewise1AgreesWithOr1: !timewiseRank1Active ? null : agreement(input.timewiseRank1, input.orRank1),
@@ -83,16 +100,16 @@ export function createRecord(input: ForwardRaceInput): ForwardRaceRecord {
 
 export function summarize(races: ForwardRaceRecord[]) {
   const cleanRaces = cleanComparisonRaces(races);
-  const settled = cleanRaces.filter((race) => race.winner !== null);
+  const settled = cleanRaces.filter((race) => race.winners.length > 0);
   const tprRank1Races = settled.filter(hasActiveTprRank1);
   const tprTop2Races = settled.filter(hasActiveTprTop2);
   const timewiseRank1Races = settled.filter(hasActiveTimewiseRank1);
   const timewiseTop2Races = settled.filter(hasActiveTimewiseTop2);
   const disagreement = timewiseRank1Races.filter((race) => race.rank1Agree === false);
-  const priced = tprRank1Races.filter((race) => race.winnerSp !== null);
-  const timewisePriced = timewiseRank1Races.filter((race) => race.winnerSp !== null);
-  const tprWinningPrices = priced.filter((race) => race.winnerWasTprRank1).map((race) => race.winnerSp!);
-  const timewiseWinningPrices = timewisePriced.filter((race) => race.winnerWasTimewiseRank1).map((race) => race.winnerSp!);
+  const priced = tprRank1Races.filter(hasPricedResult);
+  const timewisePriced = timewiseRank1Races.filter(hasPricedResult);
+  const tprWinningPrices = priced.map((race) => winningPriceFor(race, race.tprRank1)).filter((value): value is number => value !== null);
+  const timewiseWinningPrices = timewisePriced.map((race) => winningPriceFor(race, race.timewiseRank1)).filter((value): value is number => value !== null);
   return {
     racesTracked: races.length,
     comparisonRaces: cleanRaces.length,
@@ -131,15 +148,15 @@ export function orAgreementSummaries(races: ForwardRaceRecord[]) {
   return [
     agreementSummary(races, "TPR W100", true, (race) => race.tpr1AgreesWithOr1, (race) => race.winnerWasTprRank1),
     agreementSummary(races, "TPR W100", false, (race) => race.tpr1AgreesWithOr1, (race) => race.winnerWasTprRank1),
-    agreementSummary(races, "W50", true, (race) => race.w50AgreesWithOr1, (race) => race.w50Rank1 !== null && sameHorse(race.winner, race.w50Rank1)),
-    agreementSummary(races, "W50", false, (race) => race.w50AgreesWithOr1, (race) => race.w50Rank1 !== null && sameHorse(race.winner, race.w50Rank1)),
+    agreementSummary(races, "W50", true, (race) => race.w50AgreesWithOr1, (race) => race.w50Rank1 !== null && hasWinner(race.winners, race.w50Rank1)),
+    agreementSummary(races, "W50", false, (race) => race.w50AgreesWithOr1, (race) => race.w50Rank1 !== null && hasWinner(race.winners, race.w50Rank1)),
   ];
 }
 
 export function disagreementByOrContext(races: ForwardRaceRecord[]) {
   races = cleanComparisonRaces(races);
   return [true, false].map((agrees) => {
-    const rows = races.filter((race) => race.winner !== null && race.rank1Agree === false && race.tpr1AgreesWithOr1 === agrees);
+    const rows = races.filter((race) => race.winners.length > 0 && race.rank1Agree === false && race.tpr1AgreesWithOr1 === agrees);
     return {
       context: agrees ? "TPR agrees with OR" : "TPR does not agree with OR",
       races: rows.length,
@@ -211,6 +228,7 @@ export function renderReport(data: TrackerData, dataPath = DEFAULT_DATA_PATH): s
   }]);
   lines.push("Returns use one £1 stake in each race with winner final SP/BSP recorded. A winning rank-1 selection returns the recorded decimal winner price; otherwise it returns zero. Missing W100 context is unavailable rather than a loss, and W100 top-two capture uses whichever score-ordered selections exist. Timewise rank-1 non-runners are unavailable and excluded from rank-1 and disagreement denominators; top-two capture uses only surviving published selections without promotion.", "", "## Races", "");
   table(lines, [...data.races].sort(compareRaces).map((race) => ({
+    family: race.family,
     date: race.raceDate,
     course: race.course,
     time: race.raceTime,
@@ -244,12 +262,18 @@ export function renderReport(data: TrackerData, dataPath = DEFAULT_DATA_PATH): s
 }
 
 export function renderSummary(data: TrackerData): string {
-  const overall = summarize(data.races);
-  const settledRaces = cleanComparisonRaces(data.races).filter((race) => race.winner !== null);
+  const turf = renderFamilySummary(data.races.filter((race) => race.family === "turf"), "turf");
+  const allWeather = renderFamilySummary(data.races.filter((race) => race.family === "all_weather"), "all_weather");
+  return ["## Turf", "", turf, "", "## All Weather", "", allWeather].join("\n");
+}
+
+function renderFamilySummary(records: ForwardRaceRecord[], family: "turf" | "all_weather"): string {
+  const overall = summarize(records);
+  const settledRaces = cleanComparisonRaces(records).filter((race) => race.winners.length > 0);
   const w50Races = settledRaces.filter((race) => race.w50Rank1 !== null);
-  const w50Winners = count(w50Races, (race) => sameHorse(race.winner, race.w50Rank1!));
-  const w50Priced = w50Races.filter((race) => race.winnerSp !== null);
-  const w50Return = rank1Return(w50Priced, (race) => sameHorse(race.winner, race.w50Rank1!));
+  const w50Winners = count(w50Races, (race) => hasWinner(race.winners, race.w50Rank1!));
+  const w50Priced = w50Races.filter(hasPricedResult);
+  const w50Return = rank1Return(w50Priced, (race) => race.w50Rank1);
   const tprReturn = overall.pricedRaces === 0 ? null : overall.tprLevelStakeReturn;
   const timewiseReturn = overall.timewisePricedRaces === 0 ? null : overall.timewiseLevelStakeReturn;
   const timewiseRoi = timewiseReturn === null ? null : rate(timewiseReturn, overall.timewisePricedRaces);
@@ -257,9 +281,9 @@ export function renderSummary(data: TrackerData): string {
   const w50Roi = w50Return === null ? null : rate(w50Return, w50Priced.length);
   const w100Timewise = pairwiseDisagreement(settledRaces.filter(hasActiveTimewiseRank1), (race) => race.tprRank1, (race) => race.timewiseRank1);
   const w50W100 = pairwiseDisagreement(w50Races, (race) => race.w50Rank1!, (race) => race.tprRank1);
-  const orSplits = orAgreementSummaries(data.races);
+  const orSplits = orAgreementSummaries(records);
   const split = (rating: "TPR W100" | "W50", agrees: boolean) => orSplits.find((value) => value.rating === rating && value.agrees === agrees)!;
-  return [
+  const common = [
     `Races tracked: ${overall.racesTracked}`,
     `Timing: ${overall.preRaceEntries} pre-race | ${overall.postRaceEntries} post-race/backfilled | ${overall.timingUnknownEntries} unknown`,
     `Clean comparison sample: ${overall.comparisonRaces}`,
@@ -280,6 +304,23 @@ export function renderSummary(data: TrackerData): string {
     `  Strike: ${pct(overall.timewiseRank1Strike)}`,
     `  Top-2 capture: ${pct(overall.timewiseTop2Capture)}`,
     `  £1 return / ROI (${overall.timewisePricedRaces} priced): ${money(timewiseReturn)} / ${pct(timewiseRoi)}`,
+    `  Average winning SP: ${number(overall.timewiseAverageWinnerSp)}`,
+    "  A/E: unavailable (losing selections' final SP is not persisted)",
+  ];
+  if (family === "all_weather") {
+    return [
+      ...common.slice(0, 4),
+      `Pending: ${records.filter((race) => race.winners.length === 0).length}`,
+      "",
+      ...common.slice(common.indexOf("Timewise")),
+      "",
+      awComparisonLine("Best L3 Speed", settledRaces, (race) => race.awBestL3SpeedRank1 ?? null),
+      awComparisonLine("Best L3 Performance", settledRaces, (race) => race.awBestL3PerformanceRank1 ?? null),
+      awComparisonLine("OR", settledRaces, (race) => race.orRank1),
+    ].join("\n");
+  }
+  return [
+    ...common,
     "",
     "W100 vs Timewise disagreements",
     `  Races: ${w100Timewise.races} | W100 winners: ${w100Timewise.leftWinners} | Timewise winners: ${w100Timewise.rightWinners} | Neither: ${w100Timewise.neither}`,
@@ -374,13 +415,13 @@ export async function saveTrackerRace(record: ForwardRaceRecord, replace = false
 
 export function parseTrackerData(value: unknown, source = "tracker data"): TrackerData {
   const parsed = value as Partial<TrackerData> & { version?: string; races?: Array<Partial<ForwardRaceInput>> };
-  if ((parsed.version !== TRACKER_VERSION && parsed.version !== "tpr_timewise_forward_v1") || !Array.isArray(parsed.races)) throw new Error(`Unsupported tracker data in ${source}`);
-  return { version: TRACKER_VERSION, races: parsed.races.map((race) => createRecord({ ...(race as ForwardRaceInput), timewiseRank1NonRunner: race.timewiseRank1NonRunner ?? false, timewiseRank2NonRunner: race.timewiseRank2NonRunner ?? false, w50Rank1: race.w50Rank1 ?? null, orRank1: race.orRank1 ?? null, winnerOrRank: race.winnerOrRank ?? null, timewiseRecordedAt: race.timewiseRecordedAt ?? null, timewiseRecordedPreRace: race.timewiseRecordedPreRace ?? null, timewiseUpdatedAt: race.timewiseUpdatedAt ?? null })) };
+  if (![TRACKER_VERSION, "tpr_timewise_forward_v2", "tpr_timewise_forward_v1"].includes(parsed.version ?? "") || !Array.isArray(parsed.races)) throw new Error(`Unsupported tracker data in ${source}`);
+  return { version: TRACKER_VERSION, races: parsed.races.map((race) => createRecord({ ...(race as ForwardRaceInput), family: race.family ?? "turf", timewiseRank1NonRunner: race.timewiseRank1NonRunner ?? false, timewiseRank2NonRunner: race.timewiseRank2NonRunner ?? false, w50Rank1: race.w50Rank1 ?? null, awBestL3SpeedRank1: race.awBestL3SpeedRank1 ?? null, awBestL3PerformanceRank1: race.awBestL3PerformanceRank1 ?? null, orRank1: race.orRank1 ?? null, winnerOrRank: race.winnerOrRank ?? null, timewiseRecordedAt: race.timewiseRecordedAt ?? null, timewiseRecordedPreRace: race.timewiseRecordedPreRace ?? null, timewiseUpdatedAt: race.timewiseUpdatedAt ?? null })) };
 }
 
 async function writeData(path: string, data: TrackerData) { await mkdir(dirname(resolve(path)), { recursive: true }); await writeFile(path, `${JSON.stringify(data, null, 2)}\n`, "utf8"); }
 async function writeReport(path: string, report: string) { await mkdir(dirname(resolve(path)), { recursive: true }); await writeFile(path, report, "utf8"); }
-function validateInput(input: ForwardRaceInput) { if (!/^\d{4}-\d{2}-\d{2}$/.test(input.raceDate)) throw new Error("--date must be YYYY-MM-DD"); if (!/^\d{1,2}:\d{2}$/.test(input.raceTime)) throw new Error("--time must be HH:MM"); for (const [field, value] of Object.entries(input)) if (!["winner", "winnerSp", "timewiseRank1", "timewiseRank2", "w50Rank1", "orRank1", "winnerOrRank"].includes(field) && typeof value === "string" && !value.trim()) throw new Error(`${field} is required`); if (input.timewiseRank1NonRunner && input.timewiseRank1 !== null) throw new Error("Timewise rank 1 cannot be both a runner and non-runner"); if (input.timewiseRank2NonRunner && input.timewiseRank2 !== null) throw new Error("Timewise rank 2 cannot be both a runner and non-runner"); if (input.winnerSp !== null && (!Number.isFinite(input.winnerSp) || input.winnerSp <= 1)) throw new Error("--winner-sp must be decimal odds greater than 1"); if (input.winnerOrRank !== null && (!Number.isInteger(input.winnerOrRank) || input.winnerOrRank < 1)) throw new Error("--winner-or-rank must be a positive integer"); if (sameHorse(input.tprRank1, input.tprRank2)) throw new Error("TPR rank 1 and rank 2 must differ"); if (sameHorse(input.timewiseRank1, input.timewiseRank2)) throw new Error("Timewise rank 1 and rank 2 must differ"); }
+function validateInput(input: ForwardRaceInput) { if (input.family !== undefined && input.family !== "turf" && input.family !== "all_weather") throw new Error("family must be turf or all_weather"); if (!/^\d{4}-\d{2}-\d{2}$/.test(input.raceDate)) throw new Error("--date must be YYYY-MM-DD"); if (!/^\d{1,2}:\d{2}$/.test(input.raceTime)) throw new Error("--time must be HH:MM"); for (const [field, value] of Object.entries(input)) if (!["winner", "winnerSp", "timewiseRank1", "timewiseRank2", "w50Rank1", "orRank1", "winnerOrRank"].includes(field) && typeof value === "string" && !value.trim()) throw new Error(`${field} is required`); if (input.timewiseRank1NonRunner && input.timewiseRank1 !== null) throw new Error("Timewise rank 1 cannot be both a runner and non-runner"); if (input.timewiseRank2NonRunner && input.timewiseRank2 !== null) throw new Error("Timewise rank 2 cannot be both a runner and non-runner"); if (input.winnerSp !== null && (!Number.isFinite(input.winnerSp) || input.winnerSp <= 1)) throw new Error("--winner-sp must be decimal odds greater than 1"); if (input.winnerOrRank !== null && (!Number.isInteger(input.winnerOrRank) || input.winnerOrRank < 1)) throw new Error("--winner-or-rank must be a positive integer"); if (sameHorse(input.tprRank1, input.tprRank2)) throw new Error("TPR rank 1 and rank 2 must differ"); if (sameHorse(input.timewiseRank1, input.timewiseRank2)) throw new Error("Timewise rank 1 and rank 2 must differ"); }
 function sameHorse(left: string | null, right: string | null) { return left !== null && right !== null && normalize(left) === normalize(right); }
 function agreement(left: string | null, right: string | null) { return left === null || right === null ? null : sameHorse(left, right); }
 function normalize(value: string) { return value.trim().toLocaleLowerCase("en-GB").replace(/\s+/g, " "); }
@@ -392,9 +433,10 @@ function hasActiveTprTop2(race: ForwardRaceRecord) { return race.tprRank1 !== nu
 function timewiseSlotLabel(horse: string | null, nonRunner: boolean | undefined) { return nonRunner ? "Non-runner" : horse ?? "-"; }
 export function forwardRaceKey(race: Pick<ForwardRaceInput, "raceDate" | "course" | "raceTime">) { return `${race.raceDate}|${normalize(race.course)}|${race.raceTime}`; }
 function compareRaces(left: ForwardRaceInput, right: ForwardRaceInput) { return left.raceDate.localeCompare(right.raceDate) || left.raceTime.localeCompare(right.raceTime) || left.course.localeCompare(right.course); }
-function levelStakeReturn(races: ForwardRaceRecord[], source: "tpr" | "timewise") { return races.reduce((sum, race) => sum + ((source === "tpr" ? race.winnerWasTprRank1 : race.winnerWasTimewiseRank1) ? race.winnerSp! : 0), 0) - races.length; }
-function rank1Return(races: ForwardRaceRecord[], won: (race: ForwardRaceRecord) => boolean) { return races.length === 0 ? null : races.reduce((sum, race) => sum + (won(race) ? race.winnerSp! : 0), 0) - races.length; }
-function pairwiseDisagreement(races: ForwardRaceRecord[], left: (race: ForwardRaceRecord) => string | null, right: (race: ForwardRaceRecord) => string | null) { const rows = races.filter((race) => left(race) !== null && right(race) !== null && !sameHorse(left(race), right(race))); return { races: rows.length, leftWinners: count(rows, (race) => sameHorse(race.winner, left(race))), rightWinners: count(rows, (race) => sameHorse(race.winner, right(race))), neither: count(rows, (race) => !sameHorse(race.winner, left(race)) && !sameHorse(race.winner, right(race))) }; }
+function levelStakeReturn(races: ForwardRaceRecord[], source: "tpr" | "timewise") { return races.reduce((sum, race) => sum + selectionReturn(race, source === "tpr" ? race.tprRank1 : race.timewiseRank1), 0) - races.length; }
+function rank1Return(races: ForwardRaceRecord[], selection: (race: ForwardRaceRecord) => string | null) { return races.length === 0 ? null : races.reduce((sum, race) => sum + selectionReturn(race, selection(race)), 0) - races.length; }
+function pairwiseDisagreement(races: ForwardRaceRecord[], left: (race: ForwardRaceRecord) => string | null, right: (race: ForwardRaceRecord) => string | null) { const rows = races.filter((race) => left(race) !== null && right(race) !== null && !sameHorse(left(race), right(race))); return { races: rows.length, leftWinners: count(rows, (race) => hasWinner(race.winners, left(race))), rightWinners: count(rows, (race) => hasWinner(race.winners, right(race))), neither: count(rows, (race) => !hasWinner(race.winners, left(race)) && !hasWinner(race.winners, right(race))) }; }
+function awComparisonLine(label: string, races: ForwardRaceRecord[], comparison: (race: ForwardRaceRecord) => string | null) { const available = races.filter((race) => comparison(race) !== null && race.timewiseRank1 !== null), agreements = available.filter((race) => sameHorse(comparison(race), race.timewiseRank1)).length, disagreement = pairwiseDisagreement(available, comparison, (race) => race.timewiseRank1); return `${label} vs Timewise R1: agreement ${agreements} | disagreement ${disagreement.races} | Timewise only ${disagreement.rightWinners} | ${label} only ${disagreement.leftWinners} | neither ${disagreement.neither}`; }
 function count<T>(values: T[], predicate: (value: T) => boolean | null) { return values.filter((value) => predicate(value) === true).length; }
 function rate(numerator: number, denominator: number) { return denominator === 0 ? null : numerator / denominator; }
 function average(values: number[]) { return values.length === 0 ? null : values.reduce((sum, value) => sum + value, 0) / values.length; }
@@ -408,7 +450,12 @@ function money(value: number | null) { return value === null ? "-" : `${value < 
 function number(value: number | null) { return value === null ? "-" : value.toFixed(2); }
 function yesNo(value: boolean | null) { return value === null ? "-" : value ? "yes" : "no"; }
 function yesNoMissing(value: boolean | null) { return value === null ? "-" : yesNo(value); }
-function agreementSummary(races: ForwardRaceRecord[], rating: "TPR W100" | "W50", agrees: boolean, context: (race: ForwardRaceRecord) => boolean | null, won: (race: ForwardRaceRecord) => boolean | null) { const rows = races.filter((race) => race.winner !== null && context(race) === agrees), winners = rows.filter((race) => won(race) === true), priced = rows.filter((race) => race.winnerSp !== null), levelStakeReturn = priced.length === 0 ? null : priced.reduce((sum, race) => sum + (won(race) ? race.winnerSp! : 0), 0) - priced.length; return { rating, agrees, races: rows.length, winners: winners.length, strike: rate(winners.length, rows.length), averageWinnerSp: average(winners.filter((race) => race.winnerSp !== null).map((race) => race.winnerSp!)), pricedRaces: priced.length, levelStakeReturn, roi: levelStakeReturn === null ? null : rate(levelStakeReturn, priced.length) }; }
+function agreementSummary(races: ForwardRaceRecord[], rating: "TPR W100" | "W50", agrees: boolean, context: (race: ForwardRaceRecord) => boolean | null, won: (race: ForwardRaceRecord) => boolean | null) { const rows = races.filter((race) => race.winners.length > 0 && context(race) === agrees), winners = rows.filter((race) => won(race) === true), priced = rows.filter(hasPricedResult), selection = (race: ForwardRaceRecord) => rating === "W50" ? race.w50Rank1 : race.tprRank1, levelStakeReturn = priced.length === 0 ? null : rank1Return(priced, selection); return { rating, agrees, races: rows.length, winners: winners.length, strike: rate(winners.length, rows.length), averageWinnerSp: average(winners.map((race) => winningPriceFor(race, selection(race))).filter((value): value is number => value !== null)), pricedRaces: priced.length, levelStakeReturn, roi: levelStakeReturn === null ? null : rate(levelStakeReturn, priced.length) }; }
+function winnerEntries(input: ForwardRaceInput): ForwardWinner[] { return input.winners?.length ? input.winners : input.winner === null ? [] : [{ horseName: input.winner, decimalOdds: input.winnerSp }]; }
+function hasWinner(winners: ForwardWinner[], horse: string | null) { return horse !== null && winners.some((winner) => sameHorse(winner.horseName, horse)); }
+function winningPriceFor(race: ForwardRaceRecord, horse: string | null) { return horse === null ? null : race.winners.find((winner) => sameHorse(winner.horseName, horse))?.decimalOdds ?? null; }
+function hasPricedResult(race: ForwardRaceRecord) { return race.winners.length > 0 && race.winners.every((winner) => winner.decimalOdds !== null); }
+function selectionReturn(race: ForwardRaceRecord, horse: string | null) { const decimalOdds = winningPriceFor(race, horse); return decimalOdds === null ? 0 : winGrossReturn({ won: true, decimalOdds, deadHeatDivisor: race.winners.length }); }
 function table(lines: string[], rows: Array<Record<string, unknown>>) { if (rows.length === 0) { lines.push("No races tracked.", ""); return; } const headers = Object.keys(rows[0]!); lines.push(`| ${headers.join(" | ")} |`, `| ${headers.map(() => "---").join(" | ")} |`, ...rows.map((row) => `| ${headers.map((header) => String(row[header] ?? "-").replace(/\|/g, "\\|")).join(" | ")} |`), ""); }
 
 const isMain = process.argv[1] !== undefined && import.meta.url === pathToFileURL(resolve(process.argv[1])).href;

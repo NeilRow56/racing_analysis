@@ -2,6 +2,7 @@ import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import type { TodayMeeting, TodayRace, TodayRunner } from "./todays-racing";
 import { isAllWeatherRaceForDisplay } from "./todays-racing";
+import { WINNER_CAP_20_FRACTIONAL, winGrossReturn } from "./win-settlement";
 
 export const AW_FORWARD_VERSION = "aw_forward_comparisons_v1";
 export const AW_FORWARD_START_DATE = "2026-09-18";
@@ -148,6 +149,10 @@ export function upsertAwForwardRecords(data: AwForwardData, incoming: AwForwardR
 export function settleAwForwardRecords(data: AwForwardData, meetings: TodayMeeting[], settledAt = new Date()): AwForwardData {
   const runners = new Map<string, TodayRunner>();
   for (const meeting of meetings) for (const race of meeting.races) for (const runner of race.runners) runners.set(`${race.raceId}|${runner.runnerId}`, runner);
+  const deadHeatDivisors = new Map<string, number>();
+  for (const meeting of meetings) for (const race of meeting.races) {
+    deadHeatDivisors.set(race.raceId, race.runners.filter((runner) => runner.finishingPosition === 1).length || 1);
+  }
   return {
     version: AW_FORWARD_VERSION,
     records: data.records.map((record) => {
@@ -155,8 +160,9 @@ export function settleAwForwardRecords(data: AwForwardData, meetings: TodayMeeti
       const finalSp = decimalOdds(runner?.oddsDecimal ?? null);
       if (!runner || runner.resultStatus === "non_runner" || runner.finishingPosition === null || finalSp === null) return record;
       const won = runner.finishingPosition === 1;
-      const capped20Return = won ? Math.min(finalSp, 21) : 0;
-      const uncappedReturn = won ? finalSp : 0;
+      const deadHeatDivisor = deadHeatDivisors.get(record.raceKey) ?? 1;
+      const capped20Return = winGrossReturn({ won, decimalOdds: finalSp, deadHeatDivisor, maxFractionalOdds: WINNER_CAP_20_FRACTIONAL });
+      const uncappedReturn = winGrossReturn({ won, decimalOdds: finalSp, deadHeatDivisor });
       if (record.finishingPosition === runner.finishingPosition && record.won === won && record.finalSp === finalSp && record.capped20Return === capped20Return && record.uncappedReturn === uncappedReturn) return record;
       return { ...record, finishingPosition: runner.finishingPosition, won, finalSp, capped20Return, uncappedReturn, settledAt: settledAt.toISOString() };
     }),

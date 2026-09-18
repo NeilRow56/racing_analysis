@@ -105,6 +105,7 @@ export function buildTodayRuleSelections(meetings: TodayMeeting[]): TodayRuleSel
 
   for (const meeting of meetings) {
     for (const race of meeting.races) {
+      const deadHeatDivisor = race.runners.filter((candidate) => candidate.finishingPosition === 1).length || 1;
       for (const runner of race.runners) {
         const matches = runner.savedRuleMatches ?? [];
         if (matches.length === 0) {
@@ -123,7 +124,7 @@ export function buildTodayRuleSelections(meetings: TodayMeeting[]): TodayRuleSel
           ruleNames: matches.map((match) => match.ruleName),
           odds: runner.odds,
           result: resultLabelForTodayRunner(race, runner),
-          settlement: settleSelection(todayRunnerSettlementOutcome(race, runner)),
+          settlement: settleSelection(todayRunnerSettlementOutcome(race, runner, deadHeatDivisor)),
         });
       }
     }
@@ -370,6 +371,7 @@ function todayRunnerFeatures(
 function todayRunnerSettlementOutcome(
   race: TodayRace,
   runner: TodayRunner,
+  deadHeatDivisor = 1,
 ): HistoricalPostRaceOutcome {
   return {
     targetRaceId: race.raceId,
@@ -382,6 +384,7 @@ function todayRunnerSettlementOutcome(
       : runner.finishingPosition >= 1 && runner.finishingPosition <= 3,
     startingPrice: runner.odds,
     startingPriceDecimal: runner.oddsDecimal,
+    deadHeatDivisor,
   };
 }
 

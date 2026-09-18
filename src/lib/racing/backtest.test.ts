@@ -346,6 +346,11 @@ describe("backtest scoring", () => {
     );
   });
 
+  test("settles dead-heat winners by dividing profit rather than returned stake", () => {
+    assert.equal(settleSelection(outcome({ deadHeatDivisor: 2 }))?.grossReturn, 3.5);
+    assert.equal(settleSelection(outcome({ startingPriceDecimal: "7", deadHeatDivisor: 3 }))?.grossReturn, 3);
+  });
+
   test("excludes non-runners and missing settlement prices from settled selections", () => {
     assert.equal(settleSelection(outcome({ resultStatus: "non_runner" })), null);
     assert.equal(settleSelection(outcome({ startingPriceDecimal: null })), null);

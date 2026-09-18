@@ -33,7 +33,7 @@ import {
   type TodayRunner,
 } from "@/lib/racing/todays-racing";
 import { todayRaceStatusLabel } from "@/lib/racing/today-race-status";
-import { trackerRaceTime } from "@/lib/racing/tpr-timewise-forward-context";
+import { isTimewiseEligibleRace, trackerRaceTime } from "@/lib/racing/tpr-timewise-forward-context";
 import { enrichTodayForwardTrackerResults } from "@/lib/racing/tpr-timewise-forward-settlement";
 import {
   forwardRaceKey,
@@ -420,7 +420,7 @@ function RaceBlock({ existingTimewise, race, raceDate }: {
         isTurfRace={isTurfRace}
         runners={race.runners}
       />
-      {isTurfRace ? (
+      {isTimewiseEligibleRace(race) ? (
         <TimewiseComparison existing={existingTimewise} race={race} raceDate={raceDate} />
       ) : null}
     </section>

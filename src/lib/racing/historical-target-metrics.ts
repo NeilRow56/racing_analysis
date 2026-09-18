@@ -150,6 +150,7 @@ export type HistoricalPostRaceOutcome = {
   placed: boolean | null;
   startingPrice: string | null;
   startingPriceDecimal: string | null;
+  deadHeatDivisor?: number;
 };
 
 export type HistoricalTargetRunnerMetricsRow = {
@@ -271,6 +272,7 @@ export function buildHistoricalTargetRunnerMetricRows({
   const trainerPriorMetrics = trainerMetrics ?? calculateTrainerPriorMetricsForTargets(targets, candidateRuns);
   const jockeyPriorMetrics = jockeyMetrics ?? calculateJockeyPriorMetricsForTargets(targets, candidateRuns);
 
+  const deadHeatDivisors = winnerCountsByRace(targets);
   return targets.map((target) => {
     const raceCode = classifyHistoricalRaceCode(target);
     const priorRuns =
@@ -412,9 +414,22 @@ export function buildHistoricalTargetRunnerMetricRows({
             : target.finishingPosition >= 1 && target.finishingPosition <= 3,
         startingPrice: target.startingPrice,
         startingPriceDecimal: target.startingPriceDecimal,
+        deadHeatDivisor: target.finishingPosition === 1
+          ? deadHeatDivisors.get(target.targetRaceId) ?? 1
+          : 1,
       },
     };
   });
+}
+
+function winnerCountsByRace(targets: HistoricalTargetRow[]): Map<string, number> {
+  const counts = new Map<string, number>();
+  for (const target of targets) {
+    if (target.finishingPosition === 1) {
+      counts.set(target.targetRaceId, (counts.get(target.targetRaceId) ?? 0) + 1);
+    }
+  }
+  return counts;
 }
 
 async function loadTargets(

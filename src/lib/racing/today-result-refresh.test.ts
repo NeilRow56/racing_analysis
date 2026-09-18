@@ -362,6 +362,17 @@ describe("Today result refresh", () => {
 });
 
 describe("Today result refresh selection settlement integration", () => {
+  test("settles each selected dead-heat winner with the race-level divisor", () => {
+    const selections = buildTodayRuleSelections([
+      meeting(race({ winningTime: "1m 12.00s" }), [
+        runner({ runnerId: "winner-a", horseName: "Winner A", finishingPosition: 1, oddsDecimal: "5", resultStatus: "finished" }),
+        runner({ runnerId: "winner-b", horseName: "Winner B", finishingPosition: 1, oddsDecimal: "7", resultStatus: "finished" }),
+      ]),
+    ]);
+    assert.deepEqual(selections.rows.map((row) => row.settlement?.grossReturn), [3, 4]);
+    assert.equal(selections.summary.profitLoss, 5);
+  });
+
   test("refreshed winner, loser and non-runner update the daily P/L table from stored results", () => {
     const selections = buildTodayRuleSelections([
       meeting(race({ winningTime: "1m 12.00s" }), [

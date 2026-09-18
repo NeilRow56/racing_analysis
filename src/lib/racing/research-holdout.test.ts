@@ -111,8 +111,8 @@ describe("research holdout validation", () => {
     assert.equal(snapshot.settledSelections, 2);
     assert.equal(snapshot.winners, 1);
     assert.equal(snapshot.places, 1);
-    assert.equal(snapshot.profitLoss, 1);
-    assert.equal(snapshot.roiPercentage, 50);
+    assert.equal(snapshot.profitLoss, 0);
+    assert.equal(snapshot.roiPercentage, 0);
     assert.equal(snapshot.maxConsecutiveLosers, 1);
     assert.equal(snapshot.status, "insufficient_holdout_sample");
   });

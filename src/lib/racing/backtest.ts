@@ -8,6 +8,7 @@ import {
   type HistoricalRaceCode,
   type HistoricalTargetRunnerMetricsRow,
 } from "./historical-target-metrics";
+import { winGrossReturn } from "./win-settlement";
 import {
   loadBacktestFeatureCache,
   type BacktestCacheFamily,
@@ -411,7 +412,7 @@ export function evaluateBacktestRows(input: {
     "Selection filters use feature rows only; outcomes are joined after selection.",
     "Pre-race odds are unavailable in the current historical feature layer, so odds filters only match rows with a genuine feature odds value.",
     "Settlement uses race_runners.starting_price_decimal from result data.",
-    "Dead-heat payout fractions are not reconstructed; dead heats are scored from stored finishing_position only.",
+    "Dead heats use the number of runners stored with finishing_position = 1 as the payout divisor.",
   ];
   const basePopulation = input.rows
     .filter((row) => row.features.raceDate >= input.startDate)
@@ -498,6 +499,7 @@ export function deriveBacktestFeatureValues(
 
 export function settleSelection(
   outcome: HistoricalPostRaceOutcome,
+  options: { maxFractionalOdds?: number } = {},
 ): BacktestSettlement | null {
   if (outcome.resultStatus === "non_runner") {
     return null;
@@ -511,10 +513,18 @@ export function settleSelection(
     return null;
   }
   const stake = 1;
-  const grossReturn = outcome.won ? settlementOddsDecimal : 0;
+  const grossReturn = winGrossReturn({
+    won: outcome.won,
+    decimalOdds: settlementOddsDecimal,
+    deadHeatDivisor: outcome.deadHeatDivisor,
+    maxFractionalOdds: options.maxFractionalOdds,
+  });
+  const effectiveOddsDecimal = options.maxFractionalOdds === undefined
+    ? settlementOddsDecimal
+    : Math.min(settlementOddsDecimal, options.maxFractionalOdds + 1);
   return {
     settled: true,
-    settlementOddsDecimal,
+    settlementOddsDecimal: effectiveOddsDecimal,
     stake,
     grossReturn,
     profitLoss: grossReturn - stake,

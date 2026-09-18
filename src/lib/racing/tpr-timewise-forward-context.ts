@@ -4,6 +4,7 @@ import {
   type ForwardRaceRecord,
 } from "../../../scripts/diagnose-tpr-vs-timewise-forward";
 import {
+  isAllWeatherRaceForDisplay,
   isOrdinaryFlatTurfRaceForDisplay,
   type TodayRace,
   type TodayRunner,
@@ -12,7 +13,13 @@ import {
 export const TIMEWISE_NON_RUNNER_VALUE = "__timewise_non_runner__";
 
 export function isTimewiseEligibleRace(race: TodayRace) {
-  return isOrdinaryFlatTurfRaceForDisplay(race);
+  return timewiseRaceFamily(race) !== null;
+}
+
+export function timewiseRaceFamily(race: TodayRace): "turf" | "all_weather" | null {
+  if (isOrdinaryFlatTurfRaceForDisplay(race)) return "turf";
+  if (isAllWeatherRaceForDisplay(race)) return "all_weather";
+  return null;
 }
 
 export function trackerRaceTime(scheduledTime: string | null): string | null {
@@ -58,25 +65,42 @@ export function buildTodayForwardInput({
 }): ForwardRaceInput {
   const raceTime = trackerRaceTime(race.scheduledTime);
   if (!raceTime) throw new Error("This race does not have a valid scheduled time.");
-  const [tprRank1, tprRank2] = orderedTprRunners(race.runners);
+  const family = timewiseRaceFamily(race);
+  if (!family) throw new Error("Timewise tracking is available for Turf and All Weather races only.");
+  const [tprRank1, tprRank2] = family === "turf" ? orderedTprRunners(race.runners) : [];
 
-  const winner = race.runners.find((runner) => runner.finishingPosition === 1) ?? null;
+  const winners = race.runners.filter((runner) => runner.finishingPosition === 1);
+  const winner = winners[0] ?? null;
   const orRanks = competitionRanks(race.runners, (runner) => runner.officialRating);
+  const awSpeedRanks = competitionRanks(race.runners, (runner) => runner.metrics?.bestAwSpeedLast3 ?? null);
+  const awPerformanceRanks = competitionRanks(race.runners, (runner) => runner.metrics?.bestPerformanceLast3 ?? null);
+  const awBestL3SpeedRank1 = family === "all_weather"
+    ? rankedRunner(race.runners, (runner) => awSpeedRanks.get(runner.runnerId), 1)?.horseName ?? null
+    : null;
+  const awBestL3PerformanceRank1 = family === "all_weather"
+    ? rankedRunner(race.runners, (runner) => awPerformanceRanks.get(runner.runnerId), 1)?.horseName ?? null
+    : null;
   return {
+    family,
     raceDate,
     course,
     raceTime,
     winner: winner?.horseName ?? null,
     winnerSp: parseDecimalOdds(winner?.oddsDecimal ?? null),
+    winners: winners.map((runner) => ({ horseName: runner.horseName, decimalOdds: parseDecimalOdds(runner.oddsDecimal) })),
     tprRank1: tprRank1?.horseName ?? null,
     tprRank2: tprRank2?.horseName ?? null,
     timewiseRank1,
     timewiseRank2,
     timewiseRank1NonRunner,
     timewiseRank2NonRunner,
-    w50Rank1: rankedRunner(race.runners, (runner) => runner.turfPerformanceShadowRating?.rank, 1)?.horseName
-      ?? race.turfPerformanceShadow?.w50HorseName
-      ?? null,
+    w50Rank1: family === "turf"
+      ? rankedRunner(race.runners, (runner) => runner.turfPerformanceShadowRating?.rank, 1)?.horseName
+        ?? race.turfPerformanceShadow?.w50HorseName
+        ?? null
+      : null,
+    awBestL3SpeedRank1,
+    awBestL3PerformanceRank1,
     orRank1: rankedRunner(race.runners, (runner) => orRanks.get(runner.runnerId), 1)?.horseName ?? null,
     winnerOrRank: winner ? orRanks.get(winner.runnerId) ?? null : null,
   };
@@ -96,18 +120,21 @@ export function enrichForwardRecordResult(
   record: ForwardRaceRecord,
   race: TodayRace,
 ): ForwardRaceRecord {
-  const winner = race.runners.find((runner) => runner.finishingPosition === 1);
+  const winners = race.runners.filter((runner) => runner.finishingPosition === 1);
+  const winner = winners[0];
   if (!winner) return record;
   const orRanks = competitionRanks(race.runners, (runner) => runner.officialRating);
   const winnerSp = parseDecimalOdds(winner.oddsDecimal);
   const winnerOrRank = orRanks.get(winner.runnerId) ?? null;
-  if (record.winner === winner.horseName && record.winnerSp === winnerSp && record.winnerOrRank === winnerOrRank) {
+  const winnerEntries = winners.map((runner) => ({ horseName: runner.horseName, decimalOdds: parseDecimalOdds(runner.oddsDecimal) }));
+  if (record.winner === winner.horseName && record.winnerSp === winnerSp && record.winnerOrRank === winnerOrRank && JSON.stringify(record.winners) === JSON.stringify(winnerEntries)) {
     return record;
   }
   return createRecord({
     ...record,
     winner: winner.horseName,
     winnerSp,
+    winners: winnerEntries,
     winnerOrRank,
   });
 }

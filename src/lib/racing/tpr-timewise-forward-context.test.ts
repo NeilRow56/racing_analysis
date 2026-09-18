@@ -16,9 +16,9 @@ import {
 } from "./tpr-timewise-forward-context";
 
 describe("Today Timewise forward context", () => {
-  test("accepts Turf and excludes AW and Jump races", () => {
+  test("shows Timewise controls for Turf and AW but not Jump races", () => {
     assert.equal(isTimewiseEligibleRace(race()), true);
-    assert.equal(isTimewiseEligibleRace(race({ surface: "AW" })), false);
+    assert.equal(isTimewiseEligibleRace(race({ going: "Standard", surface: "ALLWEATHER" })), true);
     assert.equal(isTimewiseEligibleRace(race({ raceType: "Chase", raceTypeCode: "CHASE" })), false);
   });
 
@@ -35,12 +35,39 @@ describe("Today Timewise forward context", () => {
       timewiseRank2: "Alpha",
     });
     assert.deepEqual(input, {
-      raceDate: "2026-09-17", course: "Sandown", raceTime: "14:20",
-      winner: "Bravo", winnerSp: 6.5, tprRank1: "Alpha", tprRank2: "Bravo",
+      family: "turf", raceDate: "2026-09-17", course: "Sandown", raceTime: "14:20",
+      winner: "Bravo", winnerSp: 6.5, winners: [{ horseName: "Bravo", decimalOdds: 6.5 }],
+      tprRank1: "Alpha", tprRank2: "Bravo",
       timewiseRank1: "Bravo", timewiseRank1NonRunner: false,
       timewiseRank2: "Alpha", timewiseRank2NonRunner: false, w50Rank1: "Bravo",
+      awBestL3SpeedRank1: null, awBestL3PerformanceRank1: null,
       orRank1: "Alpha", winnerOrRank: 2,
     });
+  });
+
+  test("captures an observational AW record without Turf selections", () => {
+    const input = buildTodayForwardInput({
+      course: "Wolverhampton",
+      race: race({
+        going: "Standard",
+        surface: "ALLWEATHER",
+        runners: [
+          runner("a", "Alpha", 1, 1, 90, { metrics: { bestAwSpeedLast3: 95, bestPerformanceLast3: 88 } as TodayRunner["metrics"] }),
+          runner("b", "Bravo", 2, 2, 85, { metrics: { bestAwSpeedLast3: 90, bestPerformanceLast3: 92 } as TodayRunner["metrics"] }),
+        ],
+      }),
+      raceDate: "2026-09-18",
+      timewiseRank1: "Bravo",
+      timewiseRank2: "Alpha",
+    });
+    assert.equal(input.family, "all_weather");
+    assert.equal(input.tprRank1, null);
+    assert.equal(input.tprRank2, null);
+    assert.equal(input.w50Rank1, null);
+    assert.equal(input.awBestL3SpeedRank1, "Alpha");
+    assert.equal(input.awBestL3PerformanceRank1, "Bravo");
+    assert.equal(input.orRank1, "Alpha");
+    assert.equal(timewiseTimingForSave(undefined, new Date("2026-09-18T13:20:00Z"), new Date("2026-09-18T13:21:00Z")).timewiseRecordedPreRace, false);
   });
 
   test("derives W100 top two by score for normal competition ranks", () => {
@@ -174,6 +201,48 @@ describe("Today Timewise forward context", () => {
     assert.equal(summarize([pending]).timewiseRank1Strike, null);
     assert.equal(summarize([settled]).timewiseRank1Strike, 1);
     assert.equal(summarize([settled]).timewiseTop2Capture, 1);
+    assert.equal(enrichForwardRecordResult(settled, settledRace), settled);
+  });
+
+  test("records every dead-heat winner and adjusts the selected return", () => {
+    const input = buildTodayForwardInput({
+      course: "Sandown",
+      race: race({ runners: [
+        runner("a", "Alpha", 1, 1, 100, { finishingPosition: 1, oddsDecimal: "5" }),
+        runner("b", "Bravo", 2, 2, 90, { finishingPosition: 1, oddsDecimal: "7" }),
+      ] }),
+      raceDate: "2026-09-17",
+      timewiseRank1: "Bravo",
+      timewiseRank2: null,
+    });
+    const record = createRecord(input);
+    assert.deepEqual(record.winners, [
+      { horseName: "Alpha", decimalOdds: 5 },
+      { horseName: "Bravo", decimalOdds: 7 },
+    ]);
+    assert.equal(summarize([record]).tprLevelStakeReturn, 2);
+    assert.equal(summarize([record]).timewiseLevelStakeReturn, 3);
+  });
+
+  test("settles an AW record idempotently without changing selections or timing", () => {
+    const awRace = race({ going: "Standard", surface: "ALLWEATHER", runners: [
+      runner("a", "Alpha", 1, 1, 90), runner("b", "Bravo", 2, 2, 85),
+    ] });
+    const pending = createRecord({
+      ...buildTodayForwardInput({ course: "Wolverhampton", race: awRace, raceDate: "2026-09-18", timewiseRank1: "Bravo", timewiseRank2: "Alpha" }),
+      timewiseRecordedAt: "2026-09-18T12:00:00.000Z",
+      timewiseRecordedPreRace: true,
+    });
+    const settledRace = race({ going: "Standard", surface: "ALLWEATHER", runners: [
+      runner("a", "Alpha", 1, 1, 90, { finishingPosition: 2, oddsDecimal: "3" }),
+      runner("b", "Bravo", 2, 2, 85, { finishingPosition: 1, oddsDecimal: "6" }),
+    ] });
+    const settled = enrichForwardRecordResult(pending, settledRace);
+    assert.equal(settled.family, "all_weather");
+    assert.equal(settled.timewiseRank1, "Bravo");
+    assert.equal(settled.timewiseRecordedAt, pending.timewiseRecordedAt);
+    assert.equal(settled.timewiseRecordedPreRace, true);
+    assert.equal(settled.winnerWasTimewiseRank1, true);
     assert.equal(enrichForwardRecordResult(settled, settledRace), settled);
   });
 });

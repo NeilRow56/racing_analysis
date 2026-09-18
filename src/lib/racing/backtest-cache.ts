@@ -144,7 +144,7 @@ export async function buildBacktestFeatureCache(input: {
   timings.buildFeatureRowsMs = performance.now() - featureStart;
 
   const sortStart = performance.now();
-  const rows = sortRows(filterRowsForFamily(allRows, input.family));
+  const rows = sortRows(filterRowsForFamily(withDeadHeatDivisors(allRows), input.family));
   timings.sortAndFilterRowsMs = performance.now() - sortStart;
 
   const directory = cacheDirectory({
@@ -227,10 +227,7 @@ export async function loadBacktestFeatureCache(input: {
     return null;
   }
 
-  const rows = features.map((feature, index) => ({
-    features: feature,
-    outcome: outcomes[index]!,
-  }));
+  const rows = rowsFromCachedParts({ features, outcomes });
 
   return {
     manifest,
@@ -325,9 +322,29 @@ export function rowsFromCachedParts(input: {
   features: HistoricalPreRaceFeatureRow[];
   outcomes: HistoricalPostRaceOutcome[];
 }): HistoricalTargetRunnerMetricsRow[] {
-  return input.features.map((features, index) => ({
+  return withDeadHeatDivisors(input.features.map((features, index) => ({
     features,
     outcome: input.outcomes[index]!,
+  })));
+}
+
+function withDeadHeatDivisors(
+  rows: HistoricalTargetRunnerMetricsRow[],
+): HistoricalTargetRunnerMetricsRow[] {
+  const winnerCounts = new Map<string, number>();
+  for (const row of rows) {
+    if (row.outcome.finishingPosition === 1) {
+      winnerCounts.set(row.outcome.targetRaceId, (winnerCounts.get(row.outcome.targetRaceId) ?? 0) + 1);
+    }
+  }
+  return rows.map((row) => ({
+    ...row,
+    outcome: {
+      ...row.outcome,
+      deadHeatDivisor: row.outcome.finishingPosition === 1
+        ? winnerCounts.get(row.outcome.targetRaceId) ?? 1
+        : 1,
+    },
   }));
 }
 

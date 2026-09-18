@@ -67,6 +67,18 @@ describe("AW forward comparisons", () => {
     assert.equal(settled.records[1]!.uncappedReturn, 0);
   });
 
+  test("settles dead-heat profits after applying the 20/1 cap", () => {
+    const initial = upsertAwForwardRecords(empty(), buildAwForwardRecords([meeting()], "2026-09-18", new Date("2026-09-18T17:00:00.000Z")));
+    const settled = settleAwForwardRecords(initial, [meeting([
+      runner("a", 1, 100, 1, "26.00"),
+      runner("b", 2, 90, 1, "5.00"),
+      runner("c", 7, 80, 3, "10.00"),
+    ])]);
+    assert.equal(settled.records.find((record) => record.runnerKey === "a")?.uncappedReturn, 13.5);
+    assert.equal(settled.records.find((record) => record.runnerKey === "a")?.capped20Return, 11);
+    assert.equal(settled.records.find((record) => record.runnerKey === "b")?.uncappedReturn, 3);
+  });
+
   test("keeps pending records and excludes post-race records from clean summaries", () => {
     const clean = record({ key: "race|clean", runnerKey: "clean", finalSp: 6, uncappedReturn: 6, capped20Return: 6, won: true, finishingPosition: 1 });
     const pending = record({ key: "race|pending", runnerKey: "pending" });

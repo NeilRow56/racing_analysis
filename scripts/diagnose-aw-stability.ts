@@ -199,7 +199,7 @@ function volatility(lines: string[], contexts: Context[]) {
   const entries = YEARS.flatMap((year) => settled(find(contexts, year, "aw").rows));
   const simulations = bootstrap(entries, 1000, 20_000, 730_2026);
   const swings = bootstrapSwings(entries, 1000, 20_000, 731_2026);
-  const cappedSwings = bootstrapSwings(entries.map((e) => ({ ...e, settlement: { ...e.settlement, grossReturn: Math.min(e.settlement.grossReturn, CAP) } })), 1000, 20_000, 732_2026);
+  const cappedSwings = bootstrapSwings(entries.map((e) => ({ ...e, settlement: settleSelection(e.row.outcome, { maxFractionalOdds: CAP - 1 })! })), 1000, 20_000, 732_2026);
   table(lines, [{ sample: "1,000 AW bets", simulations: simulations.length, "ROI p05": pct(quantile(simulations, .05)), "ROI median": pct(quantile(simulations, .5)), "ROI p95": pct(quantile(simulations, .95)), "P(|swing| >= 15pp)": pct(swings.filter((x) => Math.abs(x) >= .15).length / swings.length), "capped P(|swing| >= 15pp)": pct(cappedSwings.filter((x) => Math.abs(x) >= .15).length / cappedSwings.length) }]);
   lines.push("The uncapped-versus-capped swing probability isolates how much long-priced winners widen ordinary sampling variation.", "");
 }
@@ -247,7 +247,7 @@ function conclusions(lines: string[], contexts: Context[], screen: Stability[]) 
 }
 
 function metrics(rows: Row[]) {
-  const entries = settled(rows), winners = entries.filter((e) => e.row.outcome.won), returns = winners.reduce((s, e) => s + e.settlement.grossReturn, 0), capped = winners.reduce((s, e) => s + Math.min(e.settlement.grossReturn, CAP), 0), expected = entries.reduce((s, e) => s + 1 / e.settlement.settlementOddsDecimal, 0), prices = entries.map((e) => e.settlement.settlementOddsDecimal);
+  const entries = settled(rows), winners = entries.filter((e) => e.row.outcome.won), returns = winners.reduce((s, e) => s + e.settlement.grossReturn, 0), capped = winners.reduce((s, e) => s + settleSelection(e.row.outcome, { maxFractionalOdds: CAP - 1 })!.grossReturn, 0), expected = entries.reduce((s, e) => s + 1 / e.settlement.settlementOddsDecimal, 0), prices = entries.map((e) => e.settlement.settlementOddsDecimal);
   return { rows, bets: entries.length, winners: winners.length, strike: rate(winners.length, entries.length), returns, profit: returns - entries.length, roi: rate(returns - entries.length, entries.length), cappedRoi: rate(capped - entries.length, entries.length), ae: rate(winners.length, expected), meanSp: average(prices), medianSp: median(prices) };
 }
 function metricColumns(m: ReturnType<typeof metrics>, capped = false) { return { selections: m.bets, winners: m.winners, strike: pct(m.strike), ROI: pct(m.roi), ...(capped ? { "capped ROI": pct(m.cappedRoi) } : {}), "A/E": num(m.ae) }; }

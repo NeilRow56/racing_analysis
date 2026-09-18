@@ -1,4 +1,5 @@
 import {
+  settleSelection,
   summarizeSelections,
   type BacktestSelection,
   type BacktestSettlement,
@@ -39,18 +40,11 @@ export function selectionForDevelopmentSettlementMode<TSelection extends Backtes
   ) {
     return selection;
   }
-  const settlement: BacktestSettlement = {
-    ...selection.settlement,
-    settlementOddsDecimal: capDecimal,
-    grossReturn: capDecimal,
-    profitLoss: cappedWinningProfit(selection.settlement.stake, capDecimal),
-  };
+  const settlement: BacktestSettlement = settleSelection(selection.outcome, {
+    maxFractionalOdds: capDecimal - 1,
+  })!;
   return {
     ...selection,
     settlement,
   };
-}
-
-function cappedWinningProfit(stake: number, cappedDecimalOdds: number): number {
-  return cappedDecimalOdds - stake;
 }

@@ -50,6 +50,23 @@ describe("development settlement mode", () => {
     assert.equal(parseDevelopmentSettlementMode("unexpected"), "actual");
     assert.equal(researchRuleKey(rule), identity);
   });
+
+  test("applies the winner cap before the dead-heat divisor", () => {
+    const deadHeatWinner = winner("dead-heat", 26);
+    deadHeatWinner.outcome.deadHeatDivisor = 2;
+    deadHeatWinner.settlement = {
+      ...deadHeatWinner.settlement!,
+      grossReturn: 13.5,
+      profitLoss: 12.5,
+    };
+
+    const actual = summarizeSelectionsForDevelopmentSettlementMode([deadHeatWinner], "actual");
+    const capped = summarizeSelectionsForDevelopmentSettlementMode([deadHeatWinner], "cap_20_1");
+    assert.equal(actual.profitLoss, 12.5);
+    assert.equal(capped.grossReturn, 11);
+    assert.equal(capped.profitLoss, 10);
+    assert.equal(capped.wins, 1);
+  });
 });
 
 function winner(id: string, decimalOdds: number): BacktestSelection {

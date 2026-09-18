@@ -90,7 +90,7 @@ export async function saveTimewiseComparisonAction(formData: FormData) {
     if (data.status !== "ok") throw new Error("Racecard is not available.");
     const meeting = data.meetings.find((value) => value.races.some((race) => race.raceId === raceId));
     const race = meeting?.races.find((value) => value.raceId === raceId);
-    if (!meeting || !race || !isTimewiseEligibleRace(race)) throw new Error("Timewise tracking is available for Turf races only.");
+    if (!meeting || !race || !isTimewiseEligibleRace(race)) throw new Error("Timewise tracking is available for Turf and All Weather races only.");
     const timewiseRank1NonRunner = timewiseRank1RunnerId === TIMEWISE_NON_RUNNER_VALUE;
     const timewiseRank2NonRunner = timewiseRank2RunnerId === TIMEWISE_NON_RUNNER_VALUE;
     const timewiseRank1 = timewiseRank1NonRunner ? null : race.runners.find((runner) => runner.runnerId === timewiseRank1RunnerId);

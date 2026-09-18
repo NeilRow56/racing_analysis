@@ -187,6 +187,23 @@ describe("TPR vs Timewise forward tracker", () => {
     assert.equal(parsed.races[0]!.timewiseRecordedPreRace, null);
     assert.equal(parsed.races[0]!.timewiseRank1NonRunner, false);
     assert.equal(parsed.races[0]!.timewiseRank2NonRunner, false);
+    assert.equal(parsed.races[0]!.family, "turf");
+  });
+
+  test("loads v2 records as Turf and keeps explicit AW family", () => {
+    const legacy = parseTrackerData({ version: "tpr_timewise_forward_v2", races: [race()] });
+    const aw = parseTrackerData({ version: TRACKER_VERSION, races: [race({ family: "all_weather", tprRank1: null, tprRank2: null, w50Rank1: null })] });
+    assert.equal(legacy.races[0]!.family, "turf");
+    assert.equal(aw.races[0]!.family, "all_weather");
+  });
+
+  test("renders Turf and All Weather metrics in separate summary sections", () => {
+    const turf = race();
+    const aw = race({ family: "all_weather", raceTime: "15:20", tprRank1: null, tprRank2: null, w50Rank1: null, timewiseRank1: "Alpha", timewiseRank2: "Bravo", awBestL3SpeedRank1: "Bravo" });
+    const output = renderSummary({ version: TRACKER_VERSION, races: [turf, aw] });
+    assert.match(output, /## Turf[\s\S]*Races tracked: 1/);
+    assert.match(output, /## All Weather[\s\S]*Races tracked: 1/);
+    assert.match(output, /Best L3 Speed vs Timewise R1/);
   });
 
   test("renders cumulative metrics and every requested race flag", () => {

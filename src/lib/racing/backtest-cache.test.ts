@@ -28,6 +28,21 @@ import type {
 } from "./historical-target-metrics";
 
 describe("backtest feature cache", () => {
+  test("reconstructs dead-heat divisors from cached finishing positions", () => {
+    const features = [
+      feature({ targetRunnerId: "winner-a" }),
+      feature({ targetRunnerId: "winner-b" }),
+      feature({ targetRunnerId: "loser" }),
+    ];
+    const outcomes = [
+      outcome({ targetRunnerId: "winner-a" }),
+      outcome({ targetRunnerId: "winner-b" }),
+      outcome({ targetRunnerId: "loser", finishingPosition: 3, won: false }),
+    ];
+    const rows = rowsFromCachedParts({ features, outcomes });
+    assert.deepEqual(rows.map((row) => row.outcome.deadHeatDivisor), [2, 2, 1]);
+  });
+
   test("validates cache feature and calculation versions", () => {
     const manifest = manifestFor();
     assert.equal(
@@ -108,8 +123,8 @@ describe("backtest feature cache", () => {
 
   test("cached feature parity gives identical selections to live rows", () => {
     const rows = [
-      row({ targetRunnerId: "selected", latestSpeedRating: 105, officialRating: 100 }),
-      row({ targetRunnerId: "rejected", latestSpeedRating: 99, officialRating: 100 }),
+      row({ targetRaceId: "race-selected", targetRunnerId: "selected", latestSpeedRating: 105, officialRating: 100 }),
+      row({ targetRaceId: "race-rejected", targetRunnerId: "rejected", latestSpeedRating: 99, officialRating: 100 }),
     ];
     const definition = {
       id: "latest-speed-gte-or",
