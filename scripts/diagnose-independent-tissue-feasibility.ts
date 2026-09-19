@@ -5,8 +5,8 @@ import type { HistoricalPreRaceFeatureRow, HistoricalTargetRunnerMetricsRow } fr
 
 const REPORT_PATH = "/tmp/independent-tissue-feasibility.md";
 const EPSILON = 1e-12;
-const EPOCHS = 90;
-const L2 = 0.02;
+export const EPOCHS = 90;
+export const L2 = 0.02;
 
 export const COMMENT_PATTERNS = {
   slowlyAway: /\b(?:slow(?:ly)? away|dwelt|slow(?:ly)? into stride)\b/i,
@@ -186,12 +186,12 @@ export function buildExamples(rows: HistoricalTargetRunnerMetricsRow[], comments
     });
 }
 
-function numericVector(features: HistoricalPreRaceFeatureRow) {
+export function numericVector(features: HistoricalPreRaceFeatureRow) {
   const values = NUMERIC_FEATURES.map(([, get]) => get(features));
   return [...values.map((value) => value ?? 0), ...values.map((value) => value === null || !Number.isFinite(value) ? 1 : 0)];
 }
 
-function commentVector(comments: HistoricalComment[]) {
+export function commentVector(comments: HistoricalComment[]) {
   const parsed = comments.map((comment) => parsePriorRunComment(comment.comment));
   return [
     comments.length,
@@ -241,7 +241,7 @@ export function predict(examples: Example[], model: Model, includeComments: bool
   }
 }
 
-function score(model: Model, values: number[]) {
+export function score(model: Model, values: number[]) {
   return dot(model.weights, values.map((value, index) => (value - model.means[index]!) / model.scales[index]!));
 }
 

@@ -281,15 +281,17 @@ function raceDisplayTimeZone(country: string | null | undefined): string {
 export async function getTodaysRacingData(
   db: Db,
   raceDate = getLocalRacingDate(),
+  options: {
+    raceFilter?: (race: TodayRace) => boolean;
+    onTiming?: (name: string, elapsedMs: number) => void;
+  } = {},
 ): Promise<TodaysRacingData> {
-  const [indexImport, rows, freshnessRows, metricRows] = await Promise.all([
-    getLatestRacecardIndexImport(db, raceDate),
-    getRacecardRows(db, raceDate),
-    getFreshnessRows(db, raceDate),
-    getTargetRunnerMetricsForDate(db, raceDate, SPORTING_LIFE_SOURCE, {
-      includeNonRunnerTargets: true,
-      completedPriorRunsOnly: true,
-    }),
+  const measure = <T>(name: string, operation: () => Promise<T>) =>
+    measureTodayLoad(name, operation, options.onTiming);
+  const [indexImport, rows, freshnessRows] = await Promise.all([
+    measure("today_index_load", () => getLatestRacecardIndexImport(db, raceDate)),
+    measure("today_racecard_rows_load", () => getRacecardRows(db, raceDate)),
+    measure("today_freshness_load", () => getFreshnessRows(db, raceDate)),
   ]);
   const displayDate = formatRacingDate(raceDate);
   const refreshedAt = latestDate(freshnessRows.map((row) => row.fetchedAt));
@@ -305,22 +307,34 @@ export async function getTodaysRacingData(
   }
 
   const meetingOrder = meetingOrderFromIndexPayload(indexImport?.payload);
+  const targetRows = measureSync(
+    "today_race_filter",
+    () => options.raceFilter
+      ? filterRacecardRows(rows, meetingOrder, options.raceFilter)
+      : rows,
+    options.onTiming,
+  );
+  const metricRows = await measure("today_target_metrics_load", () => getTargetRunnerMetricsForDate(db, raceDate, SPORTING_LIFE_SOURCE, {
+    includeNonRunnerTargets: true,
+    completedPriorRunsOnly: true,
+    targetRunnerIds: options.raceFilter ? targetRows.map((row) => row.runnerId) : undefined,
+  }));
   const metricsByRunnerId = new Map(
     metricRows.map((row) => [row.target.runnerId, row.metrics]),
   );
-  const targetsWithRaceDateTime = rows
+  const targetsWithRaceDateTime = targetRows
     .filter((row): row is TodayRacecardRow & { raceDateTime: Date } => row.raceDateTime !== null);
   const [trainerMetricsByRunnerId, jockeyMetricsByRunnerId] = await Promise.all([
-    getTrainerPriorMetricsForTargets(
-    db,
-    targetsWithRaceDateTime.map((row) => ({
+    measure("today_trainer_metrics_load", () => getTrainerPriorMetricsForTargets(
+      db,
+      targetsWithRaceDateTime.map((row) => ({
         targetRunnerId: row.runnerId,
         trainerId: row.trainerId,
         raceDateTime: row.raceDateTime,
       })),
-    SPORTING_LIFE_SOURCE,
-    ),
-    getJockeyPriorMetricsForTargets(
+      SPORTING_LIFE_SOURCE,
+    )),
+    measure("today_jockey_metrics_load", () => getJockeyPriorMetricsForTargets(
       db,
       targetsWithRaceDateTime.map((row) => ({
         targetRunnerId: row.runnerId,
@@ -328,7 +342,7 @@ export async function getTodaysRacingData(
         raceDateTime: row.raceDateTime,
       })),
       SPORTING_LIFE_SOURCE,
-    ),
+    )),
   ]);
 
   return {
@@ -337,13 +351,49 @@ export async function getTodaysRacingData(
     displayDate,
     refreshedAt,
     meetings: groupTodaysRacingRows(
-      rows,
+      targetRows,
       meetingOrder,
       metricsByRunnerId,
       trainerMetricsByRunnerId,
       jockeyMetricsByRunnerId,
     ),
   };
+}
+
+function filterRacecardRows(
+  rows: TodayRacecardRow[],
+  meetingOrder: Map<string, number>,
+  raceFilter: (race: TodayRace) => boolean,
+) {
+  const meetings = groupTodaysRacingRows(rows, meetingOrder);
+  const raceIds = new Set(
+    meetings.flatMap((meeting) => meeting.races)
+      .filter(raceFilter)
+      .map((race) => race.raceId),
+  );
+  return rows.filter((row) => raceIds.has(row.raceId));
+}
+
+async function measureTodayLoad<T>(
+  name: string,
+  operation: () => Promise<T>,
+  onTiming: ((name: string, elapsedMs: number) => void) | undefined,
+) {
+  const startedAt = performance.now();
+  const result = await operation();
+  onTiming?.(name, performance.now() - startedAt);
+  return result;
+}
+
+function measureSync<T>(
+  name: string,
+  operation: () => T,
+  onTiming: ((name: string, elapsedMs: number) => void) | undefined,
+) {
+  const startedAt = performance.now();
+  const result = operation();
+  onTiming?.(name, performance.now() - startedAt);
+  return result;
 }
 
 export function groupTodaysRacingRows(

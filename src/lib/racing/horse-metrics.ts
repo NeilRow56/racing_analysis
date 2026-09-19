@@ -216,13 +216,20 @@ export async function getTargetRunnerMetricsForDate(
   options: {
     includeNonRunnerTargets?: boolean;
     completedPriorRunsOnly?: boolean;
+    targetRunnerIds?: string[];
   } = {},
 ): Promise<TargetRunnerMetrics[]> {
+  if (options.targetRunnerIds && options.targetRunnerIds.length === 0) {
+    return [];
+  }
   const targetConditions = [
     eq(races.source, source),
     eq(raceRunners.source, source),
     eq(races.raceDate, targetDate),
   ];
+  if (options.targetRunnerIds) {
+    targetConditions.push(inArray(raceRunners.id, options.targetRunnerIds));
+  }
   if (!options.includeNonRunnerTargets) {
     targetConditions.push(isRunnableResultStatus());
   }

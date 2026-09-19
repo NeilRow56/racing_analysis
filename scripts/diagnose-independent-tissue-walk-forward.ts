@@ -94,6 +94,11 @@ function buildReport(windows: WindowResult[], datasets: Map<string, { cache: Loa
     const m = metricsWithTemporaryUniform(value.examples);
     lines.push(`| ${year} | ${value.cache.actualCoverage?.actualFrom ?? value.cache.manifest.from} to ${value.cache.actualCoverage?.actualTo ?? value.cache.manifest.to} | ${value.cache.manifest.rowCount} | ${m.races} | ${m.runners} | ${pct(commentCoverage(value.examples))} | ${year === "2024" ? "Complete target year; prior-form archive before 2024 is incomplete" : year === "2026" ? "YTD" : "Complete"} |`);
   }
+  lines.push("", "### Required-input coverage", "", "| Year | Prior run | Trainer prior sample | Jockey prior sample | Known result label |", "|---|---:|---:|---:|---:|");
+  for (const [year, value] of datasets) {
+    const coverage = featureCoverage(value.examples);
+    lines.push(`| ${year} | ${pct(coverage.priorRun)} | ${pct(coverage.trainer)} | ${pct(coverage.jockey)} | ${pct(coverage.label)} |`);
+  }
   lines.push("", "No compatible 2023 data exists. The database has only a short 2020 slice before the complete 2024 archive; therefore 2024 target labels/comments are complete, but early-2024 prior-run depth is understated. The 2024 cache was built under `/tmp` and not added to production caches.", "");
 
   lines.push("## Frozen specification and leakage audit", "",
@@ -210,12 +215,15 @@ function decision(windows: WindowResult[]) {
   return [
     `1. Numeric-only calibration is reported in ${windows.length} holdouts; the 2024-trained window carries a material prior-history limitation.`,
     `2. Comments improve log loss in ${logWins}/${windows.length} windows and Brier in ${brierWins}/${windows.length}.`,
-    `3. Top-1 improves in ${topWins}/${windows.length} windows.`,
+    `3. Top-1 has a positive point estimate in ${topWins}/${windows.length} windows; see item 8 for uncertainty.`,
     "4. Coefficient direction stability is mixed where last-run and last-three versions of correlated phrases disagree; treat associations as descriptive.",
     "5. Field-size, handicap and class tables show whether gains are broad rather than driven by one segment; no segment was excluded or tuned.",
     "6. Probability-change distributions and set-change rates distinguish refinement from wholesale ranking changes.",
     `7. Tissue v1 is ${enoughIndependentYears && logWins > 1 && brierWins > 1 ? "supported by the available walk-forward evidence" : "not yet justified as a production model"}.`,
-    "8. If not justified, the missing evidence is another complete pre-2025 training year with adequate preceding history, followed by a genuinely untouched chronological holdout.",
+    `8. Top-1 has a positive point estimate in ${topWins}/${windows.length} windows, but only the 2026 interval excludes zero; ranking improvement is not convincingly replicated.`,
+    "9. Improvements in log loss are broad by field size and handicap status, with isolated class-level exceptions; calibration error does not improve in every subgroup.",
+    "10. Market evaluation was intentionally omitted: it was optional, final SP is not present in the frozen Stage 1 feature cache, and no proxy was introduced.",
+    "11. If not justified, the missing evidence is another complete pre-2025 training year with adequate preceding history, followed by a genuinely untouched chronological holdout.",
   ];
 }
 
@@ -233,6 +241,14 @@ function metricsWithTemporaryUniform(examples: Example[]) { const copy = cloneEx
 function resultRow(w: WindowResult, name: string, key: ProbabilityKey) { const m = metrics(w.test, key); return `| ${w.label} | ${name} | ${m.races} | ${m.runners} | ${pct(commentCoverage(w.test))} | ${fmt(m.logLoss)} | ${fmt(m.brier)} | ${pct(m.top1)} | ${pct(m.top2)} | ${pct(m.top3)} |`; }
 function metricLine(label: string, examples: Example[]) { const n = metrics(examples, "numericProbability"), c = metrics(examples, "commentProbability"); return `${label}: numeric logloss=${fmt(n.logLoss)} brier=${fmt(n.brier)} top1=${pct(n.top1)}; comments logloss=${fmt(c.logLoss)} brier=${fmt(c.brier)} top1=${pct(c.top1)}`; }
 function commentCoverage(examples: Example[]) { return examples.filter((e) => e.priorComments.length > 0).length / examples.length; }
+function featureCoverage(examples: Example[]) {
+  return {
+    priorRun: examples.filter((e) => e.row.features.priorRuns > 0).length / examples.length,
+    trainer: examples.filter((e) => e.row.features.trainerPriorRuns > 0).length / examples.length,
+    jockey: examples.filter((e) => (e.row.features.jockeyPriorRuns ?? 0) > 0).length / examples.length,
+    label: examples.filter((e) => e.row.outcome.won !== null).length / examples.length,
+  };
+}
 function fieldSizeGroup(e: Example) { const n = e.row.features.actualRunnerCount ?? e.row.features.declaredRunnerCount ?? 0; return n <= 5 ? "2-5" : n <= 8 ? "6-8" : n <= 12 ? "9-12" : "13+"; }
 function handicapGroup(e: Example) { return /handicap/i.test(`${e.row.features.raceName ?? ""} ${e.row.features.raceType ?? ""}`) ? "Handicap" : "Non-handicap"; }
 function classGroup(e: Example) { return e.row.features.raceClass?.match(/\d+/)?.[0] ? `Class ${e.row.features.raceClass.match(/\d+/)![0]}` : "Class unavailable"; }
