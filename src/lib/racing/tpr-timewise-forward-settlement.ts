@@ -8,14 +8,16 @@ import {
 import {
   forwardRaceKey,
   loadTrackerData,
-  saveTrackerRace,
+  saveTrackerData,
+  type TrackerData,
 } from "../../../scripts/diagnose-tpr-vs-timewise-forward";
 
 export async function enrichTodayForwardTrackerResults(
   meetings: TodayMeeting[],
   raceDate: string,
+  existingData?: TrackerData,
 ) {
-  const data = await loadTrackerData();
+  const data = existingData ?? await loadTrackerData();
   const records = new Map(data.races
     .filter((record) => record.raceDate === raceDate)
     .map((record) => [forwardRaceKey(record), record]));
@@ -31,11 +33,13 @@ export async function enrichTodayForwardTrackerResults(
       if (record.family !== timewiseRaceFamily(race)) continue;
       const enriched = enrichForwardRecordResult(record, race);
       if (enriched === record) continue;
-      await saveTrackerRace(enriched, true);
+      const index = data.races.findIndex((candidate) => forwardRaceKey(candidate) === forwardRaceKey(enriched));
+      if (index >= 0) data.races[index] = enriched;
       records.set(forwardRaceKey(enriched), enriched);
       updated += 1;
     }
   }
 
-  return updated;
+  if (updated > 0) await saveTrackerData(data);
+  return { data, updated };
 }

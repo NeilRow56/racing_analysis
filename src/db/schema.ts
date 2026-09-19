@@ -12,6 +12,7 @@ import {
   uniqueIndex,
   uuid,
 } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
 
 function timestamps() {
   return {
@@ -109,6 +110,12 @@ export const races = pgTable(
   (table) => [
     uniqueIndex("races_source_source_id_idx").on(table.source, table.sourceId),
     index("races_course_date_idx").on(table.courseId, table.raceDate),
+    index("races_completed_context_distance_idx")
+      .on(table.source, table.courseId, table.distanceYards, table.raceDatetime)
+      .where(sql`${table.winningTime} is not null and btrim(${table.winningTime}) <> ''`),
+    index("races_completed_context_day_idx")
+      .on(table.source, table.courseId, table.raceDate, table.raceDatetime)
+      .where(sql`${table.winningTime} is not null and btrim(${table.winningTime}) <> ''`),
   ],
 );
 
@@ -180,6 +187,12 @@ export const sourceImports = pgTable(
     uniqueIndex("source_imports_source_type_id_idx").on(
       table.source,
       table.sourceType,
+      table.sourceId,
+    ),
+    index("source_imports_surface_lookup_idx").on(
+      table.source,
+      table.sourceType,
+      sql`upper(coalesce(${table.payload} #>> '{props,pageProps,race,race_summary,course_surface,surface}', ''))`,
       table.sourceId,
     ),
   ],

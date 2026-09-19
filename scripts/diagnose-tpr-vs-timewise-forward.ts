@@ -409,8 +409,12 @@ export async function loadTrackerData(path = DEFAULT_DATA_PATH): Promise<Tracker
 
 export async function saveTrackerRace(record: ForwardRaceRecord, replace = false, path = DEFAULT_DATA_PATH): Promise<TrackerData> {
   const updated = upsertRace(await loadTrackerData(path), record, replace);
-  await writeData(path, updated);
+  await saveTrackerData(updated, path);
   return updated;
+}
+
+export async function saveTrackerData(data: TrackerData, path = DEFAULT_DATA_PATH): Promise<void> {
+  await writeData(path, data);
 }
 
 export function parseTrackerData(value: unknown, source = "tracker data"): TrackerData {

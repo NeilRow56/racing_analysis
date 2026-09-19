@@ -187,21 +187,12 @@ export async function getHorseMetricsAsOf({
     .orderBy(desc(races.raceDatetime));
 
   const timedPriorRuns = priorRuns.filter(hasRaceDateTime);
-  const jumpSpeedRatings = await getJumpSpeedRatingsForRunners(
-    db,
-    timedPriorRuns.map((run) => run.runnerId),
-    { calculationCutoffDateTime: beforeDateTime },
-  );
-  const awSpeedRatings = await getAwSpeedRatingsForRunners(
-    db,
-    timedPriorRuns.map((run) => run.runnerId),
-    { calculationCutoffDateTime: beforeDateTime },
-  );
-  const turfSpeedRatings = await getTurfSpeedRatingsForRunners(
-    db,
-    timedPriorRuns.map((run) => run.runnerId),
-    { calculationCutoffDateTime: beforeDateTime },
-  );
+  const runnerIds = timedPriorRuns.map((run) => run.runnerId);
+  const [jumpSpeedRatings, awSpeedRatings, turfSpeedRatings] = await Promise.all([
+    getJumpSpeedRatingsForRunners(db, runnerIds, { calculationCutoffDateTime: beforeDateTime }),
+    getAwSpeedRatingsForRunners(db, runnerIds, { calculationCutoffDateTime: beforeDateTime }),
+    getTurfSpeedRatingsForRunners(db, runnerIds, { calculationCutoffDateTime: beforeDateTime }),
+  ]);
 
   return calculateHorseMetricsAsOf({
     runs: timedPriorRuns.map((run) => ({
@@ -319,21 +310,21 @@ export async function getTargetRunnerMetricsForDate(
 
   const timedCandidateRuns = candidateRuns.filter(hasRaceDateTime);
   const timedJumpCandidateRuns = timedCandidateRuns.filter(isJumpRace);
-  const jumpSpeedRatings = await getJumpSpeedRatingsForRunners(
-    db,
-    timedJumpCandidateRuns.map((run) => run.runnerId),
-    { source, calculationCutoffDateTime: latestTargetDateTime },
-  );
-  const awSpeedRatings = await getAwSpeedRatingsForRunners(
-    db,
-    timedCandidateRuns.map((run) => run.runnerId),
-    { source, calculationCutoffDateTime: latestTargetDateTime },
-  );
-  const turfSpeedRatings = await getTurfSpeedRatingsForRunners(
-    db,
-    timedCandidateRuns.map((run) => run.runnerId),
-    { source, calculationCutoffDateTime: latestTargetDateTime },
-  );
+  const candidateRunnerIds = timedCandidateRuns.map((run) => run.runnerId);
+  const [jumpSpeedRatings, awSpeedRatings, turfSpeedRatings] = await Promise.all([
+    getJumpSpeedRatingsForRunners(db, timedJumpCandidateRuns.map((run) => run.runnerId), {
+      source,
+      calculationCutoffDateTime: latestTargetDateTime,
+    }),
+    getAwSpeedRatingsForRunners(db, candidateRunnerIds, {
+      source,
+      calculationCutoffDateTime: latestTargetDateTime,
+    }),
+    getTurfSpeedRatingsForRunners(db, candidateRunnerIds, {
+      source,
+      calculationCutoffDateTime: latestTargetDateTime,
+    }),
+  ]);
 
   return calculateTargetRunnerMetrics({
     candidateRuns: timedCandidateRuns.map((run) => ({

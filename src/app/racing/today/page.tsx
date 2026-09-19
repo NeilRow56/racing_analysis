@@ -53,6 +53,7 @@ type PageProps = {
 };
 
 export default async function TodaysRacingPage({ searchParams }: PageProps) {
+  const requestStartedAt = new Date();
   const params = await searchParams;
   const { raceDate, invalidDateParam } = resolveRacingDate({
     dateParam: params?.date,
@@ -61,13 +62,21 @@ export default async function TodaysRacingPage({ searchParams }: PageProps) {
 
   try {
     connection = createDbConnection();
-    let data = await getTodaysRacingData(connection.db, raceDate);
-    const savedRules = await listSavedResearchRulesWithDb(connection.db);
-    const trainerCohortsByRule = await resolveTodayTrainerCohorts(
-      connection.db,
-      savedRules,
-      raceDate,
+    const savedRulesPromise = listSavedResearchRulesWithDb(connection.db);
+    const trainerCohortsPromise = savedRulesPromise.then((rules) =>
+      resolveTodayTrainerCohorts(
+        connection!.db,
+        rules,
+        raceDate,
+      ),
     );
+    const [initialData, savedRules, initialTrackerData, trainerCohortsByRule] = await Promise.all([
+      getTodaysRacingData(connection.db, raceDate),
+      savedRulesPromise,
+      loadTrackerData(),
+      trainerCohortsPromise,
+    ]);
+    let data = initialData;
     let shadowSummary: TurfPerformanceShadowSummary | null = null;
     const attachMatches = () => data.status === "ok"
       ? {
@@ -77,9 +86,10 @@ export default async function TodaysRacingPage({ searchParams }: PageProps) {
       : data;
     let displayData = attachMatches();
     if (displayData.status === "ok") {
-      await syncAwForwardComparisons(displayData.meetings, raceDate);
-      await saveTurfPerformanceRatingSnapshots(connection.db, displayData.meetings, raceDate);
-      await saveTurfPerformanceRatingShadowSnapshots(connection.db, displayData.meetings, raceDate);
+      await Promise.all([
+        saveTurfPerformanceRatingSnapshots(connection.db, displayData.meetings, raceDate),
+        saveTurfPerformanceRatingShadowSnapshots(connection.db, displayData.meetings, raceDate),
+      ]);
       const refreshSummary = await refreshEligibleTodaySelectionResults(
         displayData.meetings,
         raceDate,
@@ -99,11 +109,12 @@ export default async function TodaysRacingPage({ searchParams }: PageProps) {
       displayData.status === "ok" ? displayData.meetings : [],
       frozenRulesChecked,
     );
-    if (displayData.status === "ok") {
-      await syncAwForwardComparisons(displayData.meetings, raceDate);
-      await enrichTodayForwardTrackerResults(displayData.meetings, raceDate);
-    }
-    const trackerData = await loadTrackerData();
+    const trackerData = displayData.status === "ok"
+      ? (await Promise.all([
+          syncAwForwardComparisons(displayData.meetings, raceDate, requestStartedAt),
+          enrichTodayForwardTrackerResults(displayData.meetings, raceDate, initialTrackerData),
+        ]))[1].data
+      : initialTrackerData;
     const trackedRaces = new Map(trackerData.races
       .filter((race) => race.raceDate === raceDate)
       .map((race) => [forwardRaceKey(race), race]));

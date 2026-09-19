@@ -1,0 +1,1 @@
+CREATE INDEX "source_imports_surface_lookup_idx" ON "source_imports" USING btree ("source","source_type",upper(coalesce("payload" #>> '{props,pageProps,race,race_summary,course_surface,surface}', '')),"source_id");

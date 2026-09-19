@@ -1,0 +1,2 @@
+CREATE INDEX "races_completed_context_distance_idx" ON "races" USING btree ("source","course_id","distance_yards","race_datetime") WHERE "races"."winning_time" is not null and btrim("races"."winning_time") <> '';--> statement-breakpoint
+CREATE INDEX "races_completed_context_day_idx" ON "races" USING btree ("source","course_id","race_date","race_datetime") WHERE "races"."winning_time" is not null and btrim("races"."winning_time") <> '';

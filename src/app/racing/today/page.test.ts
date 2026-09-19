@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { describe, test } from "node:test";
 import {
   getTodayRaceState,
@@ -107,6 +108,25 @@ describe("Today race status label", () => {
       getTodayRaceState(eveningRace, new Date("2026-09-18T18:45:00+01:00")),
       "past_due_pending_result",
     );
+  });
+});
+
+describe("Today request orchestration", () => {
+  test("synchronizes AW forward comparisons once per page request", () => {
+    const source = readFileSync(new URL("./page.tsx", import.meta.url), "utf8");
+    const calls = source.match(/\bsyncAwForwardComparisons\(/g) ?? [];
+    assert.equal(calls.length, 1);
+  });
+
+  test("loads trainer cohorts alongside the initial Today data", () => {
+    const source = readFileSync(new URL("./page.tsx", import.meta.url), "utf8");
+    const initialRequest = source.slice(
+      source.indexOf("const savedRulesPromise"),
+      source.indexOf("let data = initialData"),
+    );
+
+    assert.match(initialRequest, /const trainerCohortsPromise = savedRulesPromise\.then/);
+    assert.match(initialRequest, /Promise\.all\(\[[\s\S]*getTodaysRacingData[\s\S]*trainerCohortsPromise/);
   });
 });
 
