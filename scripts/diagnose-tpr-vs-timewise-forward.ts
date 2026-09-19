@@ -1,4 +1,4 @@
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import { winGrossReturn } from "../src/lib/racing/win-settlement";
@@ -378,19 +378,22 @@ async function main() {
       timewiseUpdatedAt: null,
     };
     const replace = args.includes("--replace");
-    const existing = replace
-      ? data.races.find((race) => forwardRaceKey(race) === forwardRaceKey(input))
-      : undefined;
-    const record = createRecord({
-      ...input,
-      timewiseRecordedAt: existing?.timewiseRecordedAt ?? input.timewiseRecordedAt,
-      timewiseRecordedPreRace: existing?.timewiseRecordedPreRace ?? input.timewiseRecordedPreRace,
-      timewiseUpdatedAt: existing ? new Date().toISOString() : input.timewiseUpdatedAt,
-    });
-    const updated = upsertRace(data, record, replace);
-    await writeData(dataPath, updated);
+    let record: ForwardRaceRecord | null = null;
+    const updated = await mutateTrackerData((latest) => {
+      const existing = replace
+        ? latest.races.find((race) => forwardRaceKey(race) === forwardRaceKey(input))
+        : undefined;
+      const currentRecord = createRecord({
+        ...input,
+        timewiseRecordedAt: existing?.timewiseRecordedAt ?? input.timewiseRecordedAt,
+        timewiseRecordedPreRace: existing?.timewiseRecordedPreRace ?? input.timewiseRecordedPreRace,
+        timewiseUpdatedAt: existing ? new Date().toISOString() : input.timewiseUpdatedAt,
+      });
+      record = currentRecord;
+      return upsertRace(latest, currentRecord, replace);
+    }, dataPath);
     await writeReport(reportPath, renderReport(updated, dataPath));
-    console.log(`Tracked ${forwardRaceKey(record)}; wrote ${dataPath} and ${reportPath}`);
+    console.log(`Tracked ${forwardRaceKey(record!)}; wrote ${dataPath} and ${reportPath}`);
     return;
   }
   if (command !== "report") throw new Error(`Unknown command: ${command}. Use add, report, or summary.`);
@@ -408,13 +411,18 @@ export async function loadTrackerData(path = DEFAULT_DATA_PATH): Promise<Tracker
 }
 
 export async function saveTrackerRace(record: ForwardRaceRecord, replace = false, path = DEFAULT_DATA_PATH): Promise<TrackerData> {
-  const updated = upsertRace(await loadTrackerData(path), record, replace);
-  await saveTrackerData(updated, path);
-  return updated;
+  return mutateTrackerData((data) => upsertRace(data, record, replace), path);
 }
 
-export async function saveTrackerData(data: TrackerData, path = DEFAULT_DATA_PATH): Promise<void> {
-  await writeData(path, data);
+export async function mutateTrackerData(
+  mutation: (latest: TrackerData) => TrackerData | Promise<TrackerData>,
+  path = DEFAULT_DATA_PATH,
+): Promise<TrackerData> {
+  return withTrackerLock(path, async () => {
+    const updated = await mutation(await loadTrackerData(path));
+    await writeData(path, updated);
+    return updated;
+  });
 }
 
 export function parseTrackerData(value: unknown, source = "tracker data"): TrackerData {
@@ -423,7 +431,37 @@ export function parseTrackerData(value: unknown, source = "tracker data"): Track
   return { version: TRACKER_VERSION, races: parsed.races.map((race) => createRecord({ ...(race as ForwardRaceInput), family: race.family ?? "turf", timewiseRank1NonRunner: race.timewiseRank1NonRunner ?? false, timewiseRank2NonRunner: race.timewiseRank2NonRunner ?? false, w50Rank1: race.w50Rank1 ?? null, awBestL3SpeedRank1: race.awBestL3SpeedRank1 ?? null, awBestL3PerformanceRank1: race.awBestL3PerformanceRank1 ?? null, orRank1: race.orRank1 ?? null, winnerOrRank: race.winnerOrRank ?? null, timewiseRecordedAt: race.timewiseRecordedAt ?? null, timewiseRecordedPreRace: race.timewiseRecordedPreRace ?? null, timewiseUpdatedAt: race.timewiseUpdatedAt ?? null })) };
 }
 
-async function writeData(path: string, data: TrackerData) { await mkdir(dirname(resolve(path)), { recursive: true }); await writeFile(path, `${JSON.stringify(data, null, 2)}\n`, "utf8"); }
+async function writeData(path: string, data: TrackerData) {
+  const absolutePath = resolve(path);
+  await mkdir(dirname(absolutePath), { recursive: true });
+  const temporaryPath = `${absolutePath}.${process.pid}.${crypto.randomUUID()}.tmp`;
+  try {
+    await writeFile(temporaryPath, `${JSON.stringify(data, null, 2)}\n`, "utf8");
+    await rename(temporaryPath, absolutePath);
+  } finally {
+    await rm(temporaryPath, { force: true });
+  }
+}
+
+async function withTrackerLock<T>(path: string, operation: () => Promise<T>): Promise<T> {
+  const lockPath = `${resolve(path)}.lock`;
+  const deadline = Date.now() + 30_000;
+  await mkdir(dirname(lockPath), { recursive: true });
+  while (true) {
+    try {
+      await mkdir(lockPath);
+      break;
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code !== "EEXIST" || Date.now() >= deadline) throw error;
+      await new Promise((resolveWait) => setTimeout(resolveWait, 10));
+    }
+  }
+  try {
+    return await operation();
+  } finally {
+    await rm(lockPath, { recursive: true, force: true });
+  }
+}
 async function writeReport(path: string, report: string) { await mkdir(dirname(resolve(path)), { recursive: true }); await writeFile(path, report, "utf8"); }
 function validateInput(input: ForwardRaceInput) { if (input.family !== undefined && input.family !== "turf" && input.family !== "all_weather") throw new Error("family must be turf or all_weather"); if (!/^\d{4}-\d{2}-\d{2}$/.test(input.raceDate)) throw new Error("--date must be YYYY-MM-DD"); if (!/^\d{1,2}:\d{2}$/.test(input.raceTime)) throw new Error("--time must be HH:MM"); for (const [field, value] of Object.entries(input)) if (!["winner", "winnerSp", "timewiseRank1", "timewiseRank2", "w50Rank1", "orRank1", "winnerOrRank"].includes(field) && typeof value === "string" && !value.trim()) throw new Error(`${field} is required`); if (input.timewiseRank1NonRunner && input.timewiseRank1 !== null) throw new Error("Timewise rank 1 cannot be both a runner and non-runner"); if (input.timewiseRank2NonRunner && input.timewiseRank2 !== null) throw new Error("Timewise rank 2 cannot be both a runner and non-runner"); if (input.winnerSp !== null && (!Number.isFinite(input.winnerSp) || input.winnerSp <= 1)) throw new Error("--winner-sp must be decimal odds greater than 1"); if (input.winnerOrRank !== null && (!Number.isInteger(input.winnerOrRank) || input.winnerOrRank < 1)) throw new Error("--winner-or-rank must be a positive integer"); if (sameHorse(input.tprRank1, input.tprRank2)) throw new Error("TPR rank 1 and rank 2 must differ"); if (sameHorse(input.timewiseRank1, input.timewiseRank2)) throw new Error("Timewise rank 1 and rank 2 must differ"); }
 function sameHorse(left: string | null, right: string | null) { return left !== null && right !== null && normalize(left) === normalize(right); }

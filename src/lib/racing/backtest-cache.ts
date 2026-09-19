@@ -97,6 +97,7 @@ export async function buildBacktestFeatureCache(input: {
   outputDir?: string;
   batchSize?: number;
   onProgress?: (message: string) => void;
+  onFeatureTiming?: (name: string, elapsedMs: number, rows?: number) => void;
 }): Promise<BuildBacktestFeatureCacheResult> {
   const startedAt = performance.now();
   const timings: BacktestCacheBuildTimings = {
@@ -131,6 +132,7 @@ export async function buildBacktestFeatureCache(input: {
         source,
         targetRunnerIds: chunk,
         ratingFamily: ratingFamilyForCacheFamily(input.family),
+        onTiming: input.onFeatureTiming,
       })),
     );
     processedTargets += chunk.length;

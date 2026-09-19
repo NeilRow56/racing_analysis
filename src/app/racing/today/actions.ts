@@ -25,8 +25,8 @@ import { enrichTodayForwardTrackerResults } from "@/lib/racing/tpr-timewise-forw
 import {
   createRecord,
   forwardRaceKey,
-  loadTrackerData,
-  saveTrackerRace,
+  mutateTrackerData,
+  upsertRace,
 } from "../../../../scripts/diagnose-tpr-vs-timewise-forward";
 
 export async function refreshTodaySelectionResultsAction(formData: FormData) {
@@ -77,6 +77,7 @@ export async function refreshTodaySelectionResultsAction(formData: FormData) {
 }
 
 export async function saveTimewiseComparisonAction(formData: FormData) {
+  const startedAt = performance.now();
   const raceDate = requiredFormValue(formData, "raceDate");
   const raceId = requiredFormValue(formData, "raceId");
   const timewiseRank1RunnerId = requiredFormValue(formData, "timewiseRank1RunnerId");
@@ -86,7 +87,9 @@ export async function saveTimewiseComparisonAction(formData: FormData) {
 
   const connection = createDbConnection();
   try {
+    const dataLoadStartedAt = performance.now();
     const data = await getTodaysRacingData(connection.db, raceDate);
+    const dataLoadMs = performance.now() - dataLoadStartedAt;
     if (data.status !== "ok") throw new Error("Racecard is not available.");
     const meeting = data.meetings.find((value) => value.races.some((race) => race.raceId === raceId));
     const race = meeting?.races.find((value) => value.raceId === raceId);
@@ -106,17 +109,32 @@ export async function saveTimewiseComparisonAction(formData: FormData) {
       timewiseRank2: timewiseRank2?.horseName ?? null,
       timewiseRank2NonRunner,
     });
-    const trackerData = await loadTrackerData();
-    const existing = trackerData.races.find((record) => forwardRaceKey(record) === forwardRaceKey(input));
-    await saveTrackerRace(createRecord({
-      ...input,
-      ...timewiseTimingForSave(existing, race.raceDateTime),
-    }), true);
+    const trackerWriteStartedAt = performance.now();
+    await mutateTrackerData((trackerData) => {
+      const existing = trackerData.races.find((record) => forwardRaceKey(record) === forwardRaceKey(input));
+      return upsertRace(trackerData, createRecord({
+        ...input,
+        ...timewiseTimingForSave(existing, race.raceDateTime),
+      }), true);
+    });
+    console.info("TIMEWISE_SAVE_TIMING", {
+      raceDate,
+      raceId,
+      todayDataAndRatingsMs: Math.round(dataLoadMs),
+      trackerMutationMs: Math.round(performance.now() - trackerWriteStartedAt),
+      actionBeforeRevalidationMs: Math.round(performance.now() - startedAt),
+    });
   } finally {
     await connection.client.end();
   }
 
+  const revalidationStartedAt = performance.now();
   revalidatePath(`/racing/today?date=${raceDate}`);
+  console.info("TIMEWISE_SAVE_REVALIDATION_TIMING", {
+    raceDate,
+    revalidateCallMs: Math.round(performance.now() - revalidationStartedAt),
+    actionTotalMs: Math.round(performance.now() - startedAt),
+  });
 }
 
 function requiredFormValue(formData: FormData, name: string) {

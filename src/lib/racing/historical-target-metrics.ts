@@ -208,19 +208,24 @@ export async function getHistoricalTargetRunnerMetrics(
     targetRunnerIds?: string[];
     targetRaceIds?: string[];
     ratingFamily?: HistoricalRaceCode | "all";
+    onTiming?: (name: string, elapsedMs: number, rows?: number) => void;
   },
 ): Promise<HistoricalTargetRunnerMetricsRow[]> {
   const source = input.source ?? "sporting_life";
+  const targetStarted = performance.now();
   const targets = await loadTargets(db, {
     source,
     targetRunnerIds: input.targetRunnerIds ?? [],
     targetRaceIds: input.targetRaceIds ?? [],
   });
+  input.onTiming?.("historical_target_runner_load", performance.now() - targetStarted, targets.length);
   if (targets.length === 0) {
     return [];
   }
 
+  const historyStarted = performance.now();
   const candidateRuns = await loadCandidateRuns(db, source, targets);
+  input.onTiming?.("historical_run_load", performance.now() - historyStarted, candidateRuns.length);
   const [trainerMetrics, jockeyMetrics] = await Promise.all([
     getTrainerPriorMetricsForTargets(db, targets, source),
     getJockeyPriorMetricsForTargets(db, targets, source),
@@ -235,11 +240,12 @@ export async function getHistoricalTargetRunnerMetrics(
       ? getAwSpeedRatingsAsOfRuns(db, runnerIds, { source })
       : Promise.resolve(new Map<string, AwSpeedRating>()),
     ratingFamily === "all" || ratingFamily === "turf"
-      ? getTurfSpeedRatingsAsOfRuns(db, runnerIds, { source })
+      ? getTurfSpeedRatingsAsOfRuns(db, runnerIds, { source, onTiming: input.onTiming })
       : Promise.resolve(new Map<string, TurfSpeedRating>()),
   ]);
 
-  return buildHistoricalTargetRunnerMetricRows({
+  const calculationStarted = performance.now();
+  const rows = buildHistoricalTargetRunnerMetricRows({
     targets,
     trainerMetrics,
     jockeyMetrics,
@@ -250,6 +256,8 @@ export async function getHistoricalTargetRunnerMetrics(
       turfSpeedRating: turfRatings.get(run.runnerId) ?? null,
     })),
   });
+  input.onTiming?.("historical_feature_calculation", performance.now() - calculationStarted, rows.length);
+  return rows;
 }
 
 export function buildHistoricalTargetRunnerMetricRows({

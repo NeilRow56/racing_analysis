@@ -251,7 +251,7 @@ function manifestFor(
     calculationVersions: {
       jumpSpeed: "jump_speed_v1",
       awSpeed: "aw_speed_v1",
-      turfSpeed: "turf_speed_v1",
+      turfSpeed: "turf_speed_v2",
       weightPerformance: "weight_performance_v1",
       todaysRating: "todays_rating_v1",
     },

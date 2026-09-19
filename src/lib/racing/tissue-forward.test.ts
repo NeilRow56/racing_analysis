@@ -1,16 +1,22 @@
 import assert from "node:assert/strict";
 import { describe, test } from "node:test";
+import { mkdtemp, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { COMMENT_FEATURE_NAMES, NUMERIC_FEATURES, type HistoricalComment } from "../../../scripts/diagnose-independent-tissue-feasibility";
 import type { TodayRace, TodayRunner } from "./todays-racing";
 import {
   TISSUE_FORWARD_START,
   TISSUE_FORWARD_VERSION,
   TISSUE_MODEL_VERSION,
+  TISSUE_V2_CONFIG,
   buildTissueForwardRace,
   compareTissueWithTimewise,
   enrichTissueForwardRace,
   summarizeTissueForward,
   upsertTissueRaces,
+  loadFrozenTissueModel,
+  loadTissueForward,
   type FrozenTissueModel,
   type TissueForwardData,
 } from "./tissue-forward";
@@ -83,6 +89,31 @@ describe("independent tissue forward tracker", () => {
     assert.ok(Number.isFinite(summary.logLoss));
     assert.equal(summary.calibration.reduce((sum, band) => sum + band.runners, 0), 2);
     assert.equal(compareTissueWithTimewise(data, [{ raceDate: TISSUE_FORWARD_START, course: "Newbury", raceTime: "13:00", timewiseRank1: "Beta", winners: [{ horseName: "Alpha" }] }]).tissueOnly, 1);
+  });
+
+  test("keeps v2 isolated and starts only at the frozen implementation timestamp", async () => {
+    const v2Model: FrozenTissueModel = { ...model, version: TISSUE_V2_CONFIG.modelVersion };
+    const beforeStart = sampleRace();
+    beforeStart.raceDateTime = new Date("2026-09-19T17:00:00Z");
+    assert.equal(buildTissueForwardRace({ raceDate: "2026-09-19", course: "Newbury", race: beforeStart, model: v2Model, commentsByHorse: new Map(), config: TISSUE_V2_CONFIG }), null);
+
+    const afterStart = sampleRace();
+    afterStart.raceDateTime = new Date("2026-09-19T18:00:00Z");
+    const record = buildTissueForwardRace({ raceDate: "2026-09-19", course: "Newbury", race: afterStart, model: v2Model, commentsByHorse: new Map(), recordedAt: new Date(TISSUE_V2_CONFIG.forwardStartAt!), config: TISSUE_V2_CONFIG });
+    assert.equal(record?.tissueModelVersion, TISSUE_V2_CONFIG.modelVersion);
+    assert.ok(Math.abs(record!.runners.reduce((sum, runner) => sum + runner.probability, 0) - 1) < 1e-12);
+
+    const directory = await mkdtemp(join(tmpdir(), "tissue-v2-test-"));
+    try {
+      const modelPath = join(directory, "model.json");
+      const trackerPath = join(directory, "forward.json");
+      await writeFile(modelPath, JSON.stringify(v2Model));
+      await writeFile(trackerPath, JSON.stringify({ version: TISSUE_FORWARD_VERSION, tissueModelVersion: TISSUE_MODEL_VERSION, forwardStart: TISSUE_FORWARD_START, races: [] }));
+      assert.equal((await loadFrozenTissueModel(modelPath, TISSUE_V2_CONFIG.modelVersion)).version, TISSUE_V2_CONFIG.modelVersion);
+      await assert.rejects(loadTissueForward(trackerPath, TISSUE_V2_CONFIG), /Unsupported tissue forward data/);
+    } finally {
+      await rm(directory, { recursive: true, force: true });
+    }
   });
 });
 

@@ -41,8 +41,12 @@
     "backup:cleanup": "bun run scripts/backup-project.ts cleanup --keep 30",
     "timewise:summary": "bun scripts/diagnose-tpr-vs-timewise-forward.ts summary",
     "aw:summary": "bun scripts/track-aw-forward-comparisons.ts summary",
-    "tissue:sync": "bun --env-file=.env.local run scripts/track-independent-tissue.ts sync",
-    "tissue:summary": "bun run scripts/track-independent-tissue.ts summary"
+    "tissue:sync": "bun --env-file=.env.local run scripts/track-independent-tissue.ts sync v2",
+    "tissue:summary": "bun run scripts/track-independent-tissue.ts summary v2",
+    "tissue:v1:sync": "bun --env-file=.env.local run scripts/track-independent-tissue.ts sync v1",
+    "tissue:v1:summary": "bun run scripts/track-independent-tissue.ts summary v1",
+    "tissue:v2:sync": "bun --env-file=.env.local run scripts/track-independent-tissue.ts sync v2",
+    "tissue:v2:summary": "bun run scripts/track-independent-tissue.ts summary v2"
   },
   "dependencies": {
     "drizzle-orm": "^0.45.2",

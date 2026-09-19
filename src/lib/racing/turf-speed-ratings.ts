@@ -52,13 +52,20 @@ type RaceDeviation = RaceContextRow & {
 
 type RaceContextData = {
   standardContexts: RaceContextRow[];
-  deviationRaceIds: Set<string>;
+  sameDayContexts: RaceContextRow[];
+};
+
+type TurfRatingContextInput = {
+  targets: RaceContextRow[];
+  context: RaceContextData;
+  marginsByRaceId: Map<string, RunnerMarginRow[]>;
+  requestedCutoff?: Date | null;
 };
 
 const QUERY_CHUNK_SIZE = 5_000;
 const CONTEXT_KEY_CHUNK_SIZE = 200;
 const RESULT_SOURCE_TYPE = "full-result-next-data";
-const TURF_CONTEXT_CACHE_VERSION = "turf_speed_v1_context_v1";
+const TURF_CONTEXT_CACHE_VERSION = "turf_speed_v2_context_v1";
 const TURF_CONTEXT_CACHE_MAX_ENTRIES = 24;
 
 type TurfContextCacheKind = "standard" | "same-day";
@@ -72,6 +79,7 @@ export async function getTurfSpeedRatingsForRunners(
   options: {
     source?: string;
     calculationCutoffDateTime?: Date | null;
+    onTiming?: (name: string, elapsedMs: number, rows?: number) => void;
   } = {},
 ): Promise<Map<string, TurfSpeedRating>> {
   const uniqueRunnerIds = [...new Set(runnerIds)];
@@ -80,6 +88,7 @@ export async function getTurfSpeedRatingsForRunners(
   }
 
   const source = options.source ?? "sporting_life";
+  const targetStarted = performance.now();
   const targets = (
     await Promise.all(
       chunks(uniqueRunnerIds, QUERY_CHUNK_SIZE).map((runnerIdChunk) =>
@@ -112,6 +121,7 @@ export async function getTurfSpeedRatingsForRunners(
       ),
     )
   ).flat().filter(isOrdinaryFlatTurfRace);
+  options.onTiming?.("turf_target_runner_load", performance.now() - targetStarted, targets.length);
 
   if (targets.length === 0) {
     return new Map();
@@ -122,21 +132,74 @@ export async function getTurfSpeedRatingsForRunners(
     source,
     targets,
     options.calculationCutoffDateTime,
+    options.onTiming,
   );
-  const deviations = raceDeviations(context.standardContexts, context.deviationRaceIds);
-  const deviationByRaceId = new Map(deviations.map((row) => [row.raceId, row]));
-  const sameDayGroups = groupBy(deviations, sameDayKey);
+  const marginStarted = performance.now();
   const marginsByRaceId = await loadRunnerMargins(
     db,
     targets.map((target) => target.raceId),
     source,
   );
+  options.onTiming?.("turf_runner_margin_load", performance.now() - marginStarted, marginsByRaceId.size);
+  const calculationStarted = performance.now();
+  const ratings = calculateTurfSpeedRatingsFromLoadedContext({
+    targets,
+    context,
+    marginsByRaceId,
+    requestedCutoff: options.calculationCutoffDateTime,
+  });
+  options.onTiming?.("turf_rating_calculation", performance.now() - calculationStarted, ratings.size);
+  return ratings;
+}
+
+function calculateTurfSpeedRatingsFromLoadedContext({
+  targets,
+  context,
+  marginsByRaceId,
+  requestedCutoff,
+}: TurfRatingContextInput): Map<string, TurfSpeedRating> {
+  const standardContextsByKey = groupBy(context.standardContexts, standardKey);
+  const sameDayContextsByKey = groupBy(context.sameDayContexts, sameDayKey);
   const cumulativeByRunnerId = cumulativeMargins(marginsByRaceId);
-  const sourceTimingIssueByRaceId = sourceTimingIssues(deviations, sameDayGroups);
   const ratings = new Map<string, TurfSpeedRating>();
+  const calculatedRaceContexts = new Map<string, {
+    deviation: RaceDeviation | undefined;
+    sameDayGroups: Map<string, RaceDeviation[]>;
+    sourceTimingIssueByRaceId: Set<string>;
+  }>();
 
   for (const target of targets) {
-    const deviation = deviationByRaceId.get(target.raceId);
+    const cutoff = targetCutoff(target, requestedCutoff);
+    const contextKey = `${target.raceId}:${cutoff?.toISOString() ?? "none"}`;
+    let calculated = calculatedRaceContexts.get(contextKey);
+    if (calculated === undefined) {
+      const sameDayContexts = (sameDayContextsByKey.get(sameDayKey(target)) ?? [])
+        .filter((row) => isAtOrBefore(row, cutoff));
+      const relevantStandardKeys = new Set([
+        standardKey(target),
+        ...sameDayContexts.map(standardKey),
+      ]);
+      const canonicalContexts = uniqueRaceContexts([
+        target,
+        ...sameDayContexts,
+        ...[...relevantStandardKeys].flatMap((key) =>
+          (standardContextsByKey.get(key) ?? []).filter((row) => isAtOrBefore(row, cutoff))
+        ),
+      ]);
+      const deviations = raceDeviations(
+        canonicalContexts,
+        new Set([target, ...sameDayContexts].map((row) => row.raceId)),
+      );
+      const sameDayGroups = groupBy(deviations, sameDayKey);
+      const newlyCalculated = {
+        deviation: deviations.find((row) => row.raceId === target.raceId),
+        sameDayGroups,
+        sourceTimingIssueByRaceId: sourceTimingIssues(deviations, sameDayGroups),
+      };
+      calculatedRaceContexts.set(contextKey, newlyCalculated);
+      calculated = newlyCalculated;
+    }
+    const { deviation, sameDayGroups, sourceTimingIssueByRaceId } = calculated;
     const sameDay = deviation ? sameDayAdjustmentFor(deviation, sameDayGroups) : null;
     ratings.set(
       target.runnerId ?? "",
@@ -163,41 +226,25 @@ export async function getTurfSpeedRatingsForRunners(
   return ratings;
 }
 
+export function calculateTurfSpeedRatingsFromContextForTest(
+  input: TurfRatingContextInput,
+) {
+  return calculateTurfSpeedRatingsFromLoadedContext(input);
+}
+
 export async function getTurfSpeedRatingsAsOfRuns(
   db: Db,
   runnerIds: string[],
   options: {
     source?: string;
+    onTiming?: (name: string, elapsedMs: number, rows?: number) => void;
   } = {},
 ): Promise<Map<string, TurfSpeedRating>> {
   const source = options.source ?? "sporting_life";
-  const runnerCutoffs = await loadRunnerRaceDateTimes(
-    db,
-    [...new Set(runnerIds)],
+  return getTurfSpeedRatingsForRunners(db, [...new Set(runnerIds)], {
     source,
-  );
-  const groups = groupBy(
-    runnerCutoffs.filter(hasRaceDateTime),
-    (row) => String(row.raceDateTime.getTime()),
-  );
-  const ratings = new Map<string, TurfSpeedRating>();
-
-  for (const group of groups.values()) {
-    const cutoff = group[0]?.raceDateTime;
-    if (!cutoff) {
-      continue;
-    }
-    const groupRatings = await getTurfSpeedRatingsForRunners(
-      db,
-      group.map((row) => row.runnerId),
-      { source, calculationCutoffDateTime: cutoff },
-    );
-    for (const [runnerId, rating] of groupRatings) {
-      ratings.set(runnerId, rating);
-    }
-  }
-
-  return ratings;
+    onTiming: options.onTiming,
+  });
 }
 
 async function loadRaceContextForTargets(
@@ -205,35 +252,86 @@ async function loadRaceContextForTargets(
   source: string,
   targets: RaceContextRow[],
   calculationCutoffDateTime: Date | null | undefined,
+  onTiming?: (name: string, elapsedMs: number, rows?: number) => void,
 ): Promise<RaceContextData> {
   const cutoff = calculationCutoffDateTime ?? latestRaceDateTime(targets);
   const targetStandardKeys = standardKeysFor(targets);
   const targetSameDayKeys = sameDayKeysFor(targets);
   const [standardContexts, sameDayContexts] = await Promise.all([
-    loadRaceContextsForStandardKeys(db, source, targetStandardKeys, cutoff),
-    loadRaceContextsForSameDayKeys(db, source, targetSameDayKeys, cutoff),
+    timedContextLoad("turf_course_distance_standards", onTiming, () =>
+      loadRaceContextsForStandardKeys(db, source, targetStandardKeys, cutoff)),
+    timedContextLoad("turf_same_day_peer_context", onTiming, () =>
+      loadRaceContextsForSameDayKeys(db, source, targetSameDayKeys, cutoff)),
   ]);
-  const loaded = uniqueRaceContexts([...targets, ...standardContexts, ...sameDayContexts]);
-  const loadedStandardKeys = standardKeysFor(loaded);
   const peerStandardKeys = withoutExistingStandardKeys(
     standardKeysFor(sameDayContexts),
-    loadedStandardKeys,
+    targetStandardKeys,
   );
 
   if (peerStandardKeys.length === 0) {
-    return {
-      standardContexts: loaded,
-      deviationRaceIds: new Set([...targets, ...sameDayContexts].map((row) => row.raceId)),
-    };
+    onTiming?.("turf_context_expansion", 0, 0);
+    return canonicalLoadedContext(targets, standardContexts, sameDayContexts);
   }
 
+  const expansionStarted = performance.now();
+  const expanded = await loadRaceContextsForStandardKeys(db, source, peerStandardKeys, cutoff);
+  onTiming?.("turf_context_expansion", performance.now() - expansionStarted, expanded.length);
+  return canonicalLoadedContext(targets, standardContexts, sameDayContexts, expanded);
+}
+
+function canonicalLoadedContext(
+  _targets: RaceContextRow[],
+  standardContexts: RaceContextRow[],
+  sameDayContexts: RaceContextRow[],
+  expandedContexts: RaceContextRow[] = [],
+): RaceContextData {
   return {
     standardContexts: uniqueRaceContexts([
-      ...loaded,
-      ...(await loadRaceContextsForStandardKeys(db, source, peerStandardKeys, cutoff)),
+      ...standardContexts,
+      ...sameDayContexts,
+      ...expandedContexts,
     ]),
-    deviationRaceIds: new Set([...targets, ...sameDayContexts].map((row) => row.raceId)),
+    sameDayContexts: uniqueRaceContexts(sameDayContexts),
   };
+}
+
+export function canonicalLoadedContextForTest(
+  targets: RaceContextRow[],
+  standardContexts: RaceContextRow[],
+  sameDayContexts: RaceContextRow[],
+) {
+  return canonicalLoadedContext(targets, standardContexts, sameDayContexts);
+}
+
+async function timedContextLoad(
+  name: string,
+  onTiming: ((name: string, elapsedMs: number, rows?: number) => void) | undefined,
+  load: () => Promise<RaceContextRow[]>,
+) {
+  const started = performance.now();
+  const rows = await load();
+  onTiming?.(name, performance.now() - started, rows.length);
+  return rows;
+}
+
+export function missingPeerStandardKeysForTest(
+  targets: RaceContextRow[],
+  sameDayContexts: RaceContextRow[],
+) {
+  return withoutExistingStandardKeys(
+    standardKeysFor(sameDayContexts),
+    standardKeysFor(targets),
+  ).map(standardContextKey).sort();
+}
+
+function targetCutoff(target: RaceContextRow, requestedCutoff: Date | null | undefined) {
+  if (target.raceDateTime === null) return requestedCutoff ?? null;
+  if (!requestedCutoff || target.raceDateTime <= requestedCutoff) return target.raceDateTime;
+  return requestedCutoff;
+}
+
+function isAtOrBefore(row: RaceContextRow, cutoff: Date | null) {
+  return cutoff === null || (row.raceDateTime !== null && row.raceDateTime <= cutoff);
 }
 
 async function loadRaceContextsForStandardKeys(
@@ -723,43 +821,6 @@ function groupBy<T>(rows: T[], keyForRow: (row: T) => string): Map<string, T[]> 
     grouped.set(key, values);
   }
   return grouped;
-}
-
-async function loadRunnerRaceDateTimes(
-  db: Db,
-  runnerIds: string[],
-  source: string,
-): Promise<Array<{ runnerId: string; raceDateTime: Date | null }>> {
-  if (runnerIds.length === 0) {
-    return [];
-  }
-
-  return (
-    await Promise.all(
-      chunks(runnerIds, QUERY_CHUNK_SIZE).map((runnerIdChunk) =>
-        db
-          .select({
-            runnerId: raceRunners.id,
-            raceDateTime: races.raceDatetime,
-          })
-          .from(raceRunners)
-          .innerJoin(races, eq(raceRunners.raceId, races.id))
-          .where(
-            and(
-              inArray(raceRunners.id, runnerIdChunk),
-              eq(raceRunners.source, source),
-              eq(races.source, source),
-            ),
-          ),
-      ),
-    )
-  ).flat();
-}
-
-function hasRaceDateTime<T extends { raceDateTime: Date | null }>(
-  row: T,
-): row is T & { raceDateTime: Date } {
-  return row.raceDateTime !== null;
 }
 
 function chunks<T>(values: T[], size: number): T[][] {

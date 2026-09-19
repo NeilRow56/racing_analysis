@@ -6,7 +6,8 @@ import {
   type TodayRace,
 } from "@/lib/racing/todays-racing";
 import {
-  TISSUE_FORWARD_PATH,
+  TISSUE_V1_CONFIG,
+  TISSUE_V2_CONFIG,
   buildTissueForwardRace,
   compareTissueWithTimewise,
   enrichTissueForwardRace,
@@ -15,6 +16,7 @@ import {
   saveTissueForward,
   summarizeTissueForward,
   upsertTissueRaces,
+  type TissueVersionConfig,
 } from "@/lib/racing/tissue-forward";
 import type { HistoricalComment } from "./diagnose-independent-tissue-feasibility";
 import { loadTrackerData } from "./diagnose-tpr-vs-timewise-forward";
@@ -22,21 +24,26 @@ import { loadTrackerData } from "./diagnose-tpr-vs-timewise-forward";
 const timings = new Map<string, number>();
 
 const command = process.argv[2] ?? "summary";
-if (command === "summary") await summary();
-else if (command === "sync") await sync(process.argv[3] ?? getLocalRacingDate());
-else throw new Error("Usage: bun run tissue:summary | bun run tissue:sync [YYYY-MM-DD]");
+const version = process.argv[3] ?? "v2";
+const config = version === "v1" ? TISSUE_V1_CONFIG : version === "v2" ? TISSUE_V2_CONFIG : null;
+if (!config) throw new Error("Tissue version must be v1 or v2");
+if (command === "summary") await summary(config);
+else if (command === "sync") await sync(process.argv[4] ?? getLocalRacingDate(), config);
+else throw new Error("Usage: track-independent-tissue.ts <summary|sync> <v1|v2> [YYYY-MM-DD]");
 
-async function sync(raceDate: string) {
+async function sync(raceDate: string, selected: TissueVersionConfig) {
   const connection = createDbConnection();
   const syncTimer = startTimer();
   try {
+    console.log(`Tissue model: ${selected.modelVersion}`);
+    console.log(`Turf speed: ${selected.turfSpeedVersion}`);
     const [today, model, existing] = await Promise.all([
       timed("today_metrics_load", () => getTodaysRacingData(connection.db, raceDate, {
         onTiming: recordTiming,
         raceFilter: isOrdinaryFlatTurfRaceForDisplay,
       })),
-      loadFrozenTissueModel(),
-      loadTissueForward(),
+      loadFrozenTissueModel(selected.modelPath, selected.modelVersion),
+      loadTissueForward(selected.forwardPath, selected),
     ]);
     if (today.status !== "ok") throw new Error(today.message);
     const declared = await timed("declared_horse_lookup", async () => declaredTurfTargets(today.meetings));
@@ -45,7 +52,7 @@ async function sync(raceDate: string) {
     );
     const now = new Date();
     const candidates = await timed("tissue_scoring", async () => declared.races.flatMap(({ course, race }) =>
-      buildTissueForwardRace({ raceDate, course, race, model, commentsByHorse, recordedAt: now }),
+      buildTissueForwardRace({ raceDate, course, race, model, commentsByHorse, recordedAt: now, config: selected }),
     ).filter((race): race is NonNullable<typeof race> => race !== null));
     let updated = upsertTissueRaces(existing, candidates);
     const racesById = new Map(today.meetings.flatMap((meeting) => meeting.races).map((race) => [race.raceId, race]));
@@ -57,7 +64,7 @@ async function sync(raceDate: string) {
       }),
     }));
     await timed("persistence", async () => {
-      if (JSON.stringify(updated) !== JSON.stringify(existing)) await saveTissueForward(updated);
+      if (JSON.stringify(updated) !== JSON.stringify(existing)) await saveTissueForward(updated, selected.forwardPath);
     });
     const existingRaceIds = new Set(existing.races.map((race) => race.raceId));
     const created = updated.races.filter((race) => !existingRaceIds.has(race.raceId));
@@ -66,6 +73,8 @@ async function sync(raceDate: string) {
     const pendingRecords = summarizeTissueForward(updated).pending;
     console.log([
       `TISSUE_SYNC date=${raceDate}`,
+      `model=${selected.modelVersion}`,
+      `turf_speed=${selected.turfSpeedVersion}`,
       `turf_races=${declared.races.length}`,
       `declared_runners=${declared.declaredRunnerCount}`,
       `unique_horses=${declared.horseTargets.length}`,
@@ -127,13 +136,15 @@ async function loadCommentsForDeclaredHorses(client: ReturnType<typeof createDbC
   return { commentsByHorse: grouped, rowCount: rows.length };
 }
 
-async function summary() {
-  const [data, timewise] = await Promise.all([loadTissueForward(), loadTrackerData()]);
+async function summary(selected: TissueVersionConfig) {
+  const [data, timewise] = await Promise.all([loadTissueForward(selected.forwardPath, selected), loadTrackerData()]);
   const value = summarizeTissueForward(data);
   console.log(`# Independent Tissue Forward Summary\n`);
   console.log(`Model: ${data.tissueModelVersion}`);
+  console.log(`Turf speed: ${selected.turfSpeedVersion}`);
   console.log(`Forward start: ${data.forwardStart}`);
-  console.log(`Data: ${TISSUE_FORWARD_PATH}\n`);
+  if (data.forwardStartAt) console.log(`Forward start timestamp: ${data.forwardStartAt}`);
+  console.log(`Data: ${selected.forwardPath}\n`);
   console.log(`Races tracked: ${value.racesTracked}`);
   console.log(`Clean pre-race races: ${value.cleanPreRaceRaces}`);
   console.log(`Pending: ${value.pending}`);

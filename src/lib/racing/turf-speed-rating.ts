@@ -5,7 +5,7 @@ import {
   sanityCheckWinningTime,
 } from "./speed-research";
 
-export const TURF_SPEED_RATING_CALCULATION_VERSION = "turf_speed_v1";
+export const TURF_SPEED_RATING_CALCULATION_VERSION = "turf_speed_v2";
 
 export const TURF_SPEED_RATING_POLICY = {
   baseFigure: 100,

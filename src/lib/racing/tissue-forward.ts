@@ -11,9 +11,42 @@ export const TISSUE_MODEL_VERSION = "independent_tissue_numeric_comments_v1_2025
 export const TISSUE_FORWARD_START = "2026-09-19";
 export const TISSUE_FORWARD_PATH = "data/research/tissue-forward.json";
 export const TISSUE_MODEL_PATH = "data/research/tissue-model-v1.json";
+export const TISSUE_V2_FORWARD_VERSION = "tissue_forward_v2" as const;
+export const TISSUE_V2_MODEL_VERSION = "tissue_model_v2" as const;
+export const TISSUE_V2_FORWARD_PATH = "data/research/tissue-forward-v2.json";
+export const TISSUE_V2_MODEL_PATH = "data/research/tissue-model-v2.json";
+export const TISSUE_V2_FORWARD_START_AT = "2026-09-19T17:35:53.410Z";
+
+export type TissueVersionConfig = {
+  forwardVersion: string;
+  modelVersion: string;
+  forwardStart: string;
+  forwardStartAt?: string;
+  forwardPath: string;
+  modelPath: string;
+  turfSpeedVersion: string;
+};
+
+export const TISSUE_V1_CONFIG: TissueVersionConfig = {
+  forwardVersion: TISSUE_FORWARD_VERSION,
+  modelVersion: TISSUE_MODEL_VERSION,
+  forwardStart: TISSUE_FORWARD_START,
+  forwardPath: TISSUE_FORWARD_PATH,
+  modelPath: TISSUE_MODEL_PATH,
+  turfSpeedVersion: "turf_speed_v1",
+};
+export const TISSUE_V2_CONFIG: TissueVersionConfig = {
+  forwardVersion: TISSUE_V2_FORWARD_VERSION,
+  modelVersion: TISSUE_V2_MODEL_VERSION,
+  forwardStart: TISSUE_V2_FORWARD_START_AT.slice(0, 10),
+  forwardStartAt: TISSUE_V2_FORWARD_START_AT,
+  forwardPath: TISSUE_V2_FORWARD_PATH,
+  modelPath: TISSUE_V2_MODEL_PATH,
+  turfSpeedVersion: "turf_speed_v2",
+};
 
 export type FrozenTissueModel = {
-  version: typeof TISSUE_MODEL_VERSION;
+  version: string;
   trainedAt: string;
   trainingWindow: { from: string; to: string };
   checksum: string;
@@ -41,7 +74,7 @@ export type TissueForwardRace = {
   raceId: string;
   sourceId: string | null;
   raceName: string | null;
-  tissueModelVersion: typeof TISSUE_MODEL_VERSION;
+  tissueModelVersion: string;
   tissueModelChecksum: string;
   recordedAt: string;
   recordedPreRace: boolean | null;
@@ -51,9 +84,10 @@ export type TissueForwardRace = {
 };
 
 export type TissueForwardData = {
-  version: typeof TISSUE_FORWARD_VERSION;
-  tissueModelVersion: typeof TISSUE_MODEL_VERSION;
+  version: string;
+  tissueModelVersion: string;
   forwardStart: string;
+  forwardStartAt?: string;
   races: TissueForwardRace[];
 };
 
@@ -64,9 +98,12 @@ export function buildTissueForwardRace(input: {
   model: FrozenTissueModel;
   commentsByHorse: Map<string, HistoricalComment[]>;
   recordedAt?: Date;
+  config?: TissueVersionConfig;
 }): TissueForwardRace | null {
-  if (input.raceDate < TISSUE_FORWARD_START || !isOrdinaryFlatTurfRaceForDisplay(input.race)) return null;
+  const config = input.config ?? TISSUE_V1_CONFIG;
+  if (input.raceDate < config.forwardStart || !isOrdinaryFlatTurfRaceForDisplay(input.race)) return null;
   if (!input.race.raceDateTime || !input.race.scheduledTime) return null;
+  if (config.forwardStartAt && input.race.raceDateTime < new Date(config.forwardStartAt)) return null;
   const active = input.race.runners.filter((runner) => runner.resultStatus !== "non_runner");
   if (active.length < 2) return null;
   const scored = active.map((runner) => {
@@ -177,18 +214,18 @@ export function compareTissueWithTimewise(data: TissueForwardData, timewise: Arr
   return { comparable, agreement, disagreement: comparable - agreement, tissueOnly, timewiseOnly, neither };
 }
 
-export async function loadFrozenTissueModel(path = TISSUE_MODEL_PATH): Promise<FrozenTissueModel> {
+export async function loadFrozenTissueModel(path = TISSUE_MODEL_PATH, expectedVersion: string = TISSUE_MODEL_VERSION): Promise<FrozenTissueModel> {
   const model = JSON.parse(await readFile(path, "utf8")) as FrozenTissueModel;
-  if (model.version !== TISSUE_MODEL_VERSION) throw new Error(`Unsupported tissue model ${model.version}`);
+  if (model.version !== expectedVersion) throw new Error(`Unsupported tissue model ${model.version}`);
   return model;
 }
-export async function loadTissueForward(path = TISSUE_FORWARD_PATH): Promise<TissueForwardData> {
+export async function loadTissueForward(path = TISSUE_FORWARD_PATH, config = TISSUE_V1_CONFIG): Promise<TissueForwardData> {
   try {
     const data = JSON.parse(await readFile(path, "utf8")) as TissueForwardData;
-    if (data.version !== TISSUE_FORWARD_VERSION || data.tissueModelVersion !== TISSUE_MODEL_VERSION) throw new Error("Unsupported tissue forward data");
+    if (data.version !== config.forwardVersion || data.tissueModelVersion !== config.modelVersion) throw new Error("Unsupported tissue forward data");
     return data;
   } catch (error) {
-    if ((error as NodeJS.ErrnoException).code === "ENOENT") return { version: TISSUE_FORWARD_VERSION, tissueModelVersion: TISSUE_MODEL_VERSION, forwardStart: TISSUE_FORWARD_START, races: [] };
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") return { version: config.forwardVersion, tissueModelVersion: config.modelVersion, forwardStart: config.forwardStart, ...(config.forwardStartAt ? { forwardStartAt: config.forwardStartAt } : {}), races: [] };
     throw error;
   }
 }

@@ -492,7 +492,7 @@ function turfRating(rating: number): HistoricalRunInput["turfSpeedRating"] {
     withheldReason: null,
     standardSeconds: 100,
     equivalentTimeSeconds: 99,
-    calculationVersion: "turf_speed_v1",
+    calculationVersion: "turf_speed_v2",
   };
 }
 

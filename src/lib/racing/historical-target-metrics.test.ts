@@ -458,7 +458,7 @@ describe("buildHistoricalTargetRunnerMetricRows", () => {
             withheldReason: null,
             standardSeconds: 100,
             equivalentTimeSeconds: 99,
-            calculationVersion: "turf_speed_v1",
+            calculationVersion: "turf_speed_v2",
           },
         }),
       ],

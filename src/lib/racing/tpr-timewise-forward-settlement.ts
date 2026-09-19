@@ -8,7 +8,7 @@ import {
 import {
   forwardRaceKey,
   loadTrackerData,
-  saveTrackerData,
+  mutateTrackerData,
   type TrackerData,
 } from "../../../scripts/diagnose-tpr-vs-timewise-forward";
 
@@ -16,30 +16,36 @@ export async function enrichTodayForwardTrackerResults(
   meetings: TodayMeeting[],
   raceDate: string,
   existingData?: TrackerData,
+  path?: string,
 ) {
-  const data = existingData ?? await loadTrackerData();
-  const records = new Map(data.races
-    .filter((record) => record.raceDate === raceDate)
-    .map((record) => [forwardRaceKey(record), record]));
   let updated = 0;
-
-  for (const meeting of meetings) {
-    for (const race of meeting.races) {
-      if (!isTimewiseEligibleRace(race)) continue;
-      const raceTime = trackerRaceTime(race.scheduledTime);
-      if (!raceTime) continue;
-      const record = records.get(forwardRaceKey({ raceDate, course: meeting.courseName, raceTime }));
-      if (!record) continue;
-      if (record.family !== timewiseRaceFamily(race)) continue;
-      const enriched = enrichForwardRecordResult(record, race);
-      if (enriched === record) continue;
-      const index = data.races.findIndex((candidate) => forwardRaceKey(candidate) === forwardRaceKey(enriched));
-      if (index >= 0) data.races[index] = enriched;
-      records.set(forwardRaceKey(enriched), enriched);
-      updated += 1;
+  const initialData = existingData ?? await loadTrackerData();
+  const hasSettleableRace = meetings.some((meeting) => meeting.races.some((race) =>
+    isTimewiseEligibleRace(race) && race.runners.some((runner) => runner.finishingPosition === 1)
+  ));
+  if (!hasSettleableRace) return { data: initialData, updated };
+  const data = await mutateTrackerData((latest) => {
+    const races = [...latest.races];
+    const records = new Map(races
+      .filter((record) => record.raceDate === raceDate)
+      .map((record) => [forwardRaceKey(record), record]));
+    for (const meeting of meetings) {
+      for (const race of meeting.races) {
+        if (!isTimewiseEligibleRace(race)) continue;
+        const raceTime = trackerRaceTime(race.scheduledTime);
+        if (!raceTime) continue;
+        const key = forwardRaceKey({ raceDate, course: meeting.courseName, raceTime });
+        const record = records.get(key);
+        if (!record || record.family !== timewiseRaceFamily(race)) continue;
+        const enriched = enrichForwardRecordResult(record, race);
+        if (enriched === record) continue;
+        const index = races.findIndex((candidate) => forwardRaceKey(candidate) === key);
+        if (index >= 0) races[index] = enriched;
+        records.set(key, enriched);
+        updated += 1;
+      }
     }
-  }
-
-  if (updated > 0) await saveTrackerData(data);
+    return { ...latest, races };
+  }, path);
   return { data, updated };
 }
