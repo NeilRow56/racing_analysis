@@ -13,6 +13,7 @@ import type {
 import { classifyJumpRaceSubtype } from "./jump-speed-rating";
 import { normalizeRaceClasses, raceClassNumber } from "./research-rule-classes";
 import { RANK_METRIC_OPTIONS, type RankMetric } from "./research-rank-metrics";
+import { RELATIVE_METRIC_OPTIONS, type RelativeMetric } from "./research-or-relative-metrics";
 import {
   isTrainerCohortTop,
   trainerCohortLabel,
@@ -35,6 +36,12 @@ import {
 } from "./turf-performance-rating";
 export { normalizeRaceClasses } from "./research-rule-classes";
 export { RANK_METRIC_OPTIONS, type RankMetric } from "./research-rank-metrics";
+export {
+  CREATABLE_RELATIVE_METRIC_OPTIONS,
+  RELATIVE_METRIC_OPTIONS,
+  isLegacySpeedRelativeMetric,
+  type RelativeMetric,
+} from "./research-or-relative-metrics";
 export {
   STARTING_PRICE_MAX_OPTIONS,
   STARTING_PRICE_MIN_OPTIONS,
@@ -151,14 +158,6 @@ export type RatingMetric =
   | "bestTodaysRatingLast5"
   | "averageTodaysRatingLast3"
   | "averageTodaysRatingLast5";
-
-export type RelativeMetric =
-  | "latestSpeedMinusOR"
-  | "bestL3SpeedMinusOR"
-  | "latestPerformanceMinusOR"
-  | "bestPerformanceL3MinusOR"
-  | "latestTodaysRatingMinusOR"
-  | "bestTodaysRatingL3MinusOR";
 
 export type RatingCondition = {
   metric: RatingMetric;
@@ -335,30 +334,6 @@ export const RATING_METRIC_OPTIONS: Array<{ value: RatingMetric; label: string; 
   { value: "averageTodaysRatingLast3", label: "Average L3 Today's Rating", group: "Today-Adjusted" },
   { value: "averageTodaysRatingLast5", label: "Average L5 Today's Rating", group: "Today-Adjusted" },
 ];
-
-export const RELATIVE_METRIC_OPTIONS: Array<{ value: RelativeMetric; label: string }> = [
-  { value: "latestSpeedMinusOR", label: "Latest Speed minus OR" },
-  { value: "bestL3SpeedMinusOR", label: "Best L3 Speed minus OR" },
-  { value: "latestPerformanceMinusOR", label: "Latest Performance minus OR" },
-  { value: "bestPerformanceL3MinusOR", label: "Best L3 Performance minus OR" },
-  { value: "latestTodaysRatingMinusOR", label: "Latest Today's Rating minus OR" },
-  { value: "bestTodaysRatingL3MinusOR", label: "Best L3 Today's Rating minus OR" },
-];
-
-const LEGACY_SPEED_RELATIVE_METRICS: RelativeMetric[] = [
-  "latestSpeedMinusOR",
-  "bestL3SpeedMinusOR",
-];
-
-// TODO: Replace uncalibrated differences with a chronologically fitted,
-// versioned OR-calibrated residual if that feature passes holdout validation.
-export const CREATABLE_RELATIVE_METRIC_OPTIONS = RELATIVE_METRIC_OPTIONS.filter(
-  (option) => !LEGACY_SPEED_RELATIVE_METRICS.includes(option.value),
-);
-
-export function isLegacySpeedRelativeMetric(value: string): value is RelativeMetric {
-  return LEGACY_SPEED_RELATIVE_METRICS.includes(value as RelativeMetric);
-}
 
 const LEGACY_TPR_RANK_OPTION = { value: "turfPerformanceRating" as const, label: "TPR rank" };
 const COMPATIBLE_RANK_METRIC_OPTIONS: Array<{ value: RankMetric; label: string }> = [

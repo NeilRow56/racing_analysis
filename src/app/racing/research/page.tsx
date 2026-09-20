@@ -4,7 +4,6 @@ import { loadBacktestFeatureCache, type LoadedBacktestFeatureCache } from "@/lib
 import {
   DEVELOPMENT_FROM,
   DEVELOPMENT_TO,
-  CREATABLE_RELATIVE_METRIC_OPTIONS,
   FAMILY_OPTIONS,
   HANDICAP_STATUS_OPTIONS,
   RANK_METRIC_OPTIONS,
@@ -23,6 +22,7 @@ import {
   type ResearchResult,
   type ResearchRuleV1,
 } from "@/lib/racing/research-rule";
+import { CREATABLE_RELATIVE_METRIC_OPTIONS } from "@/lib/racing/research-or-relative-metrics";
 import { researchRuleKey } from "@/lib/racing/research-rule-identity";
 import {
   evaluateResearchRuleStability,

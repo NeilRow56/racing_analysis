@@ -20,18 +20,20 @@ import {
   startingPriceMaxValue,
   startingPriceMinValue,
 } from "@/lib/racing/starting-price-filter";
+import type {
+  HandicapStatusFilter,
+  JumpSubtypeFilter,
+  RatingMetric,
+  ResearchFilterOptions,
+  ResearchRuleV1,
+  ReturnBucket,
+  RunAfterBreakFilter,
+} from "@/lib/racing/research-rule";
 import {
   CREATABLE_RELATIVE_METRIC_OPTIONS,
   isLegacySpeedRelativeMetric,
-  type HandicapStatusFilter,
-  type JumpSubtypeFilter,
-  type RatingMetric,
   type RelativeMetric,
-  type ResearchFilterOptions,
-  type ResearchRuleV1,
-  type ReturnBucket,
-  type RunAfterBreakFilter,
-} from "@/lib/racing/research-rule";
+} from "@/lib/racing/research-or-relative-metrics";
 import { RANK_METRIC_OPTIONS, type RankMetric } from "@/lib/racing/research-rank-metrics";
 
 type Option<T extends string = string> = { value: T; label: string };
