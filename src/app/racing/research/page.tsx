@@ -4,11 +4,11 @@ import { loadBacktestFeatureCache, type LoadedBacktestFeatureCache } from "@/lib
 import {
   DEVELOPMENT_FROM,
   DEVELOPMENT_TO,
+  CREATABLE_RELATIVE_METRIC_OPTIONS,
   FAMILY_OPTIONS,
   HANDICAP_STATUS_OPTIONS,
   RANK_METRIC_OPTIONS,
   RATING_METRIC_OPTIONS,
-  RELATIVE_METRIC_OPTIONS,
   RETURN_BUCKET_OPTIONS,
   RUN_AFTER_BREAK_OPTIONS,
   evaluateResearchRule,
@@ -116,7 +116,7 @@ export default async function ResearchPage({
           rankMetricOptions={RANK_METRIC_OPTIONS}
           ratingMetricOptions={RATING_METRIC_OPTIONS}
           returnBucketOptions={RETURN_BUCKET_OPTIONS}
-          relativeMetricOptions={RELATIVE_METRIC_OPTIONS}
+          relativeMetricOptions={CREATABLE_RELATIVE_METRIC_OPTIONS}
           runAfterBreakOptions={RUN_AFTER_BREAK_OPTIONS}
           settlementMode={data?.settlementMode ?? settlementMode}
           saveRulePanel={data?.result ? (

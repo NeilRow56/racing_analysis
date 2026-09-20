@@ -2,11 +2,11 @@ import assert from "node:assert/strict";
 import { describe, test } from "node:test";
 import { renderToStaticMarkup } from "react-dom/server";
 import {
+  CREATABLE_RELATIVE_METRIC_OPTIONS as RELATIVE_METRIC_OPTIONS,
   FAMILY_OPTIONS,
   HANDICAP_STATUS_OPTIONS,
   RANK_METRIC_OPTIONS,
   RATING_METRIC_OPTIONS,
-  RELATIVE_METRIC_OPTIONS,
   RETURN_BUCKET_OPTIONS,
   RUN_AFTER_BREAK_OPTIONS,
   defaultResearchRule,
@@ -110,7 +110,8 @@ describe("research filters page", () => {
     assert.match(text, /Speed rating metric/);
     assert.match(text, /Speed rating min/);
     assert.match(text, /Speed rating max/);
-    assert.match(text, /Speed \/ Performance vs OR/);
+    assert.match(text, /Uncalibrated rating difference vs OR/);
+    assert.match(text, /The scales are not calibrated to each other, so treat the result as exploratory only/);
     assert.match(text, /Official Rating Rank/);
     assert.match(text, /OR rank min/);
     assert.match(text, /OR rank max/);
@@ -143,6 +144,48 @@ describe("research filters page", () => {
     assert.match(text, /20\/1\+/);
     assert.match(text, /development analysis only/i);
     assert.match(text, /Clear all filters/);
+  });
+
+  test("offers only uncalibrated Performance and Today's Rating differences for new rules", () => {
+    assert.deepEqual(
+      RELATIVE_METRIC_OPTIONS.map((option) => option.value),
+      [
+        "latestPerformanceMinusOR",
+        "bestPerformanceL3MinusOR",
+        "latestTodaysRatingMinusOR",
+        "bestTodaysRatingL3MinusOR",
+      ],
+    );
+    const text = renderResearchForm(defaultResearchRule("turf_flat"));
+    assert.match(text, /Latest Performance minus OR/);
+    assert.match(text, /Best L3 Performance minus OR/);
+    assert.match(text, /Latest Today&#x27;s Rating minus OR/);
+    assert.match(text, /Best L3 Today&#x27;s Rating minus OR/);
+    assert.doesNotMatch(text, />Latest Speed minus OR</);
+    assert.doesNotMatch(text, />Best L3 Speed minus OR</);
+  });
+
+  test("displays loaded legacy Speed-vs-OR rules without offering them on a clean form", () => {
+    const text = renderResearchForm({
+      ...defaultResearchRule("turf_flat"),
+      relatives: [{ metric: "latestSpeedMinusOR", range: { min: 5 } }],
+    });
+    assert.match(text, /Latest Speed minus OR.*Legacy uncalibrated OR-relative metric/);
+    assert.match(text, /type="hidden" name="legacyRelativeMetric" value="latestSpeedMinusOR"/);
+  });
+
+  test("rejects new legacy Speed-vs-OR form values but preserves an existing marked legacy rule", () => {
+    const fresh = researchRuleFromFormData(formData({
+      relativeMetric: "latestSpeedMinusOR",
+      relativeMin: "5",
+    }));
+    const existing = researchRuleFromFormData(formData({
+      relativeMetric: "latestSpeedMinusOR",
+      legacyRelativeMetric: "latestSpeedMinusOR",
+      relativeMin: "5",
+    }));
+    assert.deepEqual(fresh.relatives, []);
+    assert.deepEqual(existing.relatives, [{ metric: "latestSpeedMinusOR", range: { min: 5, max: undefined } }]);
   });
 
   test("renders and parses Starting Price dropdown filters", () => {
@@ -1311,4 +1354,25 @@ function formData(values: Record<string, string | string[]>): FormData {
     }
   }
   return form;
+}
+
+function renderResearchForm(rule: ResearchRuleV1): string {
+  return renderToStaticMarkup(ResearchForm({
+    familyOptions: FAMILY_OPTIONS,
+    filterOptions: { courses: [], classes: [], distances: [], trainers: [], jockeys: [], weights: weightOptions() },
+    handicapStatusOptions: HANDICAP_STATUS_OPTIONS,
+    isPending: false,
+    isStale: false,
+    onChange: () => {},
+    onClearFilters: () => {},
+    onSubmit: () => {},
+    rankMetricOptions: RANK_METRIC_OPTIONS,
+    ratingMetricOptions: RATING_METRIC_OPTIONS,
+    returnBucketOptions: RETURN_BUCKET_OPTIONS,
+    ref: null,
+    relativeMetricOptions: RELATIVE_METRIC_OPTIONS,
+    runAfterBreakOptions: RUN_AFTER_BREAK_OPTIONS,
+    rule,
+    settlementMode: "actual",
+  }));
 }

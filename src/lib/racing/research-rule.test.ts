@@ -121,6 +121,32 @@ describe("research rule evaluation", () => {
     assert.deepEqual(result.selectedRunners.map((selection) => selection.id), ["selected"]);
   });
 
+  test("keeps legacy Speed-vs-OR rules evaluable and their summaries intelligible", () => {
+    const rule: ResearchRuleV1 = {
+      ...defaultResearchRule("jump"),
+      relatives: [{ metric: "latestSpeedMinusOR", range: { min: 5 } }],
+    };
+    const result = evaluateResearchRule({
+      rows: [
+        row({ targetRunnerId: "selected", latestSpeedRating: 106, officialRating: 100 }),
+        row({ targetRunnerId: "excluded", latestSpeedRating: 104, officialRating: 100 }),
+      ],
+      rule,
+    });
+    assert.deepEqual(parseResearchRule(JSON.stringify(rule))?.relatives, rule.relatives);
+    assert.deepEqual(result.selectedRunners.map((selection) => selection.id), ["selected"]);
+    assert.ok(strategySummary(rule).includes("Latest Speed minus OR: >= 5"));
+  });
+
+  test("continues to resolve legacy Speed-vs-OR query parameters", () => {
+    const rule = ruleFromSearchParams(new URLSearchParams({
+      family: "turf_flat",
+      relativeMetric: "bestL3SpeedMinusOR",
+      relativeMin: "3",
+    }));
+    assert.deepEqual(rule.relatives, [{ metric: "bestL3SpeedMinusOR", range: { min: 3, max: undefined } }]);
+  });
+
   test("applies official rating rank independently of generic rating rank", () => {
     const rule: ResearchRuleV1 = {
       ...defaultResearchRule("jump"),

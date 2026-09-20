@@ -106,6 +106,21 @@ describe("saved research rules", () => {
     assert.equal(prepared.ruleIdentity, researchRuleKey(rule));
   });
 
+  test("preserves a legacy Speed-vs-OR condition in a frozen rule", () => {
+    const rule: ResearchRuleV1 = {
+      ...defaultResearchRule("turf_flat"),
+      relatives: [{ metric: "bestL3SpeedMinusOR", range: { min: 3, max: 8 } }],
+    };
+    const prepared = prepareFrozenSavedResearchRule({
+      name: "Legacy speed difference",
+      rule,
+      developmentSnapshot: developmentSnapshotFromResult(researchResult(rule)),
+    });
+
+    assert.deepEqual((prepared.canonicalRule as ResearchRuleV1).relatives, rule.relatives);
+    assert.equal(prepared.ruleIdentity, researchRuleKey(rule));
+  });
+
   test("preserves generic TPR rank in frozen rule identity and canonical data", () => {
     const rule: ResearchRuleV1 = {
       ...defaultResearchRule("turf_flat"),

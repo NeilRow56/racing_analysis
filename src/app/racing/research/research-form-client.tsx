@@ -21,6 +21,8 @@ import {
   startingPriceMinValue,
 } from "@/lib/racing/starting-price-filter";
 import {
+  CREATABLE_RELATIVE_METRIC_OPTIONS,
+  isLegacySpeedRelativeMetric,
   type HandicapStatusFilter,
   type JumpSubtypeFilter,
   type RatingMetric,
@@ -389,7 +391,7 @@ export const ResearchForm = ({
         </div>
       </FilterGroup>
 
-      <FilterGroup title="Speed / Performance vs OR">
+      <FilterGroup title="Ratings">
         <SelectField label="Speed rating metric" name="ratingMetric" value={rating?.metric ?? ""}>
           <option value="">No speed rating filter</option>
           {groupedRatingOptions(ratingMetricOptions).map(([group, options]) => (
@@ -402,8 +404,23 @@ export const ResearchForm = ({
         </SelectField>
         <InputField label="Speed rating min" name="ratingMin" type="number" value={rating?.range.min} />
         <InputField label="Speed rating max" name="ratingMax" type="number" value={rating?.range.max} />
-        <SelectField label="OR-relative metric" name="relativeMetric" value={relative?.metric ?? ""}>
+        <div className="md:col-span-6 border-t border-slate-200 pt-3 text-sm text-slate-600">
+          <div className="font-medium text-slate-800">Uncalibrated rating difference vs OR</div>
+          <p className="mt-1">
+            These values are raw differences between the selected rating and Official Rating.
+            The scales are not calibrated to each other, so treat the result as exploratory only.
+          </p>
+        </div>
+        {relative && isLegacySpeedRelativeMetric(relative.metric) ? (
+          <input name="legacyRelativeMetric" type="hidden" value={relative.metric} />
+        ) : null}
+        <SelectField label="Difference metric" name="relativeMetric" value={relative?.metric ?? ""}>
           <option value="">No OR-relative filter</option>
+          {relative && isLegacySpeedRelativeMetric(relative.metric) ? (
+            <option value={relative.metric}>
+              {relative.metric === "latestSpeedMinusOR" ? "Latest Speed minus OR" : "Best L3 Speed minus OR"} (Legacy uncalibrated OR-relative metric)
+            </option>
+          ) : null}
           {relativeMetricOptions.map((option) => (
             <option key={option.value} value={option.value}>{option.label}</option>
           ))}
@@ -496,7 +513,16 @@ export function clearResearchRuleFilters(rule: ResearchRuleV1): ResearchRuleV1 {
 
 export function researchRuleFromFormData(formData: FormData): ResearchRuleV1 {
   const ratingMetric = textValue(formData.get("ratingMetric")) as RatingMetric | undefined;
-  const relativeMetric = textValue(formData.get("relativeMetric")) as RelativeMetric | undefined;
+  const relativeMetricValue = textValue(formData.get("relativeMetric"));
+  const legacyRelativeMetric = textValue(formData.get("legacyRelativeMetric"));
+  const relativeMetric = CREATABLE_RELATIVE_METRIC_OPTIONS.some(
+    (option) => option.value === relativeMetricValue,
+  ) || (
+    relativeMetricValue === legacyRelativeMetric &&
+    isLegacySpeedRelativeMetric(relativeMetricValue ?? "")
+  )
+    ? relativeMetricValue as RelativeMetric
+    : undefined;
   const rankMetricValue = textValue(formData.get("rankMetric"));
   const rankMetric = RANK_METRIC_OPTIONS.some((option) => option.value === rankMetricValue)
     ? rankMetricValue as RankMetric
