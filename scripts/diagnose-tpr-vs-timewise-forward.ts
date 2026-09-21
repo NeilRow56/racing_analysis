@@ -58,6 +58,13 @@ export type TrackerData = {
   races: ForwardRaceRecord[];
 };
 
+export type TrackerMutationTiming = {
+  lockWaitMs: number;
+  fileReadMs: number;
+  mutationMs: number;
+  atomicWriteMs: number;
+};
+
 export function createRecord(input: ForwardRaceInput): ForwardRaceRecord {
   validateInput(input);
   const family = input.family ?? "turf";
@@ -417,10 +424,21 @@ export async function saveTrackerRace(record: ForwardRaceRecord, replace = false
 export async function mutateTrackerData(
   mutation: (latest: TrackerData) => TrackerData | Promise<TrackerData>,
   path = DEFAULT_DATA_PATH,
+  onTiming?: (timing: TrackerMutationTiming) => void,
 ): Promise<TrackerData> {
+  const lockStartedAt = performance.now();
   return withTrackerLock(path, async () => {
-    const updated = await mutation(await loadTrackerData(path));
+    const lockWaitMs = performance.now() - lockStartedAt;
+    const readStartedAt = performance.now();
+    const latest = await loadTrackerData(path);
+    const fileReadMs = performance.now() - readStartedAt;
+    const mutationStartedAt = performance.now();
+    const updated = await mutation(latest);
+    const mutationMs = performance.now() - mutationStartedAt;
+    const writeStartedAt = performance.now();
     await writeData(path, updated);
+    const atomicWriteMs = performance.now() - writeStartedAt;
+    onTiming?.({ lockWaitMs, fileReadMs, mutationMs, atomicWriteMs });
     return updated;
   });
 }

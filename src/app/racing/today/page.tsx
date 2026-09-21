@@ -20,6 +20,7 @@ import {
   type TurfPerformanceShadowSummary,
 } from "@/lib/racing/turf-performance-rating-snapshots";
 import { turfPerformanceHistoryDepthLabel } from "@/lib/racing/turf-performance-rating";
+import { GOING_FORM_TERMS, type GoingFormTerm } from "@/lib/racing/going-form";
 import {
   formatRaceTimeForDisplay,
   getTodaysRacingData,
@@ -374,6 +375,7 @@ function MeetingSection({ meeting, raceDate, trackedRaces }: {
       <div className="mt-5 space-y-8">
         {meeting.races.map((race) => (
           <RaceBlock
+            courseName={meeting.courseName}
             existingTimewise={trackedRaces.get(forwardRaceKey({
               course: meeting.courseName,
               raceDate,
@@ -389,7 +391,8 @@ function MeetingSection({ meeting, raceDate, trackedRaces }: {
   );
 }
 
-function RaceBlock({ existingTimewise, race, raceDate }: {
+function RaceBlock({ courseName, existingTimewise, race, raceDate }: {
+  courseName: string;
   existingTimewise: ForwardRaceRecord | null;
   race: TodayRace;
   raceDate: string;
@@ -432,7 +435,7 @@ function RaceBlock({ existingTimewise, race, raceDate }: {
         runners={race.runners}
       />
       {isTimewiseEligibleRace(race) ? (
-        <TimewiseComparison existing={existingTimewise} race={race} raceDate={raceDate} />
+        <TimewiseComparison courseName={courseName} existing={existingTimewise} race={race} raceDate={raceDate} />
       ) : null}
     </section>
   );
@@ -474,7 +477,7 @@ function RunnerTable({
 }) {
   return (
     <div className="mt-4 overflow-x-auto">
-      <table className="w-full min-w-[1260px] table-fixed text-left text-sm">
+      <table className="w-full min-w-[1360px] table-fixed text-left text-sm">
         <thead className="border-y border-slate-200 text-xs uppercase text-slate-500">
           <tr>
             <th className="w-14 py-2 pr-3 font-medium">No.</th>
@@ -487,6 +490,14 @@ function RunnerTable({
             <th className="w-36 py-2 pr-3 font-medium">Jockey</th>
             <th className="w-40 py-2 pr-3 font-medium">Trainer</th>
             <th className="w-14 py-2 pr-3 font-medium">OR</th>
+            {(isTurfRace || isJumpRace) ? (
+              <th
+                className="w-36 py-2 pr-3 font-medium"
+                title="Previous 1st or 2nd finishes on going containing these terms."
+              >
+                Going form
+              </th>
+            ) : null}
             <th className="w-16 py-2 pr-3 font-medium">Latest Speed</th>
             <th className="w-16 py-2 pr-3 font-medium">Prev Speed</th>
             <th className="w-16 py-2 pr-3 font-medium">Best L3</th>
@@ -580,6 +591,11 @@ function RunnerRow({
       <td className="py-3 pr-3">{runner.jockeyName ?? "-"}</td>
       <td className="py-3 pr-3">{runner.trainerName ?? "-"}</td>
       <td className="py-3 pr-3">{runner.officialRating ?? "-"}</td>
+      {(isTurfRace || isJumpRace) ? (
+        <td className="py-3 pr-3">
+          <GoingFormCell runner={runner} />
+        </td>
+      ) : null}
       <td className="py-3 pr-3">{formatRating(speedMetrics.latest)}</td>
       <td className="py-3 pr-3">{formatRating(speedMetrics.previous)}</td>
       <td className="py-3 pr-3">{formatRating(speedMetrics.bestLast3)}</td>
@@ -595,6 +611,25 @@ function RunnerRow({
       <td className="py-3 pr-3">{runner.odds ?? "-"}</td>
     </tr>
   );
+}
+
+function GoingFormCell({ runner }: { runner: TodayRunner }) {
+  const labels = GOING_FORM_TERMS
+    .filter((term) => runner.goingForm?.[term])
+    .map(goingFormLabel);
+
+  return (
+    <span
+      className={labels.length > 0 ? "text-slate-700" : "text-slate-400"}
+      title="Previous 1st or 2nd finishes on going containing these terms."
+    >
+      {labels.length > 0 ? labels.join(" · ") : "—"}
+    </span>
+  );
+}
+
+function goingFormLabel(term: GoingFormTerm): string {
+  return term[0]!.toUpperCase() + term.slice(1);
 }
 
 function TurfPerformanceRatingCell({ runner }: { runner: TodayRunner }) {

@@ -128,6 +128,14 @@ describe("Today request orchestration", () => {
     assert.match(initialRequest, /const trainerCohortsPromise = savedRulesPromise\.then/);
     assert.match(initialRequest, /Promise\.all\(\[[\s\S]*getTodaysRacingData[\s\S]*trainerCohortsPromise/);
   });
+
+  test("shows compact Going form help without claiming current-going suitability", () => {
+    const source = readFileSync(new URL("./page.tsx", import.meta.url), "utf8");
+
+    assert.match(source, /Going form/);
+    assert.match(source, /Previous 1st or 2nd finishes on going containing these terms\./);
+    assert.doesNotMatch(source, /suit(?:s|able|ability)/i);
+  });
 });
 
 function race(overrides: Partial<TodayRace> = {}): TodayRace {

@@ -15,19 +15,9 @@ import {
   getTodaysRacingData,
   isValidRacingDate,
 } from "@/lib/racing/todays-racing";
-import {
-  buildTodayForwardInput,
-  isTimewiseEligibleRace,
-  TIMEWISE_NON_RUNNER_VALUE,
-  timewiseTimingForSave,
-} from "@/lib/racing/tpr-timewise-forward-context";
+import type { TimewiseSaveContext } from "@/lib/racing/timewise-save";
+import { saveTimewiseComparison } from "@/lib/racing/timewise-save";
 import { enrichTodayForwardTrackerResults } from "@/lib/racing/tpr-timewise-forward-settlement";
-import {
-  createRecord,
-  forwardRaceKey,
-  mutateTrackerData,
-  upsertRace,
-} from "../../../../scripts/diagnose-tpr-vs-timewise-forward";
 
 export async function refreshTodaySelectionResultsAction(formData: FormData) {
   const raceDateValue = formData.get("raceDate");
@@ -76,71 +66,25 @@ export async function refreshTodaySelectionResultsAction(formData: FormData) {
   revalidatePath("/racing/today");
 }
 
-export async function saveTimewiseComparisonAction(formData: FormData) {
-  const startedAt = performance.now();
-  const raceDate = requiredFormValue(formData, "raceDate");
-  const raceId = requiredFormValue(formData, "raceId");
-  const timewiseRank1RunnerId = requiredFormValue(formData, "timewiseRank1RunnerId");
-  const timewiseRank2RunnerId = requiredFormValue(formData, "timewiseRank2RunnerId");
-  if (!isValidRacingDate(raceDate)) throw new Error("Invalid race date.");
-  if (timewiseRank1RunnerId === timewiseRank2RunnerId && timewiseRank1RunnerId !== TIMEWISE_NON_RUNNER_VALUE) throw new Error("Timewise rank 1 and rank 2 must differ.");
-
-  const connection = createDbConnection();
-  try {
-    const dataLoadStartedAt = performance.now();
-    const data = await getTodaysRacingData(connection.db, raceDate);
-    const dataLoadMs = performance.now() - dataLoadStartedAt;
-    if (data.status !== "ok") throw new Error("Racecard is not available.");
-    const meeting = data.meetings.find((value) => value.races.some((race) => race.raceId === raceId));
-    const race = meeting?.races.find((value) => value.raceId === raceId);
-    if (!meeting || !race || !isTimewiseEligibleRace(race)) throw new Error("Timewise tracking is available for Turf and All Weather races only.");
-    const timewiseRank1NonRunner = timewiseRank1RunnerId === TIMEWISE_NON_RUNNER_VALUE;
-    const timewiseRank2NonRunner = timewiseRank2RunnerId === TIMEWISE_NON_RUNNER_VALUE;
-    const timewiseRank1 = timewiseRank1NonRunner ? null : race.runners.find((runner) => runner.runnerId === timewiseRank1RunnerId);
-    const timewiseRank2 = timewiseRank2NonRunner ? null : race.runners.find((runner) => runner.runnerId === timewiseRank2RunnerId);
-    if ((!timewiseRank1NonRunner && !timewiseRank1) || (!timewiseRank2NonRunner && !timewiseRank2)) throw new Error("Select runners from this race.");
-
-    const input = buildTodayForwardInput({
-      course: meeting.courseName,
-      race,
-      raceDate,
-      timewiseRank1: timewiseRank1?.horseName ?? null,
-      timewiseRank1NonRunner,
-      timewiseRank2: timewiseRank2?.horseName ?? null,
-      timewiseRank2NonRunner,
-    });
-    const trackerWriteStartedAt = performance.now();
-    await mutateTrackerData((trackerData) => {
-      const existing = trackerData.races.find((record) => forwardRaceKey(record) === forwardRaceKey(input));
-      return upsertRace(trackerData, createRecord({
-        ...input,
-        ...timewiseTimingForSave(existing, race.raceDateTime),
-      }), true);
-    });
-    console.info("TIMEWISE_SAVE_TIMING", {
-      raceDate,
-      raceId,
-      todayDataAndRatingsMs: Math.round(dataLoadMs),
-      trackerMutationMs: Math.round(performance.now() - trackerWriteStartedAt),
-      actionBeforeRevalidationMs: Math.round(performance.now() - startedAt),
-    });
-  } finally {
-    await connection.client.end();
-  }
-
-  const revalidationStartedAt = performance.now();
-  revalidatePath(`/racing/today?date=${raceDate}`);
-  console.info("TIMEWISE_SAVE_REVALIDATION_TIMING", {
-    raceDate,
-    revalidateCallMs: Math.round(performance.now() - revalidationStartedAt),
-    actionTotalMs: Math.round(performance.now() - startedAt),
+export async function saveTimewiseComparisonAction(
+  context: TimewiseSaveContext,
+  formData: FormData,
+) {
+  return saveTimewiseComparison({
+    context,
+    formData,
+    onTiming: (timing) => console.info("TIMEWISE_SAVE_TIMING", {
+      raceDate: context.raceDate,
+      raceId: context.raceId,
+      ...roundedTiming(timing),
+    }),
   });
 }
 
-function requiredFormValue(formData: FormData, name: string) {
-  const value = formData.get(name);
-  if (typeof value !== "string" || !value) throw new Error(`Missing ${name}.`);
-  return value;
+function roundedTiming(timing: Record<string, number>) {
+  return Object.fromEntries(
+    Object.entries(timing).map(([name, duration]) => [name, Math.round(duration * 10) / 10]),
+  );
 }
 
 async function resolveTodayTrainerCohorts(

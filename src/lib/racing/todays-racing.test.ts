@@ -15,6 +15,7 @@ import {
   type TodayRacecardRow,
 } from "./todays-racing";
 import type { HorseMetricsAsOf } from "./horse-metrics";
+import type { GoingForm } from "./going-form";
 
 describe("Today racing grouping", () => {
   test("accepts racecard or full-result provenance without duplicate source types", () => {
@@ -268,6 +269,35 @@ describe("Today racing grouping", () => {
       91,
     );
     assert.equal(grouped[0].races[0].runners[1].metrics, null);
+  });
+
+  test("attaches batched going form to the matching runner only", () => {
+    const goingForm: GoingForm = {
+      firm: false,
+      good: true,
+      soft: true,
+      yielding: false,
+      heavy: false,
+      firmCount: 0,
+      goodCount: 2,
+      softCount: 1,
+      yieldingCount: 0,
+      heavyCount: 0,
+    };
+    const grouped = groupTodaysRacingRows(
+      [
+        row({ runnerId: "runner-with-form" }),
+        row({ runnerId: "runner-without-form", saddleclothNumber: 2 }),
+      ],
+      new Map(),
+      new Map(),
+      new Map(),
+      new Map(),
+      new Map([["runner-with-form", goingForm]]),
+    );
+
+    assert.deepEqual(grouped[0].races[0].runners[0].goingForm, goingForm);
+    assert.equal(grouped[0].races[0].runners[1].goingForm, undefined);
   });
 
   test("attaches diagnostic TPR to ordinary Flat Turf runners only", () => {
