@@ -68,6 +68,43 @@ describe("backtest feature cache", () => {
     );
   });
 
+  test("validates only speed versions used by a family cache", () => {
+    const jumpWithStaleTurf = manifestFor({
+      calculationVersions: {
+        ...manifestFor().calculationVersions,
+        turfSpeed: "turf_speed_v1" as "turf_speed_v2",
+      },
+    });
+    assert.equal(isCompatibleManifest(jumpWithStaleTurf, {
+      from: jumpWithStaleTurf.from,
+      to: jumpWithStaleTurf.to,
+      family: "jump",
+      source: jumpWithStaleTurf.source,
+    }), true);
+
+    const jumpWithStaleJump = {
+      ...jumpWithStaleTurf,
+      calculationVersions: {
+        ...jumpWithStaleTurf.calculationVersions,
+        jumpSpeed: "stale" as "jump_speed_v1",
+      },
+    };
+    assert.equal(isCompatibleManifest(jumpWithStaleJump, {
+      from: jumpWithStaleJump.from,
+      to: jumpWithStaleJump.to,
+      family: "jump",
+      source: jumpWithStaleJump.source,
+    }), false);
+
+    const allWithStaleTurf = { ...jumpWithStaleTurf, family: "all" as const };
+    assert.equal(isCompatibleManifest(allWithStaleTurf, {
+      from: allWithStaleTurf.from,
+      to: allWithStaleTurf.to,
+      family: "all",
+      source: allWithStaleTurf.source,
+    }), false);
+  });
+
   test("round-trips cached rows and preserves null feature/outcome separation", async () => {
     const root = await mkdtemp(join(tmpdir(), "racing-cache-"));
     const directory = cacheDirectory({

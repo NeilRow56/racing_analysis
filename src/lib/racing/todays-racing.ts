@@ -29,10 +29,11 @@ import {
   type TrainerPriorMetrics,
 } from "./trainer-quality";
 import {
-  calculateCrossSurfaceTurfFallbackTpr,
+  buildCanonicalTurfPerformanceRatingInput,
   calculateTurfPerformanceRating,
   rankTurfPerformanceRatings,
   type RankedTurfPerformanceRating,
+  type CanonicalTurfPerformanceRatingInput,
   TURF_PERFORMANCE_RATING_W50_WEIGHT_MULTIPLIER,
 } from "./turf-performance-rating";
 
@@ -71,6 +72,7 @@ export type TodayRunner = {
   metrics: HorseMetricsAsOf | null;
   turfPerformanceRating?: RankedTurfPerformanceRating;
   turfPerformanceShadowRating?: RankedTurfPerformanceRating;
+  turfPerformanceInput?: CanonicalTurfPerformanceRatingInput;
   trainerMetrics?: TrainerPriorMetrics;
   jockeyMetrics?: JockeyPriorMetrics;
   savedRuleMatches?: TodaySavedRuleMatch[];
@@ -528,18 +530,24 @@ export function attachTurfPerformanceRatings(race: TodayRace): TodayRace {
       .map((runner) => runner.weightCarriedLbs)
       .filter(isNumber),
   );
-  const productionInputs = race.runners.map((runner) => ({
-    id: runner.runnerId,
-    rating: turfPerformanceRatingForRunner({
+  const canonicalInputs = new Map(race.runners.map((runner) => [
+    runner.runnerId,
+    runner.resultStatus === "non_runner" ? null : turfPerformanceInputForRunner({
       runner,
       raceClass: race.raceClass,
       medianWeight,
       weightCoefficientMultiplier: 1,
     }),
+  ]));
+  const productionInputs = race.runners.map((runner) => ({
+    id: runner.runnerId,
+    rating: canonicalInputs.get(runner.runnerId) === null
+      ? null
+      : calculateTurfPerformanceRating(canonicalInputs.get(runner.runnerId)!),
   }));
   const shadowInputs = race.runners.map((runner) => ({
     id: runner.runnerId,
-    rating: turfPerformanceRatingForRunner({
+    rating: runner.resultStatus === "non_runner" ? null : turfPerformanceRatingForRunner({
       runner,
       raceClass: race.raceClass,
       medianWeight,
@@ -557,24 +565,25 @@ export function attachTurfPerformanceRatings(race: TodayRace): TodayRace {
       ...runner,
       turfPerformanceRating: ratings.get(runner.runnerId),
       turfPerformanceShadowRating: shadowRatings.get(runner.runnerId),
+      turfPerformanceInput: canonicalInputs.get(runner.runnerId) ?? undefined,
     })),
   };
 }
 
-function turfPerformanceRatingForRunner(input: {
+function turfPerformanceInputForRunner(input: {
   runner: TodayRunner;
   raceClass: string | null;
   medianWeight: number | null;
   weightCoefficientMultiplier: number;
-}) {
+}): CanonicalTurfPerformanceRatingInput | null {
   const metrics = input.runner.metrics;
   if (metrics === null) {
     return null;
   }
-  const normal = calculateTurfPerformanceRating({
-    latestPerformanceRating: metrics.latestPerformanceRating,
-    previousPerformanceRating: metrics.previousPerformanceRating,
-    averagePerformanceLast3: metrics.averagePerformanceLast3,
+  return buildCanonicalTurfPerformanceRatingInput({
+    latestPerformanceRating: metrics.latestTurfPerformanceRating,
+    previousPerformanceRating: metrics.previousTurfPerformanceRating,
+    averagePerformanceLast3: metrics.averageTurfPerformanceLast3,
     latestSpeedRating: metrics.latestTurfSpeedRating,
     previousSpeedRating: metrics.previousTurfSpeedRating,
     averageSpeedLast3: metrics.averageTurfSpeedLast3,
@@ -582,20 +591,12 @@ function turfPerformanceRatingForRunner(input: {
     weightCarriedLbs: input.runner.weightCarriedLbs,
     raceMedianWeightCarriedLbs: input.medianWeight,
     weightCoefficientMultiplier: input.weightCoefficientMultiplier,
-    basis: "turf",
   });
-  if (normal !== null) {
-    return normal;
-  }
-  return calculateCrossSurfaceTurfFallbackTpr({
-    latestAwSpeedRating: metrics.latestAwSpeedRating,
-    previousAwSpeedRating: metrics.previousAwSpeedRating,
-    averageAwSpeedLast3: metrics.averageAwSpeedLast3,
-    raceClass: input.raceClass,
-    weightCarriedLbs: input.runner.weightCarriedLbs,
-    raceMedianWeightCarriedLbs: input.medianWeight,
-    weightCoefficientMultiplier: input.weightCoefficientMultiplier,
-  });
+}
+
+function turfPerformanceRatingForRunner(input: Parameters<typeof turfPerformanceInputForRunner>[0]) {
+  const canonical = turfPerformanceInputForRunner(input);
+  return canonical === null ? null : calculateTurfPerformanceRating(canonical);
 }
 
 function turfPerformanceShadowForRace(

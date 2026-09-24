@@ -76,6 +76,32 @@ describe("Today frozen rule matching", () => {
     );
   });
 
+  test("realises AW and Jump rank rules from canonical family-pure fields", () => {
+    for (const family of ["all_weather_flat", "jump"] as const) {
+      const prefix = family === "all_weather_flat" ? "Aw" : "Jump";
+      const rule = savedRule(`${family}-family-pure`, `${family} family pure`, {
+        ...defaultResearchRule(family),
+        ranks: [
+          { metric: "latestPerformanceRating", range: { min: 1, max: 1 } },
+          { metric: "bestTodaysRatingLast3", range: { min: 1, max: 1 } },
+        ],
+      }, "frozen");
+      const familyFields = (performance: number, todays: number) => ({
+        [`latest${prefix}PerformanceRating`]: performance,
+        [`best${prefix}TodaysRatingLast3`]: todays,
+      });
+      const runners = [
+        runner("generic-leader", { latestPerformanceRating: 200, bestTodaysRatingLast3: 200, ...familyFields(80, 80) }),
+        runner("family-leader", { latestPerformanceRating: 50, bestTodaysRatingLast3: 50, ...familyFields(100, 100) }),
+      ];
+      const raceOverrides = family === "all_weather_flat"
+        ? { raceName: "AW Handicap", raceType: "Flat", surface: "ALLWEATHER" }
+        : { raceName: "Novices' Hurdle", raceType: "Hurdle", surface: "TURF" };
+
+      assert.deepEqual(matchIds(rule, raceOverrides, {}, {}, "2026-09-11", runners), ["family-leader"]);
+    }
+  });
+
   test("selects the Chase 31-60 rule from pre-race history regardless of outcome or SP", () => {
     const rule = savedRule("chase-days-31-60", "Chase 31-60 days", {
       ...defaultResearchRule("jump"),
@@ -971,18 +997,36 @@ function metrics(
     bestJumpSpeedLast5: null,
     averageJumpSpeedLast3: null,
     averageJumpSpeedLast5: null,
+    latestJumpPerformanceRating: null,
+    previousJumpPerformanceRating: null,
+    bestJumpPerformanceLast3: null,
+    bestJumpPerformanceLast5: null,
+    averageJumpPerformanceLast3: null,
+    averageJumpPerformanceLast5: null,
     latestAwSpeedRating: null,
     previousAwSpeedRating: null,
     bestAwSpeedLast3: null,
     bestAwSpeedLast5: null,
     averageAwSpeedLast3: null,
     averageAwSpeedLast5: null,
+    latestAwPerformanceRating: null,
+    previousAwPerformanceRating: null,
+    bestAwPerformanceLast3: null,
+    bestAwPerformanceLast5: null,
+    averageAwPerformanceLast3: null,
+    averageAwPerformanceLast5: null,
     latestTurfSpeedRating: 82,
     previousTurfSpeedRating: 79,
     bestTurfSpeedLast3: 82,
     bestTurfSpeedLast5: 82,
     averageTurfSpeedLast3: 80,
     averageTurfSpeedLast5: 80,
+    latestTurfPerformanceRating: 95,
+    previousTurfPerformanceRating: 89,
+    bestTurfPerformanceLast3: 95,
+    bestTurfPerformanceLast5: 95,
+    averageTurfPerformanceLast3: 91,
+    averageTurfPerformanceLast5: 91,
     latestPerformanceRating: 95,
     previousPerformanceRating: 89,
     bestPerformanceLast3: 95,
@@ -997,8 +1041,23 @@ function metrics(
     averageTodaysRatingLast5: 92,
     todaysRatingCalculationVersion: "todays_rating_v1",
     latestJumpTodaysRating: null,
+    previousJumpTodaysRating: null,
+    bestJumpTodaysRatingLast3: null,
+    bestJumpTodaysRatingLast5: null,
+    averageJumpTodaysRatingLast3: null,
+    averageJumpTodaysRatingLast5: null,
     latestAwTodaysRating: null,
+    previousAwTodaysRating: null,
+    bestAwTodaysRatingLast3: null,
+    bestAwTodaysRatingLast5: null,
+    averageAwTodaysRatingLast3: null,
+    averageAwTodaysRatingLast5: null,
     latestTurfTodaysRating: 96,
+    previousTurfTodaysRating: 90,
+    bestTurfTodaysRatingLast3: 96,
+    bestTurfTodaysRatingLast5: 96,
+    averageTurfTodaysRatingLast3: 92,
+    averageTurfTodaysRatingLast5: 92,
     latestOr: 90,
     latestRprMinusPreviousRpr: null,
     latestTsMinusPreviousTs: null,

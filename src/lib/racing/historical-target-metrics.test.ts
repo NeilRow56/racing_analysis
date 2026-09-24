@@ -5,6 +5,12 @@ import {
   type HistoricalCandidateRun,
   type HistoricalTargetRow,
 } from "./historical-target-metrics";
+import { canonicalFamilyFormMetrics, calculateHorseMetricsAsOf } from "./horse-metrics";
+import {
+  buildCanonicalTurfPerformanceRatingInput,
+  calculateTurfPerformanceRating,
+  rankTurfPerformanceRatings,
+} from "./turf-performance-rating";
 
 const targetTime = new Date("2026-09-10T14:00:00.000Z");
 
@@ -626,4 +632,176 @@ describe("buildHistoricalTargetRunnerMetricRows", () => {
     assert.equal(row.features.breakLengthDays, null);
     assert.equal(row.features.runAfterBreakNumber, null);
   });
+
+  test("keeps live and historical Turf TPR inputs and ranks identical across mixed histories", () => {
+    const scenarios = [
+      { id: "turf-only", families: ["turf", "turf", "turf"] },
+      { id: "turf-aw", families: ["aw", "turf", "turf", "turf"] },
+      { id: "turf-jump", families: ["jump", "turf", "turf", "turf"] },
+      { id: "two-turf", families: ["turf", "turf"] },
+      { id: "four-turf", families: ["turf", "turf", "turf", "turf"] },
+    ] as const;
+    const targets = scenarios.map((scenario, index) => target({
+      targetRaceId: "parity-race",
+      targetRunnerId: `target-${scenario.id}`,
+      horseId: `horse-${scenario.id}`,
+      horseName: scenario.id,
+      raceName: "Parity Maiden Stakes",
+      raceType: "Flat",
+      raceTypeCode: "FLAT",
+      surface: "TURF",
+      weightCarriedLbs: 126 + index * 2,
+    }));
+    const candidateRuns = scenarios.flatMap((scenario, scenarioIndex) =>
+      scenario.families.map((family, runIndex) => run({
+        runnerId: `${scenario.id}-${runIndex}`,
+        horseId: `horse-${scenario.id}`,
+        raceDate: `2026-08-${String(28 - runIndex).padStart(2, "0")}`,
+        raceDateTime: new Date(`2026-08-${String(28 - runIndex).padStart(2, "0")}T14:00:00.000Z`),
+        raceType: family === "jump" ? "Chase" : "Flat",
+        surface: family === "aw" ? "ALLWEATHER" : family === "turf" ? "TURF" : null,
+        weightCarriedLbs: 128 + scenarioIndex + runIndex,
+        turfSpeedRating: family === "turf" ? surfaceRating(90 + scenarioIndex * 4 - runIndex, "turf_speed_v2") : null,
+        awSpeedRating: family === "aw" ? surfaceRating(160, "aw_speed_v1") : null,
+        jumpSpeedRating: family === "jump" ? jumpRating(170) : null,
+      })),
+    );
+    const historicalRows = buildHistoricalTargetRunnerMetricRows({ targets, candidateRuns });
+    const medianWeight = 130;
+    const historicalInputs = historicalRows.map((row) => buildCanonicalTurfPerformanceRatingInput({
+      latestPerformanceRating: row.features.latestPerformanceRating,
+      previousPerformanceRating: row.features.previousPerformanceRating,
+      averagePerformanceLast3: row.features.averagePerformanceLast3,
+      latestSpeedRating: row.features.latestTurfSpeedRating,
+      previousSpeedRating: row.features.previousTurfSpeedRating,
+      averageSpeedLast3: row.features.averageTurfSpeedLast3,
+      raceClass: row.features.raceClass,
+      weightCarriedLbs: row.features.weightCarriedLbs,
+      raceMedianWeightCarriedLbs: medianWeight,
+    }));
+    const liveInputs = targets.map((targetRow) => {
+      const metrics = calculateHorseMetricsAsOf({
+        runs: candidateRuns.filter((candidate) => candidate.horseId === targetRow.horseId),
+        beforeDateTime: targetRow.raceDateTime,
+        targetWeightCarriedLbs: targetRow.weightCarriedLbs,
+      });
+      return buildCanonicalTurfPerformanceRatingInput({
+        latestPerformanceRating: metrics.latestTurfPerformanceRating,
+        previousPerformanceRating: metrics.previousTurfPerformanceRating,
+        averagePerformanceLast3: metrics.averageTurfPerformanceLast3,
+        latestSpeedRating: metrics.latestTurfSpeedRating,
+        previousSpeedRating: metrics.previousTurfSpeedRating,
+        averageSpeedLast3: metrics.averageTurfSpeedLast3,
+        raceClass: targetRow.raceClass,
+        weightCarriedLbs: targetRow.weightCarriedLbs,
+        raceMedianWeightCarriedLbs: medianWeight,
+      });
+    });
+    assert.deepEqual(liveInputs, historicalInputs);
+
+    for (const multiplier of [1, 0.5]) {
+      const rank = (inputs: typeof liveInputs) => rankTurfPerformanceRatings(inputs.map((input, index) => ({
+        id: scenarios[index]!.id,
+        rating: calculateTurfPerformanceRating({ ...input, weightCoefficientMultiplier: multiplier }),
+      })));
+      assert.deepEqual([...rank(liveInputs)], [...rank(historicalInputs)]);
+    }
+  });
+
+  test("keeps canonical AW and Jump live inputs identical to historical rows", () => {
+    for (const family of ["aw", "jump"] as const) {
+      const scenarios = [
+        { id: "target-only", families: [family, family] },
+        { id: "with-turf", families: ["turf", family, family] },
+        { id: "with-other", families: [family === "aw" ? "jump" : "aw", family, family] },
+        { id: "all-three", families: ["turf", family === "aw" ? "jump" : "aw", family] },
+      ] as const;
+      const targets = scenarios.map((scenario, index) => target({
+        targetRaceId: `parity-${family}`,
+        targetRunnerId: `${family}-${scenario.id}`,
+        horseId: `${family}-horse-${scenario.id}`,
+        horseName: scenario.id,
+        raceName: family === "aw" ? "AW Handicap" : "Novices' Hurdle",
+        raceType: family === "aw" ? "Flat" : "Hurdle",
+        raceTypeCode: family === "aw" ? "FLAT" : "HURDLE",
+        surface: family === "aw" ? "ALLWEATHER" : "TURF",
+        weightCarriedLbs: 140 + index,
+      }));
+      const candidateRuns = scenarios.flatMap((scenario, scenarioIndex) =>
+        scenario.families.map((runFamily, runIndex) => run({
+          runnerId: `${family}-${scenario.id}-${runIndex}`,
+          horseId: `${family}-horse-${scenario.id}`,
+          raceDate: `2026-08-${String(28 - runIndex).padStart(2, "0")}`,
+          raceDateTime: new Date(`2026-08-${String(28 - runIndex).padStart(2, "0")}T14:00:00.000Z`),
+          raceType: runFamily === "jump" ? "Hurdle" : "Flat",
+          surface: runFamily === "aw" ? "ALLWEATHER" : "TURF",
+          weightCarriedLbs: 142 + runIndex,
+          jumpSpeedRating: runFamily === "jump" ? jumpRating(110 + scenarioIndex - runIndex) : null,
+          awSpeedRating: runFamily === "aw" ? surfaceRating(100 + scenarioIndex - runIndex, "aw_speed_v1") : null,
+          turfSpeedRating: runFamily === "turf" ? surfaceRating(200, "turf_speed_v2") : null,
+        })),
+      );
+      const historicalRows = buildHistoricalTargetRunnerMetricRows({ targets, candidateRuns });
+      const liveBundles = targets.map((targetRow) => canonicalFamilyFormMetrics(calculateHorseMetricsAsOf({
+        runs: candidateRuns.filter((candidate) => candidate.horseId === targetRow.horseId),
+        beforeDateTime: targetRow.raceDateTime,
+        targetWeightCarriedLbs: targetRow.weightCarriedLbs,
+      }), family));
+      const historicalBundles = historicalRows.map((row) => ({
+        speed: {
+          latest: row.features.latestSpeedRating,
+          previous: row.features.previousSpeedRating,
+          bestLast3: row.features.bestSpeedLast3,
+          bestLast5: row.features.bestSpeedLast5,
+          averageLast3: row.features.averageSpeedLast3,
+          averageLast5: row.features.averageSpeedLast5,
+        },
+        performance: {
+          latest: row.features.latestPerformanceRating,
+          previous: row.features.previousPerformanceRating,
+          bestLast3: row.features.bestPerformanceLast3,
+          bestLast5: row.features.bestPerformanceLast5,
+          averageLast3: row.features.averagePerformanceLast3,
+          averageLast5: row.features.averagePerformanceLast5,
+        },
+        todaysRating: {
+          latest: row.features.latestTodaysRating,
+          previous: row.features.previousTodaysRating,
+          bestLast3: row.features.bestTodaysRatingLast3,
+          bestLast5: row.features.bestTodaysRatingLast5,
+          averageLast3: row.features.averageTodaysRatingLast3,
+          averageLast5: row.features.averageTodaysRatingLast5,
+        },
+      }));
+
+      assert.deepEqual(liveBundles, historicalBundles);
+      for (const metric of ["speed", "performance", "todaysRating"] as const) {
+        assert.deepEqual(
+          competitionRanks(liveBundles.map((bundle) => bundle[metric].latest)),
+          competitionRanks(historicalBundles.map((bundle) => bundle[metric].latest)),
+        );
+      }
+    }
+  });
 });
+
+function competitionRanks(values: Array<number | null>): Array<number | null> {
+  return values.map((value) => value === null
+    ? null
+    : 1 + values.filter((candidate) => candidate !== null && candidate > value).length);
+}
+
+function surfaceRating(rating: number, calculationVersion: string) {
+  return {
+    rating,
+    method: "base",
+    confidence: "medium",
+    baseRating: rating,
+    sameDayAdjustedRating: null,
+    cumulativeBeatenLengths: 3,
+    standardSampleSize: 8,
+    sameDaySampleSize: null,
+    withheldReason: null,
+    calculationVersion,
+  } as NonNullable<HistoricalCandidateRun["turfSpeedRating"]> & NonNullable<HistoricalCandidateRun["awSpeedRating"]>;
+}

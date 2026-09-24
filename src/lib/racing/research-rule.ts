@@ -29,6 +29,7 @@ import {
   type StartingPriceCondition,
 } from "./starting-price-filter";
 import {
+  buildCanonicalTurfPerformanceRatingInput,
   calculateTurfPerformanceRating,
   rankTurfPerformanceRatings,
   TURF_PERFORMANCE_RATING_VERSION,
@@ -870,7 +871,7 @@ function attachTurfPerformanceRatings(raceRows: RankedResearchRow[]) {
       id: row.features.targetRunnerId,
       rating: row.outcome.resultStatus === "non_runner"
         ? null
-        : calculateTurfPerformanceRating({
+        : calculateTurfPerformanceRating(buildCanonicalTurfPerformanceRatingInput({
             latestPerformanceRating: row.features.latestPerformanceRating,
             previousPerformanceRating: row.features.previousPerformanceRating,
             averagePerformanceLast3: row.features.averagePerformanceLast3,
@@ -880,7 +881,7 @@ function attachTurfPerformanceRatings(raceRows: RankedResearchRow[]) {
             raceClass: row.features.raceClass,
             weightCarriedLbs: row.features.weightCarriedLbs,
             raceMedianWeightCarriedLbs: raceMedianWeight,
-          }),
+          })),
     })),
   );
   for (const row of raceRows) {

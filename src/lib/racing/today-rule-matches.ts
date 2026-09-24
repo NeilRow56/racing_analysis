@@ -5,6 +5,7 @@ import type {
   HistoricalPreRaceFeatureRow,
   HistoricalTargetRunnerMetricsRow,
 } from "./historical-target-metrics";
+import { canonicalFamilyFormMetrics } from "./horse-metrics";
 import {
   matchesRaceConditions,
   matchesRankConditions,
@@ -273,6 +274,7 @@ function todayRunnerFeatures(
         ? "jump"
         : "unsupported";
   const speed = speedFieldsForFamily(family, runner.metrics);
+  const performance = performanceFieldsForFamily(family, runner.metrics);
   const todays = todaysRatingFieldsForFamily(family, runner.metrics);
 
   return {
@@ -329,20 +331,20 @@ function todayRunnerFeatures(
     bestSpeedLast5: speed.bestLast5,
     averageSpeedLast3: speed.averageLast3,
     averageSpeedLast5: speed.averageLast5,
-    latestPerformanceRating: runner.metrics?.latestPerformanceRating ?? null,
-    previousPerformanceRating: runner.metrics?.previousPerformanceRating ?? null,
-    bestPerformanceLast3: runner.metrics?.bestPerformanceLast3 ?? null,
-    bestPerformanceLast5: runner.metrics?.bestPerformanceLast5 ?? null,
-    averagePerformanceLast3: runner.metrics?.averagePerformanceLast3 ?? null,
-    averagePerformanceLast5: runner.metrics?.averagePerformanceLast5 ?? null,
+    latestPerformanceRating: performance.latest,
+    previousPerformanceRating: performance.previous,
+    bestPerformanceLast3: performance.bestLast3,
+    bestPerformanceLast5: performance.bestLast5,
+    averagePerformanceLast3: performance.averageLast3,
+    averagePerformanceLast5: performance.averageLast5,
     latestPerformanceCalculationVersion: null,
     currentWeightCarriedLb: runner.weightCarriedLbs,
     latestTodaysRating: todays.latest,
-    previousTodaysRating: runner.metrics?.previousTodaysRating ?? null,
-    bestTodaysRatingLast3: runner.metrics?.bestTodaysRatingLast3 ?? null,
-    bestTodaysRatingLast5: runner.metrics?.bestTodaysRatingLast5 ?? null,
-    averageTodaysRatingLast3: runner.metrics?.averageTodaysRatingLast3 ?? null,
-    averageTodaysRatingLast5: runner.metrics?.averageTodaysRatingLast5 ?? null,
+    previousTodaysRating: todays.previous,
+    bestTodaysRatingLast3: todays.bestLast3,
+    bestTodaysRatingLast5: todays.bestLast5,
+    averageTodaysRatingLast3: todays.averageLast3,
+    averageTodaysRatingLast5: todays.averageLast5,
     todaysRatingCalculationVersion: runner.metrics?.todaysRatingCalculationVersion ?? null,
     latestJumpSpeedRating: runner.metrics?.latestJumpSpeedRating ?? null,
     previousJumpSpeedRating: runner.metrics?.previousJumpSpeedRating ?? null,
@@ -461,53 +463,43 @@ function speedFieldsForFamily(
   family: ReturnType<typeof classifyCurrentRaceFamily>,
   metrics: TodayRunner["metrics"],
 ) {
-  if (family === "jump") {
-    return {
-      latest: metrics?.latestJumpSpeedRating ?? null,
-      previous: metrics?.previousJumpSpeedRating ?? null,
-      bestLast3: metrics?.bestJumpSpeedLast3 ?? null,
-      bestLast5: metrics?.bestJumpSpeedLast5 ?? null,
-      averageLast3: metrics?.averageJumpSpeedLast3 ?? null,
-      averageLast5: metrics?.averageJumpSpeedLast5 ?? null,
-    };
-  }
-  if (family === "all_weather_flat") {
-    return {
-      latest: metrics?.latestAwSpeedRating ?? null,
-      previous: metrics?.previousAwSpeedRating ?? null,
-      bestLast3: metrics?.bestAwSpeedLast3 ?? null,
-      bestLast5: metrics?.bestAwSpeedLast5 ?? null,
-      averageLast3: metrics?.averageAwSpeedLast3 ?? null,
-      averageLast5: metrics?.averageAwSpeedLast5 ?? null,
-    };
-  }
-  if (family === "turf_flat") {
-    return {
-      latest: metrics?.latestTurfSpeedRating ?? null,
-      previous: metrics?.previousTurfSpeedRating ?? null,
-      bestLast3: metrics?.bestTurfSpeedLast3 ?? null,
-      bestLast5: metrics?.bestTurfSpeedLast5 ?? null,
-      averageLast3: metrics?.averageTurfSpeedLast3 ?? null,
-      averageLast5: metrics?.averageTurfSpeedLast5 ?? null,
-    };
-  }
-  return emptyRatingFields();
+  return familyFormFields(family, metrics)?.speed ?? emptyRatingFields();
+}
+
+function performanceFieldsForFamily(
+  family: ReturnType<typeof classifyCurrentRaceFamily>,
+  metrics: TodayRunner["metrics"],
+) {
+  if (family === "turf_flat") return genericPerformanceFields(metrics);
+  return familyFormFields(family, metrics)?.performance ?? emptyRatingFields();
 }
 
 function todaysRatingFieldsForFamily(
   family: ReturnType<typeof classifyCurrentRaceFamily>,
   metrics: TodayRunner["metrics"],
 ) {
-  if (family === "jump") {
-    return { latest: metrics?.latestJumpTodaysRating ?? null };
-  }
-  if (family === "all_weather_flat") {
-    return { latest: metrics?.latestAwTodaysRating ?? null };
-  }
   if (family === "turf_flat") {
-    return { latest: metrics?.latestTurfTodaysRating ?? null };
+    return {
+      latest: metrics?.latestTurfTodaysRating ?? null,
+      previous: metrics?.previousTodaysRating ?? null,
+      bestLast3: metrics?.bestTodaysRatingLast3 ?? null,
+      bestLast5: metrics?.bestTodaysRatingLast5 ?? null,
+      averageLast3: metrics?.averageTodaysRatingLast3 ?? null,
+      averageLast5: metrics?.averageTodaysRatingLast5 ?? null,
+    };
   }
-  return { latest: metrics?.latestTodaysRating ?? null };
+  return familyFormFields(family, metrics)?.todaysRating ?? emptyRatingFields();
+}
+
+function familyFormFields(
+  family: ReturnType<typeof classifyCurrentRaceFamily>,
+  metrics: TodayRunner["metrics"],
+) {
+  if (!metrics || family === "unknown") return null;
+  return canonicalFamilyFormMetrics(
+    metrics,
+    family === "all_weather_flat" ? "aw" : family === "turf_flat" ? "turf" : "jump",
+  );
 }
 
 function emptyRatingFields() {
@@ -518,6 +510,17 @@ function emptyRatingFields() {
     bestLast5: null,
     averageLast3: null,
     averageLast5: null,
+  };
+}
+
+function genericPerformanceFields(metrics: TodayRunner["metrics"]) {
+  return {
+    latest: metrics?.latestPerformanceRating ?? null,
+    previous: metrics?.previousPerformanceRating ?? null,
+    bestLast3: metrics?.bestPerformanceLast3 ?? null,
+    bestLast5: metrics?.bestPerformanceLast5 ?? null,
+    averageLast3: metrics?.averagePerformanceLast3 ?? null,
+    averageLast5: metrics?.averagePerformanceLast5 ?? null,
   };
 }
 

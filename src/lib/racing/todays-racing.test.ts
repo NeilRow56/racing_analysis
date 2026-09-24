@@ -321,17 +321,17 @@ describe("Today racing grouping", () => {
       new Map(),
       new Map([
         ["runner-top", metric({
-          latestPerformanceRating: 70,
-          previousPerformanceRating: 64,
-          averagePerformanceLast3: 62,
+          latestTurfPerformanceRating: 70,
+          previousTurfPerformanceRating: 64,
+          averageTurfPerformanceLast3: 62,
           latestTurfSpeedRating: 105,
           previousTurfSpeedRating: 100,
           averageTurfSpeedLast3: 98,
         })],
         ["runner-second", metric({
-          latestPerformanceRating: 61,
-          previousPerformanceRating: 58,
-          averagePerformanceLast3: 56,
+          latestTurfPerformanceRating: 61,
+          previousTurfPerformanceRating: 58,
+          averageTurfPerformanceLast3: 56,
           latestTurfSpeedRating: 95,
           previousTurfSpeedRating: 92,
           averageTurfSpeedLast3: 90,
@@ -350,7 +350,7 @@ describe("Today racing grouping", () => {
     assert.equal(grouped[0].races[0].turfPerformanceShadow?.agreement, true);
   });
 
-  test("uses AW fallback only when Turf TPR is unavailable", () => {
+  test("does not use AW history when Turf TPR is unavailable", () => {
     const grouped = groupTodaysRacingRows(
       [
         row({
@@ -376,9 +376,7 @@ describe("Today racing grouping", () => {
     );
 
     const rated = grouped[0].races[0].runners[0];
-    assert.equal(rated.turfPerformanceRating?.basis, "aw_fallback");
-    assert.equal(rated.turfPerformanceRating?.fallbackSourceSurface, "all_weather");
-    assert.equal(rated.turfPerformanceRating?.historyDepth, 1);
+    assert.equal(rated.turfPerformanceRating, undefined);
     assert.equal(grouped[0].races[0].runners[1].turfPerformanceRating, undefined);
   });
 
@@ -388,7 +386,7 @@ describe("Today racing grouping", () => {
       new Map(),
       new Map([
         ["runner-both", metric({
-          latestPerformanceRating: 70,
+          latestTurfPerformanceRating: 70,
           latestTurfSpeedRating: 105,
           latestAwSpeedRating: 120,
         })],
@@ -418,11 +416,11 @@ describe("Today racing grouping", () => {
       new Map(),
       new Map([
         ["runner-production", metric({
-          latestPerformanceRating: 40,
+          latestTurfPerformanceRating: 40,
           latestTurfSpeedRating: 85,
         })],
         ["runner-shadow", metric({
-          latestPerformanceRating: 65,
+          latestTurfPerformanceRating: 65,
           latestTurfSpeedRating: 115,
         })],
       ]),
@@ -822,18 +820,36 @@ function metric(
     bestJumpSpeedLast5: null,
     averageJumpSpeedLast3: null,
     averageJumpSpeedLast5: null,
+    latestJumpPerformanceRating: null,
+    previousJumpPerformanceRating: null,
+    bestJumpPerformanceLast3: null,
+    bestJumpPerformanceLast5: null,
+    averageJumpPerformanceLast3: null,
+    averageJumpPerformanceLast5: null,
     latestAwSpeedRating: null,
     previousAwSpeedRating: null,
     bestAwSpeedLast3: null,
     bestAwSpeedLast5: null,
     averageAwSpeedLast3: null,
     averageAwSpeedLast5: null,
+    latestAwPerformanceRating: null,
+    previousAwPerformanceRating: null,
+    bestAwPerformanceLast3: null,
+    bestAwPerformanceLast5: null,
+    averageAwPerformanceLast3: null,
+    averageAwPerformanceLast5: null,
     latestTurfSpeedRating: null,
     previousTurfSpeedRating: null,
     bestTurfSpeedLast3: null,
     bestTurfSpeedLast5: null,
     averageTurfSpeedLast3: null,
     averageTurfSpeedLast5: null,
+    latestTurfPerformanceRating: null,
+    previousTurfPerformanceRating: null,
+    bestTurfPerformanceLast3: null,
+    bestTurfPerformanceLast5: null,
+    averageTurfPerformanceLast3: null,
+    averageTurfPerformanceLast5: null,
     latestPerformanceRating: null,
     previousPerformanceRating: null,
     bestPerformanceLast3: null,
@@ -848,8 +864,23 @@ function metric(
     averageTodaysRatingLast5: null,
     todaysRatingCalculationVersion: null,
     latestJumpTodaysRating: null,
+    previousJumpTodaysRating: null,
+    bestJumpTodaysRatingLast3: null,
+    bestJumpTodaysRatingLast5: null,
+    averageJumpTodaysRatingLast3: null,
+    averageJumpTodaysRatingLast5: null,
     latestAwTodaysRating: null,
+    previousAwTodaysRating: null,
+    bestAwTodaysRatingLast3: null,
+    bestAwTodaysRatingLast5: null,
+    averageAwTodaysRatingLast3: null,
+    averageAwTodaysRatingLast5: null,
     latestTurfTodaysRating: null,
+    previousTurfTodaysRating: null,
+    bestTurfTodaysRatingLast3: null,
+    bestTurfTodaysRatingLast5: null,
+    averageTurfTodaysRatingLast3: null,
+    averageTurfTodaysRatingLast5: null,
     latestOr: null,
     latestRprMinusPreviousRpr: null,
     latestTsMinusPreviousTs: null,

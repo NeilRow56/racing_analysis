@@ -105,6 +105,9 @@ export async function saveTimewiseComparison(input: {
     savedRecord = createRecord({
       ...input.context.forwardInput,
       ...settlement,
+      tprInputSnapshot: existing
+        ? existing.tprInputSnapshot ?? null
+        : input.context.forwardInput.tprInputSnapshot ?? null,
       timewiseRank1: rank1?.horseName ?? null,
       timewiseRank2: rank2?.horseName ?? null,
       timewiseRank1NonRunner: rank1NonRunner,
@@ -181,13 +184,16 @@ function validateSubmission(
 function preservedSettlement(
   existing: ForwardRaceRecord | undefined,
   current: ForwardRaceInput,
-): Pick<ForwardRaceInput, "winner" | "winnerSp" | "winners" | "winnerOrRank"> {
+): Pick<ForwardRaceInput, "winner" | "winnerSp" | "winners" | "winnerOrRank" | "tprRank1NonRunner" | "tprRank2NonRunner" | "w50Rank1NonRunner"> {
   if (existing && existing.winners.length > 0) {
     return {
       winner: existing.winner,
       winnerSp: existing.winnerSp,
       winners: existing.winners,
       winnerOrRank: existing.winnerOrRank,
+      tprRank1NonRunner: existing.tprRank1NonRunner,
+      tprRank2NonRunner: existing.tprRank2NonRunner,
+      w50Rank1NonRunner: existing.w50Rank1NonRunner,
     };
   }
   return {
@@ -195,6 +201,9 @@ function preservedSettlement(
     winnerSp: current.winnerSp,
     winners: current.winners,
     winnerOrRank: current.winnerOrRank,
+    tprRank1NonRunner: existing?.tprRank1NonRunner ?? current.tprRank1NonRunner,
+    tprRank2NonRunner: existing?.tprRank2NonRunner ?? current.tprRank2NonRunner,
+    w50Rank1NonRunner: existing?.w50Rank1NonRunner ?? current.w50Rank1NonRunner,
   };
 }
 

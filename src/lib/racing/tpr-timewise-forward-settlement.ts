@@ -21,7 +21,9 @@ export async function enrichTodayForwardTrackerResults(
   let updated = 0;
   const initialData = existingData ?? await loadTrackerData();
   const hasSettleableRace = meetings.some((meeting) => meeting.races.some((race) =>
-    isTimewiseEligibleRace(race) && race.runners.some((runner) => runner.finishingPosition === 1)
+    isTimewiseEligibleRace(race) && race.runners.some((runner) =>
+      runner.finishingPosition === 1 || runner.resultStatus === "non_runner"
+    )
   ));
   if (!hasSettleableRace) return { data: initialData, updated };
   const data = await mutateTrackerData((latest) => {

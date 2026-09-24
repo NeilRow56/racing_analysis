@@ -4,6 +4,7 @@ import { and, eq, inArray, lte } from "drizzle-orm";
 import { PgDialect } from "drizzle-orm/pg-core";
 import { raceRunners, races } from "@/db/schema";
 import {
+  canonicalFamilyFormMetrics,
   calculateHorseMetricsAsOf,
   calculateTargetRunnerMetrics,
   isRunnableResultStatus,
@@ -406,6 +407,64 @@ describe("calculateHorseMetricsAsOf", () => {
     assert.equal(metrics.latestJumpSpeedRating, 120);
   });
 
+  test("keeps AW form pure across AW, Turf, Jump and three-family histories", () => {
+    const scenarios = [
+      [familyRun("aw", "2020-09-20", 92), familyRun("turf", "2020-09-30", 180)],
+      [familyRun("aw", "2020-09-20", 92), familyRun("jump", "2020-09-30", 190)],
+      [familyRun("aw", "2020-09-10", 88), familyRun("jump", "2020-09-20", 190), familyRun("turf", "2020-09-30", 180)],
+    ];
+
+    for (const runs of scenarios) {
+      const baseline = canonicalFamilyFormMetrics(calculateHorseMetricsAsOf({
+        beforeDateTime: cutoff,
+        targetWeightCarriedLbs: 140,
+        runs,
+      }), "aw");
+      const changedOtherFamilies = runs.map((historicalRun) => ({
+        ...historicalRun,
+        jumpSpeedRating: historicalRun.jumpSpeedRating ? jumpRating(900) : null,
+        turfSpeedRating: historicalRun.turfSpeedRating ? turfRating(800) : null,
+      }));
+      const changed = canonicalFamilyFormMetrics(calculateHorseMetricsAsOf({
+        beforeDateTime: cutoff,
+        targetWeightCarriedLbs: 140,
+        runs: changedOtherFamilies,
+      }), "aw");
+
+      assert.deepEqual(changed, baseline);
+      assert.equal(baseline.speed.latest, runs.find((historicalRun) => historicalRun.awSpeedRating)?.awSpeedRating?.rating ?? null);
+    }
+  });
+
+  test("keeps Jump form pure across Jump, Turf, AW and three-family histories", () => {
+    const scenarios = [
+      [familyRun("jump", "2020-09-20", 102), familyRun("turf", "2020-09-30", 180)],
+      [familyRun("jump", "2020-09-20", 102), familyRun("aw", "2020-09-30", 190)],
+      [familyRun("jump", "2020-09-10", 98), familyRun("aw", "2020-09-20", 190), familyRun("turf", "2020-09-30", 180)],
+    ];
+
+    for (const runs of scenarios) {
+      const baseline = canonicalFamilyFormMetrics(calculateHorseMetricsAsOf({
+        beforeDateTime: cutoff,
+        targetWeightCarriedLbs: 154,
+        runs,
+      }), "jump");
+      const changedOtherFamilies = runs.map((historicalRun) => ({
+        ...historicalRun,
+        awSpeedRating: historicalRun.awSpeedRating ? awRating(900) : null,
+        turfSpeedRating: historicalRun.turfSpeedRating ? turfRating(800) : null,
+      }));
+      const changed = canonicalFamilyFormMetrics(calculateHorseMetricsAsOf({
+        beforeDateTime: cutoff,
+        targetWeightCarriedLbs: 154,
+        runs: changedOtherFamilies,
+      }), "jump");
+
+      assert.deepEqual(changed, baseline);
+      assert.equal(baseline.speed.latest, runs.find((historicalRun) => historicalRun.jumpSpeedRating)?.jumpSpeedRating?.rating ?? null);
+    }
+  });
+
   test("calculates latest, previous, best and average Turf speed ratings separately", () => {
     const metrics = calculateHorseMetricsAsOf({
       beforeDateTime: cutoff,
@@ -443,6 +502,21 @@ describe("calculateHorseMetricsAsOf", () => {
     assert.equal(metrics.latestAwSpeedRating, 120);
   });
 });
+
+function familyRun(
+  family: "jump" | "aw" | "turf",
+  raceDate: string,
+  rating: number,
+): HistoricalRunInput {
+  return run({
+    raceDate,
+    raceDateTime: new Date(`${raceDate}T15:00:00.000Z`),
+    weightCarriedLbs: family === "jump" ? 154 : 140,
+    jumpSpeedRating: family === "jump" ? jumpRating(rating) : null,
+    awSpeedRating: family === "aw" ? awRating(rating) : null,
+    turfSpeedRating: family === "turf" ? turfRating(rating) : null,
+  });
+}
 
 function jumpRating(rating: number): HistoricalRunInput["jumpSpeedRating"] {
   return {

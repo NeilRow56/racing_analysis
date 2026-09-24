@@ -2,10 +2,14 @@ import assert from "node:assert/strict";
 import { describe, test } from "node:test";
 import {
   createRecord,
+  renderSummary,
   summarize,
 } from "../../../scripts/diagnose-tpr-vs-timewise-forward";
 import type { TodayRace, TodayRunner } from "./todays-racing";
-import { TURF_PERFORMANCE_RATING_VERSION } from "./turf-performance-rating";
+import {
+  buildCanonicalTurfPerformanceRatingInput,
+  TURF_PERFORMANCE_RATING_VERSION,
+} from "./turf-performance-rating";
 import {
   buildTodayForwardInput,
   enrichForwardRecordResult,
@@ -38,8 +42,11 @@ describe("Today Timewise forward context", () => {
       family: "turf", raceDate: "2026-09-17", course: "Sandown", raceTime: "14:20",
       winner: "Bravo", winnerSp: 6.5, winners: [{ horseName: "Bravo", decimalOdds: 6.5 }],
       tprRank1: "Alpha", tprRank2: "Bravo",
+      tprRank1NonRunner: false, tprRank2NonRunner: false,
       timewiseRank1: "Bravo", timewiseRank1NonRunner: false,
       timewiseRank2: "Alpha", timewiseRank2NonRunner: false, w50Rank1: "Bravo",
+      w50Rank1NonRunner: false,
+      tprInputSnapshot: { version: "tpr_forward_snapshot_v1", runners: [] },
       awBestL3SpeedRank1: null, awBestL3PerformanceRank1: null,
       orRank1: "Alpha", winnerOrRank: 2,
     });
@@ -244,6 +251,48 @@ describe("Today Timewise forward context", () => {
     assert.equal(settled.timewiseRecordedPreRace, true);
     assert.equal(settled.winnerWasTimewiseRank1, true);
     assert.equal(enrichForwardRecordResult(settled, settledRace), settled);
+  });
+
+  test("voids later W100, W50 and Timewise non-runners without changing recorded selections", () => {
+    const pending = createRecord(forwardInput([
+      runner("a", "Alpha", 1, 1, 100),
+      runner("b", "Bravo", 2, 2, 90),
+    ]));
+    const settledRace = race({ runners: [
+      runner("a", "Alpha", 1, 1, 100, { resultStatus: "non_runner" }),
+      runner("b", "Bravo", 2, 2, 90, { finishingPosition: 1, oddsDecimal: "3" }),
+    ] });
+    const settled = enrichForwardRecordResult(pending, settledRace);
+    assert.equal(settled.tprRank1, "Alpha");
+    assert.equal(settled.w50Rank1, "Alpha");
+    assert.equal(settled.timewiseRank1, "Alpha");
+    assert.equal(settled.tprRank1NonRunner, true);
+    assert.equal(settled.w50Rank1NonRunner, true);
+    assert.equal(settled.timewiseRank1NonRunner, true);
+    assert.equal(summarize([settled]).tprRank1Races, 0);
+    assert.match(renderSummary({ version: "tpr_timewise_forward_v4", races: [settled] }), /TPR non-runners: W100 R1 1 .* W50 R1 1/);
+    assert.equal(enrichForwardRecordResult(settled, settledRace), settled);
+  });
+
+  test("stores versioned canonical inputs only on newly built Turf records", () => {
+    const canonical = buildCanonicalTurfPerformanceRatingInput({
+      latestPerformanceRating: 80,
+      previousPerformanceRating: 75,
+      averagePerformanceLast3: 76,
+      latestSpeedRating: 100,
+      previousSpeedRating: 96,
+      averageSpeedLast3: 97,
+      raceClass: "Class 4",
+      weightCarriedLbs: 132,
+      raceMedianWeightCarriedLbs: 130,
+    });
+    const input = forwardInput([
+      runner("a", "Alpha", 1, 1, 100, { weightCarriedLbs: 132, turfPerformanceInput: canonical }),
+    ]);
+    assert.equal(input.tprInputSnapshot?.version, "tpr_forward_snapshot_v1");
+    assert.equal(input.tprInputSnapshot?.runners[0]?.input.version, "tpr_turf_input_v1");
+    assert.equal(input.tprInputSnapshot?.runners[0]?.w100Rank, 1);
+    assert.equal(typeof input.tprInputSnapshot?.runners[0]?.w100RelativeWeightContribution, "number");
   });
 });
 

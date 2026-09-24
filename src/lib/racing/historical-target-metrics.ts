@@ -6,6 +6,7 @@ import {
 } from "./aw-speed-ratings";
 import { isSupportedAllWeatherRace, type AwSpeedRating } from "./aw-speed-rating";
 import {
+  canonicalFamilyFormMetrics,
   calculateHorseMetricsAsOf,
   isRunnableResultStatus,
   type HistoricalRunInput,
@@ -19,10 +20,9 @@ import {
   getTurfSpeedRatingsAsOfRuns,
 } from "./turf-speed-ratings";
 import { isOrdinaryFlatTurfRace, type TurfSpeedRating } from "./turf-speed-rating";
-import { calculateTodaysRating } from "./todays-rating";
+import { TODAYS_RATING_CALCULATION_VERSION } from "./todays-rating";
 import {
-  calculateWeightAdjustedPerformance,
-  type WeightAdjustedPerformance,
+  WEIGHT_PERFORMANCE_CALCULATION_VERSION,
 } from "./weight-performance";
 import {
   calculateTrainerPriorMetricsForTargets,
@@ -297,14 +297,14 @@ export function buildHistoricalTargetRunnerMetricRows({
       targetCourseId: target.courseId,
       targetDistanceYards: target.distanceYards,
       targetGoing: target.going,
+      targetWeightCarriedLbs: target.weightCarriedLbs,
     });
     const speed = speedFieldsForRaceCode(raceCode, metrics);
-    const performance = performanceFieldsForRaceCode(raceCode, priorRuns);
+    const performance = performanceFieldsForRaceCode(raceCode, metrics);
     const breakSequence = breakSequenceBeforeTarget(priorRuns, target.raceDateTime);
     const todays = todaysRatingFieldsForRaceCode(
       raceCode,
-      priorRuns,
-      target.weightCarriedLbs,
+      metrics,
     );
     const latestSpeedMeta = latestSpeedMetaForRaceCode(raceCode, priorRuns);
     const trainerMetricsForTarget = trainerPriorMetrics.get(target.targetRunnerId) ?? {
@@ -600,36 +600,7 @@ function speedFieldsForRaceCode(
   averageLast3: number | null;
   averageLast5: number | null;
 } {
-  if (raceCode === "jump") {
-    return {
-      latest: metrics.latestJumpSpeedRating,
-      previous: metrics.previousJumpSpeedRating,
-      bestLast3: metrics.bestJumpSpeedLast3,
-      bestLast5: metrics.bestJumpSpeedLast5,
-      averageLast3: metrics.averageJumpSpeedLast3,
-      averageLast5: metrics.averageJumpSpeedLast5,
-    };
-  }
-  if (raceCode === "aw") {
-    return {
-      latest: metrics.latestAwSpeedRating,
-      previous: metrics.previousAwSpeedRating,
-      bestLast3: metrics.bestAwSpeedLast3,
-      bestLast5: metrics.bestAwSpeedLast5,
-      averageLast3: metrics.averageAwSpeedLast3,
-      averageLast5: metrics.averageAwSpeedLast5,
-    };
-  }
-  if (raceCode === "turf") {
-    return {
-      latest: metrics.latestTurfSpeedRating,
-      previous: metrics.previousTurfSpeedRating,
-      bestLast3: metrics.bestTurfSpeedLast3,
-      bestLast5: metrics.bestTurfSpeedLast5,
-      averageLast3: metrics.averageTurfSpeedLast3,
-      averageLast5: metrics.averageTurfSpeedLast5,
-    };
-  }
+  if (raceCode !== "unsupported") return canonicalFamilyFormMetrics(metrics, raceCode).speed;
   return {
     latest: null,
     previous: null,
@@ -682,7 +653,7 @@ function speedRatingForRaceCode(
 
 function performanceFieldsForRaceCode(
   raceCode: HistoricalRaceCode,
-  priorRuns: HistoricalCandidateRun[],
+  metrics: HorseMetricsAsOf,
 ): {
   latest: number | null;
   previous: number | null;
@@ -692,38 +663,18 @@ function performanceFieldsForRaceCode(
   averageLast5: number | null;
   calculationVersion: string | null;
 } {
-  const sortedRuns = priorRuns
-    .filter(
-      (run) =>
-        run.resultStatus !== "non_runner" &&
-        (run.resultStatus !== null || run.finishingPosition !== null),
-    )
-    .sort((a, b) => b.raceDateTime.getTime() - a.raceDateTime.getTime());
-  const performances = sortedRuns.map((run) =>
-    calculatePerformanceForRun(raceCode, run),
-  );
-  const ratings = performances
-    .map((performance) => performance?.performanceRating ?? null)
-    .filter((rating): rating is number => rating !== null);
-  const last3 = performances
-    .slice(0, 3)
-    .map((performance) => performance?.performanceRating ?? null)
-    .filter((rating): rating is number => rating !== null);
-  const last5 = performances
-    .slice(0, 5)
-    .map((performance) => performance?.performanceRating ?? null)
-    .filter((rating): rating is number => rating !== null);
-
+  if (raceCode !== "unsupported") {
+    const performance = canonicalFamilyFormMetrics(metrics, raceCode).performance;
+    return {
+      ...performance,
+      calculationVersion: performance.latest === null
+        ? null
+        : WEIGHT_PERFORMANCE_CALCULATION_VERSION,
+    };
+  }
   return {
-    latest: ratings[0] ?? null,
-    previous: ratings[1] ?? null,
-    bestLast3: max(last3),
-    bestLast5: max(last5),
-    averageLast3: average(last3),
-    averageLast5: average(last5),
-    calculationVersion:
-      performances.find((performance) => performance !== null)
-        ?.calculationVersion ?? null,
+    ...emptyAggregateFields(),
+    calculationVersion: null,
   };
 }
 
@@ -775,20 +726,9 @@ function daysBetween(previous: Date, next: Date): number {
   return Math.floor((next.getTime() - previous.getTime()) / 86_400_000);
 }
 
-function calculatePerformanceForRun(
-  raceCode: HistoricalRaceCode,
-  run: HistoricalCandidateRun,
-): WeightAdjustedPerformance | null {
-  return calculateWeightAdjustedPerformance({
-    rawSpeedRating: speedRatingForRaceCode(raceCode, run)?.rating ?? null,
-    weightCarriedLb: run.weightCarriedLbs ?? null,
-  });
-}
-
 function todaysRatingFieldsForRaceCode(
   raceCode: HistoricalRaceCode,
-  priorRuns: HistoricalCandidateRun[],
-  currentWeightCarriedLb: number | null,
+  metrics: HorseMetricsAsOf,
 ): {
   latest: number | null;
   previous: number | null;
@@ -798,53 +738,25 @@ function todaysRatingFieldsForRaceCode(
   averageLast5: number | null;
   calculationVersion: string | null;
 } {
-  const sortedRuns = priorRuns
-    .filter(
-      (run) =>
-        run.resultStatus !== "non_runner" &&
-        (run.resultStatus !== null || run.finishingPosition !== null),
-    )
-    .sort((a, b) => b.raceDateTime.getTime() - a.raceDateTime.getTime());
-  const ratings = sortedRuns.map((run) =>
-    calculateTodaysRating({
-      historicalPerformanceRating:
-        calculatePerformanceForRun(raceCode, run)?.performanceRating ?? null,
-      currentWeightCarriedLb,
-    }),
-  );
-  const values = ratings
-    .map((rating) => rating?.todaysRating ?? null)
-    .filter((rating): rating is number => rating !== null);
-  const last3 = ratings
-    .slice(0, 3)
-    .map((rating) => rating?.todaysRating ?? null)
-    .filter((rating): rating is number => rating !== null);
-  const last5 = ratings
-    .slice(0, 5)
-    .map((rating) => rating?.todaysRating ?? null)
-    .filter((rating): rating is number => rating !== null);
-
+  if (raceCode === "unsupported") {
+    return { ...emptyAggregateFields(), calculationVersion: null };
+  }
+  const todaysRating = canonicalFamilyFormMetrics(metrics, raceCode).todaysRating;
   return {
-    latest: values[0] ?? null,
-    previous: values[1] ?? null,
-    bestLast3: max(last3),
-    bestLast5: max(last5),
-    averageLast3: average(last3),
-    averageLast5: average(last5),
-    calculationVersion:
-      ratings.find((rating) => rating !== null)?.calculationVersion ?? null,
+    ...todaysRating,
+    calculationVersion: todaysRating.latest === null ? null : TODAYS_RATING_CALCULATION_VERSION,
   };
 }
 
-function max(values: number[]): number | null {
-  return values.length ? Math.max(...values) : null;
-}
-
-function average(values: number[]): number | null {
-  if (values.length === 0) {
-    return null;
-  }
-  return values.reduce((total, value) => total + value, 0) / values.length;
+function emptyAggregateFields() {
+  return {
+    latest: null,
+    previous: null,
+    bestLast3: null,
+    bestLast5: null,
+    averageLast3: null,
+    averageLast5: null,
+  };
 }
 
 function previousOfficialRating(

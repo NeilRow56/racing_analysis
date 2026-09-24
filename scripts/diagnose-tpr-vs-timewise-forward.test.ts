@@ -187,6 +187,7 @@ describe("TPR vs Timewise forward tracker", () => {
     assert.equal(parsed.races[0]!.timewiseRecordedPreRace, null);
     assert.equal(parsed.races[0]!.timewiseRank1NonRunner, false);
     assert.equal(parsed.races[0]!.timewiseRank2NonRunner, false);
+    assert.equal(parsed.races[0]!.tprInputSnapshot, undefined);
     assert.equal(parsed.races[0]!.family, "turf");
   });
 

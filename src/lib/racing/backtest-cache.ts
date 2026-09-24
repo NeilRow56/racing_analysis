@@ -303,7 +303,27 @@ export function isCompatibleManifest(
     manifest.to === input.to &&
     manifest.family === input.family &&
     manifest.source === (input.source ?? DEFAULT_SOURCE) &&
-    JSON.stringify(manifest.calculationVersions) === JSON.stringify(calculationVersions());
+    compatibleCalculationVersions(manifest, input.family);
+}
+
+function compatibleCalculationVersions(
+  manifest: BacktestFeatureCacheManifest,
+  family: BacktestCacheFamily,
+): boolean {
+  const actual = manifest.calculationVersions;
+  const expected = calculationVersions();
+  if (
+    actual.weightPerformance !== expected.weightPerformance ||
+    actual.todaysRating !== expected.todaysRating
+  ) {
+    return false;
+  }
+  if (family === "jump") return actual.jumpSpeed === expected.jumpSpeed;
+  if (family === "all_weather_flat") return actual.awSpeed === expected.awSpeed;
+  if (family === "turf_flat") return actual.turfSpeed === expected.turfSpeed;
+  return actual.jumpSpeed === expected.jumpSpeed &&
+    actual.awSpeed === expected.awSpeed &&
+    actual.turfSpeed === expected.turfSpeed;
 }
 
 export function cacheDirectory(input: {

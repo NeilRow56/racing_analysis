@@ -1,6 +1,9 @@
 import { raceClassNumber } from "./research-rule-classes";
+import { TURF_SPEED_RATING_CALCULATION_VERSION } from "./turf-speed-rating";
+import { WEIGHT_PERFORMANCE_CALCULATION_VERSION } from "./weight-performance";
 
 export const TURF_PERFORMANCE_RATING_VERSION = "TPR_S2_V1";
+export const TURF_PERFORMANCE_RATING_INPUT_VERSION = "tpr_turf_input_v1" as const;
 export const TURF_PERFORMANCE_RATING_W50_SHADOW_VERSION = `${TURF_PERFORMANCE_RATING_VERSION}_W50_SHADOW`;
 export const TURF_PERFORMANCE_RATING_W50_WEIGHT_MULTIPLIER = 0.5;
 
@@ -41,6 +44,38 @@ export type TurfPerformanceRatingInput = {
   basis?: TurfPerformanceRatingBasis;
   fallbackSourceSurface?: "all_weather" | null;
 };
+
+export type CanonicalTurfPerformanceRatingInput = TurfPerformanceRatingInput & {
+  version: typeof TURF_PERFORMANCE_RATING_INPUT_VERSION;
+  formulaVersion: typeof TURF_PERFORMANCE_RATING_VERSION;
+  speedCalculationVersion: typeof TURF_SPEED_RATING_CALCULATION_VERSION;
+  performanceCalculationVersion: typeof WEIGHT_PERFORMANCE_CALCULATION_VERSION;
+  basis: "turf";
+  fallbackSourceSurface: null;
+};
+
+export function buildCanonicalTurfPerformanceRatingInput(
+  input: Omit<TurfPerformanceRatingInput, "basis" | "fallbackSourceSurface">,
+): CanonicalTurfPerformanceRatingInput {
+  return {
+    version: TURF_PERFORMANCE_RATING_INPUT_VERSION,
+    formulaVersion: TURF_PERFORMANCE_RATING_VERSION,
+    speedCalculationVersion: TURF_SPEED_RATING_CALCULATION_VERSION,
+    performanceCalculationVersion: WEIGHT_PERFORMANCE_CALCULATION_VERSION,
+    ...input,
+    basis: "turf",
+    fallbackSourceSurface: null,
+  };
+}
+
+export function turfPerformanceRelativeWeightContribution(
+  input: Pick<TurfPerformanceRatingInput, "weightCarriedLbs" | "raceMedianWeightCarriedLbs" | "weightCoefficientMultiplier">,
+): number | null {
+  const difference = weightDifference(input.weightCarriedLbs, input.raceMedianWeightCarriedLbs);
+  if (difference === null) return null;
+  return TURF_PERFORMANCE_RATING_WEIGHT_COEFFICIENT_RAW_POINTS_PER_LB *
+    (input.weightCoefficientMultiplier ?? 1) * difference;
+}
 
 export type TurfPerformanceRating = {
   rating: number;

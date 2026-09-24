@@ -47,10 +47,20 @@ type RaceDeviation = RaceContextRow & {
 type RaceContextData = {
   standardContexts: RaceContextRow[];
   deviationRaceIds: Set<string>;
+  contextRaceIds: Set<string>;
+  sameDayRaceIds: Set<string>;
 };
+
+type RaceContextIndex = {
+  byStandardKey: Map<string, RaceContextRow[]>;
+  bySameDayKey: Map<string, RaceContextRow[]>;
+};
+
+type RatingTarget = RaceContextRow & { runnerId: string };
 
 const QUERY_CHUNK_SIZE = 5_000;
 const CONTEXT_KEY_CHUNK_SIZE = 200;
+const AS_OF_TARGET_BATCH_SIZE = 500;
 
 export async function getJumpSpeedRatingsForRunners(
   db: Db,
@@ -66,35 +76,7 @@ export async function getJumpSpeedRatingsForRunners(
   }
 
   const source = options.source ?? "sporting_life";
-  const targets = (
-    await Promise.all(
-      chunks(uniqueRunnerIds, QUERY_CHUNK_SIZE).map((runnerIdChunk) =>
-        db
-          .select({
-            runnerId: raceRunners.id,
-            raceId: races.id,
-            source: raceRunners.source,
-            sourceId: races.sourceId,
-            raceDate: races.raceDate,
-            raceDateTime: races.raceDatetime,
-            courseId: races.courseId,
-            distanceYards: races.distanceYards,
-            winningTime: races.winningTime,
-            raceName: races.raceName,
-            raceType: races.raceType,
-          })
-          .from(raceRunners)
-          .innerJoin(races, eq(raceRunners.raceId, races.id))
-          .where(
-            and(
-              inArray(raceRunners.id, runnerIdChunk),
-              eq(raceRunners.source, source),
-              eq(races.source, source),
-            ),
-          ),
-      ),
-    )
-  ).flat();
+  const targets = await loadRatingTargets(db, uniqueRunnerIds, source);
 
   if (targets.length === 0) {
     return new Map();
@@ -106,38 +88,8 @@ export async function getJumpSpeedRatingsForRunners(
     targets,
     options.calculationCutoffDateTime,
   );
-  const deviations = raceDeviations(
-    context.standardContexts,
-    context.deviationRaceIds,
-  );
-  const deviationByRaceId = new Map(deviations.map((row) => [row.raceId, row]));
   const marginsByRaceId = await loadRunnerMargins(db, targets.map((target) => target.raceId), source);
-  const cumulativeByRunnerId = cumulativeMargins(marginsByRaceId);
-  const sameDayGroups = groupBy(deviations, sameDayKey);
-  const ratings = new Map<string, JumpSpeedRating>();
-
-  for (const target of targets) {
-    const deviation = deviationByRaceId.get(target.raceId);
-    const sameDay = deviation ? sameDayAdjustmentFor(deviation, sameDayGroups) : null;
-    ratings.set(
-      target.runnerId,
-      calculateJumpSpeedRating({
-        raceName: target.raceName,
-        raceType: target.raceType,
-        distanceYards: target.distanceYards,
-        winningTime: target.winningTime,
-        baseStandardSeconds: deviation?.baseStandardSeconds ?? null,
-        standardSampleSize: deviation?.standardSampleSize ?? null,
-        cumulativeBeatenLengths:
-          cumulativeByRunnerId.get(target.runnerId)?.cumulativeBeatenLengths ?? null,
-        sameDayAdjustmentSecondsPerFurlong: sameDay?.adjustmentSecondsPerFurlong ?? null,
-        sameDayPeerCount: sameDay?.peerCount ?? null,
-        sameDayStdevSecondsPerFurlong: sameDay?.stdevSecondsPerFurlong ?? null,
-      }),
-    );
-  }
-
-  return ratings;
+  return calculateRatingsForTargets(targets, context, cumulativeMargins(marginsByRaceId));
 }
 
 export async function getJumpSpeedRatingsAsOfRuns(
@@ -148,33 +100,153 @@ export async function getJumpSpeedRatingsAsOfRuns(
   } = {},
 ): Promise<Map<string, JumpSpeedRating>> {
   const source = options.source ?? "sporting_life";
-  const runnerCutoffs = await loadRunnerRaceDateTimes(
-    db,
-    [...new Set(runnerIds)],
-    source,
-  );
-  const groups = groupBy(
-    runnerCutoffs.filter(hasRaceDateTime),
-    (row) => String(row.raceDateTime.getTime()),
-  );
+  const targets = await loadRatingTargets(db, [...new Set(runnerIds)], source);
+  if (targets.length === 0) return new Map();
+  const cumulativeByRunnerId = cumulativeMargins(await loadRunnerMargins(
+    db, targets.map((target) => target.raceId), source,
+  ));
   const ratings = new Map<string, JumpSpeedRating>();
 
-  for (const group of groups.values()) {
-    const cutoff = group[0]?.raceDateTime;
-    if (!cutoff) {
-      continue;
-    }
-    const groupRatings = await getJumpSpeedRatingsForRunners(
-      db,
-      group.map((row) => row.runnerId),
-      { source, calculationCutoffDateTime: cutoff },
+  const chronologicalTargets = targets.filter(hasRaceDateTime).sort(
+    (left, right) => left.raceDateTime.getTime() - right.raceDateTime.getTime(),
+  );
+  for (const targetBatch of chunks(chronologicalTargets, AS_OF_TARGET_BATCH_SIZE)) {
+    const context = await loadRaceContextForTargets(
+      db, source, targetBatch, latestRaceDateTime(targetBatch),
     );
-    for (const [runnerId, rating] of groupRatings) {
-      ratings.set(runnerId, rating);
+    // Keep query-loaded peers distinct from target rows so batching preserves per-run semantics.
+    const contextIndex = indexRaceContexts(
+      context.standardContexts.filter((row) => context.contextRaceIds.has(row.raceId)),
+      context.sameDayRaceIds,
+    );
+    const groups = groupBy(targetBatch, (row) => String(row.raceDateTime.getTime()));
+    for (const group of groups.values()) {
+      const cutoff = group[0]?.raceDateTime;
+      if (!cutoff) continue;
+      const groupRatings = calculateRatingsForTargets(
+        group,
+        contextForCutoffGroup(contextIndex, group, cutoff),
+        cumulativeByRunnerId,
+      );
+      for (const [runnerId, rating] of groupRatings) ratings.set(runnerId, rating);
     }
   }
 
   return ratings;
+}
+
+function contextForCutoffGroup(
+  context: RaceContextIndex,
+  targets: RatingTarget[],
+  cutoff: Date,
+): RaceContextData {
+  const sameDayContexts = sameDayKeysFor(targets).flatMap((key) =>
+    rowsThroughCutoff(context.bySameDayKey.get(sameDayContextKey(key)) ?? [], cutoff)
+  );
+  const targetStandardKeys = standardKeysFor(targets).map(standardContextKey);
+  return {
+    standardContexts: uniqueRaceContexts(
+      [
+        ...targets,
+        ...sameDayContexts,
+        ...targetStandardKeys.flatMap((key) =>
+          rowsThroughCutoff(context.byStandardKey.get(key) ?? [], cutoff)
+        ),
+      ],
+    ),
+    deviationRaceIds: new Set([...targets, ...sameDayContexts].map((row) => row.raceId)),
+    contextRaceIds: new Set(sameDayContexts.map((row) => row.raceId)),
+    sameDayRaceIds: new Set(sameDayContexts.map((row) => row.raceId)),
+  };
+}
+
+function indexRaceContexts(
+  rows: RaceContextRow[],
+  sameDayRaceIds: Set<string>,
+): RaceContextIndex {
+  const chronological = [...rows].filter(hasRaceDateTime).sort(
+    (left, right) => left.raceDateTime.getTime() - right.raceDateTime.getTime(),
+  );
+  return {
+    byStandardKey: groupBy(chronological, standardKey),
+    bySameDayKey: groupBy(
+      chronological.filter((row) => sameDayRaceIds.has(row.raceId)),
+      sameDayKey,
+    ),
+  };
+}
+
+function rowsThroughCutoff<T extends { raceDateTime: Date | null }>(
+  rows: T[],
+  cutoff: Date,
+): T[] {
+  let low = 0;
+  let high = rows.length;
+  while (low < high) {
+    const middle = Math.floor((low + high) / 2);
+    const raceDateTime = rows[middle]?.raceDateTime;
+    if (raceDateTime !== null && raceDateTime !== undefined && raceDateTime <= cutoff) {
+      low = middle + 1;
+    } else {
+      high = middle;
+    }
+  }
+  return rows.slice(0, low);
+}
+
+async function loadRatingTargets(
+  db: Db,
+  runnerIds: string[],
+  source: string,
+): Promise<RatingTarget[]> {
+  if (runnerIds.length === 0) return [];
+  return (await Promise.all(chunks(runnerIds, QUERY_CHUNK_SIZE).map((runnerIdChunk) =>
+    db.select({
+      runnerId: raceRunners.id,
+      raceId: races.id,
+      source: raceRunners.source,
+      sourceId: races.sourceId,
+      raceDate: races.raceDate,
+      raceDateTime: races.raceDatetime,
+      courseId: races.courseId,
+      distanceYards: races.distanceYards,
+      winningTime: races.winningTime,
+      raceName: races.raceName,
+      raceType: races.raceType,
+    }).from(raceRunners)
+      .innerJoin(races, eq(raceRunners.raceId, races.id))
+      .where(and(
+        inArray(raceRunners.id, runnerIdChunk),
+        eq(raceRunners.source, source),
+        eq(races.source, source),
+      )),
+  ))).flat();
+}
+
+function calculateRatingsForTargets(
+  targets: RatingTarget[],
+  context: RaceContextData,
+  cumulativeByRunnerId: Map<string, { cumulativeBeatenLengths: number | null }>,
+): Map<string, JumpSpeedRating> {
+  const deviations = raceDeviations(context.standardContexts, context.deviationRaceIds);
+  const deviationByRaceId = new Map(deviations.map((row) => [row.raceId, row]));
+  const sameDayGroups = groupBy(deviations, sameDayKey);
+  return new Map(targets.map((target) => {
+    const deviation = deviationByRaceId.get(target.raceId);
+    const sameDay = deviation ? sameDayAdjustmentFor(deviation, sameDayGroups) : null;
+    return [target.runnerId, calculateJumpSpeedRating({
+      raceName: target.raceName,
+      raceType: target.raceType,
+      distanceYards: target.distanceYards,
+      winningTime: target.winningTime,
+      baseStandardSeconds: deviation?.baseStandardSeconds ?? null,
+      standardSampleSize: deviation?.standardSampleSize ?? null,
+      cumulativeBeatenLengths: cumulativeByRunnerId.get(target.runnerId)?.cumulativeBeatenLengths ?? null,
+      sameDayAdjustmentSecondsPerFurlong: sameDay?.adjustmentSecondsPerFurlong ?? null,
+      sameDayPeerCount: sameDay?.peerCount ?? null,
+      sameDayStdevSecondsPerFurlong: sameDay?.stdevSecondsPerFurlong ?? null,
+    })];
+  }));
 }
 
 async function loadRaceContextForTargets(
@@ -207,22 +279,28 @@ async function loadRaceContextForTargets(
       deviationRaceIds: new Set(
         [...targets, ...sameDayContexts].map((row) => row.raceId),
       ),
+      contextRaceIds: new Set(
+        [...standardContexts, ...sameDayContexts].map((row) => row.raceId),
+      ),
+      sameDayRaceIds: new Set(sameDayContexts.map((row) => row.raceId)),
     };
   }
 
+  const peerStandardContexts = await loadRaceContextsForStandardKeys(
+    db, source, peerStandardKeys, cutoff,
+  );
   return {
     standardContexts: uniqueRaceContexts([
       ...loaded,
-      ...(await loadRaceContextsForStandardKeys(
-        db,
-        source,
-        peerStandardKeys,
-        cutoff,
-      )),
+      ...peerStandardContexts,
     ]),
     deviationRaceIds: new Set(
       [...targets, ...sameDayContexts].map((row) => row.raceId),
     ),
+    contextRaceIds: new Set(
+      [...standardContexts, ...sameDayContexts, ...peerStandardContexts].map((row) => row.raceId),
+    ),
+    sameDayRaceIds: new Set(sameDayContexts.map((row) => row.raceId)),
   };
 }
 
@@ -640,37 +718,6 @@ function groupBy<T>(
     grouped.set(key, values);
   }
   return grouped;
-}
-
-async function loadRunnerRaceDateTimes(
-  db: Db,
-  runnerIds: string[],
-  source: string,
-): Promise<Array<{ runnerId: string; raceDateTime: Date | null }>> {
-  if (runnerIds.length === 0) {
-    return [];
-  }
-
-  return (
-    await Promise.all(
-      chunks(runnerIds, QUERY_CHUNK_SIZE).map((runnerIdChunk) =>
-        db
-          .select({
-            runnerId: raceRunners.id,
-            raceDateTime: races.raceDatetime,
-          })
-          .from(raceRunners)
-          .innerJoin(races, eq(raceRunners.raceId, races.id))
-          .where(
-            and(
-              inArray(raceRunners.id, runnerIdChunk),
-              eq(raceRunners.source, source),
-              eq(races.source, source),
-            ),
-          ),
-      ),
-    )
-  ).flat();
 }
 
 function hasRaceDateTime<T extends { raceDateTime: Date | null }>(

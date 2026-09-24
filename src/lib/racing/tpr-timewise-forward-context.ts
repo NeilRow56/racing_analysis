@@ -9,6 +9,10 @@ import {
   type TodayRace,
   type TodayRunner,
 } from "./todays-racing";
+import {
+  buildCanonicalTurfPerformanceRatingInput,
+  turfPerformanceRelativeWeightContribution,
+} from "./turf-performance-rating";
 
 export const TIMEWISE_NON_RUNNER_VALUE = "__timewise_non_runner__";
 
@@ -90,6 +94,8 @@ export function buildTodayForwardInput({
     winners: winners.map((runner) => ({ horseName: runner.horseName, decimalOdds: parseDecimalOdds(runner.oddsDecimal) })),
     tprRank1: tprRank1?.horseName ?? null,
     tprRank2: tprRank2?.horseName ?? null,
+    tprRank1NonRunner: false,
+    tprRank2NonRunner: false,
     timewiseRank1,
     timewiseRank2,
     timewiseRank1NonRunner,
@@ -99,6 +105,8 @@ export function buildTodayForwardInput({
         ?? race.turfPerformanceShadow?.w50HorseName
         ?? null
       : null,
+    w50Rank1NonRunner: false,
+    tprInputSnapshot: family === "turf" ? buildTprInputSnapshot(race.runners) : null,
     awBestL3SpeedRank1,
     awBestL3PerformanceRank1,
     orRank1: rankedRunner(race.runners, (runner) => orRanks.get(runner.runnerId), 1)?.horseName ?? null,
@@ -120,14 +128,26 @@ export function enrichForwardRecordResult(
   record: ForwardRaceRecord,
   race: TodayRace,
 ): ForwardRaceRecord {
+  const tprRank1NonRunner = selectionIsNonRunner(record.tprRank1, race.runners);
+  const tprRank2NonRunner = selectionIsNonRunner(record.tprRank2, race.runners);
+  const w50Rank1NonRunner = selectionIsNonRunner(record.w50Rank1, race.runners);
+  const timewiseRank1NonRunner = record.timewiseRank1NonRunner || selectionIsNonRunner(record.timewiseRank1, race.runners);
+  const timewiseRank2NonRunner = record.timewiseRank2NonRunner || selectionIsNonRunner(record.timewiseRank2, race.runners);
   const winners = race.runners.filter((runner) => runner.finishingPosition === 1);
   const winner = winners[0];
-  if (!winner) return record;
+  if (!winner) {
+    if (Boolean(record.tprRank1NonRunner) === tprRank1NonRunner &&
+      Boolean(record.tprRank2NonRunner) === tprRank2NonRunner &&
+      Boolean(record.w50Rank1NonRunner) === w50Rank1NonRunner &&
+      Boolean(record.timewiseRank1NonRunner) === timewiseRank1NonRunner &&
+      Boolean(record.timewiseRank2NonRunner) === timewiseRank2NonRunner) return record;
+    return createRecord({ ...record, tprRank1NonRunner, tprRank2NonRunner, w50Rank1NonRunner, timewiseRank1NonRunner, timewiseRank2NonRunner });
+  }
   const orRanks = competitionRanks(race.runners, (runner) => runner.officialRating);
   const winnerSp = parseDecimalOdds(winner.oddsDecimal);
   const winnerOrRank = orRanks.get(winner.runnerId) ?? null;
   const winnerEntries = winners.map((runner) => ({ horseName: runner.horseName, decimalOdds: parseDecimalOdds(runner.oddsDecimal) }));
-  if (record.winner === winner.horseName && record.winnerSp === winnerSp && record.winnerOrRank === winnerOrRank && JSON.stringify(record.winners) === JSON.stringify(winnerEntries)) {
+  if (record.winner === winner.horseName && record.winnerSp === winnerSp && record.winnerOrRank === winnerOrRank && JSON.stringify(record.winners) === JSON.stringify(winnerEntries) && Boolean(record.tprRank1NonRunner) === tprRank1NonRunner && Boolean(record.tprRank2NonRunner) === tprRank2NonRunner && Boolean(record.w50Rank1NonRunner) === w50Rank1NonRunner && Boolean(record.timewiseRank1NonRunner) === timewiseRank1NonRunner && Boolean(record.timewiseRank2NonRunner) === timewiseRank2NonRunner) {
     return record;
   }
   return createRecord({
@@ -136,7 +156,57 @@ export function enrichForwardRecordResult(
     winnerSp,
     winners: winnerEntries,
     winnerOrRank,
+    tprRank1NonRunner,
+    tprRank2NonRunner,
+    w50Rank1NonRunner,
+    timewiseRank1NonRunner,
+    timewiseRank2NonRunner,
   });
+}
+
+function buildTprInputSnapshot(runners: TodayRunner[]) {
+  const snapshotRunners = runners.flatMap((runner) => {
+    const input = runner.turfPerformanceInput;
+    if (!input || runner.resultStatus === "non_runner") return [];
+    const w50Input = buildCanonicalTurfPerformanceRatingInput({
+      latestPerformanceRating: input.latestPerformanceRating,
+      previousPerformanceRating: input.previousPerformanceRating,
+      averagePerformanceLast3: input.averagePerformanceLast3,
+      latestSpeedRating: input.latestSpeedRating,
+      previousSpeedRating: input.previousSpeedRating,
+      averageSpeedLast3: input.averageSpeedLast3,
+      raceClass: input.raceClass,
+      weightCarriedLbs: input.weightCarriedLbs,
+      raceMedianWeightCarriedLbs: input.raceMedianWeightCarriedLbs,
+      weightCoefficientMultiplier: 0.5,
+    });
+    return [{
+      runnerId: runner.runnerId,
+      horseName: runner.horseName,
+      input,
+      w100Rating: runner.turfPerformanceRating?.rating ?? null,
+      w100RawRating: runner.turfPerformanceRating?.rawRating ?? null,
+      w100Rank: runner.turfPerformanceRating?.rank ?? null,
+      w100RelativeWeightContribution: turfPerformanceRelativeWeightContribution(input),
+      w50Rating: runner.turfPerformanceShadowRating?.rating ?? null,
+      w50RawRating: runner.turfPerformanceShadowRating?.rawRating ?? null,
+      w50Rank: runner.turfPerformanceShadowRating?.rank ?? null,
+      w50RelativeWeightContribution: turfPerformanceRelativeWeightContribution(w50Input),
+    }];
+  });
+  return { version: "tpr_forward_snapshot_v1" as const, runners: snapshotRunners };
+}
+
+function selectionIsNonRunner(horseName: string | null, runners: TodayRunner[]) {
+  if (horseName === null) return false;
+  const normalized = normalizeHorseName(horseName);
+  return runners.some((runner) =>
+    normalizeHorseName(runner.horseName) === normalized && runner.resultStatus === "non_runner"
+  );
+}
+
+function normalizeHorseName(value: string) {
+  return value.trim().toLocaleLowerCase("en-GB").replace(/\s+/g, " ");
 }
 
 function rankedRunner(
