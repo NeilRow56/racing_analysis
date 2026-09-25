@@ -442,7 +442,10 @@ export const ResearchForm = ({
       <FilterGroup title="Within-Race Rating Ranking">
         <SelectField label="Rank metric" name="rankMetric" value={rank?.metric ?? ""}>
           <option value="">No rank filter</option>
-          {rankMetricOptions.filter((option) => option.value !== "officialRating").map((option) => (
+          {rankMetricOptions.filter((option) =>
+            option.value !== "officialRating" &&
+            (option.value !== "turfPerformanceW50Rating" || rule.family === "turf_flat")
+          ).map((option) => (
             <option key={option.value} value={option.value}>{option.label}</option>
           ))}
         </SelectField>
@@ -450,6 +453,9 @@ export const ResearchForm = ({
         <InputField label="Rank max" name="rankMax" type="number" value={rank?.range.max} />
         <div className="md:col-span-3 rounded border border-slate-200 bg-slate-50 p-3 text-sm text-slate-600">
           Ranks are per race, highest value first. Missing values and non-runners are excluded. Equal values share the same competition rank.
+          {rule.family === "turf_flat" ? (
+            <span className="mt-1 block">TPR W50 is the diagnostic TPR variant using 50% of the production relative-weight adjustment. Production TPR remains W100.</span>
+          ) : null}
         </div>
       </FilterGroup>
 

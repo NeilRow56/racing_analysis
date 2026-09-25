@@ -197,6 +197,14 @@ export type TodayRacecardRow = {
   finishingPosition: number | null;
 };
 
+export type SportingLifeEstimatedPrice = {
+  raceId: string;
+  runnerId: string;
+  estimatedSp: string | null;
+  estimatedDecimalOdds: string | null;
+  displayRaceTime: string;
+};
+
 export function getLocalRacingDate(now = new Date()): string {
   const parts = new Intl.DateTimeFormat("en-GB", {
     timeZone: "Europe/London",
@@ -386,6 +394,40 @@ export async function getTodaysRacingData(
       jockeyMetricsByRunnerId,
       goingFormByRunnerId,
     ),
+  };
+}
+
+export async function getSportingLifeEstimatedPricesForDate(
+  db: Db,
+  raceDate: string,
+): Promise<SportingLifeEstimatedPrice[]> {
+  const rows = await getRacecardRows(db, raceDate);
+  return rows.map((row) => sportingLifeEstimatedPriceFromRacecard({
+    raceId: row.raceId,
+    runnerId: row.runnerId,
+    estimatedSp: row.odds,
+    estimatedDecimalOdds: row.oddsDecimal,
+    scheduledTime: row.scheduledTime,
+    raceDateTime: row.raceDateTime,
+    courseCountry: row.country,
+  }));
+}
+
+export function sportingLifeEstimatedPriceFromRacecard(input: {
+  raceId: string;
+  runnerId: string;
+  estimatedSp: string | null;
+  estimatedDecimalOdds: string | null;
+  scheduledTime: string | null;
+  raceDateTime: Date | null;
+  courseCountry: string | null;
+}): SportingLifeEstimatedPrice {
+  return {
+    raceId: input.raceId,
+    runnerId: input.runnerId,
+    estimatedSp: input.estimatedSp,
+    estimatedDecimalOdds: input.estimatedDecimalOdds,
+    displayRaceTime: formatRaceTimeForDisplay(input),
   };
 }
 

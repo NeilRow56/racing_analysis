@@ -157,6 +157,18 @@ function raceWithFrozenRuleMatches(
   const rows = rankRows(
     race.runners.map((runner) => todayRunnerResearchRow(meeting, race, runner, raceDate)),
   );
+  const runnersById = new Map(race.runners.map((runner) => [runner.runnerId, runner]));
+  for (const row of rows) {
+    const runner = runnersById.get(row.features.targetRunnerId);
+    if (runner?.turfPerformanceRating) {
+      row.turfPerformance = runner.turfPerformanceRating;
+      row.ranks.turfPerformanceRating = runner.turfPerformanceRating.rank;
+    }
+    if (runner?.turfPerformanceShadowRating) {
+      row.turfPerformanceW50 = runner.turfPerformanceShadowRating;
+      row.ranks.turfPerformanceW50Rating = runner.turfPerformanceShadowRating.rank;
+    }
+  }
   const rowsByRunnerId = new Map(rows.map((row) => [row.features.targetRunnerId, row]));
 
   return {

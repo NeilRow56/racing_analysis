@@ -306,9 +306,28 @@ describe("research filters page", () => {
     assert.match(turfText, /TPR lead min/);
     assert.match(turfText, /TPR lead max/);
     assert.match(turfText, new RegExp(TURF_PERFORMANCE_RATING_VERSION));
+    assert.match(turfText, /TPR W50 \(diagnostic\)/);
+    assert.match(turfText, /50% of the production relative-weight adjustment/);
     assert.match(turfText, /value="110"/);
     assert.match(turfText, /value="4"/);
     assert.equal(jumpText.includes("Turf Performance Rating"), false);
+    assert.equal(jumpText.includes("TPR W50"), false);
+  });
+
+  test("parses W50 rank one and OR rank one as separate conjunctive filters", () => {
+    const rule = researchRuleFromFormData(formData({
+      family: "turf_flat",
+      rankMetric: "turfPerformanceW50Rating",
+      rankMin: "1",
+      rankMax: "1",
+      orRankMin: "1",
+      orRankMax: "1",
+    }));
+
+    assert.deepEqual(rule.ranks, [
+      { metric: "turfPerformanceW50Rating", range: { min: 1, max: 1 } },
+      { metric: "officialRating", range: { min: 1, max: 1 } },
+    ]);
   });
 
   test("parses Jump subtype from the form and ignores it for Turf", () => {

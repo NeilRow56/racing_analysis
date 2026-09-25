@@ -350,6 +350,38 @@ describe("research holdout validation", () => {
     assert.equal(snapshot.selections, 2);
   });
 
+  test("evaluates W50 rank and OR rank together in the 2026 holdout", async () => {
+    const root = await mkdtemp(join(tmpdir(), "racing-holdout-w50-or-rank-"));
+    const rule: ResearchRuleV1 = {
+      ...defaultResearchRule("turf_flat"),
+      ranks: [
+        { metric: "turfPerformanceW50Rating", range: { min: 1, max: 1 } },
+        { metric: "officialRating", range: { min: 1, max: 1 } },
+      ],
+    };
+    await writeCache(root, {
+      manifest: manifestFor({ family: "turf_flat", from: "2026-01-01", to: "2026-12-31", rowCount: 2 }),
+      rows: [
+        row({
+          ...turfPerformanceFeature("w100-top", 75, 75, "2026-01-03"),
+          officialRating: 100,
+          weightCarriedLbs: 140,
+        }),
+        row({
+          ...turfPerformanceFeature("w50-or-top", 100, 100, "2026-01-03"),
+          officialRating: 110,
+          weightCarriedLbs: 120,
+        }),
+      ],
+    });
+
+    const snapshot = await evaluateHoldoutForSavedRule(savedRuleFor(rule), { outputDir: root });
+
+    assert.equal(snapshot.eligibleRunners, 2);
+    assert.equal(snapshot.selections, 1);
+    assert.equal(snapshot.settledSelections, 1);
+  });
+
   test("uses actual result SP for holdout even when development snapshot was capped", async () => {
     const root = await mkdtemp(join(tmpdir(), "racing-holdout-actual-sp-"));
     const savedRule = savedRuleFor(defaultResearchRule("jump"));

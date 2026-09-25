@@ -137,6 +137,29 @@ describe("saved research rules", () => {
     assert.equal(prepared.ruleIdentity, researchRuleKey(rule));
   });
 
+  test("preserves diagnostic W50 rank in frozen rule identity and canonical data", () => {
+    const rule: ResearchRuleV1 = {
+      ...defaultResearchRule("turf_flat"),
+      ranks: [
+        { metric: "turfPerformanceW50Rating", range: { min: 1, max: 1 } },
+        { metric: "officialRating", range: { min: 1, max: 1 } },
+      ],
+    };
+
+    const prepared = prepareFrozenSavedResearchRule({
+      name: "W50 and OR rank one",
+      rule,
+      developmentSnapshot: developmentSnapshotFromResult(researchResult(rule)),
+    });
+
+    assert.deepEqual((prepared.canonicalRule as ResearchRuleV1).ranks, rule.ranks);
+    assert.equal(prepared.ruleIdentity, researchRuleKey(rule));
+    assert.notEqual(
+      prepared.ruleIdentity,
+      researchRuleKey({ ...rule, ranks: [{ metric: "turfPerformanceRating", range: { min: 1, max: 1 } }] }),
+    );
+  });
+
   test("preserves Jump subtype in frozen rule identity and canonical data", () => {
     const rule: ResearchRuleV1 = {
       ...defaultResearchRule("jump"),

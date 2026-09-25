@@ -6,6 +6,7 @@ export type RankMetric =
   | "bestSpeedLast3"
   | "bestPerformanceLast3"
   | "bestTodaysRatingLast3"
+  | "turfPerformanceW50Rating"
   | "turfPerformanceRating";
 
 export const RANK_METRIC_OPTIONS: Array<{ value: RankMetric; label: string }> = [
@@ -16,4 +17,5 @@ export const RANK_METRIC_OPTIONS: Array<{ value: RankMetric; label: string }> = 
   { value: "bestSpeedLast3", label: "Best L3 Speed rank" },
   { value: "bestPerformanceLast3", label: "Best L3 Performance rank" },
   { value: "bestTodaysRatingLast3", label: "Best L3 Today's Rating rank" },
+  { value: "turfPerformanceW50Rating", label: "TPR W50 (diagnostic)" },
 ];

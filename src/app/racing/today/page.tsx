@@ -38,6 +38,7 @@ import { enrichTodayForwardTrackerResults } from "@/lib/racing/tpr-timewise-forw
 import { loadTrackerData } from "../../../../scripts/diagnose-tpr-vs-timewise-forward";
 import { refreshTodaySelectionResultsAction } from "./actions";
 import { RefreshResultsButton } from "./refresh-results-button";
+import { SpeedDisplayValue, TodaySpeedDisplay } from "./speed-display";
 
 export const dynamic = "force-dynamic";
 
@@ -233,31 +234,33 @@ function TodaysRacing({
         </div>
       </nav>
 
-      <div className="mt-8 space-y-10">
-        <p className="max-w-4xl text-sm leading-6 text-slate-600">
-          TPR is an experimental Turf Performance Rating based on recent RPR/Topspeed, class and weight.
-          It is being forward-tested and is not a betting recommendation.
-        </p>
-        {shadowSummary ? (
+      <TodaySpeedDisplay>
+        <div className="mt-4 space-y-10">
           <p className="max-w-4xl text-sm leading-6 text-slate-600">
-            W50 shadow: {shadowSummary.turfRacesChecked} Turf races checked ·{" "}
-            {shadowSummary.agreements} agreements · {shadowSummary.disagreements} disagreements
-            {shadowSummary.settledDisagreementRaces > 0 ? (
-              <>
-                {" "}· settled disagreements {shadowSummary.settledDisagreementRaces}
-                {" "}· W50 winners {shadowSummary.w50DisagreementWinners}
-                {" "}· W100 winners {shadowSummary.w100DisagreementWinners}
-              </>
-            ) : null}
+            TPR is an experimental Turf Performance Rating based on recent RPR/Topspeed, class and weight.
+            It is being forward-tested and is not a betting recommendation.
           </p>
-        ) : null}
-        {meetings.map((meeting) => (
-          <MeetingSection
-            key={meeting.courseId}
-            meeting={meeting}
-          />
-        ))}
-      </div>
+          {shadowSummary ? (
+            <p className="max-w-4xl text-sm leading-6 text-slate-600">
+              W50 shadow: {shadowSummary.turfRacesChecked} Turf races checked ·{" "}
+              {shadowSummary.agreements} agreements · {shadowSummary.disagreements} disagreements
+              {shadowSummary.settledDisagreementRaces > 0 ? (
+                <>
+                  {" "}· settled disagreements {shadowSummary.settledDisagreementRaces}
+                  {" "}· W50 winners {shadowSummary.w50DisagreementWinners}
+                  {" "}· W100 winners {shadowSummary.w100DisagreementWinners}
+                </>
+              ) : null}
+            </p>
+          ) : null}
+          {meetings.map((meeting) => (
+            <MeetingSection
+              key={meeting.courseId}
+              meeting={meeting}
+            />
+          ))}
+        </div>
+      </TodaySpeedDisplay>
       <TodayRuleSelectionsTable selections={ruleSelections} />
     </>
   );
@@ -446,30 +449,28 @@ function RunnerTable({
 }) {
   return (
     <div className="mt-4 overflow-x-auto">
-      <table className="w-full min-w-[1360px] table-fixed text-left text-sm">
+      <table className="w-full min-w-[1240px] table-fixed text-left text-sm">
         <thead className="border-y border-slate-200 text-xs uppercase text-slate-500">
           <tr>
             <th className="w-14 py-2 pr-3 font-medium">No.</th>
-            <th className="w-56 py-2 pr-3 font-medium">Horse</th>
+            <th className="w-44 py-2 pr-3 font-medium">Horse</th>
             <th className="w-14 py-2 pr-3 font-medium">Age</th>
             <th className="w-20 py-2 pr-3 font-medium">Wgt</th>
             <th className="w-16 py-2 pr-3 font-medium">
               {isJumpRace ? "-" : "Draw"}
             </th>
-            <th className="w-36 py-2 pr-3 font-medium">Jockey</th>
-            <th className="w-40 py-2 pr-3 font-medium">Trainer</th>
+            <th className="w-28 py-2 pr-3 font-medium">Jockey</th>
+            <th className="w-32 py-2 pr-3 font-medium">Trainer</th>
             <th className="w-14 py-2 pr-3 font-medium">OR</th>
             {(isTurfRace || isJumpRace) ? (
               <th
-                className="w-36 py-2 pr-3 font-medium"
+                className="w-28 py-2 pr-3 font-medium"
                 title="Previous 1st or 2nd finishes on going containing these terms."
               >
                 Going form
               </th>
             ) : null}
-            <th className="w-16 py-2 pr-3 font-medium">Latest Speed</th>
-            <th className="w-16 py-2 pr-3 font-medium">Prev Speed</th>
-            <th className="w-16 py-2 pr-3 font-medium">Best L3</th>
+            <th className="w-20 py-2 pr-3 font-medium">Speed</th>
             <th
               className="w-20 py-2 pr-3 font-medium"
               title="Latest historical performance adjusted for today's weight."
@@ -478,7 +479,7 @@ function RunnerTable({
             </th>
             {isTurfRace ? (
               <th
-                className="w-32 py-2 pr-3 font-medium"
+                className="w-28 py-2 pr-3 font-medium"
                 title="Experimental Turf Performance Rating. Diagnostic forward test only."
               >
                 TPR (diagnostic)
@@ -565,9 +566,9 @@ function RunnerRow({
           <GoingFormCell runner={runner} />
         </td>
       ) : null}
-      <td className="py-3 pr-3">{formatRating(speedMetrics.latest)}</td>
-      <td className="py-3 pr-3">{formatRating(speedMetrics.previous)}</td>
-      <td className="py-3 pr-3">{formatRating(speedMetrics.bestLast3)}</td>
+      <td className="py-3 pr-3">
+        <SpeedDisplayValue values={speedMetrics} />
+      </td>
       <td className="py-3 pr-3">{formatRating(todaysRating)}</td>
       {isTurfRace ? (
         <td className="py-3 pr-3">

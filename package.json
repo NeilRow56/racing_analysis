@@ -44,6 +44,7 @@
     "aw:summary": "bun scripts/track-aw-forward-comparisons.ts summary",
     "tissue:sync": "bun --env-file=.env.local run scripts/track-independent-tissue.ts sync v2",
     "tissue:summary": "bun run scripts/track-independent-tissue.ts summary v2",
+    "tissue:today": "bun run scripts/report-tissue-today.ts",
     "tissue:v1:sync": "bun --env-file=.env.local run scripts/track-independent-tissue.ts sync v1",
     "tissue:v1:summary": "bun run scripts/track-independent-tissue.ts summary v1",
     "tissue:v2:sync": "bun --env-file=.env.local run scripts/track-independent-tissue.ts sync v2",

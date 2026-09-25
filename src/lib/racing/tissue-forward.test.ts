@@ -5,6 +5,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { COMMENT_FEATURE_NAMES, NUMERIC_FEATURES, type HistoricalComment } from "../../../scripts/diagnose-independent-tissue-feasibility";
 import type { TodayRace, TodayRunner } from "./todays-racing";
+import { formatRaceTimeForDisplay, sportingLifeEstimatedPriceFromRacecard } from "./todays-racing";
 import {
   TISSUE_FORWARD_START,
   TISSUE_FORWARD_VERSION,
@@ -17,8 +18,12 @@ import {
   upsertTissueRaces,
   loadFrozenTissueModel,
   loadTissueForward,
+  parseSportingLifeEstimatedPrice,
+  renderTissueTodayReport,
+  tissueEstimatedPriceComparison,
   type FrozenTissueModel,
   type TissueForwardData,
+  type TissueForwardRace,
 } from "./tissue-forward";
 
 const model: FrozenTissueModel = {
@@ -115,6 +120,129 @@ describe("independent tissue forward tracker", () => {
       await rm(directory, { recursive: true, force: true });
     }
   });
+
+  test("renders the latest clean date with ordered pending and settled top-three selections", () => {
+    const older = reportRace({ raceDate: "2026-09-24", raceId: "older", raceName: "Older Race", raceTime: "16:00" });
+    const backfilled = reportRace({ raceId: "backfilled", raceName: "Backfilled Race", raceTime: "12:00", recordedPreRace: false });
+    const settled = reportRace({
+      raceId: "settled",
+      raceTime: "13:30",
+      course: "Ascot",
+      raceName: "September Stakes",
+      runners: [
+        reportRunner("Rank Three", 3, 0.1, 3, 8),
+        reportRunner("Withdrawn Favourite", 1, 0.4, null, null),
+        reportRunner("Race Winner", 2, 0.25, 1, 4),
+      ],
+      winners: ["Race Winner"],
+      settledAt: "2026-09-25T14:00:00.000Z",
+    });
+    const pending = reportRace({
+      raceId: "pending",
+      raceTime: "14:10",
+      course: "Newmarket",
+      raceName: "Example Stakes",
+      runners: [
+        reportRunner("Third Choice", 3, 0.12),
+        reportRunner("First Choice", 1, 0.32),
+        reportRunner("Second Choice", 2, 0.2),
+      ],
+    });
+    const output = renderTissueTodayReport(
+      { ...emptyData(), races: [pending, older, backfilled, settled] },
+      [
+        estimatedPrice("pending", "First Choice", "5/1", "6.000"),
+        estimatedPrice("pending", "Second Choice", "7/2", "4.500"),
+        estimatedPrice("pending", "Third Choice", null, null),
+        estimatedPrice("settled", "Race Winner", "1/2", "1.500"),
+      ],
+    );
+
+    assert.match(output, /^Tissue Today - 2026-09-25/);
+    assert.equal(output.includes("Older Race"), false);
+    assert.equal(output.includes("Backfilled Race"), false);
+    assert.ok(output.indexOf("13:30 Ascot") < output.indexOf("14:10 Newmarket"));
+    assert.ok(output.indexOf("1. First Choice") < output.indexOf("2. Second Choice"));
+    assert.ok(output.indexOf("2. Second Choice") < output.indexOf("3. Third Choice"));
+    assert.match(output, /1\. Withdrawn Favourite - non-runner\n   Tissue 40\.0% \| Est SP: —/);
+    assert.match(output, /1\. First Choice\n   Tissue 32\.0% \| Est SP 5\/1 \| Market 16\.7% \| Edge \+15\.3pp \| VALUE/);
+    assert.match(output, /2\. Second Choice\n   Tissue 20\.0% \| Est SP 7\/2 \| Market 22\.2% \| Edge -2\.2pp/);
+    assert.doesNotMatch(output, /Edge -2\.2pp \| VALUE/);
+    assert.match(output, /3\. Third Choice\n   Tissue 12\.0% \| Est SP: —/);
+    assert.match(output, /Current positive-edge Tissue rank-1 horses\n14:10 Newmarket - First Choice \| Tissue 32\.0% \| Est SP 5\/1 \| Edge \+15\.3pp/);
+    assert.match(output, /Value comparison uses the current Sporting Life estimated SP and may change before the race\./);
+    assert.match(output, /Status: settled - Tissue rank 1 non-runner - winner Race Winner \(Tissue rank 2\) - Tissue rank 1 won: no/);
+    assert.match(output, /Status: pending/);
+  });
+
+  test("parses Sporting Life fractional and evens estimated prices", () => {
+    assert.equal(parseSportingLifeEstimatedPrice("5/1"), 6);
+    assert.equal(parseSportingLifeEstimatedPrice("7/2"), 4.5);
+    assert.equal(parseSportingLifeEstimatedPrice("11/4"), 3.75);
+    assert.equal(parseSportingLifeEstimatedPrice("Evens"), 2);
+    assert.equal(parseSportingLifeEstimatedPrice("EVS"), 2);
+    assert.equal(parseSportingLifeEstimatedPrice("not available"), null);
+  });
+
+  test("compares frozen Tissue probability with current market probability", () => {
+    const positive = tissueEstimatedPriceComparison(0.25, "5/1");
+    const negative = tissueEstimatedPriceComparison(0.1, "5/1");
+
+    assert.deepEqual(positive, {
+      estimatedSp: "5/1",
+      decimalOdds: 6,
+      marketProbability: 1 / 6,
+      edge: 0.25 - (1 / 6),
+      isValue: true,
+    });
+    assert.equal(negative?.isValue, false);
+    assert.ok((negative?.edge ?? 0) < 0);
+    assert.equal(tissueEstimatedPriceComparison(0.25, null), null);
+  });
+
+  test("changing the current price does not alter the frozen Tissue probability", () => {
+    const data = { ...emptyData(), races: [reportRace({
+      raceId: "price-change",
+      runners: [reportRunner("Frozen Selection", 1, 0.25)],
+    })] };
+    const frozenBefore = JSON.stringify(data);
+    const shortPrice = renderTissueTodayReport(data, [estimatedPrice("price-change", "Frozen Selection", "2/1", "3.000")]);
+    const longPrice = renderTissueTodayReport(data, [estimatedPrice("price-change", "Frozen Selection", "9/1", "10.000")]);
+
+    assert.match(shortPrice, /Tissue 25\.0% \| Est SP 2\/1 \| Market 33\.3% \| Edge -8\.3pp/);
+    assert.match(longPrice, /Tissue 25\.0% \| Est SP 9\/1 \| Market 10\.0% \| Edge \+15\.0pp \| VALUE/);
+    assert.equal(data.races[0]!.runners[0]!.probability, 0.25);
+    assert.equal(JSON.stringify(data), frozenBefore);
+  });
+
+  test("uses Today's canonical local race time for the Tissue report", () => {
+    const race = reportRace({
+      raceId: "listowel-1740",
+      course: "Listowel",
+      raceTime: "16:40",
+      runners: [reportRunner("Irish Runner", 1, 0.25)],
+    });
+    const context = sportingLifeEstimatedPriceFromRacecard({
+      raceId: race.raceId,
+      runnerId: race.runners[0]!.runnerId,
+      estimatedSp: "5/1",
+      estimatedDecimalOdds: "6.000",
+      scheduledTime: "16:40:00",
+      raceDateTime: new Date("2026-09-25T16:40:00.000Z"),
+      courseCountry: "IRE",
+    });
+    const todayTime = formatRaceTimeForDisplay({
+      scheduledTime: "16:40:00",
+      raceDateTime: new Date("2026-09-25T16:40:00.000Z"),
+      courseCountry: "IRE",
+    });
+    const output = renderTissueTodayReport({ ...emptyData(), races: [race] }, [context]);
+
+    assert.equal(todayTime, "17:40");
+    assert.equal(context.displayRaceTime, todayTime);
+    assert.match(output, /17:40 Listowel/);
+    assert.doesNotMatch(output, /16:40 Listowel/);
+  });
 });
 
 function emptyData(): TissueForwardData { return { version: TISSUE_FORWARD_VERSION, tissueModelVersion: TISSUE_MODEL_VERSION, forwardStart: TISSUE_FORWARD_START, races: [] }; }
@@ -123,4 +251,60 @@ function sampleRace(): TodayRace {
 }
 function runner(id: string, name: string): TodayRunner {
   return { runnerId: `runner-${id}`, runnerSourceId: id, horseId: `horse-${id}`, horseName: name, saddleclothNumber: Number(id), horseAge: 4, horseSex: null, weight: "9-0", weightCarriedLbs: 126, draw: Number(id), jockeyName: null, trainerId: null, trainerName: null, officialRating: 80, odds: null, oddsDecimal: null, resultStatus: null, finishingPosition: null, metrics: null };
+}
+
+function reportRace(overrides: Partial<TissueForwardRace> = {}): TissueForwardRace {
+  return {
+    raceDate: "2026-09-25",
+    course: "Newmarket",
+    raceTime: "14:00",
+    raceId: "report-race",
+    sourceId: "source",
+    raceName: null,
+    tissueModelVersion: TISSUE_V2_CONFIG.modelVersion,
+    tissueModelChecksum: "checksum",
+    recordedAt: "2026-09-25T10:00:00.000Z",
+    recordedPreRace: true,
+    runners: [reportRunner("Example", 1, 0.4)],
+    winners: [],
+    settledAt: null,
+    ...overrides,
+  };
+}
+
+function reportRunner(
+  horseName: string,
+  tissueRank: number,
+  probability: number,
+  finishingPosition: number | null = null,
+  finalSp: number | null = null,
+) {
+  return {
+    runnerId: `runner-${horseName}`,
+    horseId: `horse-${horseName}`,
+    horseName,
+    probability,
+    fairDecimalOdds: 1 / probability,
+    tissueRank,
+    commentFeatures: [],
+    finishingPosition,
+    finalSp,
+    marketImpliedProbability: finalSp === null ? null : 1 / finalSp,
+    marketRank: null,
+  };
+}
+
+function estimatedPrice(
+  raceId: string,
+  horseName: string,
+  estimatedSp: string | null,
+  estimatedDecimalOdds: string | null,
+) {
+  return {
+    raceId,
+    runnerId: `runner-${horseName}`,
+    estimatedSp,
+    estimatedDecimalOdds,
+    displayRaceTime: raceId === "pending" ? "14:10" : raceId === "settled" ? "13:30" : "14:00",
+  };
 }

@@ -9,11 +9,12 @@ import {
   buildTodayRuleSelections,
   summarizeTodayFrozenRuleMatches,
 } from "./today-rule-matches";
-import type {
-  TodayMeeting,
-  TodayRace,
-  TodayRunner,
-  TodaySavedRuleMatch,
+import {
+  attachTurfPerformanceRatings,
+  type TodayMeeting,
+  type TodayRace,
+  type TodayRunner,
+  type TodaySavedRuleMatch,
 } from "./todays-racing";
 
 describe("Today frozen rule matching", () => {
@@ -269,6 +270,54 @@ describe("Today frozen rule matching", () => {
     );
 
     assert.deepEqual(matched, ["tpr-top"]);
+  });
+
+  test("matches W50 plus OR using the same shadow rank already calculated for Today", () => {
+    const diagnosticRule = exampleFrozenRule({
+      race: {},
+      runner: {},
+      ratings: [],
+      ranks: [
+        { metric: "turfPerformanceW50Rating", range: { min: 1, max: 1 } },
+        { metric: "officialRating", range: { min: 1, max: 1 } },
+      ],
+    });
+    const currentRace = attachTurfPerformanceRatings({
+      ...race(),
+      runners: [
+        runner("w100-top", {
+          latestTurfPerformanceRating: 75,
+          previousTurfPerformanceRating: null,
+          averageTurfPerformanceLast3: null,
+          latestTurfSpeedRating: 75,
+          previousTurfSpeedRating: null,
+          averageTurfSpeedLast3: null,
+        }, { officialRating: 100, weightCarriedLbs: 140 }),
+        runner("w50-or-top", {
+          latestTurfPerformanceRating: 100,
+          previousTurfPerformanceRating: null,
+          averageTurfPerformanceLast3: null,
+          latestTurfSpeedRating: 100,
+          previousTurfSpeedRating: null,
+          averageTurfSpeedLast3: null,
+        }, { officialRating: 110, weightCarriedLbs: 120 }),
+      ],
+    });
+
+    assert.equal(currentRace.runners.find((item) => item.runnerId === "w100-top")?.turfPerformanceRating?.rank, 1);
+    assert.equal(currentRace.runners.find((item) => item.runnerId === "w50-or-top")?.turfPerformanceShadowRating?.rank, 1);
+
+    const [displayMeeting] = attachFrozenRuleMatchesToToday(
+      [meetingWithRace(currentRace, currentRace.runners)],
+      [diagnosticRule],
+      "2026-09-11",
+    );
+    assert.deepEqual(
+      displayMeeting!.races[0]!.runners
+        .filter((item) => (item.savedRuleMatches?.length ?? 0) > 0)
+        .map((item) => item.runnerId),
+      ["w50-or-top"],
+    );
   });
 
   test("supports multiple frozen matches and ignores drafts", () => {

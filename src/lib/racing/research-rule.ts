@@ -32,6 +32,7 @@ import {
   buildCanonicalTurfPerformanceRatingInput,
   calculateTurfPerformanceRating,
   rankTurfPerformanceRatings,
+  TURF_PERFORMANCE_RATING_W50_WEIGHT_MULTIPLIER,
   TURF_PERFORMANCE_RATING_VERSION,
   type RankedTurfPerformanceRating,
 } from "./turf-performance-rating";
@@ -185,11 +186,13 @@ export type TurfPerformanceCondition = {
 export type RankedResearchRow = HistoricalTargetRunnerMetricsRow & {
   ranks: Partial<Record<RankMetric, number>>;
   turfPerformance: RankedTurfPerformanceRating | null;
+  turfPerformanceW50: RankedTurfPerformanceRating | null;
 };
 
 export type ResearchSelection = BacktestSelection & {
   ranks: Partial<Record<RankMetric, number>>;
   turfPerformance: RankedTurfPerformanceRating | null;
+  turfPerformanceW50: RankedTurfPerformanceRating | null;
 };
 
 export type ResearchMissingData = {
@@ -407,13 +410,16 @@ export function rankRows(rows: HistoricalTargetRunnerMetricsRow[]): RankedResear
     ...row,
     ranks: {} as Partial<Record<RankMetric, number>>,
     turfPerformance: null,
+    turfPerformanceW50: null,
   }));
   const rowsByRace = new Map<string, RankedResearchRow[]>();
   for (const row of ranked) {
     rowsByRace.set(row.features.targetRaceId, [...(rowsByRace.get(row.features.targetRaceId) ?? []), row]);
   }
 
-  for (const metric of RANK_METRIC_OPTIONS.map((option) => option.value)) {
+  for (const metric of RANK_METRIC_OPTIONS
+    .map((option) => option.value)
+    .filter((metric) => metric !== "turfPerformanceW50Rating")) {
     for (const raceRows of rowsByRace.values()) {
       const rankable = raceRows
         .filter((row) => row.outcome.resultStatus !== "non_runner")
@@ -441,6 +447,9 @@ export function rankRows(rows: HistoricalTargetRunnerMetricsRow[]): RankedResear
     for (const row of raceRows) {
       if (row.turfPerformance) {
         row.ranks.turfPerformanceRating = row.turfPerformance.rank;
+      }
+      if (row.turfPerformanceW50) {
+        row.ranks.turfPerformanceW50Rating = row.turfPerformanceW50.rank;
       }
     }
   }
@@ -768,6 +777,7 @@ function researchSelection(row: RankedResearchRow, rule: ResearchRuleV1): Resear
     settlement: settleSelection(row.outcome),
     ranks: row.ranks,
     turfPerformance: row.turfPerformance,
+    turfPerformanceW50: row.turfPerformanceW50,
   };
 }
 
@@ -866,26 +876,42 @@ function attachTurfPerformanceRatings(raceRows: RankedResearchRow[]) {
       .map((row) => row.features.weightCarriedLbs)
       .filter(isNumber),
   );
+  const ratingInputs = raceRows.map((row) => ({
+    row,
+    input: buildCanonicalTurfPerformanceRatingInput({
+      latestPerformanceRating: row.features.latestPerformanceRating,
+      previousPerformanceRating: row.features.previousPerformanceRating,
+      averagePerformanceLast3: row.features.averagePerformanceLast3,
+      latestSpeedRating: row.features.latestTurfSpeedRating,
+      previousSpeedRating: row.features.previousTurfSpeedRating,
+      averageSpeedLast3: row.features.averageTurfSpeedLast3,
+      raceClass: row.features.raceClass,
+      weightCarriedLbs: row.features.weightCarriedLbs,
+      raceMedianWeightCarriedLbs: raceMedianWeight,
+    }),
+  }));
   const ratings = rankTurfPerformanceRatings(
-    raceRows.map((row) => ({
+    ratingInputs.map(({ row, input }) => ({
       id: row.features.targetRunnerId,
       rating: row.outcome.resultStatus === "non_runner"
         ? null
-        : calculateTurfPerformanceRating(buildCanonicalTurfPerformanceRatingInput({
-            latestPerformanceRating: row.features.latestPerformanceRating,
-            previousPerformanceRating: row.features.previousPerformanceRating,
-            averagePerformanceLast3: row.features.averagePerformanceLast3,
-            latestSpeedRating: row.features.latestTurfSpeedRating,
-            previousSpeedRating: row.features.previousTurfSpeedRating,
-            averageSpeedLast3: row.features.averageTurfSpeedLast3,
-            raceClass: row.features.raceClass,
-            weightCarriedLbs: row.features.weightCarriedLbs,
-            raceMedianWeightCarriedLbs: raceMedianWeight,
-          })),
+        : calculateTurfPerformanceRating(input),
+    })),
+  );
+  const w50Ratings = rankTurfPerformanceRatings(
+    ratingInputs.map(({ row, input }) => ({
+      id: row.features.targetRunnerId,
+      rating: row.outcome.resultStatus === "non_runner"
+        ? null
+        : calculateTurfPerformanceRating({
+            ...input,
+            weightCoefficientMultiplier: TURF_PERFORMANCE_RATING_W50_WEIGHT_MULTIPLIER,
+          }),
     })),
   );
   for (const row of raceRows) {
     row.turfPerformance = ratings.get(row.features.targetRunnerId) ?? null;
+    row.turfPerformanceW50 = w50Ratings.get(row.features.targetRunnerId) ?? null;
   }
 }
 
@@ -910,7 +936,7 @@ function isNumber(value: number | null | undefined): value is number {
 }
 
 function metricValue(features: HistoricalPreRaceFeatureRow, metric: RatingMetric | RankMetric): number | null {
-  if (metric === "turfPerformanceRating") {
+  if (metric === "turfPerformanceRating" || metric === "turfPerformanceW50Rating") {
     return null;
   }
   return features[metric];

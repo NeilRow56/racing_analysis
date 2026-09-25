@@ -23,7 +23,12 @@ import {
 } from "./research-rule";
 import { researchRuleKey } from "./research-rule-identity";
 import { trainerCohortRule, type ResolvedTrainerCohort } from "./trainer-cohorts";
-import { TURF_PERFORMANCE_RATING_VERSION } from "./turf-performance-rating";
+import {
+  buildCanonicalTurfPerformanceRatingInput,
+  calculateTurfPerformanceRating,
+  TURF_PERFORMANCE_RATING_VERSION,
+  TURF_PERFORMANCE_RATING_W50_WEIGHT_MULTIPLIER,
+} from "./turf-performance-rating";
 import type {
   HistoricalPostRaceOutcome,
   HistoricalPreRaceFeatureRow,
@@ -292,6 +297,74 @@ describe("research rule evaluation", () => {
     });
 
     assert.deepEqual(result.selectedRunners.map((selection) => selection.id), ["tpr-second"]);
+  });
+
+  test("ranks diagnostic W50 with the shared TPR implementation and combines it with OR rank", () => {
+    const rows = [
+      row({
+        ...turfPerformanceFeature("w100-top", 75, 75),
+        officialRating: 100,
+        weightCarriedLbs: 140,
+      }),
+      row({
+        ...turfPerformanceFeature("w50-or-top", 100, 100),
+        officialRating: 110,
+        weightCarriedLbs: 120,
+      }),
+    ];
+    const ranked = rankRows(rows);
+    const w100Top = ranked.find((entry) => entry.features.targetRunnerId === "w100-top")!;
+    const w50Top = ranked.find((entry) => entry.features.targetRunnerId === "w50-or-top")!;
+    const expectedW50 = calculateTurfPerformanceRating(buildCanonicalTurfPerformanceRatingInput({
+      latestPerformanceRating: 100,
+      previousPerformanceRating: null,
+      averagePerformanceLast3: null,
+      latestSpeedRating: 100,
+      previousSpeedRating: null,
+      averageSpeedLast3: null,
+      raceClass: "Class 4",
+      weightCarriedLbs: 120,
+      raceMedianWeightCarriedLbs: 130,
+      weightCoefficientMultiplier: TURF_PERFORMANCE_RATING_W50_WEIGHT_MULTIPLIER,
+    }));
+
+    assert.equal(w100Top.ranks.turfPerformanceRating, 1);
+    assert.equal(w50Top.ranks.turfPerformanceW50Rating, 1);
+    assert.equal(w50Top.turfPerformanceW50?.rating, expectedW50?.rating);
+
+    const result = evaluateResearchRule({
+      rows,
+      rule: {
+        ...defaultResearchRule("turf_flat"),
+        ranks: [
+          { metric: "turfPerformanceW50Rating", range: { min: 1, max: 1 } },
+          { metric: "officialRating", range: { min: 1, max: 1 } },
+        ],
+      },
+    });
+    assert.deepEqual(result.selectedRunners.map((selection) => selection.id), ["w50-or-top"]);
+  });
+
+  test("gives W50 ties the same competition rank and excludes missing and non-runners", () => {
+    const ranked = rankRows([
+      row({ ...turfPerformanceFeature("tie-a", 100, 100), targetRaceId: "w50-ties" }),
+      row({ ...turfPerformanceFeature("tie-b", 100, 100), targetRaceId: "w50-ties" }),
+      row({
+        ...turfPerformanceFeature("missing", 100, 100),
+        targetRaceId: "w50-ties",
+        weightCarriedLbs: null,
+      }),
+      row(
+        { ...turfPerformanceFeature("non-runner", 120, 120), targetRaceId: "w50-ties" },
+        { resultStatus: "non_runner", won: false, placed: false, finishingPosition: null },
+      ),
+    ]);
+    const ranks = new Map(ranked.map((entry) => [entry.features.targetRunnerId, entry.ranks.turfPerformanceW50Rating]));
+
+    assert.equal(ranks.get("tie-a"), 1);
+    assert.equal(ranks.get("tie-b"), 1);
+    assert.equal(ranks.get("missing"), undefined);
+    assert.equal(ranks.get("non-runner"), undefined);
   });
 
   test("combines Latest Performance rank 2-5 with dedicated TPR rank 1", () => {
@@ -672,6 +745,36 @@ describe("research rule evaluation", () => {
     assert.ok(strategySummary(rule).includes("Best L3 Speed rank: >= 3"));
     assert.ok(strategySummary(rule).includes("OR rank: >= 3"));
     assert.ok(strategySummary(rule).includes("OR rank: <= 5"));
+  });
+
+  test("parses and preserves a distinct W50 diagnostic rank identity", () => {
+    const rule = ruleFromSearchParams(new URLSearchParams([
+      ["family", "turf_flat"],
+      ["rankMetric", "turfPerformanceW50Rating"],
+      ["rankMin", "1"],
+      ["rankMax", "1"],
+      ["orRankMin", "1"],
+      ["orRankMax", "1"],
+    ]));
+    const parsed = parseResearchRule(serializeResearchRule(rule));
+
+    assert.deepEqual(rule.ranks, [
+      { metric: "turfPerformanceW50Rating", range: { min: 1, max: 1 } },
+      { metric: "officialRating", range: { min: 1, max: 1 } },
+    ]);
+    assert.deepEqual(parsed?.ranks, rule.ranks);
+    assert.ok(strategySummary(rule).includes("TPR W50 (diagnostic): 1"));
+    assert.equal(researchRuleKey(parsed!), researchRuleKey(rule));
+    assert.notEqual(
+      researchRuleKey(rule),
+      researchRuleKey({
+        ...rule,
+        ranks: [
+          { metric: "turfPerformanceRating", range: { min: 1, max: 1 } },
+          { metric: "officialRating", range: { min: 1, max: 1 } },
+        ],
+      }),
+    );
   });
 
   test("parses and summarizes frozen TPR filters for Turf URLs", () => {

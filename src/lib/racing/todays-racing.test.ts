@@ -686,6 +686,28 @@ describe("Today racing display helpers", () => {
     );
   });
 
+  test("formats the 2026-09-25 Listowel UTC instant as 17:40 Irish local time", () => {
+    assert.equal(
+      formatRaceTimeForDisplay({
+        raceDateTime: new Date("2026-09-25T16:40:00.000Z"),
+        scheduledTime: "16:40:00",
+        courseCountry: "IRE",
+      }),
+      "17:40",
+    );
+  });
+
+  test("does not apply a summer offset to an Irish GMT race", () => {
+    assert.equal(
+      formatRaceTimeForDisplay({
+        raceDateTime: new Date("2026-12-12T16:40:00.000Z"),
+        scheduledTime: "16:40:00",
+        courseCountry: "IRE",
+      }),
+      "16:40",
+    );
+  });
+
   test("displays Northern Irish summer race times with the UK timezone", () => {
     assert.equal(
       formatRaceTimeForDisplay({

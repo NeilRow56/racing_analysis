@@ -137,6 +137,19 @@ describe("Today request orchestration", () => {
     assert.doesNotMatch(source, /suit(?:s|able|ability)/i);
   });
 
+  test("renders one selectable Speed column while retaining TPR and Odds", () => {
+    const source = readFileSync(new URL("./page.tsx", import.meta.url), "utf8");
+
+    assert.match(source, />Speed<\/th>/);
+    assert.doesNotMatch(source, />Latest Speed<\/th>/);
+    assert.doesNotMatch(source, />Prev Speed<\/th>/);
+    assert.doesNotMatch(source, />Best L3<\/th>/);
+    assert.match(source, /<TodaySpeedDisplay>/);
+    assert.match(source, /<TurfPerformanceRatingCell runner=\{runner\}/);
+    assert.match(source, /\{runner\.odds \?\? "-"\}/);
+    assert.match(source, /min-w-\[1240px\]/);
+  });
+
   test("does not render active Timewise manual-entry controls", () => {
     const source = readFileSync(new URL("./page.tsx", import.meta.url), "utf8");
 
