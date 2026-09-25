@@ -8,6 +8,7 @@ import {
   loadTrackerData,
   mutateTrackerData,
   saveTrackerRace,
+  TRACKER_VERSION,
   upsertRace,
   type ForwardRaceRecord,
 } from "../../../scripts/diagnose-tpr-vs-timewise-forward";
@@ -64,6 +65,21 @@ describe("Timewise tracker persistence", () => {
     ]);
     const data = await loadTrackerData(path);
     assert.deepEqual(data.races.map((race) => race.winner), ["Alpha", "Bravo"]);
+  });
+
+  test("settlement during a Today render does not create a missing Timewise record", async () => {
+    const path = await fixturePath();
+    const result = await enrichTodayForwardTrackerResults(
+      [meeting(settledRace("14:00", "Alpha"))],
+      "2026-09-19",
+      { version: TRACKER_VERSION, races: [] },
+      path,
+    );
+    const data = await loadTrackerData(path);
+
+    assert.equal(result.updated, 0);
+    assert.deepEqual(result.data.races, []);
+    assert.deepEqual(data.races, []);
   });
 
   test("repeated replacement is idempotent and keeps audit metadata", async () => {

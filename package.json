@@ -40,6 +40,7 @@
     "backup:verify": "bun run scripts/backup-project.ts verify",
     "backup:cleanup": "bun run scripts/backup-project.ts cleanup --keep 30",
     "timewise:summary": "bun scripts/diagnose-tpr-vs-timewise-forward.ts summary",
+    "tpr:summary": "bun scripts/diagnose-tpr-vs-timewise-forward.ts tpr-summary",
     "aw:summary": "bun scripts/track-aw-forward-comparisons.ts summary",
     "tissue:sync": "bun --env-file=.env.local run scripts/track-independent-tissue.ts sync v2",
     "tissue:summary": "bun run scripts/track-independent-tissue.ts summary v2",

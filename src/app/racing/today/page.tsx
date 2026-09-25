@@ -34,16 +34,10 @@ import {
   type TodayRunner,
 } from "@/lib/racing/todays-racing";
 import { todayRaceStatusLabel } from "@/lib/racing/today-race-status";
-import { isTimewiseEligibleRace, trackerRaceTime } from "@/lib/racing/tpr-timewise-forward-context";
 import { enrichTodayForwardTrackerResults } from "@/lib/racing/tpr-timewise-forward-settlement";
-import {
-  forwardRaceKey,
-  loadTrackerData,
-  type ForwardRaceRecord,
-} from "../../../../scripts/diagnose-tpr-vs-timewise-forward";
+import { loadTrackerData } from "../../../../scripts/diagnose-tpr-vs-timewise-forward";
 import { refreshTodaySelectionResultsAction } from "./actions";
 import { RefreshResultsButton } from "./refresh-results-button";
-import { TimewiseComparison } from "./timewise-comparison";
 
 export const dynamic = "force-dynamic";
 
@@ -110,15 +104,12 @@ export default async function TodaysRacingPage({ searchParams }: PageProps) {
       displayData.status === "ok" ? displayData.meetings : [],
       frozenRulesChecked,
     );
-    const trackerData = displayData.status === "ok"
-      ? (await Promise.all([
-          syncAwForwardComparisons(displayData.meetings, raceDate, requestStartedAt),
-          enrichTodayForwardTrackerResults(displayData.meetings, raceDate, initialTrackerData),
-        ]))[1].data
-      : initialTrackerData;
-    const trackedRaces = new Map(trackerData.races
-      .filter((race) => race.raceDate === raceDate)
-      .map((race) => [forwardRaceKey(race), race]));
+    if (displayData.status === "ok") {
+      await Promise.all([
+        syncAwForwardComparisons(displayData.meetings, raceDate, requestStartedAt),
+        enrichTodayForwardTrackerResults(displayData.meetings, raceDate, initialTrackerData),
+      ]);
+    }
 
     return (
       <main className="min-h-full bg-stone-50 px-4 py-8 text-slate-950 sm:px-6 lg:px-8">
@@ -165,9 +156,7 @@ export default async function TodaysRacingPage({ searchParams }: PageProps) {
           ) : (
             <TodaysRacing
               meetings={displayData.meetings}
-              raceDate={raceDate}
               shadowSummary={shadowSummary}
-              trackedRaces={trackedRaces}
             />
           )}
         </section>
@@ -218,14 +207,10 @@ function FrozenRuleMatchSummary({ summary }: { summary: TodayFrozenRuleMatchSumm
 
 function TodaysRacing({
   meetings,
-  raceDate,
   shadowSummary,
-  trackedRaces,
 }: {
   meetings: TodayMeeting[];
-  raceDate: string;
   shadowSummary: TurfPerformanceShadowSummary | null;
-  trackedRaces: Map<string, ForwardRaceRecord>;
 }) {
   const ruleSelections = buildTodayRuleSelections(meetings);
 
@@ -270,8 +255,6 @@ function TodaysRacing({
           <MeetingSection
             key={meeting.courseId}
             meeting={meeting}
-            raceDate={raceDate}
-            trackedRaces={trackedRaces}
           />
         ))}
       </div>
@@ -354,10 +337,8 @@ function TodayRuleSelectionsTable({ selections }: { selections: TodayRuleSelecti
   );
 }
 
-function MeetingSection({ meeting, raceDate, trackedRaces }: {
+function MeetingSection({ meeting }: {
   meeting: TodayMeeting;
-  raceDate: string;
-  trackedRaces: Map<string, ForwardRaceRecord>;
 }) {
   return (
     <section id={`meeting-${meeting.courseId}`} className="scroll-mt-16">
@@ -375,15 +356,8 @@ function MeetingSection({ meeting, raceDate, trackedRaces }: {
       <div className="mt-5 space-y-8">
         {meeting.races.map((race) => (
           <RaceBlock
-            courseName={meeting.courseName}
-            existingTimewise={trackedRaces.get(forwardRaceKey({
-              course: meeting.courseName,
-              raceDate,
-              raceTime: trackerRaceTime(race.scheduledTime) ?? "",
-            })) ?? null}
             key={race.raceId}
             race={race}
-            raceDate={raceDate}
           />
         ))}
       </div>
@@ -391,11 +365,8 @@ function MeetingSection({ meeting, raceDate, trackedRaces }: {
   );
 }
 
-function RaceBlock({ courseName, existingTimewise, race, raceDate }: {
-  courseName: string;
-  existingTimewise: ForwardRaceRecord | null;
+function RaceBlock({ race }: {
   race: TodayRace;
-  raceDate: string;
 }) {
   const isJumpRace = isJumpRaceForDisplay(race);
   const isAllWeatherRace = isAllWeatherRaceForDisplay(race);
@@ -434,9 +405,7 @@ function RaceBlock({ courseName, existingTimewise, race, raceDate }: {
         isTurfRace={isTurfRace}
         runners={race.runners}
       />
-      {isTimewiseEligibleRace(race) ? (
-        <TimewiseComparison courseName={courseName} existing={existingTimewise} race={race} raceDate={raceDate} />
-      ) : null}
+      {/* TODO: The retired manual-comparator slot may host another prospective test later. */}
     </section>
   );
 }

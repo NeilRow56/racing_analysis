@@ -1,6 +1,14 @@
 import assert from "node:assert/strict";
+import { execFile } from "node:child_process";
+import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { fileURLToPath } from "node:url";
+import { promisify } from "node:util";
 import { describe, test } from "node:test";
-import { createRecord, disagreementByOrContext, orAgreementSummaries, parseTrackerData, renderReport, renderSummary, summarize, TRACKER_VERSION, upsertRace } from "./diagnose-tpr-vs-timewise-forward";
+import { createRecord, disagreementByOrContext, orAgreementSummaries, parseTrackerData, renderReport, renderSummary, renderTprSummary, summarize, summarizeTprForward, TRACKER_VERSION, upsertRace } from "./diagnose-tpr-vs-timewise-forward";
+
+const execFileAsync = promisify(execFile);
 
 describe("TPR vs Timewise forward tracker", () => {
   const race = (overrides: Partial<Parameters<typeof createRecord>[0]> = {}) => createRecord({
@@ -232,5 +240,128 @@ describe("TPR vs Timewise forward tracker", () => {
       "W50 + OR: 1 races / 0.00%",
       "TPR-only: 1 | Timewise-only: 1 | Both: 1 | Neither: 1",
     ]) assert.match(output, new RegExp(line.replace(/[£+|()]/g, "\\$&")));
+  });
+
+  test("renders a Timewise-independent TPR summary with corrected denominators and snapshot counts", () => {
+    const records = [
+      race({
+        timewiseRank1: null,
+        timewiseRank2: null,
+        timewiseRecordedPreRace: true,
+        tprInputSnapshot: { version: "tpr_forward_snapshot_v1", runners: [] },
+      }),
+      race({
+        raceTime: "15:20",
+        winner: "Bravo",
+        winnerSp: 5,
+        tprRank1: null,
+        tprRank1NonRunner: true,
+        timewiseRank1: null,
+        timewiseRank2: null,
+        timewiseRecordedPreRace: true,
+      }),
+      race({
+        raceTime: "16:20",
+        winner: "Alpha",
+        winnerSp: 4,
+        w50Rank1: null,
+        w50Rank1NonRunner: true,
+        timewiseRank1: null,
+        timewiseRank2: null,
+        timewiseRecordedPreRace: true,
+      }),
+      race({
+        raceTime: "17:20",
+        winner: "Alpha",
+        winnerSp: 3,
+        timewiseRank1: null,
+        timewiseRank2: null,
+        timewiseRecordedPreRace: false,
+      }),
+      race({
+        raceTime: "18:20",
+        winner: "Alpha",
+        winnerSp: 6,
+        winners: [
+          { horseName: "Alpha", decimalOdds: 6 },
+          { horseName: "Bravo", decimalOdds: 8 },
+        ],
+        timewiseRank1: null,
+        timewiseRank2: null,
+        timewiseRecordedPreRace: null,
+      }),
+    ];
+    const summary = summarizeTprForward(records);
+    const output = renderTprSummary({ version: TRACKER_VERSION, races: records });
+
+    assert.deepEqual(summary.tracking, {
+      racesTracked: 5,
+      preRace: 3,
+      postRace: 1,
+      unknown: 1,
+      cleanSample: 4,
+      w100NonRunners: 1,
+      w50NonRunners: 1,
+      snapshotBackedCleanRaces: 1,
+      legacyCleanRaces: 3,
+    });
+    assert.equal(summary.w100.runnableSelections, 3);
+    assert.equal(summary.w50.runnableSelections, 3);
+    assert.equal(summary.disagreements.races, 2);
+    assert.equal(summary.disagreements.both, 1);
+    assert.match(output, /## TPR\/W50 Turf Forward Summary/);
+    assert.match(output, /Snapshot-backed clean races: 1/);
+    assert.match(output, /Legacy clean races: 3/);
+    assert.match(output, /W50 without OR:/);
+    assert.doesNotMatch(output, /Timewise/);
+  });
+
+  test("includes parsed TPR rows whose Timewise selection fields are absent", () => {
+    const data = parseTrackerData({
+      version: TRACKER_VERSION,
+      races: [{
+        raceDate: "2026-09-20",
+        course: "Newbury",
+        raceTime: "14:00",
+        winner: "Alpha",
+        winnerSp: 4,
+        tprRank1: "Alpha",
+        tprRank2: "Bravo",
+        w50Rank1: "Bravo",
+        orRank1: "Alpha",
+        winnerOrRank: 1,
+        timewiseRecordedPreRace: true,
+      }],
+    });
+    const summary = summarizeTprForward(data.races);
+
+    assert.equal(data.races[0]?.timewiseRank1, null);
+    assert.equal(data.races[0]?.timewiseRank2, null);
+    assert.equal(summary.w100.runnableSelections, 1);
+    assert.equal(summary.w50.runnableSelections, 1);
+  });
+
+  test("tpr-summary command reads without mutating its tracker", async () => {
+    const directory = await mkdtemp(join(tmpdir(), "tpr-summary-"));
+    const path = join(directory, "tracker.json");
+    const data = {
+      version: TRACKER_VERSION,
+      races: [race({ timewiseRank1: null, timewiseRank2: null, timewiseRecordedPreRace: true })],
+    };
+    const original = `${JSON.stringify(data, null, 2)}\n`;
+    await writeFile(path, original, "utf8");
+
+    try {
+      const { stdout } = await execFileAsync(process.execPath, [
+        fileURLToPath(new URL("./diagnose-tpr-vs-timewise-forward.ts", import.meta.url)),
+        "tpr-summary",
+        "--data",
+        path,
+      ]);
+      assert.match(stdout, /TPR\/W50 Turf Forward Summary/);
+      assert.equal(await readFile(path, "utf8"), original);
+    } finally {
+      await rm(directory, { recursive: true, force: true });
+    }
   });
 });

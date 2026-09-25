@@ -20,7 +20,7 @@ import {
 } from "./tpr-timewise-forward-context";
 
 describe("Today Timewise forward context", () => {
-  test("shows Timewise controls for Turf and AW but not Jump races", () => {
+  test("keeps Timewise tracker eligibility for Turf and AW but not Jump races", () => {
     assert.equal(isTimewiseEligibleRace(race()), true);
     assert.equal(isTimewiseEligibleRace(race({ going: "Standard", surface: "ALLWEATHER" })), true);
     assert.equal(isTimewiseEligibleRace(race({ raceType: "Chase", raceTypeCode: "CHASE" })), false);

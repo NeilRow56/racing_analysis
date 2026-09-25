@@ -304,6 +304,91 @@ export function renderSummary(data: TrackerData): string {
   return ["## Turf", "", turf, "", "## All Weather", "", allWeather].join("\n");
 }
 
+export function summarizeTprForward(races: ForwardRaceRecord[]) {
+  const turfRaces = races.filter((race) => race.family === "turf");
+  const cleanRaces = cleanComparisonRaces(turfRaces);
+  const settledRaces = cleanRaces.filter((race) => race.winners.length > 0);
+  const w100Races = settledRaces.filter(hasActiveTprRank1);
+  const w50Races = settledRaces.filter(hasActiveW50Rank1);
+  const disagreementRaces = settledRaces.filter((race) =>
+    hasActiveTprRank1(race) &&
+    hasActiveW50Rank1(race) &&
+    !sameHorse(race.tprRank1, race.w50Rank1)
+  );
+
+  return {
+    tracking: {
+      racesTracked: turfRaces.length,
+      preRace: count(turfRaces, (race) => race.timewiseRecordedPreRace === true),
+      postRace: count(turfRaces, (race) => race.timewiseRecordedPreRace === false),
+      unknown: count(turfRaces, (race) => race.timewiseRecordedPreRace == null),
+      cleanSample: cleanRaces.length,
+      w100NonRunners: count(turfRaces, (race) => race.tprRank1NonRunner === true),
+      w50NonRunners: count(turfRaces, (race) => race.w50Rank1NonRunner === true),
+      snapshotBackedCleanRaces: count(cleanRaces, hasTprSnapshot),
+      legacyCleanRaces: count(cleanRaces, (race) => !hasTprSnapshot(race)),
+    },
+    w100: rank1SelectionSummary(w100Races, (race) => race.tprRank1),
+    w50: rank1SelectionSummary(w50Races, (race) => race.w50Rank1),
+    disagreements: disagreementSummary(disagreementRaces),
+    orAgreement: orAgreementSummaries(turfRaces),
+  };
+}
+
+export function renderTprSummary(data: TrackerData): string {
+  const summary = summarizeTprForward(data.races);
+  const split = (rating: "TPR W100" | "W50", agrees: boolean) =>
+    summary.orAgreement.find((value) => value.rating === rating && value.agrees === agrees)!;
+  const selectionLines = (label: "W100" | "W50", value: typeof summary.w100) => [
+    label,
+    `  Runnable selections: ${value.runnableSelections}`,
+    `  Winners: ${value.winners}`,
+    `  Strike: ${pct(value.strike)}`,
+    `  Priced selections: ${value.pricedSelections}`,
+    `  £1 P/L: ${money(value.levelStakeReturn)}`,
+    `  ROI: ${pct(value.roi)}`,
+    `  Average winning SP: ${number(value.averageWinningSp)}`,
+    `  Median winning SP: ${number(value.medianWinningSp)}`,
+    `  Max losing run: ${value.maxLosingRun}`,
+  ];
+  const orLine = (label: string, value: ReturnType<typeof split>) =>
+    `  ${label}: ${value.races} races | ${value.winners} winners | ${pct(value.strike)} strike | ${value.pricedRaces} priced | ${money(value.levelStakeReturn)} P/L | ${pct(value.roi)} ROI`;
+
+  return [
+    "## TPR/W50 Turf Forward Summary",
+    "",
+    "Tracking",
+    `  Races tracked: ${summary.tracking.racesTracked}`,
+    `  Timing: ${summary.tracking.preRace} pre-race | ${summary.tracking.postRace} post-race/backfilled | ${summary.tracking.unknown} unknown`,
+    `  Clean comparison sample: ${summary.tracking.cleanSample}`,
+    `  W100 non-runners: ${summary.tracking.w100NonRunners}`,
+    `  W50 non-runners: ${summary.tracking.w50NonRunners}`,
+    `  Snapshot-backed clean races: ${summary.tracking.snapshotBackedCleanRaces}`,
+    `  Legacy clean races: ${summary.tracking.legacyCleanRaces}`,
+    "",
+    ...selectionLines("W100", summary.w100),
+    "",
+    ...selectionLines("W50", summary.w50),
+    "",
+    "W50 vs W100 disagreements",
+    `  Races: ${summary.disagreements.races}`,
+    `  W50 winners: ${summary.disagreements.w50Winners}`,
+    `  W100 winners: ${summary.disagreements.w100Winners}`,
+    `  Both: ${summary.disagreements.both}`,
+    `  Neither: ${summary.disagreements.neither}`,
+    `  W50 average winning SP: ${number(summary.disagreements.w50AverageWinningSp)}`,
+    `  W100 average winning SP: ${number(summary.disagreements.w100AverageWinningSp)}`,
+    "",
+    "OR agreement",
+    orLine("W100 + OR", split("TPR W100", true)),
+    orLine("W100 without OR", split("TPR W100", false)),
+    orLine("W50 + OR", split("W50", true)),
+    orLine("W50 without OR", split("W50", false)),
+    "",
+    "Settlement basis: non-runners are void; voids and post-race/backfilled records are excluded from runnable, strike and ROI denominators. Dead heats use canonical win settlement. Winning-price averages are shown because losing selections' SPs are not persisted.",
+  ].join("\n");
+}
+
 function renderFamilySummary(records: ForwardRaceRecord[], family: "turf" | "all_weather"): string {
   const overall = summarize(records);
   const settledRaces = cleanComparisonRaces(records).filter((race) => race.winners.length > 0);
@@ -395,6 +480,10 @@ async function main() {
     console.log(renderSummary(data));
     return;
   }
+  if (command === "tpr-summary") {
+    console.log(renderTprSummary(data));
+    return;
+  }
   if (command === "add") {
     const input: ForwardRaceInput = {
       raceDate: required(args, "--date"),
@@ -434,7 +523,7 @@ async function main() {
     console.log(`Tracked ${forwardRaceKey(record!)}; wrote ${dataPath} and ${reportPath}`);
     return;
   }
-  if (command !== "report") throw new Error(`Unknown command: ${command}. Use add, report, or summary.`);
+  if (command !== "report") throw new Error(`Unknown command: ${command}. Use add, report, summary, or tpr-summary.`);
   await writeReport(reportPath, renderReport(data, dataPath));
   console.log(`Wrote ${reportPath} from ${dataPath} (${data.races.length} races)`);
 }
@@ -477,7 +566,25 @@ export async function mutateTrackerData(
 export function parseTrackerData(value: unknown, source = "tracker data"): TrackerData {
   const parsed = value as Partial<TrackerData> & { version?: string; races?: Array<Partial<ForwardRaceInput>> };
   if (![TRACKER_VERSION, "tpr_timewise_forward_v3", "tpr_timewise_forward_v2", "tpr_timewise_forward_v1"].includes(parsed.version ?? "") || !Array.isArray(parsed.races)) throw new Error(`Unsupported tracker data in ${source}`);
-  return { version: TRACKER_VERSION, races: parsed.races.map((race) => createRecord({ ...(race as ForwardRaceInput), family: race.family ?? "turf", timewiseRank1NonRunner: race.timewiseRank1NonRunner ?? false, timewiseRank2NonRunner: race.timewiseRank2NonRunner ?? false, w50Rank1: race.w50Rank1 ?? null, awBestL3SpeedRank1: race.awBestL3SpeedRank1 ?? null, awBestL3PerformanceRank1: race.awBestL3PerformanceRank1 ?? null, orRank1: race.orRank1 ?? null, winnerOrRank: race.winnerOrRank ?? null, timewiseRecordedAt: race.timewiseRecordedAt ?? null, timewiseRecordedPreRace: race.timewiseRecordedPreRace ?? null, timewiseUpdatedAt: race.timewiseUpdatedAt ?? null })) };
+  return {
+    version: TRACKER_VERSION,
+    races: parsed.races.map((race) => createRecord({
+      ...(race as ForwardRaceInput),
+      family: race.family ?? "turf",
+      timewiseRank1: race.timewiseRank1 ?? null,
+      timewiseRank2: race.timewiseRank2 ?? null,
+      timewiseRank1NonRunner: race.timewiseRank1NonRunner ?? false,
+      timewiseRank2NonRunner: race.timewiseRank2NonRunner ?? false,
+      w50Rank1: race.w50Rank1 ?? null,
+      awBestL3SpeedRank1: race.awBestL3SpeedRank1 ?? null,
+      awBestL3PerformanceRank1: race.awBestL3PerformanceRank1 ?? null,
+      orRank1: race.orRank1 ?? null,
+      winnerOrRank: race.winnerOrRank ?? null,
+      timewiseRecordedAt: race.timewiseRecordedAt ?? null,
+      timewiseRecordedPreRace: race.timewiseRecordedPreRace ?? null,
+      timewiseUpdatedAt: race.timewiseUpdatedAt ?? null,
+    })),
+  };
 }
 
 async function writeData(path: string, data: TrackerData) {
@@ -527,11 +634,70 @@ export function forwardRaceKey(race: Pick<ForwardRaceInput, "raceDate" | "course
 function compareRaces(left: ForwardRaceInput, right: ForwardRaceInput) { return left.raceDate.localeCompare(right.raceDate) || left.raceTime.localeCompare(right.raceTime) || left.course.localeCompare(right.course); }
 function levelStakeReturn(races: ForwardRaceRecord[], source: "tpr" | "timewise") { return races.reduce((sum, race) => sum + selectionReturn(race, source === "tpr" ? race.tprRank1 : race.timewiseRank1), 0) - races.length; }
 function rank1Return(races: ForwardRaceRecord[], selection: (race: ForwardRaceRecord) => string | null) { return races.length === 0 ? null : races.reduce((sum, race) => sum + selectionReturn(race, selection(race)), 0) - races.length; }
+function rank1SelectionSummary(races: ForwardRaceRecord[], selection: (race: ForwardRaceRecord) => string | null) {
+  const winners = races.filter((race) => hasWinner(race.winners, selection(race)));
+  const priced = races.filter(hasPricedResult);
+  const levelStakeReturn = rank1Return(priced, selection);
+  const winningPrices = winners
+    .map((race) => winningPriceFor(race, selection(race)))
+    .filter((value): value is number => value !== null);
+  return {
+    runnableSelections: races.length,
+    winners: winners.length,
+    strike: rate(winners.length, races.length),
+    pricedSelections: priced.length,
+    levelStakeReturn,
+    roi: levelStakeReturn === null ? null : rate(levelStakeReturn, priced.length),
+    averageWinningSp: average(winningPrices),
+    medianWinningSp: median(winningPrices),
+    maxLosingRun: maximumLosingRun(races, selection),
+  };
+}
+function disagreementSummary(races: ForwardRaceRecord[]) {
+  const w50Wins = races.filter((race) => hasWinner(race.winners, race.w50Rank1));
+  const w100Wins = races.filter((race) => hasWinner(race.winners, race.tprRank1));
+  const both = races.filter((race) =>
+    hasWinner(race.winners, race.w50Rank1) && hasWinner(race.winners, race.tprRank1)
+  );
+  return {
+    races: races.length,
+    w50Winners: w50Wins.length,
+    w100Winners: w100Wins.length,
+    both: both.length,
+    neither: races.length - new Set([...w50Wins, ...w100Wins]).size,
+    w50AverageWinningSp: average(w50Wins
+      .map((race) => winningPriceFor(race, race.w50Rank1))
+      .filter((value): value is number => value !== null)),
+    w100AverageWinningSp: average(w100Wins
+      .map((race) => winningPriceFor(race, race.tprRank1))
+      .filter((value): value is number => value !== null)),
+  };
+}
 function pairwiseDisagreement(races: ForwardRaceRecord[], left: (race: ForwardRaceRecord) => string | null, right: (race: ForwardRaceRecord) => string | null) { const rows = races.filter((race) => left(race) !== null && right(race) !== null && !sameHorse(left(race), right(race))); return { races: rows.length, leftWinners: count(rows, (race) => hasWinner(race.winners, left(race))), rightWinners: count(rows, (race) => hasWinner(race.winners, right(race))), neither: count(rows, (race) => !hasWinner(race.winners, left(race)) && !hasWinner(race.winners, right(race))) }; }
 function awComparisonLine(label: string, races: ForwardRaceRecord[], comparison: (race: ForwardRaceRecord) => string | null) { const available = races.filter((race) => comparison(race) !== null && race.timewiseRank1 !== null), agreements = available.filter((race) => sameHorse(comparison(race), race.timewiseRank1)).length, disagreement = pairwiseDisagreement(available, comparison, (race) => race.timewiseRank1); return `${label} vs Timewise R1: agreement ${agreements} | disagreement ${disagreement.races} | Timewise only ${disagreement.rightWinners} | ${label} only ${disagreement.leftWinners} | neither ${disagreement.neither}`; }
 function count<T>(values: T[], predicate: (value: T) => boolean | null) { return values.filter((value) => predicate(value) === true).length; }
 function rate(numerator: number, denominator: number) { return denominator === 0 ? null : numerator / denominator; }
 function average(values: number[]) { return values.length === 0 ? null : values.reduce((sum, value) => sum + value, 0) / values.length; }
+function median(values: number[]) {
+  if (values.length === 0) return null;
+  const sorted = [...values].sort((left, right) => left - right);
+  const middle = Math.floor(sorted.length / 2);
+  return sorted.length % 2 === 0 ? (sorted[middle - 1]! + sorted[middle]!) / 2 : sorted[middle]!;
+}
+function maximumLosingRun(races: ForwardRaceRecord[], selection: (race: ForwardRaceRecord) => string | null) {
+  let current = 0;
+  let maximum = 0;
+  for (const race of [...races].sort(compareRaces)) {
+    if (hasWinner(race.winners, selection(race))) {
+      current = 0;
+    } else {
+      current += 1;
+      maximum = Math.max(maximum, current);
+    }
+  }
+  return maximum;
+}
+function hasTprSnapshot(race: ForwardRaceRecord) { return race.tprInputSnapshot?.version === "tpr_forward_snapshot_v1"; }
 function optionalNumber(value: string | undefined) { if (value === undefined) return null; const parsed = Number(value); if (!Number.isFinite(parsed)) throw new Error(`Invalid number: ${value}`); return parsed; }
 function optionalPositiveInteger(value: string | undefined) { if (value === undefined) return null; const parsed = Number(value); if (!Number.isInteger(parsed) || parsed < 1) throw new Error(`Invalid positive integer: ${value}`); return parsed; }
 function optionalText(value: string | undefined) { return value?.trim() || null; }

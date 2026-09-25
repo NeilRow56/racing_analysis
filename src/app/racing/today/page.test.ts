@@ -136,6 +136,23 @@ describe("Today request orchestration", () => {
     assert.match(source, /Previous 1st or 2nd finishes on going containing these terms\./);
     assert.doesNotMatch(source, /suit(?:s|able|ability)/i);
   });
+
+  test("does not render active Timewise manual-entry controls", () => {
+    const source = readFileSync(new URL("./page.tsx", import.meta.url), "utf8");
+
+    assert.doesNotMatch(source, /from "\.\/timewise-comparison"/);
+    assert.doesNotMatch(source, /<TimewiseComparison\b/);
+    assert.doesNotMatch(source, /saveTimewiseComparisonAction/);
+    assert.match(source, /retired manual-comparator slot/);
+  });
+
+  test("keeps existing Timewise settlement support without exposing a save path", () => {
+    const source = readFileSync(new URL("./page.tsx", import.meta.url), "utf8");
+
+    assert.match(source, /loadTrackerData\(\)/);
+    assert.match(source, /enrichTodayForwardTrackerResults\(/);
+    assert.doesNotMatch(source, /saveTrackerRace\(/);
+  });
 });
 
 function race(overrides: Partial<TodayRace> = {}): TodayRace {
