@@ -19,6 +19,10 @@ import {
 import { trainerCohortRule } from "./trainer-cohorts";
 import { TURF_PERFORMANCE_RATING_VERSION } from "./turf-performance-rating";
 import {
+  CANONICAL_SETTLEMENT_VERSION,
+  isLegacySettlementSnapshot,
+} from "./research-settlement-version";
+import {
   developmentSnapshotFromResult,
   assertCanValidateHoldout,
   canValidateHoldout,
@@ -75,6 +79,7 @@ describe("saved research rules", () => {
     assert.deepEqual((prepared.canonicalRule as { runner?: { jockeyIds?: string[] } }).runner?.jockeyIds, ["jockey-a", "jockey-b"]);
     assert.deepEqual((prepared.canonicalRule as { runner?: { jockeyPriorRuns?: { min?: number } } }).runner?.jockeyPriorRuns, { min: 50 });
     assert.deepEqual(prepared.developmentSnapshot, {
+      settlementVersion: CANONICAL_SETTLEMENT_VERSION,
       eligibleRunners: 20,
       selections: 5,
       settledSelections: 4,
@@ -104,6 +109,28 @@ describe("saved research rules", () => {
     assert.ok(prepared.frozenAt.getTime() <= after);
     assert.deepEqual(prepared.canonicalRule, canonicalResearchRule(rule));
     assert.equal(prepared.ruleIdentity, researchRuleKey(rule));
+    const snapshot = prepared.developmentSnapshot as ReturnType<typeof developmentSnapshotFromResult>;
+    assert.equal(snapshot.settlementVersion, CANONICAL_SETTLEMENT_VERSION);
+    assert.equal(isLegacySettlementSnapshot(snapshot), false);
+  });
+
+  test("detects legacy snapshots without inferring v2 or changing historical data", () => {
+    const rule = defaultResearchRule("jump");
+    const legacySnapshot = {
+      ...developmentSnapshotFromResult(researchResult(rule)),
+      settlementVersion: undefined,
+      settledSelections: 17,
+      profitLoss: 12.5,
+      roiPercentage: 73.529,
+    };
+    const before = structuredClone(legacySnapshot);
+
+    assert.equal(isLegacySettlementSnapshot(legacySnapshot), true);
+    assert.deepEqual(legacySnapshot, before);
+    assert.equal(legacySnapshot.settlementVersion, undefined);
+    assert.equal(legacySnapshot.settledSelections, 17);
+    assert.equal(legacySnapshot.profitLoss, 12.5);
+    assert.equal(legacySnapshot.roiPercentage, 73.529);
   });
 
   test("preserves a legacy Speed-vs-OR condition in a frozen rule", () => {
@@ -177,6 +204,24 @@ describe("saved research rules", () => {
     assert.notEqual(prepared.ruleIdentity, researchRuleKey(defaultResearchRule("jump")));
   });
 
+  test("preserves calendar period in frozen identity without changing legacy rule identity", () => {
+    const legacy = defaultResearchRule("jump");
+    const rule: ResearchRuleV1 = {
+      ...legacy,
+      calendarPeriod: { monthFrom: 10, monthTo: 3 },
+    };
+    const prepared = prepareFrozenSavedResearchRule({
+      name: "Winter Jump",
+      rule,
+      developmentSnapshot: developmentSnapshotFromResult(researchResult(rule)),
+    });
+
+    assert.deepEqual((prepared.canonicalRule as ResearchRuleV1).calendarPeriod, { monthFrom: 10, monthTo: 3 });
+    assert.equal(prepared.ruleIdentity, researchRuleKey(rule));
+    assert.notEqual(prepared.ruleIdentity, researchRuleKey(legacy));
+    assert.equal("calendarPeriod" in canonicalResearchRule(legacy), false);
+  });
+
   test("round-trips the exact frozen Chase 31-60 days rule", () => {
     const rule: ResearchRuleV1 = {
       ...defaultResearchRule("jump"),
@@ -238,6 +283,14 @@ describe("saved research rules", () => {
       relatives: [],
       ranks: [],
     };
+    const legacySnapshot = {
+      ...developmentSnapshotFromResult(researchResult(defaultResearchRule("jump"))),
+      settlementVersion: undefined,
+      settledSelections: 17,
+      profitLoss: 12.5,
+      roiPercentage: 73.529,
+    };
+    const legacySnapshotBefore = structuredClone(legacySnapshot);
     const saved = savedResearchRuleFromRow({
       id: "a1111111-1111-4111-8111-111111111111",
       name: "Legacy class rule",
@@ -249,7 +302,7 @@ describe("saved research rules", () => {
       family: "jump",
       developmentFrom: "2025-01-01",
       developmentTo: "2025-12-31",
-      developmentSnapshot: developmentSnapshotFromResult(researchResult(defaultResearchRule("jump"))),
+      developmentSnapshot: legacySnapshot,
       holdoutSnapshot: null,
       cacheMetadata: null,
       createdAt: new Date("2026-09-11T10:00:00.000Z"),
@@ -264,6 +317,12 @@ describe("saved research rules", () => {
     assert.deepEqual(saved.canonicalRule, canonicalResearchRule(expectedRule));
     assert.equal(saved.ruleIdentity, researchRuleKey(expectedRule));
     assert.equal(saved.status, "frozen");
+    assert.equal(isLegacySettlementSnapshot(saved.developmentSnapshot), true);
+    assert.equal(saved.developmentSnapshot.settlementVersion, undefined);
+    assert.equal(saved.developmentSnapshot.settledSelections, 17);
+    assert.equal(saved.developmentSnapshot.profitLoss, 12.5);
+    assert.equal(saved.developmentSnapshot.roiPercentage, 73.529);
+    assert.deepEqual(legacySnapshot, legacySnapshotBefore);
   });
 
   test("canonical rule and identity survive save/load mapping unchanged", () => {
@@ -543,6 +602,7 @@ function researchResult(
   summaryOverrides: Partial<ResearchResult["summary"]> = {},
 ): ResearchResult {
   return {
+    settlementVersion: CANONICAL_SETTLEMENT_VERSION,
     rule,
     rowsEvaluated: 30,
     baselineRows: 20,

@@ -26,6 +26,7 @@ import {
 import { canonicalResearchRule, researchRuleKey } from "./research-rule-identity";
 import { trainerCohortRule, type ResolvedTrainerCohort } from "./trainer-cohorts";
 import { TURF_PERFORMANCE_RATING_VERSION } from "./turf-performance-rating";
+import { CANONICAL_SETTLEMENT_VERSION } from "./research-settlement-version";
 import {
   developmentSnapshotFromResult,
   type SavedResearchRule,
@@ -105,6 +106,7 @@ describe("research holdout validation", () => {
     assert.equal(snapshot.requestedCacheFrom, "2026-01-01");
     assert.equal(snapshot.requestedCacheTo, "2026-12-31");
     assert.equal(snapshot.ruleIdentity, savedRule.ruleIdentity);
+    assert.equal(snapshot.settlementVersion, CANONICAL_SETTLEMENT_VERSION);
     assert.equal(snapshot.ruleSchemaVersion, RESEARCH_RULE_VERSION);
     assert.equal(snapshot.eligibleRunners, 3);
     assert.equal(snapshot.selections, 2);
@@ -115,6 +117,27 @@ describe("research holdout validation", () => {
     assert.equal(snapshot.roiPercentage, 0);
     assert.equal(snapshot.maxConsecutiveLosers, 1);
     assert.equal(snapshot.status, "insufficient_holdout_sample");
+  });
+
+  test("applies a frozen calendar period to holdout using the canonical race date", async () => {
+    const root = await mkdtemp(join(tmpdir(), "racing-holdout-calendar-"));
+    const rule: ResearchRuleV1 = {
+      ...defaultResearchRule("jump"),
+      calendarPeriod: { monthFrom: 1, monthTo: 3 },
+    };
+    await writeCache(root, {
+      manifest: manifestFor({ family: "jump", from: "2026-01-01", to: "2026-12-31", rowCount: 3 }),
+      rows: [
+        row({ targetRunnerId: "jan", raceDate: "2026-01-01" }),
+        row({ targetRunnerId: "mar", raceDate: "2026-03-31" }),
+        row({ targetRunnerId: "apr", raceDate: "2026-04-01" }),
+      ],
+    });
+
+    const snapshot = await evaluateHoldoutForSavedRule(savedRuleFor(rule), { outputDir: root });
+
+    assert.equal(snapshot.eligibleRunners, 2);
+    assert.equal(snapshot.selections, 2);
   });
 
   test("records no-settled status and uses the latest compatible 2026 cache range", async () => {
@@ -445,6 +468,7 @@ function savedRuleFor(rule: ResearchRuleV1): SavedResearchRule {
     developmentFrom: rule.dateRange.from,
     developmentTo: rule.dateRange.to,
     developmentSnapshot: developmentSnapshotFromResult({
+      settlementVersion: CANONICAL_SETTLEMENT_VERSION,
       rule,
       rowsEvaluated: 0,
       baselineRows: 0,

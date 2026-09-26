@@ -144,6 +144,21 @@ describe("Today frozen rule matching", () => {
     assert.deepEqual(matched, ["runner-rank-2", "runner-rank-3"]);
   });
 
+  test("matches Today races inside a frozen wrap-around calendar period", () => {
+    const rule = savedRule("winter-jump", "Winter Jump", {
+      ...defaultResearchRule("jump"),
+      calendarPeriod: { monthFrom: 10, monthTo: 3 },
+    }, "frozen");
+    const jumpRace = { raceName: "Handicap Chase", raceType: "Chase", surface: null };
+
+    assert.equal(matchIds(rule, jumpRace, {}, {}, "2026-03-31").length, 4);
+    assert.equal(matchIds(rule, jumpRace, {}, {}, "2026-04-01").length, 0);
+    assert.equal(matchIds(rule, {
+      ...jumpRace,
+      raceDateTime: new Date("2026-09-30T23:30:00.000Z"),
+    }, {}, {}, "2026-10-01").length, 4);
+  });
+
   test("missing rank metric and non-runner do not match", () => {
     const matched = matchIds(
       exampleFrozenRule(),
@@ -658,7 +673,7 @@ describe("Today rule selections", () => {
     assert.equal(selections.rows[0]?.settlement, null);
   });
 
-  test("preserves genuine OTHER after a conclusive race result", () => {
+  test("settles a priced terminal OTHER result as a losing bet", () => {
     const selections = buildTodayRuleSelections([
       meetingWithRace(race({ winningTime: "1m 12.00s" }), [
         runner("runner-other", {}, {
@@ -675,7 +690,13 @@ describe("Today rule selections", () => {
     ]);
 
     assert.equal(selections.rows[0]?.result, "OTHER");
-    assert.equal(selections.rows[0]?.settlement, null);
+    assert.deepEqual(selections.rows[0]?.settlement, {
+      settled: true,
+      settlementOddsDecimal: 6,
+      stake: 1,
+      grossReturn: 0,
+      profitLoss: -1,
+    });
   });
 
   test("settles a winning selection at 5/1 as plus five pounds", () => {

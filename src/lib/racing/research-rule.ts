@@ -6,6 +6,12 @@ import {
   type BacktestSummary,
 } from "./backtest";
 import type { BacktestCacheFamily, BacktestFeatureCacheManifest } from "./backtest-cache";
+import {
+  calendarPeriodFromValues,
+  calendarPeriodLabel,
+  matchesCalendarPeriod,
+  type CalendarPeriod,
+} from "./calendar-period";
 import type {
   HistoricalPreRaceFeatureRow,
   HistoricalTargetRunnerMetricsRow,
@@ -13,6 +19,10 @@ import type {
 import { classifyJumpRaceSubtype } from "./jump-speed-rating";
 import { normalizeRaceClasses, raceClassNumber } from "./research-rule-classes";
 import { RANK_METRIC_OPTIONS, type RankMetric } from "./research-rank-metrics";
+import {
+  CANONICAL_SETTLEMENT_VERSION,
+  type ResearchSettlementVersion,
+} from "./research-settlement-version";
 import { RELATIVE_METRIC_OPTIONS, type RelativeMetric } from "./research-or-relative-metrics";
 import {
   isTrainerCohortTop,
@@ -37,6 +47,7 @@ import {
   type RankedTurfPerformanceRating,
 } from "./turf-performance-rating";
 export { normalizeRaceClasses } from "./research-rule-classes";
+export { calendarPeriodFromValues, matchesCalendarPeriod, type CalendarPeriod } from "./calendar-period";
 export { RANK_METRIC_OPTIONS, type RankMetric } from "./research-rank-metrics";
 export {
   CREATABLE_RELATIVE_METRIC_OPTIONS,
@@ -74,6 +85,7 @@ export type ResearchRuleV1 = {
     from: string;
     to: string;
   };
+  calendarPeriod?: CalendarPeriod;
   race: {
     courseIds?: string[];
     courseNames?: string[];
@@ -207,6 +219,7 @@ export type ResearchMissingData = {
 };
 
 export type ResearchResult = {
+  settlementVersion: ResearchSettlementVersion;
   rule: ResearchRuleV1;
   rowsEvaluated: number;
   baselineRows: number;
@@ -372,6 +385,7 @@ export function evaluateResearchRule(input: {
   const baseline = rankedRows
     .filter((row) => row.features.raceDate >= input.rule.dateRange.from)
     .filter((row) => row.features.raceDate <= input.rule.dateRange.to)
+    .filter((row) => matchesCalendarPeriod(row.features.raceDate, input.rule.calendarPeriod))
     .filter((row) => matchesRaceConditions(row.features, input.rule))
     .filter((row) => matchesRunnerConditions(row.features, input.rule, input.trainerCohort ?? null));
   const selectedRows = baseline
@@ -389,6 +403,7 @@ export function evaluateResearchRule(input: {
   const baselineWins = baselineSettled.filter(({ row }) => row.outcome.won).length;
 
   return {
+    settlementVersion: CANONICAL_SETTLEMENT_VERSION,
     rule: input.rule,
     rowsEvaluated: rows.length,
     baselineRows: baseline.length,
@@ -480,6 +495,7 @@ export function parseResearchRule(value: string): ResearchRuleV1 | null {
         from: safeDevelopmentDate(parsed.dateRange?.from, DEVELOPMENT_FROM),
         to: safeDevelopmentDate(parsed.dateRange?.to, DEVELOPMENT_TO),
       },
+      calendarPeriod: normalizeCalendarPeriod(parsed.calendarPeriod),
       race: normalizeRaceRule(parsed.race),
       runner: normalizeRunnerRule(parsed.runner, parsed.family),
       ratings: parsed.ratings ?? [],
@@ -506,6 +522,10 @@ export function ruleFromSearchParams(params: URLSearchParams): ResearchRuleV1 {
     from: safeDevelopmentDate(params.get("from"), DEVELOPMENT_FROM),
     to: safeDevelopmentDate(params.get("to"), DEVELOPMENT_TO),
   };
+  rule.calendarPeriod = calendarPeriodFromValues(
+    params.get("monthFrom"),
+    params.get("monthTo"),
+  );
   rule.race = {
     courseIds: textValues(params.getAll("courseId")),
     courseName: textValue(params.get("course")),
@@ -851,11 +871,18 @@ export function matchesStartingPriceCondition(row: RankedResearchRow, rule: Rese
   if (!hasStartingPriceCondition(rule)) {
     return true;
   }
-  const settlement = settleSelection(row.outcome);
-  if (!settlement) {
+  if (
+    row.outcome.resultStatus === "non_runner" ||
+    row.outcome.finishingPosition === null ||
+    row.outcome.won === null
+  ) {
     return false;
   }
-  return startingPriceDecimalMatches(settlement.settlementOddsDecimal, condition);
+  const decimalOdds = Number(row.outcome.startingPriceDecimal);
+  if (!Number.isFinite(decimalOdds) || decimalOdds <= 1) {
+    return false;
+  }
+  return startingPriceDecimalMatches(decimalOdds, condition);
 }
 
 export function hasStartingPriceCondition(rule: ResearchRuleV1): boolean {
@@ -953,6 +980,10 @@ function rangeMatches(value: number | null, range: NumericCondition | undefined)
     (range.max === undefined || value <= range.max);
 }
 
+function normalizeCalendarPeriod(value: CalendarPeriod | undefined): CalendarPeriod | undefined {
+  return calendarPeriodFromValues(value?.monthFrom, value?.monthTo);
+}
+
 function trainerCohortMatches(
   trainerId: string | null,
   rule: ResearchRuleV1,
@@ -988,6 +1019,11 @@ export function strategySummary(rule: ResearchRuleV1): string[] {
     `Family: ${familyLabel(rule.family)}`,
     `Dates: ${rule.dateRange.from} to ${rule.dateRange.to}`,
   ];
+  if (rule.calendarPeriod) {
+    lines.push(
+      `Calendar period: ${calendarPeriodLabel(rule.calendarPeriod)}`,
+    );
+  }
   pushDistanceSummary(lines, rule);
   if (!rule.race.distanceBucketFrom && !rule.race.distanceBucketTo) {
     pushRange(lines, "Distance", rule.race.distanceYards, "y");

@@ -501,20 +501,18 @@ export function settleSelection(
   outcome: HistoricalPostRaceOutcome,
   options: { maxFractionalOdds?: number } = {},
 ): BacktestSettlement | null {
-  if (outcome.resultStatus === "non_runner") {
+  if (isVoidBetResultStatus(outcome.resultStatus)) {
     return null;
   }
   const settlementOddsDecimal = parseDecimal(outcome.startingPriceDecimal);
-  if (
-    outcome.finishingPosition === null ||
-    outcome.won === null ||
-    settlementOddsDecimal === null
-  ) {
+  if (settlementOddsDecimal === null) {
     return null;
   }
+  const won = settledWinValue(outcome);
+  if (won === null) return null;
   const stake = 1;
   const grossReturn = winGrossReturn({
-    won: outcome.won,
+    won,
     decimalOdds: settlementOddsDecimal,
     deadHeatDivisor: outcome.deadHeatDivisor,
     maxFractionalOdds: options.maxFractionalOdds,
@@ -529,6 +527,35 @@ export function settleSelection(
     grossReturn,
     profitLoss: grossReturn - stake,
   };
+}
+
+const VOID_BET_RESULT_STATUSES = new Set([
+  "non_runner",
+  "abandoned",
+  "cancelled",
+  "canceled",
+  "no_race",
+  "race_void",
+  "void",
+  "void_race",
+]);
+
+export function isVoidBetResultStatus(resultStatus: string | null): boolean {
+  return resultStatus !== null && VOID_BET_RESULT_STATUSES.has(resultStatus.trim().toLowerCase());
+}
+
+function settledWinValue(outcome: HistoricalPostRaceOutcome): boolean | null {
+  if (outcome.finishingPosition !== null) {
+    return outcome.won ?? outcome.finishingPosition === 1;
+  }
+  if (outcome.resultStatus === null || outcome.resultStatus.trim() === "") {
+    return null;
+  }
+  const status = outcome.resultStatus.trim().toLowerCase();
+  if (status === "finished" || isVoidBetResultStatus(status)) {
+    return null;
+  }
+  return false;
 }
 
 export function summarizeSelections(

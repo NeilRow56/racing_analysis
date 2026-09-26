@@ -96,6 +96,7 @@ export function holdoutSnapshotFromResult(
   }
 
   return {
+    settlementVersion: result.settlementVersion,
     holdoutYear: HOLDOUT_YEAR,
     holdoutFrom: result.rule.dateRange.from,
     holdoutTo: result.rule.dateRange.to,

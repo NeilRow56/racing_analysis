@@ -44,8 +44,45 @@ import { TimeSliceStabilityPanel } from "./time-slice-stability-panel";
 import { TrainerCohortPanel } from "./trainer-cohort-panel";
 import { trainerCohortRule, type ResolvedTrainerCohort } from "@/lib/racing/trainer-cohorts";
 import { TURF_PERFORMANCE_RATING_VERSION } from "@/lib/racing/turf-performance-rating";
+import { CANONICAL_SETTLEMENT_VERSION } from "@/lib/racing/research-settlement-version";
+import {
+  LegacySettlementWarning,
+  SettlementVersionBadge,
+} from "./settlement-version-display";
 
 describe("research filters page", () => {
+  test("renders paired calendar month controls and stores only complete ranges", () => {
+    const text = renderResearchForm({
+      ...defaultResearchRule("jump"),
+      calendarPeriod: { monthFrom: 4, monthTo: 9 },
+    });
+    const complete = researchRuleFromFormData(formData({ monthFrom: "4", monthTo: "9" }));
+    const incomplete = researchRuleFromFormData(formData({ monthFrom: "4", monthTo: "" }));
+
+    assert.match(text, /Calendar Period/i);
+    assert.match(text, /Month from/);
+    assert.match(text, /Month to/);
+    assert.match(text, /1 January/);
+    assert.match(text, /12 December/);
+    assert.deepEqual(complete.calendarPeriod, { monthFrom: 4, monthTo: 9 });
+    assert.equal(incomplete.calendarPeriod, undefined);
+    assert.notEqual(researchRuleKey(complete), researchRuleKey(defaultResearchRule("jump")));
+  });
+
+  test("renders canonical and legacy settlement visibility with the legacy warning", () => {
+    const canonical = renderToStaticMarkup(
+      SettlementVersionBadge({ version: CANONICAL_SETTLEMENT_VERSION }),
+    );
+    const legacy = renderToStaticMarkup(SettlementVersionBadge({}));
+    const warning = renderToStaticMarkup(LegacySettlementWarning());
+
+    assert.match(canonical, /Settlement: Canonical v2/);
+    assert.match(legacy, /Settlement: Legacy/);
+    assert.match(warning, /Settlement: Legacy/);
+    assert.match(warning, /Historical P\/L, ROI, strike and settled counts may exclude started non-finishers/);
+    assert.match(warning, /Re-run Research for current settlement results/);
+  });
+
   test("gives generic rating and dedicated TPR rank summaries unique React keys", () => {
     const combinedRule: ResearchRuleV1 = {
       ...defaultResearchRule("turf_flat"),

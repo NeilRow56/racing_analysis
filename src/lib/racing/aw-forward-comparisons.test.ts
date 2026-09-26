@@ -79,6 +79,26 @@ describe("AW forward comparisons", () => {
     assert.equal(settled.records.find((record) => record.runnerKey === "b")?.uncappedReturn, 3);
   });
 
+  test("settles a priced non-finisher as a losing forward bet", () => {
+    const initial = upsertAwForwardRecords(empty(), buildAwForwardRecords([meeting()], "2026-09-18", new Date("2026-09-18T17:00:00.000Z")));
+    const nonFinisher = {
+      ...runner("a", 1, 100, null, "6.00"),
+      resultStatus: "pulled_up",
+    };
+    const settled = settleAwForwardRecords(initial, [meeting([
+      nonFinisher,
+      runner("b", 2, 90, 1, "3.00"),
+      runner("c", 7, 80, 2, "10.00"),
+    ])]);
+    const record = settled.records.find((candidate) => candidate.runnerKey === "a");
+
+    assert.equal(record?.finishingPosition, null);
+    assert.equal(record?.won, false);
+    assert.equal(record?.finalSp, 6);
+    assert.equal(record?.uncappedReturn, 0);
+    assert.equal(record?.capped20Return, 0);
+  });
+
   test("keeps pending records and excludes post-race records from clean summaries", () => {
     const clean = record({ key: "race|clean", runnerKey: "clean", finalSp: 6, uncappedReturn: 6, capped20Return: 6, won: true, finishingPosition: 1 });
     const pending = record({ key: "race|pending", runnerKey: "pending" });

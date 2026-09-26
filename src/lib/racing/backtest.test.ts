@@ -356,6 +356,48 @@ describe("backtest scoring", () => {
     assert.equal(settleSelection(outcome({ startingPriceDecimal: null })), null);
   });
 
+  test("settles Jump non-finishers that started as losing bets", () => {
+    for (const resultStatus of [
+      "fell",
+      "pulled_up",
+      "unseated_rider",
+      "brought_down",
+      "refused",
+      "ran_out",
+      "slipped_up",
+      "carried_out",
+      "disqualified",
+    ]) {
+      assert.deepEqual(
+        settleSelection(outcome({
+          finishingPosition: null,
+          resultStatus,
+          won: null,
+          placed: null,
+        })),
+        {
+          settled: true,
+          settlementOddsDecimal: 6,
+          stake: 1,
+          grossReturn: 0,
+          profitLoss: -1,
+        },
+        resultStatus,
+      );
+    }
+  });
+
+  test("keeps void and abandoned races out of betting denominators", () => {
+    for (const resultStatus of ["void", "void_race", "abandoned"]) {
+      assert.equal(settleSelection(outcome({
+        finishingPosition: null,
+        resultStatus,
+        won: null,
+        placed: null,
+      })), null, resultStatus);
+    }
+  });
+
   test("max losing run is zero with no settled selections", () => {
     const unsettled = selection("unsettled", "2025-01-01", false, -1, "race-1");
 

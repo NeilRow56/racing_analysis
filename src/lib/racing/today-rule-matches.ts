@@ -1,4 +1,5 @@
 import { classifyCurrentRaceFamily } from "./current-race-classification";
+import { matchesCalendarPeriod } from "./calendar-period";
 import { settleSelection, type BacktestSettlement } from "./backtest";
 import type {
   HistoricalPostRaceOutcome,
@@ -207,6 +208,7 @@ export function frozenRuleMatchesTodayRow(
   return canEvaluateRuleForTodayRunner(rule, runner) &&
     row.features.raceCode !== "unsupported" &&
     familyMatches(row.features.raceCode, rule.family) &&
+    matchesCalendarPeriod(row.features.raceDate, rule.calendarPeriod) &&
     matchesRaceConditions(row.features, rule) &&
     matchesRunnerConditions(row.features, rule, trainerCohort) &&
     matchesRatingConditions(row.features, rule) &&

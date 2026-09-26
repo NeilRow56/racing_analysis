@@ -176,6 +176,29 @@ export function enrichTissueForwardRace(record: TissueForwardRace, race: TodayRa
   return { ...record, runners, winners: winnerNames, settledAt: record.settledAt ?? settledAt.toISOString() };
 }
 
+export function pendingCleanPreRaceTissueRaceIds(data: TissueForwardData): string[] {
+  return data.races
+    .filter((race) => race.recordedPreRace === true && race.winners.length === 0)
+    .map((race) => race.raceId);
+}
+
+export function settlePendingTissueForwardRaces(
+  data: TissueForwardData,
+  racesById: Map<string, TodayRace>,
+  settledAt = new Date(),
+): { data: TissueForwardData; settled: number } {
+  let settled = 0;
+  const races = data.races.map((record) => {
+    if (record.recordedPreRace !== true || record.winners.length > 0) return record;
+    const race = racesById.get(record.raceId);
+    if (!race) return record;
+    const enriched = enrichTissueForwardRace(record, race, settledAt);
+    if (enriched !== record && enriched.winners.length > 0) settled += 1;
+    return enriched;
+  });
+  return { data: { ...data, races }, settled };
+}
+
 export function summarizeTissueForward(data: TissueForwardData) {
   const clean = data.races.filter((race) => race.recordedPreRace === true);
   const settled = clean.filter((race) => race.winners.length > 0);

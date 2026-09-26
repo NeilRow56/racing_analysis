@@ -3,6 +3,10 @@
 import type React from "react";
 import { useEffect, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import {
+  calendarPeriodFromValues,
+  type CalendarPeriod,
+} from "@/lib/racing/calendar-period";
 import { normalizeRaceClasses } from "@/lib/racing/research-rule-classes";
 import { researchRuleKey } from "@/lib/racing/research-rule-identity";
 import {
@@ -40,6 +44,10 @@ type Option<T extends string = string> = { value: T; label: string };
 type RatingOption = Option<RatingMetric> & { group: string };
 type MultiSelectOption = { id: string; label: string; count?: number };
 const VISIBLE_SELECTED_CHIP_LIMIT = 6;
+const MONTH_OPTIONS = [
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December",
+] as const;
 export const STARTING_PRICE_INFO_HEADING = "Historical Starting Price";
 export const STARTING_PRICE_INFO_HELP_TEXT = "Uses final result SP for historical research and holdout settlement.";
 
@@ -225,6 +233,10 @@ export const ResearchForm = ({
           <div className="mt-1">{STARTING_PRICE_INFO_HELP_TEXT}</div>
         </div>
       </div>
+
+      <FilterGroup title="Calendar Period">
+        <CalendarPeriodFields period={rule.calendarPeriod} />
+      </FilterGroup>
 
       <FilterGroup title="Race Filters">
         <MultiSelectField
@@ -550,6 +562,10 @@ export function researchRuleFromFormData(formData: FormData): ResearchRuleV1 {
       from: textValue(formData.get("from")) ?? "2025-01-01",
       to: textValue(formData.get("to")) ?? "2025-12-31",
     },
+    calendarPeriod: calendarPeriodFromValues(
+      formData.get("monthFrom"),
+      formData.get("monthTo"),
+    ),
     race: {
       courseIds: textValues(formData.getAll("courseId")),
       raceClasses: normalizeRaceClasses(formData.getAll("class")),
@@ -627,6 +643,45 @@ function FilterGroup({ children, title }: { children: React.ReactNode; title: st
       <legend className="mb-3 text-sm font-semibold uppercase text-slate-500">{title}</legend>
       <div className="grid gap-4 md:grid-cols-6">{children}</div>
     </fieldset>
+  );
+}
+
+function CalendarPeriodFields({ period }: { period: CalendarPeriod | undefined }) {
+  const [monthFrom, setMonthFrom] = useState(period ? String(period.monthFrom) : "");
+  const [monthTo, setMonthTo] = useState(period ? String(period.monthTo) : "");
+  return (
+    <>
+      <label className="block text-sm">
+        <span className="font-medium text-slate-700">Month from</span>
+        <select
+          className="mt-1 w-full border border-slate-300 bg-white px-3 py-2 text-sm"
+          name="monthFrom"
+          onChange={(event) => setMonthFrom(event.target.value)}
+          required={monthTo !== ""}
+          value={monthFrom}
+        >
+          <option value="">No filter</option>
+          {MONTH_OPTIONS.map((month, index) => (
+            <option key={month} value={index + 1}>{index + 1} {month}</option>
+          ))}
+        </select>
+      </label>
+      <label className="block text-sm">
+        <span className="font-medium text-slate-700">Month to</span>
+        <select
+          className="mt-1 w-full border border-slate-300 bg-white px-3 py-2 text-sm"
+          name="monthTo"
+          onChange={(event) => setMonthTo(event.target.value)}
+          required={monthFrom !== ""}
+          value={monthTo}
+        >
+          <option value="">No filter</option>
+          {MONTH_OPTIONS.map((month, index) => (
+            <option key={month} value={index + 1}>{index + 1} {month}</option>
+          ))}
+        </select>
+      </label>
+    </>
   );
 }
 

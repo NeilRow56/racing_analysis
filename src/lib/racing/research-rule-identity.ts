@@ -40,6 +40,12 @@ export function canonicalResearchRule(rule: ResearchRuleV1) {
       from: rule.dateRange.from,
       to: rule.dateRange.to,
     },
+    calendarPeriod: rule.calendarPeriod
+      ? {
+          monthFrom: rule.calendarPeriod.monthFrom,
+          monthTo: rule.calendarPeriod.monthTo,
+        }
+      : undefined,
     race: compactObject({
       courseIds,
       courseName: courseIds.length > 0 ? undefined : courseNames[0],

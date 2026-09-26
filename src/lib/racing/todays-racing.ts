@@ -431,6 +431,15 @@ export function sportingLifeEstimatedPriceFromRacecard(input: {
   };
 }
 
+export async function getRacecardRowsForRaceIds(
+  db: Db,
+  raceIds: string[],
+): Promise<TodayRacecardRow[]> {
+  const uniqueRaceIds = [...new Set(raceIds)];
+  if (uniqueRaceIds.length === 0) return [];
+  return getRacecardRowsWhere(db, inArray(races.id, uniqueRaceIds));
+}
+
 function filterRacecardRows(
   rows: TodayRacecardRow[],
   meetingOrder: Map<string, number>,
@@ -839,6 +848,13 @@ async function getRacecardRows(
   db: Db,
   raceDate: string,
 ): Promise<TodayRacecardRow[]> {
+  return getRacecardRowsWhere(db, eq(races.raceDate, raceDate));
+}
+
+function getRacecardRowsWhere(
+  db: Db,
+  racePredicate: ReturnType<typeof eq> | ReturnType<typeof inArray>,
+): Promise<TodayRacecardRow[]> {
   return db
     .select({
       raceId: races.id,
@@ -910,7 +926,7 @@ async function getRacecardRows(
       and(
         eq(races.source, SPORTING_LIFE_SOURCE),
         eq(raceRunners.source, SPORTING_LIFE_SOURCE),
-        eq(races.raceDate, raceDate),
+        racePredicate,
         sql`exists (
           select 1
           from ${sourceImports}

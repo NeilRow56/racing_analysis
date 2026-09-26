@@ -22,6 +22,7 @@ import {
   type ResearchRuleV1,
 } from "./research-rule";
 import { researchRuleKey } from "./research-rule-identity";
+import { CANONICAL_SETTLEMENT_VERSION } from "./research-settlement-version";
 import { trainerCohortRule, type ResolvedTrainerCohort } from "./trainer-cohorts";
 import {
   buildCanonicalTurfPerformanceRatingInput,
@@ -94,6 +95,7 @@ describe("research rule evaluation", () => {
 
     assert.equal(result.baselineRows, 2);
     assert.equal(result.selectedRunners.length, 2);
+    assert.equal(result.settlementVersion, CANONICAL_SETTLEMENT_VERSION);
 
     const filtered = evaluateResearchRule({
       rows: [
@@ -949,18 +951,20 @@ describe("research Starting Price filters", () => {
     row({ targetRunnerId: "sp-20-99" }, { startingPriceDecimal: "20.99", won: false, placed: false, finishingPosition: 4 }),
     row({ targetRunnerId: "sp-21-00" }, { startingPriceDecimal: "21.00", won: false, placed: false, finishingPosition: 4 }),
     row({ targetRunnerId: "missing-sp" }, { startingPriceDecimal: null, won: false, placed: false, finishingPosition: 4 }),
+    row({ targetRunnerId: "priced-faller" }, { startingPriceDecimal: "6.00", resultStatus: "fell", won: null, placed: null, finishingPosition: null }),
   ];
 
   function idsFor(startingPrice: ResearchRuleV1["startingPrice"]) {
     return evaluateResearchRule({
       rows: priceRows,
       rule: { ...defaultResearchRule("jump"), startingPrice },
-    }).selectedRunners.map((selection) => selection.id);
+    }).selectedRunners.map((selection) => selection.id).sort();
   }
 
   test("does not filter when no price filter is active", () => {
     assert.deepEqual(idsFor(undefined), [
       "missing-sp",
+      "priced-faller",
       "sp-1-99",
       "sp-2-00",
       "sp-2-99",
@@ -995,6 +999,10 @@ describe("research Starting Price filters", () => {
 
   test("rejects missing SP when an active price filter is present", () => {
     assert.equal(idsFor({ minDecimal: 1 }).includes("missing-sp"), false);
+  });
+
+  test("keeps existing final-SP rule eligibility unchanged for non-finishers", () => {
+    assert.equal(idsFor({ minDecimal: 1 }).includes("priced-faller"), false);
   });
 
   test("treats invalid min-greater-than-max filters as matching no runners", () => {
@@ -1370,6 +1378,66 @@ describe("research handicap filters", () => {
       ],
       rule,
     }).selectedRunners.length, 2);
+  });
+});
+
+describe("research calendar period filters", () => {
+  const datedRows = [
+    row({ targetRunnerId: "jan", raceDate: "2025-01-01" }),
+    row({ targetRunnerId: "mar", raceDate: "2025-03-31" }),
+    row({ targetRunnerId: "apr", raceDate: "2025-04-01" }),
+    row({ targetRunnerId: "jun", raceDate: "2025-06-30" }),
+    row({ targetRunnerId: "jul", raceDate: "2025-07-01" }),
+    row({ targetRunnerId: "oct", raceDate: "2025-10-01" }),
+    row({ targetRunnerId: "dec", raceDate: "2025-12-31" }),
+  ];
+
+  function selected(monthFrom: number, monthTo: number) {
+    return evaluateResearchRule({
+      rows: datedRows,
+      rule: { ...defaultResearchRule("jump"), calendarPeriod: { monthFrom, monthTo } },
+    }).selectedRunners.map((selection) => selection.id);
+  }
+
+  test("includes boundary months for Jan-Mar and Apr-Jun", () => {
+    assert.deepEqual(selected(1, 3), ["jan", "mar"]);
+    assert.deepEqual(selected(4, 6), ["apr", "jun"]);
+  });
+
+  test("supports an inclusive Oct-Mar wrap-around range", () => {
+    assert.deepEqual(selected(10, 3), ["dec", "jan", "mar", "oct"]);
+  });
+
+  test("uses identical month semantics for Turf, All Weather and Jump", () => {
+    for (const [family, raceCode] of [
+      ["turf_flat", "turf"],
+      ["all_weather_flat", "aw"],
+      ["jump", "jump"],
+    ] as const) {
+      const result = evaluateResearchRule({
+        rows: [
+          row({ targetRunnerId: `${family}-jun`, raceCode, raceDate: "2025-06-15" }),
+          row({ targetRunnerId: `${family}-jul`, raceCode, raceDate: "2025-07-01" }),
+        ],
+        rule: { ...defaultResearchRule(family), calendarPeriod: { monthFrom: 4, monthTo: 6 } },
+      });
+      assert.deepEqual(result.selectedRunners.map((selection) => selection.id), [`${family}-jun`]);
+    }
+  });
+
+  test("round-trips complete periods, ignores incomplete periods and preserves legacy identity", () => {
+    const complete = ruleFromSearchParams(new URLSearchParams("family=jump&monthFrom=4&monthTo=9"));
+    const incomplete = ruleFromSearchParams(new URLSearchParams("family=jump&monthFrom=4"));
+    const roundTrip = parseResearchRule(serializeResearchRule(complete));
+    const legacy = defaultResearchRule("jump");
+
+    assert.deepEqual(complete.calendarPeriod, { monthFrom: 4, monthTo: 9 });
+    assert.deepEqual(roundTrip?.calendarPeriod, complete.calendarPeriod);
+    assert.equal(incomplete.calendarPeriod, undefined);
+    assert.equal(researchRuleKey(legacy), researchRuleKey(parseResearchRule(serializeResearchRule(legacy))!));
+    assert.notEqual(researchRuleKey(complete), researchRuleKey(legacy));
+    assert.ok(strategySummary(complete).includes("Calendar period: Apr–Sep"));
+    assert.ok(strategySummary({ ...legacy, calendarPeriod: { monthFrom: 10, monthTo: 3 } }).includes("Calendar period: Oct–Mar"));
   });
 });
 

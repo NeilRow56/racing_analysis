@@ -43,6 +43,10 @@ import {
   summarizeSelectionsForDevelopmentSettlementMode,
   type DevelopmentSettlementMode,
 } from "@/lib/racing/research-settlement-mode";
+import {
+  isLegacySettlementSnapshot,
+  settlementVersionLabel,
+} from "@/lib/racing/research-settlement-version";
 import type { BacktestSummary } from "@/lib/racing/backtest";
 import {
   getTrainerCohortForRule,
@@ -66,6 +70,10 @@ import { PriceSensitivityPanel } from "./price-sensitivity-panel";
 import { RuleStabilityPanel } from "./rule-stability-panel";
 import { SaveRuleSubmitButton } from "./save-rule-submit-button";
 import { SavedRuleActionForms } from "./saved-rule-actions-client";
+import {
+  LegacySettlementWarning,
+  SettlementVersionBadge,
+} from "./settlement-version-display";
 import { TimeSliceStabilityPanel } from "./time-slice-stability-panel";
 import { TrainerCohortPanel, type TrainerCohortDiagnostics } from "./trainer-cohort-panel";
 import { keyedStrategySummary } from "./strategy-summary-items";
@@ -366,8 +374,11 @@ function ResearchResults({
             <p className="text-sm text-slate-600">
               Cache {result.cache?.manifest.featureSchemaVersion ?? "-"} · {result.cache?.manifest.family ?? "-"} · evaluated in {Math.round(result.elapsedMs)}ms
             </p>
-            <p className="mt-1 text-sm font-medium text-slate-700">
-              Settlement: {developmentSettlementModeDescription(settlementMode)}
+            <p className="mt-1 text-sm font-medium">
+              <SettlementVersionBadge version={result.settlementVersion} />
+              <span className="ml-2 text-slate-600">
+                Returns: {developmentSettlementModeDescription(settlementMode)}
+              </span>
             </p>
           </div>
           <p className="text-sm text-slate-500">No strategy confidence score is assigned in v1.</p>
@@ -504,6 +515,7 @@ function SavedRulesSection({ savedRules }: { savedRules: SavedResearchRule[] }) 
               <tr>
                 <th className="py-2 pr-3 font-medium">Name</th>
                 <th className="py-2 pr-3 font-medium">Status</th>
+                <th className="py-2 pr-3 font-medium">Settlement</th>
                 <th className="py-2 pr-3 font-medium">Family</th>
                 <th className="py-2 pr-3 font-medium">Created</th>
                 <th className="py-2 pr-3 font-medium">Rule summary</th>
@@ -520,6 +532,9 @@ function SavedRulesSection({ savedRules }: { savedRules: SavedResearchRule[] }) 
                 <tr key={rule.id}>
                   <td className="py-3 pr-3 align-top font-medium text-emerald-800">{rule.name}</td>
                   <td className="py-3 pr-3 align-top">{statusLabel(rule.status)}</td>
+                  <td className="py-3 pr-3 align-top">
+                    <SettlementVersionBadge version={rule.developmentSnapshot.settlementVersion} />
+                  </td>
                   <td className="py-3 pr-3 align-top">{familyLabel(rule.family)}</td>
                   <td className="py-3 pr-3 align-top">{formatDateTime(rule.createdAt)}</td>
                   <td className="py-3 pr-3 align-top">
@@ -550,8 +565,11 @@ function SavedRulesSection({ savedRules }: { savedRules: SavedResearchRule[] }) 
 
 function SavedRuleDetails({ rule }: { rule: SavedResearchRule }) {
   const summary = strategySummaryFromSavedRule(rule);
+  const hasLegacySnapshot = isLegacySettlementSnapshot(rule.developmentSnapshot) ||
+    (rule.holdoutSnapshot !== null && isLegacySettlementSnapshot(rule.holdoutSnapshot));
   return (
     <div className="mt-3 max-w-xl space-y-3 border border-slate-100 bg-slate-50 p-3 text-xs text-slate-700">
+      {hasLegacySnapshot ? <LegacySettlementWarning /> : null}
       {rule.notes ? <p>{rule.notes}</p> : null}
       <ul className="space-y-1">
         {keyedStrategySummary(summary).map((item) => (
@@ -565,6 +583,7 @@ function SavedRuleDetails({ rule }: { rule: SavedResearchRule }) {
         <Detail label="Winners" value={rule.developmentSnapshot.winners} />
         <Detail label="Places" value={rule.developmentSnapshot.places} />
         <Detail label="P/L" value={formatMoney(rule.developmentSnapshot.profitLoss)} />
+        <Detail label="Development settlement basis" value={settlementVersionLabel(rule.developmentSnapshot)} />
         <Detail label="Development settlement" value={snapshotSettlementLabel(rule.developmentSnapshot)} />
         <Detail label="Rule identity" value={rule.ruleIdentity} />
         <Detail label="Frozen" value={rule.frozenAt ? formatDateTime(rule.frozenAt) : "-"} />
@@ -604,6 +623,9 @@ function HoldoutSummary({ rule }: { rule: SavedResearchRule }) {
       </div>
       <div className="mt-1 text-slate-700">
         {snapshot.selections} selections · {formatPct(snapshot.roiPercentage)} ROI
+      </div>
+      <div className="mt-1">
+        <SettlementVersionBadge version={snapshot.settlementVersion} />
       </div>
       {trainerCohortText ? (
         <div className="mt-1 text-slate-600">Trainer cohort used: {trainerCohortText}</div>
@@ -720,7 +742,7 @@ function Detail({ label, value }: { label: string; value: string | number }) {
 }
 
 function snapshotSettlementLabel(snapshot: SavedResearchRule["developmentSnapshot"]) {
-  return developmentSettlementModeDescription(snapshot.developmentSettlementMode ?? "actual");
+  return `${settlementVersionLabel(snapshot)} · ${developmentSettlementModeDescription(snapshot.developmentSettlementMode ?? "actual")}`;
 }
 
 function emptyFilterOptions(): ResearchFilterOptions {

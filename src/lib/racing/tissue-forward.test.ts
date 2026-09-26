@@ -19,7 +19,9 @@ import {
   loadFrozenTissueModel,
   loadTissueForward,
   parseSportingLifeEstimatedPrice,
+  pendingCleanPreRaceTissueRaceIds,
   renderTissueTodayReport,
+  settlePendingTissueForwardRaces,
   tissueEstimatedPriceComparison,
   type FrozenTissueModel,
   type TissueForwardData,
@@ -94,6 +96,108 @@ describe("independent tissue forward tracker", () => {
     assert.ok(Number.isFinite(summary.logLoss));
     assert.equal(summary.calibration.reduce((sum, band) => sum + band.runners, 0), 2);
     assert.equal(compareTissueWithTimewise(data, [{ raceDate: TISSUE_FORWARD_START, course: "Newbury", raceTime: "13:00", timewiseRank1: "Beta", winners: [{ horseName: "Alpha" }] }]).tissueOnly, 1);
+  });
+
+  test("settles a prior-day pending clean pre-race record from batched race results", () => {
+    const pending = reportRace({
+      raceDate: "2026-09-25",
+      raceId: "race-1",
+      runners: [reportRunner("Alpha", 1, 0.6), reportRunner("Beta", 2, 0.4)],
+    });
+    const frozen = pending.runners.map(({ probability, fairDecimalOdds, tissueRank }) => ({ probability, fairDecimalOdds, tissueRank }));
+    const resultRace = sampleRace();
+    resultRace.runners[0]!.finishingPosition = 1;
+    resultRace.runners[0]!.oddsDecimal = "3";
+    resultRace.runners[1]!.finishingPosition = 2;
+    resultRace.runners[1]!.oddsDecimal = "5";
+
+    const settled = settlePendingTissueForwardRaces(
+      { ...emptyData(), races: [pending] },
+      new Map([[resultRace.raceId, resultRace]]),
+      new Date("2026-09-26T10:00:00.000Z"),
+    );
+
+    assert.equal(settled.settled, 1);
+    assert.deepEqual(settled.data.races[0]!.winners, ["Alpha"]);
+    assert.equal(settled.data.races[0]!.settledAt, "2026-09-26T10:00:00.000Z");
+    assert.deepEqual(settled.data.races[0]!.runners.map(({ probability, fairDecimalOdds, tissueRank }) => ({ probability, fairDecimalOdds, tissueRank })), frozen);
+  });
+
+  test("leaves a current-day future clean pre-race record pending when no winner is available", () => {
+    const pending = reportRace({ raceDate: "2026-09-26", raceId: "race-1" });
+    const result = settlePendingTissueForwardRaces(
+      { ...emptyData(), races: [pending] },
+      new Map([[sampleRace().raceId, sampleRace()]]),
+    );
+
+    assert.equal(result.settled, 0);
+    assert.equal(result.data.races[0]!.winners.length, 0);
+    assert.equal(result.data.races[0]!.settledAt, null);
+  });
+
+  test("settling pending Tissue races is idempotent", () => {
+    const pending = reportRace({ raceId: "race-1", runners: [reportRunner("Alpha", 1, 0.5), reportRunner("Beta", 2, 0.5)] });
+    const resultRace = sampleRace();
+    resultRace.runners[1]!.finishingPosition = 1;
+    resultRace.runners[1]!.oddsDecimal = "2";
+    resultRace.runners[0]!.finishingPosition = 2;
+    resultRace.runners[0]!.oddsDecimal = "4";
+
+    const first = settlePendingTissueForwardRaces({ ...emptyData(), races: [pending] }, new Map([[resultRace.raceId, resultRace]]));
+    const firstBytes = JSON.stringify(first.data);
+    const second = settlePendingTissueForwardRaces(first.data, new Map([[resultRace.raceId, resultRace]]));
+
+    assert.equal(first.settled, 1);
+    assert.equal(second.settled, 0);
+    assert.equal(JSON.stringify(second.data), firstBytes);
+  });
+
+  test("post-race backfilled Tissue records stay excluded during settlement", () => {
+    const backfilled = reportRace({
+      raceId: "race-1",
+      recordedPreRace: false,
+      runners: [reportRunner("Alpha", 1, 0.5), reportRunner("Beta", 2, 0.5)],
+    });
+    const resultRace = sampleRace();
+    resultRace.runners[0]!.finishingPosition = 1;
+
+    const result = settlePendingTissueForwardRaces(
+      { ...emptyData(), races: [backfilled] },
+      new Map([[resultRace.raceId, resultRace]]),
+    );
+    const summary = summarizeTissueForward(result.data);
+
+    assert.equal(result.settled, 0);
+    assert.equal(result.data.races[0]!.recordedPreRace, false);
+    assert.deepEqual(result.data.races[0]!.winners, []);
+    assert.equal(summary.postRaceBackfilledExcluded, 1);
+  });
+
+  test("records non-runners while settling with canonical result enrichment", () => {
+    const pending = reportRace({ raceId: "race-1", runners: [reportRunner("Alpha", 1, 0.6), reportRunner("Beta", 2, 0.4)] });
+    const resultRace = sampleRace();
+    resultRace.runners[0]!.resultStatus = "non_runner";
+    resultRace.runners[1]!.finishingPosition = 1;
+    resultRace.runners[1]!.oddsDecimal = "2.5";
+
+    const result = settlePendingTissueForwardRaces(
+      { ...emptyData(), races: [pending] },
+      new Map([[resultRace.raceId, resultRace]]),
+    );
+
+    assert.equal(result.settled, 1);
+    assert.deepEqual(result.data.races[0]!.winners, ["Beta"]);
+    assert.equal(result.data.races[0]!.runners[0]!.finishingPosition, null);
+    assert.equal(result.data.races[0]!.runners[0]!.finalSp, null);
+    assert.equal(result.data.races[0]!.runners[0]!.tissueRank, 1);
+  });
+
+  test("pending clean pre-race IDs exclude settled and post-race backfilled records", () => {
+    assert.deepEqual(pendingCleanPreRaceTissueRaceIds({ ...emptyData(), races: [
+      reportRace({ raceId: "pending", recordedPreRace: true }),
+      reportRace({ raceId: "settled", recordedPreRace: true, winners: ["Winner"], settledAt: "2026-09-25T14:00:00.000Z" }),
+      reportRace({ raceId: "backfilled", recordedPreRace: false }),
+    ] }), ["pending"]);
   });
 
   test("keeps v2 isolated and starts only at the frozen implementation timestamp", async () => {

@@ -1,7 +1,9 @@
 import { createDbConnection } from "@/db";
 import {
   getLocalRacingDate,
+  getRacecardRowsForRaceIds,
   getTodaysRacingData,
+  groupTodaysRacingRows,
   isOrdinaryFlatTurfRaceForDisplay,
   type TodayRace,
 } from "@/lib/racing/todays-racing";
@@ -10,12 +12,14 @@ import {
   TISSUE_V2_CONFIG,
   buildTissueForwardRace,
   compareTissueWithTimewise,
-  enrichTissueForwardRace,
   loadFrozenTissueModel,
   loadTissueForward,
+  pendingCleanPreRaceTissueRaceIds,
   saveTissueForward,
+  settlePendingTissueForwardRaces,
   summarizeTissueForward,
   upsertTissueRaces,
+  type TissueForwardData,
   type TissueVersionConfig,
 } from "@/lib/racing/tissue-forward";
 import type { HistoricalComment } from "./diagnose-independent-tissue-feasibility";
@@ -37,36 +41,45 @@ async function sync(raceDate: string, selected: TissueVersionConfig) {
   try {
     console.log(`Tissue model: ${selected.modelVersion}`);
     console.log(`Turf speed: ${selected.turfSpeedVersion}`);
-    const [today, model, existing] = await Promise.all([
+    const now = new Date();
+    const existing = await timed("tracker_load", () => loadTissueForward(selected.forwardPath, selected));
+    let settlementQueryCount = 0;
+    let settledFromPending = 0;
+    const beforeCapture = await timed("pending_result_enrichment_before_capture", async () => {
+      const result = await settlePendingFromDb(connection.db, existing, now);
+      settlementQueryCount += result.queryCount;
+      settledFromPending += result.settled;
+      return result.data;
+    });
+    await timed("pending_result_persistence_before_capture", async () => {
+      if (JSON.stringify(beforeCapture) !== JSON.stringify(existing)) await saveTissueForward(beforeCapture, selected.forwardPath);
+    });
+    const [today, model] = await Promise.all([
       timed("today_metrics_load", () => getTodaysRacingData(connection.db, raceDate, {
         onTiming: recordTiming,
         raceFilter: isOrdinaryFlatTurfRaceForDisplay,
       })),
       loadFrozenTissueModel(selected.modelPath, selected.modelVersion),
-      loadTissueForward(selected.forwardPath, selected),
     ]);
     if (today.status !== "ok") throw new Error(today.message);
     const declared = await timed("declared_horse_lookup", async () => declaredTurfTargets(today.meetings));
     const { commentsByHorse, rowCount: historicalCommentRows } = await timed("historical_comment_query", () =>
       loadCommentsForDeclaredHorses(connection.client, declared.horseTargets),
     );
-    const now = new Date();
     const candidates = await timed("tissue_scoring", async () => declared.races.flatMap(({ course, race }) =>
       buildTissueForwardRace({ raceDate, course, race, model, commentsByHorse, recordedAt: now, config: selected }),
     ).filter((race): race is NonNullable<typeof race> => race !== null));
-    let updated = upsertTissueRaces(existing, candidates);
-    const racesById = new Map(today.meetings.flatMap((meeting) => meeting.races).map((race) => [race.raceId, race]));
-    updated = await timed("result_enrichment", async () => ({
-      ...updated,
-      races: updated.races.map((record) => {
-        const race = racesById.get(record.raceId);
-        return race ? enrichTissueForwardRace(record, race, now) : record;
-      }),
-    }));
-    await timed("persistence", async () => {
-      if (JSON.stringify(updated) !== JSON.stringify(existing)) await saveTissueForward(updated, selected.forwardPath);
+    let updated = upsertTissueRaces(beforeCapture, candidates);
+    updated = await timed("result_enrichment", async () => {
+      const result = await settlePendingFromDb(connection.db, updated, now);
+      settlementQueryCount += result.queryCount;
+      settledFromPending += result.settled;
+      return result.data;
     });
-    const existingRaceIds = new Set(existing.races.map((race) => race.raceId));
+    await timed("persistence", async () => {
+      if (JSON.stringify(updated) !== JSON.stringify(beforeCapture)) await saveTissueForward(updated, selected.forwardPath);
+    });
+    const existingRaceIds = new Set(beforeCapture.races.map((race) => race.raceId));
     const created = updated.races.filter((race) => !existingRaceIds.has(race.raceId));
     const cleanPreRaceCreated = created.filter((race) => race.recordedPreRace === true).length;
     const postRaceBackfilledCreated = created.filter((race) => race.recordedPreRace !== true).length;
@@ -80,6 +93,9 @@ async function sync(raceDate: string, selected: TissueVersionConfig) {
       `unique_horses=${declared.horseTargets.length}`,
       `historical_comment_rows=${historicalCommentRows}`,
       `comment_query_ms=${Math.round(timing("historical_comment_query") ?? 0)}`,
+      `settlement_queries=${settlementQueryCount}`,
+      `settlement_ms=${Math.round((timing("pending_result_enrichment_before_capture") ?? 0) + (timing("result_enrichment") ?? 0))}`,
+      `settled_from_pending=${settledFromPending}`,
       `total_sync_ms=${Math.round(syncTimer.elapsedMs())}`,
       `clean_pre_race_created=${cleanPreRaceCreated}`,
       `post_race_backfilled_created=${postRaceBackfilledCreated}`,
@@ -89,6 +105,21 @@ async function sync(raceDate: string, selected: TissueVersionConfig) {
   } finally {
     await connection.client.end();
   }
+}
+
+async function settlePendingFromDb(
+  db: ReturnType<typeof createDbConnection>["db"],
+  data: TissueForwardData,
+  settledAt: Date,
+) {
+  const pendingRaceIds = pendingCleanPreRaceTissueRaceIds(data);
+  if (pendingRaceIds.length === 0) return { data, settled: 0, queryCount: 0 };
+  const resultRows = await getRacecardRowsForRaceIds(db, pendingRaceIds);
+  const racesById = new Map(
+    groupTodaysRacingRows(resultRows).flatMap((meeting) => meeting.races).map((race) => [race.raceId, race]),
+  );
+  const settled = settlePendingTissueForwardRaces(data, racesById, settledAt);
+  return { ...settled, queryCount: 1 };
 }
 
 type DeclaredHorseTarget = { horseId: string; targetRaceDateTime: Date };

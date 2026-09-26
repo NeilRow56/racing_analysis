@@ -1,8 +1,9 @@
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
+import { settleSelection } from "./backtest";
 import type { TodayMeeting, TodayRace, TodayRunner } from "./todays-racing";
 import { isAllWeatherRaceForDisplay } from "./todays-racing";
-import { WINNER_CAP_20_FRACTIONAL, winGrossReturn } from "./win-settlement";
+import { WINNER_CAP_20_FRACTIONAL } from "./win-settlement";
 
 export const AW_FORWARD_VERSION = "aw_forward_comparisons_v1";
 export const AW_FORWARD_START_DATE = "2026-09-18";
@@ -157,12 +158,25 @@ export function settleAwForwardRecords(data: AwForwardData, meetings: TodayMeeti
     version: AW_FORWARD_VERSION,
     records: data.records.map((record) => {
       const runner = runners.get(record.key);
-      const finalSp = decimalOdds(runner?.oddsDecimal ?? null);
-      if (!runner || runner.resultStatus === "non_runner" || runner.finishingPosition === null || finalSp === null) return record;
+      if (!runner) return record;
+      const outcome = {
+        targetRaceId: record.raceKey,
+        targetRunnerId: record.runnerKey,
+        finishingPosition: runner.finishingPosition,
+        resultStatus: runner.resultStatus,
+        won: runner.finishingPosition === null ? null : runner.finishingPosition === 1,
+        placed: runner.finishingPosition === null ? null : runner.finishingPosition <= 3,
+        startingPrice: runner.odds,
+        startingPriceDecimal: runner.oddsDecimal,
+        deadHeatDivisor: deadHeatDivisors.get(record.raceKey) ?? 1,
+      };
+      const uncappedSettlement = settleSelection(outcome);
+      if (!uncappedSettlement) return record;
       const won = runner.finishingPosition === 1;
-      const deadHeatDivisor = deadHeatDivisors.get(record.raceKey) ?? 1;
-      const capped20Return = winGrossReturn({ won, decimalOdds: finalSp, deadHeatDivisor, maxFractionalOdds: WINNER_CAP_20_FRACTIONAL });
-      const uncappedReturn = winGrossReturn({ won, decimalOdds: finalSp, deadHeatDivisor });
+      const cappedSettlement = settleSelection(outcome, { maxFractionalOdds: WINNER_CAP_20_FRACTIONAL })!;
+      const finalSp = uncappedSettlement.settlementOddsDecimal;
+      const capped20Return = cappedSettlement.grossReturn;
+      const uncappedReturn = uncappedSettlement.grossReturn;
       if (record.finishingPosition === runner.finishingPosition && record.won === won && record.finalSp === finalSp && record.capped20Return === capped20Return && record.uncappedReturn === uncappedReturn) return record;
       return { ...record, finishingPosition: runner.finishingPosition, won, finalSp, capped20Return, uncappedReturn, settledAt: settledAt.toISOString() };
     }),
@@ -239,7 +253,6 @@ export async function writeAwForwardData(data: AwForwardData, path = AW_FORWARD_
   await rename(temporary, path);
 }
 
-function decimalOdds(value: string | null) { const parsed = Number(value); return Number.isFinite(parsed) && parsed > 1 ? parsed : null; }
 function ratio(numerator: number, denominator: number) { return denominator > 0 ? numerator / denominator : null; }
 function percent(value: number | null) { return value === null ? "-" : `${(value * 100).toFixed(1)}%`; }
 function number(value: number | null) { return value === null ? "-" : value.toFixed(3); }

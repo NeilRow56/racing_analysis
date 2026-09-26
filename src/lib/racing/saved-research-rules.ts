@@ -17,6 +17,7 @@ import type { BacktestSummary } from "./backtest";
 import {
   type DevelopmentSettlementMode,
 } from "./development-settlement-mode";
+import type { ResearchSettlementVersion } from "./research-settlement-version";
 
 type Db = ReturnType<typeof createDbConnection>["db"];
 type DbConnection = ReturnType<typeof createDbConnection>;
@@ -27,6 +28,7 @@ export type SavedResearchRuleStatus = "draft" | "frozen";
 export type CanonicalResearchRuleV1 = ReturnType<typeof canonicalResearchRule>;
 
 export type DevelopmentResultSnapshot = {
+  settlementVersion?: ResearchSettlementVersion;
   eligibleRunners: number;
   selections: number;
   settledSelections: number;
@@ -321,6 +323,7 @@ export function developmentSnapshotFromResult(
 ): DevelopmentResultSnapshot {
   const summary = input.summary ?? result.summary;
   return {
+    settlementVersion: result.settlementVersion,
     eligibleRunners: result.baselineRows,
     selections: summary.selections,
     settledSelections: summary.settledSelections,
