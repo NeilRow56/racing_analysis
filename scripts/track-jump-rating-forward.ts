@@ -19,6 +19,16 @@ import {
   isJumpRaceForDisplay,
   type TodayRace,
 } from "@/lib/racing/todays-racing";
+import {
+  buildForwardValueRecordsFromMeetings,
+  enrichForwardValuePriceSnapshots,
+  loadForwardValueCalibration,
+  loadForwardValueData,
+  mutateForwardValueData,
+  pendingForwardValueRaceIds,
+  settleForwardValueRecords,
+  upsertForwardValueRecords,
+} from "@/lib/racing/forward-value";
 
 const command = process.argv[2] ?? "summary";
 const raceDate = process.argv[3] ?? getLocalRacingDate();
@@ -33,8 +43,12 @@ async function sync(date: string) {
   const now = new Date();
   const connection = createDbConnection();
   try {
-    const existing = await loadJumpRatingForward();
+    const [existing, existingValue, calibration] = await Promise.all([
+      loadJumpRatingForward(), loadForwardValueData(), loadForwardValueCalibration(),
+    ]);
     const pendingBefore = pendingJumpRatingRaceIds(existing);
+    const valuePending = pendingForwardValueRaceIds(existingValue, "jump");
+    const valuePriorRaces = await loadRacesByIds(connection.db, valuePending);
     const settlementStartedAt = performance.now();
     const priorSettlement = await settlePendingFromDb(connection.db, existing, now);
     let settlementMs = performance.now() - settlementStartedAt;
@@ -61,6 +75,21 @@ async function sync(date: string) {
     if (JSON.stringify(updated) !== JSON.stringify(existing)) {
       await saveJumpRatingForward(updated);
     }
+    const valueCandidates = buildForwardValueRecordsFromMeetings({
+      family: "jump", raceDate: date, meetings: todayData.meetings,
+      calibration: calibration.families.jump, recordedAt: now,
+    });
+    let valueSettled = 0;
+    const updatedValue = await mutateForwardValueData((latest) => {
+      const valuePrior = settleForwardValueRecords(latest, valuePriorRaces, now);
+      const valueCaptured = upsertForwardValueRecords(valuePrior.data, valueCandidates);
+      const valueEnriched = enrichForwardValuePriceSnapshots(valueCaptured, {
+        family: "jump", meetings: todayData.meetings, capturedAt: now,
+      });
+      const valueCurrent = settleForwardValueRecords(valueEnriched, todayRaces, now);
+      valueSettled = valuePrior.settled + valueCurrent.settled;
+      return valueCurrent.data;
+    });
     const existingIds = new Set(existing.races.map((race) => race.raceId));
     const created = updated.races.filter((race) => !existingIds.has(race.raceId));
     console.log([
@@ -73,10 +102,23 @@ async function sync(date: string) {
       `settlement_queries=${priorSettlement.queryCount}`,
       `settlement_ms=${Math.round(settlementMs)}`,
       `elapsed_ms=${Math.round(performance.now() - startedAt)}`,
+      `value_created=${updatedValue.races.length - existingValue.races.length}`,
+      `value_settled=${valueSettled}`,
     ].join(" "));
   } finally {
     await connection.client.end();
   }
+}
+
+async function loadRacesByIds(
+  db: ReturnType<typeof createDbConnection>["db"],
+  raceIds: string[],
+) {
+  if (raceIds.length === 0) return new Map<string, TodayRace>();
+  const rows = await getRacecardRowsForRaceIds(db, raceIds);
+  return new Map<string, TodayRace>(groupTodaysRacingRows(rows).flatMap((meeting) =>
+    meeting.races.map((race) => [race.raceId, race] as const)
+  ));
 }
 
 async function today(date: string) {
@@ -111,7 +153,42 @@ async function summary() {
   for (const subtype of value.subtypes) {
     console.log(`${subtype.subtype} | ${subtype.races} | ${subtype.pending} | ${subtype.settled} | ${pct(subtype.jprARank1Strike)} | ${pct(subtype.jprATop3Capture)}`);
   }
+  printA0Summary(value.jprA0);
   console.log("\nDescriptive forward validation only. No profitability claim is supported without a meaningful settled sample.");
+}
+
+function printA0Summary(value: ReturnType<typeof summarizeJumpRatingForward>["jprA0"]) {
+  console.log("\n## JPR-A0 Shadow (JPR_A0_V1)");
+  console.log(`Implementation epoch: ${value.implementationEpoch}`);
+  console.log("Scope | Clean | Settled | Pending | JPR-A rank-1 | JPR-A0 rank-1 | JPR-A top-3 | JPR-A0 top-3 | Rank-1 agreement | Fallback races");
+  console.log("---|---:|---:|---:|---:|---:|---:|---:|---:|---:");
+  printA0Scope("Overall", value);
+  for (const subtype of value.subtypes) {
+    printA0Scope(subtype.subtype === "hurdle" ? "Hurdle" : "Chase", subtype);
+  }
+  console.log("\n### JPR-A0 Fallback Evidence");
+  console.log(`Races containing fallback runners: ${value.fallback.races}`);
+  console.log(`Fallback runners: ${value.fallback.fallbackRunners}`);
+  console.log(`Fallback-derived rank-1 selections: ${value.fallback.fallbackDerivedRank1Selections}`);
+  console.log(`Fallback-derived rank-1 winners: ${value.fallback.fallbackDerivedRank1Winners}`);
+  console.log(`Zero-history winners: ${value.fallback.zeroHistoryWinners}`);
+  console.log(`Zero-history winners captured in JPR-A0 top 3: ${value.fallback.zeroHistoryWinnersCapturedTop3}`);
+  const ranks = Object.entries(value.fallback.zeroHistoryWinnerRanks)
+    .sort(([left], [right]) => Number(left) - Number(right))
+    .map(([rank, count]) => `${rank}:${count}`)
+    .join(", ");
+  console.log(`JPR-A0 zero-history winner rank distribution: ${ranks || "none"}`);
+}
+
+function printA0Scope(
+  label: string,
+  value: ReturnType<typeof summarizeJumpRatingForward>["jprA0"]["subtypes"][number] | ReturnType<typeof summarizeJumpRatingForward>["jprA0"],
+) {
+  console.log(`${label} | ${value.cleanRaces} | ${value.settled} | ${value.pending} | ${strike(value.jprA)} | ${strike(value.jprA0)} | ${pct(value.jprA.top3Capture)} | ${pct(value.jprA0.top3Capture)} | ${value.rank1Agreement.agreements}/${value.rank1Agreement.eligible} | ${value.racesContainingFallbackRunners}`);
+}
+
+function strike(value: ReturnType<typeof summarizeJumpRatingForward>["jprA"]) {
+  return `${value.rank1Winners}/${value.rank1Selections} (${pct(value.rank1Strike)})`;
 }
 
 async function settlePendingFromDb(

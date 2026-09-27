@@ -13,7 +13,7 @@ export default function Home() {
           </h1>
         </header>
 
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-4 md:grid-cols-3">
           <Link
             className="block border border-slate-200 bg-white p-6 shadow-sm hover:border-emerald-300"
             href="/racing/today"
@@ -23,6 +23,17 @@ export default function Home() {
             </h2>
             <p className="mt-2 text-sm leading-6 text-slate-600">
               View today&apos;s races, speed figures and Today&apos;s Ratings.
+            </p>
+          </Link>
+          <Link
+            className="block border border-slate-200 bg-white p-6 shadow-sm hover:border-emerald-300"
+            href="/racing/research/forward-value"
+          >
+            <h2 className="text-xl font-semibold text-emerald-800">
+              Forward Value
+            </h2>
+            <p className="mt-2 text-sm leading-6 text-slate-600">
+              Monitor prospective rating probabilities against captured market prices.
             </p>
           </Link>
           <Link

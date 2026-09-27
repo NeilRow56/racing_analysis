@@ -39,7 +39,8 @@ describe("Today Timewise forward context", () => {
       timewiseRank2: "Alpha",
     });
     assert.deepEqual(input, {
-      family: "turf", raceDate: "2026-09-17", course: "Sandown", raceTime: "14:20",
+      family: "turf", raceId: "race-1", raceDateTime: "2026-09-17T13:20:00.000Z",
+      raceName: "Novice Stakes", raceDate: "2026-09-17", course: "Sandown", raceTime: "14:20",
       winner: "Bravo", winnerSp: 6.5, winners: [{ horseName: "Bravo", decimalOdds: 6.5 }],
       tprRank1: "Alpha", tprRank2: "Bravo",
       tprRank1NonRunner: false, tprRank2NonRunner: false,

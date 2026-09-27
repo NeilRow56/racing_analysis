@@ -6,7 +6,7 @@ import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
 import { describe, test } from "node:test";
-import { createRecord, disagreementByOrContext, orAgreementSummaries, parseTrackerData, renderReport, renderSummary, renderTprSummary, summarize, summarizeTprForward, TRACKER_VERSION, upsertRace } from "./diagnose-tpr-vs-timewise-forward";
+import { createRecord, disagreementByOrContext, orAgreementSummaries, parseTrackerData, renderReport, renderSummary, renderTprSummary, summarize, summarizeTprDateCoverage, summarizeTprForward, TRACKER_VERSION, upsertRace } from "./diagnose-tpr-vs-timewise-forward";
 
 const execFileAsync = promisify(execFile);
 
@@ -314,6 +314,28 @@ describe("TPR vs Timewise forward tracker", () => {
     assert.match(output, /Legacy clean races: 3/);
     assert.match(output, /W50 without OR:/);
     assert.doesNotMatch(output, /Timewise/);
+  });
+
+  test("renders compact clean date coverage and only reports a real gap", () => {
+    const legacy = ["2026-09-18", "2026-09-19", "2026-09-20", "2026-09-21", "2026-09-22", "2026-09-23"]
+      .map((raceDate, index) => race({ raceDate, raceTime: `${12 + index}:00`, timewiseRecordedPreRace: true }));
+    const snapshot = race({
+      raceDate: "2026-09-27",
+      raceTime: "12:00",
+      timewiseRecordedPreRace: true,
+      tprInputSnapshot: { version: "tpr_forward_snapshot_v1", runners: [] },
+    });
+    const data = { version: TRACKER_VERSION, races: [...legacy, snapshot] };
+    assert.deepEqual(summarizeTprDateCoverage(data.races), {
+      legacyRanges: [{ from: "2026-09-18", to: "2026-09-23" }],
+      gap: { from: "2026-09-24", to: "2026-09-26" },
+      snapshotBackedFrom: "2026-09-27",
+    });
+    assert.match(renderTprSummary(data), /Clean coverage:\n  2026-09-18 to 2026-09-23\n  Gap: 2026-09-24 to 2026-09-26\n  Snapshot-backed from: 2026-09-27/);
+
+    const contiguous = { ...data, races: [...legacy, { ...snapshot, raceDate: "2026-09-24" }] };
+    assert.equal(summarizeTprDateCoverage(contiguous.races).gap, null);
+    assert.doesNotMatch(renderTprSummary(contiguous), /Gap:/);
   });
 
   test("includes parsed TPR rows whose Timewise selection fields are absent", () => {

@@ -111,12 +111,20 @@ export default async function ResearchPage({
               Development dataset: 2025. Holdout validation is intentionally not exposed here.
             </p>
           </div>
-          <Link
-            className="border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:border-emerald-400 hover:text-emerald-800"
-            href="/racing/today"
-          >
-            Today&apos;s Racing
-          </Link>
+          <nav aria-label="Racing Research" className="flex flex-wrap gap-2">
+            <Link
+              className="border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:border-emerald-400 hover:text-emerald-800"
+              href="/racing/research/forward-value"
+            >
+              Forward Value
+            </Link>
+            <Link
+              className="border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:border-emerald-400 hover:text-emerald-800"
+              href="/racing/today"
+            >
+              Today&apos;s Racing
+            </Link>
+          </nav>
         </header>
 
         <ResearchWorkspace

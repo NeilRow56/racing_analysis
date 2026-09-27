@@ -86,6 +86,9 @@ export function buildTodayForwardInput({
     : null;
   return {
     family,
+    raceId: race.raceId,
+    raceDateTime: race.raceDateTime?.toISOString() ?? null,
+    raceName: race.raceName,
     raceDate,
     course,
     raceTime,

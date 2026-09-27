@@ -19,6 +19,16 @@ import {
   isAllWeatherRaceForDisplay,
   type TodayRace,
 } from "@/lib/racing/todays-racing";
+import {
+  buildForwardValueRecordsFromMeetings,
+  enrichForwardValuePriceSnapshots,
+  loadForwardValueCalibration,
+  loadForwardValueData,
+  mutateForwardValueData,
+  pendingForwardValueRaceIds,
+  settleForwardValueRecords,
+  upsertForwardValueRecords,
+} from "@/lib/racing/forward-value";
 
 const command = process.argv[2] ?? "summary";
 const raceDate = process.argv[3] ?? getLocalRacingDate();
@@ -33,8 +43,12 @@ async function sync(date: string) {
   const now = new Date();
   const connection = createDbConnection();
   try {
-    const existing = await loadAwRatingForward();
+    const [existing, existingValue, calibration] = await Promise.all([
+      loadAwRatingForward(), loadForwardValueData(), loadForwardValueCalibration(),
+    ]);
     const pendingBefore = pendingAwRatingRaceIds(existing);
+    const valuePending = pendingForwardValueRaceIds(existingValue, "aw");
+    const valuePriorRaces = await loadRacesByIds(connection.db, valuePending);
     const settlementStartedAt = performance.now();
     const priorSettlement = await settlePendingFromDb(connection.db, existing, now);
     let settlementMs = performance.now() - settlementStartedAt;
@@ -61,6 +75,21 @@ async function sync(date: string) {
     if (JSON.stringify(updated) !== JSON.stringify(existing)) {
       await saveAwRatingForward(updated);
     }
+    const valueCandidates = buildForwardValueRecordsFromMeetings({
+      family: "aw", raceDate: date, meetings,
+      calibration: calibration.families.aw, recordedAt: now,
+    });
+    let valueSettled = 0;
+    const updatedValue = await mutateForwardValueData((latest) => {
+      const valuePrior = settleForwardValueRecords(latest, valuePriorRaces, now);
+      const valueCaptured = upsertForwardValueRecords(valuePrior.data, valueCandidates);
+      const valueEnriched = enrichForwardValuePriceSnapshots(valueCaptured, {
+        family: "aw", meetings, capturedAt: now,
+      });
+      const valueCurrent = settleForwardValueRecords(valueEnriched, todayRaces, now);
+      valueSettled = valuePrior.settled + valueCurrent.settled;
+      return valueCurrent.data;
+    });
     const existingIds = new Set(existing.races.map((race) => race.raceId));
     const created = updated.races.filter((race) => !existingIds.has(race.raceId));
     console.log([
@@ -73,10 +102,23 @@ async function sync(date: string) {
       `settlement_queries=${priorSettlement.queryCount}`,
       `settlement_ms=${Math.round(settlementMs)}`,
       `elapsed_ms=${Math.round(performance.now() - startedAt)}`,
+      `value_created=${updatedValue.races.length - existingValue.races.length}`,
+      `value_settled=${valueSettled}`,
     ].join(" "));
   } finally {
     await connection.client.end();
   }
+}
+
+async function loadRacesByIds(
+  db: ReturnType<typeof createDbConnection>["db"],
+  raceIds: string[],
+) {
+  if (raceIds.length === 0) return new Map<string, TodayRace>();
+  const rows = await getRacecardRowsForRaceIds(db, raceIds);
+  return new Map<string, TodayRace>(groupTodaysRacingRows(rows).flatMap((meeting) =>
+    meeting.races.map((race) => [race.raceId, race] as const)
+  ));
 }
 
 async function today(date: string) {

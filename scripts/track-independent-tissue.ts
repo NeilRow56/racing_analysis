@@ -24,6 +24,10 @@ import {
 } from "@/lib/racing/tissue-forward";
 import type { HistoricalComment } from "./diagnose-independent-tissue-feasibility";
 import { loadTrackerData } from "./diagnose-tpr-vs-timewise-forward";
+import {
+  attachTissueValueSnapshots,
+  mutateForwardValueData,
+} from "@/lib/racing/forward-value";
 
 const timings = new Map<string, number>();
 
@@ -79,6 +83,29 @@ async function sync(raceDate: string, selected: TissueVersionConfig) {
     await timed("persistence", async () => {
       if (JSON.stringify(updated) !== JSON.stringify(beforeCapture)) await saveTissueForward(updated, selected.forwardPath);
     });
+    if (selected.forwardVersion === TISSUE_V2_CONFIG.forwardVersion) {
+      const currentRaces = new Map(today.meetings.flatMap((meeting) =>
+        meeting.races.map((race) => [race.raceId, race] as const)
+      ));
+      const snapshots = new Map(updated.races.flatMap((race) => {
+        const leader = [...race.runners].sort((a, b) => a.tissueRank - b.tissueRank || a.runnerId.localeCompare(b.runnerId))[0];
+        const currentRunner = currentRaces.get(race.raceId)?.runners.find((runner) => runner.runnerId === leader?.runnerId);
+        const currentDecimalOdds = currentRunner?.oddsDecimal ? Number(currentRunner.oddsDecimal) : null;
+        const validDecimalOdds = currentDecimalOdds !== null && Number.isFinite(currentDecimalOdds) && currentDecimalOdds > 1
+          ? currentDecimalOdds
+          : null;
+        return leader ? [[race.raceId, {
+          runnerId: leader.runnerId,
+          horseName: leader.horseName,
+          probability: leader.probability,
+          recordedPreRace: race.recordedPreRace,
+          capturedPrice: validDecimalOdds === null ? null : currentRunner?.odds ?? null,
+          capturedDecimalOdds: validDecimalOdds,
+          priceCapturedAt: validDecimalOdds === null ? null : now.toISOString(),
+        }] as const] : [];
+      }));
+      await mutateForwardValueData((latest) => attachTissueValueSnapshots(latest, snapshots));
+    }
     const existingRaceIds = new Set(beforeCapture.races.map((race) => race.raceId));
     const created = updated.races.filter((race) => !existingRaceIds.has(race.raceId));
     const cleanPreRaceCreated = created.filter((race) => race.recordedPreRace === true).length;

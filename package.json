@@ -40,7 +40,9 @@
     "backup:verify": "bun run scripts/backup-project.ts verify",
     "backup:cleanup": "bun run scripts/backup-project.ts cleanup --keep 30",
     "timewise:summary": "bun scripts/diagnose-tpr-vs-timewise-forward.ts summary",
-    "tpr:summary": "bun scripts/diagnose-tpr-vs-timewise-forward.ts tpr-summary",
+    "tpr:sync": "bun --env-file=.env.local run scripts/track-tpr-forward.ts sync",
+    "tpr:today": "bun run scripts/track-tpr-forward.ts today",
+    "tpr:summary": "bun run scripts/track-tpr-forward.ts summary",
     "aw:summary": "bun scripts/track-aw-forward-comparisons.ts summary",
     "tissue:sync": "bun --env-file=.env.local run scripts/track-independent-tissue.ts sync v2",
     "tissue:summary": "bun run scripts/track-independent-tissue.ts summary v2",
@@ -54,7 +56,10 @@
     "jump-rating:summary": "bun run scripts/track-jump-rating-forward.ts summary",
     "aw-rating:sync": "bun --env-file=.env.local run scripts/track-aw-rating-forward.ts sync",
     "aw-rating:today": "bun --env-file=.env.local run scripts/track-aw-rating-forward.ts today",
-    "aw-rating:summary": "bun run scripts/track-aw-rating-forward.ts summary"
+    "aw-rating:summary": "bun run scripts/track-aw-rating-forward.ts summary",
+    "value:calibrate": "bun run scripts/build-forward-value-calibration.ts",
+    "value:today": "bun run scripts/report-forward-value.ts today",
+    "value:summary": "bun run scripts/report-forward-value.ts summary"
   },
   "dependencies": {
     "drizzle-orm": "^0.45.2",

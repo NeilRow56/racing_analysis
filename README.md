@@ -32,6 +32,36 @@ bun run lint
 bun run build
 ```
 
+## Forward Value Daily Workflow
+
+After importing fresh Sporting Life racecards, run the normal family syncs early in the day to create the prospective observations:
+
+```bash
+bun run tpr:sync
+bun run jump-rating:sync
+bun run aw-rating:sync
+```
+
+Run the same commands again when races are 75-45 minutes from their canonical scheduled off to capture T-60 prices, and again at 25-5 minutes before off to capture T-15 prices. Repeat syncs enrich the existing observation; they do not replace the frozen rating or early price and do not create duplicate observations. A missed window remains missing and is never reconstructed retrospectively.
+
+The reporting commands are read-only:
+
+```bash
+bun run value:today
+bun run value:summary
+```
+
+## JPR-A0 Prospective Shadow
+
+`JPR_A0_V1` is captured only from `2026-09-27T06:06:49.000Z`. It does not replace `JPR_A_V1` in Today or Forward Value.
+
+- With Average Jump Speed L3, its score is the unchanged JPR-A average of the runner's within-race speed rank and trainer prior strike-rate rank.
+- Without Average Jump Speed L3, its score is the trainer prior strike-rate rank alone. Without that trainer rank, the runner is unrated.
+- Normal and fallback scores are compared directly because both are expressed in the same unit: ordinal positions within the same active-runner field. Normal scores average two such positions; fallback scores retain the one available position. No scaling, offset, penalty, OR, or market-price input is applied.
+- The combined scores receive ascending competition ranks, preserving ties.
+
+The existing `bun run jump-rating:sync`, `bun run jump-rating:today`, and `bun run jump-rating:summary` commands capture and report the shadow evidence through the existing Jump tracker.
+
 ## PostgreSQL and Drizzle
 
 Database configuration expects a PostgreSQL connection string:

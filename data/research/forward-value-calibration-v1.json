@@ -1,0 +1,1080 @@
+{
+  "version": "forward_value_calibration_v1",
+  "createdAt": "2026-09-27T05:14:45.877Z",
+  "developmentYear": "2025",
+  "validationYear": "2026",
+  "settlementVersion": "canonical_settlement_v2",
+  "priceVersion": "actual_sp_v2",
+  "families": {
+    "turf": {
+      "family": "turf",
+      "calibrationVersion": "TPR_CAL_V1",
+      "ratingVersion": "TPR_S2_V1",
+      "leaderProbability": 0.17488312792180197,
+      "gapQuartiles": [
+        1.2924515612475034,
+        2.9311464345423843,
+        5.6711013739374145
+      ],
+      "gapBands": [
+        {
+          "key": "Q1",
+          "minimumGap": null,
+          "maximumGap": 1.2924515612475034,
+          "selections": 1163,
+          "winners": 151,
+          "probability": 0.1298366294067068
+        },
+        {
+          "key": "Q2",
+          "minimumGap": 1.2924515612475034,
+          "maximumGap": 2.9311464345423843,
+          "selections": 1163,
+          "winners": 191,
+          "probability": 0.1642304385210662
+        },
+        {
+          "key": "Q3",
+          "minimumGap": 2.9311464345423843,
+          "maximumGap": 5.6711013739374145,
+          "selections": 1163,
+          "winners": 215,
+          "probability": 0.18486672398968185
+        },
+        {
+          "key": "Q4",
+          "minimumGap": 5.6711013739374145,
+          "maximumGap": null,
+          "selections": 1163,
+          "winners": 253,
+          "probability": 0.2175408426483233
+        }
+      ]
+    },
+    "jump": {
+      "family": "jump",
+      "calibrationVersion": "JPR_CAL_V1",
+      "ratingVersion": "JPR_A_V1",
+      "leaderProbability": 0.20261302364164246,
+      "gapQuartiles": [
+        0.5,
+        1,
+        1.5
+      ],
+      "gapBands": [
+        {
+          "key": "Q1",
+          "minimumGap": null,
+          "maximumGap": 0.5,
+          "selections": 1474,
+          "winners": 279,
+          "probability": 0.189280868385346
+        },
+        {
+          "key": "Q2",
+          "minimumGap": 0.5,
+          "maximumGap": 1,
+          "selections": 1249,
+          "winners": 272,
+          "probability": 0.2177742193755004
+        },
+        {
+          "key": "Q3",
+          "minimumGap": 1,
+          "maximumGap": 1.5,
+          "selections": 918,
+          "winners": 195,
+          "probability": 0.21241830065359477
+        },
+        {
+          "key": "Q4",
+          "minimumGap": 1.5,
+          "maximumGap": null,
+          "selections": 1038,
+          "winners": 192,
+          "probability": 0.18497109826589594
+        }
+      ]
+    },
+    "aw": {
+      "family": "aw",
+      "calibrationVersion": "AW_CAL_V1",
+      "ratingVersion": "AW_D_V1",
+      "leaderProbability": 0.20026135249918328,
+      "gapQuartiles": [
+        0.3333333333333335,
+        0.9999999999999998,
+        1.3333333333333335
+      ],
+      "gapBands": [
+        {
+          "key": "Q1",
+          "minimumGap": null,
+          "maximumGap": 0.3333333333333335,
+          "selections": 783,
+          "winners": 148,
+          "probability": 0.18901660280970625
+        },
+        {
+          "key": "Q2",
+          "minimumGap": 0.3333333333333335,
+          "maximumGap": 0.9999999999999998,
+          "selections": 711,
+          "winners": 141,
+          "probability": 0.19831223628691982
+        },
+        {
+          "key": "Q3",
+          "minimumGap": 0.9999999999999998,
+          "maximumGap": 1.3333333333333335,
+          "selections": 730,
+          "winners": 157,
+          "probability": 0.21506849315068494
+        },
+        {
+          "key": "Q4",
+          "minimumGap": 1.3333333333333335,
+          "maximumGap": null,
+          "selections": 741,
+          "winners": 152,
+          "probability": 0.20512820512820512
+        }
+      ]
+    }
+  },
+  "diagnostics": {
+    "turf": {
+      "rankBands2025": [
+        {
+          "band": "rank 1",
+          "selections": 4706,
+          "winners": 823,
+          "winRate": 0.17488312792180197,
+          "expectedProbability": null,
+          "expectedWins": null,
+          "calibrationError": null
+        },
+        {
+          "band": "rank 2",
+          "selections": 4652,
+          "winners": 699,
+          "winRate": 0.1502579535683577,
+          "expectedProbability": null,
+          "expectedWins": null,
+          "calibrationError": null
+        },
+        {
+          "band": "rank 3",
+          "selections": 4525,
+          "winners": 608,
+          "winRate": 0.1343646408839779,
+          "expectedProbability": null,
+          "expectedWins": null,
+          "calibrationError": null
+        },
+        {
+          "band": "ranks 4-5",
+          "selections": 8286,
+          "winners": 936,
+          "winRate": 0.11296162201303403,
+          "expectedProbability": null,
+          "expectedWins": null,
+          "calibrationError": null
+        },
+        {
+          "band": "ranks 6+",
+          "selections": 16425,
+          "winners": 1201,
+          "winRate": 0.07312024353120243,
+          "expectedProbability": null,
+          "expectedWins": null,
+          "calibrationError": null
+        }
+      ],
+      "rankBands2026": [
+        {
+          "band": "rank 1",
+          "selections": 4027,
+          "winners": 737,
+          "winRate": 0.18301465110504098,
+          "expectedProbability": 0.17488312792180197,
+          "expectedWins": 704.2543561410965,
+          "calibrationError": 0.008131523183239009
+        },
+        {
+          "band": "rank 2",
+          "selections": 3958,
+          "winners": 634,
+          "winRate": 0.16018191005558363,
+          "expectedProbability": 0.1502579535683577,
+          "expectedWins": 594.7209802235598,
+          "calibrationError": 0.009923956487225938
+        },
+        {
+          "band": "rank 3",
+          "selections": 3825,
+          "winners": 533,
+          "winRate": 0.13934640522875816,
+          "expectedProbability": 0.1343646408839779,
+          "expectedWins": 513.9447513812155,
+          "calibrationError": 0.0049817643447802595
+        },
+        {
+          "band": "ranks 4-5",
+          "selections": 6940,
+          "winners": 808,
+          "winRate": 0.11642651296829971,
+          "expectedProbability": 0.11296162201303403,
+          "expectedWins": 783.9536567704562,
+          "calibrationError": 0.0034648909552656842
+        },
+        {
+          "band": "ranks 6+",
+          "selections": 14211,
+          "winners": 982,
+          "winRate": 0.06910140032369291,
+          "expectedProbability": 0.07312024353120243,
+          "expectedWins": 1039.1117808219178,
+          "calibrationError": -0.004018843207509518
+        }
+      ],
+      "fieldBands2025": [
+        {
+          "band": "<=5",
+          "selections": 2054,
+          "winners": 468,
+          "winRate": 0.22784810126582278,
+          "expectedProbability": null,
+          "expectedWins": null,
+          "calibrationError": null
+        },
+        {
+          "band": "6-8",
+          "selections": 10284,
+          "winners": 1516,
+          "winRate": 0.14741345779852197,
+          "expectedProbability": null,
+          "expectedWins": null,
+          "calibrationError": null
+        },
+        {
+          "band": "9-12",
+          "selections": 15119,
+          "winners": 1535,
+          "winRate": 0.10152787882796481,
+          "expectedProbability": null,
+          "expectedWins": null,
+          "calibrationError": null
+        },
+        {
+          "band": "13+",
+          "selections": 11137,
+          "winners": 748,
+          "winRate": 0.06716350902397414,
+          "expectedProbability": null,
+          "expectedWins": null,
+          "calibrationError": null
+        }
+      ],
+      "fieldBands2026": [
+        {
+          "band": "<=5",
+          "selections": 2131,
+          "winners": 514,
+          "winRate": 0.24120131393711872,
+          "expectedProbability": 0.14355834555420405,
+          "expectedWins": 305.92283437600884,
+          "calibrationError": 0.09764296838291467
+        },
+        {
+          "band": "6-8",
+          "selections": 8680,
+          "winners": 1276,
+          "winRate": 0.14700460829493087,
+          "expectedProbability": 0.12259751604141457,
+          "expectedWins": 1064.1464392394785,
+          "calibrationError": 0.024407092253516297
+        },
+        {
+          "band": "9-12",
+          "selections": 12005,
+          "winners": 1232,
+          "winRate": 0.10262390670553936,
+          "expectedProbability": 0.10796117207334956,
+          "expectedWins": 1296.0738707405615,
+          "calibrationError": -0.005337265367810193
+        },
+        {
+          "band": "13+",
+          "selections": 10145,
+          "winners": 672,
+          "winRate": 0.06623952686052242,
+          "expectedProbability": 0.09559806613919085,
+          "expectedWins": 969.8423809820912,
+          "calibrationError": -0.029358539278668425
+        }
+      ],
+      "contexts2025": [
+        {
+          "band": "handicap",
+          "selections": 28598,
+          "winners": 2985,
+          "winRate": 0.10437792852647038,
+          "expectedProbability": null,
+          "expectedWins": null,
+          "calibrationError": null
+        },
+        {
+          "band": "non_handicap",
+          "selections": 9684,
+          "winners": 1243,
+          "winRate": 0.12835605121850474,
+          "expectedProbability": null,
+          "expectedWins": null,
+          "calibrationError": null
+        },
+        {
+          "band": "unknown",
+          "selections": 312,
+          "winners": 39,
+          "winRate": 0.125,
+          "expectedProbability": null,
+          "expectedWins": null,
+          "calibrationError": null
+        }
+      ],
+      "contexts2026": [
+        {
+          "band": "handicap",
+          "selections": 24476,
+          "winners": 2559,
+          "winRate": 0.10455139728713841,
+          "expectedProbability": 0.10680297673677104,
+          "expectedWins": 2614.109658609208,
+          "calibrationError": -0.0022515794496326264
+        },
+        {
+          "band": "non_handicap",
+          "selections": 8233,
+          "winners": 1097,
+          "winRate": 0.13324426090125105,
+          "expectedProbability": 0.12031959719919569,
+          "expectedWins": 990.5912437409781,
+          "calibrationError": 0.012924663702055361
+        },
+        {
+          "band": "unknown",
+          "selections": 252,
+          "winners": 38,
+          "winRate": 0.15079365079365079,
+          "expectedProbability": 0.12414532931828647,
+          "expectedWins": 31.284622988208188,
+          "calibrationError": 0.02664832147536432
+        }
+      ],
+      "gapBands2025": [
+        {
+          "key": "Q1",
+          "minimumGap": null,
+          "maximumGap": 1.2924515612475034,
+          "selections": 1163,
+          "winners": 151,
+          "probability": 0.1298366294067068
+        },
+        {
+          "key": "Q2",
+          "minimumGap": 1.2924515612475034,
+          "maximumGap": 2.9311464345423843,
+          "selections": 1163,
+          "winners": 191,
+          "probability": 0.1642304385210662
+        },
+        {
+          "key": "Q3",
+          "minimumGap": 2.9311464345423843,
+          "maximumGap": 5.6711013739374145,
+          "selections": 1163,
+          "winners": 215,
+          "probability": 0.18486672398968185
+        },
+        {
+          "key": "Q4",
+          "minimumGap": 5.6711013739374145,
+          "maximumGap": null,
+          "selections": 1163,
+          "winners": 253,
+          "probability": 0.2175408426483233
+        }
+      ],
+      "gapBands2026": [
+        {
+          "selections": 987,
+          "winners": 153,
+          "winRate": 0.15501519756838905,
+          "expectedProbability": 0.1298366294067068,
+          "expectedWins": 128.1487532244196,
+          "calibrationError": 0.025178568161682263
+        },
+        {
+          "selections": 997,
+          "winners": 168,
+          "winRate": 0.16850551654964896,
+          "expectedProbability": 0.1642304385210662,
+          "expectedWins": 163.73774720550298,
+          "calibrationError": 0.004275078028582763
+        },
+        {
+          "selections": 1046,
+          "winners": 170,
+          "winRate": 0.16252390057361377,
+          "expectedProbability": 0.18486672398968185,
+          "expectedWins": 193.3705932932072,
+          "calibrationError": -0.02234282341606808
+        },
+        {
+          "selections": 928,
+          "winners": 223,
+          "winRate": 0.24030172413793102,
+          "expectedProbability": 0.2175408426483233,
+          "expectedWins": 201.87790197764403,
+          "calibrationError": 0.022760881489607726
+        }
+      ],
+      "validation": {
+        "selections": 32961,
+        "expectedWins": 3635.98552533923,
+        "actualWins": 3694,
+        "calibrationError": 0.0017600944953359969,
+        "brier": 0.09776477912775314
+      }
+    },
+    "jump": {
+      "rankBands2025": [
+        {
+          "band": "rank 1",
+          "selections": 5999,
+          "winners": 1221,
+          "winRate": 0.20353392232038672,
+          "expectedProbability": null,
+          "expectedWins": null,
+          "calibrationError": null
+        },
+        {
+          "band": "rank 2",
+          "selections": 5094,
+          "winners": 783,
+          "winRate": 0.15371024734982333,
+          "expectedProbability": null,
+          "expectedWins": null,
+          "calibrationError": null
+        },
+        {
+          "band": "rank 3",
+          "selections": 4576,
+          "winners": 662,
+          "winRate": 0.14466783216783216,
+          "expectedProbability": null,
+          "expectedWins": null,
+          "calibrationError": null
+        },
+        {
+          "band": "ranks 4-5",
+          "selections": 7624,
+          "winners": 813,
+          "winRate": 0.10663693599160545,
+          "expectedProbability": null,
+          "expectedWins": null,
+          "calibrationError": null
+        },
+        {
+          "band": "ranks 6+",
+          "selections": 11066,
+          "winners": 730,
+          "winRate": 0.0659678293873125,
+          "expectedProbability": null,
+          "expectedWins": null,
+          "calibrationError": null
+        }
+      ],
+      "rankBands2026": [
+        {
+          "band": "rank 1",
+          "selections": 3765,
+          "winners": 736,
+          "winRate": 0.1954847277556441,
+          "expectedProbability": 0.20353392232038672,
+          "expectedWins": 766.305217536256,
+          "calibrationError": -0.008049194564742623
+        },
+        {
+          "band": "rank 2",
+          "selections": 3197,
+          "winners": 526,
+          "winRate": 0.16452924616828277,
+          "expectedProbability": 0.15371024734982333,
+          "expectedWins": 491.4116607773852,
+          "calibrationError": 0.010818998818459435
+        },
+        {
+          "band": "rank 3",
+          "selections": 2885,
+          "winners": 391,
+          "winRate": 0.13552859618717505,
+          "expectedProbability": 0.14466783216783216,
+          "expectedWins": 417.3666958041958,
+          "calibrationError": -0.009139235980657107
+        },
+        {
+          "band": "ranks 4-5",
+          "selections": 4965,
+          "winners": 546,
+          "winRate": 0.10996978851963746,
+          "expectedProbability": 0.10663693599160545,
+          "expectedWins": 529.452387198321,
+          "calibrationError": 0.0033328525280320043
+        },
+        {
+          "band": "ranks 6+",
+          "selections": 8003,
+          "winners": 542,
+          "winRate": 0.06772460327377233,
+          "expectedProbability": 0.0659678293873125,
+          "expectedWins": 527.9405385866619,
+          "calibrationError": 0.0017567738864598392
+        }
+      ],
+      "fieldBands2025": [
+        {
+          "band": "<=5",
+          "selections": 3579,
+          "winners": 862,
+          "winRate": 0.2408493992735401,
+          "expectedProbability": null,
+          "expectedWins": null,
+          "calibrationError": null
+        },
+        {
+          "band": "6-8",
+          "selections": 10216,
+          "winners": 1545,
+          "winRate": 0.15123335943617855,
+          "expectedProbability": null,
+          "expectedWins": null,
+          "calibrationError": null
+        },
+        {
+          "band": "9-12",
+          "selections": 11174,
+          "winners": 1146,
+          "winRate": 0.10255951315553964,
+          "expectedProbability": null,
+          "expectedWins": null,
+          "calibrationError": null
+        },
+        {
+          "band": "13+",
+          "selections": 9390,
+          "winners": 656,
+          "winRate": 0.0698615548455804,
+          "expectedProbability": null,
+          "expectedWins": null,
+          "calibrationError": null
+        }
+      ],
+      "fieldBands2026": [
+        {
+          "band": "<=5",
+          "selections": 2463,
+          "winners": 578,
+          "winRate": 0.2346731628095818,
+          "expectedProbability": 0.15829893672647397,
+          "expectedWins": 389.89028115730537,
+          "calibrationError": 0.07637422608310784
+        },
+        {
+          "band": "6-8",
+          "selections": 6426,
+          "winners": 958,
+          "winRate": 0.1490818549642079,
+          "expectedProbability": 0.132695093779558,
+          "expectedWins": 852.6986726274396,
+          "calibrationError": 0.016386761184649906
+        },
+        {
+          "band": "9-12",
+          "selections": 7157,
+          "winners": 728,
+          "winRate": 0.10171859717758837,
+          "expectedProbability": 0.11422031537145994,
+          "expectedWins": 817.4747971135388,
+          "calibrationError": -0.012501718193871567
+        },
+        {
+          "band": "13+",
+          "selections": 6769,
+          "winners": 477,
+          "winRate": 0.0704683114197075,
+          "expectedProbability": 0.09933708804912644,
+          "expectedWins": 672.4127490045369,
+          "calibrationError": -0.028868776629418946
+        }
+      ],
+      "contexts2025": [
+        {
+          "band": "chase",
+          "selections": 11497,
+          "winners": 1589,
+          "winRate": 0.13820996781769157,
+          "expectedProbability": null,
+          "expectedWins": null,
+          "calibrationError": null
+        },
+        {
+          "band": "hurdle",
+          "selections": 21955,
+          "winners": 2508,
+          "winRate": 0.11423365975859713,
+          "expectedProbability": null,
+          "expectedWins": null,
+          "calibrationError": null
+        },
+        {
+          "band": "nh_flat",
+          "selections": 898,
+          "winners": 111,
+          "winRate": 0.12360801781737193,
+          "expectedProbability": null,
+          "expectedWins": null,
+          "calibrationError": null
+        },
+        {
+          "band": "unknown_other",
+          "selections": 9,
+          "winners": 1,
+          "winRate": 0.1111111111111111,
+          "expectedProbability": null,
+          "expectedWins": null,
+          "calibrationError": null
+        }
+      ],
+      "contexts2026": [
+        {
+          "band": "chase",
+          "selections": 7370,
+          "winners": 1007,
+          "winRate": 0.13663500678426052,
+          "expectedProbability": 0.1240490661189247,
+          "expectedWins": 914.241617296475,
+          "calibrationError": 0.012585940665335818
+        },
+        {
+          "band": "hurdle",
+          "selections": 14836,
+          "winners": 1667,
+          "winRate": 0.11236182259369103,
+          "expectedProbability": 0.11660693033958328,
+          "expectedWins": 1729.9804185180574,
+          "calibrationError": -0.004245107745892249
+        },
+        {
+          "band": "nh_flat",
+          "selections": 585,
+          "winners": 64,
+          "winRate": 0.1094017094017094,
+          "expectedProbability": 0.14608389790743018,
+          "expectedWins": 85.45908027584666,
+          "calibrationError": -0.036682188505720775
+        },
+        {
+          "band": "unknown_other",
+          "selections": 24,
+          "winners": 3,
+          "winRate": 0.125,
+          "expectedProbability": 0.11647432552040755,
+          "expectedWins": 2.7953838124897814,
+          "calibrationError": 0.008525674479592446
+        }
+      ],
+      "gapBands2025": [
+        {
+          "key": "Q1",
+          "minimumGap": null,
+          "maximumGap": 0.5,
+          "selections": 1474,
+          "winners": 279,
+          "probability": 0.189280868385346
+        },
+        {
+          "key": "Q2",
+          "minimumGap": 0.5,
+          "maximumGap": 1,
+          "selections": 1249,
+          "winners": 272,
+          "probability": 0.2177742193755004
+        },
+        {
+          "key": "Q3",
+          "minimumGap": 1,
+          "maximumGap": 1.5,
+          "selections": 918,
+          "winners": 195,
+          "probability": 0.21241830065359477
+        },
+        {
+          "key": "Q4",
+          "minimumGap": 1.5,
+          "maximumGap": null,
+          "selections": 1038,
+          "winners": 192,
+          "probability": 0.18497109826589594
+        }
+      ],
+      "gapBands2026": [
+        {
+          "selections": 949,
+          "winners": 178,
+          "winRate": 0.18756585879873552,
+          "expectedProbability": 0.189280868385346,
+          "expectedWins": 179.62754409769335,
+          "calibrationError": -0.001715009586610472
+        },
+        {
+          "selections": 788,
+          "winners": 163,
+          "winRate": 0.2068527918781726,
+          "expectedProbability": 0.2177742193755004,
+          "expectedWins": 171.6060848678943,
+          "calibrationError": -0.010921427497327801
+        },
+        {
+          "selections": 575,
+          "winners": 113,
+          "winRate": 0.19652173913043477,
+          "expectedProbability": 0.21241830065359477,
+          "expectedWins": 122.14052287581698,
+          "calibrationError": -0.01589656152315999
+        },
+        {
+          "selections": 629,
+          "winners": 123,
+          "winRate": 0.19554848966613672,
+          "expectedProbability": 0.18497109826589594,
+          "expectedWins": 116.34682080924856,
+          "calibrationError": 0.010577391400240777
+        }
+      ],
+      "validation": {
+        "selections": 22815,
+        "expectedWins": 2732.476499902529,
+        "actualWins": 2741,
+        "calibrationError": 0.0003735919394026205,
+        "brier": 0.10351864569664568
+      }
+    },
+    "aw": {
+      "rankBands2025": [
+        {
+          "band": "rank 1",
+          "selections": 3465,
+          "winners": 686,
+          "winRate": 0.19797979797979798,
+          "expectedProbability": null,
+          "expectedWins": null,
+          "calibrationError": null
+        },
+        {
+          "band": "rank 2",
+          "selections": 3125,
+          "winners": 443,
+          "winRate": 0.14176,
+          "expectedProbability": null,
+          "expectedWins": null,
+          "calibrationError": null
+        },
+        {
+          "band": "rank 3",
+          "selections": 2845,
+          "winners": 312,
+          "winRate": 0.10966608084358524,
+          "expectedProbability": null,
+          "expectedWins": null,
+          "calibrationError": null
+        },
+        {
+          "band": "ranks 4-5",
+          "selections": 5010,
+          "winners": 483,
+          "winRate": 0.09640718562874251,
+          "expectedProbability": null,
+          "expectedWins": null,
+          "calibrationError": null
+        },
+        {
+          "band": "ranks 6+",
+          "selections": 6920,
+          "winners": 473,
+          "winRate": 0.06835260115606936,
+          "expectedProbability": null,
+          "expectedWins": null,
+          "calibrationError": null
+        }
+      ],
+      "rankBands2026": [
+        {
+          "band": "rank 1",
+          "selections": 2227,
+          "winners": 465,
+          "winRate": 0.2088010776829816,
+          "expectedProbability": 0.19797979797979798,
+          "expectedWins": 440.9010101010101,
+          "calibrationError": 0.010821279703183612
+        },
+        {
+          "band": "rank 2",
+          "selections": 2027,
+          "winners": 301,
+          "winRate": 0.14849531327084362,
+          "expectedProbability": 0.14176,
+          "expectedWins": 287.34752,
+          "calibrationError": 0.006735313270843618
+        },
+        {
+          "band": "rank 3",
+          "selections": 1899,
+          "winners": 248,
+          "winRate": 0.13059505002632965,
+          "expectedProbability": 0.10966608084358524,
+          "expectedWins": 208.25588752196836,
+          "calibrationError": 0.02092896918274441
+        },
+        {
+          "band": "ranks 4-5",
+          "selections": 3250,
+          "winners": 318,
+          "winRate": 0.09784615384615385,
+          "expectedProbability": 0.09640718562874251,
+          "expectedWins": 313.32335329341316,
+          "calibrationError": 0.0014389682174113377
+        },
+        {
+          "band": "ranks 6+",
+          "selections": 4651,
+          "winners": 277,
+          "winRate": 0.05955708449795743,
+          "expectedProbability": 0.06835260115606936,
+          "expectedWins": 317.90794797687863,
+          "calibrationError": -0.008795516658111936
+        }
+      ],
+      "fieldBands2025": [
+        {
+          "band": "<=5",
+          "selections": 736,
+          "winners": 168,
+          "winRate": 0.22826086956521738,
+          "expectedProbability": null,
+          "expectedWins": null,
+          "calibrationError": null
+        },
+        {
+          "band": "6-8",
+          "selections": 5586,
+          "winners": 794,
+          "winRate": 0.14214106695309703,
+          "expectedProbability": null,
+          "expectedWins": null,
+          "calibrationError": null
+        },
+        {
+          "band": "9-12",
+          "selections": 11641,
+          "winners": 1178,
+          "winRate": 0.1011940554935143,
+          "expectedProbability": null,
+          "expectedWins": null,
+          "calibrationError": null
+        },
+        {
+          "band": "13+",
+          "selections": 3402,
+          "winners": 257,
+          "winRate": 0.07554379776602,
+          "expectedProbability": null,
+          "expectedWins": null,
+          "calibrationError": null
+        }
+      ],
+      "fieldBands2026": [
+        {
+          "band": "<=5",
+          "selections": 568,
+          "winners": 130,
+          "winRate": 0.22887323943661972,
+          "expectedProbability": 0.14424462219775724,
+          "expectedWins": 81.93094540832611,
+          "calibrationError": 0.08462861723886247
+        },
+        {
+          "band": "6-8",
+          "selections": 4040,
+          "winners": 571,
+          "winRate": 0.14133663366336632,
+          "expectedProbability": 0.12054539788054519,
+          "expectedWins": 487.0034074374026,
+          "calibrationError": 0.020791235782821132
+        },
+        {
+          "band": "9-12",
+          "selections": 8066,
+          "winners": 805,
+          "winRate": 0.09980163649888421,
+          "expectedProbability": 0.10659645459265477,
+          "expectedWins": 859.8070027443533,
+          "calibrationError": -0.006794818093770555
+        },
+        {
+          "band": "13+",
+          "selections": 1380,
+          "winners": 103,
+          "winRate": 0.0746376811594203,
+          "expectedProbability": 0.10072055311824778,
+          "expectedWins": 138.99436330318193,
+          "calibrationError": -0.026082871958827483
+        }
+      ],
+      "contexts2025": [
+        {
+          "band": "handicap",
+          "selections": 17289,
+          "winners": 1923,
+          "winRate": 0.11122679160159639,
+          "expectedProbability": null,
+          "expectedWins": null,
+          "calibrationError": null
+        },
+        {
+          "band": "non_handicap",
+          "selections": 4024,
+          "winners": 467,
+          "winRate": 0.11605367793240556,
+          "expectedProbability": null,
+          "expectedWins": null,
+          "calibrationError": null
+        },
+        {
+          "band": "unknown",
+          "selections": 52,
+          "winners": 7,
+          "winRate": 0.1346153846153846,
+          "expectedProbability": null,
+          "expectedWins": null,
+          "calibrationError": null
+        }
+      ],
+      "contexts2026": [
+        {
+          "band": "handicap",
+          "selections": 11162,
+          "winners": 1251,
+          "winRate": 0.11207668876545422,
+          "expectedProbability": 0.10909764013162415,
+          "expectedWins": 1217.7478591491888,
+          "calibrationError": 0.00297904863383007
+        },
+        {
+          "band": "non_handicap",
+          "selections": 2861,
+          "winners": 352,
+          "winRate": 0.12303390422929046,
+          "expectedProbability": 0.12089403568927815,
+          "expectedWins": 345.8778361070248,
+          "calibrationError": 0.0021398685400123157
+        },
+        {
+          "band": "unknown",
+          "selections": 31,
+          "winners": 6,
+          "winRate": 0.1935483870967742,
+          "expectedProbability": 0.1325814076479213,
+          "expectedWins": 4.11002363708556,
+          "calibrationError": 0.060966979448852876
+        }
+      ],
+      "gapBands2025": [
+        {
+          "key": "Q1",
+          "minimumGap": null,
+          "maximumGap": 0.3333333333333335,
+          "selections": 783,
+          "winners": 148,
+          "probability": 0.18901660280970625
+        },
+        {
+          "key": "Q2",
+          "minimumGap": 0.3333333333333335,
+          "maximumGap": 0.9999999999999998,
+          "selections": 711,
+          "winners": 141,
+          "probability": 0.19831223628691982
+        },
+        {
+          "key": "Q3",
+          "minimumGap": 0.9999999999999998,
+          "maximumGap": 1.3333333333333335,
+          "selections": 730,
+          "winners": 157,
+          "probability": 0.21506849315068494
+        },
+        {
+          "key": "Q4",
+          "minimumGap": 1.3333333333333335,
+          "maximumGap": null,
+          "selections": 741,
+          "winners": 152,
+          "probability": 0.20512820512820512
+        }
+      ],
+      "gapBands2026": [
+        {
+          "selections": 520,
+          "winners": 100,
+          "winRate": 0.19230769230769232,
+          "expectedProbability": 0.18901660280970625,
+          "expectedWins": 98.28863346104725,
+          "calibrationError": 0.003291089497986066
+        },
+        {
+          "selections": 453,
+          "winners": 115,
+          "winRate": 0.25386313465783666,
+          "expectedProbability": 0.19831223628691982,
+          "expectedWins": 89.83544303797468,
+          "calibrationError": 0.05555089837091684
+        },
+        {
+          "selections": 481,
+          "winners": 97,
+          "winRate": 0.20166320166320167,
+          "expectedProbability": 0.21506849315068494,
+          "expectedWins": 103.44794520547946,
+          "calibrationError": -0.013405291487483262
+        },
+        {
+          "selections": 462,
+          "winners": 96,
+          "winRate": 0.2077922077922078,
+          "expectedProbability": 0.20512820512820512,
+          "expectedWins": 94.76923076923076,
+          "calibrationError": 0.002664002664002685
+        }
+      ],
+      "validation": {
+        "selections": 14054,
+        "expectedWins": 1567.7357188932656,
+        "actualWins": 1609,
+        "calibrationError": 0.0029361236023007268,
+        "brier": 0.09881610380505663
+      }
+    }
+  }
+}

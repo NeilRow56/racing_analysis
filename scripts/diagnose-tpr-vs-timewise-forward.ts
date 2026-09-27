@@ -7,9 +7,15 @@ import type { CanonicalTurfPerformanceRatingInput } from "../src/lib/racing/turf
 export const TRACKER_VERSION = "tpr_timewise_forward_v4" as const;
 export const DEFAULT_DATA_PATH = "data/research/tpr-vs-timewise-forward.json";
 export const DEFAULT_REPORT_PATH = "/tmp/tpr-vs-timewise-forward.md";
+export const TPR_CLEAN_COVERAGE_START = "2026-09-18";
 
 export type ForwardRaceInput = {
   family?: "turf" | "all_weather";
+  raceId?: string | null;
+  raceDateTime?: string | null;
+  raceName?: string | null;
+  recordedAt?: string | null;
+  recordedPreRace?: boolean | null;
   raceDate: string;
   course: string;
   raceTime: string;
@@ -335,8 +341,31 @@ export function summarizeTprForward(races: ForwardRaceRecord[]) {
   };
 }
 
+export function summarizeTprDateCoverage(
+  races: ForwardRaceRecord[],
+  coverageStart = TPR_CLEAN_COVERAGE_START,
+) {
+  const clean = cleanComparisonRaces(races.filter((race) =>
+    race.family === "turf" && race.raceDate >= coverageStart
+  ));
+  const legacyDates = uniqueSorted(clean
+    .filter((race) => !hasTprSnapshot(race))
+    .map((race) => race.raceDate));
+  const snapshotDates = uniqueSorted(clean
+    .filter(hasTprSnapshot)
+    .map((race) => race.raceDate));
+  const legacyRanges = contiguousDateRanges(legacyDates);
+  const snapshotBackedFrom = snapshotDates[0] ?? null;
+  const latestLegacyDate = legacyDates.at(-1) ?? null;
+  const gap = latestLegacyDate && snapshotBackedFrom
+    ? dateRangeBetween(latestLegacyDate, snapshotBackedFrom)
+    : null;
+  return { legacyRanges, gap, snapshotBackedFrom };
+}
+
 export function renderTprSummary(data: TrackerData): string {
   const summary = summarizeTprForward(data.races);
+  const coverage = summarizeTprDateCoverage(data.races);
   const split = (rating: "TPR W100" | "W50", agrees: boolean) =>
     summary.orAgreement.find((value) => value.rating === rating && value.agrees === agrees)!;
   const selectionLines = (label: "W100" | "W50", value: typeof summary.w100) => [
@@ -365,6 +394,11 @@ export function renderTprSummary(data: TrackerData): string {
     `  W50 non-runners: ${summary.tracking.w50NonRunners}`,
     `  Snapshot-backed clean races: ${summary.tracking.snapshotBackedCleanRaces}`,
     `  Legacy clean races: ${summary.tracking.legacyCleanRaces}`,
+    "",
+    "Clean coverage:",
+    ...coverage.legacyRanges.map((range) => `  ${dateRangeLabel(range)}`),
+    ...(coverage.gap ? [`  Gap: ${dateRangeLabel(coverage.gap)}`] : []),
+    ...(coverage.snapshotBackedFrom ? [`  Snapshot-backed from: ${coverage.snapshotBackedFrom}`] : []),
     "",
     ...selectionLines("W100", summary.w100),
     "",
@@ -698,6 +732,31 @@ function maximumLosingRun(races: ForwardRaceRecord[], selection: (race: ForwardR
   return maximum;
 }
 function hasTprSnapshot(race: ForwardRaceRecord) { return race.tprInputSnapshot?.version === "tpr_forward_snapshot_v1"; }
+function uniqueSorted(values: string[]) { return [...new Set(values)].sort(); }
+function contiguousDateRanges(dates: string[]) {
+  const ranges: Array<{ from: string; to: string }> = [];
+  for (const date of dates) {
+    const current = ranges.at(-1);
+    if (current && nextDate(current.to) === date) current.to = date;
+    else ranges.push({ from: date, to: date });
+  }
+  return ranges;
+}
+function dateRangeBetween(left: string, right: string) {
+  const from = nextDate(left);
+  const to = previousDate(right);
+  return from <= to ? { from, to } : null;
+}
+function nextDate(value: string) { return shiftedDate(value, 1); }
+function previousDate(value: string) { return shiftedDate(value, -1); }
+function shiftedDate(value: string, days: number) {
+  const date = new Date(`${value}T00:00:00.000Z`);
+  date.setUTCDate(date.getUTCDate() + days);
+  return date.toISOString().slice(0, 10);
+}
+function dateRangeLabel(range: { from: string; to: string }) {
+  return range.from === range.to ? range.from : `${range.from} to ${range.to}`;
+}
 function optionalNumber(value: string | undefined) { if (value === undefined) return null; const parsed = Number(value); if (!Number.isFinite(parsed)) throw new Error(`Invalid number: ${value}`); return parsed; }
 function optionalPositiveInteger(value: string | undefined) { if (value === undefined) return null; const parsed = Number(value); if (!Number.isInteger(parsed) || parsed < 1) throw new Error(`Invalid positive integer: ${value}`); return parsed; }
 function optionalText(value: string | undefined) { return value?.trim() || null; }
