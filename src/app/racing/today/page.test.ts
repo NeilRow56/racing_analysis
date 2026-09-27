@@ -112,6 +112,20 @@ describe("Today race status label", () => {
 });
 
 describe("Today request orchestration", () => {
+  test("renders the frozen JPR-A diagnostic for Jump runners only", () => {
+    const source = readFileSync(new URL("./page.tsx", import.meta.url), "utf8");
+    assert.match(source, /Jump Rating \(diagnostic\)/);
+    assert.match(source, /isJumpRace \? \([\s\S]*?<JumpRatingCell runner=\{runner\}/);
+    assert.match(source, /JPR-A \{rating\.score\.toFixed\(1\)\}/);
+  });
+
+  test("renders the frozen AW-D diagnostic for All Weather runners only", () => {
+    const source = readFileSync(new URL("./page.tsx", import.meta.url), "utf8");
+    assert.match(source, /AW Rating \(diagnostic\)/);
+    assert.match(source, /isAllWeatherRace \? \([\s\S]*?<AwRatingCell runner=\{runner\}/);
+    assert.match(source, /AW-D \{rating\.score\.toFixed\(1\)\}/);
+  });
+
   test("synchronizes AW forward comparisons once per page request", () => {
     const source = readFileSync(new URL("./page.tsx", import.meta.url), "utf8");
     const calls = source.match(/\bsyncAwForwardComparisons\(/g) ?? [];
@@ -147,7 +161,7 @@ describe("Today request orchestration", () => {
     assert.match(source, /<TodaySpeedDisplay>/);
     assert.match(source, /<TurfPerformanceRatingCell runner=\{runner\}/);
     assert.match(source, /\{runner\.odds \?\? "-"\}/);
-    assert.match(source, /min-w-\[1240px\]/);
+    assert.match(source, /min-w-\[1360px\]/);
   });
 
   test("does not render active Timewise manual-entry controls", () => {

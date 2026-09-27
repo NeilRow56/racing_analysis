@@ -50,6 +50,7 @@ describe("saved research rules", () => {
       },
       ratings: [{ metric: "latestSpeedRating", range: { min: 72 } }],
       ranks: [{ metric: "latestSpeedRating", range: { max: 2 } }],
+      startingPrice: { minDecimal: 2, maxDecimalExclusive: 8 },
     };
     const result = researchResult(rule);
 
@@ -80,6 +81,7 @@ describe("saved research rules", () => {
     assert.deepEqual((prepared.canonicalRule as { runner?: { jockeyPriorRuns?: { min?: number } } }).runner?.jockeyPriorRuns, { min: 50 });
     assert.deepEqual(prepared.developmentSnapshot, {
       settlementVersion: CANONICAL_SETTLEMENT_VERSION,
+      priceFilterVersion: "actual_sp_v2",
       eligibleRunners: 20,
       selections: 5,
       settledSelections: 4,
@@ -115,10 +117,14 @@ describe("saved research rules", () => {
   });
 
   test("detects legacy snapshots without inferring v2 or changing historical data", () => {
-    const rule = defaultResearchRule("jump");
+    const rule: ResearchRuleV1 = {
+      ...defaultResearchRule("jump"),
+      startingPrice: { minDecimal: 2, maxDecimalExclusive: 8 },
+    };
     const legacySnapshot = {
       ...developmentSnapshotFromResult(researchResult(rule)),
       settlementVersion: undefined,
+      priceFilterVersion: undefined,
       settledSelections: 17,
       profitLoss: 12.5,
       roiPercentage: 73.529,
@@ -128,6 +134,7 @@ describe("saved research rules", () => {
     assert.equal(isLegacySettlementSnapshot(legacySnapshot), true);
     assert.deepEqual(legacySnapshot, before);
     assert.equal(legacySnapshot.settlementVersion, undefined);
+    assert.equal(legacySnapshot.priceFilterVersion, undefined);
     assert.equal(legacySnapshot.settledSelections, 17);
     assert.equal(legacySnapshot.profitLoss, 12.5);
     assert.equal(legacySnapshot.roiPercentage, 73.529);
@@ -603,6 +610,7 @@ function researchResult(
 ): ResearchResult {
   return {
     settlementVersion: CANONICAL_SETTLEMENT_VERSION,
+    priceFilterVersion: "actual_sp_v2",
     rule,
     rowsEvaluated: 30,
     baselineRows: 20,
@@ -634,6 +642,7 @@ function researchResult(
       noWeight: 0,
       noTrainerPriorHistory: 0,
       noSettlementSp: 0,
+      priceEligibilityUnknown: 0,
       nonRunnerOrUnsettled: 1,
     },
     strategySummary: [],

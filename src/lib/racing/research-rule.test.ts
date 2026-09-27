@@ -980,6 +980,7 @@ describe("research Starting Price filters", () => {
   test("applies under-evens, minimum, range and 20/1+ boundaries", () => {
     assert.deepEqual(idsFor({ maxDecimalExclusive: 2 }), ["sp-1-99"]);
     assert.deepEqual(idsFor({ minDecimal: 2 }), [
+      "priced-faller",
       "sp-2-00",
       "sp-2-99",
       "sp-20-99",
@@ -990,6 +991,7 @@ describe("research Starting Price filters", () => {
       "sp-6-99",
     ]);
     assert.deepEqual(idsFor({ minDecimal: 4, maxDecimalExclusive: 7 }), [
+      "priced-faller",
       "sp-5-99",
       "sp-6-00",
       "sp-6-99",
@@ -1001,8 +1003,44 @@ describe("research Starting Price filters", () => {
     assert.equal(idsFor({ minDecimal: 1 }).includes("missing-sp"), false);
   });
 
-  test("keeps existing final-SP rule eligibility unchanged for non-finishers", () => {
-    assert.equal(idsFor({ minDecimal: 1 }).includes("priced-faller"), false);
+  test("uses recorded SP independently of finish status", () => {
+    assert.equal(idsFor({ minDecimal: 1 }).includes("priced-faller"), true);
+  });
+
+  test("passes priced started non-finishers to canonical settlement as losses", () => {
+    const result = evaluateResearchRule({
+      rows: [
+        row({ targetRunnerId: "winner" }, { startingPriceDecimal: "6.00", resultStatus: "finished", won: true, placed: true, finishingPosition: 1 }),
+        row({ targetRunnerId: "unplaced" }, { startingPriceDecimal: "6.00", resultStatus: "finished", won: false, placed: false, finishingPosition: 7 }),
+        row({ targetRunnerId: "faller" }, { startingPriceDecimal: "6.00", resultStatus: "fell", won: null, placed: null, finishingPosition: null }),
+        row({ targetRunnerId: "pulled-up" }, { startingPriceDecimal: "6.00", resultStatus: "pulled_up", won: null, placed: null, finishingPosition: null }),
+        row({ targetRunnerId: "unseated" }, { startingPriceDecimal: "6.00", resultStatus: "unseated_rider", won: null, placed: null, finishingPosition: null }),
+        row({ targetRunnerId: "brought-down" }, { startingPriceDecimal: "6.00", resultStatus: "brought_down", won: null, placed: null, finishingPosition: null }),
+        row({ targetRunnerId: "non-runner" }, { startingPriceDecimal: "6.00", resultStatus: "non_runner", won: null, placed: null, finishingPosition: null }),
+        row({ targetRunnerId: "missing" }, { startingPriceDecimal: null, resultStatus: "pulled_up", won: null, placed: null, finishingPosition: null }),
+      ],
+      rule: { ...defaultResearchRule("jump"), startingPrice: { minDecimal: 4, maxDecimalExclusive: 7 } },
+    });
+    const selections = new Map(result.selectedRunners.map((selection) => [selection.id, selection]));
+
+    assert.deepEqual([...selections.keys()].sort(), [
+      "brought-down",
+      "faller",
+      "non-runner",
+      "pulled-up",
+      "unplaced",
+      "unseated",
+      "winner",
+    ]);
+    assert.equal(selections.get("winner")?.settlement?.profitLoss, 5);
+    for (const id of ["unplaced", "faller", "pulled-up", "unseated", "brought-down"]) {
+      assert.equal(selections.get(id)?.settlement?.profitLoss, -1);
+    }
+    assert.equal(selections.get("non-runner")?.settlement, null);
+    assert.equal(selections.has("missing"), false);
+    assert.equal(result.missingData.priceEligibilityUnknown, 1);
+    assert.equal(result.settlementVersion, CANONICAL_SETTLEMENT_VERSION);
+    assert.equal(result.priceFilterVersion, "actual_sp_v2");
   });
 
   test("treats invalid min-greater-than-max filters as matching no runners", () => {

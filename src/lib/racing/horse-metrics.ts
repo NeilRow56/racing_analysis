@@ -59,6 +59,7 @@ export type HorseMetricsContext = {
 
 export type HorseMetricsAsOf = {
   priorRuns: number;
+  priorAwStarts?: number;
   priorWins: number;
   priorPlaces: number;
   winPercentage: number | null;
@@ -578,6 +579,9 @@ export function calculateHorseMetricsAsOf({
 
   return {
     priorRuns: priorRuns.length,
+    priorAwStarts: priorRuns.filter((run) =>
+      run.awSpeedRating != null || isSupportedAllWeatherRace(run)
+    ).length,
     priorWins: countWins(priorRuns),
     priorPlaces: countPlaces(priorRuns),
     winPercentage: percentage(countWins(priorRuns), priorRuns.length),

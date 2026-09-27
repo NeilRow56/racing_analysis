@@ -12,6 +12,7 @@ import {
   RUN_AFTER_BREAK_OPTIONS,
   evaluateResearchRule,
   formatExactDistance,
+  hasStartingPriceCondition,
   hydrateResearchRuleMetadata,
   parseResearchRule,
   researchFilterOptionsForRows,
@@ -67,6 +68,10 @@ import { holdoutRangeText, savedRuleTrainerCohortText } from "./holdout-display"
 import { ResearchWorkspace } from "./research-form-client";
 import { ResearchHorseNameLink } from "./research-horse-link";
 import { PriceSensitivityPanel } from "./price-sensitivity-panel";
+import {
+  LegacyPriceFilterWarning,
+  PriceFilterVersionBadge,
+} from "./price-filter-version-display";
 import { RuleStabilityPanel } from "./rule-stability-panel";
 import { SaveRuleSubmitButton } from "./save-rule-submit-button";
 import { SavedRuleActionForms } from "./saved-rule-actions-client";
@@ -379,6 +384,11 @@ function ResearchResults({
               <span className="ml-2 text-slate-600">
                 Returns: {developmentSettlementModeDescription(settlementMode)}
               </span>
+              {hasStartingPriceCondition(result.rule) ? (
+                <span className="ml-2">
+                  <PriceFilterVersionBadge active version={result.priceFilterVersion} />
+                </span>
+              ) : null}
             </p>
           </div>
           <p className="text-sm text-slate-500">No strategy confidence score is assigned in v1.</p>
@@ -393,6 +403,9 @@ function ResearchResults({
           <Metric label="Place strike" value={formatPct(developmentSummary.placeStrikeRate)} />
           <Metric label="£1 P/L" value={formatMoney(developmentSummary.profitLoss)} />
           <Metric label="ROI" value={formatPct(developmentSummary.roiPercentage)} />
+          {result.rule.startingPrice ? (
+            <Metric label="SP eligibility unknown" value={result.missingData.priceEligibilityUnknown} />
+          ) : null}
           <Metric label="Max losing run" value={developmentSummary.maxConsecutiveLosers} />
         </div>
         <div className="mt-4 rounded border border-slate-200 bg-slate-50 p-3 text-sm text-slate-700">
@@ -534,6 +547,16 @@ function SavedRulesSection({ savedRules }: { savedRules: SavedResearchRule[] }) 
                   <td className="py-3 pr-3 align-top">{statusLabel(rule.status)}</td>
                   <td className="py-3 pr-3 align-top">
                     <SettlementVersionBadge version={rule.developmentSnapshot.settlementVersion} />
+                    <div className="mt-1">
+                      <PriceFilterVersionBadge
+                        active={savedRuleHasStartingPriceCondition(rule)}
+                        version={rule.developmentSnapshot.priceFilterVersion}
+                      />
+                    </div>
+                    <LegacyPriceFilterWarning
+                      active={savedRuleHasStartingPriceCondition(rule)}
+                      version={rule.developmentSnapshot.priceFilterVersion}
+                    />
                   </td>
                   <td className="py-3 pr-3 align-top">{familyLabel(rule.family)}</td>
                   <td className="py-3 pr-3 align-top">{formatDateTime(rule.createdAt)}</td>
@@ -567,9 +590,22 @@ function SavedRuleDetails({ rule }: { rule: SavedResearchRule }) {
   const summary = strategySummaryFromSavedRule(rule);
   const hasLegacySnapshot = isLegacySettlementSnapshot(rule.developmentSnapshot) ||
     (rule.holdoutSnapshot !== null && isLegacySettlementSnapshot(rule.holdoutSnapshot));
+  const hasPriceFilter = savedRuleHasStartingPriceCondition(rule);
   return (
     <div className="mt-3 max-w-xl space-y-3 border border-slate-100 bg-slate-50 p-3 text-xs text-slate-700">
       {hasLegacySnapshot ? <LegacySettlementWarning /> : null}
+      <LegacyPriceFilterWarning
+        active={hasPriceFilter}
+        version={rule.developmentSnapshot.priceFilterVersion}
+        sampleLabel="Development snapshot"
+      />
+      {rule.holdoutSnapshot ? (
+        <LegacyPriceFilterWarning
+          active={hasPriceFilter}
+          version={rule.holdoutSnapshot.priceFilterVersion}
+          sampleLabel="Holdout snapshot"
+        />
+      ) : null}
       {rule.notes ? <p>{rule.notes}</p> : null}
       <ul className="space-y-1">
         {keyedStrategySummary(summary).map((item) => (
@@ -585,6 +621,9 @@ function SavedRuleDetails({ rule }: { rule: SavedResearchRule }) {
         <Detail label="P/L" value={formatMoney(rule.developmentSnapshot.profitLoss)} />
         <Detail label="Development settlement basis" value={settlementVersionLabel(rule.developmentSnapshot)} />
         <Detail label="Development settlement" value={snapshotSettlementLabel(rule.developmentSnapshot)} />
+        {hasPriceFilter ? (
+          <Detail label="Development price filter" value={priceFilterVersionLabel(rule.developmentSnapshot)} />
+        ) : null}
         <Detail label="Rule identity" value={rule.ruleIdentity} />
         <Detail label="Frozen" value={rule.frozenAt ? formatDateTime(rule.frozenAt) : "-"} />
         <Detail label="Feature schema" value={rule.cacheMetadata?.featureSchemaVersion ?? "-"} />
@@ -627,6 +666,16 @@ function HoldoutSummary({ rule }: { rule: SavedResearchRule }) {
       <div className="mt-1">
         <SettlementVersionBadge version={snapshot.settlementVersion} />
       </div>
+      <div className="mt-1">
+        <PriceFilterVersionBadge
+          active={savedRuleHasStartingPriceCondition(rule)}
+          version={snapshot.priceFilterVersion}
+        />
+      </div>
+      <LegacyPriceFilterWarning
+        active={savedRuleHasStartingPriceCondition(rule)}
+        version={snapshot.priceFilterVersion}
+      />
       {trainerCohortText ? (
         <div className="mt-1 text-slate-600">Trainer cohort used: {trainerCohortText}</div>
       ) : null}
@@ -653,6 +702,9 @@ function SavedRuleResultComparison({ rule }: { rule: SavedResearchRule }) {
             <th className="py-1 pr-2 font-medium">Sample</th>
             <th className="py-1 pr-2 font-medium">Range</th>
             <th className="py-1 pr-2 font-medium">Settlement</th>
+            {savedRuleHasStartingPriceCondition(rule) ? (
+              <th className="py-1 pr-2 font-medium">Price filter</th>
+            ) : null}
             <th className="py-1 pr-2 font-medium">Selections</th>
             <th className="py-1 pr-2 font-medium">Settled</th>
             <th className="py-1 pr-2 font-medium">Winners</th>
@@ -669,11 +721,13 @@ function SavedRuleResultComparison({ rule }: { rule: SavedResearchRule }) {
             label="2025 Development"
             range={`${rule.developmentFrom} to ${rule.developmentTo}`}
             snapshot={rule.developmentSnapshot}
+            hasPriceFilter={savedRuleHasStartingPriceCondition(rule)}
           />
           <ResultComparisonRow
             label="2026 Holdout"
             range={holdoutRangeText(holdout)}
             snapshot={holdout}
+            hasPriceFilter={savedRuleHasStartingPriceCondition(rule)}
           />
         </tbody>
       </table>
@@ -698,16 +752,19 @@ function ResultComparisonRow({
   label,
   range,
   snapshot,
+  hasPriceFilter,
 }: {
   label: string;
   range: string;
   snapshot: SavedResearchRule["developmentSnapshot"];
+  hasPriceFilter: boolean;
 }) {
   return (
     <tr>
       <td className="py-1 pr-2 font-medium text-slate-700">{label}</td>
       <td className="py-1 pr-2">{range}</td>
       <td className="py-1 pr-2">{snapshotSettlementLabel(snapshot)}</td>
+      {hasPriceFilter ? <td className="py-1 pr-2">{priceFilterVersionLabel(snapshot)}</td> : null}
       <td className="py-1 pr-2">{snapshot.selections}</td>
       <td className="py-1 pr-2">{snapshot.settledSelections}</td>
       <td className="py-1 pr-2">{snapshot.winners}</td>
@@ -743,6 +800,15 @@ function Detail({ label, value }: { label: string; value: string | number }) {
 
 function snapshotSettlementLabel(snapshot: SavedResearchRule["developmentSnapshot"]) {
   return `${settlementVersionLabel(snapshot)} · ${developmentSettlementModeDescription(snapshot.developmentSettlementMode ?? "actual")}`;
+}
+
+function priceFilterVersionLabel(snapshot: SavedResearchRule["developmentSnapshot"]) {
+  return snapshot.priceFilterVersion === "actual_sp_v2" ? "Actual SP v2" : "Legacy";
+}
+
+function savedRuleHasStartingPriceCondition(rule: Pick<SavedResearchRule, "canonicalRule">) {
+  const canonicalRule = parseResearchRule(JSON.stringify(rule.canonicalRule));
+  return canonicalRule ? hasStartingPriceCondition(canonicalRule) : false;
 }
 
 function emptyFilterOptions(): ResearchFilterOptions {
@@ -826,6 +892,7 @@ function diagnosticLabel(key: string) {
     noOr: "No OR",
     noWeight: "No Weight",
     noSettlementSp: "No Settlement SP",
+    priceEligibilityUnknown: "SP eligibility unknown",
     nonRunnerOrUnsettled: "Non-runner/unsettled",
   };
   return labels[key] ?? key

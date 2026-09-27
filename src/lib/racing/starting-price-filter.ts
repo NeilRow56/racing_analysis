@@ -3,6 +3,13 @@ export type StartingPriceCondition = {
   maxDecimalExclusive?: number;
 };
 
+export const ACTUAL_SP_FILTER_VERSION = "actual_sp_v2" as const;
+
+export type ActualStartingPriceEligibility =
+  | "eligible"
+  | "outside_range"
+  | "price_unavailable";
+
 export type StartingPriceFilterValue =
   | "under_1_1"
   | "1_1"
@@ -102,21 +109,31 @@ export function startingPriceDecimalMatches(
   value: number | null,
   condition: StartingPriceCondition | undefined,
 ): boolean {
+  return actualStartingPriceEligibility(value, condition) === "eligible";
+}
+
+export function actualStartingPriceEligibility(
+  value: number | string | null | undefined,
+  condition: StartingPriceCondition | undefined,
+): ActualStartingPriceEligibility {
   if (!condition || (condition.minDecimal === undefined && condition.maxDecimalExclusive === undefined)) {
-    return true;
+    return "eligible";
   }
-  if (value === null || !Number.isFinite(value)) {
-    return false;
+  const decimal = typeof value === "number" ? value : Number(value);
+  if (value === null || value === undefined || !Number.isFinite(decimal) || decimal <= 1) {
+    return "price_unavailable";
   }
   if (
     condition.minDecimal !== undefined &&
     condition.maxDecimalExclusive !== undefined &&
     condition.minDecimal >= condition.maxDecimalExclusive
   ) {
-    return false;
+    return "outside_range";
   }
-  return (condition.minDecimal === undefined || value >= condition.minDecimal) &&
-    (condition.maxDecimalExclusive === undefined || value < condition.maxDecimalExclusive);
+  return (condition.minDecimal === undefined || decimal >= condition.minDecimal) &&
+      (condition.maxDecimalExclusive === undefined || decimal < condition.maxDecimalExclusive)
+    ? "eligible"
+    : "outside_range";
 }
 
 export function isImpossibleStartingPriceCondition(condition: StartingPriceCondition | undefined): boolean {

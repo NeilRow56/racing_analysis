@@ -29,6 +29,14 @@ import {
   type TrainerPriorMetrics,
 } from "./trainer-quality";
 import {
+  attachJumpRaceRatings,
+  type JumpRatingRunner,
+} from "./jump-performance-rating";
+import {
+  attachAwRaceRatings,
+  type AwRatingRunner,
+} from "./aw-performance-rating";
+import {
   buildCanonicalTurfPerformanceRatingInput,
   calculateTurfPerformanceRating,
   rankTurfPerformanceRatings,
@@ -77,6 +85,8 @@ export type TodayRunner = {
   jockeyMetrics?: JockeyPriorMetrics;
   savedRuleMatches?: TodaySavedRuleMatch[];
   goingForm?: GoingForm;
+  jumpRating?: JumpRatingRunner;
+  awRating?: AwRatingRunner;
 };
 
 export type TodaySavedRuleMatch = {
@@ -560,9 +570,11 @@ export function groupTodaysRacingRows(
       races: meeting.races
         .map((race) => {
           const raceWithTpr = attachTurfPerformanceRatings(race);
+          const raceWithJumpRatings = attachJumpRaceRatings(raceWithTpr);
+          const raceWithRatings = attachAwRaceRatings(raceWithJumpRatings);
           return {
-            ...raceWithTpr,
-            runners: raceWithTpr.runners.sort(compareRunners),
+            ...raceWithRatings,
+            runners: raceWithRatings.runners.sort(compareRunners),
           };
         })
         .sort(compareRaces),

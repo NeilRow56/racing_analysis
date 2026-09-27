@@ -405,6 +405,7 @@ describe("calculateHorseMetricsAsOf", () => {
     assert.equal(metrics.averageAwSpeedLast3, 94.33333333333333);
     assert.equal(metrics.averageAwSpeedLast5, 95.5);
     assert.equal(metrics.latestJumpSpeedRating, 120);
+    assert.equal(metrics.priorAwStarts, 4);
   });
 
   test("keeps AW form pure across AW, Turf, Jump and three-family histories", () => {

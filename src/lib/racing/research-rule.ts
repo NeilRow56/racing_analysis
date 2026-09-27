@@ -33,9 +33,10 @@ import {
   type TrainerCohortRule,
 } from "./trainer-cohort-mode";
 import {
+  ACTUAL_SP_FILTER_VERSION,
+  actualStartingPriceEligibility,
   isImpossibleStartingPriceCondition,
   startingPriceConditionFromValues,
-  startingPriceDecimalMatches,
   type StartingPriceCondition,
 } from "./starting-price-filter";
 import {
@@ -56,8 +57,10 @@ export {
   type RelativeMetric,
 } from "./research-or-relative-metrics";
 export {
+  ACTUAL_SP_FILTER_VERSION,
   STARTING_PRICE_MAX_OPTIONS,
   STARTING_PRICE_MIN_OPTIONS,
+  actualStartingPriceEligibility,
   isImpossibleStartingPriceCondition,
   startingPriceConditionFromValues,
   startingPriceMaxValue,
@@ -215,11 +218,13 @@ export type ResearchMissingData = {
   noWeight: number;
   noTrainerPriorHistory: number;
   noSettlementSp: number;
+  priceEligibilityUnknown: number;
   nonRunnerOrUnsettled: number;
 };
 
 export type ResearchResult = {
   settlementVersion: ResearchSettlementVersion;
+  priceFilterVersion: typeof ACTUAL_SP_FILTER_VERSION;
   rule: ResearchRuleV1;
   rowsEvaluated: number;
   baselineRows: number;
@@ -404,6 +409,7 @@ export function evaluateResearchRule(input: {
 
   return {
     settlementVersion: CANONICAL_SETTLEMENT_VERSION,
+    priceFilterVersion: ACTUAL_SP_FILTER_VERSION,
     rule: input.rule,
     rowsEvaluated: rows.length,
     baselineRows: baseline.length,
@@ -412,7 +418,7 @@ export function evaluateResearchRule(input: {
     baselineWinStrikeRate: percentage(baselineWins, baselineSettled.length),
     selectedRunners,
     summary: summarizeSelections(selectedRunners),
-    missingData: missingDataFor(baseline),
+    missingData: missingDataFor(baseline, input.rule),
     strategySummary: strategySummary(input.rule),
     cache: input.cache ?? null,
     elapsedMs: input.elapsedMs ?? 0,
@@ -871,18 +877,7 @@ export function matchesStartingPriceCondition(row: RankedResearchRow, rule: Rese
   if (!hasStartingPriceCondition(rule)) {
     return true;
   }
-  if (
-    row.outcome.resultStatus === "non_runner" ||
-    row.outcome.finishingPosition === null ||
-    row.outcome.won === null
-  ) {
-    return false;
-  }
-  const decimalOdds = Number(row.outcome.startingPriceDecimal);
-  if (!Number.isFinite(decimalOdds) || decimalOdds <= 1) {
-    return false;
-  }
-  return startingPriceDecimalMatches(decimalOdds, condition);
+  return actualStartingPriceEligibility(row.outcome.startingPriceDecimal, condition) === "eligible";
 }
 
 export function hasStartingPriceCondition(rule: ResearchRuleV1): boolean {
@@ -1001,7 +996,7 @@ function trainerCohortMatches(
   return trainerCohort.trainerIds.has(trainerId);
 }
 
-function missingDataFor(rows: RankedResearchRow[]): ResearchMissingData {
+function missingDataFor(rows: RankedResearchRow[], rule: ResearchRuleV1): ResearchMissingData {
   return {
     noSpeed: rows.filter((row) => row.features.latestSpeedRating === null).length,
     noPerformance: rows.filter((row) => row.features.latestPerformanceRating === null).length,
@@ -1010,6 +1005,12 @@ function missingDataFor(rows: RankedResearchRow[]): ResearchMissingData {
     noWeight: rows.filter((row) => row.features.weightCarriedLbs === null).length,
     noTrainerPriorHistory: rows.filter((row) => row.features.trainerPriorRuns === 0).length,
     noSettlementSp: rows.filter((row) => row.outcome.startingPriceDecimal === null).length,
+    priceEligibilityUnknown: hasStartingPriceCondition(rule)
+      ? rows.filter((row) =>
+        actualStartingPriceEligibility(row.outcome.startingPriceDecimal, rule.startingPrice) ===
+          "price_unavailable"
+      ).length
+      : 0,
     nonRunnerOrUnsettled: rows.filter((row) => settleSelection(row.outcome) === null).length,
   };
 }

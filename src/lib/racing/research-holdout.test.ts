@@ -298,6 +298,7 @@ describe("research holdout validation", () => {
 
     assert.equal(snapshot.selections, 2);
     assert.equal(snapshot.settledSelections, 2);
+    assert.equal(snapshot.priceFilterVersion, "actual_sp_v2");
   });
 
   test("evaluates official rating rank alongside a generic rank in holdout", async () => {
@@ -469,6 +470,7 @@ function savedRuleFor(rule: ResearchRuleV1): SavedResearchRule {
     developmentTo: rule.dateRange.to,
     developmentSnapshot: developmentSnapshotFromResult({
       settlementVersion: CANONICAL_SETTLEMENT_VERSION,
+      priceFilterVersion: "actual_sp_v2",
       rule,
       rowsEvaluated: 0,
       baselineRows: 0,
@@ -499,6 +501,7 @@ function savedRuleFor(rule: ResearchRuleV1): SavedResearchRule {
         noWeight: 0,
         noTrainerPriorHistory: 0,
         noSettlementSp: 0,
+        priceEligibilityUnknown: 0,
         nonRunnerOrUnsettled: 0,
       },
       strategySummary: [],

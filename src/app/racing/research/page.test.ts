@@ -49,6 +49,10 @@ import {
   LegacySettlementWarning,
   SettlementVersionBadge,
 } from "./settlement-version-display";
+import {
+  LegacyPriceFilterWarning,
+  PriceFilterVersionBadge,
+} from "./price-filter-version-display";
 
 describe("research filters page", () => {
   test("renders paired calendar month controls and stores only complete ranges", () => {
@@ -81,6 +85,26 @@ describe("research filters page", () => {
     assert.match(warning, /Settlement: Legacy/);
     assert.match(warning, /Historical P\/L, ROI, strike and settled counts may exclude started non-finishers/);
     assert.match(warning, /Re-run Research for current settlement results/);
+  });
+
+  test("renders current and legacy price-filter versions independently", () => {
+    const development = renderToStaticMarkup(
+      LegacyPriceFilterWarning({ active: true, sampleLabel: "Development snapshot" }),
+    );
+    const holdout = renderToStaticMarkup(
+      PriceFilterVersionBadge({ active: true, version: "actual_sp_v2" }),
+    );
+
+    assert.match(development, /Development snapshot/);
+    assert.match(development, /Price filter: Legacy/);
+    assert.match(development, /Legacy SP filtering may exclude priced started non-finishers/);
+    assert.match(development, /Re-run Research for current results/);
+    assert.match(holdout, /Price filter: Actual SP v2/);
+  });
+
+  test("does not render price-filter metadata for rules without an SP condition", () => {
+    assert.equal(renderToStaticMarkup(PriceFilterVersionBadge({ active: false })), "");
+    assert.equal(renderToStaticMarkup(LegacyPriceFilterWarning({ active: false })), "");
   });
 
   test("gives generic rating and dedicated TPR rank summaries unique React keys", () => {

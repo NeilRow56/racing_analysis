@@ -449,7 +449,7 @@ function RunnerTable({
 }) {
   return (
     <div className="mt-4 overflow-x-auto">
-      <table className="w-full min-w-[1240px] table-fixed text-left text-sm">
+      <table className="w-full min-w-[1360px] table-fixed text-left text-sm">
         <thead className="border-y border-slate-200 text-xs uppercase text-slate-500">
           <tr>
             <th className="w-14 py-2 pr-3 font-medium">No.</th>
@@ -477,6 +477,22 @@ function RunnerTable({
             >
               Today&apos;s Rating
             </th>
+            {isJumpRace ? (
+              <th
+                className="w-32 py-2 pr-3 font-medium"
+                title="Frozen JPR-A diagnostic: equal average of Average Jump Speed L3 rank and Trainer prior strike-rate rank."
+              >
+                Jump Rating (diagnostic)
+              </th>
+            ) : null}
+            {isAllWeatherRace ? (
+              <th
+                className="w-32 py-2 pr-3 font-medium"
+                title="Frozen AW-D diagnostic: equal average of Average AW Speed L3, Trainer prior strike-rate, and Jockey prior strike-rate ranks."
+              >
+                AW Rating (diagnostic)
+              </th>
+            ) : null}
             {isTurfRace ? (
               <th
                 className="w-28 py-2 pr-3 font-medium"
@@ -570,6 +586,16 @@ function RunnerRow({
         <SpeedDisplayValue values={speedMetrics} />
       </td>
       <td className="py-3 pr-3">{formatRating(todaysRating)}</td>
+      {isJumpRace ? (
+        <td className="py-3 pr-3">
+          <JumpRatingCell runner={runner} />
+        </td>
+      ) : null}
+      {isAllWeatherRace ? (
+        <td className="py-3 pr-3">
+          <AwRatingCell runner={runner} />
+        </td>
+      ) : null}
       {isTurfRace ? (
         <td className="py-3 pr-3">
           <TurfPerformanceRatingCell runner={runner} />
@@ -580,6 +606,28 @@ function RunnerRow({
       </td>
       <td className="py-3 pr-3">{runner.odds ?? "-"}</td>
     </tr>
+  );
+}
+
+function JumpRatingCell({ runner }: { runner: TodayRunner }) {
+  const rating = runner.jumpRating?.jprA;
+  if (!rating) return <span className="text-slate-400">—</span>;
+  return (
+    <div className="space-y-0.5">
+      <div className="font-semibold text-slate-900">JPR-A {rating.score.toFixed(1)}</div>
+      <div className="text-xs text-slate-600">Rank {rating.rank}</div>
+    </div>
+  );
+}
+
+function AwRatingCell({ runner }: { runner: TodayRunner }) {
+  const rating = runner.awRating?.awD;
+  if (!rating) return <span className="text-slate-400">—</span>;
+  return (
+    <div className="space-y-0.5">
+      <div className="font-semibold text-slate-900">AW-D {rating.score.toFixed(1)}</div>
+      <div className="text-xs text-slate-600">Rank {rating.rank}</div>
+    </div>
   );
 }
 

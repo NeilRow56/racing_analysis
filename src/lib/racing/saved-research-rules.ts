@@ -18,6 +18,7 @@ import {
   type DevelopmentSettlementMode,
 } from "./development-settlement-mode";
 import type { ResearchSettlementVersion } from "./research-settlement-version";
+import { ACTUAL_SP_FILTER_VERSION } from "./starting-price-filter";
 
 type Db = ReturnType<typeof createDbConnection>["db"];
 type DbConnection = ReturnType<typeof createDbConnection>;
@@ -29,6 +30,7 @@ export type CanonicalResearchRuleV1 = ReturnType<typeof canonicalResearchRule>;
 
 export type DevelopmentResultSnapshot = {
   settlementVersion?: ResearchSettlementVersion;
+  priceFilterVersion?: typeof ACTUAL_SP_FILTER_VERSION;
   eligibleRunners: number;
   selections: number;
   settledSelections: number;
@@ -324,6 +326,7 @@ export function developmentSnapshotFromResult(
   const summary = input.summary ?? result.summary;
   return {
     settlementVersion: result.settlementVersion,
+    priceFilterVersion: result.priceFilterVersion,
     eligibleRunners: result.baselineRows,
     selections: summary.selections,
     settledSelections: summary.settledSelections,
