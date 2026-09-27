@@ -321,10 +321,10 @@ function rankSummary(
   settled: JumpRatingForwardRace[],
   rankFor: (runner: JumpRatingForwardRunner) => number | null,
 ) {
-  const rank1 = settled.flatMap((race) => race.runners
+  const rawRank1 = settled.flatMap((race) => race.runners
     .filter((runner) => rankFor(runner) === 1)
-    .map((runner) => ({ race, runner })))
-    .filter(({ runner }) => !isVoidBetResultStatus(runner.resultStatus));
+    .map((runner) => ({ race, runner })));
+  const rank1 = rawRank1.filter(({ runner }) => !isVoidBetResultStatus(runner.resultStatus));
   const rank1Winners = rank1.filter(({ race, runner }) =>
     race.winnerRunnerIds.includes(runner.runnerId)
   ).length;
@@ -340,6 +340,12 @@ function rankSummary(
       covered.length,
     ),
     coveredRaces: covered.length,
+    voidRank1Selections: rawRank1.length - rank1.length,
+    rank1TiedRaces: settled.filter((race) =>
+      race.runners.filter((runner) =>
+        rankFor(runner) === 1 && !isVoidBetResultStatus(runner.resultStatus)
+      ).length > 1
+    ).length,
   };
 }
 

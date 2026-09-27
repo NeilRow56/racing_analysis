@@ -134,7 +134,8 @@ function printCandidate(
   label: string,
   value: ReturnType<typeof summarizeJumpRatingForward>["jprA"],
 ) {
-  console.log(`${label} rank-1: ${value.rank1Winners}/${value.rank1Selections} (${pct(value.rank1Strike)})`);
+  console.log(`${label} rank-1 selections: ${value.rank1Winners}/${value.rank1Selections} (${pct(value.rank1Strike)})`);
+  console.log(`${label} rank-1 denominator: ${value.rank1Selections} settled, non-void selections; voided rank-1 selections: ${value.voidRank1Selections}; tied rank-1 races: ${value.rank1TiedRaces}`);
   console.log(`${label} top-3 capture: ${pct(value.top3Capture)} (${value.coveredRaces} covered races)`);
 }
 

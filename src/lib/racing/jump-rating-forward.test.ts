@@ -99,6 +99,38 @@ describe("Jump Rating forward tracker", () => {
     assert.equal(deadHeat.runners[1]?.settlement?.grossReturn, 3);
   });
 
+  test("reports rank-1 denominator diagnostics for voided and tied selections", () => {
+    const voided = enrichJumpRatingForwardRace(requiredRecord(), jumpRace({
+      runners: [
+        runner("a", { resultStatus: "non_runner", oddsDecimal: null }),
+        runner("b", { finishingPosition: 1, resultStatus: "finished", oddsDecimal: "4" }),
+      ],
+    }));
+    const baseTiedRecord = requiredRecord();
+    const tiedRecord = {
+      ...baseTiedRecord,
+      raceId: "race-2",
+      runners: baseTiedRecord.runners.map((item) => ({ ...item, jprARank: 1 })),
+    };
+    const tied = enrichJumpRatingForwardRace(tiedRecord, jumpRace({
+      raceId: "race-2",
+      runners: [
+        runner("a", { finishingPosition: 2, resultStatus: "finished", oddsDecimal: "3" }),
+        runner("b", { finishingPosition: 1, resultStatus: "finished", oddsDecimal: "4" }),
+      ],
+    }));
+
+    const summary = summarizeJumpRatingForward({
+      ...emptyJumpRatingForwardData(),
+      races: [voided, tied],
+    });
+
+    assert.equal(summary.jprA.rank1Selections, 2);
+    assert.equal(summary.jprA.rank1Winners, 1);
+    assert.equal(summary.jprA.voidRank1Selections, 1);
+    assert.equal(summary.jprA.rank1TiedRaces, 1);
+  });
+
   test("upsert and repeated settlement are idempotent", () => {
     const record = requiredRecord();
     const initial = upsertJumpRatingForwardRaces(emptyJumpRatingForwardData(), [record, record]);
