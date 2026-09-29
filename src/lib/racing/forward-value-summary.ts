@@ -45,6 +45,16 @@ export type ForwardValueFamilySummary = {
   priceDiagnostics: ForwardValuePriceDiagnostics;
 };
 
+export type TurfModelAgreementSummary = {
+  comparableRaces: number;
+  tprTissueAgree: number;
+  disagree: number;
+  bothPositiveEdge: number;
+  tprPositiveOnly: number;
+  tissuePositiveOnly: number;
+  neitherPositive: number;
+};
+
 export type ForwardValueSnapshotMetrics = {
   observations: number;
   meanEdgePercentagePoints: number | null;
@@ -94,6 +104,7 @@ export type ForwardValueSummary = {
   latestObservationDate: string | null;
   sparseSampleWarning: boolean;
   exclusionCounts: Partial<Record<ValueExclusionReason, number>>;
+  turfModelAgreement: TurfModelAgreementSummary;
   families: ForwardValueFamilySummary[];
 };
 
@@ -123,6 +134,7 @@ export function summarizeForwardValue(data: ForwardValueData): ForwardValueSumma
     latestObservationDate: dates.at(-1) ?? null,
     sparseSampleWarning: settled.length < 25,
     exclusionCounts,
+    turfModelAgreement: summarizeTurfModelAgreement(data.races),
     families: (["turf", "jump", "aw"] as ValueFamily[]).map((family) => {
       const familyProspective = prospective.filter((race) => race.family === family);
       const cleanSettled = familyProspective.filter(isCleanSettledPhase2Observation);
@@ -142,6 +154,36 @@ export function summarizeForwardValue(data: ForwardValueData): ForwardValueSumma
       };
     }),
   };
+}
+
+export function summarizeTurfModelAgreement(records: ForwardValueRecord[]): TurfModelAgreementSummary {
+  const comparable = records.filter((record) =>
+    record.family === "turf" &&
+    isProspectiveObservation(record) &&
+    record.tissueAgreesWithTpr !== null &&
+    record.edgePercentagePoints !== null &&
+    record.tissueEdgePercentagePoints != null
+  );
+  const summary: TurfModelAgreementSummary = {
+    comparableRaces: comparable.length,
+    tprTissueAgree: 0,
+    disagree: 0,
+    bothPositiveEdge: 0,
+    tprPositiveOnly: 0,
+    tissuePositiveOnly: 0,
+    neitherPositive: 0,
+  };
+  for (const race of comparable) {
+    if (race.tissueAgreesWithTpr) summary.tprTissueAgree += 1;
+    else summary.disagree += 1;
+    const tprPositive = race.edgePercentagePoints! > 0;
+    const tissuePositive = race.tissueEdgePercentagePoints! > 0;
+    if (tprPositive && tissuePositive) summary.bothPositiveEdge += 1;
+    else if (tprPositive) summary.tprPositiveOnly += 1;
+    else if (tissuePositive) summary.tissuePositiveOnly += 1;
+    else summary.neitherPositive += 1;
+  }
+  return summary;
 }
 
 export function summarizeForwardValuePriceDiagnostics(records: ForwardValueRecord[]): ForwardValuePriceDiagnostics {
