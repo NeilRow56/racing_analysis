@@ -29,6 +29,7 @@ import {
   isOrdinaryFlatTurfRaceForDisplay,
   racingPageTitle,
   resolveRacingDate,
+  summarizeTodayMarketPrice,
   type TodayMeeting,
   type TodayRace,
   type TodayRunner,
@@ -448,61 +449,61 @@ function RunnerTable({
   runners: TodayRunner[];
 }) {
   return (
-    <div className="mt-4 overflow-x-auto">
-      <table className="w-full min-w-[1360px] table-fixed text-left text-sm">
-        <thead className="border-y border-slate-200 text-xs uppercase text-slate-500">
+    <div className="mt-4 overflow-x-auto" data-testid="runner-table-scroll">
+      <table className="w-full min-w-[1120px] table-fixed text-left text-xs">
+        <thead className="border-y border-slate-200 text-[10px] uppercase text-slate-500">
           <tr>
-            <th className="w-14 py-2 pr-3 font-medium">No.</th>
-            <th className="w-44 py-2 pr-3 font-medium">Horse</th>
-            <th className="w-14 py-2 pr-3 font-medium">Age</th>
-            <th className="w-20 py-2 pr-3 font-medium">Wgt</th>
-            <th className="w-16 py-2 pr-3 font-medium">
+            <th className="w-10 px-1.5 py-1.5 font-medium">No.</th>
+            <th className="w-40 px-1.5 py-1.5 font-medium">Horse</th>
+            <th className="w-9 px-1.5 py-1.5 font-medium">Age</th>
+            <th className="w-14 px-1.5 py-1.5 font-medium">Wgt</th>
+            <th className="w-10 px-1.5 py-1.5 font-medium">
               {isJumpRace ? "-" : "Draw"}
             </th>
-            <th className="w-28 py-2 pr-3 font-medium">Jockey</th>
-            <th className="w-32 py-2 pr-3 font-medium">Trainer</th>
-            <th className="w-14 py-2 pr-3 font-medium">OR</th>
+            <th className="w-24 px-1.5 py-1.5 font-medium">Jockey</th>
+            <th className="w-28 px-1.5 py-1.5 font-medium">Trainer</th>
+            <th className="w-10 px-1.5 py-1.5 font-medium">OR</th>
             {(isTurfRace || isJumpRace) ? (
               <th
-                className="w-28 py-2 pr-3 font-medium"
+                className="w-20 px-1.5 py-1.5 font-medium"
                 title="Previous 1st or 2nd finishes on going containing these terms."
               >
                 Going form
               </th>
             ) : null}
-            <th className="w-20 py-2 pr-3 font-medium">Speed</th>
+            <th className="w-16 px-1.5 py-1.5 font-medium">Speed</th>
             <th
-              className="w-20 py-2 pr-3 font-medium"
+              className="w-[72px] px-1.5 py-1.5 font-medium"
               title="Latest historical performance adjusted for today's weight."
             >
               Today&apos;s Rating
             </th>
             {isJumpRace ? (
               <th
-                className="w-32 py-2 pr-3 font-medium"
+                className="w-28 px-1.5 py-1.5 font-medium"
                 title="Frozen JPR-A diagnostic: equal average of Average Jump Speed L3 rank and Trainer prior strike-rate rank."
               >
-                Jump Rating (diagnostic)
+                JPR-A diag.
               </th>
             ) : null}
             {isAllWeatherRace ? (
               <th
-                className="w-32 py-2 pr-3 font-medium"
+                className="w-28 px-1.5 py-1.5 font-medium"
                 title="Frozen AW-D diagnostic: equal average of Average AW Speed L3, Trainer prior strike-rate, and Jockey prior strike-rate ranks."
               >
-                AW Rating (diagnostic)
+                AW-D diag.
               </th>
             ) : null}
             {isTurfRace ? (
               <th
-                className="w-28 py-2 pr-3 font-medium"
+                className="w-24 px-1.5 py-1.5 font-medium"
                 title="Experimental Turf Performance Rating. Diagnostic forward test only."
               >
-                TPR (diagnostic)
+                Turf TPR
               </th>
             ) : null}
-            <th className="w-16 py-2 pr-3 font-medium">Days</th>
-            <th className="w-20 py-2 pr-3 font-medium">Odds</th>
+            <th className="w-11 px-1.5 py-1.5 font-medium">Days</th>
+            <th className="w-20 px-1.5 py-1.5 font-medium">Odds</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-200">
@@ -552,11 +553,11 @@ function RunnerRow({
         nonRunner ? "bg-slate-100 text-slate-500 line-through" : "align-top"
       }
     >
-      <td className="py-3 pr-3">{runner.saddleclothNumber ?? "-"}</td>
-      <td className="py-3 pr-3">
-        <div className="flex items-center gap-2">
+      <td className="px-1.5 py-2">{runner.saddleclothNumber ?? "-"}</td>
+      <td className="px-1.5 py-2">
+        <div className="flex min-w-0 flex-wrap items-center gap-1">
           <Link
-            className="font-medium text-emerald-800 hover:text-emerald-950 hover:underline"
+            className="break-words font-medium leading-4 text-emerald-800 hover:text-emerald-950 hover:underline"
             href={`/horses/${runner.horseId}`}
           >
             {runner.horseName}
@@ -569,43 +570,75 @@ function RunnerRow({
         </div>
         <SavedRuleMatches matches={runner.savedRuleMatches ?? []} />
       </td>
-      <td className="py-3 pr-3">{runner.horseAge ?? "-"}</td>
-      <td className="py-3 pr-3">{runner.weight ?? "-"}</td>
-      <td className="py-3 pr-3">
+      <td className="px-1.5 py-2">{runner.horseAge ?? "-"}</td>
+      <td className="px-1.5 py-2">{runner.weight ?? "-"}</td>
+      <td className="px-1.5 py-2">
         {isJumpRace ? "-" : runner.draw ?? "-"}
       </td>
-      <td className="py-3 pr-3">{runner.jockeyName ?? "-"}</td>
-      <td className="py-3 pr-3">{runner.trainerName ?? "-"}</td>
-      <td className="py-3 pr-3">{runner.officialRating ?? "-"}</td>
+      <td className="break-words px-1.5 py-2 leading-4">{runner.jockeyName ?? "-"}</td>
+      <td className="break-words px-1.5 py-2 leading-4">{runner.trainerName ?? "-"}</td>
+      <td className="px-1.5 py-2">{runner.officialRating ?? "-"}</td>
       {(isTurfRace || isJumpRace) ? (
-        <td className="py-3 pr-3">
+        <td className="px-1.5 py-2">
           <GoingFormCell runner={runner} />
         </td>
       ) : null}
-      <td className="py-3 pr-3">
+      <td className="px-1.5 py-2">
         <SpeedDisplayValue values={speedMetrics} />
       </td>
-      <td className="py-3 pr-3">{formatRating(todaysRating)}</td>
+      <td className="px-1.5 py-2">{formatRating(todaysRating)}</td>
       {isJumpRace ? (
-        <td className="py-3 pr-3">
+        <td className="px-1.5 py-2">
           <JumpRatingCell runner={runner} />
         </td>
       ) : null}
       {isAllWeatherRace ? (
-        <td className="py-3 pr-3">
+        <td className="px-1.5 py-2">
           <AwRatingCell runner={runner} />
         </td>
       ) : null}
       {isTurfRace ? (
-        <td className="py-3 pr-3">
+        <td className="px-1.5 py-2">
           <TurfPerformanceRatingCell runner={runner} />
         </td>
       ) : null}
-      <td className="py-3 pr-3">
+      <td className="px-1.5 py-2">
         {runner.metrics?.daysSinceLastRun ?? "-"}
       </td>
-      <td className="py-3 pr-3">{runner.odds ?? "-"}</td>
+      <td className="px-1.5 py-2"><TodayMarketOdds runner={runner} /></td>
     </tr>
+  );
+}
+
+export function TodayMarketOdds({ runner }: { runner: TodayRunner }) {
+  const market = summarizeTodayMarketPrice(runner);
+  const forecast = market.forecastOdds
+    ? `${market.forecastOdds}${market.forecastDecimalOdds === null ? "" : ` (${market.forecastDecimalOdds.toFixed(2)})`}`
+    : "-";
+  if (market.medianDecimalOdds === null) {
+    return (
+      <span className="text-slate-400" title={`No market quote. Forecast: ${forecast}`}>
+        -
+      </span>
+    );
+  }
+  const median = market.medianFractionalOdds ?? market.medianDecimalOdds.toFixed(2);
+  const best = market.bestFractionalOdds ?? market.bestDecimalOdds?.toFixed(2) ?? "-";
+  const providers = market.bestBookmakerNames.length ? ` ${market.bestBookmakerNames.join(" / ")}` : "";
+  const quotes = market.quotes.map((quote) =>
+    `${quote.bookmakerName ?? quote.bookmakerId ?? "Unknown"}: ${quote.fractionalOdds ?? quote.decimalOdds.toFixed(2)} (${quote.decimalOdds.toFixed(2)})`
+  ).join("\n");
+  const title = [
+    `Median market: ${median} (${market.medianDecimalOdds.toFixed(2)}), ${market.quoteCount} quotes`,
+    `Best: ${best}${providers}`,
+    `Forecast: ${forecast}`,
+    quotes,
+  ].filter(Boolean).join("\n");
+  return (
+    <div className="leading-4" title={title}>
+      <div className="font-semibold text-slate-900">{median}</div>
+      <div className="truncate text-[10px] text-slate-500">Best {best}</div>
+    </div>
   );
 }
 

@@ -1,17 +1,23 @@
 import assert from "node:assert/strict";
 import { describe, test } from "node:test";
 import { renderToStaticMarkup } from "react-dom/server";
-import type { ForwardValueData, ForwardValueRecord } from "@/lib/racing/forward-value";
+import { FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION, FORWARD_VALUE_PRICE_SNAPSHOT_SCHEDULE_VERSION, type ForwardValueData, type ForwardValueRecord } from "@/lib/racing/forward-value";
 import {
+  buildTurfModelDisagreementDiagnostics,
   filterForwardValueObservations,
   summarizeForwardValue,
+  summarizeForwardValuePriceDiagnostics,
   summarizeTurfModelAgreement,
+  turfModelDisagreementClassification,
+  turfModelDisagreementLargeDifference,
 } from "@/lib/racing/forward-value-summary";
 import {
   EdgeBucketTables,
   FamilySummaryTable,
+  PriceSnapshotDiagnostics,
   RecentObservations,
   SparseSampleWarning,
+  TurfModelDisagreementExplainer,
   TurfModelAgreementCounts,
 } from "./page";
 import {
@@ -57,13 +63,93 @@ describe("Forward Value dashboard", () => {
 
   test("summarizes immutable price snapshots without counting missing stages", () => {
     const diagnostics = summarizeForwardValue(data).families.find((family) => family.family === "turf")!.priceDiagnostics;
-    assert.equal(diagnostics.snapshots.early.observations, 2);
-    assert.equal(diagnostics.snapshots.t60.observations, 1);
-    assert.equal(diagnostics.snapshots.t15.observations, 1);
-    assert.equal(diagnostics.persistence.earlyToT60.comparableObservations, 1);
-    assert.equal(diagnostics.persistence.earlyToT60.stillPositive.wins, 1);
-    assert.ok(Math.abs((diagnostics.movements.earlyToT60.meanMovement ?? 0) - -.2) < 1e-9);
-    assert.ok(Math.abs((diagnostics.movements.t15ToFinalSp.meanMovement ?? 0) - .2) < 1e-9);
+    assert.equal(diagnostics.legacy.snapshots.early.observations, 2);
+    assert.equal(diagnostics.legacy.snapshots.t60.observations, 1);
+    assert.equal(diagnostics.legacy.snapshots.t15.observations, 1);
+    assert.equal(diagnostics.legacy.persistence.earlyToT60.comparableObservations, 1);
+    assert.equal(diagnostics.legacy.persistence.earlyToT60.stillPositive.wins, 1);
+    assert.ok(Math.abs((diagnostics.legacy.movements.earlyToT60.meanMovement ?? 0) - -.2) < 1e-9);
+    assert.ok(Math.abs((diagnostics.legacy.movements.t15ToFinalSp.meanMovement ?? 0) - .2) < 1e-9);
+  });
+
+  test("reports new-schedule price movement including median and unchanged rates", () => {
+    const diagnostics = summarizeForwardValuePriceDiagnostics([
+      newScheduleRecord("shortened", 5, 4, 3, 2),
+      newScheduleRecord("unchanged", 4, 4, 4, 4),
+      newScheduleRecord("drifted", 2, 3, 4, 5),
+    ]).newSchedule;
+    assert.equal(diagnostics.records, 3);
+    assert.equal(diagnostics.snapshots.t180.observations, 3);
+    assert.equal(diagnostics.movements.earlyToT180.observations, 3);
+    assert.equal(diagnostics.movements.earlyToT180.medianMovement, 0);
+    assert.equal(diagnostics.movements.earlyToT180.shorteningProportion, 1 / 3);
+    assert.equal(diagnostics.movements.earlyToT180.driftingProportion, 1 / 3);
+    assert.equal(diagnostics.movements.earlyToT180.unchangedProportion, 1 / 3);
+    assert.equal(diagnostics.movements.earlyToFinalSp.observations, 3);
+  });
+
+  test("renders new and legacy snapshot schedules without relabelling T-15", () => {
+    const current = newScheduleRecord("current-schedule", 5, 4, 3, 2);
+    const legacy = record({
+      raceId: "legacy-schedule",
+      t15PriceSnapshot: {
+        decimalPrice: 3,
+        impliedProbability: 1 / 3,
+        capturedAt: "2026-09-27T12:45:00Z",
+        minutesBeforeScheduledOff: 15,
+        ratingProbability: .4,
+        ratingEdgePercentagePoints: 40 - 100 / 3,
+      },
+    });
+    const scheduleData = { ...fixtureData(), races: [current, legacy] };
+    const html = renderToStaticMarkup(
+      <PriceSnapshotDiagnostics observations={scheduleData.races} summary={summarizeForwardValue(scheduleData)} />,
+    );
+    assert.match(html, /early_t180_t60_v1/);
+    assert.match(html, /T-180 \(210-150 minutes\)/);
+    assert.match(html, /Early \/ T-180 \/ T-60 \/ SP/);
+    assert.match(html, /Legacy forecast \| Early \/ T-60 \/ T-15 \/ SP/);
+    assert.match(html, /T-15/);
+  });
+
+  test("labels median-bookmaker rows and exposes quote provenance", () => {
+    const current = newScheduleRecord("median-market", 5, 4, 3, 2);
+    current.marketPriceBasisVersion = FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION;
+    current.capturedPrice = null;
+    current.bookmakerQuotes = [
+      { bookmakerId: 1, bookmakerName: "Book One", fractionalOdds: "5/2", decimalOdds: 3.5 },
+      { bookmakerId: 2, bookmakerName: "Book Two", fractionalOdds: "7/2", decimalOdds: 4.5 },
+    ];
+    current.bestBookmakerPriceDecimal = 4.5;
+    current.bestBookmakerPriceFractional = "7/2";
+    current.bestBookmakerName = "Book Two";
+    current.forecastPrice = "10/1";
+    current.forecastDecimalPrice = 11;
+    current.t180PriceSnapshot = {
+      ...current.t180PriceSnapshot!,
+      price: null,
+      marketPriceBasisVersion: FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION,
+      medianBookmakerPriceDecimal: 4,
+      medianBookmakerImpliedProbability: .25,
+      bookmakerQuoteCount: 2,
+      bookmakerQuotes: [
+        { bookmakerId: 1, bookmakerName: "Book One", fractionalOdds: "5/2", decimalOdds: 3.5 },
+        { bookmakerId: 2, bookmakerName: "Book Two", fractionalOdds: "7/2", decimalOdds: 4.5 },
+      ],
+      bestBookmakerPriceDecimal: 4.5,
+      bestBookmakerPriceFractional: "7/2",
+      bestBookmakerName: "Book Two",
+      forecastPrice: "10/1",
+      forecastDecimalPrice: 11,
+    };
+    const value = { ...fixtureData(), races: [current] };
+    const html = renderToStaticMarkup(<PriceSnapshotDiagnostics observations={value.races} summary={summarizeForwardValue(value)} />);
+    assert.match(html, /Median bookmaker v1/);
+    assert.match(html, /Book Two/);
+    assert.match(html, /Forecast 10\/1 \(11\.00\)/);
+    const recent = renderToStaticMarkup(<RecentObservations filters={{ family: "all", state: "all", edge: "all" }} observations={[current]} />);
+    assert.match(recent, /Median bookmaker v1 \(2 quotes\)/);
+    assert.match(recent, /Forecast 10\/1 \(11\.00\)/);
   });
 
   test("filters clean settled, clean unsettled, and excluded observations", () => {
@@ -186,8 +272,39 @@ describe("Forward Value dashboard", () => {
   test("summarizes both positive edges", () => {
     const summary = summarizeTurfModelAgreement([turfComparisonRecord({ raceId: "both-positive", edgePercentagePoints: 2, tissueEdgePercentagePoints: 3 })]);
     assert.equal(summary.bothPositiveEdge, 1);
+    assert.equal(summary.bothPositiveDifferentHorses, 1);
     assert.equal(summary.tprPositiveOnly, 0);
     assert.equal(summary.tissuePositiveOnly, 0);
+  });
+
+  test("classifies same-horse probability materiality", () => {
+    assert.equal(
+      turfModelDisagreementClassification(turfComparisonRecord({
+        raceId: "same-close",
+        tissueRunnerId: "same-close-runner",
+        tissueAgreesWithTpr: true,
+        tissueProbability: .49,
+      })),
+      "same_horse_similar_probability",
+    );
+    const wide = turfComparisonRecord({
+      raceId: "same-wide",
+      tissueRunnerId: "same-wide-runner",
+      tissueAgreesWithTpr: true,
+      tissueProbability: .55,
+    });
+    assert.equal(turfModelDisagreementClassification(wide), "same_horse_materially_different_probability");
+    assert.equal(turfModelDisagreementLargeDifference(wide), true);
+  });
+
+  test("classifies different-horse edge signs and large edge gaps", () => {
+    const tprOnly = turfComparisonRecord({ raceId: "tpr-edge-only", edgePercentagePoints: 8, tissueEdgePercentagePoints: -3 });
+    const tissueOnly = turfComparisonRecord({ raceId: "tissue-edge-only", edgePercentagePoints: -1, tissueEdgePercentagePoints: 4 });
+    const neither = turfComparisonRecord({ raceId: "neither-edge", edgePercentagePoints: -5, tissueEdgePercentagePoints: -1 });
+    assert.equal(turfModelDisagreementClassification(tprOnly), "different_horses_tpr_positive_only");
+    assert.equal(turfModelDisagreementClassification(tissueOnly), "different_horses_tissue_positive_only");
+    assert.equal(turfModelDisagreementClassification(neither), "different_horses_neither_positive");
+    assert.equal(turfModelDisagreementLargeDifference(tprOnly), true);
   });
 
   test("ignores missing Tissue observations in Turf agreement counts", () => {
@@ -205,13 +322,183 @@ describe("Forward Value dashboard", () => {
       tprTissueAgree: 2,
       disagree: 4,
       bothPositiveEdge: 1,
+      bothPositiveSameHorse: 1,
+      bothPositiveDifferentHorses: 1,
       tprPositiveOnly: 2,
       tissuePositiveOnly: 3,
       neitherPositive: 0,
+      largeDisagreements: 2,
     }} />);
     assert.match(html, /Comparable races/);
+    assert.match(html, /Large disagreements/);
     assert.match(html, /TPR positive only/);
     assert.match(html, />6</);
+  });
+
+  test("builds and renders the frozen Turf model disagreement explainer", () => {
+    const race = turfComparisonRecord({
+      raceId: "explain",
+      leaderRunnerId: "tpr-runner",
+      leaderHorseName: "TPR Pick",
+      leaderScore: 107.2,
+      leaderGap: 4.5,
+      calibratedProbability: .32,
+      edgePercentagePoints: 12,
+      tissueRunnerId: "tissue-runner",
+      tissueHorseName: "Tissue Pick",
+      tissueProbability: .28,
+      tissueEdgePercentagePoints: -1,
+      tissueCapturedPrice: "7/2",
+      tissueCapturedDecimalOdds: 4.5,
+      tissueMarketProbability: 1 / 4.5,
+      tissueAgreesWithTpr: false,
+      finalSp: 5,
+      leaderWon: false,
+    });
+    const diagnostics = buildTurfModelDisagreementDiagnostics([race], {
+      version: "tissue_forward_v2",
+      tissueModelVersion: "tissue_model_v2",
+      forwardStart: "2026-09-19",
+      forwardStartAt: "2026-09-19T17:35:53.410Z",
+      races: [{
+        raceDate: race.raceDate,
+        course: race.course,
+        raceTime: race.raceTime,
+        raceId: race.raceId,
+        sourceId: null,
+        raceName: race.raceName,
+        tissueModelVersion: "tissue_model_v2",
+        tissueModelChecksum: "checksum",
+        recordedAt: race.recordedAt,
+        recordedPreRace: true,
+        runners: [
+          tissueRunner({ runnerId: "tpr-runner", horseName: "TPR Pick", probability: .12, tissueRank: 4, commentFeatures: ["stayedOn"], finishingPosition: 2, finalSp: 5 }),
+          tissueRunner({ runnerId: "tissue-runner", horseName: "Tissue Pick", probability: .28, tissueRank: 1, commentFeatures: ["led"], finishingPosition: 1, finalSp: 4 }),
+        ],
+        winners: ["Tissue Pick"],
+        settledAt: "2026-09-27T14:00:00Z",
+      }],
+    });
+    assert.equal(diagnostics.length, 1);
+    assert.equal(diagnostics[0]!.largeDifference, true);
+    assert.equal(diagnostics[0]!.fieldSize, 2);
+    assert.deepEqual(diagnostics[0]!.tissueHorse.commentFeatures, ["led"]);
+
+    const html = renderToStaticMarkup(<TurfModelDisagreementExplainer diagnostics={diagnostics} />);
+    assert.match(html, /Why models disagree/);
+    assert.match(html, /C\. different horses \/ TPR positive only/);
+    assert.match(html, /Large disagreement/);
+    assert.match(html, /TPR Pick/);
+    assert.match(html, /Tissue Pick/);
+    assert.match(html, /Comment signals/);
+    assert.match(html, /individual numeric inputs and fitted feature contributions are not persisted/);
+  });
+
+  test("keeps same-horse TPR and Tissue assessments separate", () => {
+    const race = turfComparisonRecord({
+      raceId: "time-turner-style",
+      leaderRunnerId: "time-turner",
+      leaderHorseName: "Time Turner",
+      calibratedProbability: .13,
+      capturedPrice: "6/4",
+      capturedDecimalOdds: 2.5,
+      capturedMarketProbability: .4,
+      edgePercentagePoints: -27,
+      tissueRunnerId: "time-turner",
+      tissueHorseName: "Time Turner",
+      tissueProbability: .331,
+      tissueAgreesWithTpr: true,
+      tissueCapturedPrice: "6/4",
+      tissueCapturedDecimalOdds: 2.5,
+      tissueMarketProbability: .4,
+      tissueEdgePercentagePoints: -6.9,
+    });
+    const diagnostic = buildTurfModelDisagreementDiagnostics([race])[0]!;
+    assert.equal(diagnostic.tprHorse.edgePercentagePoints, -27);
+    assert.equal(diagnostic.tissueHorse.edgePercentagePoints, -6.9);
+    assert.equal(diagnostic.tprHorse.tissueProbability, null);
+    assert.equal(diagnostic.tissueHorse.tprProbability, null);
+
+    const html = renderToStaticMarkup(<TurfModelDisagreementExplainer diagnostics={[diagnostic]} />);
+    assert.match(html, /Horse: Time Turner/);
+    assert.match(html, /Market price/);
+    assert.match(html, /6\/4 \(2\.50\)/);
+    assert.match(html, /13\.0%/);
+    assert.match(html, /33\.1%/);
+    assert.match(html, /-27\.0pp/);
+    assert.match(html, /-6\.9pp/);
+    assert.match(html, /\+20\.1pp Tissue vs TPR/);
+  });
+
+  test("uses each selected horse's own captured price and implied probability", () => {
+    const race = turfComparisonRecord({
+      raceId: "different-prices",
+      calibratedProbability: .3,
+      capturedPrice: "4/1",
+      capturedDecimalOdds: 5,
+      capturedMarketProbability: .2,
+      edgePercentagePoints: 10,
+      tissueProbability: .25,
+      tissueCapturedPrice: "9/1",
+      tissueCapturedDecimalOdds: 10,
+      tissueMarketProbability: .1,
+      tissueEdgePercentagePoints: 15,
+    });
+    const diagnostic = buildTurfModelDisagreementDiagnostics([race])[0]!;
+    assert.equal(diagnostic.tprHorse.capturedDecimalOdds, 5);
+    assert.equal(diagnostic.tprHorse.marketImpliedProbability, .2);
+    assert.equal(diagnostic.tprHorse.edgePercentagePoints, 10);
+    assert.equal(diagnostic.tissueHorse.capturedDecimalOdds, 10);
+    assert.equal(diagnostic.tissueHorse.marketImpliedProbability, .1);
+    assert.equal(diagnostic.tissueHorse.edgePercentagePoints, 15);
+
+    const html = renderToStaticMarkup(<TurfModelDisagreementExplainer diagnostics={[diagnostic]} />);
+    assert.match(html, /4\/1 \(5\.00\)/);
+    assert.match(html, /9\/1 \(10\.00\)/);
+    assert.match(html, /20\.0%/);
+    assert.match(html, /10\.0%/);
+  });
+
+  test("classifies both-positive different-horse diagnostics", () => {
+    const diagnostic = buildTurfModelDisagreementDiagnostics([
+      turfComparisonRecord({ raceId: "both-positive-diagnostic", edgePercentagePoints: 4, tissueEdgePercentagePoints: 7 }),
+    ])[0]!;
+    assert.equal(diagnostic.classification, "different_horses_both_positive");
+    assert.equal(diagnostic.tprPositive, true);
+    assert.equal(diagnostic.tissuePositive, true);
+  });
+
+  test("classifies TPR-positive and Tissue-negative diagnostics", () => {
+    const diagnostic = buildTurfModelDisagreementDiagnostics([
+      turfComparisonRecord({ raceId: "tpr-positive-diagnostic", edgePercentagePoints: 4, tissueEdgePercentagePoints: -7 }),
+    ])[0]!;
+    assert.equal(diagnostic.classification, "different_horses_tpr_positive_only");
+    assert.equal(diagnostic.tprPositive, true);
+    assert.equal(diagnostic.tissuePositive, false);
+  });
+
+  test("classifies Tissue-positive and TPR-negative diagnostics", () => {
+    const diagnostic = buildTurfModelDisagreementDiagnostics([
+      turfComparisonRecord({ raceId: "tissue-positive-diagnostic", edgePercentagePoints: -4, tissueEdgePercentagePoints: 7 }),
+    ])[0]!;
+    assert.equal(diagnostic.classification, "different_horses_tissue_positive_only");
+    assert.equal(diagnostic.tprPositive, false);
+    assert.equal(diagnostic.tissuePositive, true);
+  });
+
+  test("does not display a Tissue edge when the Tissue price is missing", () => {
+    const race = turfComparisonRecord({
+      raceId: "missing-tissue-price-diagnostic",
+      tissueCapturedPrice: null,
+      tissueCapturedDecimalOdds: null,
+      tissueMarketProbability: null,
+      tissueEdgePercentagePoints: -5,
+    });
+    const diagnostic = buildTurfModelDisagreementDiagnostics([race])[0]!;
+    assert.equal(diagnostic.tissueHorse.capturedDecimalOdds, null);
+    assert.equal(diagnostic.tissueHorse.marketImpliedProbability, null);
+    assert.equal(diagnostic.tissueHorse.edgePercentagePoints, null);
+    assert.notEqual(diagnostic.tissueHorse.edgePercentagePoints, diagnostic.tprHorse.edgePercentagePoints);
   });
 
   test("sorts observations newest first", () => {
@@ -257,6 +544,57 @@ function turfComparisonRecord(overrides: Partial<ForwardValueRecord> & { raceId:
     tissueEdgePercentagePoints: 10,
     ...overrides,
   });
+}
+
+function newScheduleRecord(raceId: string, early: number, t180: number, t60: number, finalSp: number): ForwardValueRecord {
+  const base = record({
+    raceId,
+    priceSnapshotScheduleVersion: FORWARD_VALUE_PRICE_SNAPSHOT_SCHEDULE_VERSION,
+    capturedDecimalOdds: early,
+    capturedMarketProbability: 1 / early,
+    edgePercentagePoints: (.4 - 1 / early) * 100,
+    finalSp,
+  });
+  const snapshot = (decimalPrice: number, minutesBeforeScheduledOff: number) => ({
+    price: String(decimalPrice),
+    decimalPrice,
+    impliedProbability: 1 / decimalPrice,
+    capturedAt: "2026-09-27T09:00:00Z",
+    minutesBeforeScheduledOff,
+    ratingProbability: .4,
+    ratingEdgePercentagePoints: (.4 - 1 / decimalPrice) * 100,
+  });
+  return {
+    ...base,
+    earlyPriceSnapshot: snapshot(early, 300),
+    t180PriceSnapshot: snapshot(t180, 180),
+    t60PriceSnapshot: snapshot(t60, 60),
+    t15PriceSnapshot: undefined,
+  };
+}
+
+function tissueRunner(overrides: {
+  runnerId: string;
+  horseName: string;
+  probability: number;
+  tissueRank: number;
+  commentFeatures?: string[];
+  finishingPosition?: number | null;
+  finalSp?: number | null;
+}) {
+  return {
+    runnerId: overrides.runnerId,
+    horseId: `${overrides.runnerId}-horse`,
+    horseName: overrides.horseName,
+    probability: overrides.probability,
+    fairDecimalOdds: 1 / overrides.probability,
+    tissueRank: overrides.tissueRank,
+    commentFeatures: overrides.commentFeatures ?? [],
+    finishingPosition: overrides.finishingPosition ?? null,
+    finalSp: overrides.finalSp ?? null,
+    marketImpliedProbability: overrides.finalSp ? 1 / overrides.finalSp : null,
+    marketRank: null,
+  };
 }
 
 function record(overrides: Partial<ForwardValueRecord> & { raceId: string }): ForwardValueRecord {

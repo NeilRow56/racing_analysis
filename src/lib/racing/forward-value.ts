@@ -1,7 +1,13 @@
 import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { settleSelection } from "./backtest";
-import { formatRaceTimeForDisplay, type TodayMeeting, type TodayRace } from "./todays-racing";
+import {
+  formatRaceTimeForDisplay,
+  type SportingLifeBookmakerQuote,
+  type TodayMeeting,
+  type TodayRace,
+  type TodayRunner,
+} from "./todays-racing";
 
 export const FORWARD_VALUE_VERSION = "forward_value_v1" as const;
 export const FORWARD_VALUE_PATH = "data/research/forward-value-v1.json";
@@ -9,7 +15,14 @@ export const FORWARD_VALUE_CALIBRATION_PATH = "data/research/forward-value-calib
 export const EDGE_BANDS = ["<=0pp", ">0-2pp", ">2-5pp", ">5-10pp", ">10pp"] as const;
 export const FORWARD_VALUE_PRICE_SOURCE = "sporting_life_imported_racecard" as const;
 export const FORWARD_VALUE_SETTLEMENT_VERSION = "canonical_settlement_v2" as const;
+export const FORWARD_VALUE_PRICE_SNAPSHOT_SCHEDULE_VERSION = "early_t180_t60_v1" as const;
+export const FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION = "median_bookmaker_v1" as const;
+export const FORWARD_VALUE_MARKET_PRICE_BASIS_IMPLEMENTED_AT = "2026-09-29T05:58:30.000Z" as const;
 export const FORWARD_VALUE_PRICE_WINDOWS = {
+  t180: { minimumMinutesBeforeOff: 150, maximumMinutesBeforeOff: 210 },
+  t60: { minimumMinutesBeforeOff: 30, maximumMinutesBeforeOff: 90 },
+} as const;
+export const LEGACY_FORWARD_VALUE_PRICE_WINDOWS = {
   t60: { minimumMinutesBeforeOff: 45, maximumMinutesBeforeOff: 75 },
   t15: { minimumMinutesBeforeOff: 5, maximumMinutesBeforeOff: 25 },
 } as const;
@@ -28,15 +41,37 @@ export type ValueSampleStatus =
   | "EARLY"
   | "DEVELOPING"
   | "USABLE FOR INITIAL ASSESSMENT";
-export type ForwardValuePriceStage = "early" | "t60" | "t15";
+export type ForwardValuePriceSnapshotScheduleVersion = typeof FORWARD_VALUE_PRICE_SNAPSHOT_SCHEDULE_VERSION;
+export type ForwardValuePriceStage = "early" | "t180" | "t60" | "t15";
 
 export type ForwardValuePriceSnapshot = {
+  price?: string | null;
   decimalPrice: number;
   impliedProbability: number;
   capturedAt: string;
   minutesBeforeScheduledOff: number;
   ratingProbability: number;
   ratingEdgePercentagePoints: number;
+  marketPriceBasisVersion?: typeof FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION;
+  bookmakerQuoteCount?: number;
+  bookmakerQuotes?: SportingLifeBookmakerQuote[];
+  medianBookmakerPriceDecimal?: number;
+  medianBookmakerImpliedProbability?: number;
+  bestBookmakerPriceDecimal?: number | null;
+  bestBookmakerPriceFractional?: string | null;
+  bestBookmakerName?: string | null;
+  forecastPrice?: string | null;
+  forecastDecimalPrice?: number | null;
+};
+
+export type ForwardValueBookmakerMarket = {
+  decimalPrice: number | null;
+  impliedProbability: number | null;
+  quoteCount: number;
+  quotes: SportingLifeBookmakerQuote[];
+  bestDecimalPrice: number | null;
+  bestFractionalPrice: string | null;
+  bestBookmakerName: string | null;
 };
 
 export type CalibrationBand = {
@@ -91,6 +126,17 @@ export type ForwardValueRecord = {
   leaderGap: number | null;
   calibratedProbability: number;
   capturedPrice: string | null;
+  marketPriceBasisVersion?: typeof FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION;
+  marketPriceBasisImplementedAt?: typeof FORWARD_VALUE_MARKET_PRICE_BASIS_IMPLEMENTED_AT;
+  forecastPrice?: string | null;
+  forecastDecimalPrice?: number | null;
+  bookmakerQuoteCount?: number;
+  bookmakerQuotes?: SportingLifeBookmakerQuote[];
+  medianBookmakerPriceDecimal?: number | null;
+  medianBookmakerImpliedProbability?: number | null;
+  bestBookmakerPriceDecimal?: number | null;
+  bestBookmakerPriceFractional?: string | null;
+  bestBookmakerName?: string | null;
   priceSource?: typeof FORWARD_VALUE_PRICE_SOURCE;
   priceCapturedAt?: string | null;
   minutesBeforeScheduledOff?: number | null;
@@ -98,7 +144,9 @@ export type ForwardValueRecord = {
   capturedMarketProbability: number | null;
   edgePercentagePoints: number | null;
   edgeBand: EdgeBand | null;
+  priceSnapshotScheduleVersion?: ForwardValuePriceSnapshotScheduleVersion;
   earlyPriceSnapshot?: ForwardValuePriceSnapshot | null;
+  t180PriceSnapshot?: ForwardValuePriceSnapshot | null;
   t60PriceSnapshot?: ForwardValuePriceSnapshot | null;
   t15PriceSnapshot?: ForwardValuePriceSnapshot | null;
   marketFavouriteRunnerIds: string[];
@@ -114,6 +162,18 @@ export type ForwardValueRecord = {
   tissueMarketProbability?: number | null;
   tissueEdgePercentagePoints?: number | null;
   tissuePriceCapturedAt?: string | null;
+  tissueForecastPrice?: string | null;
+  tissueForecastDecimalPrice?: number | null;
+  tissueBookmakerQuoteCount?: number;
+  tissueBookmakerQuotes?: SportingLifeBookmakerQuote[];
+  tissueMedianBookmakerPriceDecimal?: number | null;
+  tissueMedianBookmakerImpliedProbability?: number | null;
+  tissueBestBookmakerPriceDecimal?: number | null;
+  tissueBestBookmakerPriceFractional?: string | null;
+  tissueBestBookmakerName?: string | null;
+  tissueEarlyPriceSnapshot?: ForwardValuePriceSnapshot | null;
+  tissueT180PriceSnapshot?: ForwardValuePriceSnapshot | null;
+  tissueT60PriceSnapshot?: ForwardValuePriceSnapshot | null;
   winnerRunnerIds: string[];
   leaderResultStatus: string | null;
   leaderFinishingPosition: number | null;
@@ -123,6 +183,10 @@ export type ForwardValueRecord = {
   profitLoss: number | null;
   capturedPriceGrossReturn?: number | null;
   capturedPriceProfitLoss?: number | null;
+  medianMarketPriceGrossReturn?: number | null;
+  medianMarketPriceProfitLoss?: number | null;
+  bestBookmakerPriceGrossReturn?: number | null;
+  bestBookmakerPriceProfitLoss?: number | null;
   settledAt: string | null;
 };
 
@@ -181,6 +245,42 @@ export async function mutateForwardValueData(
   }
 }
 
+export function summarizeBookmakerMarket(
+  quotes: SportingLifeBookmakerQuote[] | null | undefined,
+): ForwardValueBookmakerMarket {
+  const valid = (quotes ?? [])
+    .filter((quote) => Number.isFinite(quote.decimalOdds) && quote.decimalOdds > 1)
+    .map((quote) => ({ ...quote }))
+    .sort((left, right) => left.decimalOdds - right.decimalOdds ||
+      (left.bookmakerName ?? "").localeCompare(right.bookmakerName ?? ""));
+  if (valid.length === 0) {
+    return {
+      decimalPrice: null,
+      impliedProbability: null,
+      quoteCount: 0,
+      quotes: [],
+      bestDecimalPrice: null,
+      bestFractionalPrice: null,
+      bestBookmakerName: null,
+    };
+  }
+  const middle = Math.floor(valid.length / 2);
+  const decimalPrice = valid.length % 2 === 1
+    ? valid[middle]!.decimalOdds
+    : (valid[middle - 1]!.decimalOdds + valid[middle]!.decimalOdds) / 2;
+  const bestDecimalPrice = valid.at(-1)!.decimalOdds;
+  const bestQuotes = valid.filter((quote) => quote.decimalOdds === bestDecimalPrice);
+  return {
+    decimalPrice,
+    impliedProbability: 1 / decimalPrice,
+    quoteCount: valid.length,
+    quotes: valid,
+    bestDecimalPrice,
+    bestFractionalPrice: bestQuotes[0]?.fractionalOdds ?? null,
+    bestBookmakerName: bestQuotes.length === 1 ? bestQuotes[0]!.bookmakerName : null,
+  };
+}
+
 export function buildForwardValueRecord(input: {
   family: ValueFamily;
   raceDate: string;
@@ -213,28 +313,33 @@ export function buildForwardValueRecord(input: {
     ? leader.gap
     : secondScore === null ? null : secondScore - leader.score;
   const probability = calibratedLeaderProbability(input.calibration, gap);
-  const capturedDecimalOdds = decimal(leader.runner.oddsDecimal);
-  const marketProbability = capturedDecimalOdds === null ? null : 1 / capturedDecimalOdds;
+  const leaderMarket = summarizeBookmakerMarket(leader.runner.bookmakerQuotes);
+  const capturedDecimalOdds = leaderMarket.decimalPrice;
+  const marketProbability = leaderMarket.impliedProbability;
   const edge = marketProbability === null ? null : (probability - marketProbability) * 100;
   const priced = active.flatMap((runner) => {
-    const price = decimal(runner.oddsDecimal);
+    const price = summarizeBookmakerMarket(runner.bookmakerQuotes).decimalPrice;
     return price === null ? [] : [{ runner, price }];
   });
   const shortest = priced.length === 0 ? null : Math.min(...priced.map((entry) => entry.price));
   const favourites = shortest === null ? [] : priced.filter((entry) => entry.price === shortest);
   const tissue = input.family === "turf" ? input.tissue ?? null : null;
   const tissueRunner = tissue ? active.find((runner) => runner.runnerId === tissue.runnerId) : null;
-  const tissueDecimalOdds = decimal(tissueRunner?.oddsDecimal);
-  const tissueMarketProbability = tissueDecimalOdds === null ? null : 1 / tissueDecimalOdds;
+  const tissueMarket = summarizeBookmakerMarket(tissueRunner?.bookmakerQuotes);
+  const tissueDecimalOdds = tissueMarket.decimalPrice;
+  const tissueMarketProbability = tissueMarket.impliedProbability;
   const tissueEdge = tissue && tissueMarketProbability !== null
     ? (tissue.probability - tissueMarketProbability) * 100
     : null;
   const minutesBeforeScheduledOff = (raceDateTime.getTime() - recordedAt.getTime()) / 60_000;
   const earlyPriceSnapshot = capturedDecimalOdds === null ? null : createPriceSnapshot({
+    price: null,
     decimalPrice: capturedDecimalOdds,
     capturedAt: recordedAt,
     raceDateTime,
     ratingProbability: probability,
+    market: leaderMarket,
+    runner: leader.runner,
   });
   return {
     family: input.family,
@@ -258,7 +363,18 @@ export function buildForwardValueRecord(input: {
     leaderScore: leader.score,
     leaderGap: gap,
     calibratedProbability: probability,
-    capturedPrice: leader.runner.odds,
+    capturedPrice: null,
+    marketPriceBasisVersion: FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION,
+    marketPriceBasisImplementedAt: FORWARD_VALUE_MARKET_PRICE_BASIS_IMPLEMENTED_AT,
+    forecastPrice: leader.runner.forecastOdds ?? leader.runner.odds,
+    forecastDecimalPrice: leader.runner.forecastDecimalOdds ?? decimal(leader.runner.oddsDecimal),
+    bookmakerQuoteCount: leaderMarket.quoteCount,
+    bookmakerQuotes: leaderMarket.quotes,
+    medianBookmakerPriceDecimal: leaderMarket.decimalPrice,
+    medianBookmakerImpliedProbability: leaderMarket.impliedProbability,
+    bestBookmakerPriceDecimal: leaderMarket.bestDecimalPrice,
+    bestBookmakerPriceFractional: leaderMarket.bestFractionalPrice,
+    bestBookmakerName: leaderMarket.bestBookmakerName,
     priceSource: FORWARD_VALUE_PRICE_SOURCE,
     priceCapturedAt: capturedDecimalOdds === null ? null : recordedAt.toISOString(),
     minutesBeforeScheduledOff: capturedDecimalOdds === null ? null : minutesBeforeScheduledOff,
@@ -266,9 +382,10 @@ export function buildForwardValueRecord(input: {
     capturedMarketProbability: marketProbability,
     edgePercentagePoints: edge,
     edgeBand: edge === null ? null : edgeBand(edge),
+    priceSnapshotScheduleVersion: FORWARD_VALUE_PRICE_SNAPSHOT_SCHEDULE_VERSION,
     earlyPriceSnapshot,
+    t180PriceSnapshot: null,
     t60PriceSnapshot: null,
-    t15PriceSnapshot: null,
     marketFavouriteRunnerIds: favourites.map((entry) => entry.runner.runnerId),
     marketFavouriteHorseNames: favourites.map((entry) => entry.runner.horseName),
     agreesWithMarketFavourite: favourites.length === 0 ? null : favourites.some((entry) => entry.runner.runnerId === leader.runner.runnerId),
@@ -277,11 +394,33 @@ export function buildForwardValueRecord(input: {
     tissueHorseName: tissue?.horseName ?? null,
     tissueProbability: tissue?.probability ?? null,
     tissueAgreesWithTpr: tissue ? tissue.runnerId === leader.runner.runnerId : null,
-    tissueCapturedPrice: tissueRunner?.odds ?? null,
+    tissueCapturedPrice: null,
     tissueCapturedDecimalOdds: tissueDecimalOdds,
     tissueMarketProbability,
     tissueEdgePercentagePoints: tissueEdge,
     tissuePriceCapturedAt: tissueDecimalOdds === null ? null : recordedAt.toISOString(),
+    tissueForecastPrice: tissueRunner?.forecastOdds ?? tissueRunner?.odds ?? null,
+    tissueForecastDecimalPrice: tissueRunner?.forecastDecimalOdds ?? decimal(tissueRunner?.oddsDecimal),
+    tissueBookmakerQuoteCount: tissueMarket.quoteCount,
+    tissueBookmakerQuotes: tissueMarket.quotes,
+    tissueMedianBookmakerPriceDecimal: tissueMarket.decimalPrice,
+    tissueMedianBookmakerImpliedProbability: tissueMarket.impliedProbability,
+    tissueBestBookmakerPriceDecimal: tissueMarket.bestDecimalPrice,
+    tissueBestBookmakerPriceFractional: tissueMarket.bestFractionalPrice,
+    tissueBestBookmakerName: tissueMarket.bestBookmakerName,
+    tissueEarlyPriceSnapshot: tissue && tissueRunner && tissueDecimalOdds !== null
+      ? createPriceSnapshot({
+        price: null,
+        decimalPrice: tissueDecimalOdds,
+        capturedAt: recordedAt,
+        raceDateTime,
+        ratingProbability: tissue.probability,
+        market: tissueMarket,
+        runner: tissueRunner,
+      })
+      : null,
+    tissueT180PriceSnapshot: null,
+    tissueT60PriceSnapshot: null,
     winnerRunnerIds: [],
     leaderResultStatus: null,
     leaderFinishingPosition: null,
@@ -291,6 +430,10 @@ export function buildForwardValueRecord(input: {
     profitLoss: null,
     capturedPriceGrossReturn: null,
     capturedPriceProfitLoss: null,
+    medianMarketPriceGrossReturn: null,
+    medianMarketPriceProfitLoss: null,
+    bestBookmakerPriceGrossReturn: null,
+    bestBookmakerPriceProfitLoss: null,
     settledAt: null,
   };
 }
@@ -305,15 +448,29 @@ export function upsertForwardValueRecords(data: ForwardValueData, candidates: Fo
   return additions.length === 0 ? data : { ...data, races: [...data.races, ...additions] };
 }
 
-export function priceSnapshotStage(minutesBeforeScheduledOff: number): Exclude<ForwardValuePriceStage, "early"> | null {
+export function priceSnapshotStage(
+  minutesBeforeScheduledOff: number,
+  scheduleVersion: ForwardValuePriceSnapshotScheduleVersion | null = FORWARD_VALUE_PRICE_SNAPSHOT_SCHEDULE_VERSION,
+): Exclude<ForwardValuePriceStage, "early"> | null {
   if (!Number.isFinite(minutesBeforeScheduledOff)) return null;
-  const t60 = FORWARD_VALUE_PRICE_WINDOWS.t60;
+  const windows = scheduleVersion === FORWARD_VALUE_PRICE_SNAPSHOT_SCHEDULE_VERSION
+    ? FORWARD_VALUE_PRICE_WINDOWS
+    : LEGACY_FORWARD_VALUE_PRICE_WINDOWS;
+  if ("t180" in windows) {
+    const t180 = windows.t180;
+    if (minutesBeforeScheduledOff >= t180.minimumMinutesBeforeOff && minutesBeforeScheduledOff <= t180.maximumMinutesBeforeOff) {
+      return "t180";
+    }
+  }
+  const t60 = windows.t60;
   if (minutesBeforeScheduledOff >= t60.minimumMinutesBeforeOff && minutesBeforeScheduledOff <= t60.maximumMinutesBeforeOff) {
     return "t60";
   }
-  const t15 = FORWARD_VALUE_PRICE_WINDOWS.t15;
-  if (minutesBeforeScheduledOff >= t15.minimumMinutesBeforeOff && minutesBeforeScheduledOff <= t15.maximumMinutesBeforeOff) {
-    return "t15";
+  if ("t15" in windows) {
+    const t15 = windows.t15;
+    if (minutesBeforeScheduledOff >= t15.minimumMinutesBeforeOff && minutesBeforeScheduledOff <= t15.maximumMinutesBeforeOff) {
+      return "t15";
+    }
   }
   return null;
 }
@@ -322,6 +479,7 @@ export function forwardValuePriceSnapshot(
   record: ForwardValueRecord,
   stage: ForwardValuePriceStage,
 ): ForwardValuePriceSnapshot | null {
+  if (stage === "t180") return record.t180PriceSnapshot ?? null;
   if (stage === "t60") return record.t60PriceSnapshot ?? null;
   if (stage === "t15") return record.t15PriceSnapshot ?? null;
   if (record.earlyPriceSnapshot) return record.earlyPriceSnapshot;
@@ -356,38 +514,77 @@ export function enrichForwardValuePriceSnapshots(
     const off = new Date(record.raceDateTime);
     if (!race || !Number.isFinite(off.getTime()) || capturedAt >= off) return record;
     const runner = race.runners.find((candidate) => candidate.runnerId === record.leaderRunnerId);
-    const decimalPrice = decimal(runner?.oddsDecimal);
-    if (decimalPrice === null) return record;
+    const usesMedianMarket = record.marketPriceBasisVersion === FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION;
+    const market = usesMedianMarket ? summarizeBookmakerMarket(runner?.bookmakerQuotes) : null;
+    const decimalPrice = usesMedianMarket ? market!.decimalPrice : decimal(runner?.oddsDecimal);
     const minutesBeforeScheduledOff = (off.getTime() - capturedAt.getTime()) / 60_000;
-    const snapshot = createPriceSnapshot({
+    const scheduleVersion = record.priceSnapshotScheduleVersion ?? null;
+    const stage = priceSnapshotStage(minutesBeforeScheduledOff, scheduleVersion);
+    const hasEarlyPrice = forwardValuePriceSnapshot(record, "early") !== null;
+    const snapshot = decimalPrice === null ? null : createPriceSnapshot({
+      price: usesMedianMarket ? null : runner?.odds ?? String(decimalPrice),
       decimalPrice,
       capturedAt,
       raceDateTime: off,
       ratingProbability: record.calibratedProbability,
+      market: market ?? undefined,
+      runner,
     });
-    const stage = priceSnapshotStage(minutesBeforeScheduledOff);
-    const hasEarlyPrice = forwardValuePriceSnapshot(record, "early") !== null;
-    const addEarly = !hasEarlyPrice;
-    const addT60 = stage === "t60" && !record.t60PriceSnapshot;
-    const addT15 = stage === "t15" && !record.t15PriceSnapshot;
-    if (!addEarly && !addT60 && !addT15) return record;
+    const addEarly = snapshot !== null && !hasEarlyPrice;
+    const addT180 = snapshot !== null && stage === "t180" && !record.t180PriceSnapshot;
+    const addT60 = snapshot !== null && stage === "t60" && !record.t60PriceSnapshot;
+    const addT15 = snapshot !== null && scheduleVersion === null && stage === "t15" && !record.t15PriceSnapshot;
+
+    const tissueRunner = record.tissueRunnerId
+      ? race.runners.find((candidate) => candidate.runnerId === record.tissueRunnerId)
+      : null;
+    const tissueMarket = usesMedianMarket ? summarizeBookmakerMarket(tissueRunner?.bookmakerQuotes) : null;
+    const tissueDecimalPrice = usesMedianMarket ? tissueMarket!.decimalPrice : decimal(tissueRunner?.oddsDecimal);
+    const tissueSnapshot = tissueRunner && record.tissueProbability !== null && tissueDecimalPrice !== null
+      ? createPriceSnapshot({
+        price: usesMedianMarket ? null : tissueRunner.odds,
+        decimalPrice: tissueDecimalPrice,
+        capturedAt,
+        raceDateTime: off,
+        ratingProbability: record.tissueProbability,
+        market: tissueMarket ?? undefined,
+        runner: tissueRunner,
+      })
+      : null;
+    const addTissueEarly = usesMedianMarket && tissueSnapshot !== null && !record.tissueEarlyPriceSnapshot;
+    const addTissueT180 = usesMedianMarket && tissueSnapshot !== null && stage === "t180" && !record.tissueT180PriceSnapshot;
+    const addTissueT60 = usesMedianMarket && tissueSnapshot !== null && stage === "t60" && !record.tissueT60PriceSnapshot;
+    if (!addEarly && !addT180 && !addT60 && !addT15 && !addTissueEarly && !addTissueT180 && !addTissueT60) return record;
     changed = true;
     return {
       ...record,
       ...(addEarly ? {
-        capturedPrice: runner?.odds ?? String(decimalPrice),
+        capturedPrice: usesMedianMarket ? null : runner?.odds ?? String(decimalPrice),
         priceSource: FORWARD_VALUE_PRICE_SOURCE,
         priceCapturedAt: capturedAt.toISOString(),
         minutesBeforeScheduledOff,
         capturedDecimalOdds: decimalPrice,
-        capturedMarketProbability: snapshot.impliedProbability,
-        edgePercentagePoints: snapshot.ratingEdgePercentagePoints,
-        edgeBand: edgeBand(snapshot.ratingEdgePercentagePoints),
+        capturedMarketProbability: snapshot!.impliedProbability,
+        edgePercentagePoints: snapshot!.ratingEdgePercentagePoints,
+        edgeBand: edgeBand(snapshot!.ratingEdgePercentagePoints),
         earlyPriceSnapshot: snapshot,
+        ...(usesMedianMarket ? marketRecordFields(runner, market!) : {}),
         phase2ExclusionReason: record.phase2ExclusionReason === "missing_price" ? null : record.phase2ExclusionReason,
       } : {}),
+      ...(addT180 ? { t180PriceSnapshot: snapshot } : {}),
       ...(addT60 ? { t60PriceSnapshot: snapshot } : {}),
       ...(addT15 ? { t15PriceSnapshot: snapshot } : {}),
+      ...(addTissueEarly ? {
+        tissueCapturedPrice: null,
+        tissueCapturedDecimalOdds: tissueDecimalPrice,
+        tissueMarketProbability: tissueSnapshot!.impliedProbability,
+        tissueEdgePercentagePoints: tissueSnapshot!.ratingEdgePercentagePoints,
+        tissuePriceCapturedAt: capturedAt.toISOString(),
+        tissueEarlyPriceSnapshot: tissueSnapshot,
+        ...tissueMarketRecordFields(tissueRunner!, tissueMarket!),
+      } : {}),
+      ...(addTissueT180 ? { tissueT180PriceSnapshot: tissueSnapshot } : {}),
+      ...(addTissueT60 ? { tissueT60PriceSnapshot: tissueSnapshot } : {}),
     };
   });
   return changed ? { ...data, races } : data;
@@ -433,6 +630,9 @@ export function attachTissueValueSnapshots(
     capturedPrice?: string | null;
     capturedDecimalOdds?: number | null;
     priceCapturedAt?: string | null;
+    forecastPrice?: string | null;
+    forecastDecimalPrice?: number | null;
+    bookmakerQuotes?: SportingLifeBookmakerQuote[];
   }>,
 ): ForwardValueData {
   let updated = false;
@@ -442,14 +642,41 @@ export function attachTissueValueSnapshots(
     if (!tissue || tissue.recordedPreRace !== true) return race;
     const canAttachProbability = race.tissueProbability === null;
     const tissuePriceAt = tissue.priceCapturedAt ? new Date(tissue.priceCapturedAt) : null;
-    const canAttachPrice = race.tissueCapturedDecimalOdds == null &&
+    const tissueMarket = summarizeBookmakerMarket(tissue.bookmakerQuotes);
+    const usesMedianMarket = race.marketPriceBasisVersion === FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION;
+    const canAttachLegacyPrice = !usesMedianMarket &&
+      race.tissueCapturedDecimalOdds == null &&
       tissue.capturedDecimalOdds != null &&
       tissuePriceAt !== null &&
       Number.isFinite(tissuePriceAt.getTime()) &&
       tissuePriceAt < new Date(race.raceDateTime);
+    const canAttachMedianPrice = usesMedianMarket &&
+      race.tissueCapturedDecimalOdds == null &&
+      tissueMarket.decimalPrice !== null &&
+      tissuePriceAt !== null &&
+      Number.isFinite(tissuePriceAt.getTime()) &&
+      tissuePriceAt < new Date(race.raceDateTime);
+    const canAttachPrice = canAttachLegacyPrice || canAttachMedianPrice;
     if (!canAttachProbability && !canAttachPrice) return race;
     const probability = canAttachProbability ? tissue.probability : race.tissueProbability;
-    const marketProbability = canAttachPrice ? 1 / tissue.capturedDecimalOdds! : race.tissueMarketProbability ?? null;
+    const attachedDecimalPrice = canAttachMedianPrice ? tissueMarket.decimalPrice : tissue.capturedDecimalOdds ?? null;
+    const marketProbability = canAttachPrice && attachedDecimalPrice !== null
+      ? 1 / attachedDecimalPrice
+      : race.tissueMarketProbability ?? null;
+    const off = new Date(race.raceDateTime);
+    const tissueSnapshot = canAttachMedianPrice && probability !== null && tissuePriceAt
+      ? createPriceSnapshot({
+        price: null,
+        decimalPrice: tissueMarket.decimalPrice!,
+        capturedAt: tissuePriceAt,
+        raceDateTime: off,
+        ratingProbability: probability,
+        market: tissueMarket,
+        forecastPrice: tissue.forecastPrice,
+        forecastDecimalPrice: tissue.forecastDecimalPrice,
+      })
+      : null;
+    const tissueStage = tissueSnapshot ? priceSnapshotStage(tissueSnapshot.minutesBeforeScheduledOff) : null;
     updated = true;
     return {
       ...race,
@@ -457,13 +684,27 @@ export function attachTissueValueSnapshots(
       tissueHorseName: canAttachProbability ? tissue.horseName : race.tissueHorseName,
       tissueProbability: probability,
       tissueAgreesWithTpr: canAttachProbability ? tissue.runnerId === race.leaderRunnerId : race.tissueAgreesWithTpr,
-      tissueCapturedPrice: canAttachPrice ? tissue.capturedPrice ?? null : race.tissueCapturedPrice ?? null,
-      tissueCapturedDecimalOdds: canAttachPrice ? tissue.capturedDecimalOdds! : race.tissueCapturedDecimalOdds ?? null,
+      tissueCapturedPrice: canAttachPrice ? canAttachMedianPrice ? null : tissue.capturedPrice ?? null : race.tissueCapturedPrice ?? null,
+      tissueCapturedDecimalOdds: canAttachPrice ? attachedDecimalPrice : race.tissueCapturedDecimalOdds ?? null,
       tissueMarketProbability: marketProbability,
       tissueEdgePercentagePoints: probability === null || marketProbability === null
         ? null
         : (probability - marketProbability) * 100,
       tissuePriceCapturedAt: canAttachPrice ? tissue.priceCapturedAt! : race.tissuePriceCapturedAt ?? null,
+      ...(canAttachMedianPrice ? {
+        tissueForecastPrice: tissue.forecastPrice ?? null,
+        tissueForecastDecimalPrice: tissue.forecastDecimalPrice ?? null,
+        tissueBookmakerQuoteCount: tissueMarket.quoteCount,
+        tissueBookmakerQuotes: tissueMarket.quotes,
+        tissueMedianBookmakerPriceDecimal: tissueMarket.decimalPrice,
+        tissueMedianBookmakerImpliedProbability: tissueMarket.impliedProbability,
+        tissueBestBookmakerPriceDecimal: tissueMarket.bestDecimalPrice,
+        tissueBestBookmakerPriceFractional: tissueMarket.bestFractionalPrice,
+        tissueBestBookmakerName: tissueMarket.bestBookmakerName,
+        tissueEarlyPriceSnapshot: race.tissueEarlyPriceSnapshot ?? tissueSnapshot,
+        tissueT180PriceSnapshot: tissueStage === "t180" && !race.tissueT180PriceSnapshot ? tissueSnapshot : race.tissueT180PriceSnapshot,
+        tissueT60PriceSnapshot: tissueStage === "t60" && !race.tissueT60PriceSnapshot ? tissueSnapshot : race.tissueT60PriceSnapshot,
+      } : {}),
     };
   });
   return updated ? { ...data, races } : data;
@@ -505,6 +746,19 @@ export function settleForwardValueRecords(data: ForwardValueData, racesById: Map
       startingPriceDecimal: record.capturedDecimalOdds === null ? null : String(record.capturedDecimalOdds),
       deadHeatDivisor: winners.length,
     });
+    const bestPriceSettlement = record.marketPriceBasisVersion === FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION
+      ? settleSelection({
+        targetRaceId: record.raceId,
+        targetRunnerId: result.runnerId,
+        finishingPosition: result.finishingPosition,
+        resultStatus: result.resultStatus,
+        won: result.finishingPosition === 1,
+        placed: result.finishingPosition !== null && result.finishingPosition <= 3,
+        startingPrice: record.bestBookmakerPriceFractional ?? null,
+        startingPriceDecimal: record.bestBookmakerPriceDecimal == null ? null : String(record.bestBookmakerPriceDecimal),
+        deadHeatDivisor: winners.length,
+      })
+      : null;
     const phase2ExclusionReason = record.phase2ExclusionReason ?? (
       isNonRunnerStatus(result.resultStatus)
         ? "non_runner"
@@ -524,6 +778,18 @@ export function settleForwardValueRecords(data: ForwardValueData, racesById: Map
       profitLoss: settlement?.profitLoss ?? null,
       capturedPriceGrossReturn: capturedPriceSettlement?.grossReturn ?? null,
       capturedPriceProfitLoss: capturedPriceSettlement?.profitLoss ?? null,
+      medianMarketPriceGrossReturn: record.marketPriceBasisVersion === FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION
+        ? capturedPriceSettlement?.grossReturn ?? null
+        : record.medianMarketPriceGrossReturn,
+      medianMarketPriceProfitLoss: record.marketPriceBasisVersion === FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION
+        ? capturedPriceSettlement?.profitLoss ?? null
+        : record.medianMarketPriceProfitLoss,
+      bestBookmakerPriceGrossReturn: record.marketPriceBasisVersion === FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION
+        ? bestPriceSettlement?.grossReturn ?? null
+        : record.bestBookmakerPriceGrossReturn,
+      bestBookmakerPriceProfitLoss: record.marketPriceBasisVersion === FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION
+        ? bestPriceSettlement?.profitLoss ?? null
+        : record.bestBookmakerPriceProfitLoss,
       phase2ExclusionReason,
       settledAt: settledAt.toISOString(),
     };
@@ -618,18 +884,21 @@ export function renderForwardValueToday(data: ForwardValueData, date: string): s
       const exclusion = valueExclusionReason(race);
       const priceState = race.capturedDecimalOdds === null
         ? "price unavailable"
-        : `price frozen ${race.capturedPrice ?? "-"} (${race.capturedDecimalOdds.toFixed(2)}) at ${race.priceCapturedAt ?? race.recordedAt}`;
+        : race.marketPriceBasisVersion === FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION
+          ? `median bookmaker price ${race.capturedDecimalOdds.toFixed(2)} (${race.bookmakerQuoteCount ?? 0} quotes) at ${race.priceCapturedAt ?? race.recordedAt}; best ${decimalLabel(race.bestBookmakerPriceDecimal ?? null)}${race.bestBookmakerName ? ` ${race.bestBookmakerName}` : ""}; forecast ${race.forecastPrice ?? decimalLabel(race.forecastDecimalPrice ?? null)}`
+          : `legacy forecast price ${race.capturedPrice ?? "-"} (${race.capturedDecimalOdds.toFixed(2)}) at ${race.priceCapturedAt ?? race.recordedAt}`;
+      const early = forwardValuePriceSnapshot(race, "early");
       const t60 = forwardValuePriceSnapshot(race, "t60");
-      const t15 = forwardValuePriceSnapshot(race, "t15");
-      const laterPrices = ` | T-60 ${t60 ? `${t60.decimalPrice.toFixed(2)} / ${pp(t60.ratingEdgePercentagePoints)}` : "-"}` +
-        ` | T-15 ${t15 ? `${t15.decimalPrice.toFixed(2)} / ${pp(t15.ratingEdgePercentagePoints)}` : "-"}`;
+      const pricePath = race.priceSnapshotScheduleVersion === FORWARD_VALUE_PRICE_SNAPSHOT_SCHEDULE_VERSION
+        ? `Early ${snapshotLabel(early)} | T-180 ${snapshotLabel(forwardValuePriceSnapshot(race, "t180"))} | T-60 ${snapshotLabel(t60)} | SP ${decimalLabel(race.finalSp)}`
+        : `Early ${snapshotLabel(early)} | T-60 ${snapshotLabel(t60)} | T-15 ${snapshotLabel(forwardValuePriceSnapshot(race, "t15"))} | SP ${decimalLabel(race.finalSp)}`;
       const tissue = race.tissueProbability === null
         ? ""
         : ` | Tissue ${pct(race.tissueProbability)}, price ${race.tissueCapturedPrice ?? "-"}, edge ${pp(race.tissueEdgePercentagePoints ?? null)}`;
       lines.push(`${formatForwardValueRaceTime(race)} ${race.course}${race.raceName ? ` - ${race.raceName}` : ""}`);
       lines.push(
         `  ${familyLabel(race.family)} | ${race.leaderHorseName} | model ${pct(race.calibratedProbability)} | ` +
-        `${priceState}${laterPrices} | ` +
+        `${priceState} | ${pricePath} | ` +
         `market ${pct(race.capturedMarketProbability)} | edge ${pp(race.edgePercentagePoints)} | ` +
         `favourite ${favourite} | leader favourite ${yesNo(race.leaderIsMarketFavourite ?? race.agreesWithMarketFavourite)}${tissue} | ` +
         `${exclusion ? `EXCLUDED: ${exclusion}` : "included in prospective analysis"} | ${race.settledAt ? "settled" : "pending"}`,
@@ -652,19 +921,65 @@ export function formatForwardValueRaceTime(
 }
 
 function createPriceSnapshot(input: {
+  price: string | null;
   decimalPrice: number;
   capturedAt: Date;
   raceDateTime: Date;
   ratingProbability: number;
+  market?: ForwardValueBookmakerMarket;
+  runner?: TodayRunner;
+  forecastPrice?: string | null;
+  forecastDecimalPrice?: number | null;
 }): ForwardValuePriceSnapshot {
   const impliedProbability = 1 / input.decimalPrice;
   return {
+    price: input.price,
     decimalPrice: input.decimalPrice,
     impliedProbability,
     capturedAt: input.capturedAt.toISOString(),
     minutesBeforeScheduledOff: (input.raceDateTime.getTime() - input.capturedAt.getTime()) / 60_000,
     ratingProbability: input.ratingProbability,
     ratingEdgePercentagePoints: (input.ratingProbability - impliedProbability) * 100,
+    ...(input.market ? {
+      marketPriceBasisVersion: FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION,
+      bookmakerQuoteCount: input.market.quoteCount,
+      bookmakerQuotes: input.market.quotes,
+      medianBookmakerPriceDecimal: input.market.decimalPrice!,
+      medianBookmakerImpliedProbability: input.market.impliedProbability!,
+      bestBookmakerPriceDecimal: input.market.bestDecimalPrice,
+      bestBookmakerPriceFractional: input.market.bestFractionalPrice,
+      bestBookmakerName: input.market.bestBookmakerName,
+      forecastPrice: input.forecastPrice ?? input.runner?.forecastOdds ?? input.runner?.odds ?? null,
+      forecastDecimalPrice: input.forecastDecimalPrice ?? input.runner?.forecastDecimalOdds ?? decimal(input.runner?.oddsDecimal),
+    } : {}),
+  };
+}
+
+function marketRecordFields(runner: TodayRunner | undefined, market: ForwardValueBookmakerMarket) {
+  return {
+    forecastPrice: runner?.forecastOdds ?? runner?.odds ?? null,
+    forecastDecimalPrice: runner?.forecastDecimalOdds ?? decimal(runner?.oddsDecimal),
+    bookmakerQuoteCount: market.quoteCount,
+    bookmakerQuotes: market.quotes,
+    medianBookmakerPriceDecimal: market.decimalPrice,
+    medianBookmakerImpliedProbability: market.impliedProbability,
+    bestBookmakerPriceDecimal: market.bestDecimalPrice,
+    bestBookmakerPriceFractional: market.bestFractionalPrice,
+    bestBookmakerName: market.bestBookmakerName,
+  };
+}
+
+function tissueMarketRecordFields(runner: TodayRunner, market: ForwardValueBookmakerMarket) {
+  return {
+    tissueForecastPrice: runner.forecastOdds ?? runner.odds,
+    tissueForecastDecimalPrice: runner.forecastDecimalOdds ?? decimal(runner.oddsDecimal),
+    tissueBookmakerQuoteCount: market.quoteCount,
+    tissueBookmakerQuotes: market.quotes,
+    tissueMedianBookmakerPriceDecimal: market.decimalPrice,
+    tissueMedianBookmakerImpliedProbability: market.impliedProbability,
+    tissueBestBookmakerPriceDecimal: market.bestDecimalPrice,
+    tissueBestBookmakerPriceFractional: market.bestFractionalPrice,
+    tissueBestBookmakerName: market.bestBookmakerName,
   };
 }
 
@@ -680,6 +995,10 @@ function isNonRunnerStatus(value: string | null) {
 
 function title(value: string) { return value[0]!.toUpperCase() + value.slice(1); }
 function familyLabel(value: ValueFamily) { return value === "turf" ? "TPR / Turf" : value === "jump" ? "JPR-A / Jump" : "AW-D / AW"; }
+function snapshotLabel(value: ForwardValuePriceSnapshot | null) {
+  return value ? `${value.price ? `${value.price} / ` : ""}${value.decimalPrice.toFixed(2)} / ${pp(value.ratingEdgePercentagePoints)}` : "-";
+}
+function decimalLabel(value: number | null) { return value === null ? "-" : value.toFixed(2); }
 function pct(value: number | null) { return value === null ? "-" : `${(value * 100).toFixed(1)}%`; }
 function pp(value: number | null) { return value === null ? "-" : `${value >= 0 ? "+" : ""}${value.toFixed(1)}pp`; }
 function yesNo(value: boolean | null) { return value === null ? "-" : value ? "yes" : "no"; }

@@ -114,14 +114,14 @@ describe("Today race status label", () => {
 describe("Today request orchestration", () => {
   test("renders the frozen JPR-A diagnostic for Jump runners only", () => {
     const source = readFileSync(new URL("./page.tsx", import.meta.url), "utf8");
-    assert.match(source, /Jump Rating \(diagnostic\)/);
+    assert.match(source, /JPR-A diag\./);
     assert.match(source, /isJumpRace \? \([\s\S]*?<JumpRatingCell runner=\{runner\}/);
     assert.match(source, /JPR-A \{rating\.score\.toFixed\(1\)\}/);
   });
 
   test("renders the frozen AW-D diagnostic for All Weather runners only", () => {
     const source = readFileSync(new URL("./page.tsx", import.meta.url), "utf8");
-    assert.match(source, /AW Rating \(diagnostic\)/);
+    assert.match(source, /AW-D diag\./);
     assert.match(source, /isAllWeatherRace \? \([\s\S]*?<AwRatingCell runner=\{runner\}/);
     assert.match(source, /AW-D \{rating\.score\.toFixed\(1\)\}/);
   });
@@ -151,7 +151,7 @@ describe("Today request orchestration", () => {
     assert.doesNotMatch(source, /suit(?:s|able|ability)/i);
   });
 
-  test("renders one selectable Speed column while retaining TPR and Odds", () => {
+  test("renders compact important columns with responsive overflow fallback", () => {
     const source = readFileSync(new URL("./page.tsx", import.meta.url), "utf8");
 
     assert.match(source, />Speed<\/th>/);
@@ -160,8 +160,23 @@ describe("Today request orchestration", () => {
     assert.doesNotMatch(source, />Best L3<\/th>/);
     assert.match(source, /<TodaySpeedDisplay>/);
     assert.match(source, /<TurfPerformanceRatingCell runner=\{runner\}/);
-    assert.match(source, /\{runner\.odds \?\? "-"\}/);
-    assert.match(source, /min-w-\[1360px\]/);
+    assert.match(source, /<TodayMarketOdds runner=\{runner\}/);
+    assert.match(source, /min-w-\[1120px\].*text-xs/);
+    assert.match(source, /data-testid="runner-table-scroll"/);
+    assert.match(source, /overflow-x-auto/);
+    for (const heading of ["Horse", "Age", "Wgt", "Draw", "Jockey", "Trainer", "OR", "Going form", "Speed", "Today&apos;s Rating", "Turf TPR", "Days", "Odds"]) {
+      assert.match(source, new RegExp(heading));
+    }
+    assert.match(source, /px-1\.5 py-2/);
+  });
+
+  test("labels bookmaker median, best price, and forecast provenance", () => {
+    const source = readFileSync(new URL("./page.tsx", import.meta.url), "utf8");
+    assert.match(source, /Median market:/);
+    assert.match(source, /Best:/);
+    assert.match(source, /Forecast:/);
+    assert.match(source, /No market quote/);
+    assert.doesNotMatch(source, /\{runner\.odds \?\? "-"\}/);
   });
 
   test("does not render active Timewise manual-entry controls", () => {

@@ -67,30 +67,57 @@ async function summary() {
 }
 
 function printPriceDiagnostics(diagnostics: ForwardValuePriceDiagnostics) {
-  console.log("\n### Price Snapshots");
+  const current = diagnostics.newSchedule;
+  console.log(`\n### Price Snapshots (${current.scheduleVersion}, records=${current.records})`);
   console.log("Snapshot | Observations | Mean edge | Positive edge");
   console.log("---|---:|---:|---:");
   for (const [label, snapshot] of [
-    ["Early", diagnostics.snapshots.early],
-    ["T-60", diagnostics.snapshots.t60],
-    ["T-15", diagnostics.snapshots.t15],
+    ["Early", current.snapshots.early],
+    ["T-180", current.snapshots.t180],
+    ["T-60", current.snapshots.t60],
   ] as const) {
     console.log(`${label} | ${snapshot.observations} | ${ppPoints(snapshot.meanEdgePercentagePoints)} | ${pct(snapshot.positiveEdgeProportion)}`);
   }
-  console.log("\nPrice movement | Observations | Mean movement | Shortened | Drifted");
-  console.log("---|---:|---:|---:|---:");
-  printMovement("Early -> T-60", diagnostics.movements.earlyToT60);
-  printMovement("T-60 -> T-15", diagnostics.movements.t60ToT15);
-  printMovement("T-15 -> final SP", diagnostics.movements.t15ToFinalSp);
+  console.log("\nPrice movement | Comparable | Mean | Median | Shortened | Drifted | Unchanged");
+  console.log("---|---:|---:|---:|---:|---:|---:");
+  printMovement("Early -> T-180", current.movements.earlyToT180);
+  printMovement("T-180 -> T-60", current.movements.t180ToT60);
+  printMovement("T-60 -> final SP", current.movements.t60ToFinalSp);
+  printMovement("Early -> final SP", current.movements.earlyToFinalSp);
   console.log("\nEdge persistence | Source positive | Comparable | Still positive (wins/strike) | Neutral or negative (wins/strike)");
   console.log("---|---:|---:|---:|---:");
-  printPersistence("Early -> T-60", diagnostics.persistence.earlyToT60);
-  printPersistence("Early -> T-15", diagnostics.persistence.earlyToT15);
-  printPersistence("T-60 -> T-15", diagnostics.persistence.t60ToT15);
+  printPersistence("Early -> T-180", current.persistence.earlyToT180);
+  printPersistence("Early -> T-60", current.persistence.earlyToT60);
+  printPersistence("T-180 -> T-60", current.persistence.t180ToT60);
+
+  const legacy = diagnostics.legacy;
+  if (legacy.records === 0) return;
+  console.log(`\n### Legacy Price Snapshots (unversioned, records=${legacy.records})`);
+  console.log("Existing T-15 observations retain their original meaning.");
+  console.log("Snapshot | Observations | Mean edge | Positive edge");
+  console.log("---|---:|---:|---:");
+  for (const [label, snapshot] of [
+    ["Early", legacy.snapshots.early],
+    ["T-60", legacy.snapshots.t60],
+    ["T-15", legacy.snapshots.t15],
+  ] as const) {
+    console.log(`${label} | ${snapshot.observations} | ${ppPoints(snapshot.meanEdgePercentagePoints)} | ${pct(snapshot.positiveEdgeProportion)}`);
+  }
+  console.log("\nLegacy price movement | Comparable | Mean | Median | Shortened | Drifted | Unchanged");
+  console.log("---|---:|---:|---:|---:|---:|---:");
+  printMovement("Early -> T-60", legacy.movements.earlyToT60);
+  printMovement("T-60 -> T-15", legacy.movements.t60ToT15);
+  printMovement("T-15 -> final SP", legacy.movements.t15ToFinalSp);
+  printMovement("Early -> final SP", legacy.movements.earlyToFinalSp);
+  console.log("\nLegacy edge persistence | Source positive | Comparable | Still positive (wins/strike) | Neutral or negative (wins/strike)");
+  console.log("---|---:|---:|---:|---:");
+  printPersistence("Early -> T-60", legacy.persistence.earlyToT60);
+  printPersistence("Early -> T-15", legacy.persistence.earlyToT15);
+  printPersistence("T-60 -> T-15", legacy.persistence.t60ToT15);
 }
 
 function printMovement(label: string, value: ForwardValueMovementMetrics) {
-  console.log(`${label} | ${value.observations} | ${signedRatio(value.meanMovement)} | ${pct(value.shorteningProportion)} | ${pct(value.driftingProportion)}`);
+  console.log(`${label} | ${value.observations} | ${signedRatio(value.meanMovement)} | ${signedRatio(value.medianMovement)} | ${pct(value.shorteningProportion)} | ${pct(value.driftingProportion)} | ${pct(value.unchangedProportion)}`);
 }
 
 function printPersistence(label: string, value: ForwardValuePersistenceMetrics) {
@@ -125,40 +152,42 @@ function printAllClean(records: ForwardValueRecord[]) {
   const value = metrics(records);
   console.log(`Clean observations: ${value.observations} | sample: ${valueSampleStatus(value.observations)}`);
   console.log(`Wins: ${value.wins} | strike: ${pct(value.strike)} | mean calibrated: ${pct(value.meanModel)} | expected wins: ${num(value.expectedWins)} | actual minus expected: ${signed(value.actualMinusExpected)}`);
-  console.log(`Mean market implied: ${pct(value.meanMarket)} | mean raw edge: ${ppPoints(value.meanEdge)} | captured-price P/L: ${money(value.profitLoss)} | ROI: ${pct(value.roi)} | rating A/E: ${num(value.ratingAe)} | market A/E: ${num(value.marketAe)}`);
+  console.log(`Mean market implied: ${pct(value.meanMarket)} | mean raw edge: ${ppPoints(value.meanEdge)} | rating A/E: ${num(value.ratingAe)} | market A/E: ${num(value.marketAe)}`);
+  console.log(`Median-market P/L: ${returnLine(value.shared.medianMarketProfitLoss, value.shared.medianMarketRoi, value.shared.medianMarketSettled)} | best-bookmaker P/L: ${returnLine(value.shared.bestBookmakerProfitLoss, value.shared.bestBookmakerRoi, value.shared.bestBookmakerSettled)}`);
+  console.log(`Legacy forecast P/L: ${returnLine(value.shared.legacyForecastProfitLoss, value.shared.legacyForecastRoi, value.shared.legacyForecastSettled)} | final-SP P/L: ${returnLine(value.shared.finalSpProfitLoss, value.shared.finalSpRoi, value.shared.finalSpSettled)} | BSP: unavailable`);
   console.log(`Captured-to-final SP movement: mean ${signedPct(value.meanMovement)} | median ${signedPct(value.medianMovement)} | n=${value.movementCount} (negative=shortened, positive=drifted)`);
 }
 
 function printEdgeBuckets(records: ForwardValueRecord[]) {
   console.log("\n### Edge Buckets");
-  console.log("Bucket | Observations | Sample | Wins | Strike | Expected rate | Market implied | Mean edge | P/L | ROI | Calibration error");
-  console.log("---|---:|---|---:|---:|---:|---:|---:|---:|---:|---:");
+  console.log("Bucket | Observations | Sample | Wins | Strike | Expected rate | Market implied | Mean edge | Median P/L | Legacy P/L | Final SP P/L | Calibration error");
+  console.log("---|---:|---|---:|---:|---:|---:|---:|---:|---:|---:|---:");
   for (const band of EDGE_BANDS) {
     const value = metrics(records.filter((race) => race.edgePercentagePoints !== null && edgeBand(race.edgePercentagePoints) === band));
-    console.log(`${band} | ${value.observations} | ${valueSampleStatus(value.observations)} | ${value.wins} | ${pct(value.strike)} | ${pct(value.meanModel)} | ${pct(value.meanMarket)} | ${ppPoints(value.meanEdge)} | ${money(value.profitLoss)} | ${pct(value.roi)} | ${pp(value.calibrationError)}`);
+    console.log(`${band} | ${value.observations} | ${valueSampleStatus(value.observations)} | ${value.wins} | ${pct(value.strike)} | ${pct(value.meanModel)} | ${pct(value.meanMarket)} | ${ppPoints(value.meanEdge)} | ${money(value.shared.medianMarketProfitLoss)} | ${money(value.shared.legacyForecastProfitLoss)} | ${money(value.shared.finalSpProfitLoss)} | ${pp(value.calibrationError)}`);
   }
 }
 
 function printGapEdgeCrossTab(records: ForwardValueRecord[], calibration: FamilyCalibration) {
   console.log("\n### Rating Gap x Market Edge");
-  console.log("Gap | Edge | Observations | Sample | Actual | Expected | P/L | ROI");
-  console.log("---|---|---:|---|---:|---:|---:|---:");
+  console.log("Gap | Edge | Observations | Sample | Actual | Expected | Median P/L | Legacy P/L | Final SP P/L");
+  console.log("---|---|---:|---|---:|---:|---:|---:|---:");
   for (const gap of calibration.gapBands) {
     for (const edge of EDGE_BANDS) {
       const selected = records.filter((race) => inGapBand(race.leaderGap, gap.minimumGap, gap.maximumGap) && race.edgePercentagePoints !== null && edgeBand(race.edgePercentagePoints) === edge);
       const value = metrics(selected);
-      console.log(`${gap.key} | ${edge} | ${value.observations} | ${valueSampleStatus(value.observations)} | ${pct(value.strike)} | ${pct(value.meanModel)} | ${money(value.profitLoss)} | ${pct(value.roi)}`);
+      console.log(`${gap.key} | ${edge} | ${value.observations} | ${valueSampleStatus(value.observations)} | ${pct(value.strike)} | ${pct(value.meanModel)} | ${money(value.shared.medianMarketProfitLoss)} | ${money(value.shared.legacyForecastProfitLoss)} | ${money(value.shared.finalSpProfitLoss)}`);
     }
   }
 }
 
 function printFavouriteComparison(records: ForwardValueRecord[]) {
   console.log("\n### Favourite Status");
-  console.log("Status | Observations | Sample | Wins | Strike | Expected | Market implied | Mean edge | P/L | ROI");
-  console.log("---|---:|---|---:|---:|---:|---:|---:|---:|---:");
+  console.log("Status | Observations | Sample | Wins | Strike | Expected | Market implied | Mean edge | Median P/L | Legacy P/L | Final SP P/L");
+  console.log("---|---:|---|---:|---:|---:|---:|---:|---:|---:|---:");
   for (const [label, favourite] of [["leader is favourite", true], ["leader is not favourite", false]] as const) {
     const value = metrics(records.filter((race) => (race.leaderIsMarketFavourite ?? race.agreesWithMarketFavourite) === favourite));
-    console.log(`${label} | ${value.observations} | ${valueSampleStatus(value.observations)} | ${value.wins} | ${pct(value.strike)} | ${pct(value.meanModel)} | ${pct(value.meanMarket)} | ${ppPoints(value.meanEdge)} | ${money(value.profitLoss)} | ${pct(value.roi)}`);
+    console.log(`${label} | ${value.observations} | ${valueSampleStatus(value.observations)} | ${value.wins} | ${pct(value.strike)} | ${pct(value.meanModel)} | ${pct(value.meanMarket)} | ${ppPoints(value.meanEdge)} | ${money(value.shared.medianMarketProfitLoss)} | ${money(value.shared.legacyForecastProfitLoss)} | ${money(value.shared.finalSpProfitLoss)}`);
   }
 }
 
@@ -181,6 +210,7 @@ function metrics(records: ForwardValueRecord[]) {
     ? [(race.finalSp / race.capturedDecimalOdds - 1) * 100]
     : []);
   return {
+    shared,
     observations,
     wins,
     strike: shared.strikeRate,
@@ -213,4 +243,9 @@ function signed(value: number | null) { return value === null ? "-" : `${value >
 function money(value: number | null) { return value === null ? "-" : `${value >= 0 ? "+" : ""}${value.toFixed(2)}`; }
 function signedPct(value: number | null) { return value === null ? "-" : `${value >= 0 ? "+" : ""}${value.toFixed(1)}%`; }
 function signedRatio(value: number | null) { return value === null ? "-" : `${value >= 0 ? "+" : ""}${(value * 100).toFixed(1)}%`; }
-function outcome(value: { observations: number; wins: number; strikeRate: number | null }) { return `${value.observations} (${value.wins}/${pct(value.strikeRate)})`; }
+function outcome(value: { observations: number; settledObservations: number; wins: number; strikeRate: number | null }) {
+  return `${value.observations} (${value.wins}/${value.settledObservations} settled, ${pct(value.strikeRate)})`;
+}
+function returnLine(profitLoss: number | null, roi: number | null, observations: number) {
+  return profitLoss === null ? "-" : `${money(profitLoss)}, ROI ${pct(roi)}, n=${observations}`;
+}

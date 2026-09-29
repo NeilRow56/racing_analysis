@@ -94,6 +94,9 @@ async function sync(raceDate: string, selected: TissueVersionConfig) {
         const validDecimalOdds = currentDecimalOdds !== null && Number.isFinite(currentDecimalOdds) && currentDecimalOdds > 1
           ? currentDecimalOdds
           : null;
+        const hasValidBookmakerQuote = (currentRunner?.bookmakerQuotes ?? []).some((quote) =>
+          Number.isFinite(quote.decimalOdds) && quote.decimalOdds > 1
+        );
         return leader ? [[race.raceId, {
           runnerId: leader.runnerId,
           horseName: leader.horseName,
@@ -101,7 +104,10 @@ async function sync(raceDate: string, selected: TissueVersionConfig) {
           recordedPreRace: race.recordedPreRace,
           capturedPrice: validDecimalOdds === null ? null : currentRunner?.odds ?? null,
           capturedDecimalOdds: validDecimalOdds,
-          priceCapturedAt: validDecimalOdds === null ? null : now.toISOString(),
+          priceCapturedAt: validDecimalOdds !== null || hasValidBookmakerQuote ? now.toISOString() : null,
+          forecastPrice: currentRunner?.forecastOdds ?? currentRunner?.odds ?? null,
+          forecastDecimalPrice: currentRunner?.forecastDecimalOdds ?? validDecimalOdds,
+          bookmakerQuotes: currentRunner?.bookmakerQuotes ?? [],
         }] as const] : [];
       }));
       await mutateForwardValueData((latest) => attachTissueValueSnapshots(latest, snapshots));

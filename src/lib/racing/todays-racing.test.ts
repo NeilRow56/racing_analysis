@@ -9,8 +9,10 @@ import {
   isJumpRaceForDisplay,
   isOrdinaryFlatTurfRaceForDisplay,
   meetingOrderFromIndexPayload,
+  parseSportingLifeBookmakerQuotes,
   racingPageTitle,
   resolveRacingDate,
+  summarizeTodayMarketPrice,
   TODAY_RACE_SOURCE_TYPES,
   type TodayRacecardRow,
 } from "./todays-racing";
@@ -18,6 +20,56 @@ import type { HorseMetricsAsOf } from "./horse-metrics";
 import type { GoingForm } from "./going-form";
 
 describe("Today racing grouping", () => {
+  test("projects only valid Sporting Life bookmaker quote fields", () => {
+    assert.deepEqual(parseSportingLifeBookmakerQuotes([
+      { bookmakerId: 6, bookmakerName: "Paddy Power", fractionalOdds: "6/1", decimalOdds: 7, ignored: "x" },
+      { bookmakerId: 4, bookmakerName: "Betfair Sportsbook", fractionalOdds: "11/2", decimalOddsString: "6.5" },
+      { bookmakerId: 9, bookmakerName: "Invalid", decimalOdds: 1 },
+    ]), [
+      { bookmakerId: 6, bookmakerName: "Paddy Power", fractionalOdds: "6/1", decimalOdds: 7 },
+      { bookmakerId: 4, bookmakerName: "Betfair Sportsbook", fractionalOdds: "11/2", decimalOdds: 6.5 },
+    ]);
+  });
+
+  test("uses bookmaker medians and retains best-provider and forecast diagnostics", () => {
+    const market = summarizeTodayMarketPrice({
+      odds: "20/1",
+      oddsDecimal: "21",
+      forecastOdds: "20/1",
+      forecastDecimalOdds: 21,
+      bookmakerQuotes: [
+        quote(6.5, "11/2", "Betfair Sportsbook", 4),
+        quote(7, "6/1", "Paddy Power", 6),
+        quote(7, "6/1", "Sky Bet", 17),
+      ],
+    });
+    assert.equal(market.medianDecimalOdds, 7);
+    assert.equal(market.medianFractionalOdds, "6/1");
+    assert.equal(market.bestDecimalOdds, 7);
+    assert.deepEqual(market.bestBookmakerNames, ["Paddy Power", "Sky Bet"]);
+    assert.equal(market.forecastOdds, "20/1");
+  });
+
+  test("uses the arithmetic median for an even bookmaker count", () => {
+    const market = summarizeTodayMarketPrice({ bookmakerQuotes: [quote(4, "3/1"), quote(5, "4/1")] });
+    assert.equal(market.medianDecimalOdds, 4.5);
+    assert.equal(market.medianFractionalOdds, "7/2");
+  });
+
+  test("a refreshed racecard payload immediately changes the Today market price", () => {
+    const before = groupTodaysRacingRows([row({ bookmakerQuotes: bookmakerOdds(7, "6/1") })]);
+    const after = groupTodaysRacingRows([row({ bookmakerQuotes: bookmakerOdds(5, "4/1") })]);
+    assert.equal(summarizeTodayMarketPrice(before[0]!.races[0]!.runners[0]!).medianFractionalOdds, "6/1");
+    assert.equal(summarizeTodayMarketPrice(after[0]!.races[0]!.runners[0]!).medianFractionalOdds, "4/1");
+  });
+
+  test("does not fall back to forecast when no bookmaker quote exists", () => {
+    const market = summarizeTodayMarketPrice({ odds: "20/1", oddsDecimal: "21", bookmakerQuotes: [] });
+    assert.equal(market.medianDecimalOdds, null);
+    assert.equal(market.medianFractionalOdds, null);
+    assert.equal(market.forecastOdds, "20/1");
+  });
+
   test("accepts racecard or full-result provenance without duplicate source types", () => {
     assert.deepEqual(TODAY_RACE_SOURCE_TYPES, [
       "racecard-next-data",
@@ -111,37 +163,42 @@ describe("Today racing grouping", () => {
     );
   });
 
-  test("orders runners by numeric fractional odds and keeps displayed odds unchanged", () => {
+  test("orders runners by bookmaker median and keeps forecast separately", () => {
     const grouped = groupTodaysRacingRows([
       row({
         runnerId: "runner-5-2",
         saddleclothNumber: 3,
         horseName: "Five To Two",
         odds: "5/2",
+        bookmakerQuotes: bookmakerOdds(3.5, "5/2"),
       }),
       row({
         runnerId: "runner-6-4",
         saddleclothNumber: 1,
         horseName: "Six To Four",
         odds: "6/4",
+        bookmakerQuotes: bookmakerOdds(2.5, "6/4"),
       }),
       row({
         runnerId: "runner-10-1",
         saddleclothNumber: 5,
         horseName: "Ten To One",
         odds: "10/1",
+        bookmakerQuotes: bookmakerOdds(11, "10/1"),
       }),
       row({
         runnerId: "runner-4-1",
         saddleclothNumber: 4,
         horseName: "Four To One",
         odds: "4/1",
+        bookmakerQuotes: bookmakerOdds(5, "4/1"),
       }),
       row({
         runnerId: "runner-15-8",
         saddleclothNumber: 2,
         horseName: "Fifteen To Eight",
         odds: "15/8",
+        bookmakerQuotes: bookmakerOdds(2.875, "15/8"),
       }),
     ]);
 
@@ -159,6 +216,7 @@ describe("Today racing grouping", () => {
         horseName: "Longer",
         odds: "6/4",
         oddsDecimal: "3.25",
+        bookmakerQuotes: bookmakerOdds(3.25, "9/4"),
       }),
       row({
         runnerId: "runner-shorter",
@@ -166,6 +224,7 @@ describe("Today racing grouping", () => {
         horseName: "Shorter",
         odds: "15/8",
         oddsDecimal: "2.10",
+        bookmakerQuotes: bookmakerOdds(2.1, "11/10"),
       }),
     ]);
 
@@ -183,6 +242,7 @@ describe("Today racing grouping", () => {
         saddleclothNumber: 3,
         horseName: "Third",
         odds: "5/1",
+        bookmakerQuotes: bookmakerOdds(6, "5/1"),
       }),
       row({
         runnerId: "runner-1",
@@ -190,6 +250,7 @@ describe("Today racing grouping", () => {
         saddleclothNumber: 1,
         horseName: "First",
         odds: "5/1",
+        bookmakerQuotes: bookmakerOdds(6, "5/1"),
       }),
     ]);
 
@@ -218,6 +279,7 @@ describe("Today racing grouping", () => {
         saddleclothNumber: 3,
         horseName: "Valid",
         odds: "10/1",
+        bookmakerQuotes: bookmakerOdds(11, "10/1"),
       }),
     ]);
 
@@ -813,6 +875,14 @@ function row(overrides: Partial<TodayRacecardRow> = {}): TodayRacecardRow {
     finishingPosition: null,
     ...overrides,
   };
+}
+
+function quote(decimalOdds: number, fractionalOdds: string | null, bookmakerName = "Book", bookmakerId = 1) {
+  return { bookmakerId, bookmakerName, fractionalOdds, decimalOdds };
+}
+
+function bookmakerOdds(decimalOdds: number, fractionalOdds: string) {
+  return [quote(decimalOdds, fractionalOdds)];
 }
 
 function metric(

@@ -42,7 +42,7 @@ describe("Today Speed display", () => {
     );
   });
 
-  test("selection is local display state and the table keeps rating, TPR and odds output", () => {
+  test("selection is local display state and the table keeps rating, TPR and market odds output", () => {
     const selectorSource = readFileSync(new URL("./speed-display.tsx", import.meta.url), "utf8");
     const pageSource = readFileSync(new URL("./page.tsx", import.meta.url), "utf8");
 
@@ -50,6 +50,6 @@ describe("Today Speed display", () => {
     assert.doesNotMatch(selectorSource, /server|action|tracker|turfPerformanceRating/i);
     assert.equal((pageSource.match(/<SpeedDisplayValue\b/g) ?? []).length, 1);
     assert.match(pageSource, /<TurfPerformanceRatingCell runner=\{runner\}/);
-    assert.match(pageSource, /\{runner\.odds \?\? "-"\}/);
+    assert.match(pageSource, /<TodayMarketOdds runner=\{runner\}/);
   });
 });

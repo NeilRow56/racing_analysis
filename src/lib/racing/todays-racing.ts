@@ -75,6 +75,9 @@ export type TodayRunner = {
   officialRating: number | null;
   odds: string | null;
   oddsDecimal: string | null;
+  forecastOdds?: string | null;
+  forecastDecimalOdds?: number | null;
+  bookmakerQuotes?: SportingLifeBookmakerQuote[];
   resultStatus: string | null;
   finishingPosition: number | null;
   metrics: HorseMetricsAsOf | null;
@@ -87,6 +90,25 @@ export type TodayRunner = {
   goingForm?: GoingForm;
   jumpRating?: JumpRatingRunner;
   awRating?: AwRatingRunner;
+};
+
+export type SportingLifeBookmakerQuote = {
+  bookmakerId: number | null;
+  bookmakerName: string | null;
+  fractionalOdds: string | null;
+  decimalOdds: number;
+};
+
+export type TodayMarketPrice = {
+  medianDecimalOdds: number | null;
+  medianFractionalOdds: string | null;
+  bestDecimalOdds: number | null;
+  bestFractionalOdds: string | null;
+  bestBookmakerNames: string[];
+  quoteCount: number;
+  quotes: SportingLifeBookmakerQuote[];
+  forecastOdds: string | null;
+  forecastDecimalOdds: number | null;
 };
 
 export type TodaySavedRuleMatch = {
@@ -203,6 +225,8 @@ export type TodayRacecardRow = {
   officialRating: number | null;
   odds: string | null;
   oddsDecimal: string | null;
+  forecastOdds?: string | null;
+  bookmakerQuotes?: unknown;
   resultStatus: string | null;
   finishingPosition: number | null;
 };
@@ -555,6 +579,9 @@ export function groupTodaysRacingRows(
       officialRating: row.officialRating,
       odds: row.odds,
       oddsDecimal: row.oddsDecimal,
+      forecastOdds: row.forecastOdds ?? row.odds,
+      forecastDecimalOdds: decimalPrice(row.oddsDecimal),
+      bookmakerQuotes: parseSportingLifeBookmakerQuotes(row.bookmakerQuotes),
       resultStatus: row.resultStatus,
       finishingPosition: row.finishingPosition,
       metrics: metricsByRunnerId.get(row.runnerId) ?? null,
@@ -801,37 +828,8 @@ function oddsMissingSortValue(value: number | null): number {
   return value === null ? 1 : 0;
 }
 
-function oddsSortValue(runner: Pick<TodayRunner, "odds" | "oddsDecimal">): number | null {
-  const decimalOdds = parseDecimalOdds(runner.oddsDecimal);
-  if (decimalOdds !== null) {
-    return decimalOdds;
-  }
-
-  return parseFractionalOdds(runner.odds);
-}
-
-function parseDecimalOdds(value: string | null): number | null {
-  if (!value) {
-    return null;
-  }
-
-  const parsed = Number(value);
-  return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
-}
-
-function parseFractionalOdds(value: string | null): number | null {
-  const match = value?.trim().match(/^(\d+(?:\.\d+)?)\/(\d+(?:\.\d+)?)$/);
-  if (!match) {
-    return null;
-  }
-
-  const numerator = Number(match[1]);
-  const denominator = Number(match[2]);
-  if (!Number.isFinite(numerator) || !Number.isFinite(denominator) || denominator <= 0) {
-    return null;
-  }
-
-  return numerator / denominator + 1;
+function oddsSortValue(runner: Pick<TodayRunner, "bookmakerQuotes">): number | null {
+  return summarizeTodayMarketPrice(runner).medianDecimalOdds;
 }
 
 function firstRaceTime(meeting: TodayMeeting): string {
@@ -925,6 +923,28 @@ function getRacecardRowsWhere(
       officialRating: raceRunners.officialRating,
       odds: raceRunners.startingPrice,
       oddsDecimal: raceRunners.startingPriceDecimal,
+      forecastOdds: sql<string | null>`(
+        select ride #>> '{betting,current_odds}'
+        from ${sourceImports}, lateral jsonb_array_elements(
+          coalesce(${sourceImports.payload} #> '{props,pageProps,race,rides}', '[]'::jsonb)
+        ) as ride
+        where ${sourceImports.source} = ${SPORTING_LIFE_SOURCE}
+          and ${sourceImports.sourceType} = ${RACECARD_SOURCE_TYPE}
+          and ${sourceImports.sourceId} = ${races.sourceId}
+          and ride #>> '{ride_reference,id}' = ${raceRunners.sourceId}
+        limit 1
+      )`,
+      bookmakerQuotes: sql<unknown>`(
+        select coalesce(ride -> 'bookmakerOdds', '[]'::jsonb)
+        from ${sourceImports}, lateral jsonb_array_elements(
+          coalesce(${sourceImports.payload} #> '{props,pageProps,race,rides}', '[]'::jsonb)
+        ) as ride
+        where ${sourceImports.source} = ${SPORTING_LIFE_SOURCE}
+          and ${sourceImports.sourceType} = ${RACECARD_SOURCE_TYPE}
+          and ${sourceImports.sourceId} = ${races.sourceId}
+          and ride #>> '{ride_reference,id}' = ${raceRunners.sourceId}
+        limit 1
+      )`,
       resultStatus: raceRunners.resultStatus,
       finishingPosition: raceRunners.finishingPosition,
     })
@@ -1018,4 +1038,92 @@ function isNumber(value: number | null | undefined): value is number {
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
+}
+
+export function parseSportingLifeBookmakerQuotes(value: unknown): SportingLifeBookmakerQuote[] {
+  if (!Array.isArray(value)) return [];
+  return value.flatMap((entry) => {
+    if (!isRecord(entry)) return [];
+    const decimalOdds = Number(entry.decimalOdds ?? entry.decimalOddsString);
+    if (!Number.isFinite(decimalOdds) || decimalOdds <= 1) return [];
+    const bookmakerId = Number(entry.bookmakerId);
+    return [{
+      bookmakerId: Number.isFinite(bookmakerId) ? bookmakerId : null,
+      bookmakerName: typeof entry.bookmakerName === "string" ? entry.bookmakerName : null,
+      fractionalOdds: typeof entry.fractionalOdds === "string" ? entry.fractionalOdds : null,
+      decimalOdds,
+    }];
+  });
+}
+
+export function summarizeTodayMarketPrice(
+  runner: {
+    bookmakerQuotes?: SportingLifeBookmakerQuote[];
+    forecastOdds?: string | null;
+    forecastDecimalOdds?: number | null;
+    odds?: string | null;
+    oddsDecimal?: string | null;
+  },
+): TodayMarketPrice {
+  const quotes = (runner.bookmakerQuotes ?? [])
+    .filter((quote) => Number.isFinite(quote.decimalOdds) && quote.decimalOdds > 1)
+    .map((quote) => ({ ...quote }))
+    .sort((left, right) => left.decimalOdds - right.decimalOdds ||
+      (left.bookmakerName ?? "").localeCompare(right.bookmakerName ?? ""));
+  if (quotes.length === 0) {
+    return {
+      medianDecimalOdds: null,
+      medianFractionalOdds: null,
+      bestDecimalOdds: null,
+      bestFractionalOdds: null,
+      bestBookmakerNames: [],
+      quoteCount: 0,
+      quotes: [],
+      forecastOdds: runner.forecastOdds ?? runner.odds ?? null,
+      forecastDecimalOdds: runner.forecastDecimalOdds ?? decimalPrice(runner.oddsDecimal ?? null),
+    };
+  }
+  const middle = Math.floor(quotes.length / 2);
+  const medianDecimalOdds = quotes.length % 2 === 1
+    ? quotes[middle]!.decimalOdds
+    : (quotes[middle - 1]!.decimalOdds + quotes[middle]!.decimalOdds) / 2;
+  const matchingMedian = quotes.find((quote) => quote.decimalOdds === medianDecimalOdds);
+  const bestDecimalOdds = quotes.at(-1)!.decimalOdds;
+  const bestQuotes = quotes.filter((quote) => quote.decimalOdds === bestDecimalOdds);
+  return {
+    medianDecimalOdds,
+    medianFractionalOdds: matchingMedian?.fractionalOdds ?? decimalToFractionalOdds(medianDecimalOdds),
+    bestDecimalOdds,
+    bestFractionalOdds: bestQuotes[0]?.fractionalOdds ?? decimalToFractionalOdds(bestDecimalOdds),
+    bestBookmakerNames: [...new Set(bestQuotes.flatMap((quote) => quote.bookmakerName ? [quote.bookmakerName] : []))],
+    quoteCount: quotes.length,
+    quotes,
+    forecastOdds: runner.forecastOdds ?? runner.odds ?? null,
+    forecastDecimalOdds: runner.forecastDecimalOdds ?? decimalPrice(runner.oddsDecimal ?? null),
+  };
+}
+
+function decimalToFractionalOdds(decimalOdds: number): string | null {
+  const fractional = decimalOdds - 1;
+  for (const denominator of [1, 2, 4, 5, 8, 10, 16, 20, 25, 50, 100]) {
+    const numerator = Math.round(fractional * denominator);
+    if (Math.abs(numerator / denominator - fractional) < 1e-9) {
+      const divisor = greatestCommonDivisor(numerator, denominator);
+      return `${numerator / divisor}/${denominator / divisor}`;
+    }
+  }
+  return null;
+}
+
+function greatestCommonDivisor(left: number, right: number): number {
+  let a = Math.abs(left);
+  let b = Math.abs(right);
+  while (b !== 0) [a, b] = [b, a % b];
+  return a || 1;
+}
+
+function decimalPrice(value: string | null): number | null {
+  if (value === null || value === "") return null;
+  const parsed = Number(value);
+  return Number.isFinite(parsed) && parsed > 1 ? parsed : null;
 }

@@ -1,5 +1,6 @@
 import {
   EDGE_BANDS,
+  FORWARD_VALUE_PRICE_SNAPSHOT_SCHEDULE_VERSION,
   capturedPriceProfitLoss,
   edgeBand,
   forwardValuePriceMovement,
@@ -16,6 +17,7 @@ import {
   type ValueFamily,
   type ValueSampleStatus,
 } from "./forward-value";
+import type { TissueForwardData, TissueForwardRunner } from "./tissue-forward";
 
 export type ForwardValueObservationState = "all" | "settled" | "unsettled" | "excluded";
 export type ForwardValueEdgeFilter = "all" | "positive" | "non_positive";
@@ -32,6 +34,18 @@ export type ForwardValueMetrics = {
   averageRatingEdgePercentagePoints: number | null;
   profitLoss: number | null;
   roi: number | null;
+  medianMarketProfitLoss: number | null;
+  medianMarketRoi: number | null;
+  medianMarketSettled: number;
+  bestBookmakerProfitLoss: number | null;
+  bestBookmakerRoi: number | null;
+  bestBookmakerSettled: number;
+  legacyForecastProfitLoss: number | null;
+  legacyForecastRoi: number | null;
+  legacyForecastSettled: number;
+  finalSpProfitLoss: number | null;
+  finalSpRoi: number | null;
+  finalSpSettled: number;
   sampleStatus: ValueSampleStatus;
 };
 
@@ -50,9 +64,71 @@ export type TurfModelAgreementSummary = {
   tprTissueAgree: number;
   disagree: number;
   bothPositiveEdge: number;
+  bothPositiveSameHorse: number;
+  bothPositiveDifferentHorses: number;
   tprPositiveOnly: number;
   tissuePositiveOnly: number;
   neitherPositive: number;
+  largeDisagreements: number;
+};
+
+export type TurfDisagreementClassification =
+  | "same_horse_similar_probability"
+  | "same_horse_materially_different_probability"
+  | "different_horses_tpr_positive_only"
+  | "different_horses_tissue_positive_only"
+  | "different_horses_both_positive"
+  | "different_horses_neither_positive";
+
+export type TurfModelHorseDiagnostic = {
+  runnerId: string | null;
+  horseName: string;
+  tprProbability: number | null;
+  tissueProbability: number | null;
+  tprRank: number | null;
+  tissueRank: number | null;
+  tprScore: number | null;
+  tprGap: number | null;
+  officialRating: number | null;
+  latestSpeed: number | null;
+  bestSpeed: number | null;
+  averageSpeed: number | null;
+  latestPerformance: number | null;
+  bestPerformance: number | null;
+  averagePerformance: number | null;
+  trainerStrikeRate: number | null;
+  jockeyStrikeRate: number | null;
+  capturedPrice: string | null;
+  capturedDecimalOdds: number | null;
+  marketImpliedProbability: number | null;
+  edgePercentagePoints: number | null;
+  commentFeatures: string[];
+  finalSp: number | null;
+  won: boolean | null;
+};
+
+export type TurfModelDisagreementDiagnostic = {
+  race: ForwardValueRecord;
+  classification: TurfDisagreementClassification;
+  largeDifference: boolean;
+  probabilityDifferencePercentagePoints: number;
+  edgeDifferencePercentagePoints: number | null;
+  sameHorse: boolean;
+  tprPositive: boolean;
+  tissuePositive: boolean;
+  fieldSize: number | null;
+  tprHorse: TurfModelHorseDiagnostic;
+  tissueHorse: TurfModelHorseDiagnostic;
+  contributionNote: string;
+  outcome: {
+    tprWon: boolean | null;
+    tissueWon: boolean | null;
+    neitherWon: boolean | null;
+    tprFinalSp: number | null;
+    tissueFinalSp: number | null;
+    tprPriceMovement: number | null;
+    tissuePriceMovement: number | null;
+  };
 };
 
 export type ForwardValueSnapshotMetrics = {
@@ -64,8 +140,10 @@ export type ForwardValueSnapshotMetrics = {
 export type ForwardValueMovementMetrics = {
   observations: number;
   meanMovement: number | null;
+  medianMovement: number | null;
   shorteningProportion: number | null;
   driftingProportion: number | null;
+  unchangedProportion: number | null;
 };
 
 export type ForwardValuePersistenceMetrics = {
@@ -77,21 +155,50 @@ export type ForwardValuePersistenceMetrics = {
 
 export type ForwardValueOutcomeMetrics = {
   observations: number;
+  settledObservations: number;
   wins: number;
   strikeRate: number | null;
 };
 
 export type ForwardValuePriceDiagnostics = {
-  snapshots: Record<ForwardValuePriceStage, ForwardValueSnapshotMetrics>;
-  movements: {
-    earlyToT60: ForwardValueMovementMetrics;
-    t60ToT15: ForwardValueMovementMetrics;
-    t15ToFinalSp: ForwardValueMovementMetrics;
+  newSchedule: {
+    scheduleVersion: typeof FORWARD_VALUE_PRICE_SNAPSHOT_SCHEDULE_VERSION;
+    records: number;
+    snapshots: {
+      early: ForwardValueSnapshotMetrics;
+      t180: ForwardValueSnapshotMetrics;
+      t60: ForwardValueSnapshotMetrics;
+    };
+    movements: {
+      earlyToT180: ForwardValueMovementMetrics;
+      t180ToT60: ForwardValueMovementMetrics;
+      t60ToFinalSp: ForwardValueMovementMetrics;
+      earlyToFinalSp: ForwardValueMovementMetrics;
+    };
+    persistence: {
+      earlyToT180: ForwardValuePersistenceMetrics;
+      earlyToT60: ForwardValuePersistenceMetrics;
+      t180ToT60: ForwardValuePersistenceMetrics;
+    };
   };
-  persistence: {
-    earlyToT60: ForwardValuePersistenceMetrics;
-    earlyToT15: ForwardValuePersistenceMetrics;
-    t60ToT15: ForwardValuePersistenceMetrics;
+  legacy: {
+    records: number;
+    snapshots: {
+      early: ForwardValueSnapshotMetrics;
+      t60: ForwardValueSnapshotMetrics;
+      t15: ForwardValueSnapshotMetrics;
+    };
+    movements: {
+      earlyToT60: ForwardValueMovementMetrics;
+      t60ToT15: ForwardValueMovementMetrics;
+      t15ToFinalSp: ForwardValueMovementMetrics;
+      earlyToFinalSp: ForwardValueMovementMetrics;
+    };
+    persistence: {
+      earlyToT60: ForwardValuePersistenceMetrics;
+      earlyToT15: ForwardValuePersistenceMetrics;
+      t60ToT15: ForwardValuePersistenceMetrics;
+    };
   };
 };
 
@@ -150,7 +257,7 @@ export function summarizeForwardValue(data: ForwardValueData): ForwardValueSumma
             race.edgePercentagePoints !== null && edgeBand(race.edgePercentagePoints) === band
           )),
         })),
-        priceDiagnostics: summarizeForwardValuePriceDiagnostics(cleanSettled),
+        priceDiagnostics: summarizeForwardValuePriceDiagnostics(familyProspective),
       };
     }),
   };
@@ -169,39 +276,182 @@ export function summarizeTurfModelAgreement(records: ForwardValueRecord[]): Turf
     tprTissueAgree: 0,
     disagree: 0,
     bothPositiveEdge: 0,
+    bothPositiveSameHorse: 0,
+    bothPositiveDifferentHorses: 0,
     tprPositiveOnly: 0,
     tissuePositiveOnly: 0,
     neitherPositive: 0,
+    largeDisagreements: 0,
   };
   for (const race of comparable) {
     if (race.tissueAgreesWithTpr) summary.tprTissueAgree += 1;
     else summary.disagree += 1;
     const tprPositive = race.edgePercentagePoints! > 0;
     const tissuePositive = race.tissueEdgePercentagePoints! > 0;
-    if (tprPositive && tissuePositive) summary.bothPositiveEdge += 1;
+    if (tprPositive && tissuePositive) {
+      summary.bothPositiveEdge += 1;
+      if (race.tissueAgreesWithTpr) summary.bothPositiveSameHorse += 1;
+      else summary.bothPositiveDifferentHorses += 1;
+    }
     else if (tprPositive) summary.tprPositiveOnly += 1;
     else if (tissuePositive) summary.tissuePositiveOnly += 1;
     else summary.neitherPositive += 1;
+    if (turfModelDisagreementLargeDifference(race)) summary.largeDisagreements += 1;
   }
   return summary;
 }
 
+export function turfModelDisagreementClassification(record: ForwardValueRecord): TurfDisagreementClassification | null {
+  if (
+    record.family !== "turf" ||
+    !isProspectiveObservation(record) ||
+    record.tissueAgreesWithTpr === null ||
+    record.tissueProbability === null ||
+    record.edgePercentagePoints === null ||
+    record.tissueEdgePercentagePoints == null
+  ) return null;
+  const probabilityDifference = Math.abs(record.calibratedProbability - record.tissueProbability) * 100;
+  if (record.tissueAgreesWithTpr) {
+    return probabilityDifference >= 10
+      ? "same_horse_materially_different_probability"
+      : "same_horse_similar_probability";
+  }
+  const tprPositive = record.edgePercentagePoints > 0;
+  const tissuePositive = record.tissueEdgePercentagePoints > 0;
+  if (tprPositive && tissuePositive) return "different_horses_both_positive";
+  if (tprPositive) return "different_horses_tpr_positive_only";
+  if (tissuePositive) return "different_horses_tissue_positive_only";
+  return "different_horses_neither_positive";
+}
+
+export function turfModelDisagreementLargeDifference(record: ForwardValueRecord): boolean {
+  if (
+    record.tissueAgreesWithTpr === null ||
+    record.tissueProbability === null ||
+    record.edgePercentagePoints === null ||
+    record.tissueEdgePercentagePoints == null
+  ) return false;
+  if (record.tissueAgreesWithTpr) {
+    return Math.abs(record.calibratedProbability - record.tissueProbability) * 100 >= 10;
+  }
+  return Math.abs(record.edgePercentagePoints - record.tissueEdgePercentagePoints) >= 10;
+}
+
+export function buildTurfModelDisagreementDiagnostics(
+  records: ForwardValueRecord[],
+  tissueData?: TissueForwardData,
+): TurfModelDisagreementDiagnostic[] {
+  const tissueByRaceId = new Map((tissueData?.races ?? []).map((race) => [race.raceId, race]));
+  return records.flatMap((race) => {
+    const classification = turfModelDisagreementClassification(race);
+    if (!classification || race.tissueRunnerId === null || race.tissueHorseName === null || race.tissueProbability === null) return [];
+    const tissueRace = tissueByRaceId.get(race.raceId) ?? null;
+    const tprTissueRunner = tissueRace?.runners.find((runner) => runner.runnerId === race.leaderRunnerId) ?? null;
+    const tissueRunner = tissueRace?.runners.find((runner) => runner.runnerId === race.tissueRunnerId) ?? null;
+    const sameHorse = race.tissueAgreesWithTpr === true;
+    const tissueFinalSp = tissueRunner?.finalSp ?? null;
+    const tissueWon = tissueRunner?.finishingPosition === 1 ? true : tissueRunner?.finishingPosition === null || tissueRunner?.finishingPosition === undefined ? null : false;
+    const tprWon = race.leaderWon;
+    return [{
+      race,
+      classification,
+      largeDifference: turfModelDisagreementLargeDifference(race),
+      probabilityDifferencePercentagePoints: Math.abs(race.calibratedProbability - race.tissueProbability) * 100,
+      edgeDifferencePercentagePoints: race.edgePercentagePoints === null || race.tissueEdgePercentagePoints == null
+        ? null
+        : Math.abs(race.edgePercentagePoints - race.tissueEdgePercentagePoints),
+      sameHorse,
+      tprPositive: (race.edgePercentagePoints ?? 0) > 0,
+      tissuePositive: (race.tissueEdgePercentagePoints ?? 0) > 0,
+      fieldSize: tissueRace?.runners.length ?? null,
+      tprHorse: diagnosticHorse({
+        model: "tpr",
+        record: race,
+        runnerId: race.leaderRunnerId,
+        horseName: race.leaderHorseName,
+        tissueRunner: tprTissueRunner,
+      }),
+      tissueHorse: diagnosticHorse({
+        model: "tissue",
+        record: race,
+        runnerId: race.tissueRunnerId,
+        horseName: race.tissueHorseName,
+        tissueRunner,
+      }),
+      contributionNote: "Tissue v2 forward snapshots persist probabilities, ranks and comment feature flags; individual numeric inputs and fitted feature contributions are not persisted. Forward Value persists the TPR leader score, rank, gap and calibrated probability, but not the decomposed TPR component inputs.",
+      outcome: {
+        tprWon,
+        tissueWon,
+        neitherWon: tprWon === null && tissueWon === null ? null : tprWon !== true && tissueWon !== true,
+        tprFinalSp: race.finalSp,
+        tissueFinalSp,
+        tprPriceMovement: forwardValuePriceMovement(forwardValuePriceSnapshot(race, "early"), race.finalSp),
+        tissuePriceMovement: forwardValuePriceMovement(
+          race.tissueCapturedDecimalOdds == null
+            ? null
+            : {
+              decimalPrice: race.tissueCapturedDecimalOdds,
+              impliedProbability: race.tissueMarketProbability ?? 1 / race.tissueCapturedDecimalOdds,
+              capturedAt: race.tissuePriceCapturedAt ?? race.recordedAt,
+              minutesBeforeScheduledOff: race.minutesBeforeScheduledOff ?? 0,
+              ratingProbability: race.tissueProbability,
+              ratingEdgePercentagePoints: race.tissueEdgePercentagePoints ?? 0,
+            },
+          tissueFinalSp,
+        ),
+      },
+    }];
+  }).sort((left, right) =>
+    Number(right.largeDifference) - Number(left.largeDifference) ||
+    right.race.recordedAt.localeCompare(left.race.recordedAt) ||
+    right.probabilityDifferencePercentagePoints - left.probabilityDifferencePercentagePoints
+  );
+}
+
 export function summarizeForwardValuePriceDiagnostics(records: ForwardValueRecord[]): ForwardValuePriceDiagnostics {
+  const newSchedule = records.filter((record) =>
+    record.priceSnapshotScheduleVersion === FORWARD_VALUE_PRICE_SNAPSHOT_SCHEDULE_VERSION
+  );
+  const legacy = records.filter((record) => !record.priceSnapshotScheduleVersion);
   return {
-    snapshots: {
-      early: snapshotMetrics(records, "early"),
-      t60: snapshotMetrics(records, "t60"),
-      t15: snapshotMetrics(records, "t15"),
+    newSchedule: {
+      scheduleVersion: FORWARD_VALUE_PRICE_SNAPSHOT_SCHEDULE_VERSION,
+      records: newSchedule.length,
+      snapshots: {
+        early: snapshotMetrics(newSchedule, "early"),
+        t180: snapshotMetrics(newSchedule, "t180"),
+        t60: snapshotMetrics(newSchedule, "t60"),
+      },
+      movements: {
+        earlyToT180: movementMetrics(newSchedule, "early", "t180"),
+        t180ToT60: movementMetrics(newSchedule, "t180", "t60"),
+        t60ToFinalSp: finalMovementMetrics(newSchedule, "t60"),
+        earlyToFinalSp: finalMovementMetrics(newSchedule, "early"),
+      },
+      persistence: {
+        earlyToT180: persistenceMetrics(newSchedule, "early", "t180"),
+        earlyToT60: persistenceMetrics(newSchedule, "early", "t60"),
+        t180ToT60: persistenceMetrics(newSchedule, "t180", "t60"),
+      },
     },
-    movements: {
-      earlyToT60: movementMetrics(records, "early", "t60"),
-      t60ToT15: movementMetrics(records, "t60", "t15"),
-      t15ToFinalSp: finalMovementMetrics(records),
-    },
-    persistence: {
-      earlyToT60: persistenceMetrics(records, "early", "t60"),
-      earlyToT15: persistenceMetrics(records, "early", "t15"),
-      t60ToT15: persistenceMetrics(records, "t60", "t15"),
+    legacy: {
+      records: legacy.length,
+      snapshots: {
+        early: snapshotMetrics(legacy, "early"),
+        t60: snapshotMetrics(legacy, "t60"),
+        t15: snapshotMetrics(legacy, "t15"),
+      },
+      movements: {
+        earlyToT60: movementMetrics(legacy, "early", "t60"),
+        t60ToT15: movementMetrics(legacy, "t60", "t15"),
+        t15ToFinalSp: finalMovementMetrics(legacy, "t15"),
+        earlyToFinalSp: finalMovementMetrics(legacy, "early"),
+      },
+      persistence: {
+        earlyToT60: persistenceMetrics(legacy, "early", "t60"),
+        earlyToT15: persistenceMetrics(legacy, "early", "t15"),
+        t60ToT15: persistenceMetrics(legacy, "t60", "t15"),
+      },
     },
   };
 }
@@ -211,6 +461,14 @@ export function summarizeForwardValueRecords(records: ForwardValueRecord[]): For
   const wins = records.filter((race) => race.leaderWon).length;
   const expectedWins = sum(records.map((race) => race.calibratedProbability));
   const profitLoss = observations ? sum(records.map((race) => capturedPriceProfitLoss(race)!)) : null;
+  const medianMarketReturns = records.flatMap((race) => race.medianMarketPriceProfitLoss == null ? [] : [race.medianMarketPriceProfitLoss]);
+  const bestBookmakerReturns = records.flatMap((race) => race.bestBookmakerPriceProfitLoss == null ? [] : [race.bestBookmakerPriceProfitLoss]);
+  const legacyForecastReturns = records.flatMap((race) =>
+    race.marketPriceBasisVersion === undefined && capturedPriceProfitLoss(race) !== null
+      ? [capturedPriceProfitLoss(race)!]
+      : []
+  );
+  const finalSpReturns = records.flatMap((race) => race.profitLoss == null ? [] : [race.profitLoss]);
   return {
     observations,
     wins,
@@ -223,6 +481,18 @@ export function summarizeForwardValueRecords(records: ForwardValueRecord[]): For
     averageRatingEdgePercentagePoints: average(records.map((race) => race.edgePercentagePoints!)),
     profitLoss,
     roi: profitLoss === null ? null : rate(profitLoss, observations),
+    medianMarketProfitLoss: totalOrNull(medianMarketReturns),
+    medianMarketRoi: rate(sum(medianMarketReturns), medianMarketReturns.length),
+    medianMarketSettled: medianMarketReturns.length,
+    bestBookmakerProfitLoss: totalOrNull(bestBookmakerReturns),
+    bestBookmakerRoi: rate(sum(bestBookmakerReturns), bestBookmakerReturns.length),
+    bestBookmakerSettled: bestBookmakerReturns.length,
+    legacyForecastProfitLoss: totalOrNull(legacyForecastReturns),
+    legacyForecastRoi: rate(sum(legacyForecastReturns), legacyForecastReturns.length),
+    legacyForecastSettled: legacyForecastReturns.length,
+    finalSpProfitLoss: totalOrNull(finalSpReturns),
+    finalSpRoi: rate(sum(finalSpReturns), finalSpReturns.length),
+    finalSpSettled: finalSpReturns.length,
     sampleStatus: valueSampleStatus(observations),
   };
 }
@@ -294,9 +564,9 @@ function movementMetrics(
   return summarizeMovements(movements);
 }
 
-function finalMovementMetrics(records: ForwardValueRecord[]): ForwardValueMovementMetrics {
+function finalMovementMetrics(records: ForwardValueRecord[], fromStage: ForwardValuePriceStage): ForwardValueMovementMetrics {
   const movements = records.flatMap((record) => {
-    const movement = forwardValuePriceMovement(forwardValuePriceSnapshot(record, "t15"), record.finalSp);
+    const movement = forwardValuePriceMovement(forwardValuePriceSnapshot(record, fromStage), record.finalSp);
     return movement === null ? [] : [movement];
   });
   return summarizeMovements(movements);
@@ -306,8 +576,10 @@ function summarizeMovements(movements: number[]): ForwardValueMovementMetrics {
   return {
     observations: movements.length,
     meanMovement: average(movements),
+    medianMovement: median(movements),
     shorteningProportion: rate(movements.filter((movement) => movement < 0).length, movements.length),
     driftingProportion: rate(movements.filter((movement) => movement > 0).length, movements.length),
+    unchangedProportion: rate(movements.filter((movement) => movement === 0).length, movements.length),
   };
 }
 
@@ -335,10 +607,60 @@ function persistenceMetrics(
 }
 
 function outcomeMetrics(records: ForwardValueRecord[]): ForwardValueOutcomeMetrics {
-  const wins = records.filter((record) => record.leaderWon).length;
-  return { observations: records.length, wins, strikeRate: rate(wins, records.length) };
+  const settled = records.filter((record) => typeof record.leaderWon === "boolean");
+  const wins = settled.filter((record) => record.leaderWon).length;
+  return { observations: records.length, settledObservations: settled.length, wins, strikeRate: rate(wins, settled.length) };
+}
+
+function diagnosticHorse(input: {
+  model: "tpr" | "tissue";
+  record: ForwardValueRecord;
+  runnerId: string | null;
+  horseName: string;
+  tissueRunner: TissueForwardRunner | null;
+}): TurfModelHorseDiagnostic {
+  const isTpr = input.model === "tpr";
+  const hasTprPrice = input.record.capturedDecimalOdds != null && input.record.capturedMarketProbability != null;
+  const hasTissuePrice = input.record.tissueCapturedDecimalOdds != null && input.record.tissueMarketProbability != null;
+  return {
+    runnerId: input.runnerId,
+    horseName: input.horseName,
+    tprProbability: isTpr ? input.record.calibratedProbability : null,
+    tissueProbability: isTpr ? null : input.record.tissueProbability,
+    tprRank: isTpr ? input.record.leaderRank : null,
+    tissueRank: isTpr ? null : input.tissueRunner?.tissueRank ?? 1,
+    tprScore: isTpr ? input.record.leaderScore : null,
+    tprGap: isTpr ? input.record.leaderGap : null,
+    officialRating: null,
+    latestSpeed: null,
+    bestSpeed: null,
+    averageSpeed: null,
+    latestPerformance: null,
+    bestPerformance: null,
+    averagePerformance: null,
+    trainerStrikeRate: null,
+    jockeyStrikeRate: null,
+    capturedPrice: isTpr ? input.record.capturedPrice : input.record.tissueCapturedPrice ?? null,
+    capturedDecimalOdds: isTpr ? input.record.capturedDecimalOdds : input.record.tissueCapturedDecimalOdds ?? null,
+    marketImpliedProbability: isTpr ? input.record.capturedMarketProbability : input.record.tissueMarketProbability ?? null,
+    edgePercentagePoints: isTpr
+      ? hasTprPrice ? input.record.edgePercentagePoints : null
+      : hasTissuePrice ? input.record.tissueEdgePercentagePoints ?? null : null,
+    commentFeatures: isTpr ? [] : input.tissueRunner?.commentFeatures ?? [],
+    finalSp: isTpr ? input.record.finalSp : input.tissueRunner?.finalSp ?? null,
+    won: isTpr
+      ? input.record.leaderWon
+      : input.tissueRunner?.finishingPosition === 1 ? true : input.tissueRunner?.finishingPosition == null ? null : false,
+  };
 }
 
 function sum(values: number[]) { return values.reduce((total, value) => total + value, 0); }
+function totalOrNull(values: number[]) { return values.length ? sum(values) : null; }
 function average(values: number[]) { return values.length ? sum(values) / values.length : null; }
+function median(values: number[]) {
+  if (!values.length) return null;
+  const sorted = [...values].sort((left, right) => left - right);
+  const middle = Math.floor(sorted.length / 2);
+  return sorted.length % 2 ? sorted[middle]! : (sorted[middle - 1]! + sorted[middle]!) / 2;
+}
 function rate(numerator: number, denominator: number) { return denominator ? numerator / denominator : null; }
