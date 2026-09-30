@@ -33650,9 +33650,14 @@
       "raceDate": "2026-09-30",
       "course": "Musselburgh",
       "raceTime": "12:38",
-      "winner": null,
-      "winnerSp": null,
-      "winners": [],
+      "winner": "Sable Noir",
+      "winnerSp": 6,
+      "winners": [
+        {
+          "horseName": "Sable Noir",
+          "decimalOdds": 6
+        }
+      ],
       "tprRank1": "Sod Hall Lane",
       "tprRank2": "Sable Noir",
       "tprRank1NonRunner": false,
@@ -33767,8 +33772,8 @@
       "timewiseRecordedAt": "2026-09-30T04:06:52.960Z",
       "timewiseRecordedPreRace": true,
       "timewiseUpdatedAt": null,
-      "winnerWasTprRank1": null,
-      "winnerWasTprTop2": null,
+      "winnerWasTprRank1": false,
+      "winnerWasTprTop2": true,
       "winnerWasTimewiseRank1": null,
       "winnerWasTimewiseTop2": null,
       "rank1Agree": null,
@@ -33779,7 +33784,7 @@
       "tpr1AgreesWithOr1": true,
       "w50AgreesWithOr1": true,
       "timewise1AgreesWithOr1": null,
-      "winnerIsOr1": null
+      "winnerIsOr1": false
     },
     {
       "family": "turf",
@@ -33789,9 +33794,14 @@
       "raceDate": "2026-09-30",
       "course": "Catterick",
       "raceTime": "12:57",
-      "winner": null,
-      "winnerSp": null,
-      "winners": [],
+      "winner": "Bladey Lady",
+      "winnerSp": 2.75,
+      "winners": [
+        {
+          "horseName": "Bladey Lady",
+          "decimalOdds": 2.75
+        }
+      ],
       "tprRank1": "Duchess Of Immatin",
       "tprRank2": "Bladey Lady",
       "tprRank1NonRunner": false,
@@ -33990,14 +34000,14 @@
       "awBestL3SpeedRank1": null,
       "awBestL3PerformanceRank1": null,
       "orRank1": "Duchess Of Immatin",
-      "winnerOrRank": null,
+      "winnerOrRank": 1,
       "recordedAt": "2026-09-30T04:06:52.960Z",
       "recordedPreRace": true,
       "timewiseRecordedAt": "2026-09-30T04:06:52.960Z",
       "timewiseRecordedPreRace": true,
       "timewiseUpdatedAt": null,
-      "winnerWasTprRank1": null,
-      "winnerWasTprTop2": null,
+      "winnerWasTprRank1": false,
+      "winnerWasTprTop2": true,
       "winnerWasTimewiseRank1": null,
       "winnerWasTimewiseTop2": null,
       "rank1Agree": null,
@@ -34008,7 +34018,7 @@
       "tpr1AgreesWithOr1": true,
       "w50AgreesWithOr1": true,
       "timewise1AgreesWithOr1": null,
-      "winnerIsOr1": null
+      "winnerIsOr1": false
     },
     {
       "family": "turf",
@@ -34024,13 +34034,13 @@
       "tprRank1": "Senna's Girl",
       "tprRank2": "Nautic Star",
       "tprRank1NonRunner": false,
-      "tprRank2NonRunner": false,
+      "tprRank2NonRunner": true,
       "timewiseRank1": null,
       "timewiseRank2": null,
       "timewiseRank1NonRunner": false,
       "timewiseRank2NonRunner": false,
       "w50Rank1": "Nautic Star",
-      "w50Rank1NonRunner": false,
+      "w50Rank1NonRunner": true,
       "tprInputSnapshot": {
         "version": "tpr_forward_snapshot_v1",
         "runners": [
@@ -34355,7 +34365,7 @@
       "bothTop2CapturedWinner": null,
       "neitherTop2CapturedWinner": null,
       "tpr1AgreesWithOr1": false,
-      "w50AgreesWithOr1": false,
+      "w50AgreesWithOr1": null,
       "timewise1AgreesWithOr1": null,
       "winnerIsOr1": null
     },
@@ -34841,14 +34851,14 @@
       "winners": [],
       "tprRank1": "Sunriseontheboyne",
       "tprRank2": "Walsingham",
-      "tprRank1NonRunner": false,
+      "tprRank1NonRunner": true,
       "tprRank2NonRunner": false,
       "timewiseRank1": null,
       "timewiseRank2": null,
       "timewiseRank1NonRunner": false,
       "timewiseRank2NonRunner": false,
       "w50Rank1": "Sunriseontheboyne",
-      "w50Rank1NonRunner": false,
+      "w50Rank1NonRunner": true,
       "tprInputSnapshot": {
         "version": "tpr_forward_snapshot_v1",
         "runners": [
@@ -35082,8 +35092,8 @@
       "winnerWasTimewiseOnlyTop2": null,
       "bothTop2CapturedWinner": null,
       "neitherTop2CapturedWinner": null,
-      "tpr1AgreesWithOr1": false,
-      "w50AgreesWithOr1": false,
+      "tpr1AgreesWithOr1": null,
+      "w50AgreesWithOr1": null,
       "timewise1AgreesWithOr1": null,
       "winnerIsOr1": null
     },
@@ -40988,7 +40998,7 @@
       "tprRank1": "Clonmacash",
       "tprRank2": "Gotta Catch'em All",
       "tprRank1NonRunner": false,
-      "tprRank2NonRunner": false,
+      "tprRank2NonRunner": true,
       "timewiseRank1": null,
       "timewiseRank2": null,
       "timewiseRank1NonRunner": false,
