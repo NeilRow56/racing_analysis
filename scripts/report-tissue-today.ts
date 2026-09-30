@@ -1,7 +1,7 @@
 import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import { createDbConnection } from "@/db";
-import { getSportingLifeEstimatedPricesForDate, type SportingLifeEstimatedPrice } from "@/lib/racing/todays-racing";
+import { getSportingLifeCurrentPricesForDate, type SportingLifeCurrentPrice } from "@/lib/racing/todays-racing";
 import {
   TISSUE_V2_CONFIG,
   loadTissueForward,
@@ -11,7 +11,7 @@ import {
 export async function reportTissueToday(
   path = TISSUE_V2_CONFIG.forwardPath,
   write: (output: string) => void = console.log,
-  loadEstimatedPrices: (raceDate: string) => Promise<SportingLifeEstimatedPrice[]> = loadCurrentEstimatedPrices,
+  loadCurrentPrices: (raceDate: string) => Promise<SportingLifeCurrentPrice[]> = loadCurrentMarketPrices,
 ): Promise<string> {
   const data = await loadTissueForward(path, TISSUE_V2_CONFIG);
   const latestDate = data.races
@@ -19,24 +19,26 @@ export async function reportTissueToday(
     .map((race) => race.raceDate)
     .sort()
     .at(-1);
-  let estimatedPrices: SportingLifeEstimatedPrice[] = [];
+  let currentPrices: SportingLifeCurrentPrice[] = [];
+  let currentRaceIds: Set<string> | undefined;
   if (latestDate) {
     try {
-      estimatedPrices = await loadEstimatedPrices(latestDate);
+      currentPrices = await loadCurrentPrices(latestDate);
+      currentRaceIds = new Set(currentPrices.map((price) => price.raceId));
     } catch (error) {
       const code = nestedErrorCode(error);
       console.error(`Sporting Life racecard context unavailable${code ? ` (${code})` : ""}; showing tracker times and missing prices.`);
     }
   }
-  const output = renderTissueTodayReport(data, estimatedPrices);
+  const output = renderTissueTodayReport(data, currentPrices, { currentRaceIds });
   write(output);
   return output;
 }
 
-async function loadCurrentEstimatedPrices(raceDate: string): Promise<SportingLifeEstimatedPrice[]> {
+async function loadCurrentMarketPrices(raceDate: string): Promise<SportingLifeCurrentPrice[]> {
   const connection = createDbConnection();
   try {
-    return await getSportingLifeEstimatedPricesForDate(connection.db, raceDate);
+    return await getSportingLifeCurrentPricesForDate(connection.db, raceDate);
   } finally {
     await connection.client.end();
   }

@@ -19,8 +19,19 @@ import {
 } from "./forward-value";
 import type { TissueForwardData, TissueForwardRunner } from "./tissue-forward";
 
-export type ForwardValueObservationState = "all" | "settled" | "unsettled" | "excluded";
+export type ForwardValueObservationState = "all" | "settled" | "unsettled" | "excluded" | "superseded";
 export type ForwardValueEdgeFilter = "all" | "positive" | "non_positive";
+export type ForwardValueReportingStatus =
+  | "current"
+  | "superseded_race_version"
+  | "ordinary_historical_observation";
+
+export type ForwardValueReportingScope = {
+  rawRecords: ForwardValueRecord[];
+  analyticalRecords: ForwardValueRecord[];
+  supersededRecords: ForwardValueRecord[];
+  statusByRaceId: ReadonlyMap<string, ForwardValueReportingStatus>;
+};
 
 export type ForwardValueMetrics = {
   observations: number;
@@ -203,10 +214,12 @@ export type ForwardValuePriceDiagnostics = {
 };
 
 export type ForwardValueSummary = {
+  rawObservations: number;
   totalProspectiveObservations: number;
   cleanSettledObservations: number;
   unsettledObservations: number;
   excludedObservations: number;
+  supersededRaceVersions: number;
   earliestObservationDate: string | null;
   latestObservationDate: string | null;
   sparseSampleWarning: boolean;
@@ -221,11 +234,44 @@ export type ForwardValueObservationFilters = {
   edge: ForwardValueEdgeFilter;
 };
 
-export function summarizeForwardValue(data: ForwardValueData): ForwardValueSummary {
-  const prospective = data.races.filter(isProspectiveObservation);
+export function buildForwardValueReportingScope(
+  records: ForwardValueRecord[],
+  reconciliation: {
+    currentReplacementRaceIds: ReadonlySet<string>;
+    supersededRaceIds: ReadonlySet<string>;
+  },
+): ForwardValueReportingScope {
+  const statusByRaceId = new Map<string, ForwardValueReportingStatus>();
+  for (const record of records) {
+    const status = reconciliation.supersededRaceIds.has(record.raceId)
+      ? "superseded_race_version"
+      : reconciliation.currentReplacementRaceIds.has(record.raceId)
+        ? "current"
+        : "ordinary_historical_observation";
+    statusByRaceId.set(record.raceId, status);
+  }
+  const supersededRecords = records.filter((record) =>
+    statusByRaceId.get(record.raceId) === "superseded_race_version"
+  );
+  return {
+    rawRecords: records,
+    analyticalRecords: records.filter((record) =>
+      statusByRaceId.get(record.raceId) !== "superseded_race_version"
+    ),
+    supersededRecords,
+    statusByRaceId,
+  };
+}
+
+export function summarizeForwardValue(
+  data: ForwardValueData,
+  reportingScope?: ForwardValueReportingScope,
+): ForwardValueSummary {
+  const records = reportingScope?.analyticalRecords ?? data.races;
+  const prospective = records.filter(isProspectiveObservation);
   const settled = prospective.filter(isCleanSettledPhase2Observation);
   const unsettled = prospective.filter((race) => isCleanPhase2Observation(race) && race.settledAt === null);
-  const excluded = data.races.filter((race) => valueExclusionReason(race) !== null);
+  const excluded = records.filter((race) => valueExclusionReason(race) !== null);
   const dates = prospective.map((race) => race.raceDate).sort();
   const exclusionCounts: Partial<Record<ValueExclusionReason, number>> = {};
   for (const race of excluded) {
@@ -233,15 +279,17 @@ export function summarizeForwardValue(data: ForwardValueData): ForwardValueSumma
     exclusionCounts[reason] = (exclusionCounts[reason] ?? 0) + 1;
   }
   return {
+    rawObservations: data.races.length,
     totalProspectiveObservations: prospective.length,
     cleanSettledObservations: settled.length,
     unsettledObservations: unsettled.length,
     excludedObservations: excluded.length,
+    supersededRaceVersions: reportingScope?.supersededRecords.length ?? 0,
     earliestObservationDate: dates[0] ?? null,
     latestObservationDate: dates.at(-1) ?? null,
     sparseSampleWarning: settled.length < 25,
     exclusionCounts,
-    turfModelAgreement: summarizeTurfModelAgreement(data.races),
+    turfModelAgreement: summarizeTurfModelAgreement(records),
     families: (["turf", "jump", "aw"] as ValueFamily[]).map((family) => {
       const familyProspective = prospective.filter((race) => race.family === family);
       const cleanSettled = familyProspective.filter(isCleanSettledPhase2Observation);
@@ -500,16 +548,24 @@ export function summarizeForwardValueRecords(records: ForwardValueRecord[]): For
 export function filterForwardValueObservations(
   records: ForwardValueRecord[],
   filters: ForwardValueObservationFilters,
+  reportingScope?: ForwardValueReportingScope,
 ): ForwardValueRecord[] {
-  return records
-    .filter(isProspectiveObservation)
+  const candidates = filters.state === "superseded"
+    ? reportingScope?.supersededRecords ?? []
+    : reportingScope?.analyticalRecords ?? records;
+  return candidates
+    .filter((race) => filters.state === "superseded" || isProspectiveObservation(race))
     .filter((race) => filters.family === "all" || race.family === filters.family)
     .filter((race) => matchesState(race, filters.state))
     .filter((race) => matchesEdge(race, filters.edge))
     .sort((left, right) => right.recordedAt.localeCompare(left.recordedAt) || right.raceDateTime.localeCompare(left.raceDateTime));
 }
 
-export function forwardValueObservationStatus(record: ForwardValueRecord): string {
+export function forwardValueObservationStatus(
+  record: ForwardValueRecord,
+  reportingStatus?: ForwardValueReportingStatus,
+): string {
+  if (reportingStatus === "superseded_race_version") return "Superseded race version";
   const exclusion = valueExclusionReason(record);
   if (exclusion) return `Excluded: ${exclusion}`;
   if (record.settledAt === null) return "Unsettled";
@@ -526,6 +582,7 @@ export function forwardValueFamilyLabel(family: ValueFamily): string {
 }
 
 function matchesState(record: ForwardValueRecord, state: ForwardValueObservationState) {
+  if (state === "superseded") return true;
   if (state === "all") return true;
   if (state === "excluded") return valueExclusionReason(record) !== null;
   if (state === "settled") return isCleanSettledPhase2Observation(record);

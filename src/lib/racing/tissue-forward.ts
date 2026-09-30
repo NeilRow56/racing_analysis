@@ -2,7 +2,7 @@ import { readFile, writeFile, mkdir, rename } from "node:fs/promises";
 import { dirname } from "node:path";
 import type { HistoricalPreRaceFeatureRow } from "./historical-target-metrics";
 import type { TodayRace, TodayRunner } from "./todays-racing";
-import type { SportingLifeEstimatedPrice } from "./todays-racing";
+import type { SportingLifeCurrentPrice } from "./todays-racing";
 import { isOrdinaryFlatTurfRaceForDisplay } from "./todays-racing";
 import type { HistoricalComment, Model } from "../../../scripts/diagnose-independent-tissue-feasibility";
 import { COMMENT_NAMES, commentVector, numericVector, priorCommentsForTarget, raceSoftmax, score } from "../../../scripts/diagnose-independent-tissue-feasibility";
@@ -220,7 +220,8 @@ export function summarizeTissueForward(data: TissueForwardData) {
 
 export function renderTissueTodayReport(
   data: TissueForwardData,
-  estimatedPrices: SportingLifeEstimatedPrice[] = [],
+  currentPrices: SportingLifeCurrentPrice[] = [],
+  options: { currentRaceIds?: ReadonlySet<string> } = {},
 ): string {
   const clean = data.races.filter((race) => race.recordedPreRace === true);
   const latestDate = clean.map((race) => race.raceDate).sort().at(-1);
@@ -229,19 +230,22 @@ export function renderTissueTodayReport(
   }
 
   const races = clean
-    .filter((race) => race.raceDate === latestDate)
+    .filter((race) =>
+      race.raceDate === latestDate &&
+      (options.currentRaceIds === undefined || options.currentRaceIds.has(race.raceId))
+    )
     .sort((left, right) =>
-      tissueTodayDisplayTime(left, estimatedPrices).localeCompare(tissueTodayDisplayTime(right, estimatedPrices)) ||
+      tissueTodayDisplayTime(left, currentPrices).localeCompare(tissueTodayDisplayTime(right, currentPrices)) ||
       left.course.localeCompare(right.course)
     );
-  const priceByRunner = new Map(estimatedPrices.map((price) => [
+  const priceByRunner = new Map(currentPrices.map((price) => [
     `${price.raceId}|${price.runnerId}`,
     price,
   ]));
   const lines = [`Tissue Today - ${latestDate}`, ""];
   const positiveRankOne: string[] = [];
   for (const race of races) {
-    const displayRaceTime = tissueTodayDisplayTime(race, estimatedPrices);
+    const displayRaceTime = tissueTodayDisplayTime(race, currentPrices);
     lines.push(`${displayRaceTime} ${race.course}${race.raceName ? ` - ${race.raceName}` : ""}`);
     const topThree = [...race.runners]
       .sort((left, right) =>
@@ -255,16 +259,20 @@ export function renderTissueTodayReport(
       const currentPrice = race.winners.length === 0
         ? priceByRunner.get(`${race.raceId}|${runner.runnerId}`)
         : undefined;
-      const comparison = tissueEstimatedPriceComparison(
+      const comparison = tissueMarketPriceComparison(
         runner.probability,
-        currentPrice?.estimatedSp ?? null,
-        currentPrice?.estimatedDecimalOdds ?? null,
+        currentPrice?.marketPrice ?? null,
+        currentPrice?.marketDecimalOdds ?? null,
       );
       lines.push(`${runner.tissueRank}. ${runner.horseName}${nonRunner}`);
-      lines.push(`   ${formatTissuePriceComparison(runner.probability, comparison)}`);
+      lines.push(`   ${formatTissuePriceComparison(
+        runner.probability,
+        comparison,
+        currentPrice?.forecastPrice ?? null,
+      )}`);
       if (runner.tissueRank === 1 && comparison?.isValue) {
         positiveRankOne.push(
-          `${displayRaceTime} ${race.course} - ${runner.horseName} | Tissue ${pct1(runner.probability)} | Est SP ${comparison.estimatedSp} | Edge ${signedPp(comparison.edge)}`,
+          `${displayRaceTime} ${race.course} - ${runner.horseName} | Tissue ${pct1(runner.probability)} | Market ${comparison.marketPrice} | Edge ${signedPp(comparison.edge)}`,
         );
       }
     }
@@ -272,37 +280,38 @@ export function renderTissueTodayReport(
   }
   lines.push("Current positive-edge Tissue rank-1 horses");
   lines.push(...(positiveRankOne.length > 0 ? positiveRankOne : ["None"]), "");
-  lines.push("Value comparison uses the current Sporting Life estimated SP and may change before the race.");
+  lines.push("Value comparison uses the current median Sporting Life bookmaker price and may change before the race.");
+  lines.push("Sporting Life forecast prices are shown separately and never drive market edge.");
   lines.push("Monitoring only; not a betting recommendation.");
   return lines.join("\n").trimEnd();
 }
 
 function tissueTodayDisplayTime(
   race: TissueForwardRace,
-  racecardContext: SportingLifeEstimatedPrice[],
+  racecardContext: SportingLifeCurrentPrice[],
 ): string {
   return racecardContext.find((entry) => entry.raceId === race.raceId)?.displayRaceTime ?? race.raceTime;
 }
 
-export type TissueEstimatedPriceComparison = {
-  estimatedSp: string;
+export type TissueMarketPriceComparison = {
+  marketPrice: string;
   decimalOdds: number;
   marketProbability: number;
   edge: number;
   isValue: boolean;
 };
 
-export function tissueEstimatedPriceComparison(
+export function tissueMarketPriceComparison(
   tissueProbability: number,
-  estimatedSp: string | null,
-  estimatedDecimalOdds: string | null = null,
-): TissueEstimatedPriceComparison | null {
-  const decimalOdds = parseDecimalEstimatedPrice(estimatedDecimalOdds) ?? parseSportingLifeEstimatedPrice(estimatedSp);
-  if (decimalOdds === null || estimatedSp === null || estimatedSp.trim() === "") return null;
+  marketPrice: string | null,
+  marketDecimalOdds: number | null,
+): TissueMarketPriceComparison | null {
+  const decimalOdds = marketDecimalOdds ?? parseSportingLifeEstimatedPrice(marketPrice);
+  if (decimalOdds === null || marketPrice === null || marketPrice.trim() === "") return null;
   const marketProbability = 1 / decimalOdds;
   const edge = tissueProbability - marketProbability;
   return {
-    estimatedSp: estimatedSp.trim(),
+    marketPrice: marketPrice.trim(),
     decimalOdds,
     marketProbability,
     edge,
@@ -322,21 +331,22 @@ export function parseSportingLifeEstimatedPrice(value: string | null): number | 
   return numerator / denominator + 1;
 }
 
-function parseDecimalEstimatedPrice(value: string | null): number | null {
-  if (!value) return null;
-  const parsed = Number(value);
-  return Number.isFinite(parsed) && parsed > 1 ? parsed : null;
-}
-
 function formatTissuePriceComparison(
   tissueProbability: number,
-  comparison: TissueEstimatedPriceComparison | null,
+  comparison: TissueMarketPriceComparison | null,
+  forecastPrice: string | null,
 ): string {
-  if (!comparison) return `Tissue ${pct1(tissueProbability)} | Est SP: —`;
+  if (!comparison) {
+    return [
+      `Tissue ${pct1(tissueProbability)}`,
+      "Market -",
+      "Edge -",
+      ...(forecastPrice ? [`Forecast ${forecastPrice}`] : []),
+    ].join(" | ");
+  }
   return [
     `Tissue ${pct1(tissueProbability)}`,
-    `Est SP ${comparison.estimatedSp}`,
-    `Market ${pct1(comparison.marketProbability)}`,
+    `Market ${comparison.marketPrice}`,
     `Edge ${signedPp(comparison.edge)}`,
     ...(comparison.isValue ? ["VALUE"] : []),
   ].join(" | ");

@@ -19,8 +19,11 @@ test("today command reads the v2 tracker without changing a byte", async () => {
       return [{
         raceId: "race-1",
         runnerId: "runner-1",
-        estimatedSp: "5/1",
-        estimatedDecimalOdds: "6.000",
+        marketPrice: "5/1",
+        marketDecimalOdds: 6,
+        bookmakerQuoteCount: 3,
+        forecastPrice: "20/1",
+        forecastDecimalOdds: 21,
         displayRaceTime: "15:10",
       }];
     });
@@ -28,7 +31,7 @@ test("today command reads the v2 tracker without changing a byte", async () => {
     assert.equal(written, output);
     assert.match(output, /Tissue Today - 2026-09-25/);
     assert.match(output, /15:10 Newmarket/);
-    assert.match(output, /Tissue 40\.0% \| Est SP 5\/1 \| Market 16\.7% \| Edge \+23\.3pp \| VALUE/);
+    assert.match(output, /Tissue 40\.0% \| Market 5\/1 \| Edge \+23\.3pp \| VALUE/);
     assert.equal(await readFile(path, "utf8"), bytes);
   } finally {
     await rm(directory, { recursive: true, force: true });

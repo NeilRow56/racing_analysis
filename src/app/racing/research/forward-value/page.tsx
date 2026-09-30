@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { createDbConnection } from "@/db";
 import {
   capturedPriceProfitLoss,
   FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION,
@@ -10,6 +11,7 @@ import {
 } from "@/lib/racing/forward-value";
 import {
   buildTurfModelDisagreementDiagnostics,
+  buildForwardValueReportingScope,
   filterForwardValueObservations,
   forwardValueFamilyLabel,
   forwardValueObservationStatus,
@@ -19,8 +21,10 @@ import {
   type ForwardValueObservationFilters,
   type ForwardValueObservationState,
   type ForwardValueSummary,
+  type ForwardValueReportingStatus,
   type TurfModelAgreementSummary,
 } from "@/lib/racing/forward-value-summary";
+import { getSportingLifeCurrentCardRaceStatuses } from "@/lib/racing/todays-racing";
 import { loadTissueForward, TISSUE_V2_CONFIG } from "@/lib/racing/tissue-forward";
 import { RecentObservationsScroll } from "./recent-observations-scroll";
 
@@ -31,13 +35,26 @@ type PageProps = {
 };
 
 export default async function ForwardValuePage({ searchParams }: PageProps) {
-  const data = await loadForwardValueData();
-  const tissueData = await loadTissueForward(TISSUE_V2_CONFIG.forwardPath, TISSUE_V2_CONFIG);
-  const params = await searchParams;
+  const [data, tissueData, params] = await Promise.all([
+    loadForwardValueData(),
+    loadTissueForward(TISSUE_V2_CONFIG.forwardPath, TISSUE_V2_CONFIG),
+    searchParams,
+  ]);
+  const connection = createDbConnection();
+  let currentCardStatuses;
+  try {
+    currentCardStatuses = await getSportingLifeCurrentCardRaceStatuses(
+      connection.db,
+      data.races.map((race) => race.raceId),
+    );
+  } finally {
+    await connection.client.end();
+  }
+  const reportingScope = buildForwardValueReportingScope(data.races, currentCardStatuses);
   const filters = parseFilters(params);
-  const summary = summarizeForwardValue(data);
-  const disagreementDiagnostics = buildTurfModelDisagreementDiagnostics(data.races, tissueData).slice(0, 25);
-  const observations = filterForwardValueObservations(data.races, filters).slice(0, 100);
+  const summary = summarizeForwardValue(data, reportingScope);
+  const disagreementDiagnostics = buildTurfModelDisagreementDiagnostics(reportingScope.analyticalRecords, tissueData).slice(0, 25);
+  const observations = filterForwardValueObservations(data.races, filters, reportingScope).slice(0, 100);
 
   return (
     <main className="min-h-screen bg-stone-50 px-4 py-6 text-slate-950 sm:px-6 lg:px-8">
@@ -67,10 +84,10 @@ export default async function ForwardValuePage({ searchParams }: PageProps) {
         <TopLevelCounts summary={summary} />
         <FamilySummaryTable summary={summary} />
         <EdgeBucketTables summary={summary} />
-        <PriceSnapshotDiagnostics observations={data.races} summary={summary} />
+        <PriceSnapshotDiagnostics observations={reportingScope.analyticalRecords} summary={summary} />
         <TurfModelAgreementCounts summary={summary.turfModelAgreement} />
         <TurfModelDisagreementExplainer diagnostics={disagreementDiagnostics} />
-        <RecentObservations filters={filters} observations={observations} />
+        <RecentObservations filters={filters} observations={observations} reportingStatuses={reportingScope.statusByRaceId} />
       </div>
     </main>
   );
@@ -90,13 +107,14 @@ export function TopLevelCounts({ summary }: { summary: ForwardValueSummary }) {
     ["Clean settled", summary.cleanSettledObservations],
     ["Unsettled", summary.unsettledObservations],
     ["Excluded", summary.excludedObservations],
+    ["Superseded", summary.supersededRaceVersions],
     ["Earliest", summary.earliestObservationDate ?? "-"],
     ["Latest", summary.latestObservationDate ?? "-"],
   ];
   return (
     <section aria-labelledby="coverage-heading" className="mt-6">
       <h2 className="text-lg font-semibold" id="coverage-heading">Coverage</h2>
-      <dl className="mt-3 grid border border-slate-200 bg-white sm:grid-cols-2 lg:grid-cols-6">
+      <dl className="mt-3 grid border border-slate-200 bg-white sm:grid-cols-2 lg:grid-cols-7">
         {values.map(([label, value]) => (
           <div className="border-b border-slate-200 px-4 py-3 last:border-b-0 sm:border-r lg:border-b-0" key={label}>
             <dt className="text-xs font-semibold uppercase tracking-normal text-slate-500">{label}</dt>
@@ -294,7 +312,7 @@ function ModelAssessment({ horse, model }: {
     ["Edge", pp(horse.edgePercentagePoints)],
     ["TPR rank", nullable(horse.tprRank)],
     ["TPR score", decimal(horse.tprScore)],
-    ["TPR gap", decimal(horse.tprGap)],
+    ["TPR rating gap", decimal(horse.tprGap)],
   ] : [
     ["Probability", pct(horse.tissueProbability)],
     ["Edge", pp(horse.edgePercentagePoints)],
@@ -324,7 +342,7 @@ function DiagnosticHorsePanel({ horse, label, model, priceMovement }: {
     ["TPR probability", pct(horse.tprProbability)],
     ["TPR rank", nullable(horse.tprRank)],
     ["TPR score", decimal(horse.tprScore)],
-    ["TPR gap", decimal(horse.tprGap)],
+    ["TPR rating gap", decimal(horse.tprGap)],
   ] : [
     ["Tissue probability", pct(horse.tissueProbability)],
     ["Tissue rank", nullable(horse.tissueRank)],
@@ -552,6 +570,7 @@ function outcomeSummary(value: { observations: number; settledObservations: numb
 type RecentProps = {
   filters: ForwardValueObservationFilters;
   observations: Awaited<ReturnType<typeof loadForwardValueData>>["races"];
+  reportingStatuses?: ReadonlyMap<string, ForwardValueReportingStatus>;
 };
 
 const recentObservationColumnWidths = [84, 46, 170, 52, 96, 64, 78, 66, 52, 96, 64, 78, 66, 52, 58, 56, 54, 48, 92];
@@ -562,7 +581,7 @@ const recentObservationHeadings = [
 ];
 const recentObservationTableMinWidth = 1446;
 
-export function RecentObservations({ filters, observations }: RecentProps) {
+export function RecentObservations({ filters, observations, reportingStatuses }: RecentProps) {
   return (
     <section aria-labelledby="recent-heading" className="mt-8 pb-10">
       <div className="border-b border-slate-300 pb-3">
@@ -573,7 +592,7 @@ export function RecentObservations({ filters, observations }: RecentProps) {
         controls={(
         <form className="flex flex-wrap items-end justify-end gap-2" method="get">
           <FilterSelect label="Family" name="family" value={filters.family} options={[["all", "All families"], ["turf", "TPR"], ["jump", "JPR-A"], ["aw", "AW-D"]]} />
-          <FilterSelect label="Status" name="state" value={filters.state} options={[["all", "All statuses"], ["settled", "Settled"], ["unsettled", "Unsettled"], ["excluded", "Excluded"]]} />
+          <FilterSelect label="Status" name="state" value={filters.state} options={[["all", "All statuses"], ["settled", "Settled"], ["unsettled", "Unsettled"], ["excluded", "Excluded"], ["superseded", "Superseded"]]} />
           <FilterSelect label="Edge" name="edge" value={filters.edge} options={[["all", "All edges"], ["positive", "Positive"], ["non_positive", "Negative / zero"]]} />
           <button className="border border-emerald-700 bg-emerald-700 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700" type="submit">
             Apply
@@ -620,8 +639,8 @@ export function RecentObservations({ filters, observations }: RecentProps) {
                   <CompactCell value={yesNo(race.leaderIsMarketFavourite ?? race.agreesWithMarketFavourite)} />
                   <CompactCell value={resultLabel(race)} />
                   <CompactCell value={`${race.marketPriceBasisVersion === FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION ? "Median " : "Legacy "}${money(profitLoss)}`} />
-                  <td className="px-2 py-2 font-medium leading-4" title={forwardValueObservationStatus(race)}>
-                    <span className="line-clamp-2 break-words">{forwardValueObservationStatus(race)}</span>
+                  <td className="px-2 py-2 font-medium leading-4" title={forwardValueObservationStatus(race, reportingStatuses?.get(race.raceId))}>
+                    <span className="line-clamp-2 break-words">{forwardValueObservationStatus(race, reportingStatuses?.get(race.raceId))}</span>
                   </td>
                 </tr>
               );
@@ -721,7 +740,7 @@ function parseFilters(params: Awaited<PageProps["searchParams"]>): ForwardValueO
   const edge = scalar(params?.edge);
   return {
     family: family === "turf" || family === "jump" || family === "aw" ? family : "all",
-    state: state === "settled" || state === "unsettled" || state === "excluded" ? state as ForwardValueObservationState : "all",
+    state: state === "settled" || state === "unsettled" || state === "excluded" || state === "superseded" ? state as ForwardValueObservationState : "all",
     edge: edge === "positive" || edge === "non_positive" ? edge as ForwardValueEdgeFilter : "all",
   };
 }

@@ -3,6 +3,7 @@ import { describe, test } from "node:test";
 import { renderToStaticMarkup } from "react-dom/server";
 import { FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION, FORWARD_VALUE_PRICE_SNAPSHOT_SCHEDULE_VERSION, type ForwardValueData, type ForwardValueRecord } from "@/lib/racing/forward-value";
 import {
+  buildForwardValueReportingScope,
   buildTurfModelDisagreementDiagnostics,
   filterForwardValueObservations,
   summarizeForwardValue,
@@ -17,6 +18,7 @@ import {
   PriceSnapshotDiagnostics,
   RecentObservations,
   SparseSampleWarning,
+  TopLevelCounts,
   TurfModelDisagreementExplainer,
   TurfModelAgreementCounts,
 } from "./page";
@@ -37,6 +39,98 @@ describe("Forward Value dashboard", () => {
     assert.equal(summary.excludedObservations, 1);
     assert.equal(summary.earliestObservationDate, "2026-09-25");
     assert.equal(summary.latestObservationDate, "2026-09-27");
+  });
+
+  test("reconciles replacement race versions in reporting without mutating tracker records", () => {
+    const pairs = [
+      ["17:35", "17:39", "SIS Maiden"],
+      ["17:00", "17:04", "Paddy Woods Memorial"],
+      ["16:25", "16:29", "Gannon City Handicap"],
+    ] as const;
+    const races = pairs.flatMap(([currentTime, staleTime, raceName], index) => [
+      record({
+        raceId: `stale-${index}`,
+        raceDate: "2026-09-30",
+        raceDateTime: `2026-09-30T${String(Number(staleTime.slice(0, 2)) - 1).padStart(2, "0")}:${staleTime.slice(3)}:00Z`,
+        raceTime: staleTime,
+        course: "Bellewstown",
+        raceName,
+        leaderWon: false,
+        capturedPriceProfitLoss: -1,
+        ...(index === 0 ? {
+          phase2ExclusionReason: "missing_price" as const,
+          capturedPrice: null,
+          capturedDecimalOdds: null,
+          capturedMarketProbability: null,
+          edgePercentagePoints: null,
+        } : {}),
+      }),
+      record({
+        raceId: `current-${index}`,
+        raceDate: "2026-09-30",
+        raceDateTime: `2026-09-30T${String(Number(currentTime.slice(0, 2)) - 1).padStart(2, "0")}:${currentTime.slice(3)}:00Z`,
+        raceTime: currentTime,
+        course: "Bellewstown",
+        raceName,
+      }),
+    ]);
+    const before = JSON.stringify(races);
+    const scope = buildForwardValueReportingScope(races, {
+      currentReplacementRaceIds: new Set(["current-0", "current-1", "current-2"]),
+      supersededRaceIds: new Set(["stale-0", "stale-1", "stale-2"]),
+    });
+    const value = { ...data, races };
+    const summary = summarizeForwardValue(value, scope);
+
+    assert.equal(summary.rawObservations, 6);
+    assert.equal(summary.totalProspectiveObservations, 3);
+    assert.equal(summary.supersededRaceVersions, 3);
+    assert.equal(summary.excludedObservations, 0);
+    assert.equal(summary.families.find((family) => family.family === "turf")!.metrics.profitLoss, 12);
+    assert.deepEqual(
+      filterForwardValueObservations(races, { family: "all", state: "all", edge: "all" }, scope)
+        .map((race) => race.raceId).sort(),
+      ["current-0", "current-1", "current-2"],
+    );
+    const superseded = filterForwardValueObservations(
+      races,
+      { family: "all", state: "superseded", edge: "all" },
+      scope,
+    );
+    assert.deepEqual(superseded.map((race) => race.raceId).sort(), ["stale-0", "stale-1", "stale-2"]);
+    assert.equal(JSON.stringify(races), before);
+    const analytical = filterForwardValueObservations(
+      races,
+      { family: "all", state: "all", edge: "all" },
+      scope,
+    );
+
+    const coverage = renderToStaticMarkup(<TopLevelCounts summary={summary} />);
+    assert.match(coverage, /Superseded/);
+    assert.match(coverage, />3</);
+    const audit = renderToStaticMarkup(
+      <RecentObservations
+        filters={{ family: "all", state: "superseded", edge: "all" }}
+        observations={superseded}
+        reportingStatuses={scope.statusByRaceId}
+      />,
+    );
+    assert.match(audit, /Superseded race version/);
+    assert.match(audit, /17:39/);
+    assert.match(audit, /17:04/);
+    assert.match(audit, /16:29/);
+    assert.doesNotMatch(audit, /17:35/);
+    const normal = renderToStaticMarkup(
+      <RecentObservations
+        filters={{ family: "all", state: "all", edge: "all" }}
+        observations={analytical}
+        reportingStatuses={scope.statusByRaceId}
+      />,
+    );
+    assert.match(normal, /17:35/);
+    assert.match(normal, /17:00/);
+    assert.match(normal, /16:25/);
+    assert.doesNotMatch(normal, /17:39/);
   });
 
   test("family filter returns only the requested rating family", () => {
@@ -390,6 +484,9 @@ describe("Forward Value dashboard", () => {
     assert.match(html, /Large disagreement/);
     assert.match(html, /TPR Pick/);
     assert.match(html, /Tissue Pick/);
+    assert.match(html, /TPR rating gap/);
+    assert.match(html, /Edge<\/dt><dd[^>]*>\+12\.0pp/);
+    assert.doesNotMatch(html, /TPR rating gap<\/dt><dd[^>]*>[^<]*pp/);
     assert.match(html, /Comment signals/);
     assert.match(html, /individual numeric inputs and fitted feature contributions are not persisted/);
   });

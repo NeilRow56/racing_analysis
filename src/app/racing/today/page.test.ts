@@ -168,6 +168,7 @@ describe("Today request orchestration", () => {
       assert.match(source, new RegExp(heading));
     }
     assert.match(source, /px-1\.5 py-2/);
+    assert.match(source, /formatTodayTprRankGap\(rating\.rank, rating\.gap\)/);
   });
 
   test("labels bookmaker median, best price, and forecast provenance", () => {

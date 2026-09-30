@@ -12,11 +12,14 @@ import {
   valueExclusionReason,
   valueSampleStatus,
   type FamilyCalibration,
+  type ForwardValueData,
   type ForwardValueRecord,
   type ValueFamily,
 } from "@/lib/racing/forward-value";
-import { getLocalRacingDate } from "@/lib/racing/todays-racing";
+import { createDbConnection } from "@/db";
+import { getLocalRacingDate, getSportingLifeCurrentCardRaceStatuses } from "@/lib/racing/todays-racing";
 import {
+  buildForwardValueReportingScope,
   summarizeForwardValue,
   summarizeForwardValueRecords,
   type ForwardValueMovementMetrics,
@@ -31,8 +34,10 @@ else throw new Error("Usage: report-forward-value.ts <summary|today> [YYYY-MM-DD
 
 async function summary() {
   const [data, calibration] = await Promise.all([loadForwardValueData(), loadForwardValueCalibration()]);
-  const sharedSummary = summarizeForwardValue(data);
-  const excluded = data.races.filter((race) => valueExclusionReason(race) !== null);
+  const reportingScope = await loadReportingScope(data);
+  const analyticalRecords = reportingScope.analyticalRecords;
+  const sharedSummary = summarizeForwardValue(data, reportingScope);
+  const excluded = analyticalRecords.filter((race) => valueExclusionReason(race) !== null);
 
   console.log("# Forward Value Framework - Phase 2");
   console.log("Prospective market validation only\n");
@@ -43,15 +48,16 @@ async function summary() {
   console.log(`Clean settled observations: ${sharedSummary.cleanSettledObservations}`);
   console.log(`Unsettled observations: ${sharedSummary.unsettledObservations}`);
   console.log(`Excluded observations: ${sharedSummary.excludedObservations}`);
+  console.log(`Superseded race versions (audit only): ${sharedSummary.supersededRaceVersions}`);
   console.log(`Date range: ${sharedSummary.earliestObservationDate ? `${sharedSummary.earliestObservationDate} to ${sharedSummary.latestObservationDate}` : "-"}`);
   printExclusions(excluded);
-  printFamilyCounts(data.races);
+  printFamilyCounts(analyticalRecords);
   if (sharedSummary.sparseSampleWarning) {
     console.log("\nSample warning: fewer than 25 clean settled observations overall. Results are VERY EARLY and no profitability conclusion is supported.");
   }
 
   for (const family of ["turf", "jump", "aw"] as ValueFamily[]) {
-    const records = data.races.filter((race) => race.family === family);
+    const records = analyticalRecords.filter((race) => race.family === family);
     const cleanSettled = records.filter(isCleanSettledPhase2Observation);
     const familyCalibration = calibration.families[family];
     console.log(`\n## ${familyName(family)}`);
@@ -125,7 +131,23 @@ function printPersistence(label: string, value: ForwardValuePersistenceMetrics) 
 }
 
 async function today(date: string) {
-  console.log(renderForwardValueToday(await loadForwardValueData(), date));
+  const data = await loadForwardValueData();
+  const reportingScope = await loadReportingScope(data);
+  console.log(renderForwardValueToday({ ...data, races: reportingScope.analyticalRecords }, date));
+  console.log(`\nSuperseded race versions retained for audit: ${reportingScope.supersededRecords.length}`);
+}
+
+async function loadReportingScope(data: ForwardValueData) {
+  const connection = createDbConnection();
+  try {
+    const statuses = await getSportingLifeCurrentCardRaceStatuses(
+      connection.db,
+      data.races.map((race) => race.raceId),
+    );
+    return buildForwardValueReportingScope(data.races, statuses);
+  } finally {
+    await connection.client.end();
+  }
 }
 
 function printExclusions(records: ForwardValueRecord[]) {

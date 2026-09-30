@@ -56,6 +56,7 @@ export const TODAY_RACE_SOURCE_TYPES = [
   FULL_RESULT_SOURCE_TYPE,
 ] as const;
 const DEFAULT_RACING_DISPLAY_TIME_ZONE = "Europe/London";
+export const SPORTING_LIFE_CURRENT_CARD_VERSION = "reconciled_v1" as const;
 
 export type TodayRunner = {
   runnerId: string;
@@ -169,6 +170,7 @@ export type TodaysRacingData =
       raceDate: string;
       displayDate: string;
       refreshedAt: Date | null;
+      sportingLifeCurrentCardVersion: typeof SPORTING_LIFE_CURRENT_CARD_VERSION;
       meetings: TodayMeeting[];
     }
   | {
@@ -176,6 +178,7 @@ export type TodaysRacingData =
       raceDate: string;
       displayDate: string;
       refreshedAt: Date | null;
+      sportingLifeCurrentCardVersion: typeof SPORTING_LIFE_CURRENT_CARD_VERSION;
       message: string;
     };
 
@@ -231,12 +234,27 @@ export type TodayRacecardRow = {
   finishingPosition: number | null;
 };
 
-export type SportingLifeEstimatedPrice = {
+export type SportingLifeCurrentPrice = {
   raceId: string;
   runnerId: string;
-  estimatedSp: string | null;
-  estimatedDecimalOdds: string | null;
+  marketPrice: string | null;
+  marketDecimalOdds: number | null;
+  bookmakerQuoteCount: number;
+  forecastPrice: string | null;
+  forecastDecimalOdds: number | null;
   displayRaceTime: string;
+};
+
+export type SportingLifeCurrentCardDiagnostic = {
+  version: typeof SPORTING_LIFE_CURRENT_CARD_VERSION;
+  status: "replacement" | "ambiguous";
+  meetingId: string;
+  course: string;
+  currentSourceRaceId: string | null;
+  staleSourceRaceId: string | null;
+  currentTime: string | null;
+  staleTime: string | null;
+  evidence: string[];
 };
 
 export function getLocalRacingDate(now = new Date()): string {
@@ -316,6 +334,13 @@ export function formatRaceTimeForDisplay(input: {
   }).format(input.raceDateTime);
 }
 
+export function formatTodayTprRankGap(rank: number, gap: number | null): string {
+  if (gap === null) return `Rank ${rank}`;
+  const absolute = Math.abs(gap).toFixed(1);
+  const signed = Math.abs(gap) < 0.05 ? "0.0" : gap > 0 ? `+${absolute}` : `-${absolute}`;
+  return `Rank ${rank} · ${rank === 1 ? "TPR lead" : "TPR deficit"} ${signed}`;
+}
+
 function raceDisplayTimeZone(country: string | null | undefined): string {
   const normalized = country?.trim().toLowerCase();
   if (
@@ -334,6 +359,7 @@ export async function getTodaysRacingData(
   options: {
     raceFilter?: (race: TodayRace) => boolean;
     onTiming?: (name: string, elapsedMs: number) => void;
+    onCurrentCardDiagnostic?: (diagnostic: SportingLifeCurrentCardDiagnostic) => void;
   } = {},
 ): Promise<TodaysRacingData> {
   const measure = <T>(name: string, operation: () => Promise<T>) =>
@@ -352,22 +378,32 @@ export async function getTodaysRacingData(
       raceDate,
       displayDate,
       refreshedAt,
+      sportingLifeCurrentCardVersion: SPORTING_LIFE_CURRENT_CARD_VERSION,
       message: "No racecard data has been imported for today.",
     };
   }
 
   const meetingOrder = meetingOrderFromIndexPayload(indexImport?.payload);
+  const currentRows = measureSync(
+    "today_current_card_reconciliation",
+    () => reconcileSportingLifeCurrentCardRows(
+      rows,
+      indexImport?.payload,
+      options.onCurrentCardDiagnostic ?? logCurrentCardDiagnostic,
+    ),
+    options.onTiming,
+  );
   const targetRows = measureSync(
     "today_race_filter",
     () => options.raceFilter
-      ? filterRacecardRows(rows, meetingOrder, options.raceFilter)
-      : rows,
+      ? filterRacecardRows(currentRows, meetingOrder, options.raceFilter)
+      : currentRows,
     options.onTiming,
   );
   const metricRows = await measure("today_target_metrics_load", () => getTargetRunnerMetricsForDate(db, raceDate, SPORTING_LIFE_SOURCE, {
     includeNonRunnerTargets: true,
     completedPriorRunsOnly: true,
-    targetRunnerIds: options.raceFilter ? targetRows.map((row) => row.runnerId) : undefined,
+    targetRunnerIds: targetRows.map((row) => row.runnerId),
   }));
   const metricsByRunnerId = new Map(
     metricRows.map((row) => [row.target.runnerId, row.metrics]),
@@ -420,6 +456,7 @@ export async function getTodaysRacingData(
     raceDate,
     displayDate,
     refreshedAt,
+    sportingLifeCurrentCardVersion: SPORTING_LIFE_CURRENT_CARD_VERSION,
     meetings: groupTodaysRacingRows(
       targetRows,
       meetingOrder,
@@ -431,36 +468,54 @@ export async function getTodaysRacingData(
   };
 }
 
-export async function getSportingLifeEstimatedPricesForDate(
+export async function getSportingLifeCurrentPricesForDate(
   db: Db,
   raceDate: string,
-): Promise<SportingLifeEstimatedPrice[]> {
-  const rows = await getRacecardRows(db, raceDate);
-  return rows.map((row) => sportingLifeEstimatedPriceFromRacecard({
+): Promise<SportingLifeCurrentPrice[]> {
+  const [indexImport, rows] = await Promise.all([
+    getLatestRacecardIndexImport(db, raceDate),
+    getRacecardRows(db, raceDate),
+  ]);
+  const currentRows = reconcileSportingLifeCurrentCardRows(
+    rows,
+    indexImport?.payload,
+    logCurrentCardDiagnostic,
+  );
+  return currentRows.map((row) => sportingLifeCurrentPriceFromRacecard({
     raceId: row.raceId,
     runnerId: row.runnerId,
-    estimatedSp: row.odds,
-    estimatedDecimalOdds: row.oddsDecimal,
+    forecastPrice: row.forecastOdds ?? row.odds,
+    forecastDecimalOdds: decimalPrice(row.oddsDecimal),
+    bookmakerQuotes: parseSportingLifeBookmakerQuotes(row.bookmakerQuotes),
     scheduledTime: row.scheduledTime,
     raceDateTime: row.raceDateTime,
     courseCountry: row.country,
   }));
 }
 
-export function sportingLifeEstimatedPriceFromRacecard(input: {
+export function sportingLifeCurrentPriceFromRacecard(input: {
   raceId: string;
   runnerId: string;
-  estimatedSp: string | null;
-  estimatedDecimalOdds: string | null;
+  forecastPrice: string | null;
+  forecastDecimalOdds: number | null;
+  bookmakerQuotes: SportingLifeBookmakerQuote[];
   scheduledTime: string | null;
   raceDateTime: Date | null;
   courseCountry: string | null;
-}): SportingLifeEstimatedPrice {
+}): SportingLifeCurrentPrice {
+  const market = summarizeTodayMarketPrice({
+    bookmakerQuotes: input.bookmakerQuotes,
+    forecastOdds: input.forecastPrice,
+    forecastDecimalOdds: input.forecastDecimalOdds,
+  });
   return {
     raceId: input.raceId,
     runnerId: input.runnerId,
-    estimatedSp: input.estimatedSp,
-    estimatedDecimalOdds: input.estimatedDecimalOdds,
+    marketPrice: market.medianFractionalOdds ?? market.medianDecimalOdds?.toFixed(2) ?? null,
+    marketDecimalOdds: market.medianDecimalOdds,
+    bookmakerQuoteCount: market.quoteCount,
+    forecastPrice: market.forecastOdds,
+    forecastDecimalOdds: market.forecastDecimalOdds,
     displayRaceTime: formatRaceTimeForDisplay(input),
   };
 }
@@ -472,6 +527,54 @@ export async function getRacecardRowsForRaceIds(
   const uniqueRaceIds = [...new Set(raceIds)];
   if (uniqueRaceIds.length === 0) return [];
   return getRacecardRowsWhere(db, inArray(races.id, uniqueRaceIds));
+}
+
+export type SportingLifeCurrentCardRaceStatuses = Omit<
+  SportingLifeCurrentCardReconciliation<SportingLifeCurrentCardRaceRow>,
+  "rows"
+> & {
+  version: typeof SPORTING_LIFE_CURRENT_CARD_VERSION;
+};
+
+export async function getSportingLifeCurrentCardRaceStatuses(
+  db: Db,
+  raceIds: string[],
+): Promise<SportingLifeCurrentCardRaceStatuses> {
+  const uniqueRaceIds = [...new Set(raceIds)];
+  if (uniqueRaceIds.length === 0) {
+    return emptyCurrentCardRaceStatuses();
+  }
+  const dateRows = await db
+    .selectDistinct({ raceDate: races.raceDate })
+    .from(races)
+    .where(and(eq(races.source, SPORTING_LIFE_SOURCE), inArray(races.id, uniqueRaceIds)));
+  const dates = dateRows.map((row) => row.raceDate);
+  const reconciliations = await Promise.all(dates.map(async (raceDate) => {
+    const [indexImport, rows] = await Promise.all([
+      getLatestRacecardIndexImport(db, raceDate),
+      getRacecardRows(db, raceDate),
+    ]);
+    return sportingLifeCurrentCardReconciliation(rows, indexImport?.payload);
+  }));
+  return {
+    version: SPORTING_LIFE_CURRENT_CARD_VERSION,
+    currentReplacementRaceIds: new Set(
+      reconciliations.flatMap((result) => [...result.currentReplacementRaceIds]),
+    ),
+    supersededRaceIds: new Set(
+      reconciliations.flatMap((result) => [...result.supersededRaceIds]),
+    ),
+    diagnostics: reconciliations.flatMap((result) => result.diagnostics),
+  };
+}
+
+function emptyCurrentCardRaceStatuses(): SportingLifeCurrentCardRaceStatuses {
+  return {
+    version: SPORTING_LIFE_CURRENT_CARD_VERSION,
+    currentReplacementRaceIds: new Set(),
+    supersededRaceIds: new Set(),
+    diagnostics: [],
+  };
 }
 
 function filterRacecardRows(
@@ -754,6 +857,273 @@ export function meetingOrderFromIndexPayload(
   });
 
   return order;
+}
+
+type SportingLifeIndexRace = {
+  sourceId: string;
+  meetingId: string;
+  course: string;
+  meetingIndex: number;
+  raceIndex: number;
+};
+
+type CurrentCardRace = {
+  sourceId: string;
+  raceId: string;
+  raceDate: string;
+  course: string;
+  raceName: string | null;
+  scheduledTime: string | null;
+  distanceYards: number | null;
+  horseIds: Set<string>;
+  horseNames: Set<string>;
+  index: SportingLifeIndexRace;
+};
+
+export type SportingLifeCurrentCardRaceRow = Pick<
+  TodayRacecardRow,
+  | "raceId"
+  | "raceSourceId"
+  | "raceDate"
+  | "scheduledTime"
+  | "raceName"
+  | "distanceYards"
+  | "courseName"
+  | "horseId"
+  | "horseName"
+>;
+
+export type SportingLifeCurrentCardReconciliation<T> = {
+  rows: T[];
+  currentReplacementRaceIds: Set<string>;
+  supersededRaceIds: Set<string>;
+  diagnostics: SportingLifeCurrentCardDiagnostic[];
+};
+
+export function sportingLifeCurrentCardReconciliation<
+  T extends SportingLifeCurrentCardRaceRow,
+>(
+  rows: T[],
+  indexPayload: unknown,
+  onDiagnostic?: (diagnostic: SportingLifeCurrentCardDiagnostic) => void,
+): SportingLifeCurrentCardReconciliation<T> {
+  const indexRaces = sportingLifeIndexRaces(indexPayload);
+  if (indexRaces.size === 0 || rows.length === 0) {
+    return {
+      rows,
+      currentReplacementRaceIds: new Set(),
+      supersededRaceIds: new Set(),
+      diagnostics: [],
+    };
+  }
+
+  const grouped = new Map<string, T[]>();
+  for (const row of rows) {
+    if (!row.raceSourceId || !indexRaces.has(row.raceSourceId)) continue;
+    const group = grouped.get(row.raceSourceId) ?? [];
+    group.push(row);
+    grouped.set(row.raceSourceId, group);
+  }
+  const candidates = [...grouped.entries()].flatMap(([sourceId, raceRows]) => {
+    const first = raceRows[0];
+    const index = indexRaces.get(sourceId);
+    if (!first || !index) return [];
+    return [{
+      sourceId,
+      raceId: first.raceId,
+      raceDate: first.raceDate,
+      course: first.courseName,
+      raceName: first.raceName,
+      scheduledTime: first.scheduledTime,
+      distanceYards: first.distanceYards,
+      horseIds: new Set(raceRows.map((row) => row.horseId)),
+      horseNames: new Set(raceRows.map((row) => normalizeRaceIdentityText(row.horseName))),
+      index,
+    } satisfies CurrentCardRace];
+  }).sort((left, right) =>
+    left.index.meetingIndex - right.index.meetingIndex ||
+    left.index.raceIndex - right.index.raceIndex
+  );
+
+  const staleSourceIds = new Set<string>();
+  const currentReplacementRaceIds = new Set<string>();
+  const supersededRaceIds = new Set<string>();
+  const diagnostics: SportingLifeCurrentCardDiagnostic[] = [];
+  const processedSourceIds = new Set<string>();
+  for (let index = 0; index < candidates.length; index += 1) {
+    const current = candidates[index]!;
+    if (processedSourceIds.has(current.sourceId)) continue;
+    const matches = candidates.filter((candidate) =>
+      candidate.sourceId !== current.sourceId &&
+      !processedSourceIds.has(candidate.sourceId) &&
+      replacementMatchEvidence(current, candidate) !== null
+    );
+    if (matches.length === 0) continue;
+    if (matches.length > 1) {
+      const diagnostic = currentCardDiagnostic("ambiguous", current, null, [
+        `matched ${matches.length} possible alternate versions`,
+        `candidate source IDs ${matches.map((match) => match.sourceId).join(", ")}`,
+      ]);
+      diagnostics.push(diagnostic);
+      onDiagnostic?.(diagnostic);
+      processedSourceIds.add(current.sourceId);
+      continue;
+    }
+    const alternate = matches[0]!;
+    const evidence = replacementMatchEvidence(current, alternate)!;
+    processedSourceIds.add(current.sourceId);
+    processedSourceIds.add(alternate.sourceId);
+    if (!isGuardedCurrentVersion(current, alternate)) {
+      const diagnostic = currentCardDiagnostic("ambiguous", current, alternate, evidence);
+      diagnostics.push(diagnostic);
+      onDiagnostic?.(diagnostic);
+      continue;
+    }
+    staleSourceIds.add(alternate.sourceId);
+    currentReplacementRaceIds.add(current.raceId);
+    supersededRaceIds.add(alternate.raceId);
+    const diagnostic = currentCardDiagnostic("replacement", current, alternate, evidence);
+    diagnostics.push(diagnostic);
+    onDiagnostic?.(diagnostic);
+  }
+
+  return {
+    rows: staleSourceIds.size === 0
+      ? rows
+      : rows.filter((row) => !row.raceSourceId || !staleSourceIds.has(row.raceSourceId)),
+    currentReplacementRaceIds,
+    supersededRaceIds,
+    diagnostics,
+  };
+}
+
+export function reconcileSportingLifeCurrentCardRows<
+  T extends SportingLifeCurrentCardRaceRow,
+>(
+  rows: T[],
+  indexPayload: unknown,
+  onDiagnostic?: (diagnostic: SportingLifeCurrentCardDiagnostic) => void,
+): T[] {
+  return sportingLifeCurrentCardReconciliation(rows, indexPayload, onDiagnostic).rows;
+}
+
+function sportingLifeIndexRaces(payload: unknown): Map<string, SportingLifeIndexRace> {
+  const meetings = (payload as RacecardIndexPayload | undefined)?.props?.pageProps?.meetings;
+  const result = new Map<string, SportingLifeIndexRace>();
+  if (!Array.isArray(meetings)) return result;
+  meetings.forEach((meeting, meetingIndex) => {
+    if (!isRecord(meeting) || !isRecord(meeting.meeting_summary)) return;
+    const summary = meeting.meeting_summary;
+    const meetingReference = summary.meeting_reference;
+    const course = summary.course;
+    const races = meeting.races;
+    if (!isRecord(meetingReference) || !isRecord(course) || !Array.isArray(races)) return;
+    const meetingId = scalarString(meetingReference.id);
+    const courseName = typeof course.name === "string" ? course.name : "";
+    if (!meetingId || !courseName) return;
+    races.forEach((race, raceIndex) => {
+      if (!isRecord(race) || !isRecord(race.race_summary_reference)) return;
+      const sourceId = scalarString(race.race_summary_reference.id);
+      if (!sourceId) return;
+      result.set(sourceId, { sourceId, meetingId, course: courseName, meetingIndex, raceIndex });
+    });
+  });
+  return result;
+}
+
+function replacementMatchEvidence(
+  current: CurrentCardRace,
+  alternate: CurrentCardRace,
+): string[] | null {
+  if (current.index.meetingId !== alternate.index.meetingId) return null;
+  if (normalizeRaceIdentityText(current.course) !== normalizeRaceIdentityText(alternate.course)) return null;
+  if (current.raceDate !== alternate.raceDate) return null;
+  const title = normalizeRaceIdentityText(current.raceName);
+  if (!title || title !== normalizeRaceIdentityText(alternate.raceName)) return null;
+  if (current.distanceYards === null || current.distanceYards !== alternate.distanceYards) return null;
+  const timeDifference = raceTimeDifferenceMinutes(current.scheduledTime, alternate.scheduledTime);
+  if (timeDifference === null || timeDifference > 10) return null;
+  if (current.index.meetingIndex !== alternate.index.meetingIndex) return null;
+  if (Math.abs(current.index.raceIndex - alternate.index.raceIndex) !== 1) return null;
+  if (current.horseIds.size < 2 || alternate.horseIds.size < 2) return null;
+  const overlap = [...current.horseIds].filter((horseId) => alternate.horseIds.has(horseId));
+  const smaller = Math.min(current.horseIds.size, alternate.horseIds.size);
+  const nameOverlap = [...current.horseNames].filter((horseName) => alternate.horseNames.has(horseName));
+  const smallerNameSet = Math.min(current.horseNames.size, alternate.horseNames.size);
+  if (nameOverlap.length !== smallerNameSet || overlap.length / smaller < 0.9) return null;
+  return [
+    `same meeting ${current.index.meetingId}, course, date, normalized title and distance`,
+    `adjacent current-index positions ${current.index.raceIndex}/${alternate.index.raceIndex}`,
+    `scheduled times within ${timeDifference} minutes`,
+    `runner overlap ${nameOverlap.length}/${smallerNameSet} names and ${overlap.length}/${smaller} stable horse IDs`,
+  ];
+}
+
+function isGuardedCurrentVersion(current: CurrentCardRace, alternate: CurrentCardRace): boolean {
+  const currentSourceId = Number(current.sourceId);
+  const alternateSourceId = Number(alternate.sourceId);
+  return current.index.raceIndex < alternate.index.raceIndex &&
+    Number.isInteger(currentSourceId) &&
+    Number.isInteger(alternateSourceId) &&
+    currentSourceId > alternateSourceId &&
+    current.horseIds.size <= alternate.horseIds.size &&
+    [...current.horseNames].every((horseName) => alternate.horseNames.has(horseName)) &&
+    [...current.horseIds].filter((horseId) => alternate.horseIds.has(horseId)).length /
+      current.horseIds.size >= 0.9;
+}
+
+function currentCardDiagnostic(
+  status: SportingLifeCurrentCardDiagnostic["status"],
+  current: CurrentCardRace,
+  alternate: CurrentCardRace | null,
+  evidence: string[],
+): SportingLifeCurrentCardDiagnostic {
+  return {
+    version: SPORTING_LIFE_CURRENT_CARD_VERSION,
+    status,
+    meetingId: current.index.meetingId,
+    course: current.course,
+    currentSourceRaceId: status === "replacement" ? current.sourceId : null,
+    staleSourceRaceId: status === "replacement" ? alternate?.sourceId ?? null : null,
+    currentTime: current.scheduledTime?.slice(0, 5) ?? null,
+    staleTime: alternate?.scheduledTime?.slice(0, 5) ?? null,
+    evidence,
+  };
+}
+
+function logCurrentCardDiagnostic(diagnostic: SportingLifeCurrentCardDiagnostic): void {
+  const ids = diagnostic.status === "replacement"
+    ? `stale=${diagnostic.staleSourceRaceId} current=${diagnostic.currentSourceRaceId}`
+    : "current=ambiguous";
+  console.info(
+    `SPORTING_LIFE_CURRENT_CARD version=${diagnostic.version} status=${diagnostic.status} ` +
+    `meeting=${diagnostic.meetingId} course=${JSON.stringify(diagnostic.course)} ${ids} ` +
+    `times=${diagnostic.staleTime ?? "-"}->${diagnostic.currentTime ?? "-"} ` +
+    `evidence=${JSON.stringify(diagnostic.evidence.join("; "))}`,
+  );
+}
+
+function normalizeRaceIdentityText(value: string | null): string {
+  return (value ?? "")
+    .normalize("NFKD")
+    .toLocaleLowerCase("en-GB")
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+}
+
+function raceTimeDifferenceMinutes(left: string | null, right: string | null): number | null {
+  const minutes = (value: string | null) => {
+    const match = value?.match(/^(\d{1,2}):(\d{2})/);
+    if (!match) return null;
+    return Number(match[1]) * 60 + Number(match[2]);
+  };
+  const leftMinutes = minutes(left);
+  const rightMinutes = minutes(right);
+  return leftMinutes === null || rightMinutes === null ? null : Math.abs(leftMinutes - rightMinutes);
+}
+
+function scalarString(value: unknown): string | null {
+  return typeof value === "string" || typeof value === "number" ? String(value) : null;
 }
 
 export function isJumpRaceForDisplay(race: {

@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { describe, test } from "node:test";
 import {
   formatRaceTimeForDisplay,
+  formatTodayTprRankGap,
   formatRacingDate,
   getLocalRacingDate,
   groupTodaysRacingRows,
@@ -11,15 +12,26 @@ import {
   meetingOrderFromIndexPayload,
   parseSportingLifeBookmakerQuotes,
   racingPageTitle,
+  reconcileSportingLifeCurrentCardRows,
   resolveRacingDate,
+  sportingLifeCurrentPriceFromRacecard,
+  sportingLifeCurrentCardReconciliation,
   summarizeTodayMarketPrice,
   TODAY_RACE_SOURCE_TYPES,
+  type SportingLifeCurrentCardDiagnostic,
   type TodayRacecardRow,
 } from "./todays-racing";
 import type { HorseMetricsAsOf } from "./horse-metrics";
 import type { GoingForm } from "./going-form";
 
 describe("Today racing grouping", () => {
+  test("labels TPR rating-point leads and deficits without probability-point units", () => {
+    assert.equal(formatTodayTprRankGap(1, 11.7), "Rank 1 · TPR lead +11.7");
+    assert.equal(formatTodayTprRankGap(2, -11.7), "Rank 2 · TPR deficit -11.7");
+    assert.equal(formatTodayTprRankGap(1, null), "Rank 1");
+    assert.doesNotMatch(formatTodayTprRankGap(1, 11.7), /pp/);
+  });
+
   test("projects only valid Sporting Life bookmaker quote fields", () => {
     assert.deepEqual(parseSportingLifeBookmakerQuotes([
       { bookmakerId: 6, bookmakerName: "Paddy Power", fractionalOdds: "6/1", decimalOdds: 7, ignored: "x" },
@@ -70,12 +82,143 @@ describe("Today racing grouping", () => {
     assert.equal(market.forecastOdds, "20/1");
   });
 
+  test("keeps bookmaker median and Sporting Life forecast separate in Tissue context", () => {
+    const base = {
+      raceId: "race-1",
+      runnerId: "runner-1",
+      scheduledTime: "13:40:00",
+      raceDateTime: new Date("2026-09-30T13:40:00.000Z"),
+      courseCountry: "Eire",
+      forecastPrice: "20/1",
+      forecastDecimalOdds: 21,
+    };
+    const quoted = sportingLifeCurrentPriceFromRacecard({
+      ...base,
+      bookmakerQuotes: [quote(6.5, "11/2"), quote(7, "6/1"), quote(7, "6/1")],
+    });
+    assert.equal(quoted.marketPrice, "6/1");
+    assert.equal(quoted.marketDecimalOdds, 7);
+    assert.equal(quoted.forecastPrice, "20/1");
+
+    const forecastOnly = sportingLifeCurrentPriceFromRacecard({
+      ...base,
+      forecastPrice: "33/1",
+      forecastDecimalOdds: 34,
+      bookmakerQuotes: [],
+    });
+    assert.equal(forecastOnly.marketPrice, null);
+    assert.equal(forecastOnly.marketDecimalOdds, null);
+    assert.equal(forecastOnly.forecastPrice, "33/1");
+  });
+
   test("accepts racecard or full-result provenance without duplicate source types", () => {
     assert.deepEqual(TODAY_RACE_SOURCE_TYPES, [
       "racecard-next-data",
       "full-result-next-data",
     ]);
     assert.equal(new Set(TODAY_RACE_SOURCE_TYPES).size, TODAY_RACE_SOURCE_TYPES.length);
+  });
+
+  test("reconciles Bellewstown replacement cards without mutating stored versions", () => {
+    const raceRows = (
+      raceId: string,
+      sourceId: string,
+      time: string,
+      raceName: string,
+      declared: number,
+      horseIds: string[],
+    ) => horseIds.map((horseId, index) => row({
+      raceId,
+      raceSourceId: sourceId,
+      raceDate: "2026-09-30",
+      scheduledTime: `${time}:00`,
+      raceName,
+      distanceYards: 1760,
+      declaredRunnerCount: declared,
+      courseId: "course-bellewstown",
+      courseSourceId: "336",
+      courseName: "Bellewstown",
+      country: "Eire",
+      runnerId: `${raceId}-runner-${index}`,
+      runnerSourceId: `${sourceId}-ride-${index}`,
+      horseId,
+      horseName: horseId,
+    }));
+    const rows = [
+      ...raceRows("current-boyle", "941452", "13:40", "BOYLE Sports Handicap (0-60)", 18, ["ohmali", "blue-panther"]),
+      ...raceRows("stale-boyle", "940938", "13:44", "BOYLE Sports Handicap (0-60)", 32, ["ohmali", "blue-panther", "blue-anthem"]),
+      ...raceRows("current-rathbarry", "941453", "14:15", "Rathbarry & Glenview Studs Handicap", 17, ["moyassr", "mythical-rock"]),
+      ...raceRows("stale-rathbarry", "940939", "14:19", "Rathbarry & Glenview Studs Handicap", 21, ["moyassr", "mythical-rock", "emiza"]),
+    ];
+    const before = JSON.stringify(rows);
+    const diagnostics: SportingLifeCurrentCardDiagnostic[] = [];
+    const payload = currentCardIndexPayload("Bellewstown", "121682", [
+      ["941452", "BOYLE Sports Handicap (0-60)"],
+      ["940938", "BOYLE Sports Handicap (0-60)"],
+      ["941453", "Rathbarry & Glenview Studs Handicap"],
+      ["940939", "Rathbarry & Glenview Studs Handicap"],
+    ]);
+    const reconciled = reconcileSportingLifeCurrentCardRows(
+      rows,
+      payload,
+      (diagnostic) => diagnostics.push(diagnostic),
+    );
+    const detailed = sportingLifeCurrentCardReconciliation(rows, payload);
+
+    assert.equal(JSON.stringify(rows), before);
+    assert.deepEqual([...new Set(rows.map((entry) => entry.raceSourceId))], ["941452", "940938", "941453", "940939"]);
+    assert.deepEqual([...new Set(reconciled.map((entry) => entry.raceSourceId))], ["941452", "941453"]);
+    assert.deepEqual([...new Set(reconciled.map((entry) => entry.declaredRunnerCount))], [18, 17]);
+    assert.deepEqual([...detailed.currentReplacementRaceIds].sort(), ["current-boyle", "current-rathbarry"]);
+    assert.deepEqual([...detailed.supersededRaceIds].sort(), ["stale-boyle", "stale-rathbarry"]);
+    assert.equal(diagnostics.length, 2);
+    assert.deepEqual(diagnostics.map((entry) => [entry.staleSourceRaceId, entry.currentSourceRaceId]), [
+      ["940938", "941452"],
+      ["940939", "941453"],
+    ]);
+  });
+
+  test("does not collapse legitimate Sligo races or ambiguous versions", () => {
+    const sligoRows = [
+      row({ raceId: "sligo-1", raceSourceId: "950001", raceDate: "2026-09-30", courseName: "Sligo", courseId: "sligo", horseId: "horse-a", raceName: "Maiden", scheduledTime: "13:20:00" }),
+      row({ raceId: "sligo-2", raceSourceId: "950002", raceDate: "2026-09-30", courseName: "Sligo", courseId: "sligo", horseId: "horse-b", raceName: "Handicap", scheduledTime: "13:25:00" }),
+    ];
+    const diagnostics: unknown[] = [];
+    const reconciled = reconcileSportingLifeCurrentCardRows(
+      sligoRows,
+      currentCardIndexPayload("Sligo", "meeting-sligo", [["950001", "Maiden"], ["950002", "Handicap"]]),
+      (diagnostic) => diagnostics.push(diagnostic),
+    );
+    assert.strictEqual(reconciled, sligoRows);
+    assert.equal(reconciled.length, 2);
+    assert.deepEqual(diagnostics, []);
+    assert.equal(summarizeTodayMarketPrice({ bookmakerQuotes: [quote(4, "3/1"), quote(5, "4/1"), quote(6, "5/1")] }).medianFractionalOdds, "4/1");
+  });
+
+  test("preserves both versions when current-index precedence is ambiguous", () => {
+    const candidate = (raceId: string, sourceId: string, time: string) => ["alpha", "beta"].map((horseId, index) => row({
+      raceId,
+      raceSourceId: sourceId,
+      raceDate: "2026-09-30",
+      scheduledTime: `${time}:00`,
+      raceName: "Example Handicap",
+      distanceYards: 1760,
+      courseId: "course-example",
+      courseName: "Example",
+      runnerId: `${raceId}-${index}`,
+      horseId,
+      horseName: horseId,
+    }));
+    const rows = [...candidate("first", "940001", "14:00"), ...candidate("second", "941001", "14:04")];
+    const diagnostics: SportingLifeCurrentCardDiagnostic[] = [];
+    const reconciled = reconcileSportingLifeCurrentCardRows(
+      rows,
+      currentCardIndexPayload("Example", "meeting-example", [["940001", "Example Handicap"], ["941001", "Example Handicap"]]),
+      (diagnostic) => diagnostics.push(diagnostic),
+    );
+    assert.strictEqual(reconciled, rows);
+    assert.equal(diagnostics.length, 1);
+    assert.equal(diagnostics[0]!.status, "ambiguous");
   });
 
   test("groups the eight imported Downpatrick result races into Today", () => {
@@ -1007,6 +1150,29 @@ function indexPayload(courseIds: string[]) {
             },
           },
         })),
+      },
+    },
+  };
+}
+
+function currentCardIndexPayload(
+  course: string,
+  meetingId: string,
+  races: Array<[sourceId: string, raceName: string]>,
+) {
+  return {
+    props: {
+      pageProps: {
+        meetings: [{
+          meeting_summary: {
+            meeting_reference: { id: meetingId },
+            course: { name: course, course_reference: { id: course } },
+          },
+          races: races.map(([sourceId, raceName]) => ({
+            race_summary_reference: { id: sourceId },
+            name: raceName,
+          })),
+        }],
       },
     },
   };

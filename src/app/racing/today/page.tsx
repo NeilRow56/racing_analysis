@@ -23,6 +23,7 @@ import { turfPerformanceHistoryDepthLabel } from "@/lib/racing/turf-performance-
 import { GOING_FORM_TERMS, type GoingFormTerm } from "@/lib/racing/going-form";
 import {
   formatRaceTimeForDisplay,
+  formatTodayTprRankGap,
   getTodaysRacingData,
   isAllWeatherRaceForDisplay,
   isJumpRaceForDisplay,
@@ -695,8 +696,7 @@ function TurfPerformanceRatingCell({ runner }: { runner: TodayRunner }) {
         TPR {Math.round(rating.rating)}
       </div>
       <div className="text-xs text-slate-600">
-        Rank {rating.rank}
-        {rating.gap !== null ? ` · ${formatTprGap(rating.gap)}` : ""}
+        {formatTodayTprRankGap(rating.rank, rating.gap)}
       </div>
       {rating.isCrossSurfaceFallback ? (
         <div className="text-xs font-medium text-sky-700">
@@ -826,12 +826,6 @@ function formatFreshnessTime(value: Date): string {
 
 function formatRating(value: number | null | undefined): string {
   return value === null || value === undefined ? "-" : Math.round(value).toString();
-}
-
-function formatTprGap(value: number): string {
-  const rounded = Math.abs(value).toFixed(1);
-  if (Math.abs(value) < 0.05) return "0.0";
-  return value > 0 ? `+${rounded}` : `-${rounded}`;
 }
 
 function formatPercent(value: number | null): string {
