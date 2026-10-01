@@ -34,6 +34,7 @@ import {
 } from "./jump-performance-rating";
 import {
   attachAwRaceRatings,
+  type AwRatingCoverage,
   type AwRatingRunner,
 } from "./aw-performance-rating";
 import {
@@ -44,6 +45,12 @@ import {
   type CanonicalTurfPerformanceRatingInput,
   TURF_PERFORMANCE_RATING_W50_WEIGHT_MULTIPLIER,
 } from "./turf-performance-rating";
+import {
+  calculateRatingCoverage,
+  TPR_RATING_COVERAGE_GUARD_IMPLEMENTED_AT,
+  TPR_RATING_COVERAGE_GUARD_VERSION,
+  type RatingCoverage,
+} from "./rating-coverage";
 
 type Db = ReturnType<typeof createDbConnection>["db"];
 
@@ -143,6 +150,13 @@ export type TodayRace = {
   actualRunnerCount: number | null;
   winningTime: string | null;
   turfPerformanceShadow?: TodayTurfPerformanceShadow;
+  tprRatingCoverage?: RatingCoverage;
+  jumpRatingCoverage?: {
+    jprA: RatingCoverage;
+  };
+  awRatingCoverage?: {
+    awD: AwRatingCoverage;
+  };
   runners: TodayRunner[];
 };
 
@@ -750,10 +764,17 @@ export function attachTurfPerformanceRatings(race: TodayRace): TodayRace {
   const ratings = rankTurfPerformanceRatings(productionInputs);
   const shadowRatings = rankTurfPerformanceRatings(shadowInputs);
   const shadow = turfPerformanceShadowForRace(race.runners, ratings, shadowRatings);
+  const tprRatingCoverage = calculateRatingCoverage(
+    race.runners,
+    (runner) => ratings.has(runner.runnerId),
+    TPR_RATING_COVERAGE_GUARD_VERSION,
+    TPR_RATING_COVERAGE_GUARD_IMPLEMENTED_AT,
+  );
 
   return {
     ...race,
     turfPerformanceShadow: shadow,
+    tprRatingCoverage,
     runners: race.runners.map((runner) => ({
       ...runner,
       turfPerformanceRating: ratings.get(runner.runnerId),

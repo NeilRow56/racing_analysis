@@ -52,6 +52,31 @@ describe("independent tissue forward tracker", () => {
     assert.ok(record.runners.every((runner) => runner.finalSp === null && runner.marketRank === null));
   });
 
+  test("remains valid when TPR race coverage is insufficient", () => {
+    const race = {
+      ...sampleRace(),
+      tprRatingCoverage: {
+        activeRunnerCount: 11,
+        ratedRunnerCount: 1,
+        ratingCoverage: 1 / 11,
+        ratingCoverageStatus: "insufficient_coverage" as const,
+        guardVersion: "tpr_rating_coverage_guard_v1",
+        guardImplementedAt: "2026-09-30T00:00:00.000Z",
+      },
+    };
+    const record = buildTissueForwardRace({
+      raceDate: TISSUE_FORWARD_START,
+      course: "Newbury",
+      race,
+      model,
+      commentsByHorse: new Map(),
+      recordedAt: new Date("2026-09-19T11:00:00Z"),
+    });
+    assert.ok(record);
+    assert.equal(record.runners.length, 2);
+    assert.ok(Math.abs(record.runners.reduce((sum, runner) => sum + runner.probability, 0) - 1) < 1e-12);
+  });
+
   test("uses strictly earlier comments and rejects historical clean backfill", () => {
     const comments = new Map<string, HistoricalComment[]>([["horse-1", [
       { raceId: "prior", raceDate: "2026-09-01", raceDateTime: new Date("2026-09-01T12:00:00Z"), comment: "slowly away" },

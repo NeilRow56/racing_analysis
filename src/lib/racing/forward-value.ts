@@ -1,6 +1,14 @@
 import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { settleSelection } from "./backtest";
+import { calculateAwDRatingCoverage } from "./aw-performance-rating";
+import {
+  calculateRatingCoverage,
+  JPR_A_RATING_COVERAGE_GUARD_IMPLEMENTED_AT,
+  JPR_A_RATING_COVERAGE_GUARD_VERSION,
+  TPR_RATING_COVERAGE_GUARD_IMPLEMENTED_AT,
+  TPR_RATING_COVERAGE_GUARD_VERSION,
+} from "./rating-coverage";
 import {
   formatRaceTimeForDisplay,
   type SportingLifeBookmakerQuote,
@@ -294,6 +302,31 @@ export function buildForwardValueRecord(input: {
   const raceDateTime = input.race.raceDateTime;
   if (!raceDateTime || !input.race.scheduledTime || recordedAt >= raceDateTime) return null;
   const active = input.race.runners.filter((runner) => runner.resultStatus !== "non_runner");
+  if (input.family === "turf") {
+    const coverage = input.race.tprRatingCoverage ?? calculateRatingCoverage(
+      active,
+      (runner) => runner.turfPerformanceRating !== undefined,
+      TPR_RATING_COVERAGE_GUARD_VERSION,
+      TPR_RATING_COVERAGE_GUARD_IMPLEMENTED_AT,
+    );
+    if (coverage.ratingCoverageStatus === "insufficient_coverage") return null;
+  }
+  if (input.family === "jump") {
+    const coverage = input.race.jumpRatingCoverage?.jprA ?? calculateRatingCoverage(
+      active,
+      (runner) => runner.jumpRating?.jprA !== null && runner.jumpRating?.jprA !== undefined,
+      JPR_A_RATING_COVERAGE_GUARD_VERSION,
+      JPR_A_RATING_COVERAGE_GUARD_IMPLEMENTED_AT,
+    );
+    if (coverage.ratingCoverageStatus === "insufficient_coverage") return null;
+  }
+  if (input.family === "aw") {
+    const coverage = input.race.awRatingCoverage?.awD ?? calculateAwDRatingCoverage(
+      active.map((runner) => ({ runnerId: runner.runnerId, resultStatus: runner.resultStatus })),
+      new Map(active.map((runner) => [runner.runnerId, runner.awRating ?? { components: { averageAwSpeedLast3: null, trainerPriorStrikeRate: null, jockeyPriorStrikeRate: null }, awD: null, awA: null }])),
+    );
+    if (coverage.ratingCoverageStatus === "insufficient_coverage") return null;
+  }
   const ranked = active.flatMap((runner) => {
     if (input.family === "turf" && runner.turfPerformanceRating) {
       return [{ runner, rank: runner.turfPerformanceRating.rank, score: runner.turfPerformanceRating.rating, gap: runner.turfPerformanceRating.gap }];

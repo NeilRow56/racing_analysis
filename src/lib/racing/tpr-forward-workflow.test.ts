@@ -111,6 +111,24 @@ describe("TPR forward workflow", () => {
     assert.deepEqual(after, before);
     assert.equal(before.tracking.cleanSample, 1);
   });
+
+  test("retains sparse TPR races diagnostically without a false rank-1 selection", () => {
+    const record = buildTprForwardRace({
+      raceDate: "2026-09-27",
+      course: "Ascot",
+      race: sparseTprRace(11, 1),
+      recordedAt: new Date("2026-09-27T12:00:00.000Z"),
+    });
+    assert.ok(record);
+    assert.equal(record.activeRunnerCount, 11);
+    assert.equal(record.ratedRunnerCount, 1);
+    assert.equal(record.ratingCoverageStatus, "insufficient_coverage");
+    assert.equal(record.ratingCoverageExclusionReason, "insufficient_rating_coverage");
+    assert.equal(record.tprRankEligible, false);
+    assert.equal(record.tprRank1, null);
+    assert.deepEqual(pendingTprForwardRaceIds({ ...tracker(), races: [record] }), []);
+    assert.match(renderTprToday({ ...tracker(), races: [record] }, "2026-09-27"), /insufficient race coverage \(Rated: 1\/11\)/);
+  });
 });
 
 function capture() {
@@ -149,6 +167,30 @@ function race(overrides: Partial<TodayRace> = {}): TodayRace {
     runners: [runner("a", "Alpha", 1, 2, 100), runner("b", "Bravo", 2, 1, 90)],
     ...overrides,
   };
+}
+
+function sparseTprRace(activeRunnerCount: number, ratedRunnerCount: number): TodayRace {
+  return race({
+    declaredRunnerCount: activeRunnerCount,
+    tprRatingCoverage: {
+      activeRunnerCount,
+      ratedRunnerCount,
+      ratingCoverage: ratedRunnerCount / activeRunnerCount,
+      ratingCoverageStatus: "insufficient_coverage",
+      guardVersion: "tpr_rating_coverage_guard_v1",
+      guardImplementedAt: "2026-09-30T00:00:00.000Z",
+    },
+    runners: Array.from({ length: activeRunnerCount }, (_, index) => runner(
+      String(index + 1),
+      index === 0 ? "Sparse Rated" : `Unrated ${index + 1}`,
+      index + 1,
+      index + 1,
+      100 - index,
+      index < ratedRunnerCount
+        ? {}
+        : { turfPerformanceRating: undefined, turfPerformanceShadowRating: undefined, turfPerformanceInput: undefined },
+    )),
+  });
 }
 
 function runner(

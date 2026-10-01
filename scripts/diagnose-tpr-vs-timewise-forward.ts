@@ -32,6 +32,14 @@ export type ForwardRaceInput = {
   timewiseRank2NonRunner?: boolean;
   w50Rank1: string | null;
   w50Rank1NonRunner?: boolean;
+  activeRunnerCount?: number;
+  ratedRunnerCount?: number;
+  ratingCoverage?: number;
+  ratingCoverageStatus?: "eligible" | "insufficient_coverage";
+  ratingCoverageGuardVersion?: string;
+  ratingCoverageGuardImplementedAt?: string;
+  ratingCoverageExclusionReason?: "insufficient_rating_coverage" | null;
+  tprRankEligible?: boolean;
   tprInputSnapshot?: ForwardTprInputSnapshot | null;
   awBestL3SpeedRank1?: string | null;
   awBestL3PerformanceRank1?: string | null;

@@ -3,6 +3,12 @@ import type { TodayRace, TodayRunner } from "./todays-racing";
 
 export const AW_RATING_D_VERSION = "AW_D_V1" as const;
 export const AW_RATING_A_VERSION = "AW_A_V1" as const;
+export const AW_D_RATING_COVERAGE_GUARD_VERSION = "aw_d_rating_coverage_guard_v1" as const;
+export const AW_D_RATING_COVERAGE_GUARD_IMPLEMENTED_AT = "2026-09-30T00:00:00.000Z" as const;
+export const AW_D_MIN_RATED_RUNNERS = 2;
+export const AW_D_MIN_RATING_COVERAGE = 0.2;
+
+export type RatingCoverageStatus = "eligible" | "insufficient_coverage";
 
 export type AwRatingComponentRanks = {
   averageAwSpeedLast3: number | null;
@@ -19,6 +25,15 @@ export type AwRatingRunner = {
   components: AwRatingComponentRanks;
   awD: (RankedAwRating & { version: typeof AW_RATING_D_VERSION }) | null;
   awA: (RankedAwRating & { version: typeof AW_RATING_A_VERSION }) | null;
+};
+
+export type AwRatingCoverage = {
+  activeRunnerCount: number;
+  ratedRunnerCount: number;
+  ratingCoverage: number;
+  ratingCoverageStatus: RatingCoverageStatus;
+  guardVersion: typeof AW_D_RATING_COVERAGE_GUARD_VERSION;
+  guardImplementedAt: typeof AW_D_RATING_COVERAGE_GUARD_IMPLEMENTED_AT;
 };
 
 export type AwRatingInput = {
@@ -84,13 +99,38 @@ export function calculateAwRaceRatings(
 export function attachAwRaceRatings(race: TodayRace): TodayRace {
   if (!isCurrentAllWeatherRace(race)) return race;
   const ratings = calculateAwRaceRatings(race.runners.map(awRatingInputForTodayRunner));
+  const awDRatingCoverage = calculateAwDRatingCoverage(race.runners, ratings);
   return {
     ...race,
+    awRatingCoverage: { awD: awDRatingCoverage },
     runners: race.runners.map((runner) => ({
       ...runner,
       awRating: ratings.get(runner.runnerId),
     })),
   };
+}
+
+export function calculateAwDRatingCoverage(
+  runners: Array<{ runnerId: string; resultStatus: string | null }>,
+  ratings: ReadonlyMap<string, AwRatingRunner>,
+): AwRatingCoverage {
+  const active = runners.filter((runner) => runner.resultStatus !== "non_runner");
+  const ratedRunnerCount = active.filter((runner) => ratings.get(runner.runnerId)?.awD !== null).length;
+  const ratingCoverage = active.length === 0 ? 0 : ratedRunnerCount / active.length;
+  return {
+    activeRunnerCount: active.length,
+    ratedRunnerCount,
+    ratingCoverage,
+    ratingCoverageStatus: ratedRunnerCount >= AW_D_MIN_RATED_RUNNERS && ratingCoverage >= AW_D_MIN_RATING_COVERAGE
+      ? "eligible"
+      : "insufficient_coverage",
+    guardVersion: AW_D_RATING_COVERAGE_GUARD_VERSION,
+    guardImplementedAt: AW_D_RATING_COVERAGE_GUARD_IMPLEMENTED_AT,
+  };
+}
+
+export function isAwDRatingRankEligible(coverage: Pick<AwRatingCoverage, "ratedRunnerCount" | "ratingCoverage">): boolean {
+  return coverage.ratedRunnerCount >= AW_D_MIN_RATED_RUNNERS && coverage.ratingCoverage >= AW_D_MIN_RATING_COVERAGE;
 }
 
 export function awRatingInputForTodayRunner(runner: TodayRunner): AwRatingInput {

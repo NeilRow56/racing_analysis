@@ -16,6 +16,13 @@ import {
   type JumpRatingA0Source,
 } from "./jump-performance-rating-a0";
 import { classifyJumpRaceSubtype, isJumpRace, type JumpRaceSubtype } from "./jump-speed-rating";
+import {
+  calculateRatingCoverage,
+  JPR_A_RATING_COVERAGE_GUARD_IMPLEMENTED_AT,
+  JPR_A_RATING_COVERAGE_GUARD_VERSION,
+  RATING_COVERAGE_EXCLUSION_REASON,
+  type RatingCoverageStatus,
+} from "./rating-coverage";
 import type { TodayMeeting, TodayRace } from "./todays-racing";
 
 export const JUMP_RATING_FORWARD_VERSION = "jump_rating_forward_v1" as const;
@@ -59,6 +66,14 @@ export type JumpRatingForwardRace = {
   sourceId: string | null;
   raceName: string | null;
   subtype: JumpRaceSubtype;
+  activeRunnerCount?: number;
+  ratedRunnerCount?: number;
+  ratingCoverage?: number;
+  ratingCoverageStatus?: RatingCoverageStatus;
+  ratingCoverageGuardVersion?: typeof JPR_A_RATING_COVERAGE_GUARD_VERSION;
+  ratingCoverageGuardImplementedAt?: typeof JPR_A_RATING_COVERAGE_GUARD_IMPLEMENTED_AT;
+  ratingCoverageExclusionReason?: typeof RATING_COVERAGE_EXCLUSION_REASON | null;
+  jprARankEligible?: boolean;
   jprAVersion: typeof JUMP_RATING_A_VERSION;
   jprA0Version?: typeof JUMP_RATING_A0_VERSION;
   jprA0ImplementationEpoch?: typeof JUMP_RATING_A0_IMPLEMENTATION_EPOCH;
@@ -89,6 +104,7 @@ export type JumpRatingForwardSummary = {
   jprA: ReturnType<typeof rankSummary>;
   jprB: ReturnType<typeof rankSummary>;
   orAgreement: { eligible: number; agreements: number };
+  insufficientCoverage: number;
   subtypes: Array<{
     subtype: JumpRaceSubtype;
     races: number;
@@ -156,6 +172,13 @@ export function buildJumpRatingForwardRace(input: {
   const active = input.race.runners.filter((runner) => runner.resultStatus !== "non_runner");
   if (active.length < 2) return null;
   const ratings = calculateJumpRaceRatings(active.map(jumpRatingInputForTodayRunner));
+  const coverage = calculateRatingCoverage(
+    active,
+    (runner) => ratings.get(runner.runnerId)?.jprA !== null,
+    JPR_A_RATING_COVERAGE_GUARD_VERSION,
+    JPR_A_RATING_COVERAGE_GUARD_IMPLEMENTED_AT,
+  );
+  const jprARankEligible = coverage.ratingCoverageStatus === "eligible";
   const captureA0 = recordedAt >= new Date(JUMP_RATING_A0_IMPLEMENTATION_EPOCH) &&
     raceDateTime >= new Date(JUMP_RATING_A0_IMPLEMENTATION_EPOCH);
   const a0Ratings = captureA0
@@ -173,6 +196,14 @@ export function buildJumpRatingForwardRace(input: {
     sourceId: input.race.sourceId,
     raceName: input.race.raceName,
     subtype: classifyJumpRaceSubtype(input.race),
+    activeRunnerCount: coverage.activeRunnerCount,
+    ratedRunnerCount: coverage.ratedRunnerCount,
+    ratingCoverage: coverage.ratingCoverage,
+    ratingCoverageStatus: coverage.ratingCoverageStatus,
+    ratingCoverageGuardVersion: JPR_A_RATING_COVERAGE_GUARD_VERSION,
+    ratingCoverageGuardImplementedAt: JPR_A_RATING_COVERAGE_GUARD_IMPLEMENTED_AT,
+    ratingCoverageExclusionReason: jprARankEligible ? null : RATING_COVERAGE_EXCLUSION_REASON,
+    jprARankEligible,
     jprAVersion: JUMP_RATING_A_VERSION,
     ...(captureA0 ? {
       jprA0Version: JUMP_RATING_A0_VERSION,
@@ -242,7 +273,7 @@ export function upsertJumpRatingForwardRaces(
 
 export function pendingJumpRatingRaceIds(data: JumpRatingForwardData): string[] {
   return data.races
-    .filter((race) => race.recordedPreRace && race.winnerRunnerIds.length === 0)
+    .filter((race) => race.recordedPreRace && race.winnerRunnerIds.length === 0 && isJprAForwardRaceRankEligible(race))
     .map((race) => race.raceId);
 }
 
@@ -312,25 +343,27 @@ export function summarizeJumpRatingForward(
   data: JumpRatingForwardData,
 ): JumpRatingForwardSummary {
   const clean = data.races.filter((race) => race.recordedPreRace);
-  const settled = clean.filter((race) => race.winnerRunnerIds.length > 0);
-  const pending = clean.length - settled.length;
+  const analytical = clean.filter(isJprAForwardRaceRankEligible);
+  const settled = analytical.filter((race) => race.winnerRunnerIds.length > 0);
+  const pending = analytical.length - settled.length;
   const orEligible = settled.filter((race) =>
     race.runners.some((runner) => runner.jprARank === 1) &&
     race.runners.some((runner) => runner.components.officialRating === 1)
   );
-  const subtypeGroups = groupBy(clean, (race) => race.subtype);
+  const subtypeGroups = groupBy(analytical, (race) => race.subtype);
   return {
     cleanRaces: clean.length,
     pending,
     settled: settled.length,
     jprA: rankSummary(settled, (runner) => runner.jprARank),
-    jprB: rankSummary(settled, (runner) => runner.jprBRank),
+    jprB: rankSummary(clean.filter((race) => race.winnerRunnerIds.length > 0), (runner) => runner.jprBRank),
     orAgreement: {
       eligible: orEligible.length,
       agreements: orEligible.filter((race) => race.runners.some((runner) =>
         runner.jprARank === 1 && runner.components.officialRating === 1
       )).length,
     },
+    insufficientCoverage: clean.filter((race) => !isJprAForwardRaceRankEligible(race)).length,
     subtypes: [...subtypeGroups].map(([subtype, races]) => {
       const subtypeSettled = races.filter((race) => race.winnerRunnerIds.length > 0);
       const summary = rankSummary(subtypeSettled, (runner) => runner.jprARank);
@@ -359,11 +392,17 @@ export function renderJumpRatingToday(
   for (const { course, race } of races) {
     const active = race.runners.filter((runner) => runner.resultStatus !== "non_runner");
     const a0 = calculateJumpRaceA0Ratings(active.map(jumpRatingInputForTodayRunner));
-    const aRank1 = active.filter((runner) => runner.jumpRating?.jprA?.rank === 1);
+    const coverage = race.jumpRatingCoverage?.jprA;
+    const aRank1 = coverage?.ratingCoverageStatus === "insufficient_coverage"
+      ? []
+      : active.filter((runner) => runner.jumpRating?.jprA?.rank === 1);
     const a0Rank1 = active.filter((runner) => a0.get(runner.runnerId)?.rank === 1);
     const fallbackCount = [...a0.values()].filter((rating) => rating?.ratingSource === "trainer_fallback").length;
     lines.push(`${race.scheduledTime?.slice(0, 5) ?? "--:--"} ${course}${race.raceName ? ` - ${race.raceName}` : ""}`);
-    lines.push(`  JPR-A top 3: ${leaders(race, (runner) => runner.jumpRating?.jprA?.rank ?? null, 3)}`);
+    const jprALeaders = coverage?.ratingCoverageStatus === "insufficient_coverage"
+      ? `insufficient race coverage (Rated: ${coverage.ratedRunnerCount}/${coverage.activeRunnerCount})`
+      : leaders(race, (runner) => runner.jumpRating?.jprA?.rank ?? null, 3);
+    lines.push(`  JPR-A top 3: ${jprALeaders}`);
     lines.push(`  JPR-A0 rank 1: ${a0Rank1.length ? a0Rank1.map((runner) => runner.horseName).join(" / ") : "unrated"} | agrees ${sameIds(aRank1.map((runner) => runner.runnerId), a0Rank1.map((runner) => runner.runnerId)) ? "yes" : "no"} | fallback runners ${fallbackCount}`);
     lines.push(`  JPR-B rank 1: ${leaders(race, (runner) => runner.jumpRating?.jprB?.rank ?? null, 1)}`);
     lines.push(`  OR leader: ${leaders(race, (runner) => runner.jumpRating?.components.officialRating ?? null, 1)}`);
@@ -508,6 +547,11 @@ function rankSummary(
       ).length > 1
     ).length,
   };
+}
+
+function isJprAForwardRaceRankEligible(race: JumpRatingForwardRace): boolean {
+  if (race.jprARankEligible !== undefined) return race.jprARankEligible;
+  return race.ratingCoverageStatus !== "insufficient_coverage";
 }
 
 function goingFormMatchesRace(

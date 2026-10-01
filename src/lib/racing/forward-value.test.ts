@@ -39,6 +39,15 @@ const calibration: FamilyCalibration = {
   ],
 };
 
+const awCalibration: FamilyCalibration = {
+  family: "aw",
+  calibrationVersion: "AW_CAL_V1",
+  ratingVersion: "AW_D_V1",
+  leaderProbability: .2,
+  gapQuartiles: [],
+  gapBands: [],
+};
+
 describe("forward value capture", () => {
   test("captures pre-race price and freezes the selected leader", () => {
     const record = buildForwardValueRecord({ family: "turf", raceDate: "2026-09-27", course: "Test", race: race(), calibration, recordedAt: new Date("2026-09-27T12:00:00Z") });
@@ -61,6 +70,41 @@ describe("forward value capture", () => {
 
   test("refuses post-start capture", () => {
     assert.equal(buildForwardValueRecord({ family: "turf", raceDate: "2026-09-27", course: "Test", race: race(), calibration, recordedAt: new Date("2026-09-27T13:00:00Z") }), null);
+  });
+
+  test("does not create an AW-D Forward Value leader when rating coverage is insufficient", () => {
+    const sparse = awRaceWithRatedCount(11, 1);
+    assert.equal(sparse.runners[0]?.awRating?.awD?.rank, 1);
+    assert.equal(
+      buildForwardValueRecord({
+        family: "aw",
+        raceDate: "2026-09-27",
+        course: "Kempton",
+        race: sparse,
+        calibration: awCalibration,
+        recordedAt: new Date("2026-09-27T12:00:00Z"),
+      }),
+      null,
+    );
+  });
+
+  test("does not create TPR or JPR-A Forward Value leaders when rating coverage is insufficient", () => {
+    assert.equal(buildForwardValueRecord({
+      family: "turf",
+      raceDate: "2026-09-27",
+      course: "Ascot",
+      race: sparseTprRace(),
+      calibration,
+      recordedAt: new Date("2026-09-27T12:00:00Z"),
+    }), null);
+    assert.equal(buildForwardValueRecord({
+      family: "jump",
+      raceDate: "2026-09-27",
+      course: "Sligo",
+      race: sparseJumpRace(),
+      calibration: { ...awCalibration, family: "jump", calibrationVersion: "JPR_CAL_V1", ratingVersion: "JPR_A_V1" },
+      recordedAt: new Date("2026-09-27T12:00:00Z"),
+    }), null);
   });
 
   test("upsert is idempotent", () => {
@@ -466,6 +510,93 @@ function race(): TodayRace {
     courseCountry: "GB", raceName: "Test Handicap", raceClass: "Class 4", raceType: "Handicap", raceTypeCode: "Flat",
     distance: "1m", distanceYards: 1760, going: "Good", surface: "Turf", declaredRunnerCount: 2, actualRunnerCount: null, winningTime: null,
     runners: [runner("one", "Leader", "5", 1, .7), runner("two", "Other", "3", 2, null)],
+  };
+}
+
+function awRaceWithRatedCount(activeRunnerCount: number, ratedRunnerCount: number): TodayRace {
+  return {
+    raceId: "aw-race-1", sourceId: null, scheduledTime: "17:30", raceDateTime: new Date("2026-09-27T17:30:00Z"),
+    courseCountry: "GB", raceName: "AW Maiden", raceClass: "Class 4", raceType: "Flat", raceTypeCode: "FLAT",
+    distance: "1m", distanceYards: 1760, going: "Standard", surface: "ALLWEATHER", declaredRunnerCount: activeRunnerCount,
+    actualRunnerCount: null, winningTime: null,
+    awRatingCoverage: {
+      awD: {
+        activeRunnerCount,
+        ratedRunnerCount,
+        ratingCoverage: ratedRunnerCount / activeRunnerCount,
+        ratingCoverageStatus: ratedRunnerCount >= 2 && ratedRunnerCount / activeRunnerCount >= .2 ? "eligible" : "insufficient_coverage",
+        guardVersion: "aw_d_rating_coverage_guard_v1",
+        guardImplementedAt: "2026-09-30T00:00:00.000Z",
+      },
+    },
+    runners: Array.from({ length: activeRunnerCount }, (_, index) => awRunner(String(index + 1), index < ratedRunnerCount ? index + 1 : null)),
+  };
+}
+
+function sparseTprRace(): TodayRace {
+  const value = race();
+  value.tprRatingCoverage = {
+    activeRunnerCount: 11,
+    ratedRunnerCount: 1,
+    ratingCoverage: 1 / 11,
+    ratingCoverageStatus: "insufficient_coverage",
+    guardVersion: "tpr_rating_coverage_guard_v1",
+    guardImplementedAt: "2026-09-30T00:00:00.000Z",
+  };
+  value.declaredRunnerCount = 11;
+  value.runners = [
+    value.runners[0]!,
+    ...Array.from({ length: 10 }, (_, index) => ({
+      ...value.runners[1]!,
+      runnerId: `unrated-${index}`,
+      horseId: `unrated-${index}`,
+      horseName: `Unrated ${index + 1}`,
+      turfPerformanceRating: undefined,
+    })),
+  ];
+  return value;
+}
+
+function sparseJumpRace(): TodayRace {
+  return {
+    raceId: "jump-sparse", sourceId: null, scheduledTime: "14:00", raceDateTime: new Date("2026-09-27T14:00:00Z"),
+    courseCountry: "GB", raceName: "Jump Sparse", raceClass: "Class 4", raceType: "Hurdle", raceTypeCode: "HUR",
+    distance: "2m", distanceYards: 3520, going: "Good", surface: null, declaredRunnerCount: 11, actualRunnerCount: null,
+    winningTime: null,
+    jumpRatingCoverage: {
+      jprA: {
+        activeRunnerCount: 11,
+        ratedRunnerCount: 1,
+        ratingCoverage: 1 / 11,
+        ratingCoverageStatus: "insufficient_coverage",
+        guardVersion: "jpr_a_rating_coverage_guard_v1",
+        guardImplementedAt: "2026-09-30T00:00:00.000Z",
+      },
+    },
+    runners: Array.from({ length: 11 }, (_, index) => ({
+      ...awRunner(String(index + 1), index === 0 ? 1 : null),
+      jumpRating: {
+        components: { averageJumpSpeedLast3: index === 0 ? 1 : null, trainerPriorStrikeRate: index === 0 ? 1 : null, officialRating: index + 1 },
+        jprA: index === 0 ? { version: "JPR_A_V1", score: 1, rank: 1 } : null,
+        jprB: null,
+      },
+      awRating: undefined,
+    })),
+  };
+}
+
+function awRunner(id: string, rank: number | null): TodayRunner {
+  return {
+    runnerId: id, runnerSourceId: null, horseId: `aw-${id}`, horseName: id === "1" ? "Kingdom Of Heaven" : `AW Runner ${id}`,
+    saddleclothNumber: Number(id), horseAge: null, horseSex: null, weight: null, weightCarriedLbs: null,
+    draw: null, jockeyName: null, trainerId: null, trainerName: null, officialRating: null,
+    odds: "5", oddsDecimal: "5", resultStatus: null, finishingPosition: null, metrics: null,
+    forecastOdds: "5", forecastDecimalOdds: 5, bookmakerQuotes: quotes(5),
+    awRating: {
+      components: { averageAwSpeedLast3: rank, trainerPriorStrikeRate: rank, jockeyPriorStrikeRate: rank },
+      awD: rank === null ? null : { version: "AW_D_V1", score: rank, rank },
+      awA: null,
+    },
   };
 }
 

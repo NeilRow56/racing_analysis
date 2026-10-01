@@ -3,10 +3,14 @@ import { dirname } from "node:path";
 import { isVoidBetResultStatus, settleSelection } from "./backtest";
 import {
   AW_RATING_A_VERSION,
+  AW_D_RATING_COVERAGE_GUARD_IMPLEMENTED_AT,
+  AW_D_RATING_COVERAGE_GUARD_VERSION,
   AW_RATING_D_VERSION,
   awRatingInputForTodayRunner,
+  calculateAwDRatingCoverage,
   calculateAwRaceRatings,
   type AwRatingComponentRanks,
+  type RatingCoverageStatus,
 } from "./aw-performance-rating";
 import { isCurrentAllWeatherRace } from "./current-race-classification";
 import { classifyHandicapStatus, type HandicapStatus } from "./research-rule";
@@ -15,6 +19,7 @@ import type { TodayMeeting, TodayRace } from "./todays-racing";
 export const AW_RATING_FORWARD_VERSION = "aw_rating_forward_v1" as const;
 export const AW_RATING_FORWARD_PATH = "data/research/aw-rating-forward-v1.json";
 export const AW_RATING_FORWARD_START_AT = "2026-09-26T23:41:45.000Z";
+export const AW_RATING_COVERAGE_EXCLUSION_REASON = "insufficient_rating_coverage" as const;
 
 export type AwDistanceGroup = "sprint" | "intermediate" | "staying" | "unknown";
 
@@ -53,6 +58,14 @@ export type AwRatingForwardRace = {
   distanceGroup: AwDistanceGroup;
   handicapStatus: HandicapStatus;
   fieldSize: number;
+  activeRunnerCount?: number;
+  ratedRunnerCount?: number;
+  ratingCoverage?: number;
+  ratingCoverageStatus?: RatingCoverageStatus;
+  ratingCoverageGuardVersion?: typeof AW_D_RATING_COVERAGE_GUARD_VERSION;
+  ratingCoverageGuardImplementedAt?: typeof AW_D_RATING_COVERAGE_GUARD_IMPLEMENTED_AT;
+  ratingCoverageExclusionReason?: typeof AW_RATING_COVERAGE_EXCLUSION_REASON | null;
+  awDRankEligible?: boolean;
   awDVersion: typeof AW_RATING_D_VERSION;
   awAVersion: typeof AW_RATING_A_VERSION;
   recordedAt: string;
@@ -79,6 +92,7 @@ export type AwRatingForwardSummary = {
   awD: ReturnType<typeof rankSummary>;
   awA: ReturnType<typeof rankSummary>;
   rank1Agreement: { eligible: number; agreements: number };
+  insufficientCoverage: number;
   zeroHistory: {
     runners: number;
     races: number;
@@ -131,6 +145,8 @@ export function buildAwRatingForwardRace(input: {
   const active = input.race.runners.filter((runner) => runner.resultStatus !== "non_runner");
   if (active.length < 2) return null;
   const ratings = calculateAwRaceRatings(active.map(awRatingInputForTodayRunner));
+  const coverage = calculateAwDRatingCoverage(active, ratings);
+  const awDRankEligible = coverage.ratingCoverageStatus === "eligible";
   const runners = active.map((runner): AwRatingForwardRunner => {
     const rating = ratings.get(runner.runnerId)!;
     const priorAwStarts = runner.metrics?.priorAwStarts ?? null;
@@ -162,14 +178,24 @@ export function buildAwRatingForwardRace(input: {
     distanceGroup: classifyAwDistanceGroup(input.race.distanceYards),
     handicapStatus: classifyHandicapStatus(input.race),
     fieldSize: active.length,
+    activeRunnerCount: coverage.activeRunnerCount,
+    ratedRunnerCount: coverage.ratedRunnerCount,
+    ratingCoverage: coverage.ratingCoverage,
+    ratingCoverageStatus: coverage.ratingCoverageStatus,
+    ratingCoverageGuardVersion: coverage.guardVersion,
+    ratingCoverageGuardImplementedAt: coverage.guardImplementedAt,
+    ratingCoverageExclusionReason: awDRankEligible ? null : AW_RATING_COVERAGE_EXCLUSION_REASON,
+    awDRankEligible,
     awDVersion: AW_RATING_D_VERSION,
     awAVersion: AW_RATING_A_VERSION,
     recordedAt: recordedAt.toISOString(),
     recordedPreRace: true,
-    rank1Agreement: sameIds(
-      runners.filter((runner) => runner.awDRank === 1).map((runner) => runner.runnerId),
-      runners.filter((runner) => runner.awARank === 1).map((runner) => runner.runnerId),
-    ),
+    rank1Agreement: awDRankEligible
+      ? sameIds(
+          runners.filter((runner) => runner.awDRank === 1).map((runner) => runner.runnerId),
+          runners.filter((runner) => runner.awARank === 1).map((runner) => runner.runnerId),
+        )
+      : null,
     zeroHistoryRunnerCount: runners.filter((runner) => runner.zeroHistory).length,
     runners,
     winnerRunnerIds: [],
@@ -192,7 +218,7 @@ export function upsertAwRatingForwardRaces(
 
 export function pendingAwRatingRaceIds(data: AwRatingForwardData): string[] {
   return data.races
-    .filter((race) => race.recordedPreRace && race.winnerRunnerIds.length === 0)
+    .filter((race) => race.recordedPreRace && race.winnerRunnerIds.length === 0 && isAwDForwardRaceRankEligible(race))
     .map((race) => race.raceId);
 }
 
@@ -203,7 +229,7 @@ export function settlePendingAwRatingRaces(
 ): { data: AwRatingForwardData; settled: number } {
   let settled = 0;
   const races = data.races.map((record) => {
-    if (!record.recordedPreRace || record.winnerRunnerIds.length > 0) return record;
+    if (!record.recordedPreRace || record.winnerRunnerIds.length > 0 || !isAwDForwardRaceRankEligible(record)) return record;
     const result = racesById.get(record.raceId);
     if (!result) return record;
     const enriched = enrichAwRatingForwardRace(record, result, settledAt);
@@ -259,19 +285,21 @@ export function enrichAwRatingForwardRace(
 
 export function summarizeAwRatingForward(data: AwRatingForwardData): AwRatingForwardSummary {
   const clean = data.races.filter((race) => race.recordedPreRace);
-  const settled = clean.filter((race) => race.winnerRunnerIds.length > 0);
-  const agreementEligible = clean.filter((race) => race.rank1Agreement !== null);
+  const analytical = clean.filter(isAwDForwardRaceRankEligible);
+  const settled = analytical.filter((race) => race.winnerRunnerIds.length > 0);
+  const agreementEligible = analytical.filter((race) => race.rank1Agreement !== null);
   const zeroHistoryRunners = clean.flatMap((race) => race.runners.filter((runner) => runner.zeroHistory));
   return {
     cleanRaces: clean.length,
-    pending: clean.length - settled.length,
+    pending: analytical.filter((race) => race.winnerRunnerIds.length === 0).length,
     settled: settled.length,
-    awD: rankSummary(settled, (runner) => runner.awDRank),
-    awA: rankSummary(settled, (runner) => runner.awARank),
+    awD: rankSummary(settled, (runner) => runner.awDRank, isAwDForwardRaceRankEligible),
+    awA: rankSummary(clean.filter((race) => race.winnerRunnerIds.length > 0), (runner) => runner.awARank),
     rank1Agreement: {
       eligible: agreementEligible.length,
       agreements: agreementEligible.filter((race) => race.rank1Agreement).length,
     },
+    insufficientCoverage: clean.filter((race) => !isAwDForwardRaceRankEligible(race)).length,
     zeroHistory: {
       runners: zeroHistoryRunners.length,
       races: clean.filter((race) => race.zeroHistoryRunnerCount > 0).length,
@@ -281,8 +309,8 @@ export function summarizeAwRatingForward(data: AwRatingForwardData): AwRatingFor
       unratedByAwD: zeroHistoryRunners.filter((runner) => runner.awDRank === null).length,
       unratedByAwA: zeroHistoryRunners.filter((runner) => runner.awARank === null).length,
     },
-    handicap: contextSummaries(clean, (race) => race.handicapStatus),
-    distance: contextSummaries(clean, (race) => race.distanceGroup),
+    handicap: contextSummaries(analytical, (race) => race.handicapStatus),
+    distance: contextSummaries(analytical, (race) => race.distanceGroup),
   };
 }
 
@@ -294,7 +322,14 @@ export function renderAwRatingToday(meetings: TodayMeeting[], raceDate: string):
   if (races.length === 0) return `${lines.join("\n")}No All Weather races available.`;
   for (const { course, race } of races) {
     lines.push(`${race.scheduledTime?.slice(0, 5) ?? "--:--"} ${course}${race.raceName ? ` - ${race.raceName}` : ""}`);
-    lines.push(`  AW-D top 3: ${leaders(race, (runner) => runner.awRating?.awD?.rank ?? null, 3)}`);
+    const coverage = race.awRatingCoverage?.awD;
+    const coverageLabel = coverage
+      ? `Rated: ${coverage.ratedRunnerCount}/${coverage.activeRunnerCount}`
+      : null;
+    const awDLeaders = coverage?.ratingCoverageStatus === "insufficient_coverage"
+      ? `insufficient race coverage${coverageLabel ? ` (${coverageLabel})` : ""}`
+      : leaders(race, (runner) => runner.awRating?.awD?.rank ?? null, 3);
+    lines.push(`  AW-D top 3: ${awDLeaders}`);
     lines.push(`  AW-A rank 1: ${leaders(race, (runner) => runner.awRating?.awA?.rank ?? null, 1)}`);
     lines.push(`  Avg-L3 Speed leader: ${leaders(race, (runner) => runner.awRating?.components.averageAwSpeedLast3 ?? null, 1)}`);
     lines.push(`  Trainer-SR leader: ${leaders(race, (runner) => runner.awRating?.components.trainerPriorStrikeRate ?? null, 1)}`);
@@ -342,15 +377,17 @@ export function classifyAwDistanceGroup(distanceYards: number | null): AwDistanc
 function rankSummary(
   settled: AwRatingForwardRace[],
   rankFor: (runner: AwRatingForwardRunner) => number | null,
+  raceEligible: (race: AwRatingForwardRace) => boolean = () => true,
 ) {
-  const rank1 = settled.flatMap((race) => race.runners
+  const eligibleSettled = settled.filter(raceEligible);
+  const rank1 = eligibleSettled.flatMap((race) => race.runners
     .filter((runner) => rankFor(runner) === 1)
     .map((runner) => ({ race, runner })))
     .filter(({ runner }) => !isVoidBetResultStatus(runner.resultStatus));
   const rank1Winners = rank1.filter(({ race, runner }) =>
     race.winnerRunnerIds.includes(runner.runnerId)
   ).length;
-  const covered = settled.filter((race) => race.runners.some((runner) => rankFor(runner) !== null));
+  const covered = eligibleSettled.filter((race) => race.runners.some((runner) => rankFor(runner) !== null));
   return {
     rank1Selections: rank1.length,
     rank1Winners,
@@ -365,13 +402,18 @@ function rankSummary(
   };
 }
 
+function isAwDForwardRaceRankEligible(race: AwRatingForwardRace): boolean {
+  if (race.awDRankEligible !== undefined) return race.awDRankEligible;
+  return true;
+}
+
 function contextSummaries<T>(
   races: AwRatingForwardRace[],
   contextFor: (race: AwRatingForwardRace) => T,
 ): ContextSummary<T>[] {
   return [...groupBy(races, contextFor)].map(([context, contextRaces]) => {
     const settled = contextRaces.filter((race) => race.winnerRunnerIds.length > 0);
-    const awD = rankSummary(settled, (runner) => runner.awDRank);
+    const awD = rankSummary(settled, (runner) => runner.awDRank, isAwDForwardRaceRankEligible);
     const awA = rankSummary(settled, (runner) => runner.awARank);
     return {
       context,

@@ -5,6 +5,7 @@ import {
   buildAwRatingForwardRace,
   emptyAwRatingForwardData,
   enrichAwRatingForwardRace,
+  pendingAwRatingRaceIds,
   settlePendingAwRatingRaces,
   summarizeAwRatingForward,
   upsertAwRatingForwardRaces,
@@ -28,6 +29,9 @@ describe("AW Rating forward tracker", () => {
     assert.equal(captured.zeroHistoryRunnerCount, 1);
     assert.equal(captured.runners[1]?.zeroHistory, true);
     assert.equal(captured.runners[1]?.awDRank, null);
+    assert.equal(captured.ratingCoverageStatus, "insufficient_coverage");
+    assert.equal(captured.ratingCoverageExclusionReason, "insufficient_rating_coverage");
+    assert.equal(captured.awDRankEligible, false);
     assert.equal(
       buildAwRatingForwardRace({
         raceDate: "2026-09-26",
@@ -47,6 +51,36 @@ describe("AW Rating forward tracker", () => {
       null,
     );
     assert.ok(new Date(AW_RATING_FORWARD_START_AT).getTime() > 0);
+  });
+
+  test("does not treat insufficient AW-D coverage as a rank-1 analytical selection", () => {
+    const record = requiredRecord(awRace({
+      declaredRunnerCount: 11,
+      runners: Array.from({ length: 11 }, (_, index) => runner(String(index + 1), {
+        averageAwSpeedLast3: index === 0 ? 100 : null,
+        trainerRate: index === 0 ? 20 : 10,
+        jockeyRate: index === 0 ? 20 : 10,
+      })),
+    }));
+    const summary = summarizeAwRatingForward({
+      ...emptyAwRatingForwardData(),
+      races: [record],
+    });
+
+    assert.equal(record.activeRunnerCount, 11);
+    assert.equal(record.ratedRunnerCount, 1);
+    assert.equal(Math.round((record.ratingCoverage ?? 0) * 10000) / 100, 9.09);
+    assert.equal(record.ratingCoverageStatus, "insufficient_coverage");
+    assert.equal(record.runners[0]?.awDScore, 1);
+    assert.equal(record.runners[0]?.awDRank, 1);
+    assert.equal(record.rank1Agreement, null);
+    assert.equal(summary.awD.rank1Selections, 0);
+    assert.equal(summary.pending, 0);
+    assert.equal(summary.insufficientCoverage, 1);
+    assert.deepEqual(pendingAwRatingRaceIds({
+      ...emptyAwRatingForwardData(),
+      races: [record],
+    }), []);
   });
 
   test("records AW-D/A disagreement without changing either ranking", () => {
@@ -113,7 +147,7 @@ describe("AW Rating forward tracker", () => {
   });
 });
 
-function requiredRecord(race = awRace()) {
+function requiredRecord(race = eligibleAwRace()) {
   const record = buildAwRatingForwardRace({
     raceDate: "2026-09-27",
     course: "Test",
@@ -122,6 +156,16 @@ function requiredRecord(race = awRace()) {
   });
   assert.ok(record);
   return record;
+}
+
+function eligibleAwRace(overrides: Partial<TodayRace> = {}): TodayRace {
+  return awRace({
+    runners: [
+      runner("a", { averageAwSpeedLast3: 120, trainerRate: 20, jockeyRate: 20 }),
+      runner("b", { averageAwSpeedLast3: 110, trainerRate: 10, jockeyRate: 10, priorAwStarts: 0 }),
+    ],
+    ...overrides,
+  });
 }
 
 function frozenRating(runner: ReturnType<typeof requiredRecord>["runners"][number]) {

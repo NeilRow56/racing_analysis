@@ -68,6 +68,7 @@ export function pendingTprForwardRaceIds(data: TrackerData): string[] {
   return [...new Set(data.races.flatMap((race) =>
     race.family === "turf" &&
     race.timewiseRecordedPreRace === true &&
+    tprForwardRaceRankEligible(race) &&
     race.winners.length === 0 &&
     race.raceId
       ? [race.raceId]
@@ -85,6 +86,7 @@ export function settlePendingTprForwardRaces(
     if (
       record.family !== "turf" ||
       record.timewiseRecordedPreRace !== true ||
+      !tprForwardRaceRankEligible(record) ||
       record.winners.length > 0 ||
       !record.raceId
     ) return record;
@@ -114,7 +116,10 @@ export function renderTprToday(data: TrackerData, raceDate: string): string {
   for (const race of records) {
     const raceLabel = `${race.raceTime} ${race.course}${race.raceName ? ` - ${race.raceName}` : ""}`;
     lines.push(raceLabel);
-    lines.push(`  W100: ${selectionLabel(race.tprRank1, race.tprRank1NonRunner)} | W50: ${selectionLabel(race.w50Rank1, race.w50Rank1NonRunner)} | agree: ${yesNo(agrees(race.tprRank1, race.w50Rank1))}`);
+    const coverage = race.ratingCoverageStatus === "insufficient_coverage"
+      ? `insufficient race coverage${race.ratedRunnerCount !== undefined && race.activeRunnerCount !== undefined ? ` (Rated: ${race.ratedRunnerCount}/${race.activeRunnerCount})` : ""}`
+      : selectionLabel(race.tprRank1, race.tprRank1NonRunner);
+    lines.push(`  W100: ${coverage} | W50: ${selectionLabel(race.w50Rank1, race.w50Rank1NonRunner)} | agree: ${yesNo(agrees(race.tprRank1, race.w50Rank1))}`);
     lines.push(`  OR: ${race.orRank1 ?? "-"} | W100=OR: ${yesNo(race.tpr1AgreesWithOr1)} | W50=OR: ${yesNo(race.w50AgreesWithOr1)} | ${race.winners.length > 0 ? "settled" : "pending"}`, "");
   }
   return lines.join("\n").trimEnd();
@@ -139,6 +144,10 @@ function compareForwardRaces(left: ForwardRaceRecord, right: ForwardRaceRecord) 
   return left.raceDate.localeCompare(right.raceDate) ||
     left.raceTime.localeCompare(right.raceTime) ||
     left.course.localeCompare(right.course);
+}
+
+function tprForwardRaceRankEligible(race: ForwardRaceRecord) {
+  return race.tprRankEligible !== false && race.ratingCoverageStatus !== "insufficient_coverage";
 }
 
 function agrees(left: string | null, right: string | null) {

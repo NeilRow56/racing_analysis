@@ -22,6 +22,22 @@ import {
 import { turfPerformanceHistoryDepthLabel } from "@/lib/racing/turf-performance-rating";
 import { GOING_FORM_TERMS, type GoingFormTerm } from "@/lib/racing/going-form";
 import {
+  type AwRatingCoverage,
+  AW_D_RATING_COVERAGE_GUARD_VERSION,
+  AW_D_RATING_COVERAGE_GUARD_IMPLEMENTED_AT,
+  AW_D_MIN_RATED_RUNNERS,
+  AW_D_MIN_RATING_COVERAGE,
+} from "@/lib/racing/aw-performance-rating";
+import {
+  MIN_RACE_RATED_RUNNERS,
+  MIN_RACE_RATING_COVERAGE,
+  JPR_A_RATING_COVERAGE_GUARD_IMPLEMENTED_AT,
+  JPR_A_RATING_COVERAGE_GUARD_VERSION,
+  TPR_RATING_COVERAGE_GUARD_IMPLEMENTED_AT,
+  TPR_RATING_COVERAGE_GUARD_VERSION,
+  type RatingCoverage,
+} from "@/lib/racing/rating-coverage";
+import {
   formatRaceTimeForDisplay,
   formatTodayTprRankGap,
   getTodaysRacingData,
@@ -377,6 +393,9 @@ function RaceBlock({ race }: {
   const isAllWeatherRace = isAllWeatherRaceForDisplay(race);
   const isTurfRace = isOrdinaryFlatTurfRaceForDisplay(race);
   const statusLabel = todayRaceStatusLabel(race);
+  const awDCoverage = isAllWeatherRace ? race.awRatingCoverage?.awD : undefined;
+  const tprCoverage = isTurfRace ? race.tprRatingCoverage : undefined;
+  const jprACoverage = isJumpRace ? race.jumpRatingCoverage?.jprA : undefined;
 
   return (
     <section className="border-b border-slate-200 pb-7">
@@ -395,6 +414,30 @@ function RaceBlock({ race }: {
           <h3 className="mt-1 text-base font-semibold leading-6">
             {race.raceName ?? "Untitled race"}
           </h3>
+          {awDCoverage ? (
+            <p className="mt-1 text-xs font-medium text-slate-600">
+              AW-D rated: {awDCoverage.ratedRunnerCount}/{awDCoverage.activeRunnerCount}
+              {awDCoverage.ratingCoverageStatus === "insufficient_coverage" ? (
+                <> · Insufficient race coverage</>
+              ) : null}
+            </p>
+          ) : null}
+          {tprCoverage ? (
+            <p className="mt-1 text-xs font-medium text-slate-600">
+              TPR rated: {tprCoverage.ratedRunnerCount}/{tprCoverage.activeRunnerCount}
+              {tprCoverage.ratingCoverageStatus === "insufficient_coverage" ? (
+                <> · Insufficient race coverage</>
+              ) : null}
+            </p>
+          ) : null}
+          {jprACoverage ? (
+            <p className="mt-1 text-xs font-medium text-slate-600">
+              JPR-A rated: {jprACoverage.ratedRunnerCount}/{jprACoverage.activeRunnerCount}
+              {jprACoverage.ratingCoverageStatus === "insufficient_coverage" ? (
+                <> · Insufficient race coverage</>
+              ) : null}
+            </p>
+          ) : null}
         </div>
         <RaceMeta race={race} />
       </header>
@@ -406,6 +449,9 @@ function RaceBlock({ race }: {
 
       <RunnerTable
         isAllWeatherRace={isAllWeatherRace}
+        awDCoverage={awDCoverage}
+        jprACoverage={jprACoverage}
+        tprCoverage={tprCoverage}
         isJumpRace={isJumpRace}
         isTurfRace={isTurfRace}
         runners={race.runners}
@@ -440,11 +486,17 @@ function RaceMeta({ race }: { race: TodayRace }) {
 
 function RunnerTable({
   isAllWeatherRace,
+  awDCoverage,
+  jprACoverage,
+  tprCoverage,
   isJumpRace,
   isTurfRace,
   runners,
 }: {
   isAllWeatherRace: boolean;
+  awDCoverage?: AwRatingCoverage;
+  jprACoverage?: RatingCoverage;
+  tprCoverage?: RatingCoverage;
   isJumpRace: boolean;
   isTurfRace: boolean;
   runners: TodayRunner[];
@@ -511,6 +563,9 @@ function RunnerTable({
           {runners.map((runner) => (
             <RunnerRow
               isAllWeatherRace={isAllWeatherRace}
+              awDCoverage={awDCoverage}
+              jprACoverage={jprACoverage}
+              tprCoverage={tprCoverage}
               isJumpRace={isJumpRace}
               isTurfRace={isTurfRace}
               key={runner.runnerId}
@@ -525,11 +580,17 @@ function RunnerTable({
 
 function RunnerRow({
   isAllWeatherRace,
+  awDCoverage,
+  jprACoverage,
+  tprCoverage,
   isJumpRace,
   isTurfRace,
   runner,
 }: {
   isAllWeatherRace: boolean;
+  awDCoverage?: AwRatingCoverage;
+  jprACoverage?: RatingCoverage;
+  tprCoverage?: RatingCoverage;
   isJumpRace: boolean;
   isTurfRace: boolean;
   runner: TodayRunner;
@@ -590,17 +651,17 @@ function RunnerRow({
       <td className="px-1.5 py-2">{formatRating(todaysRating)}</td>
       {isJumpRace ? (
         <td className="px-1.5 py-2">
-          <JumpRatingCell runner={runner} />
+          <JumpRatingCell coverage={jprACoverage} runner={runner} />
         </td>
       ) : null}
       {isAllWeatherRace ? (
         <td className="px-1.5 py-2">
-          <AwRatingCell runner={runner} />
+          <AwRatingCell coverage={awDCoverage} runner={runner} />
         </td>
       ) : null}
       {isTurfRace ? (
         <td className="px-1.5 py-2">
-          <TurfPerformanceRatingCell runner={runner} />
+          <TurfPerformanceRatingCell coverage={tprCoverage} runner={runner} />
         </td>
       ) : null}
       <td className="px-1.5 py-2">
@@ -643,24 +704,38 @@ export function TodayMarketOdds({ runner }: { runner: TodayRunner }) {
   );
 }
 
-function JumpRatingCell({ runner }: { runner: TodayRunner }) {
+function JumpRatingCell({ coverage, runner }: { coverage?: RatingCoverage; runner: TodayRunner }) {
   const rating = runner.jumpRating?.jprA;
   if (!rating) return <span className="text-slate-400">—</span>;
+  const insufficientCoverage = coverage?.ratingCoverageStatus === "insufficient_coverage";
   return (
     <div className="space-y-0.5">
       <div className="font-semibold text-slate-900">JPR-A {rating.score.toFixed(1)}</div>
-      <div className="text-xs text-slate-600">Rank {rating.rank}</div>
+      <div
+        className={insufficientCoverage ? "text-xs font-medium text-amber-700" : "text-xs text-slate-600"}
+        title={insufficientCoverage ? coverageTitle(coverage, JPR_A_RATING_COVERAGE_GUARD_VERSION, JPR_A_RATING_COVERAGE_GUARD_IMPLEMENTED_AT) : undefined}
+      >
+        {insufficientCoverage ? "Insufficient race coverage" : `Rank ${rating.rank}`}
+      </div>
     </div>
   );
 }
 
-function AwRatingCell({ runner }: { runner: TodayRunner }) {
+function AwRatingCell({ coverage, runner }: { coverage?: AwRatingCoverage; runner: TodayRunner }) {
   const rating = runner.awRating?.awD;
   if (!rating) return <span className="text-slate-400">—</span>;
+  const insufficientCoverage = coverage?.ratingCoverageStatus === "insufficient_coverage";
   return (
     <div className="space-y-0.5">
       <div className="font-semibold text-slate-900">AW-D {rating.score.toFixed(1)}</div>
-      <div className="text-xs text-slate-600">Rank {rating.rank}</div>
+      <div
+        className={insufficientCoverage ? "text-xs font-medium text-amber-700" : "text-xs text-slate-600"}
+        title={insufficientCoverage
+          ? `Rated ${coverage.ratedRunnerCount}/${coverage.activeRunnerCount}; guard ${AW_D_RATING_COVERAGE_GUARD_VERSION}, implemented ${AW_D_RATING_COVERAGE_GUARD_IMPLEMENTED_AT}; requires at least ${AW_D_MIN_RATED_RUNNERS} rated runners and ${(AW_D_MIN_RATING_COVERAGE * 100).toFixed(0)}% coverage.`
+          : undefined}
+      >
+        {insufficientCoverage ? "Insufficient race coverage" : `Rank ${rating.rank}`}
+      </div>
     </div>
   );
 }
@@ -684,19 +759,23 @@ function goingFormLabel(term: GoingFormTerm): string {
   return term[0]!.toUpperCase() + term.slice(1);
 }
 
-function TurfPerformanceRatingCell({ runner }: { runner: TodayRunner }) {
+function TurfPerformanceRatingCell({ coverage, runner }: { coverage?: RatingCoverage; runner: TodayRunner }) {
   const rating = runner.turfPerformanceRating;
   if (!rating) {
     return <span className="text-slate-400">—</span>;
   }
+  const insufficientCoverage = coverage?.ratingCoverageStatus === "insufficient_coverage";
 
   return (
     <div className="space-y-0.5">
       <div className="font-semibold text-slate-900">
         TPR {Math.round(rating.rating)}
       </div>
-      <div className="text-xs text-slate-600">
-        {formatTodayTprRankGap(rating.rank, rating.gap)}
+      <div
+        className={insufficientCoverage ? "text-xs font-medium text-amber-700" : "text-xs text-slate-600"}
+        title={insufficientCoverage ? coverageTitle(coverage, TPR_RATING_COVERAGE_GUARD_VERSION, TPR_RATING_COVERAGE_GUARD_IMPLEMENTED_AT) : undefined}
+      >
+        {insufficientCoverage ? "Insufficient race coverage" : formatTodayTprRankGap(rating.rank, rating.gap)}
       </div>
       {rating.isCrossSurfaceFallback ? (
         <div className="text-xs font-medium text-sky-700">
@@ -710,6 +789,10 @@ function TurfPerformanceRatingCell({ runner }: { runner: TodayRunner }) {
       ) : null}
     </div>
   );
+}
+
+function coverageTitle(coverage: RatingCoverage, version: string, implementedAt: string) {
+  return `Rated ${coverage.ratedRunnerCount}/${coverage.activeRunnerCount}; guard ${version}, implemented ${implementedAt}; requires at least ${MIN_RACE_RATED_RUNNERS} rated runners and ${(MIN_RACE_RATING_COVERAGE * 100).toFixed(0)}% coverage.`;
 }
 
 function SavedRuleMatches({ matches }: { matches: NonNullable<TodayRunner["savedRuleMatches"]> }) {

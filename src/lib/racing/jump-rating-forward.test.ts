@@ -134,6 +134,43 @@ describe("Jump Rating forward tracker", () => {
     assert.equal(summary.jprA.rank1TiedRaces, 1);
   });
 
+  test("retains insufficient JPR-A coverage diagnostically without analytical rank-1 selection", () => {
+    const record = buildJumpRatingForwardRace({
+      raceDate: "2026-09-27",
+      course: "Test",
+      race: sparseJumpRace(11, 1),
+      recordedAt: new Date("2026-09-27T07:00:00.000Z"),
+    });
+    assert.ok(record);
+    assert.equal(record.activeRunnerCount, 11);
+    assert.equal(record.ratedRunnerCount, 1);
+    assert.equal(record.ratingCoverageStatus, "insufficient_coverage");
+    assert.equal(record.ratingCoverageExclusionReason, "insufficient_rating_coverage");
+    assert.equal(record.jprARankEligible, false);
+    assert.equal(record.runners[0]?.jprAScore, 1);
+    assert.equal(record.runners[0]?.jprARank, 1);
+    const summary = summarizeJumpRatingForward({ ...emptyJumpRatingForwardData(), races: [record] });
+    assert.equal(summary.jprA.rank1Selections, 0);
+    assert.equal(summary.pending, 0);
+    assert.equal(summary.insufficientCoverage, 1);
+  });
+
+  test("JPR-A0 shadow does not make insufficient JPR-A coverage eligible", () => {
+    const record = buildJumpRatingForwardRace({
+      raceDate: "2026-09-27",
+      course: "Test",
+      race: a0Race(),
+      recordedAt: new Date("2026-09-27T07:00:00.000Z"),
+    });
+    assert.ok(record);
+    assert.equal(record.ratedRunnerCount, 1);
+    assert.equal(record.ratingCoverageStatus, "insufficient_coverage");
+    assert.equal(record.jprARankEligible, false);
+    assert.equal(record.jprA0Rank1FallbackDerived, true);
+    assert.equal(record.runners[0]?.jprA0Rank, 1);
+    assert.deepEqual(summarizeJumpRatingForward({ ...emptyJumpRatingForwardData(), races: [record] }).jprA.rank1Selections, 0);
+  });
+
   test("upsert and repeated settlement are idempotent", () => {
     const record = requiredRecord();
     const initial = upsertJumpRatingForwardRaces(emptyJumpRatingForwardData(), [record, record]);
@@ -271,6 +308,19 @@ function jumpRace(overrides: Partial<TodayRace> = {}): TodayRace {
     ],
     ...overrides,
   };
+}
+
+function sparseJumpRace(activeRunnerCount: number, ratedRunnerCount: number): TodayRace {
+  return jumpRace({
+    raceId: "sparse-jump",
+    declaredRunnerCount: activeRunnerCount,
+    raceDateTime: new Date("2026-09-27T12:00:00.000Z"),
+    runners: Array.from({ length: activeRunnerCount }, (_, index) => runner(String(index + 1), {
+      averageJumpSpeedLast3: index < ratedRunnerCount ? 100 - index : null,
+      trainerPriorWinRate: index < ratedRunnerCount ? 20 - index : 10,
+      officialRating: 100 - index,
+    })),
+  });
 }
 
 function runner(

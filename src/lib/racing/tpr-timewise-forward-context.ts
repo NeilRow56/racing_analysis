@@ -13,6 +13,11 @@ import {
   buildCanonicalTurfPerformanceRatingInput,
   turfPerformanceRelativeWeightContribution,
 } from "./turf-performance-rating";
+import {
+  RATING_COVERAGE_EXCLUSION_REASON,
+  TPR_RATING_COVERAGE_GUARD_IMPLEMENTED_AT,
+  TPR_RATING_COVERAGE_GUARD_VERSION,
+} from "./rating-coverage";
 
 export const TIMEWISE_NON_RUNNER_VALUE = "__timewise_non_runner__";
 
@@ -71,7 +76,9 @@ export function buildTodayForwardInput({
   if (!raceTime) throw new Error("This race does not have a valid scheduled time.");
   const family = timewiseRaceFamily(race);
   if (!family) throw new Error("Timewise tracking is available for Turf and All Weather races only.");
-  const [tprRank1, tprRank2] = family === "turf" ? orderedTprRunners(race.runners) : [];
+  const tprCoverage = family === "turf" ? race.tprRatingCoverage : undefined;
+  const tprRankEligible = tprCoverage?.ratingCoverageStatus !== "insufficient_coverage";
+  const [tprRank1, tprRank2] = family === "turf" && tprRankEligible ? orderedTprRunners(race.runners) : [];
 
   const winners = race.runners.filter((runner) => runner.finishingPosition === 1);
   const winner = winners[0] ?? null;
@@ -109,6 +116,16 @@ export function buildTodayForwardInput({
         ?? null
       : null,
     w50Rank1NonRunner: false,
+    activeRunnerCount: tprCoverage?.activeRunnerCount,
+    ratedRunnerCount: tprCoverage?.ratedRunnerCount,
+    ratingCoverage: tprCoverage?.ratingCoverage,
+    ratingCoverageStatus: tprCoverage?.ratingCoverageStatus,
+    ratingCoverageGuardVersion: family === "turf" ? TPR_RATING_COVERAGE_GUARD_VERSION : undefined,
+    ratingCoverageGuardImplementedAt: family === "turf" ? TPR_RATING_COVERAGE_GUARD_IMPLEMENTED_AT : undefined,
+    ratingCoverageExclusionReason: tprCoverage?.ratingCoverageStatus === "insufficient_coverage"
+      ? RATING_COVERAGE_EXCLUSION_REASON
+      : null,
+    tprRankEligible: family === "turf" ? tprRankEligible : undefined,
     tprInputSnapshot: family === "turf" ? buildTprInputSnapshot(race.runners) : null,
     awBestL3SpeedRank1,
     awBestL3PerformanceRank1,

@@ -1,5 +1,10 @@
 import type { TodayRace, TodayRunner } from "./todays-racing";
 import { isJumpRace } from "./jump-speed-rating";
+import {
+  calculateRatingCoverage,
+  JPR_A_RATING_COVERAGE_GUARD_IMPLEMENTED_AT,
+  JPR_A_RATING_COVERAGE_GUARD_VERSION,
+} from "./rating-coverage";
 
 export const JUMP_RATING_A_VERSION = "JPR_A_V1" as const;
 export const JUMP_RATING_B_VERSION = "JPR_B_V1" as const;
@@ -85,8 +90,15 @@ export function calculateJumpRaceRatings(
 export function attachJumpRaceRatings(race: TodayRace): TodayRace {
   if (!isJumpRace(race)) return race;
   const ratings = calculateJumpRaceRatings(race.runners.map(jumpRatingInputForTodayRunner));
+  const jprARatingCoverage = calculateRatingCoverage(
+    race.runners,
+    (runner) => ratings.get(runner.runnerId)?.jprA !== null,
+    JPR_A_RATING_COVERAGE_GUARD_VERSION,
+    JPR_A_RATING_COVERAGE_GUARD_IMPLEMENTED_AT,
+  );
   return {
     ...race,
+    jumpRatingCoverage: { jprA: jprARatingCoverage },
     runners: race.runners.map((runner) => ({
       ...runner,
       jumpRating: ratings.get(runner.runnerId),

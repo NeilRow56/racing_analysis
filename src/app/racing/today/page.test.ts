@@ -115,15 +115,16 @@ describe("Today request orchestration", () => {
   test("renders the frozen JPR-A diagnostic for Jump runners only", () => {
     const source = readFileSync(new URL("./page.tsx", import.meta.url), "utf8");
     assert.match(source, /JPR-A diag\./);
-    assert.match(source, /isJumpRace \? \([\s\S]*?<JumpRatingCell runner=\{runner\}/);
+    assert.match(source, /isJumpRace \? \([\s\S]*?<JumpRatingCell coverage=\{jprACoverage\} runner=\{runner\}/);
     assert.match(source, /JPR-A \{rating\.score\.toFixed\(1\)\}/);
   });
 
   test("renders the frozen AW-D diagnostic for All Weather runners only", () => {
     const source = readFileSync(new URL("./page.tsx", import.meta.url), "utf8");
     assert.match(source, /AW-D diag\./);
-    assert.match(source, /isAllWeatherRace \? \([\s\S]*?<AwRatingCell runner=\{runner\}/);
+    assert.match(source, /isAllWeatherRace \? \([\s\S]*?<AwRatingCell coverage=\{awDCoverage\} runner=\{runner\}/);
     assert.match(source, /AW-D \{rating\.score\.toFixed\(1\)\}/);
+    assert.match(source, /Insufficient race coverage/);
   });
 
   test("synchronizes AW forward comparisons once per page request", () => {
@@ -159,7 +160,7 @@ describe("Today request orchestration", () => {
     assert.doesNotMatch(source, />Prev Speed<\/th>/);
     assert.doesNotMatch(source, />Best L3<\/th>/);
     assert.match(source, /<TodaySpeedDisplay>/);
-    assert.match(source, /<TurfPerformanceRatingCell runner=\{runner\}/);
+    assert.match(source, /<TurfPerformanceRatingCell coverage=\{tprCoverage\} runner=\{runner\}/);
     assert.match(source, /<TodayMarketOdds runner=\{runner\}/);
     assert.match(source, /min-w-\[1120px\].*text-xs/);
     assert.match(source, /data-testid="runner-table-scroll"/);

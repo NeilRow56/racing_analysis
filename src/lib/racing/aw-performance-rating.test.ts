@@ -3,6 +3,7 @@ import { describe, test } from "node:test";
 import {
   AW_RATING_A_VERSION,
   AW_RATING_D_VERSION,
+  calculateAwDRatingCoverage,
   calculateAwRaceRatings,
   type AwRatingInput,
 } from "./aw-performance-rating";
@@ -79,6 +80,58 @@ describe("All Weather Performance Rating V1", () => {
 
     assert.equal(ratings.get("runner")?.awD?.rank, 1);
     assert.equal(ratings.get("non-runner")?.awD, null);
+  });
+
+  test("applies the AW-D race coverage guard after preserving scores", () => {
+    const elevenWithOneRated = Array.from({ length: 11 }, (_, index) => input(String(index + 1), {
+      averageAwSpeedLast3: index === 0 ? 100 : null,
+      trainerPriorStrikeRate: index === 0 ? 20 : 10,
+      jockeyPriorStrikeRate: index === 0 ? 20 : 10,
+    }));
+    const oneRatedRatings = calculateAwRaceRatings(elevenWithOneRated);
+    const oneRatedCoverage = calculateAwDRatingCoverage(elevenWithOneRated, oneRatedRatings);
+    assert.equal(oneRatedCoverage.activeRunnerCount, 11);
+    assert.equal(oneRatedCoverage.ratedRunnerCount, 1);
+    assert.equal(Math.round(oneRatedCoverage.ratingCoverage * 10000) / 100, 9.09);
+    assert.equal(oneRatedCoverage.ratingCoverageStatus, "insufficient_coverage");
+    assert.equal(oneRatedRatings.get("1")?.awD?.score, 1);
+
+    const twoOfEleven = elevenWithOneRated.map((runner, index) =>
+      index === 1 ? { ...runner, averageAwSpeedLast3: 90, trainerPriorStrikeRate: 15, jockeyPriorStrikeRate: 15 } : runner
+    );
+    assert.equal(
+      calculateAwDRatingCoverage(twoOfEleven, calculateAwRaceRatings(twoOfEleven)).ratingCoverageStatus,
+      "insufficient_coverage",
+    );
+
+    const threeOfEleven = twoOfEleven.map((runner, index) =>
+      index === 2 ? { ...runner, averageAwSpeedLast3: 80, trainerPriorStrikeRate: 12, jockeyPriorStrikeRate: 12 } : runner
+    );
+    assert.equal(
+      calculateAwDRatingCoverage(threeOfEleven, calculateAwRaceRatings(threeOfEleven)).ratingCoverageStatus,
+      "eligible",
+    );
+
+    const twoOfFive = Array.from({ length: 5 }, (_, index) => input(String(index + 1), {
+      averageAwSpeedLast3: index < 2 ? 100 - index : null,
+      trainerPriorStrikeRate: index < 2 ? 20 - index : 10,
+      jockeyPriorStrikeRate: index < 2 ? 20 - index : 10,
+    }));
+    assert.equal(
+      calculateAwDRatingCoverage(twoOfFive, calculateAwRaceRatings(twoOfFive)).ratingCoverageStatus,
+      "eligible",
+    );
+
+    const withNonRunner = [...twoOfFive, input("nr", {
+      averageAwSpeedLast3: null,
+      trainerPriorStrikeRate: null,
+      jockeyPriorStrikeRate: null,
+      resultStatus: "non_runner",
+    })];
+    const nonRunnerCoverage = calculateAwDRatingCoverage(withNonRunner, calculateAwRaceRatings(withNonRunner));
+    assert.equal(nonRunnerCoverage.activeRunnerCount, 5);
+    assert.equal(nonRunnerCoverage.ratedRunnerCount, 2);
+    assert.equal(nonRunnerCoverage.ratingCoverageStatus, "eligible");
   });
 });
 

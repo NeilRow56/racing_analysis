@@ -8993,8 +8993,8 @@
           "jprBRank": 1,
           "goingFormMatch": null,
           "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
+          "resultStatus": "non_runner",
+          "finalSp": 2.75,
           "settlement": null
         },
         {
@@ -9016,10 +9016,15 @@
           "jprBScore": null,
           "jprBRank": null,
           "goingFormMatch": null,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 2,
+          "resultStatus": "finished",
+          "finalSp": 1.222,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 1.222
+          }
         },
         {
           "runnerId": "dd1f9023-a6a4-40dd-89fa-f847f8a380f4",
@@ -9041,8 +9046,8 @@
           "jprBRank": null,
           "goingFormMatch": null,
           "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
+          "resultStatus": "non_runner",
+          "finalSp": 5,
           "settlement": null
         },
         {
@@ -9065,8 +9070,8 @@
           "jprBRank": null,
           "goingFormMatch": null,
           "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
+          "resultStatus": "non_runner",
+          "finalSp": 11,
           "settlement": null
         },
         {
@@ -9088,10 +9093,15 @@
           "jprBScore": 1.5,
           "jprBRank": 1,
           "goingFormMatch": null,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 1,
+          "resultStatus": "finished",
+          "finalSp": 4,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 4,
+            "profitLoss": 3,
+            "settlementOddsDecimal": 4
+          }
         },
         {
           "runnerId": "46af0668-ec0c-42e9-89f8-ea78e1eaf141",
@@ -9113,13 +9123,15 @@
           "jprBRank": null,
           "goingFormMatch": null,
           "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
+          "resultStatus": "non_runner",
+          "finalSp": 34,
           "settlement": null
         }
       ],
-      "winnerRunnerIds": [],
-      "settledAt": null
+      "winnerRunnerIds": [
+        "b6e9fe47-f2ce-45a1-89a4-d5a1d96cf821"
+      ],
+      "settledAt": "2026-09-30T18:09:48.485Z"
     },
     {
       "raceDate": "2026-09-30",
@@ -9158,10 +9170,15 @@
           "jprBScore": null,
           "jprBRank": null,
           "goingFormMatch": null,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 3,
+          "resultStatus": "finished",
+          "finalSp": 2.1,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 2.1
+          }
         },
         {
           "runnerId": "8106f526-f086-4171-9c54-34c52fab6823",
@@ -9182,10 +9199,15 @@
           "jprBScore": null,
           "jprBRank": null,
           "goingFormMatch": null,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 1,
+          "resultStatus": "finished",
+          "finalSp": 2,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 2,
+            "profitLoss": 1,
+            "settlementOddsDecimal": 2
+          }
         },
         {
           "runnerId": "71447bde-8773-4fcd-b587-c37eead17e94",
@@ -9207,8 +9229,8 @@
           "jprBRank": null,
           "goingFormMatch": null,
           "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
+          "resultStatus": "non_runner",
+          "finalSp": 3.5,
           "settlement": null
         },
         {
@@ -9230,10 +9252,15 @@
           "jprBScore": null,
           "jprBRank": null,
           "goingFormMatch": null,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 2,
+          "resultStatus": "finished",
+          "finalSp": 9,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 9
+          }
         },
         {
           "runnerId": "bce94e7c-1a07-4cd1-8c9a-6a8689dd867f",
@@ -9254,14 +9281,21 @@
           "jprBScore": null,
           "jprBRank": null,
           "goingFormMatch": null,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 4,
+          "resultStatus": "finished",
+          "finalSp": 301,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 301
+          }
         }
       ],
-      "winnerRunnerIds": [],
-      "settledAt": null
+      "winnerRunnerIds": [
+        "8106f526-f086-4171-9c54-34c52fab6823"
+      ],
+      "settledAt": "2026-09-30T18:09:48.485Z"
     },
     {
       "raceDate": "2026-09-30",
@@ -9300,10 +9334,15 @@
           "jprBScore": 4,
           "jprBRank": 4,
           "goingFormMatch": null,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 1,
+          "resultStatus": "finished",
+          "finalSp": 2.75,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 2.75,
+            "profitLoss": 1.75,
+            "settlementOddsDecimal": 2.75
+          }
         },
         {
           "runnerId": "ee2f336c-3493-42ce-972d-8c4546634eb3",
@@ -9324,10 +9363,15 @@
           "jprBScore": 2.5,
           "jprBRank": 1,
           "goingFormMatch": null,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 2,
+          "resultStatus": "finished",
+          "finalSp": 6.5,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 6.5
+          }
         },
         {
           "runnerId": "7183de2a-b2fe-480e-b48e-6c2679f4f3a7",
@@ -9349,8 +9393,8 @@
           "jprBRank": 2,
           "goingFormMatch": null,
           "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
+          "resultStatus": "non_runner",
+          "finalSp": 3.25,
           "settlement": null
         },
         {
@@ -9372,10 +9416,15 @@
           "jprBScore": 3,
           "jprBRank": 2,
           "goingFormMatch": null,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 3,
+          "resultStatus": "finished",
+          "finalSp": 3.5,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 3.5
+          }
         },
         {
           "runnerId": "c178db3f-5be5-412a-b643-d5b5649c673e",
@@ -9396,10 +9445,15 @@
           "jprBScore": 4,
           "jprBRank": 4,
           "goingFormMatch": null,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 6,
+          "resultStatus": "finished",
+          "finalSp": 13,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 13
+          }
         },
         {
           "runnerId": "884181db-43f7-48a7-b983-08c353c03f90",
@@ -9420,10 +9474,15 @@
           "jprBScore": 4.5,
           "jprBRank": 6,
           "goingFormMatch": null,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 7,
+          "resultStatus": "finished",
+          "finalSp": 5,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 5
+          }
         },
         {
           "runnerId": "fb3d26c0-c124-478a-81f5-995832fff960",
@@ -9444,10 +9503,15 @@
           "jprBScore": 7,
           "jprBRank": 7,
           "goingFormMatch": null,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 4,
+          "resultStatus": "finished",
+          "finalSp": 19,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 19
+          }
         },
         {
           "runnerId": "acb6dcb5-9cb6-4304-97ee-1ff282bdbcb2",
@@ -9468,14 +9532,21 @@
           "jprBScore": 8,
           "jprBRank": 8,
           "goingFormMatch": null,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 5,
+          "resultStatus": "finished",
+          "finalSp": 29,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 29
+          }
         }
       ],
-      "winnerRunnerIds": [],
-      "settledAt": null
+      "winnerRunnerIds": [
+        "30887b0b-9e3f-4a6f-907b-aee32b9d86cd"
+      ],
+      "settledAt": "2026-09-30T18:09:48.485Z"
     },
     {
       "raceDate": "2026-09-30",
@@ -9515,9 +9586,14 @@
           "jprBRank": 1,
           "goingFormMatch": null,
           "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "resultStatus": "fell",
+          "finalSp": 4.333,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 4.333
+          }
         },
         {
           "runnerId": "c730daf2-88ec-454c-8058-6bb9c4e03377",
@@ -9538,10 +9614,15 @@
           "jprBScore": 2.5,
           "jprBRank": 2,
           "goingFormMatch": null,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 2,
+          "resultStatus": "finished",
+          "finalSp": 4.333,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 4.333
+          }
         },
         {
           "runnerId": "0c73e2ef-84d1-4df3-9e6e-75d13d8b7b8f",
@@ -9562,10 +9643,15 @@
           "jprBScore": 3,
           "jprBRank": 3,
           "goingFormMatch": null,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 1,
+          "resultStatus": "finished",
+          "finalSp": 3.75,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 3.75,
+            "profitLoss": 2.75,
+            "settlementOddsDecimal": 3.75
+          }
         },
         {
           "runnerId": "9d87c09f-d987-426d-ae20-41296ed5d285",
@@ -9586,10 +9672,15 @@
           "jprBScore": null,
           "jprBRank": null,
           "goingFormMatch": null,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 4,
+          "resultStatus": "finished",
+          "finalSp": 9,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 9
+          }
         },
         {
           "runnerId": "fec11cbb-cad8-4a94-8ccd-3471b6d1c115",
@@ -9610,10 +9701,15 @@
           "jprBScore": null,
           "jprBRank": null,
           "goingFormMatch": null,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 5,
+          "resultStatus": "finished",
+          "finalSp": 29,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 29
+          }
         },
         {
           "runnerId": "3d3525fb-ca99-4cae-8349-b58e04687814",
@@ -9635,9 +9731,14 @@
           "jprBRank": null,
           "goingFormMatch": null,
           "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "resultStatus": "unseated_rider",
+          "finalSp": 6,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 6
+          }
         },
         {
           "runnerId": "821f8c08-6e22-4113-9f1c-285f85560de0",
@@ -9659,8 +9760,8 @@
           "jprBRank": null,
           "goingFormMatch": null,
           "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
+          "resultStatus": "non_runner",
+          "finalSp": 17,
           "settlement": null
         },
         {
@@ -9682,10 +9783,15 @@
           "jprBScore": null,
           "jprBRank": null,
           "goingFormMatch": null,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 3,
+          "resultStatus": "finished",
+          "finalSp": 13,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 13
+          }
         },
         {
           "runnerId": "9a9a5977-33ea-4624-b153-7eba6f93f9c8",
@@ -9707,9 +9813,14 @@
           "jprBRank": null,
           "goingFormMatch": null,
           "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "resultStatus": "pulled_up",
+          "finalSp": 13,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 13
+          }
         },
         {
           "runnerId": "52a37d01-f2d2-4ff6-ac21-4e983b0d7ab3",
@@ -9731,13 +9842,15 @@
           "jprBRank": null,
           "goingFormMatch": null,
           "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
+          "resultStatus": "non_runner",
+          "finalSp": 26,
           "settlement": null
         }
       ],
-      "winnerRunnerIds": [],
-      "settledAt": null
+      "winnerRunnerIds": [
+        "0c73e2ef-84d1-4df3-9e6e-75d13d8b7b8f"
+      ],
+      "settledAt": "2026-09-30T18:09:48.485Z"
     },
     {
       "raceDate": "2026-09-30",
@@ -9777,9 +9890,14 @@
           "jprBRank": null,
           "goingFormMatch": null,
           "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "resultStatus": "pulled_up",
+          "finalSp": 6,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 6
+          }
         },
         {
           "runnerId": "bccfc39d-3412-4e30-90f4-6648a03d6619",
@@ -9801,9 +9919,14 @@
           "jprBRank": 7,
           "goingFormMatch": null,
           "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "resultStatus": "pulled_up",
+          "finalSp": 2.375,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 2.375
+          }
         },
         {
           "runnerId": "1d2666ad-00df-4e61-bd38-58f57b1e2573",
@@ -9824,10 +9947,15 @@
           "jprBScore": 8.5,
           "jprBRank": 11,
           "goingFormMatch": null,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 3,
+          "resultStatus": "finished",
+          "finalSp": 13,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 13
+          }
         },
         {
           "runnerId": "1f812ce2-d157-4231-a393-0410f470b64f",
@@ -9849,9 +9977,14 @@
           "jprBRank": 4,
           "goingFormMatch": null,
           "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "resultStatus": "pulled_up",
+          "finalSp": 13,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 13
+          }
         },
         {
           "runnerId": "941a97ff-1adc-4365-87dc-ec6d496598cc",
@@ -9872,10 +10005,15 @@
           "jprBScore": 5,
           "jprBRank": 1,
           "goingFormMatch": null,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 6,
+          "resultStatus": "finished",
+          "finalSp": 15,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 15
+          }
         },
         {
           "runnerId": "a608a86b-4a0d-4a56-9d13-5e39ba6d22ab",
@@ -9896,10 +10034,15 @@
           "jprBScore": 7.5,
           "jprBRank": 7,
           "goingFormMatch": null,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 2,
+          "resultStatus": "finished",
+          "finalSp": 21,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 21
+          }
         },
         {
           "runnerId": "261aa73e-774c-4258-9993-659012e155bc",
@@ -9921,9 +10064,14 @@
           "jprBRank": 4,
           "goingFormMatch": null,
           "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "resultStatus": "pulled_up",
+          "finalSp": 26,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 26
+          }
         },
         {
           "runnerId": "2bae3ff2-bda4-4dc9-9ecf-e5f2e55498f6",
@@ -9944,10 +10092,15 @@
           "jprBScore": 9,
           "jprBRank": 13,
           "goingFormMatch": null,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 7,
+          "resultStatus": "finished",
+          "finalSp": 13,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 13
+          }
         },
         {
           "runnerId": "24de9ba7-29d3-493b-8112-e4e1b2e1c152",
@@ -9968,10 +10121,15 @@
           "jprBScore": 5,
           "jprBRank": 1,
           "goingFormMatch": null,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 10,
+          "resultStatus": "finished",
+          "finalSp": 12,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 12
+          }
         },
         {
           "runnerId": "8bb9764e-ec1b-450c-a2df-cd34da8c8047",
@@ -9992,10 +10150,15 @@
           "jprBScore": 8,
           "jprBRank": 9,
           "goingFormMatch": null,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 1,
+          "resultStatus": "finished",
+          "finalSp": 15,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 15,
+            "profitLoss": 14,
+            "settlementOddsDecimal": 15
+          }
         },
         {
           "runnerId": "9807e2d6-1cf5-47eb-a8f9-dc40fb5ff017",
@@ -10017,9 +10180,14 @@
           "jprBRank": 4,
           "goingFormMatch": null,
           "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "resultStatus": "pulled_up",
+          "finalSp": 29,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 29
+          }
         },
         {
           "runnerId": "26d32e76-dc06-4aab-9e13-d06d53ea9046",
@@ -10040,10 +10208,15 @@
           "jprBScore": 8.5,
           "jprBRank": 11,
           "goingFormMatch": null,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 5,
+          "resultStatus": "finished",
+          "finalSp": 13,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 13
+          }
         },
         {
           "runnerId": "4fffa16c-21bd-4869-a777-d8670c8e625c",
@@ -10064,10 +10237,15 @@
           "jprBScore": 5.5,
           "jprBRank": 3,
           "goingFormMatch": null,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 9,
+          "resultStatus": "finished",
+          "finalSp": 21,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 21
+          }
         },
         {
           "runnerId": "367b9bdc-a4bc-4bd7-b8fd-e0c8966577fd",
@@ -10088,10 +10266,15 @@
           "jprBScore": 8,
           "jprBRank": 9,
           "goingFormMatch": null,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 8,
+          "resultStatus": "finished",
+          "finalSp": 29,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 29
+          }
         },
         {
           "runnerId": "04454020-3b4e-4f56-b633-2441f6b83091",
@@ -10112,14 +10295,21 @@
           "jprBScore": null,
           "jprBRank": null,
           "goingFormMatch": null,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 4,
+          "resultStatus": "finished",
+          "finalSp": 67,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 67
+          }
         }
       ],
-      "winnerRunnerIds": [],
-      "settledAt": null
+      "winnerRunnerIds": [
+        "8bb9764e-ec1b-450c-a2df-cd34da8c8047"
+      ],
+      "settledAt": "2026-09-30T18:09:48.485Z"
     },
     {
       "raceDate": "2026-09-30",
@@ -10158,10 +10348,15 @@
           "jprBScore": 2.5,
           "jprBRank": 1,
           "goingFormMatch": null,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 3,
+          "resultStatus": "finished",
+          "finalSp": 2.75,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 2.75
+          }
         },
         {
           "runnerId": "035b8790-2b5c-496c-b166-486ca4623f8f",
@@ -10182,10 +10377,15 @@
           "jprBScore": 2.5,
           "jprBRank": 1,
           "goingFormMatch": null,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 4,
+          "resultStatus": "finished",
+          "finalSp": 3.75,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 3.75
+          }
         },
         {
           "runnerId": "bbfce515-f704-4397-8972-1a618367fd68",
@@ -10206,10 +10406,15 @@
           "jprBScore": null,
           "jprBRank": null,
           "goingFormMatch": null,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 1,
+          "resultStatus": "finished",
+          "finalSp": 3,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 3,
+            "profitLoss": 2,
+            "settlementOddsDecimal": 3
+          }
         },
         {
           "runnerId": "34deed08-5f6c-4c7d-8813-8be0767d6316",
@@ -10230,10 +10435,15 @@
           "jprBScore": 3.5,
           "jprBRank": 3,
           "goingFormMatch": null,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 2,
+          "resultStatus": "finished",
+          "finalSp": 15,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 15
+          }
         },
         {
           "runnerId": "8e03d90a-6764-41ac-8ac8-3c2292fbe36a",
@@ -10254,10 +10464,15 @@
           "jprBScore": 4.5,
           "jprBRank": 5,
           "goingFormMatch": null,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 5,
+          "resultStatus": "finished",
+          "finalSp": 13,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 13
+          }
         },
         {
           "runnerId": "b19cd018-9ccf-4dfa-8e48-c1a7d000dc00",
@@ -10278,14 +10493,21 @@
           "jprBScore": 3.5,
           "jprBRank": 3,
           "goingFormMatch": null,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 6,
+          "resultStatus": "finished",
+          "finalSp": 23,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 23
+          }
         }
       ],
-      "winnerRunnerIds": [],
-      "settledAt": null
+      "winnerRunnerIds": [
+        "bbfce515-f704-4397-8972-1a618367fd68"
+      ],
+      "settledAt": "2026-09-30T18:09:48.485Z"
     },
     {
       "raceDate": "2026-09-30",
@@ -10324,10 +10546,15 @@
           "jprBScore": 2,
           "jprBRank": 1,
           "goingFormMatch": null,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 3,
+          "resultStatus": "finished",
+          "finalSp": 4,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 4
+          }
         },
         {
           "runnerId": "95fafc5f-3a84-4cad-97f7-e33d3ae6f18f",
@@ -10348,10 +10575,15 @@
           "jprBScore": 2.5,
           "jprBRank": 2,
           "goingFormMatch": null,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 2,
+          "resultStatus": "finished",
+          "finalSp": 3.75,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 3.75
+          }
         },
         {
           "runnerId": "f95959ba-916a-4690-b657-a2c2689963a3",
@@ -10373,8 +10605,8 @@
           "jprBRank": null,
           "goingFormMatch": null,
           "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
+          "resultStatus": "non_runner",
+          "finalSp": 9,
           "settlement": null
         },
         {
@@ -10397,9 +10629,14 @@
           "jprBRank": 3,
           "goingFormMatch": null,
           "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "resultStatus": "pulled_up",
+          "finalSp": 12,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 12
+          }
         },
         {
           "runnerId": "73a38371-28ff-4b59-8c59-2c5c9cb2d86b",
@@ -10420,10 +10657,15 @@
           "jprBScore": null,
           "jprBRank": null,
           "goingFormMatch": null,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 4,
+          "resultStatus": "finished",
+          "finalSp": 6,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 6
+          }
         },
         {
           "runnerId": "d402f81f-4353-4e29-be9f-a42c320e1b9a",
@@ -10444,10 +10686,15 @@
           "jprBScore": 8.5,
           "jprBRank": 7,
           "goingFormMatch": null,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 10,
+          "resultStatus": "finished",
+          "finalSp": 17,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 17
+          }
         },
         {
           "runnerId": "90f447b9-ea14-49ac-8565-ec34d5d5694f",
@@ -10468,10 +10715,15 @@
           "jprBScore": 5,
           "jprBRank": 4,
           "goingFormMatch": null,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 6,
+          "resultStatus": "finished",
+          "finalSp": 34,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 34
+          }
         },
         {
           "runnerId": "f99e3075-09df-42dc-b9fb-8a556127577c",
@@ -10492,10 +10744,15 @@
           "jprBScore": 9.5,
           "jprBRank": 8,
           "goingFormMatch": null,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 1,
+          "resultStatus": "finished",
+          "finalSp": 11,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 11,
+            "profitLoss": 10,
+            "settlementOddsDecimal": 11
+          }
         },
         {
           "runnerId": "015ba035-0982-48c6-b5c6-a2293eb14033",
@@ -10516,10 +10773,15 @@
           "jprBScore": 5.5,
           "jprBRank": 5,
           "goingFormMatch": null,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 5,
+          "resultStatus": "finished",
+          "finalSp": 10,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 10
+          }
         },
         {
           "runnerId": "7a748d3d-e464-4435-925e-d868846f0e59",
@@ -10540,10 +10802,15 @@
           "jprBScore": 10.5,
           "jprBRank": 10,
           "goingFormMatch": null,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 7,
+          "resultStatus": "finished",
+          "finalSp": 15,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 15
+          }
         },
         {
           "runnerId": "e9181e41-2c11-4707-8624-7ae0e37af307",
@@ -10565,9 +10832,14 @@
           "jprBRank": 6,
           "goingFormMatch": null,
           "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "resultStatus": "unseated_rider",
+          "finalSp": 34,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 34
+          }
         },
         {
           "runnerId": "ab521241-dcab-4197-b7e1-3d609dfd2b75",
@@ -10588,10 +10860,15 @@
           "jprBScore": 10.5,
           "jprBRank": 10,
           "goingFormMatch": null,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 8,
+          "resultStatus": "finished",
+          "finalSp": 15,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 15
+          }
         },
         {
           "runnerId": "c18a5d51-a97d-4b0a-9891-75ee5aa031ee",
@@ -10612,14 +10889,21 @@
           "jprBScore": 10,
           "jprBRank": 9,
           "goingFormMatch": null,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 9,
+          "resultStatus": "finished",
+          "finalSp": 17,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 17
+          }
         }
       ],
-      "winnerRunnerIds": [],
-      "settledAt": null
+      "winnerRunnerIds": [
+        "f99e3075-09df-42dc-b9fb-8a556127577c"
+      ],
+      "settledAt": "2026-09-30T18:09:48.485Z"
     }
   ],
   "jprA0Version": "JPR_A0_V1",
