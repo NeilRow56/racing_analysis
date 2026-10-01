@@ -1,0 +1,204 @@
+Run a diagnostic-only investigation of one-run and lightly raced horses in
+TPR_S2_V1.
+
+Do NOT change production TPR, Today, Forward Value, trackers, or saved rules.
+
+CONTEXT
+
+The Exactly Right diagnostic found:
+
+- valid TPR rank 1 under frozen TPR_S2_V1
+- only one usable prior Turf run
+- relative-weight term was the main reason for the lead:
+  +0.486 raw versus Blue Wonder, approximately +3.98 TPR points
+- latest turf_speed_v2 = 100.853
+- Today Best L3 Speed display was missing because only one run existed
+- 294-day layoff has no TPR effect
+- market price has no role
+- no code defect
+- structural weakness: one-run horses can rank highly without shrinkage,
+  minimum-history protection, or layoff protection
+
+GOAL
+
+Determine whether one-run horses are systematically over-ranked and whether a
+simple, pre-specified confidence treatment would improve robustness.
+
+Do NOT optimise for ROI.
+
+1. POPULATION
+
+Use authoritative current Turf pipeline:
+
+- 2025 development
+- 2026 holdout
+- TPR_S2_V1
+- turf_speed_v2
+- canonical settlement v2
+- chronology-safe inputs
+
+Split runners by usable prior Turf history:
+
+- exactly 1 run
+- exactly 2 runs
+- 3+ runs
+
+2. CURRENT TPR BEHAVIOUR
+
+For each history group report:
+
+- runners
+- rated runners
+- races with a rank-1 horse from that group
+- rank-1 strike
+- rank-1 top-3 finish rate
+- top-3 winner capture
+- winner mean rank
+- rank/finish association
+- mean TPR lead for rank 1
+- median TPR lead
+- mean relative-weight contribution
+- median relative-weight contribution
+
+ROI/A/E may be shown descriptively only.
+
+3. RELATIVE-WEIGHT DIAGNOSTIC
+
+For one-run horses specifically, compare:
+
+- their relative-weight contribution distribution
+- 2-run horses
+- 3+ run horses
+
+Report:
+
+- mean
+- median
+- 10th/90th percentile
+- proportion where relative-weight term changes rank by:
+  0
+  1
+  2+
+  positions
+
+Determine whether one-run horses receive unusually influential relative-weight
+effects.
+
+4. RANK-1 DISPLACEMENT
+
+For races where a one-run horse is TPR rank 1:
+
+recalculate diagnostic rankings under these fixed alternatives:
+
+A. Current frozen TPR_S2_V1
+
+B. One-run relative-weight contribution = 0
+
+C. One-run relative-weight contribution = 50% of current value
+
+D. One-run horse remains scored but is NOT eligible to be analytical rank 1
+   until it has at least 2 prior Turf runs
+
+Do not test any other percentages or thresholds.
+
+For each variant report 2025 and 2026:
+
+- races affected
+- rank-1 changed
+- rank-1 strike
+- top-3 capture
+- association
+- race coverage
+
+ROI secondary only.
+
+5. EXACTLY RIGHT REPLAY
+
+Show Exactly Right under A/B/C/D:
+
+- score
+- rank
+- lead/deficit
+- whether still rank 1
+
+This should make the practical effect easy to understand.
+
+6. LONG-LAYOFF INTERACTION
+
+For one-run horses only, descriptively split:
+
+- <=90 days
+- 91–180 days
+- >180 days
+
+Report ranking performance.
+
+Do NOT create a layoff penalty.
+
+The purpose is only to see whether very stale one-run evidence is particularly
+fragile.
+
+7. RACE TYPE
+
+For one-run TPR rank-1 horses report separately:
+
+- maiden
+- novice
+- handicap
+- other
+
+and age group where available:
+
+- 2yo
+- 3yo
+- older
+
+This is important because seasonal maiden/novice composition may drive the issue.
+
+8. REPLICATION
+
+For every conclusion compare 2025 versus 2026.
+
+Highlight only effects that replicate directionally.
+
+Do not choose a treatment because it has the highest ROI.
+
+9. RECOMMENDATION
+
+Conclude which of these is best supported:
+
+A. keep current TPR unchanged
+B. add a confidence warning only
+C. suppress analytical rank 1 for one-run horses
+D. reduce/remove relative-weight contribution for one-run horses
+E. insufficient evidence
+
+Do not implement the recommendation yet.
+
+10. OUTPUT
+
+Write:
+
+/tmp/tpr-one-run-history-diagnostic.md
+
+Answer clearly:
+
+1. Are one-run horses systematically over-ranked?
+2. Is the relative-weight term the main cause?
+3. Does the issue replicate in both 2025 and 2026?
+4. Does it concentrate in maiden/novice races?
+5. Does long absence make it worse?
+6. Which fixed treatment is most robust?
+7. What would happen to Exactly Right under each treatment?
+8. Should production TPR change?
+
+No production changes.
+
+Validation:
+- current TPR_S2_V1
+- turf_speed_v2
+- chronology-safe
+- no ROI optimisation
+- typecheck
+- targeted ESLint
+- git diff --check

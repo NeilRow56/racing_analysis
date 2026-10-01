@@ -625,7 +625,20 @@ export function RecentObservations({ filters, observations, reportingStatuses }:
                     <span className="line-clamp-2 break-words font-medium leading-4">{raceDescription}</span>
                   </td>
                   <td className="whitespace-nowrap px-2 py-2 font-medium">{forwardValueFamilyLabel(race.family)}</td>
-                  <HorseCell value={race.leaderHorseName} />
+                  <td className="px-2 py-2 font-medium leading-4" title={race.leaderHorseName}>
+                    <span className="line-clamp-2 break-words">{race.leaderHorseName}</span>
+                    {race.family === "turf" && race.leaderTprConfidence ? (
+                      <details className="mt-1 text-[11px] font-normal text-slate-600">
+                        <summary className="cursor-pointer">TPR context</summary>
+                        <div className="mt-1 space-y-0.5">
+                          <p>{race.leaderTprConfidence.historyDepthLabel}</p>
+                          {race.leaderTprConfidence.limitedHistory ? <p className="text-amber-700">Limited history</p> : null}
+                          {race.leaderTprConfidence.staleTurfEvidence ? <p className="text-amber-700">Stale Turf evidence</p> : null}
+                          <p>Days since usable Turf run: {race.leaderTprConfidence.daysSinceUsableTurfRun ?? "-"}</p>
+                        </div>
+                      </details>
+                    ) : null}
+                  </td>
                   <CompactCell value={pct(race.calibratedProbability)} />
                   <MarketPriceCell model="tpr" record={race} />
                   <CompactCell value={pct(race.capturedMarketProbability)} />

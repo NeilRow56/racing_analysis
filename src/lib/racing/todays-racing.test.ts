@@ -23,8 +23,23 @@ import {
 } from "./todays-racing";
 import type { HorseMetricsAsOf } from "./horse-metrics";
 import type { GoingForm } from "./going-form";
+import { getTprConfidenceContext } from "./tpr-confidence-context";
 
 describe("Today racing grouping", () => {
+  test("attaches actual-history context without changing ratings, ranks or snapshot inputs", () => {
+    const context = getTprConfidenceContext([1, 2].map(id => ({ runnerId: String(id), raceDateTime: new Date(`2026-01-0${id}`), resultStatus: "finished", finishingPosition: 4, weightCarriedLbs: 135, turfSpeedRating: { rating: 100 } })), new Date("2026-10-01"));
+    const form = metric({ latestTurfPerformanceRating: 67.853, latestTurfSpeedRating: 100.853 });
+    const baseline = groupTodaysRacingRows([row()], new Map(), new Map([["runner-1", form]]));
+    const annotated = groupTodaysRacingRows([row()], new Map(), new Map([["runner-1", { ...form, tprConfidence: context }]]));
+    const before = baseline[0]!.races[0]!.runners[0]!;
+    const after = annotated[0]!.races[0]!.runners[0]!;
+    assert.ok(before.turfPerformanceRating);
+    assert.deepEqual(after.turfPerformanceRating, before.turfPerformanceRating);
+    assert.deepEqual(after.turfPerformanceInput, before.turfPerformanceInput);
+    assert.equal(after.turfPerformanceRating?.historyDepth, 1);
+    assert.equal(after.tprConfidence?.historyDepthLabel, "2-run basis");
+    assert.equal(after.tprConfidence?.limitedHistory, false);
+  });
   test("labels TPR rating-point leads and deficits without probability-point units", () => {
     assert.equal(formatTodayTprRankGap(1, 11.7), "Rank 1 · TPR lead +11.7");
     assert.equal(formatTodayTprRankGap(2, -11.7), "Rank 2 · TPR deficit -11.7");

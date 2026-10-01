@@ -22,6 +22,7 @@ import { getTurfSpeedRatingsForRunners } from "./turf-speed-ratings";
 import { type TurfSpeedRating } from "./turf-speed-rating";
 import { calculateTodaysRating } from "./todays-rating";
 import { calculateWeightAdjustedPerformance } from "./weight-performance";
+import { getTprConfidenceContext, type TprConfidenceContext } from "./tpr-confidence-context";
 
 type Db = ReturnType<typeof createDbConnection>["db"];
 
@@ -58,6 +59,7 @@ export type HorseMetricsContext = {
 };
 
 export type HorseMetricsAsOf = {
+  tprConfidence?: TprConfidenceContext;
   priorRuns: number;
   priorAwStarts?: number;
   priorWins: number;
@@ -579,6 +581,7 @@ export function calculateHorseMetricsAsOf({
 
   return {
     priorRuns: priorRuns.length,
+    tprConfidence: getTprConfidenceContext(priorRuns, beforeDateTime),
     priorAwStarts: priorRuns.filter((run) =>
       run.awSpeedRating != null || isSupportedAllWeatherRace(run)
     ).length,

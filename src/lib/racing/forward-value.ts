@@ -1,6 +1,7 @@
 import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { settleSelection } from "./backtest";
+import type { TprConfidenceContext } from "./tpr-confidence-context";
 import { calculateAwDRatingCoverage } from "./aw-performance-rating";
 import {
   calculateRatingCoverage,
@@ -131,6 +132,7 @@ export type ForwardValueRecord = {
   leaderHorseName: string;
   leaderRank: 1;
   leaderScore: number;
+  leaderTprConfidence?: TprConfidenceContext;
   leaderGap: number | null;
   calibratedProbability: number;
   capturedPrice: string | null;
@@ -394,6 +396,9 @@ export function buildForwardValueRecord(input: {
     leaderHorseName: leader.runner.horseName,
     leaderRank: 1,
     leaderScore: leader.score,
+    ...(input.family === "turf" && leader.runner.tprConfidence
+      ? { leaderTprConfidence: { ...leader.runner.tprConfidence } }
+      : {}),
     leaderGap: gap,
     calibratedProbability: probability,
     capturedPrice: null,

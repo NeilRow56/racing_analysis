@@ -39,6 +39,17 @@ function run(
 }
 
 describe("calculateHorseMetricsAsOf", () => {
+  test("attaches canonical Turf context without resetting it after a recent AW run", () => {
+    const metrics = calculateHorseMetricsAsOf({ beforeDateTime: cutoff, runs: [
+      familyRun("turf", "2020-01-01", 100),
+      familyRun("aw", "2020-09-30", 110),
+    ] });
+    assert.equal(metrics.daysSinceLastRun, 1);
+    assert.equal(metrics.tprConfidence?.usableTurfHistoryCount, 1);
+    assert.equal(metrics.tprConfidence?.limitedHistory, true);
+    assert.equal(metrics.tprConfidence?.staleTurfEvidence, true);
+    assert.equal(metrics.tprConfidence?.latestUsableTurfRunDateTime, "2020-01-01T15:00:00.000Z");
+  });
   test("excludes a run at the cutoff time and later runs", () => {
     const metrics = calculateHorseMetricsAsOf({
       beforeDateTime: cutoff,

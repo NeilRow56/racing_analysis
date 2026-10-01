@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, test } from "node:test";
 import { renderToStaticMarkup } from "react-dom/server";
+import { getTprConfidenceContext } from "@/lib/racing/tpr-confidence-context";
 import { FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION, FORWARD_VALUE_PRICE_SNAPSHOT_SCHEDULE_VERSION, type ForwardValueData, type ForwardValueRecord } from "@/lib/racing/forward-value";
 import {
   buildForwardValueReportingScope,
@@ -39,6 +40,21 @@ describe("Forward Value dashboard", () => {
     assert.equal(summary.excludedObservations, 1);
     assert.equal(summary.earliestObservationDate, "2026-09-25");
     assert.equal(summary.latestObservationDate, "2026-09-27");
+  });
+
+  test("prospective TPR context is confined to expanded details and leaves summaries unchanged", () => {
+    const annotated = { ...data, races: data.races.map((race, i) => i === 0 ? {
+      ...race,
+      leaderTprConfidence: getTprConfidenceContext([{ raceDateTime: new Date("2025-01-01"), resultStatus: "finished", finishingPosition: 4, weightCarriedLbs: 135, turfSpeedRating: { rating: 100 } }], new Date("2026-09-27")),
+    } : race) };
+    assert.deepEqual(summarizeForwardValue(annotated), summarizeForwardValue(data));
+    const html = renderToStaticMarkup(<RecentObservations filters={{ family: "all", state: "all", edge: "all" }} observations={annotated.races} />);
+    assert.match(html, /<details[^>]*><summary[^>]*>TPR context<\/summary>/);
+    assert.match(html, /Limited history/);
+    assert.match(html, /Stale Turf evidence/);
+    assert.match(html, /Days since usable Turf run/);
+    const legacy = renderToStaticMarkup(<RecentObservations filters={{ family: "all", state: "all", edge: "all" }} observations={data.races} />);
+    assert.doesNotMatch(legacy, /TPR context|Limited history|Stale Turf evidence/);
   });
 
   test("reconciles replacement race versions in reporting without mutating tracker records", () => {

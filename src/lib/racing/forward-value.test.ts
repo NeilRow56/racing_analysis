@@ -24,6 +24,7 @@ import {
   type ForwardValueRecord,
 } from "./forward-value";
 import type { TodayMeeting, TodayRace, TodayRunner } from "./todays-racing";
+import { getTprConfidenceContext } from "./tpr-confidence-context";
 
 const calibration: FamilyCalibration = {
   family: "turf",
@@ -49,6 +50,30 @@ const awCalibration: FamilyCalibration = {
 };
 
 describe("forward value capture", () => {
+  test("confidence metadata preserves all financial fields and existing frozen records", () => {
+    const card = race();
+    const args = { family: "turf" as const, raceDate: "2026-09-27", course: "Test", race: card, calibration, recordedAt: new Date("2026-09-27T12:00:00Z") };
+    const baseline = buildForwardValueRecord(args)!;
+    card.runners[0]!.tprConfidence = getTprConfidenceContext([{ raceDateTime: new Date("2025-01-01"), resultStatus: "finished", finishingPosition: 4, weightCarriedLbs: 135, turfSpeedRating: { rating: 100 } }], new Date("2026-09-27T13:00:00Z"));
+    const annotated = buildForwardValueRecord(args)!;
+    const { leaderTprConfidence, ...financialRecord } = annotated;
+    assert.equal(leaderTprConfidence?.limitedHistory, true);
+    assert.equal(leaderTprConfidence?.staleTurfEvidence, true);
+    assert.deepEqual(financialRecord, baseline);
+    assert.deepEqual(upsertForwardValueRecords({ version: "forward_value_v1", races: [baseline] }, [annotated]).races, [baseline]);
+    const result = race();
+    result.runners[0] = { ...result.runners[0]!, odds: "3/1", oddsDecimal: "4", finishingPosition: 1, resultStatus: "finished" };
+    result.runners[1] = { ...result.runners[1]!, finishingPosition: 2, resultStatus: "finished" };
+    const resultMap = new Map([[result.raceId, result]]);
+    const settledAt = new Date("2026-09-27T14:00:00Z");
+    const settledBaseline = settleForwardValueRecords({ version: "forward_value_v1", races: [baseline] }, resultMap, settledAt);
+    const settledAnnotated = settleForwardValueRecords({ version: "forward_value_v1", races: [annotated] }, resultMap, settledAt);
+    const { leaderTprConfidence: settledContext, ...settledFinancialRecord } = settledAnnotated.data.races[0]!;
+    assert.ok(settledContext);
+    assert.deepEqual(settledFinancialRecord, settledBaseline.data.races[0]);
+    assert.equal(settledFinancialRecord.profitLoss, 3);
+    assert.equal(settledFinancialRecord.capturedPriceProfitLoss, 4);
+  });
   test("captures pre-race price and freezes the selected leader", () => {
     const record = buildForwardValueRecord({ family: "turf", raceDate: "2026-09-27", course: "Test", race: race(), calibration, recordedAt: new Date("2026-09-27T12:00:00Z") });
     assert.equal(record?.leaderHorseName, "Leader");

@@ -19,7 +19,6 @@ import {
   summarizeTurfPerformanceShadowSnapshots,
   type TurfPerformanceShadowSummary,
 } from "@/lib/racing/turf-performance-rating-snapshots";
-import { turfPerformanceHistoryDepthLabel } from "@/lib/racing/turf-performance-rating";
 import { GOING_FORM_TERMS, type GoingFormTerm } from "@/lib/racing/going-form";
 import {
   type AwRatingCoverage,
@@ -33,13 +32,10 @@ import {
   MIN_RACE_RATING_COVERAGE,
   JPR_A_RATING_COVERAGE_GUARD_IMPLEMENTED_AT,
   JPR_A_RATING_COVERAGE_GUARD_VERSION,
-  TPR_RATING_COVERAGE_GUARD_IMPLEMENTED_AT,
-  TPR_RATING_COVERAGE_GUARD_VERSION,
   type RatingCoverage,
 } from "@/lib/racing/rating-coverage";
 import {
   formatRaceTimeForDisplay,
-  formatTodayTprRankGap,
   getTodaysRacingData,
   isAllWeatherRaceForDisplay,
   isJumpRaceForDisplay,
@@ -57,6 +53,7 @@ import { loadTrackerData } from "../../../../scripts/diagnose-tpr-vs-timewise-fo
 import { refreshTodaySelectionResultsAction } from "./actions";
 import { RefreshResultsButton } from "./refresh-results-button";
 import { SpeedDisplayValue, TodaySpeedDisplay } from "./speed-display";
+import { TurfPerformanceRatingCell } from "./tpr-display";
 
 export const dynamic = "force-dynamic";
 
@@ -757,38 +754,6 @@ function GoingFormCell({ runner }: { runner: TodayRunner }) {
 
 function goingFormLabel(term: GoingFormTerm): string {
   return term[0]!.toUpperCase() + term.slice(1);
-}
-
-function TurfPerformanceRatingCell({ coverage, runner }: { coverage?: RatingCoverage; runner: TodayRunner }) {
-  const rating = runner.turfPerformanceRating;
-  if (!rating) {
-    return <span className="text-slate-400">—</span>;
-  }
-  const insufficientCoverage = coverage?.ratingCoverageStatus === "insufficient_coverage";
-
-  return (
-    <div className="space-y-0.5">
-      <div className="font-semibold text-slate-900">
-        TPR {Math.round(rating.rating)}
-      </div>
-      <div
-        className={insufficientCoverage ? "text-xs font-medium text-amber-700" : "text-xs text-slate-600"}
-        title={insufficientCoverage ? coverageTitle(coverage, TPR_RATING_COVERAGE_GUARD_VERSION, TPR_RATING_COVERAGE_GUARD_IMPLEMENTED_AT) : undefined}
-      >
-        {insufficientCoverage ? "Insufficient race coverage" : formatTodayTprRankGap(rating.rank, rating.gap)}
-      </div>
-      {rating.isCrossSurfaceFallback ? (
-        <div className="text-xs font-medium text-sky-700">
-          {rating.historyDepth}-run AW fallback
-        </div>
-      ) : null}
-      {rating.historyDepth < 3 ? (
-        <div className="text-xs text-amber-700">
-          {turfPerformanceHistoryDepthLabel(rating.historyDepth)}
-        </div>
-      ) : null}
-    </div>
-  );
 }
 
 function coverageTitle(coverage: RatingCoverage, version: string, implementedAt: string) {

@@ -1,4 +1,5 @@
 import { and, asc, desc, eq, inArray, sql } from "drizzle-orm";
+import type { TprConfidenceContext } from "./tpr-confidence-context";
 import { createDbConnection } from "@/db";
 import {
   courses,
@@ -66,6 +67,7 @@ const DEFAULT_RACING_DISPLAY_TIME_ZONE = "Europe/London";
 export const SPORTING_LIFE_CURRENT_CARD_VERSION = "reconciled_v1" as const;
 
 export type TodayRunner = {
+  tprConfidence?: TprConfidenceContext;
   runnerId: string;
   runnerSourceId: string | null;
   horseId: string;
@@ -778,6 +780,7 @@ export function attachTurfPerformanceRatings(race: TodayRace): TodayRace {
     runners: race.runners.map((runner) => ({
       ...runner,
       turfPerformanceRating: ratings.get(runner.runnerId),
+      tprConfidence: ratings.has(runner.runnerId) ? runner.metrics?.tprConfidence : undefined,
       turfPerformanceShadowRating: shadowRatings.get(runner.runnerId),
       turfPerformanceInput: canonicalInputs.get(runner.runnerId) ?? undefined,
     })),

@@ -1,4 +1,5 @@
 import { and, desc, eq, inArray, lt, sql, type SQL } from "drizzle-orm";
+import type { TprConfidenceContext } from "./tpr-confidence-context";
 import { createDbConnection } from "@/db";
 import { courses, horses, jockeys, raceRunners, races, sourceImports, trainers } from "@/db/schema";
 import {
@@ -50,6 +51,7 @@ export type HistoricalSpeedRatingMeta = {
 };
 
 export type HistoricalPreRaceFeatureRow = {
+  tprConfidence?: TprConfidenceContext;
   targetRaceId: string;
   targetRunnerId: string;
   source: string | null;
@@ -357,6 +359,7 @@ export function buildHistoricalTargetRunnerMetricRows({
         odds: null,
         oddsDecimal: null,
         priorRuns: metrics.priorRuns,
+        tprConfidence: metrics.tprConfidence,
         priorWins: metrics.priorWins,
         priorPlaces: metrics.priorPlaces,
         winPercentage: metrics.winPercentage,
