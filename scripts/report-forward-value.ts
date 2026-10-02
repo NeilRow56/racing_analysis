@@ -17,6 +17,7 @@ import {
   type ValueFamily,
 } from "@/lib/racing/forward-value";
 import { createDbConnection } from "@/db";
+import { loadAwTissueForward, renderAwTissueValue } from "@/lib/racing/aw-tissue-forward";
 import { getLocalRacingDate, getSportingLifeCurrentCardRaceStatuses } from "@/lib/racing/todays-racing";
 import {
   buildForwardValueReportingScope,
@@ -69,6 +70,7 @@ async function summary() {
     printFavouriteComparison(cleanSettled);
     if (family === "turf") printTissueComparison(cleanSettled);
   }
+  console.log(`\n${renderAwTissueValue(await loadAwTissueForward(), analyticalRecords)}`);
   console.log("\nDiagnostic research only. Fixed buckets and sample labels do not define betting selections.");
 }
 
@@ -134,6 +136,7 @@ async function today(date: string) {
   const data = await loadForwardValueData();
   const reportingScope = await loadReportingScope(data);
   console.log(renderForwardValueToday({ ...data, races: reportingScope.analyticalRecords }, date));
+  console.log(`\n${renderAwTissueValue(await loadAwTissueForward(), reportingScope.analyticalRecords, date)}`);
   console.log(`\nSuperseded race versions retained for audit: ${reportingScope.supersededRecords.length}`);
 }
 

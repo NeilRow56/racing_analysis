@@ -6,7 +6,7 @@ import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
 import { describe, test } from "node:test";
-import { createRecord, disagreementByOrContext, orAgreementSummaries, parseTrackerData, renderReport, renderSummary, renderTprSummary, summarize, summarizeTprDateCoverage, summarizeTprForward, TRACKER_VERSION, upsertRace } from "./diagnose-tpr-vs-timewise-forward";
+import { createRecord, disagreementByOrContext, orAgreementSummaries, parseTrackerData, renderReport, renderSummary, renderTprSummary, summarize, summarizeTprCleanEraComparison, summarizeTprDateCoverage, summarizeTprForward, TRACKER_VERSION, upsertRace } from "./diagnose-tpr-vs-timewise-forward";
 
 const execFileAsync = promisify(execFile);
 
@@ -314,6 +314,97 @@ describe("TPR vs Timewise forward tracker", () => {
     assert.match(output, /Legacy clean races: 3/);
     assert.match(output, /W50 without OR:/);
     assert.doesNotMatch(output, /Timewise/);
+  });
+
+  test("extends the TPR summary with clean-era cohorts, daily snapshot diagnostics and robustness", () => {
+    const snapshot = { version: "tpr_forward_snapshot_v1" as const, runners: [] };
+    const records = [
+      race({
+        raceDate: "2026-09-23",
+        raceTime: "14:00",
+        winner: "Alpha",
+        winnerSp: 6,
+        tprRank1: "Alpha",
+        w50Rank1: "Bravo",
+        orRank1: "Alpha",
+        timewiseRank1: null,
+        timewiseRank2: null,
+        timewiseRecordedPreRace: true,
+      }),
+      race({
+        raceDate: "2026-09-27",
+        raceTime: "14:00",
+        winner: "Bravo",
+        winnerSp: 5,
+        tprRank1: "Alpha",
+        w50Rank1: "Bravo",
+        orRank1: "Bravo",
+        timewiseRank1: null,
+        timewiseRank2: null,
+        timewiseRecordedPreRace: true,
+        tprInputSnapshot: snapshot,
+      }),
+      race({
+        raceDate: "2026-09-27",
+        raceTime: "15:00",
+        winner: "Charlie",
+        winnerSp: 3,
+        tprRank1: "Charlie",
+        w50Rank1: "Delta",
+        orRank1: "Echo",
+        timewiseRank1: null,
+        timewiseRank2: null,
+        timewiseRecordedPreRace: true,
+        tprInputSnapshot: snapshot,
+      }),
+      race({
+        raceDate: "2026-09-28",
+        raceTime: "14:00",
+        winner: "Foxtrot",
+        winnerSp: 4,
+        tprRank1: "Foxtrot",
+        w50Rank1: "Foxtrot",
+        orRank1: "Foxtrot",
+        timewiseRank1: null,
+        timewiseRank2: null,
+        timewiseRecordedPreRace: true,
+        tprInputSnapshot: snapshot,
+      }),
+    ];
+    const summary = summarizeTprCleanEraComparison(records);
+    const snapshotCohort = summary.cohorts[1]!;
+    const output = renderTprSummary({ version: TRACKER_VERSION, races: records });
+
+    assert.equal(snapshotCohort.label, "Snapshot-backed cohort from 2026-09-27");
+    assert.equal(snapshotCohort.w100.winners, 2);
+    assert.equal(snapshotCohort.w50.winners, 2);
+    assert.equal(snapshotCohort.disagreements.races, 2);
+    assert.equal(snapshotCohort.disagreements.w50Winners, 1);
+    assert.equal(snapshotCohort.disagreements.w100Winners, 1);
+    assert.deepEqual(summary.daily.map((day) => [day.raceDate, day.races, day.w100Wins, day.w50Wins, day.w50OrSelections, day.w50OrWins]), [
+      ["2026-09-27", 2, 1, 1, 1, 1],
+      ["2026-09-28", 1, 1, 1, 1, 1],
+    ]);
+    assert.equal(summary.robustness.w50.excludingLargestWinningReturn, 1);
+    assert.equal(summary.robustness.w50.excludingTop3WinningReturns, -3);
+    assert.deepEqual(summary.forwardValueCrossCheck, {
+      races: 3,
+      w50EqualsW100: 1,
+      w50Differs: 2,
+      w50EqualsOr: 2,
+    });
+    for (const text of [
+      "Clean-era comparison",
+      "Legacy clean cohort",
+      "Snapshot-backed cohort from 2026-09-27",
+      "Post-2026-09-27 daily breakdown",
+      "2026-09-27: 2 races | W100 wins 1 | W50 wins 1",
+      "Snapshot robustness",
+      "W50 P/L excluding largest winning return: £1.00",
+      "Forward Value cross-check",
+      "W50 Forward Value edges are not created retrospectively",
+      "W100 should remain production; W50 remains shadow",
+    ]) assert.match(output, new RegExp(text.replace(/[£+|()]/g, "\\$&")));
   });
 
   test("renders compact clean date coverage and only reports a real gap", () => {

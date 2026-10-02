@@ -57,6 +57,9 @@
     "aw-rating:sync": "bun --env-file=.env.local run scripts/track-aw-rating-forward.ts sync",
     "aw-rating:today": "bun --env-file=.env.local run scripts/track-aw-rating-forward.ts today",
     "aw-rating:summary": "bun run scripts/track-aw-rating-forward.ts summary",
+    "aw-tissue:today": "bun run scripts/track-aw-tissue.ts today",
+    "aw-tissue:sync": "bun --env-file=.env.local run scripts/track-aw-tissue.ts sync",
+    "aw-tissue:summary": "bun run scripts/track-aw-tissue.ts summary",
     "value:calibrate": "bun run scripts/build-forward-value-calibration.ts",
     "value:today": "bun run scripts/report-forward-value.ts today",
     "value:summary": "bun run scripts/report-forward-value.ts summary"

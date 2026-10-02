@@ -349,6 +349,31 @@ export function summarizeTprForward(races: ForwardRaceRecord[]) {
   };
 }
 
+export function summarizeTprCleanEraComparison(races: ForwardRaceRecord[]) {
+  const turfRaces = races.filter((race) => race.family === "turf");
+  const cleanRaces = cleanComparisonRaces(turfRaces);
+  const cohorts = [
+    cleanEraCohort("Legacy clean cohort", cleanRaces.filter((race) => !hasTprSnapshot(race))),
+    cleanEraCohort("Snapshot-backed cohort from 2026-09-27", cleanRaces.filter(hasTprSnapshot)),
+    cleanEraCohort("Combined", cleanRaces),
+  ];
+  const snapshotSettled = cleanRaces.filter(hasTprSnapshot).filter((race) => race.winners.length > 0);
+  const snapshotW50Races = snapshotSettled.filter(hasActiveW50Rank1);
+  const snapshotW50OrRaces = snapshotSettled.filter((race) => hasActiveW50Rank1(race) && race.w50AgreesWithOr1 === true);
+  const daily = summarizeSnapshotDailyBreakdown(snapshotSettled);
+  const robustness = {
+    w50: robustnessSummary(snapshotW50Races, (race) => race.w50Rank1),
+    w50Or: robustnessSummary(snapshotW50OrRaces, (race) => race.w50Rank1),
+  };
+  return {
+    cohorts,
+    daily,
+    robustness,
+    forwardValueCrossCheck: forwardValueCrossCheck(snapshotSettled),
+    conclusion: cleanEraConclusion(cohorts, daily, robustness),
+  };
+}
+
 export function summarizeTprDateCoverage(
   races: ForwardRaceRecord[],
   coverageStart = TPR_CLEAN_COVERAGE_START,
@@ -371,8 +396,116 @@ export function summarizeTprDateCoverage(
   return { legacyRanges, gap, snapshotBackedFrom };
 }
 
+function cleanEraCohort(label: string, cleanRaces: ForwardRaceRecord[]) {
+  const settledRaces = cleanRaces.filter((race) => race.winners.length > 0);
+  const w100Races = settledRaces.filter(hasActiveTprRank1);
+  const w50Races = settledRaces.filter(hasActiveW50Rank1);
+  const disagreementRaces = settledRaces.filter((race) =>
+    hasActiveTprRank1(race) &&
+    hasActiveW50Rank1(race) &&
+    !sameHorse(race.tprRank1, race.w50Rank1)
+  );
+  const orAgreement = orAgreementSummaries(cleanRaces).map((value) => ({
+    ...value,
+    label: value.rating === "TPR W100"
+      ? value.agrees ? "W100 + OR" : "W100 without OR"
+      : value.agrees ? "W50 + OR" : "W50 without OR",
+  }));
+  return {
+    label,
+    cleanRaces: cleanRaces.length,
+    settledRaces: settledRaces.length,
+    w100: rank1SelectionSummary(w100Races, (race) => race.tprRank1),
+    w50: rank1SelectionSummary(w50Races, (race) => race.w50Rank1),
+    disagreements: disagreementSummary(disagreementRaces),
+    orAgreement,
+  };
+}
+
+function summarizeSnapshotDailyBreakdown(races: ForwardRaceRecord[]) {
+  return [...groupBy(races, (race) => race.raceDate).entries()]
+    .sort(([left], [right]) => left.localeCompare(right))
+    .map(([raceDate, rows]) => {
+      const disagreementRaces = rows.filter((race) =>
+        hasActiveTprRank1(race) &&
+        hasActiveW50Rank1(race) &&
+        !sameHorse(race.tprRank1, race.w50Rank1)
+      );
+      const disagreements = disagreementSummary(disagreementRaces);
+      const w50Or = rows.filter((race) => hasActiveW50Rank1(race) && race.w50AgreesWithOr1 === true);
+      return {
+        raceDate,
+        races: rows.length,
+        w100Wins: count(rows.filter(hasActiveTprRank1), (race) => hasWinner(race.winners, race.tprRank1)),
+        w50Wins: count(rows.filter(hasActiveW50Rank1), (race) => hasWinner(race.winners, race.w50Rank1)),
+        disagreements,
+        w50OrSelections: w50Or.length,
+        w50OrWins: count(w50Or, (race) => hasWinner(race.winners, race.w50Rank1)),
+      };
+    });
+}
+
+function robustnessSummary(races: ForwardRaceRecord[], selection: (race: ForwardRaceRecord) => string | null) {
+  const priced = races.filter(hasPricedResult);
+  const base = rank1Return(priced, selection);
+  const winningReturns = priced
+    .map((race) => winningPriceFor(race, selection(race)) === null ? 0 : selectionReturn(race, selection(race)))
+    .filter((value) => value > 0)
+    .sort((left, right) => right - left);
+  return {
+    excludingLargestWinningReturn: base === null ? null : base - (winningReturns[0] ?? 0),
+    excludingTop3WinningReturns: base === null ? null : base - winningReturns.slice(0, 3).reduce((sum, value) => sum + value, 0),
+  };
+}
+
+function forwardValueCrossCheck(races: ForwardRaceRecord[]) {
+  const observed = races.filter((race) => hasActiveTprRank1(race) && hasActiveW50Rank1(race));
+  return {
+    races: observed.length,
+    w50EqualsW100: count(observed, (race) => sameHorse(race.w50Rank1, race.tprRank1)),
+    w50Differs: count(observed, (race) => !sameHorse(race.w50Rank1, race.tprRank1)),
+    w50EqualsOr: count(observed, (race) => sameHorse(race.w50Rank1, race.orRank1)),
+  };
+}
+
+function cleanEraConclusion(
+  cohorts: ReturnType<typeof cleanEraCohort>[],
+  daily: ReturnType<typeof summarizeSnapshotDailyBreakdown>,
+  robust: {
+    w50: ReturnType<typeof robustnessSummary>;
+    w50Or: ReturnType<typeof robustnessSummary>;
+  },
+) {
+  const legacy = cohorts.find((cohort) => cohort.label.startsWith("Legacy"))!;
+  const snapshot = cohorts.find((cohort) => cohort.label.startsWith("Snapshot"))!;
+  const legacyAdvantage = profitAdvantage(legacy);
+  const snapshotAdvantage = profitAdvantage(snapshot);
+  const advantageCohort = snapshotAdvantage > legacyAdvantage
+    ? `W50's current P/L advantage is larger post-27-Sep (${money(snapshotAdvantage)} versus ${money(legacyAdvantage)} in legacy).`
+    : legacyAdvantage > snapshotAdvantage
+      ? `W50's current P/L advantage is larger in legacy (${money(legacyAdvantage)} versus ${money(snapshotAdvantage)} post-27-Sep).`
+      : `W50's current P/L advantage is level across legacy and post-27-Sep (${money(snapshotAdvantage)} each).`;
+  const disagreementPersistence = snapshot.disagreements.races === 0
+    ? "There are no snapshot-backed W50/W100 disagreements yet."
+    : `Snapshot-backed W50/W100 disagreements are ${snapshot.disagreements.w50Winners}-${snapshot.disagreements.w100Winners} to W50, with ${snapshot.disagreements.neither} neither and ${snapshot.disagreements.both} both.`;
+  const w50Or = snapshot.orAgreement.find((value) => value.label === "W50 + OR")!;
+  const w50OrWinningDays = daily.filter((day) => day.w50OrWins > 0).length;
+  const w50OrBreadth = w50Or.races === 0
+    ? "There are no snapshot-backed W50+OR selections yet."
+    : `Snapshot-backed W50+OR is ${w50Or.winners}/${w50Or.races}, with wins on ${w50OrWinningDays} race date${w50OrWinningDays === 1 ? "" : "s"}.`;
+  const robustness = snapshot.w50.levelStakeReturn === null
+    ? "Snapshot-backed W50 has no priced selections for robustness checks yet."
+    : `Snapshot-backed P/L after removing largest winning return: W50 ${money(robust.w50.excludingLargestWinningReturn)}, W50+OR ${money(robust.w50Or.excludingLargestWinningReturn)}.`;
+  return { advantageCohort, disagreementPersistence, w50OrBreadth, robustness };
+}
+
+function profitAdvantage(cohort: ReturnType<typeof cleanEraCohort>) {
+  return (cohort.w50.levelStakeReturn ?? 0) - (cohort.w100.levelStakeReturn ?? 0);
+}
+
 export function renderTprSummary(data: TrackerData): string {
   const summary = summarizeTprForward(data.races);
+  const cleanEra = summarizeTprCleanEraComparison(data.races);
   const coverage = summarizeTprDateCoverage(data.races);
   const split = (rating: "TPR W100" | "W50", agrees: boolean) =>
     summary.orAgreement.find((value) => value.rating === rating && value.agrees === agrees)!;
@@ -390,6 +523,43 @@ export function renderTprSummary(data: TrackerData): string {
   ];
   const orLine = (label: string, value: ReturnType<typeof split>) =>
     `  ${label}: ${value.races} races | ${value.winners} winners | ${pct(value.strike)} strike | ${value.pricedRaces} priced | ${money(value.levelStakeReturn)} P/L | ${pct(value.roi)} ROI`;
+  const cohortLines = cleanEra.cohorts.flatMap((cohort) => [
+    cohort.label,
+    `  Clean races: ${cohort.cleanRaces} | settled: ${cohort.settledRaces}`,
+    "  W100",
+    `    Races/selections: ${cohort.w100.runnableSelections}/${cohort.w100.runnableSelections}`,
+    `    Winners: ${cohort.w100.winners}`,
+    `    Strike: ${pct(cohort.w100.strike)}`,
+    `    Priced selections: ${cohort.w100.pricedSelections}`,
+    `    P/L: ${money(cohort.w100.levelStakeReturn)}`,
+    `    ROI: ${pct(cohort.w100.roi)}`,
+    `    Average winning SP: ${number(cohort.w100.averageWinningSp)}`,
+    `    Median winning SP: ${number(cohort.w100.medianWinningSp)}`,
+    `    Max losing run: ${cohort.w100.maxLosingRun}`,
+    "  W50",
+    `    Races/selections: ${cohort.w50.runnableSelections}/${cohort.w50.runnableSelections}`,
+    `    Winners: ${cohort.w50.winners}`,
+    `    Strike: ${pct(cohort.w50.strike)}`,
+    `    Priced selections: ${cohort.w50.pricedSelections}`,
+    `    P/L: ${money(cohort.w50.levelStakeReturn)}`,
+    `    ROI: ${pct(cohort.w50.roi)}`,
+    `    Average winning SP: ${number(cohort.w50.averageWinningSp)}`,
+    `    Median winning SP: ${number(cohort.w50.medianWinningSp)}`,
+    `    Max losing run: ${cohort.w50.maxLosingRun}`,
+    "  W50/W100 disagreements",
+    `    Races: ${cohort.disagreements.races}`,
+    `    W50 winner: ${cohort.disagreements.w50Winners}`,
+    `    W100 winner: ${cohort.disagreements.w100Winners}`,
+    `    Both: ${cohort.disagreements.both}`,
+    `    Neither: ${cohort.disagreements.neither}`,
+    `    W50 average winning SP: ${number(cohort.disagreements.w50AverageWinningSp)}`,
+    `    W100 average winning SP: ${number(cohort.disagreements.w100AverageWinningSp)}`,
+    "  OR agreement",
+    ...cohort.orAgreement.map((value) =>
+      `    ${value.label}: ${value.races} races | ${value.winners} winners | ${pct(value.strike)} strike | ${money(value.levelStakeReturn)} P/L | ${pct(value.roi)} ROI`
+    ),
+    "",
+  ]);
 
   return [
     "## TPR/W50 Turf Forward Summary",
@@ -426,6 +596,34 @@ export function renderTprSummary(data: TrackerData): string {
     orLine("W100 without OR", split("TPR W100", false)),
     orLine("W50 + OR", split("W50", true)),
     orLine("W50 without OR", split("W50", false)),
+    "",
+    "Clean-era comparison",
+    ...cohortLines,
+    "Post-2026-09-27 daily breakdown",
+    ...cleanEra.daily.map((day) =>
+      `  ${day.raceDate}: ${day.races} races | W100 wins ${day.w100Wins} | W50 wins ${day.w50Wins} | disagreements W50 ${day.disagreements.w50Winners}, W100 ${day.disagreements.w100Winners}, both ${day.disagreements.both}, neither ${day.disagreements.neither} | W50+OR ${day.w50OrSelections}/${day.w50OrWins}`
+    ),
+    ...(cleanEra.daily.length === 0 ? ["  No snapshot-backed settled races."] : []),
+    "",
+    "Snapshot robustness",
+    `  W50 P/L excluding largest winning return: ${money(cleanEra.robustness.w50.excludingLargestWinningReturn)}`,
+    `  W50 P/L excluding top 3 winning returns: ${money(cleanEra.robustness.w50.excludingTop3WinningReturns)}`,
+    `  W50+OR P/L excluding largest winning return: ${money(cleanEra.robustness.w50Or.excludingLargestWinningReturn)}`,
+    `  W50+OR P/L excluding top 3 winning returns: ${money(cleanEra.robustness.w50Or.excludingTop3WinningReturns)}`,
+    "",
+    "Forward Value cross-check",
+    `  Snapshot races with clean W100/W50 observations: ${cleanEra.forwardValueCrossCheck.races}`,
+    `  W50 leader = TPR/W100 leader: ${cleanEra.forwardValueCrossCheck.w50EqualsW100}`,
+    `  W50 leader differs: ${cleanEra.forwardValueCrossCheck.w50Differs}`,
+    `  W50 leader = OR leader: ${cleanEra.forwardValueCrossCheck.w50EqualsOr}`,
+    "  Descriptive only: W50 Forward Value edges are not created retrospectively unless W50 prices were frozen prospectively.",
+    "",
+    "Conclusion",
+    `  1. ${cleanEra.conclusion.advantageCohort}`,
+    `  2. ${cleanEra.conclusion.disagreementPersistence}`,
+    `  3. ${cleanEra.conclusion.w50OrBreadth}`,
+    `  4. ${cleanEra.conclusion.robustness}`,
+    "  5. W100 should remain production; W50 remains shadow/prospective monitoring until the snapshot-backed sample is materially larger and less return-sensitive.",
     "",
     "Settlement basis: non-runners are void; voids and post-race/backfilled records are excluded from runnable, strike and ROI denominators. Dead heats use canonical win settlement. Winning-price averages are shown because losing selections' SPs are not persisted.",
   ].join("\n");
@@ -740,6 +938,7 @@ function maximumLosingRun(races: ForwardRaceRecord[], selection: (race: ForwardR
   return maximum;
 }
 function hasTprSnapshot(race: ForwardRaceRecord) { return race.tprInputSnapshot?.version === "tpr_forward_snapshot_v1"; }
+function groupBy<T>(values: T[], key: (value: T) => string) { const map = new Map<string, T[]>(); for (const value of values) { const bucket = key(value); map.set(bucket, [...(map.get(bucket) ?? []), value]); } return map; }
 function uniqueSorted(values: string[]) { return [...new Set(values)].sort(); }
 function contiguousDateRanges(dates: string[]) {
   const ranges: Array<{ from: string; to: string }> = [];

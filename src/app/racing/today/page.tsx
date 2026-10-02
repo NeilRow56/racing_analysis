@@ -54,6 +54,8 @@ import { refreshTodaySelectionResultsAction } from "./actions";
 import { RefreshResultsButton } from "./refresh-results-button";
 import { SpeedDisplayValue, TodaySpeedDisplay } from "./speed-display";
 import { TurfPerformanceRatingCell } from "./tpr-display";
+import { syncAwTissueMeetings } from "@/lib/racing/aw-tissue-sync";
+import { attachAwTissueToMeetings } from "@/lib/racing/aw-tissue-forward";
 
 export const dynamic = "force-dynamic";
 
@@ -112,6 +114,10 @@ export default async function TodaysRacingPage({ searchParams }: PageProps) {
       if (displayData.status === "ok") {
         shadowSummary = await summarizeTurfPerformanceShadowSnapshots(connection.db, raceDate);
       }
+    }
+    if (displayData.status === "ok") {
+      const awTissue = await syncAwTissueMeetings(connection, displayData.meetings, raceDate);
+      displayData = { ...displayData, meetings: attachAwTissueToMeetings(displayData.meetings, awTissue) };
     }
     await connection.client.end();
     connection = null;
@@ -544,6 +550,7 @@ function RunnerTable({
                 AW-D diag.
               </th>
             ) : null}
+            {isAllWeatherRace ? <th className="w-24 px-1.5 py-1.5 font-medium">AW Tissue (diagnostic)</th> : null}
             {isTurfRace ? (
               <th
                 className="w-24 px-1.5 py-1.5 font-medium"
@@ -656,6 +663,7 @@ function RunnerRow({
           <AwRatingCell coverage={awDCoverage} runner={runner} />
         </td>
       ) : null}
+      {isAllWeatherRace ? <td className="px-1.5 py-2"><AwTissueCell runner={runner} /></td> : null}
       {isTurfRace ? (
         <td className="px-1.5 py-2">
           <TurfPerformanceRatingCell coverage={tprCoverage} runner={runner} />
@@ -667,6 +675,16 @@ function RunnerRow({
       <td className="px-1.5 py-2"><TodayMarketOdds runner={runner} /></td>
     </tr>
   );
+}
+
+export function AwTissueCell({ runner }: { runner: TodayRunner }) {
+  const prediction = runner.awTissue;
+  if (!prediction?.predictionAvailable || prediction.probability === null) return <span title={prediction?.unavailableReason ?? "No prospective capture"}>-</span>;
+  return <div className="tabular-nums">
+    <span className="font-semibold">{(prediction.probability * 100).toFixed(1)}%</span>
+    <span className="ml-1 text-slate-600">#{prediction.rank}</span>
+    {prediction.zeroHistoryRunner ? <div className="text-[10px] text-slate-500">0 prior AW starts</div> : null}
+  </div>;
 }
 
 export function TodayMarketOdds({ runner }: { runner: TodayRunner }) {

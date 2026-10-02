@@ -27,6 +27,8 @@ import {
 import { getSportingLifeCurrentCardRaceStatuses } from "@/lib/racing/todays-racing";
 import { loadTissueForward, TISSUE_V2_CONFIG } from "@/lib/racing/tissue-forward";
 import { RecentObservationsScroll } from "./recent-observations-scroll";
+import { loadAwTissueForward } from "@/lib/racing/aw-tissue-forward";
+import { AwTissueValueSection } from "./aw-tissue-value";
 
 export const dynamic = "force-dynamic";
 
@@ -35,9 +37,10 @@ type PageProps = {
 };
 
 export default async function ForwardValuePage({ searchParams }: PageProps) {
-  const [data, tissueData, params] = await Promise.all([
+  const [data, tissueData, awTissueData, params] = await Promise.all([
     loadForwardValueData(),
     loadTissueForward(TISSUE_V2_CONFIG.forwardPath, TISSUE_V2_CONFIG),
+    loadAwTissueForward(),
     searchParams,
   ]);
   const connection = createDbConnection();
@@ -87,6 +90,7 @@ export default async function ForwardValuePage({ searchParams }: PageProps) {
         <PriceSnapshotDiagnostics observations={reportingScope.analyticalRecords} summary={summary} />
         <TurfModelAgreementCounts summary={summary.turfModelAgreement} />
         <TurfModelDisagreementExplainer diagnostics={disagreementDiagnostics} />
+        <AwTissueValueSection data={awTissueData} ratings={reportingScope.analyticalRecords} />
         <RecentObservations filters={filters} observations={observations} reportingStatuses={reportingScope.statusByRaceId} />
       </div>
     </main>

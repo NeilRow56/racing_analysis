@@ -100,6 +100,7 @@ export type TodayRunner = {
   goingForm?: GoingForm;
   jumpRating?: JumpRatingRunner;
   awRating?: AwRatingRunner;
+  awTissue?: import("./aw-tissue-model").AwTissuePrediction;
 };
 
 export type SportingLifeBookmakerQuote = {
