@@ -17,11 +17,13 @@ import {
   type ValueFamily,
   type ValueSampleStatus,
 } from "./forward-value";
-import type { TissueForwardData, TissueForwardRunner } from "./tissue-forward";
-import { cleanAwTissueRace, type AwTissueForwardData, type AwTissueRace } from "./aw-tissue-forward";
-import { cleanJumpTissueRace, type JumpTissueForwardData, type JumpTissueRace } from "./jump-tissue-forward";
+import type { SportingLifeCurrentPrice } from "./todays-racing";
+import { currentPositiveTurfTissueRankOneEdges, type TissueForwardData, type TissueForwardRace, type TissueForwardRunner } from "./tissue-forward";
+import { cleanAwTissueRace, currentPositiveAwTissueRankOneEdges, type AwTissueForwardData, type AwTissueRace } from "./aw-tissue-forward";
+import { cleanJumpTissueRace, currentPositiveJumpTissueRankOneEdges, type JumpTissueForwardData, type JumpTissueRace } from "./jump-tissue-forward";
+import { formatPositiveTissueRankOneEdgeLine, LARGE_PROBABILITY_GAP_PP, type TissueRankOneEdge } from "./tissue-rank-one-edge";
 
-export const LARGE_PROBABILITY_GAP_PP = 10;
+export { LARGE_PROBABILITY_GAP_PP };
 
 export type ForwardValueObservationState = "all" | "settled" | "unsettled" | "excluded" | "superseded";
 export type ForwardValueEdgeFilter = "all" | "positive" | "non_positive";
@@ -36,6 +38,104 @@ export type ForwardValueReportingScope = {
   supersededRecords: ForwardValueRecord[];
   statusByRaceId: ReadonlyMap<string, ForwardValueReportingStatus>;
 };
+
+export type DailyPositiveTissueRankOneSummaryInput = {
+  date: string;
+  turf: TissueForwardData;
+  jump: JumpTissueForwardData;
+  aw: AwTissueForwardData;
+  currentPrices: SportingLifeCurrentPrice[];
+  currentRaceIds?: ReadonlySet<string>;
+};
+
+export function renderDailyPositiveTissueRankOneSummary(input: DailyPositiveTissueRankOneSummaryInput): string {
+  const families = dailyPositiveTissueRankOneFamilies(input);
+  const lines = ["Today's positive-edge Tissue rank-1 horses", ""];
+  for (const family of families) {
+    lines.push(family.heading);
+    if (family.selections.length === 0) {
+      lines.push("None", "");
+      continue;
+    }
+    for (const selection of family.selections) {
+      lines.push(`${selection.displayTime} ${selection.course} - ${selection.horseName}`);
+      lines.push(formatPositiveTissueRankOneEdgeLine({
+        tissueProbability: selection.tissueProbability,
+        marketPrice: selection.comparison.price.marketPrice!,
+        edge: selection.comparison.edge,
+        bookmakerQuoteCount: selection.comparison.price.bookmakerQuoteCount,
+      }));
+      lines.push("");
+    }
+  }
+  const turf = families[0]!.selections.length;
+  const jump = families[1]!.selections.length;
+  const aw = families[2]!.selections.length;
+  const total = turf + jump + aw;
+  const large = families.reduce((sum, family) => sum + family.selections.filter((selection) => selection.comparison.edge * 100 >= LARGE_PROBABILITY_GAP_PP - 1e-9).length, 0);
+  lines.push("Daily positive-edge rank-1 summary:");
+  lines.push(`Turf ${turf} | Jump ${jump} | AW ${aw} | Total ${total}`);
+  lines.push(`Large edges >=${LARGE_PROBABILITY_GAP_PP}pp: ${large}`);
+  lines.push("");
+  lines.push("Monitoring only; not a betting recommendation.");
+  return lines.join("\n").trimEnd();
+}
+
+function dailyPositiveTissueRankOneFamilies(input: DailyPositiveTissueRankOneSummaryInput) {
+  const turfRaces = input.turf.races
+    .filter((race) => race.raceDate === input.date && race.recordedPreRace === true && (!input.currentRaceIds || input.currentRaceIds.has(race.raceId)))
+    .sort((left, right) => turfDisplayTime(left, input.currentPrices).localeCompare(turfDisplayTime(right, input.currentPrices)) || left.course.localeCompare(right.course));
+  const jumpRaces = input.jump.races
+    .filter((race) => race.raceDate === input.date && race.recordedPreRace && cleanJumpTissueRace(race))
+    .sort((left, right) => left.currentOffAt.localeCompare(right.currentOffAt) || left.course.localeCompare(right.course));
+  const awRaces = input.aw.races
+    .filter((race) => race.raceDate === input.date && race.recordedPreRace && cleanAwTissueRace(race))
+    .sort((left, right) => left.currentOffAt.localeCompare(right.currentOffAt) || left.course.localeCompare(right.course));
+  return [
+    {
+      heading: "TURF",
+      selections: currentPositiveTurfTissueRankOneEdges(turfRaces, input.currentPrices).selections.map(({ race, runner, comparison }) => ({
+        displayTime: turfDisplayTime(race, input.currentPrices),
+        course: race.course,
+        horseName: runner.horseName,
+        tissueProbability: runner.probability,
+        comparison,
+      })),
+    },
+    {
+      heading: "JUMP",
+      selections: currentPositiveJumpTissueRankOneEdges(jumpRaces, input.currentPrices).selections.map(({ race, runner, comparison }) => ({
+        displayTime: comparison.price.displayRaceTime || race.scheduledTime.slice(0, 5),
+        course: race.course,
+        horseName: runner.horseName,
+        tissueProbability: runner.probability!,
+        comparison,
+      })),
+    },
+    {
+      heading: "ALL WEATHER",
+      selections: currentPositiveAwTissueRankOneEdges(awRaces, input.currentPrices).selections.map(({ race, runner, comparison }) => ({
+        displayTime: comparison.price.displayRaceTime || race.scheduledTime.slice(0, 5),
+        course: race.course,
+        horseName: runner.horseName,
+        tissueProbability: runner.probability!,
+        comparison,
+      })),
+    },
+  ] satisfies Array<{ heading: string; selections: DailyPositiveTissueRankOneSelection[] }>;
+}
+
+type DailyPositiveTissueRankOneSelection = {
+  displayTime: string;
+  course: string;
+  horseName: string;
+  tissueProbability: number;
+  comparison: TissueRankOneEdge;
+};
+
+function turfDisplayTime(race: TissueForwardRace, currentPrices: SportingLifeCurrentPrice[]): string {
+  return currentPrices.find((entry) => entry.raceId === race.raceId)?.displayRaceTime ?? race.raceTime;
+}
 
 export type ForwardValueMetrics = {
   observations: number;

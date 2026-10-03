@@ -4,6 +4,12 @@ import type { HistoricalPreRaceFeatureRow } from "./historical-target-metrics";
 import type { TodayRace, TodayRunner } from "./todays-racing";
 import type { SportingLifeCurrentPrice } from "./todays-racing";
 import { isOrdinaryFlatTurfRaceForDisplay } from "./todays-racing";
+import {
+  currentTissueRankOneEdge,
+  formatPositiveTissueRankOneEdgeLine,
+  formatTissueEdge,
+  type TissueRankOneEdge,
+} from "./tissue-rank-one-edge";
 import type { HistoricalComment, Model } from "../../../scripts/diagnose-independent-tissue-feasibility";
 import { COMMENT_NAMES, commentVector, numericVector, priorCommentsForTarget, raceSoftmax, score } from "../../../scripts/diagnose-independent-tissue-feasibility";
 
@@ -243,7 +249,7 @@ export function renderTissueTodayReport(
     price,
   ]));
   const lines = [`Tissue Today - ${latestDate}`, ""];
-  const positiveRankOne: string[] = [];
+  const positiveRankOne = currentPositiveTurfTissueRankOneEdges(races, currentPrices);
   for (const race of races) {
     const displayRaceTime = tissueTodayDisplayTime(race, currentPrices);
     lines.push(`${displayRaceTime} ${race.course}${race.raceName ? ` - ${race.raceName}` : ""}`);
@@ -270,20 +276,46 @@ export function renderTissueTodayReport(
         comparison,
         currentPrice?.forecastPrice ?? null,
       )}`);
-      if (runner.tissueRank === 1 && comparison?.isValue) {
-        positiveRankOne.push(
-          `${displayRaceTime} ${race.course} - ${runner.horseName} | Tissue ${pct1(runner.probability)} | Market ${comparison.marketPrice} | Edge ${signedPp(comparison.edge)}`,
-        );
-      }
     }
     lines.push(`   Status: ${tissueRaceStatus(race)}`, "");
   }
   lines.push("Current positive-edge Tissue rank-1 horses");
-  lines.push(...(positiveRankOne.length > 0 ? positiveRankOne : ["None"]), "");
+  lines.push(...(positiveRankOne.selections.length > 0 ? positiveRankOne.selections.map(({ race, runner, comparison }) =>
+    `${tissueTodayDisplayTime(race, currentPrices)} ${race.course} - ${runner.horseName} | ${formatPositiveTissueRankOneEdgeLine({
+      tissueProbability: runner.probability,
+      marketPrice: comparison.price.marketPrice!,
+      edge: comparison.edge,
+      bookmakerQuoteCount: comparison.price.bookmakerQuoteCount,
+    })}`,
+  ) : ["None"]), "");
   lines.push("Value comparison uses the current median Sporting Life bookmaker price and may change before the race.");
   lines.push("Sporting Life forecast prices are shown separately and never drive market edge.");
   lines.push("Monitoring only; not a betting recommendation.");
   return lines.join("\n").trimEnd();
+}
+
+export type TurfTissueRankOnePriceEdge = {
+  race: TissueForwardRace;
+  runner: TissueForwardRunner;
+  comparison: TissueRankOneEdge;
+};
+
+export function currentPositiveTurfTissueRankOneEdges(
+  races: TissueForwardRace[],
+  currentPrices: SportingLifeCurrentPrice[] = [],
+): { selections: TurfTissueRankOnePriceEdge[]; comparableRaces: number } {
+  const priceByRunner = new Map(currentPrices.map((price) => [`${price.raceId}|${price.runnerId}`, price]));
+  let comparableRaces = 0;
+  const selections: TurfTissueRankOnePriceEdge[] = [];
+  for (const race of races) {
+    const runner = race.runners.find((candidate) => candidate.tissueRank === 1);
+    if (!runner || race.winners.length > 0) continue;
+    const comparison = currentTissueRankOneEdge(runner.probability, priceByRunner.get(`${race.raceId}|${runner.runnerId}`));
+    if (!comparison) continue;
+    comparableRaces += 1;
+    if (comparison.edge > 0) selections.push({ race, runner, comparison });
+  }
+  return { selections, comparableRaces };
 }
 
 function tissueTodayDisplayTime(
@@ -353,8 +385,7 @@ function formatTissuePriceComparison(
 }
 
 function signedPp(value: number): string {
-  const points = value * 100;
-  return `${points >= 0 ? "+" : ""}${points.toFixed(1)}pp`;
+  return formatTissueEdge(value);
 }
 
 function tissueRaceStatus(race: TissueForwardRace): string {

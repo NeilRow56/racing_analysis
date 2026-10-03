@@ -1,7 +1,7 @@
 import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { isVoidBetResultStatus, settleSelection } from "./backtest";
-import { calculateJumpRaceRatings, jumpRatingInputForTodayRunner, JUMP_RATING_A_VERSION, JUMP_RATING_B_VERSION } from "./jump-performance-rating";
+import { calculateJumpRaceRatings, jumpRatingInputForTodayRunner } from "./jump-performance-rating";
 import {
   FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION,
   FORWARD_VALUE_PRICE_SNAPSHOT_SCHEDULE_VERSION,
@@ -23,6 +23,7 @@ import {
   type JumpTissuePrediction,
 } from "./jump-tissue-model";
 import { formatRaceTimeForDisplay, type SportingLifeCurrentPrice, type TodayMeeting, type TodayRace } from "./todays-racing";
+import { currentTissueRankOneEdge, formatTissueEdge, formatTissueProbability, isLargeTissueEdge, type TissueRankOneEdge } from "./tissue-rank-one-edge";
 
 export const JUMP_TISSUE_FORWARD_VERSION = "jump_tissue_forward_v1" as const;
 export const JUMP_TISSUE_FORWARD_PATH = "data/research/jump-tissue-forward-v1.json" as const;
@@ -310,9 +311,9 @@ export function renderJumpTissueToday(data: JumpTissueForwardData, date: string,
   }) : ["No prospective Jump Tissue races recorded for this date."]),
   "",
   "Current positive-edge Jump Tissue rank-1 horses",
-  ...(edges.selections.length ? edges.selections.flatMap(({ race, runner, price, impliedProbability, edge }) => [
-    `${price.displayRaceTime || displayRaceTime(race)} ${race.course} | ${runner.horseName}`,
-    `Tissue ${pct1(runner.probability!)} | Market ${price.marketPrice!.trim()} | Implied ${pct1(impliedProbability)} | Edge ${signedPp1(edge * 100)} | Quotes ${price.bookmakerQuoteCount}${edge * 100 >= 10 - 1e-9 ? " | LARGE" : ""}`,
+  ...(edges.selections.length ? edges.selections.flatMap(({ race, runner, price, impliedProbability, edge, comparison }) => [
+    `${comparison.price.displayRaceTime || displayRaceTime(race)} ${race.course} | ${runner.horseName}`,
+    `Tissue ${pct1(runner.probability!)} | Market ${price.marketPrice!.trim()} | Implied ${pct1(impliedProbability)} | Edge ${signedPp1(edge * 100)} | Quotes ${price.bookmakerQuoteCount}${isLargeTissueEdge(edge) ? " | LARGE" : ""}`,
     "",
   ]).slice(0, -1) : ["None"]),
   "",
@@ -322,16 +323,14 @@ export function renderJumpTissueToday(data: JumpTissueForwardData, date: string,
 export function currentPositiveJumpTissueRankOneEdges(races: JumpTissueRace[], currentPrices: SportingLifeCurrentPrice[] = []) {
   const priceByRunner = new Map(currentPrices.map((price) => [`${price.raceId}|${price.runnerId}`, price]));
   let comparableRaces = 0;
-  const selections: Array<{ race: JumpTissueRace; runner: JumpTissueRunner; price: SportingLifeCurrentPrice; impliedProbability: number; edge: number }> = [];
+  const selections: Array<{ race: JumpTissueRace; runner: JumpTissueRunner; price: SportingLifeCurrentPrice; impliedProbability: number; edge: number; comparison: TissueRankOneEdge }> = [];
   for (const race of races) {
     const runner = race.runners.find((candidate) => candidate.runnerId === race.top1);
-    if (!runner?.probability) continue;
-    const price = priceByRunner.get(`${race.raceId}|${runner.runnerId}`);
-    if (!price || price.bookmakerQuoteCount <= 0 || price.marketDecimalOdds === null || !Number.isFinite(price.marketDecimalOdds) || price.marketDecimalOdds <= 1 || !price.marketPrice?.trim()) continue;
+    if (!runner) continue;
+    const comparison = currentTissueRankOneEdge(runner.probability, priceByRunner.get(`${race.raceId}|${runner.runnerId}`));
+    if (!comparison) continue;
     comparableRaces += 1;
-    const impliedProbability = 1 / price.marketDecimalOdds;
-    const edge = runner.probability - impliedProbability;
-    if (edge > 0) selections.push({ race, runner, price, impliedProbability, edge });
+    if (comparison.edge > 0) selections.push({ race, runner, price: comparison.price, impliedProbability: comparison.impliedProbability, edge: comparison.edge, comparison });
   }
   return { selections, comparableRaces };
 }
@@ -399,6 +398,6 @@ function jprComparison(settled: JumpTissueRace[], key: "jprALeader" | "jprBLeade
 
 const avg = (values: number[]) => values.length ? values.reduce((sum, value) => sum + value, 0) / values.length : null;
 const pct = (value: number | null) => value === null ? "-" : `${(value * 100).toFixed(2)}%`;
-const pct1 = (value: number) => `${(value * 100).toFixed(1)}%`;
-const signedPp1 = (value: number) => `${value >= 0 ? "+" : ""}${value.toFixed(1)}pp`;
+const pct1 = (value: number) => formatTissueProbability(value);
+const signedPp1 = (value: number) => formatTissueEdge(value / 100);
 const num = (value: number | null) => value === null ? "-" : value.toFixed(4);

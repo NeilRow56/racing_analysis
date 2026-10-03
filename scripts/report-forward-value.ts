@@ -7,7 +7,6 @@ import {
   isCleanSettledPhase2Observation,
   loadForwardValueCalibration,
   loadForwardValueData,
-  renderForwardValueToday,
   tissueValueAgreement,
   valueExclusionReason,
   valueSampleStatus,
@@ -19,9 +18,11 @@ import {
 import { createDbConnection } from "@/db";
 import { loadAwTissueForward, renderAwTissueValue } from "@/lib/racing/aw-tissue-forward";
 import { loadJumpTissueForward, renderJumpTissueValue } from "@/lib/racing/jump-tissue-forward";
-import { getLocalRacingDate, getSportingLifeCurrentCardRaceStatuses } from "@/lib/racing/todays-racing";
+import { loadTissueForward, TISSUE_V2_CONFIG } from "@/lib/racing/tissue-forward";
+import { getLocalRacingDate, getSportingLifeCurrentCardRaceStatuses, getSportingLifeCurrentPricesForDate } from "@/lib/racing/todays-racing";
 import {
   buildForwardValueReportingScope,
+  renderDailyPositiveTissueRankOneSummary,
   summarizeForwardValue,
   summarizeForwardValueRecords,
   type ForwardValueMovementMetrics,
@@ -35,12 +36,19 @@ else if (command === "today") await today(process.argv[3] ?? getLocalRacingDate(
 else throw new Error("Usage: report-forward-value.ts <summary|today> [YYYY-MM-DD]");
 
 async function summary() {
-  const [data, calibration] = await Promise.all([loadForwardValueData(), loadForwardValueCalibration()]);
+  const today = getLocalRacingDate();
+  const [data, calibration, dailyReport] = await Promise.all([
+    loadForwardValueData(),
+    loadForwardValueCalibration(),
+    loadDailyPositiveTissueRankOneReport(today),
+  ]);
   const reportingScope = await loadReportingScope(data);
   const analyticalRecords = reportingScope.analyticalRecords;
   const sharedSummary = summarizeForwardValue(data, reportingScope);
   const excluded = analyticalRecords.filter((race) => valueExclusionReason(race) !== null);
 
+  console.log(dailyReport.output);
+  console.log("");
   console.log("# Forward Value Framework - Phase 2");
   console.log("Prospective market validation only\n");
   console.log(`Tracker: ${FORWARD_VALUE_PATH}`);
@@ -71,9 +79,18 @@ async function summary() {
     printFavouriteComparison(cleanSettled);
     if (family === "turf") printTissueComparison(cleanSettled);
   }
-  console.log(`\n${renderJumpTissueValue(await loadJumpTissueForward(), analyticalRecords)}`);
-  console.log(`\n${renderAwTissueValue(await loadAwTissueForward(), analyticalRecords)}`);
+  console.log(`\n${renderJumpTissueValue(dailyReport.jumpTissue, analyticalRecords)}`);
+  console.log(`\n${renderAwTissueValue(dailyReport.awTissue, analyticalRecords)}`);
   console.log("\nDiagnostic research only. Fixed buckets and sample labels do not define betting selections.");
+}
+
+async function loadCurrentPrices(date: string) {
+  const connection = createDbConnection();
+  try {
+    return await getSportingLifeCurrentPricesForDate(connection.db, date);
+  } finally {
+    await connection.client.end();
+  }
 }
 
 function printPriceDiagnostics(diagnostics: ForwardValuePriceDiagnostics) {
@@ -135,12 +152,30 @@ function printPersistence(label: string, value: ForwardValuePersistenceMetrics) 
 }
 
 async function today(date: string) {
-  const data = await loadForwardValueData();
-  const reportingScope = await loadReportingScope(data);
-  console.log(renderForwardValueToday({ ...data, races: reportingScope.analyticalRecords }, date));
-  console.log(`\n${renderJumpTissueValue(await loadJumpTissueForward(), reportingScope.analyticalRecords, date)}`);
-  console.log(`\n${renderAwTissueValue(await loadAwTissueForward(), reportingScope.analyticalRecords, date)}`);
-  console.log(`\nSuperseded race versions retained for audit: ${reportingScope.supersededRecords.length}`);
+  console.log((await loadDailyPositiveTissueRankOneReport(date)).output);
+}
+
+async function loadDailyPositiveTissueRankOneReport(date: string) {
+  const [turfTissue, jumpTissue, awTissue, currentPrices] = await Promise.all([
+    loadTissueForward(TISSUE_V2_CONFIG.forwardPath, TISSUE_V2_CONFIG),
+    loadJumpTissueForward(),
+    loadAwTissueForward(),
+    loadCurrentPrices(date),
+  ]);
+  return {
+    turfTissue,
+    jumpTissue,
+    awTissue,
+    currentPrices,
+    output: renderDailyPositiveTissueRankOneSummary({
+      date,
+      turf: turfTissue,
+      jump: jumpTissue,
+      aw: awTissue,
+      currentPrices,
+      currentRaceIds: new Set(currentPrices.map((price) => price.raceId)),
+    }),
+  };
 }
 
 async function loadReportingScope(data: ForwardValueData) {

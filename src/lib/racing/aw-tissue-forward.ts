@@ -14,6 +14,7 @@ import {
 } from "./aw-tissue-model";
 import { formatRaceTimeForDisplay, type SportingLifeCurrentPrice, type TodayMeeting, type TodayRace } from "./todays-racing";
 import type { createDbConnection } from "@/db";
+import { currentTissueRankOneEdge, formatTissueEdge, formatTissueProbability, isLargeTissueEdge, type TissueRankOneEdge } from "./tissue-rank-one-edge";
 
 export const AW_TISSUE_FORWARD_VERSION = "aw_tissue_forward_v1";
 export const AW_TISSUE_FORWARD_PATH = "data/research/aw-tissue-forward-v1.json";
@@ -195,8 +196,8 @@ export function updateAwTissueForward(data: AwTissueForwardData, currentById: Re
 const mean = (values: number[]) => values.length ? values.reduce((a, b) => a + b, 0) / values.length : null;
 const percentage = (n: number | null) => n === null ? "-" : `${(n * 100).toFixed(2)}%`;
 const number = (n: number | null) => n === null ? "-" : n.toFixed(4);
-const percentage1 = (n: number) => `${(n * 100).toFixed(1)}%`;
-const signedPp1 = (n: number) => `${n >= 0 ? "+" : ""}${n.toFixed(1)}pp`;
+const percentage1 = (n: number) => formatTissueProbability(n);
+const signedPp1 = (n: number) => formatTissueEdge(n / 100);
 export function cleanAwTissueRace(race: AwTissueRace): boolean { return race.recordedPreRace && race.recordedAt >= AW_TISSUE_IMPLEMENTED_AT && race.recordedAt < race.scheduledOffAt && race.excludedReason === null && race.predictedRunnerCount === race.activeRunnerCount; }
 
 export function summarizeAwTissueForward(data: AwTissueForwardData) {
@@ -248,6 +249,7 @@ export type AwTissueRankOnePriceEdge = {
   price: SportingLifeCurrentPrice;
   impliedProbability: number;
   edge: number;
+  comparison: TissueRankOneEdge;
 };
 
 export function currentPositiveAwTissueRankOneEdges(
@@ -259,13 +261,11 @@ export function currentPositiveAwTissueRankOneEdges(
   const selections: AwTissueRankOnePriceEdge[] = [];
   for (const race of races) {
     const runner = race.runners.find((candidate) => candidate.runnerId === race.top1);
-    if (!runner || runner.probability === null) continue;
-    const price = priceByRunner.get(`${race.raceId}|${runner.runnerId}`);
-    if (!price || price.bookmakerQuoteCount <= 0 || price.marketDecimalOdds === null || !Number.isFinite(price.marketDecimalOdds) || price.marketDecimalOdds <= 1 || !price.marketPrice?.trim()) continue;
+    if (!runner) continue;
+    const comparison = currentTissueRankOneEdge(runner.probability, priceByRunner.get(`${race.raceId}|${runner.runnerId}`));
+    if (!comparison) continue;
     comparableRaces += 1;
-    const impliedProbability = 1 / price.marketDecimalOdds;
-    const edge = runner.probability - impliedProbability;
-    if (edge > 0) selections.push({ race, runner, price, impliedProbability, edge });
+    if (comparison.edge > 0) selections.push({ race, runner, price: comparison.price, impliedProbability: comparison.impliedProbability, edge: comparison.edge, comparison });
   }
   return { selections, comparableRaces };
 }
@@ -288,9 +288,9 @@ export function renderAwTissueToday(
   }) : ["No prospective AW races recorded for this date."]),
   "",
   "Current positive-edge AW Tissue rank-1 horses",
-  ...(positiveEdges.selections.length > 0 ? positiveEdges.selections.flatMap(({ race, runner, price, impliedProbability, edge }) => [
-    `${price.displayRaceTime || displayRaceTime(race)} ${race.course} | ${runner.horseName}`,
-    `Tissue ${percentage1(runner.probability!)} | Market ${price.marketPrice!.trim()} | Implied ${percentage1(impliedProbability)} | Edge ${signedPp1(edge * 100)} | Quotes ${price.bookmakerQuoteCount}${edge * 100 >= 10 - 1e-9 ? " | LARGE" : ""}`,
+  ...(positiveEdges.selections.length > 0 ? positiveEdges.selections.flatMap(({ race, runner, price, impliedProbability, edge, comparison }) => [
+    `${comparison.price.displayRaceTime || displayRaceTime(race)} ${race.course} | ${runner.horseName}`,
+    `Tissue ${percentage1(runner.probability!)} | Market ${price.marketPrice!.trim()} | Implied ${percentage1(impliedProbability)} | Edge ${signedPp1(edge * 100)} | Quotes ${price.bookmakerQuoteCount}${isLargeTissueEdge(edge) ? " | LARGE" : ""}`,
     "",
   ]).slice(0, -1) : ["None"]),
   "",
