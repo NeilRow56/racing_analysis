@@ -18,6 +18,10 @@ import {
   type ValueSampleStatus,
 } from "./forward-value";
 import type { TissueForwardData, TissueForwardRunner } from "./tissue-forward";
+import { cleanAwTissueRace, type AwTissueForwardData, type AwTissueRace } from "./aw-tissue-forward";
+import { cleanJumpTissueRace, type JumpTissueForwardData, type JumpTissueRace } from "./jump-tissue-forward";
+
+export const LARGE_PROBABILITY_GAP_PP = 10;
 
 export type ForwardValueObservationState = "all" | "settled" | "unsettled" | "excluded" | "superseded";
 export type ForwardValueEdgeFilter = "all" | "positive" | "non_positive";
@@ -228,6 +232,57 @@ export type ForwardValueSummary = {
   families: ForwardValueFamilySummary[];
 };
 
+export type SameLeaderProbabilityGapInput = {
+  raceId: string;
+  family: ValueFamily;
+  modelRunnerId: string | null;
+  tissueRunnerId: string | null;
+  modelProbability: number | null;
+  tissueProbability: number | null;
+  marketImpliedProbability: number | null;
+  primaryEdgePercentagePoints: number | null;
+  tissueEdgePercentagePoints: number | null;
+  leaderWon: boolean | null;
+  settledAt: string | null;
+  cleanProspective: boolean;
+  recordedPreRace: boolean;
+};
+
+export type SameLeaderProbabilityGapObservation = SameLeaderProbabilityGapInput & {
+  probabilityGapPp: number;
+  largeProbabilityDisagreement: boolean;
+  direction: "tissue_higher" | "primary_higher";
+  marketPosition: "below_both" | "between_models" | "above_both" | "missing";
+  edgeDirection: "primary_negative_tissue_positive" | "primary_positive_tissue_negative" | "both_positive" | "both_negative" | "missing";
+};
+
+export type SameLeaderProbabilityGapFamilySummary = {
+  family: ValueFamily;
+  label: string;
+  sameLeaderComparableRaces: number;
+  largeProbabilityDisagreements: number;
+  largeProbabilityDisagreementRate: number | null;
+};
+
+export type SameLeaderProbabilityGapOutcomeSummary = {
+  races: number;
+  winners: number;
+  strikeRate: number | null;
+  meanModelProbability: number | null;
+  meanTissueProbability: number | null;
+  meanMarketImpliedProbability: number | null;
+  meanAbsoluteProbabilityGapPp: number | null;
+};
+
+export type SameLeaderProbabilityGapDiagnostics = {
+  families: SameLeaderProbabilityGapFamilySummary[];
+  largeGapObservations: SameLeaderProbabilityGapObservation[];
+  outcome: SameLeaderProbabilityGapOutcomeSummary;
+  direction: Record<"tissue_higher" | "primary_higher", SameLeaderProbabilityGapOutcomeSummary>;
+  marketPosition: Record<"below_both" | "between_models" | "above_both", SameLeaderProbabilityGapOutcomeSummary>;
+  edgeDirection: Record<"primary_negative_tissue_positive" | "primary_positive_tissue_negative" | "both_positive" | "both_negative", number>;
+};
+
 export type ForwardValueObservationFilters = {
   family: ValueFamily | "all";
   state: ForwardValueObservationState;
@@ -347,6 +402,179 @@ export function summarizeTurfModelAgreement(records: ForwardValueRecord[]): Turf
     if (turfModelDisagreementLargeDifference(race)) summary.largeDisagreements += 1;
   }
   return summary;
+}
+
+export function buildSameLeaderProbabilityGapDiagnostics(
+  records: ForwardValueRecord[],
+  sources: { jump?: JumpTissueForwardData; aw?: AwTissueForwardData } = {},
+): SameLeaderProbabilityGapDiagnostics {
+  const observations = [
+    ...records.flatMap(turfSameLeaderProbabilityGapInput),
+    ...trackerSameLeaderProbabilityGapInputs(records, sources.jump?.races ?? [], "jump"),
+    ...trackerSameLeaderProbabilityGapInputs(records, sources.aw?.races ?? [], "aw"),
+  ].flatMap((input): SameLeaderProbabilityGapObservation[] => {
+    if (
+      !input.cleanProspective ||
+      !input.recordedPreRace ||
+      input.modelRunnerId === null ||
+      input.tissueRunnerId === null ||
+      input.modelRunnerId !== input.tissueRunnerId ||
+      input.modelProbability === null ||
+      input.tissueProbability === null
+    ) return [];
+    const probabilityGapPp = Math.abs(input.tissueProbability - input.modelProbability) * 100;
+    const largeProbabilityDisagreement = probabilityGapPp >= LARGE_PROBABILITY_GAP_PP;
+    return [{
+      ...input,
+      probabilityGapPp,
+      largeProbabilityDisagreement,
+      direction: input.tissueProbability >= input.modelProbability ? "tissue_higher" : "primary_higher",
+      marketPosition: probabilityGapMarketPosition(input),
+      edgeDirection: probabilityGapEdgeDirection(input),
+    }];
+  });
+  const largeGapObservations = observations.filter((observation) => observation.largeProbabilityDisagreement);
+  const families = (["turf", "jump", "aw"] as ValueFamily[]).map((family) => {
+    const sameFamily = observations.filter((observation) => observation.family === family);
+    const large = sameFamily.filter((observation) => observation.largeProbabilityDisagreement);
+    return {
+      family,
+      label: `${forwardValueFamilyLabel(family)} / ${family === "turf" ? "Turf" : family === "jump" ? "Jump" : "AW"} Tissue`,
+      sameLeaderComparableRaces: sameFamily.length,
+      largeProbabilityDisagreements: large.length,
+      largeProbabilityDisagreementRate: rate(large.length, sameFamily.length),
+    };
+  });
+  return {
+    families,
+    largeGapObservations,
+    outcome: summarizeProbabilityGapOutcomes(largeGapObservations.filter(isSettledCleanProbabilityGap)),
+    direction: {
+      tissue_higher: summarizeProbabilityGapOutcomes(largeGapObservations.filter((observation) =>
+        observation.direction === "tissue_higher" && isSettledCleanProbabilityGap(observation)
+      )),
+      primary_higher: summarizeProbabilityGapOutcomes(largeGapObservations.filter((observation) =>
+        observation.direction === "primary_higher" && isSettledCleanProbabilityGap(observation)
+      )),
+    },
+    marketPosition: {
+      below_both: summarizeProbabilityGapOutcomes(largeGapObservations.filter((observation) =>
+        observation.marketPosition === "below_both" && isSettledCleanProbabilityGap(observation)
+      )),
+      between_models: summarizeProbabilityGapOutcomes(largeGapObservations.filter((observation) =>
+        observation.marketPosition === "between_models" && isSettledCleanProbabilityGap(observation)
+      )),
+      above_both: summarizeProbabilityGapOutcomes(largeGapObservations.filter((observation) =>
+        observation.marketPosition === "above_both" && isSettledCleanProbabilityGap(observation)
+      )),
+    },
+    edgeDirection: {
+      primary_negative_tissue_positive: largeGapObservations.filter((observation) => observation.edgeDirection === "primary_negative_tissue_positive").length,
+      primary_positive_tissue_negative: largeGapObservations.filter((observation) => observation.edgeDirection === "primary_positive_tissue_negative").length,
+      both_positive: largeGapObservations.filter((observation) => observation.edgeDirection === "both_positive").length,
+      both_negative: largeGapObservations.filter((observation) => observation.edgeDirection === "both_negative").length,
+    },
+  };
+}
+
+export function sameLeaderProbabilityGapPp(input: {
+  agreesWithModel: boolean | null;
+  modelProbability: number | null;
+  tissueProbability: number | null;
+  recordedPreRace?: boolean | null;
+}): number | null {
+  if (input.agreesWithModel !== true || input.modelProbability === null || input.tissueProbability === null || input.recordedPreRace === false) return null;
+  return Math.abs(input.tissueProbability - input.modelProbability) * 100;
+}
+
+function turfSameLeaderProbabilityGapInput(record: ForwardValueRecord): SameLeaderProbabilityGapInput[] {
+  if (record.family !== "turf") return [];
+  return [{
+    raceId: record.raceId,
+    family: record.family,
+    modelRunnerId: record.leaderRunnerId,
+    tissueRunnerId: record.tissueRunnerId,
+    modelProbability: record.calibratedProbability,
+    tissueProbability: record.tissueProbability,
+    marketImpliedProbability: record.capturedMarketProbability,
+    primaryEdgePercentagePoints: record.edgePercentagePoints,
+    tissueEdgePercentagePoints: record.tissueEdgePercentagePoints ?? null,
+    leaderWon: record.leaderWon,
+    settledAt: record.settledAt,
+    cleanProspective: isCleanPhase2Observation(record),
+    recordedPreRace: record.recordedPreRace,
+  }];
+}
+
+function trackerSameLeaderProbabilityGapInputs(
+  records: ForwardValueRecord[],
+  races: readonly (JumpTissueRace | AwTissueRace)[],
+  family: "jump" | "aw",
+): SameLeaderProbabilityGapInput[] {
+  const byId = new Map(records.filter((record) => record.family === family).map((record) => [record.raceId, record]));
+  return races.flatMap((race) => {
+    const record = byId.get(race.raceId);
+    if (!record) return [];
+    const clean = family === "jump" ? cleanJumpTissueRace(race as JumpTissueRace) : cleanAwTissueRace(race as AwTissueRace);
+    const leaderRunnerId = race.top1;
+    const leader = leaderRunnerId ? race.runners.find((runner) => runner.runnerId === leaderRunnerId) : null;
+    const snapshot = race.prices.t60 ?? race.prices.t180 ?? race.prices.early;
+    return [{
+      raceId: record.raceId,
+      family,
+      modelRunnerId: record.leaderRunnerId,
+      tissueRunnerId: leaderRunnerId,
+      modelProbability: record.calibratedProbability,
+      tissueProbability: leader?.probability ?? null,
+      marketImpliedProbability: record.capturedMarketProbability,
+      primaryEdgePercentagePoints: record.edgePercentagePoints,
+      tissueEdgePercentagePoints: snapshot?.ratingEdgePercentagePoints ?? null,
+      leaderWon: record.leaderWon,
+      settledAt: record.settledAt,
+      cleanProspective: clean && isCleanPhase2Observation(record),
+      recordedPreRace: race.recordedPreRace,
+    }];
+  });
+}
+
+function probabilityGapMarketPosition(input: SameLeaderProbabilityGapInput): SameLeaderProbabilityGapObservation["marketPosition"] {
+  if (input.marketImpliedProbability === null || input.modelProbability === null || input.tissueProbability === null) return "missing";
+  const lower = Math.min(input.modelProbability, input.tissueProbability);
+  const upper = Math.max(input.modelProbability, input.tissueProbability);
+  if (input.marketImpliedProbability < lower) return "below_both";
+  if (input.marketImpliedProbability > upper) return "above_both";
+  return "between_models";
+}
+
+function probabilityGapEdgeDirection(input: SameLeaderProbabilityGapInput): SameLeaderProbabilityGapObservation["edgeDirection"] {
+  if (input.primaryEdgePercentagePoints === null || input.tissueEdgePercentagePoints === null) return "missing";
+  const primaryPositive = input.primaryEdgePercentagePoints > 0;
+  const tissuePositive = input.tissueEdgePercentagePoints > 0;
+  if (!primaryPositive && tissuePositive) return "primary_negative_tissue_positive";
+  if (primaryPositive && !tissuePositive) return "primary_positive_tissue_negative";
+  if (primaryPositive && tissuePositive) return "both_positive";
+  return "both_negative";
+}
+
+function isSettledCleanProbabilityGap(observation: SameLeaderProbabilityGapObservation): boolean {
+  return observation.cleanProspective && observation.settledAt !== null && observation.leaderWon !== null;
+}
+
+function summarizeProbabilityGapOutcomes(
+  observations: SameLeaderProbabilityGapObservation[],
+): SameLeaderProbabilityGapOutcomeSummary {
+  const winners = observations.filter((observation) => observation.leaderWon).length;
+  return {
+    races: observations.length,
+    winners,
+    strikeRate: rate(winners, observations.length),
+    meanModelProbability: average(observations.map((observation) => observation.modelProbability!)),
+    meanTissueProbability: average(observations.map((observation) => observation.tissueProbability!)),
+    meanMarketImpliedProbability: average(observations.flatMap((observation) =>
+      observation.marketImpliedProbability === null ? [] : [observation.marketImpliedProbability]
+    )),
+    meanAbsoluteProbabilityGapPp: average(observations.map((observation) => observation.probabilityGapPp)),
+  };
 }
 
 export function turfModelDisagreementClassification(record: ForwardValueRecord): TurfDisagreementClassification | null {

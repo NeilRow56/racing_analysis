@@ -4,9 +4,12 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { getTprConfidenceContext } from "@/lib/racing/tpr-confidence-context";
 import { FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION, FORWARD_VALUE_PRICE_SNAPSHOT_SCHEDULE_VERSION, type ForwardValueData, type ForwardValueRecord } from "@/lib/racing/forward-value";
 import {
+  buildSameLeaderProbabilityGapDiagnostics,
   buildForwardValueReportingScope,
   buildTurfModelDisagreementDiagnostics,
   filterForwardValueObservations,
+  LARGE_PROBABILITY_GAP_PP,
+  sameLeaderProbabilityGapPp,
   summarizeForwardValue,
   summarizeForwardValuePriceDiagnostics,
   summarizeTurfModelAgreement,
@@ -19,6 +22,7 @@ import {
   FamilySummaryTable,
   PriceSnapshotDiagnostics,
   RecentObservations,
+  SameLeaderProbabilityGapDiagnostics,
   SparseSampleWarning,
   TopLevelCounts,
   TurfModelDisagreementExplainer,
@@ -434,7 +438,7 @@ describe("Forward Value dashboard", () => {
     const no = record({ raceId: "aw-disagree", family: "aw", leaderRunnerId: "aw-model" });
     const missing = record({ raceId: "jump-no-tissue", family: "jump", leaderRunnerId: "missing-model" });
     const comparisons = buildFamilyTissueComparisons([yes, no, missing], {
-      jump: jumpForward([jumpTissueRace({ raceId: "jump-agree", top1: "same-runner", horseName: "Same Runner", probability: .26, price: 4 })]),
+      jump: jumpForward([jumpTissueRace({ raceId: "jump-agree", top1: "same-runner", horseName: "Same Runner", probability: .36, price: 4 })]),
       aw: awForward([awTissueRace({ raceId: "aw-disagree", top1: "different-runner", horseName: "Different Runner", probability: .21, price: 6 })]),
     });
     assert.equal(comparisons.get("jump-agree")?.agreesWithModel, true);
@@ -443,6 +447,101 @@ describe("Forward Value dashboard", () => {
     const html = renderToStaticMarkup(<RecentObservations filters={{ family: "all", state: "all", edge: "all" }} observations={[yes, no, missing]} tissueComparisons={comparisons} />);
     assert.match(html, />Yes</);
     assert.match(html, />No</);
+  });
+
+  test("marks same-leader rows with a compact large probability-gap label", () => {
+    const row = record({
+      raceId: "large-gap-row",
+      leaderRunnerId: "same-runner",
+      calibratedProbability: .189,
+      tissueRunnerId: "same-runner",
+      tissueHorseName: "Same Runner",
+      tissueProbability: .583,
+      tissueAgreesWithTpr: true,
+    });
+    const html = renderToStaticMarkup(<RecentObservations filters={{ family: "all", state: "all", edge: "all" }} observations={[row]} />);
+    assert.equal(sameLeaderProbabilityGapPp({
+      agreesWithModel: true,
+      modelProbability: .189,
+      tissueProbability: .583,
+    })?.toFixed(1), "39.4");
+    assert.match(html, /Yes Δ 39\.4pp/);
+    assert.match(html, /Model 18\.9% vs Tissue 58\.3% - gap 39\.4pp/);
+  });
+
+  test("summarizes same-leader large probability disagreements across families", () => {
+    const turf = record({
+      raceId: "turf-gap",
+      leaderRunnerId: "turf-same",
+      calibratedProbability: .2,
+      capturedMarketProbability: .15,
+      edgePercentagePoints: 5,
+      tissueRunnerId: "turf-same",
+      tissueHorseName: "Turf Same",
+      tissueProbability: .35,
+      tissueAgreesWithTpr: true,
+      tissueEdgePercentagePoints: 20,
+      leaderWon: false,
+      capturedPriceProfitLoss: -1,
+    });
+    const jump = record({
+      raceId: "jump-gap",
+      family: "jump",
+      leaderRunnerId: "jump-same",
+      calibratedProbability: .189,
+      capturedMarketProbability: .25,
+      edgePercentagePoints: -6.1,
+      leaderWon: true,
+      capturedPriceProfitLoss: 3,
+    });
+    const aw = record({
+      raceId: "aw-small-gap",
+      family: "aw",
+      leaderRunnerId: "aw-same",
+      calibratedProbability: .24,
+      capturedMarketProbability: .2,
+      edgePercentagePoints: 4,
+    });
+    const diagnostics = buildSameLeaderProbabilityGapDiagnostics([turf, jump, aw], {
+      jump: jumpForward([jumpTissueRace({ raceId: "jump-gap", top1: "jump-same", horseName: "Jump Same", probability: .583, price: 2 })]),
+      aw: awForward([awTissueRace({ raceId: "aw-small-gap", top1: "aw-same", horseName: "AW Same", probability: .28, price: 5 })]),
+    });
+
+    assert.equal(LARGE_PROBABILITY_GAP_PP, 10);
+    assert.equal(diagnostics.families.find((family) => family.family === "turf")!.sameLeaderComparableRaces, 1);
+    assert.equal(diagnostics.families.find((family) => family.family === "jump")!.largeProbabilityDisagreements, 1);
+    assert.equal(diagnostics.families.find((family) => family.family === "aw")!.largeProbabilityDisagreements, 0);
+    assert.equal(diagnostics.largeGapObservations.length, 2);
+    assert.equal(diagnostics.outcome.races, 2);
+    assert.equal(diagnostics.outcome.winners, 1);
+    assert.ok(Math.abs((diagnostics.outcome.meanAbsoluteProbabilityGapPp ?? 0) - 27.2) < 1e-9);
+    assert.equal(diagnostics.direction.tissue_higher.races, 2);
+    assert.equal(diagnostics.marketPosition.below_both.races, 1);
+    assert.equal(diagnostics.marketPosition.between_models.races, 1);
+    assert.equal(diagnostics.edgeDirection.primary_negative_tissue_positive, 1);
+
+    const html = renderToStaticMarkup(<SameLeaderProbabilityGapDiagnostics diagnostics={diagnostics} />);
+    assert.match(html, /Same Leader Probability Gaps/);
+    assert.match(html, /TPR \/ Turf Tissue/);
+    assert.match(html, /JPR-A \/ Jump Tissue/);
+    assert.match(html, /Large-gap settled outcome/);
+    assert.match(html, /Primary negative \/ Tissue positive/);
+  });
+
+  test("shows an empty state when no same-leader large probability gaps exist", () => {
+    const diagnostics = buildSameLeaderProbabilityGapDiagnostics([
+      record({
+        raceId: "same-small",
+        leaderRunnerId: "same-small-runner",
+        calibratedProbability: .25,
+        tissueRunnerId: "same-small-runner",
+        tissueHorseName: "Same Small",
+        tissueProbability: .3,
+        tissueAgreesWithTpr: true,
+      }),
+    ]);
+    const html = renderToStaticMarkup(<SameLeaderProbabilityGapDiagnostics diagnostics={diagnostics} />);
+    assert.match(html, /No same-leader probability gaps &gt;=10pp yet/);
   });
 
   test("family-aware Tissue display leaves filters, sort order, and primary result semantics unchanged", () => {

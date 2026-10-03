@@ -12,12 +12,17 @@ import {
   type ForwardValueRecord,
 } from "@/lib/racing/forward-value";
 import {
+  buildSameLeaderProbabilityGapDiagnostics,
   buildTurfModelDisagreementDiagnostics,
   buildForwardValueReportingScope,
   filterForwardValueObservations,
   forwardValueFamilyLabel,
+  LARGE_PROBABILITY_GAP_PP,
+  sameLeaderProbabilityGapPp,
   forwardValueObservationStatus,
   summarizeForwardValue,
+  type SameLeaderProbabilityGapDiagnostics,
+  type SameLeaderProbabilityGapOutcomeSummary,
   type TurfModelDisagreementDiagnostic,
   type ForwardValueEdgeFilter,
   type ForwardValueObservationFilters,
@@ -65,7 +70,14 @@ export default async function ForwardValuePage({ searchParams }: PageProps) {
   const filters = parseFilters(params);
   const summary = summarizeForwardValue(data, reportingScope);
   const disagreementDiagnostics = buildTurfModelDisagreementDiagnostics(reportingScope.analyticalRecords, tissueData).slice(0, 25);
+  const diagnosticsRecords = filters.family === "all"
+    ? reportingScope.analyticalRecords
+    : reportingScope.analyticalRecords.filter((record) => record.family === filters.family);
   const observations = filterForwardValueObservations(data.races, filters, reportingScope).slice(0, 100);
+  const probabilityGapDiagnostics = familyFilteredProbabilityGapDiagnostics(
+    buildSameLeaderProbabilityGapDiagnostics(diagnosticsRecords, { aw: awTissueData, jump: jumpTissueData }),
+    filters.family,
+  );
 
   return (
     <main className="min-h-screen bg-stone-50 px-4 py-6 text-slate-950 sm:px-6 lg:px-8">
@@ -97,6 +109,7 @@ export default async function ForwardValuePage({ searchParams }: PageProps) {
         <EdgeBucketTables summary={summary} />
         <PriceSnapshotDiagnostics observations={reportingScope.analyticalRecords} summary={summary} />
         <TurfModelAgreementCounts summary={summary.turfModelAgreement} />
+        <SameLeaderProbabilityGapDiagnostics diagnostics={probabilityGapDiagnostics} />
         <TurfModelDisagreementExplainer diagnostics={disagreementDiagnostics} />
         <AwTissueValueSection data={awTissueData} ratings={reportingScope.analyticalRecords} />
         <JumpTissueValueSection data={jumpTissueData} ratings={reportingScope.analyticalRecords} />
@@ -120,6 +133,17 @@ async function getCanonicalResultRaceIds(
   return new Set(groupTodaysRacingRows(rows).flatMap((meeting) =>
     meeting.races.filter(todayRaceHasConclusiveResult).map((race) => race.raceId)
   ));
+}
+
+function familyFilteredProbabilityGapDiagnostics(
+  diagnostics: SameLeaderProbabilityGapDiagnostics,
+  family: ForwardValueObservationFilters["family"],
+): SameLeaderProbabilityGapDiagnostics {
+  if (family === "all") return diagnostics;
+  return {
+    ...diagnostics,
+    families: diagnostics.families.filter((entry) => entry.family === family),
+  };
 }
 
 function countPendingWithCanonicalResults(
@@ -241,6 +265,129 @@ export function TurfModelAgreementCounts({ summary }: { summary: TurfModelAgreem
         ))}
       </dl>
     </section>
+  );
+}
+
+export function SameLeaderProbabilityGapDiagnostics({ diagnostics }: { diagnostics: SameLeaderProbabilityGapDiagnostics }) {
+  const hasLargeGap = diagnostics.largeGapObservations.length > 0;
+  return (
+    <section aria-labelledby="probability-gap-heading" className="mt-8">
+      <h2 className="text-lg font-semibold" id="probability-gap-heading">Same Leader Probability Gaps</h2>
+      <p className="mt-1 text-xs text-slate-600">
+        Diagnostic only. Same primary/Tissue leader with both probabilities present and gap at least {LARGE_PROBABILITY_GAP_PP.toFixed(0)}pp.
+      </p>
+      <div className="mt-3 grid gap-3 md:grid-cols-3">
+        {diagnostics.families.map((family) => (
+          <div className="border border-slate-200 bg-white px-3 py-3" key={family.family}>
+            <h3 className="text-sm font-semibold text-slate-950">{family.label}</h3>
+            <dl className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1 text-xs">
+              <dt className="text-slate-500">Same leader</dt>
+              <dd className="text-right font-semibold tabular-nums">{family.sameLeaderComparableRaces}</dd>
+              <dt className="text-slate-500">Large prob gap</dt>
+              <dd className="text-right font-semibold tabular-nums">{family.largeProbabilityDisagreements}</dd>
+              <dt className="text-slate-500">Rate</dt>
+              <dd className="text-right font-semibold tabular-nums">{pct(family.largeProbabilityDisagreementRate)}</dd>
+            </dl>
+          </div>
+        ))}
+      </div>
+      {hasLargeGap ? (
+        <div className="mt-3 border border-slate-200 bg-white px-3 py-3">
+          <div className="grid gap-4 lg:grid-cols-2">
+            <ProbabilityGapOutcomeBlock title="Large-gap settled outcome" value={diagnostics.outcome} includeGap />
+            <div>
+              <h3 className="text-sm font-semibold text-slate-950">Direction</h3>
+              <CompactProbabilityGapTable rows={[
+                ["Tissue higher", diagnostics.direction.tissue_higher],
+                ["Primary higher", diagnostics.direction.primary_higher],
+              ]} />
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold text-slate-950">Market Position</h3>
+              <CompactProbabilityGapTable rows={[
+                ["Below both", diagnostics.marketPosition.below_both],
+                ["Between models", diagnostics.marketPosition.between_models],
+                ["Above both", diagnostics.marketPosition.above_both],
+              ]} />
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold text-slate-950">Edge Direction</h3>
+              <dl className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1 text-xs">
+                <dt className="text-slate-500">Primary negative / Tissue positive</dt>
+                <dd className="text-right font-semibold tabular-nums">{diagnostics.edgeDirection.primary_negative_tissue_positive}</dd>
+                <dt className="text-slate-500">Primary positive / Tissue negative</dt>
+                <dd className="text-right font-semibold tabular-nums">{diagnostics.edgeDirection.primary_positive_tissue_negative}</dd>
+                <dt className="text-slate-500">Both positive</dt>
+                <dd className="text-right font-semibold tabular-nums">{diagnostics.edgeDirection.both_positive}</dd>
+                <dt className="text-slate-500">Both negative</dt>
+                <dd className="text-right font-semibold tabular-nums">{diagnostics.edgeDirection.both_negative}</dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <p className="mt-3 border border-slate-200 bg-white px-3 py-3 text-sm text-slate-600">
+          No same-leader probability gaps &gt;={LARGE_PROBABILITY_GAP_PP.toFixed(0)}pp yet.
+        </p>
+      )}
+    </section>
+  );
+}
+
+function ProbabilityGapOutcomeBlock({ title, value, includeGap = false }: {
+  title: string;
+  value: SameLeaderProbabilityGapOutcomeSummary;
+  includeGap?: boolean;
+}) {
+  return (
+    <div>
+      <h3 className="text-sm font-semibold text-slate-950">{title}</h3>
+      <dl className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1 text-xs">
+        <dt className="text-slate-500">Races</dt>
+        <dd className="text-right font-semibold tabular-nums">{value.races}</dd>
+        <dt className="text-slate-500">Winners</dt>
+        <dd className="text-right font-semibold tabular-nums">{value.winners}</dd>
+        <dt className="text-slate-500">Actual strike</dt>
+        <dd className="text-right font-semibold tabular-nums">{pct(value.strikeRate)}</dd>
+        <dt className="text-slate-500">Mean model prob</dt>
+        <dd className="text-right font-semibold tabular-nums">{pct(value.meanModelProbability)}</dd>
+        <dt className="text-slate-500">Mean Tissue prob</dt>
+        <dd className="text-right font-semibold tabular-nums">{pct(value.meanTissueProbability)}</dd>
+        <dt className="text-slate-500">Mean market implied</dt>
+        <dd className="text-right font-semibold tabular-nums">{pct(value.meanMarketImpliedProbability)}</dd>
+        {includeGap ? (
+          <>
+            <dt className="text-slate-500">Mean absolute gap</dt>
+            <dd className="text-right font-semibold tabular-nums">{ppUnsigned(value.meanAbsoluteProbabilityGapPp)}</dd>
+          </>
+        ) : null}
+      </dl>
+    </div>
+  );
+}
+
+function CompactProbabilityGapTable({ rows }: { rows: Array<[string, SameLeaderProbabilityGapOutcomeSummary]> }) {
+  return (
+    <div className="mt-2 overflow-x-auto border border-slate-200">
+      <table className="w-full min-w-[520px] text-xs">
+        <thead className="bg-slate-100 text-slate-600">
+          <tr>{["Group", "Races", "Winners", "Strike", "Model", "Tissue", "Market"].map((heading) => <th className="px-2 py-2 text-right first:text-left" key={heading}>{heading}</th>)}</tr>
+        </thead>
+        <tbody className="divide-y divide-slate-200">
+          {rows.map(([label, value]) => (
+            <tr key={label}>
+              <th className="px-2 py-2 text-left font-medium">{label}</th>
+              <CompactCell value={value.races} />
+              <CompactCell value={value.winners} />
+              <CompactCell value={pct(value.strikeRate)} />
+              <CompactCell value={pct(value.meanModelProbability)} />
+              <CompactCell value={pct(value.meanTissueProbability)} />
+              <CompactCell value={pct(value.meanMarketImpliedProbability)} />
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 }
 
@@ -810,7 +957,10 @@ export function RecentObservations({ filters, observations, tissueComparisons, r
                   <MarketPriceCell model="tissue" record={race} tissueComparison={tissueComparison} />
                   <CompactCell value={pct(tissueComparison.marketProbability)} />
                   <CompactCell value={pp(tissueComparison.edgePercentagePoints)} />
-                  <CompactCell value={yesNo(tissueComparison.agreesWithModel)} />
+                  <AgreeCell
+                    modelProbability={race.calibratedProbability}
+                    tissueComparison={tissueComparison}
+                  />
                   <CompactCell value={yesNo(race.leaderIsMarketFavourite ?? race.agreesWithMarketFavourite)} />
                   <CompactCell value={resultLabel(race, canonicalResultRaceIds)} />
                   <CompactCell value={`${race.marketPriceBasisVersion === FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION ? "Median " : "Legacy "}${money(profitLoss)}`} />
@@ -866,6 +1016,22 @@ function EdgeBucketCell({ value }: { value: number | string }) {
 
 function CompactCell({ value }: { value: number | string }) {
   return <td className="whitespace-nowrap px-2 py-2 text-center tabular-nums">{value}</td>;
+}
+
+function AgreeCell({ modelProbability, tissueComparison }: {
+  modelProbability: number | null;
+  tissueComparison: FamilyTissueComparison;
+}) {
+  const gap = sameLeaderProbabilityGapPp({
+    agreesWithModel: tissueComparison.agreesWithModel,
+    modelProbability,
+    tissueProbability: tissueComparison.probability,
+  });
+  const label = gap !== null && gap >= LARGE_PROBABILITY_GAP_PP ? `${yesNo(tissueComparison.agreesWithModel)} Δ ${gap.toFixed(1)}pp` : yesNo(tissueComparison.agreesWithModel);
+  const title = gap === null || tissueComparison.probability === null || modelProbability === null
+    ? undefined
+    : `Model ${(modelProbability * 100).toFixed(1)}% vs Tissue ${(tissueComparison.probability * 100).toFixed(1)}% - gap ${gap.toFixed(1)}pp`;
+  return <td className="whitespace-nowrap px-2 py-2 text-center tabular-nums" title={title}>{label}</td>;
 }
 
 function MarketPriceCell({ model, record, tissueComparison }: {
@@ -948,6 +1114,7 @@ function edgeLabel(value: string) { return value.replace(">0-2pp", "> 0–2pp").
 function pct(value: number | null) { return value === null ? "-" : `${(value * 100).toFixed(1)}%`; }
 function pctFromPercent(value: number | null) { return value === null ? "-" : `${value.toFixed(1)}%`; }
 function pp(value: number | null) { return value === null ? "-" : `${value >= 0 ? "+" : ""}${value.toFixed(1)}pp`; }
+function ppUnsigned(value: number | null) { return value === null ? "-" : `${value.toFixed(1)}pp`; }
 function signedPp(value: number | null, baseline: number | null) {
   return value === null || baseline === null ? "-" : pp((value - baseline) * 100);
 }
