@@ -14,6 +14,7 @@ import {
   turfModelDisagreementLargeDifference,
 } from "@/lib/racing/forward-value-summary";
 import {
+  buildFamilyTissueComparisons,
   EdgeBucketTables,
   FamilySummaryTable,
   PriceSnapshotDiagnostics,
@@ -23,6 +24,8 @@ import {
   TurfModelDisagreementExplainer,
   TurfModelAgreementCounts,
 } from "./page";
+import { emptyAwTissueForward, type AwTissueForwardData, type AwTissueRace } from "@/lib/racing/aw-tissue-forward";
+import { emptyJumpTissueForward, type JumpTissueForwardData, type JumpTissueRace } from "@/lib/racing/jump-tissue-forward";
 import {
   hasHorizontalOverflow,
   shouldShowStickyScrollbar,
@@ -326,7 +329,7 @@ describe("Forward Value dashboard", () => {
     assert.equal(JSON.stringify(pending), before);
   });
 
-  test("renders Turf TPR-versus-Tissue race table columns", () => {
+  test("renders family-aware model-versus-Tissue race table columns", () => {
     const recentHtml = renderToStaticMarkup(<RecentObservations filters={{ family: "all", state: "all", edge: "all" }} observations={[
       record({
         raceId: "turf-tissue-row",
@@ -342,11 +345,120 @@ describe("Forward Value dashboard", () => {
         tissueEdgePercentagePoints: 6.8,
       }),
     ]} />);
-    assert.match(recentHtml, /TPR horse/);
+    assert.match(recentHtml, /Model horse/);
+    assert.match(recentHtml, /Model prob/);
+    assert.doesNotMatch(recentHtml, /TPR horse/);
     assert.match(recentHtml, /Tissue Choice/);
     assert.match(recentHtml, /9\/2 \(5\.50\)/);
     assert.match(recentHtml, /\+6\.8pp/);
     assert.match(recentHtml, />No</);
+  });
+
+  test("main table maps TPR, JPR-A and AW-D rows to the matching Tissue tracker", () => {
+    const rows = [
+      record({
+        raceId: "turf-family",
+        family: "turf",
+        leaderRunnerId: "turf-model",
+        tissueRunnerId: "turf-tissue",
+        tissueHorseName: "Turf Tissue Horse",
+        tissueProbability: .31,
+        tissueAgreesWithTpr: false,
+        tissueCapturedDecimalOdds: 4,
+        tissueMarketProbability: .25,
+        tissueEdgePercentagePoints: 6,
+      }),
+      record({ raceId: "jump-family", family: "jump", leaderRunnerId: "jump-model" }),
+      record({ raceId: "aw-family", family: "aw", leaderRunnerId: "aw-model" }),
+    ];
+    const comparisons = buildFamilyTissueComparisons(rows, {
+      jump: jumpForward([jumpTissueRace({ raceId: "jump-family", top1: "jump-tissue", horseName: "Jump Tissue Horse", probability: .22, price: 5 })]),
+      aw: awForward([awTissueRace({ raceId: "aw-family", top1: "aw-tissue", horseName: "AW Tissue Horse", probability: .18, price: 8 })]),
+    });
+    assert.equal(comparisons.get("turf-family")?.horseName, "Turf Tissue Horse");
+    assert.equal(comparisons.get("jump-family")?.horseName, "Jump Tissue Horse");
+    assert.equal(comparisons.get("aw-family")?.horseName, "AW Tissue Horse");
+
+    const html = renderToStaticMarkup(<RecentObservations filters={{ family: "all", state: "all", edge: "all" }} observations={rows} tissueComparisons={comparisons} />);
+    assert.match(html, /TPR compares with Turf Tissue/);
+    assert.match(html, /JPR-A compares with Jump Tissue/);
+    assert.match(html, /AW-D compares with AW Tissue/);
+    assert.match(html, /Turf Tissue Horse/);
+    assert.match(html, /Jump Tissue Horse/);
+    assert.match(html, /AW Tissue Horse/);
+  });
+
+  test("Tissue columns use the Tissue horse's own median bookmaker price and edge", () => {
+    const row = record({ raceId: "jump-price", family: "jump", leaderRunnerId: "primary-runner", capturedDecimalOdds: 2, capturedMarketProbability: .5 });
+    const comparisons = buildFamilyTissueComparisons([row], {
+      jump: jumpForward([jumpTissueRace({
+        raceId: "jump-price",
+        top1: "tissue-runner",
+        horseName: "Own Price Tissue",
+        probability: .3,
+        price: 5,
+        bestPrice: 7,
+      })]),
+    });
+    const comparison = comparisons.get("jump-price")!;
+    assert.equal(comparison.capturedDecimalOdds, 5);
+    assert.equal(comparison.marketProbability, .2);
+    assert.ok(Math.abs((comparison.edgePercentagePoints ?? 0) - 10) < 1e-9);
+
+    const html = renderToStaticMarkup(<RecentObservations filters={{ family: "all", state: "all", edge: "all" }} observations={[row]} tissueComparisons={comparisons} />);
+    assert.match(html, /Own Price Tissue/);
+    assert.match(html, />5\.00</);
+    assert.match(html, /20\.0%/);
+    assert.match(html, /\+10\.0pp/);
+    assert.match(html, /Best 7\.00/);
+  });
+
+  test("missing or non-clean Tissue observations show placeholders and are not reconstructed", () => {
+    const rows = [
+      record({ raceId: "jump-missing", family: "jump", leaderRunnerId: "jump-model" }),
+      record({ raceId: "aw-post-race", family: "aw", leaderRunnerId: "aw-model" }),
+    ];
+    const comparisons = buildFamilyTissueComparisons(rows, {
+      aw: awForward([awTissueRace({ raceId: "aw-post-race", top1: "aw-tissue", horseName: "Late AW Tissue", probability: .4, price: 3, recordedPreRace: false })]),
+    });
+    assert.equal(comparisons.has("jump-missing"), false);
+    assert.equal(comparisons.has("aw-post-race"), false);
+
+    const html = renderToStaticMarkup(<RecentObservations filters={{ family: "all", state: "all", edge: "all" }} observations={rows} tissueComparisons={comparisons} />);
+    assert.doesNotMatch(html, /Late AW Tissue/);
+    assert.equal(html.match(/<td class="whitespace-nowrap px-2 py-2 text-center tabular-nums">-<\/td>/g)!.length >= 10, true);
+  });
+
+  test("agreement is Yes, No or placeholder according to primary versus family Tissue rank one", () => {
+    const yes = record({ raceId: "jump-agree", family: "jump", leaderRunnerId: "same-runner" });
+    const no = record({ raceId: "aw-disagree", family: "aw", leaderRunnerId: "aw-model" });
+    const missing = record({ raceId: "jump-no-tissue", family: "jump", leaderRunnerId: "missing-model" });
+    const comparisons = buildFamilyTissueComparisons([yes, no, missing], {
+      jump: jumpForward([jumpTissueRace({ raceId: "jump-agree", top1: "same-runner", horseName: "Same Runner", probability: .26, price: 4 })]),
+      aw: awForward([awTissueRace({ raceId: "aw-disagree", top1: "different-runner", horseName: "Different Runner", probability: .21, price: 6 })]),
+    });
+    assert.equal(comparisons.get("jump-agree")?.agreesWithModel, true);
+    assert.equal(comparisons.get("aw-disagree")?.agreesWithModel, false);
+    assert.equal(comparisons.has("jump-no-tissue"), false);
+    const html = renderToStaticMarkup(<RecentObservations filters={{ family: "all", state: "all", edge: "all" }} observations={[yes, no, missing]} tissueComparisons={comparisons} />);
+    assert.match(html, />Yes</);
+    assert.match(html, />No</);
+  });
+
+  test("family-aware Tissue display leaves filters, sort order, and primary result semantics unchanged", () => {
+    const jumpWonTissue = record({ raceId: "jump-result", family: "jump", leaderRunnerId: "model-lost", leaderWon: false, leaderResultStatus: "finished", settledAt: "2026-09-27T15:00:00Z", recordedAt: "2026-09-27T10:00:00Z" });
+    const turfNewer = record({ raceId: "turf-newer", family: "turf", recordedAt: "2026-09-27T11:00:00Z" });
+    const rows = [jumpWonTissue, turfNewer];
+    const comparisons = buildFamilyTissueComparisons(rows, {
+      jump: jumpForward([jumpTissueRace({ raceId: "jump-result", top1: "tissue-winner", horseName: "Tissue Winner", probability: .5, price: 2 })]),
+    });
+    assert.deepEqual(filterForwardValueObservations(rows, { family: "jump", state: "settled", edge: "positive" }).map((race) => race.raceId), ["jump-result"]);
+    assert.deepEqual(filterForwardValueObservations(rows, { family: "all", state: "all", edge: "all" }).map((race) => race.raceId), ["turf-newer", "jump-result"]);
+
+    const html = renderToStaticMarkup(<RecentObservations filters={{ family: "all", state: "all", edge: "all" }} observations={[jumpWonTissue]} tissueComparisons={comparisons} />);
+    assert.match(html, /Tissue Winner/);
+    assert.match(html, />Lost</);
+    assert.doesNotMatch(html, />Won</);
   });
 
   test("renders the compact Recent Observations layout with constrained race text", () => {
@@ -811,5 +923,104 @@ function record(overrides: Partial<ForwardValueRecord> & { raceId: string }): Fo
     capturedPriceProfitLoss: 4,
     settledAt: "2026-09-27T14:00:00Z",
     ...rest,
+  };
+}
+
+function jumpForward(races: JumpTissueRace[]): JumpTissueForwardData {
+  return { ...emptyJumpTissueForward(), races };
+}
+
+function awForward(races: AwTissueRace[]): AwTissueForwardData {
+  return { ...emptyAwTissueForward(), races };
+}
+
+function jumpTissueRace(input: {
+  raceId: string;
+  top1: string;
+  horseName: string;
+  probability: number;
+  price: number | null;
+  bestPrice?: number;
+  recordedPreRace?: boolean;
+}): JumpTissueRace {
+  return baseTrackerTissueRace(input, "jump") as unknown as JumpTissueRace;
+}
+
+function awTissueRace(input: {
+  raceId: string;
+  top1: string;
+  horseName: string;
+  probability: number;
+  price: number | null;
+  bestPrice?: number;
+  recordedPreRace?: boolean;
+}): AwTissueRace {
+  return baseTrackerTissueRace(input, "aw") as unknown as AwTissueRace;
+}
+
+function baseTrackerTissueRace(input: {
+  raceId: string;
+  top1: string;
+  horseName: string;
+  probability: number;
+  price: number | null;
+  bestPrice?: number;
+  recordedPreRace?: boolean;
+}, family: "jump" | "aw") {
+  const priceSnapshot = input.price === null ? null : {
+    price: null,
+    decimalPrice: input.price,
+    impliedProbability: 1 / input.price,
+    capturedAt: "2026-10-03T09:00:00Z",
+    minutesBeforeScheduledOff: 60,
+    ratingProbability: input.probability,
+    ratingEdgePercentagePoints: (input.probability - 1 / input.price) * 100,
+    marketPriceBasisVersion: FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION,
+    bookmakerQuoteCount: 2,
+    bookmakerQuotes: [
+      { bookmakerId: 1, bookmakerName: "Median One", fractionalOdds: null, decimalOdds: input.price - .5 },
+      { bookmakerId: 2, bookmakerName: "Median Two", fractionalOdds: null, decimalOdds: input.price + .5 },
+    ],
+    medianBookmakerPriceDecimal: input.price,
+    medianBookmakerImpliedProbability: 1 / input.price,
+    bestBookmakerPriceDecimal: input.bestPrice ?? input.price + .5,
+    bestBookmakerPriceFractional: null,
+    bestBookmakerName: "Best Book",
+    forecastPrice: "99/1",
+    forecastDecimalPrice: 100,
+  };
+  return {
+    raceId: input.raceId,
+    sourceId: null,
+    raceDate: "2026-10-03",
+    course: family === "jump" ? "Jump Test" : "AW Test",
+    raceName: "Tissue Stakes",
+    scheduledTime: "14:00",
+    scheduledOffAt: "2026-10-03T14:00:00Z",
+    currentOffAt: "2026-10-03T14:00:00Z",
+    fieldSize: 2,
+    recordedAt: "2026-10-03T09:00:00Z",
+    recordedPreRace: input.recordedPreRace ?? true,
+    runners: [{
+      runnerId: input.top1,
+      horseId: `${input.top1}-horse`,
+      horseName: input.horseName,
+      probability: input.probability,
+      rank: 1,
+      outcome: null,
+    }],
+    top1: input.top1,
+    top2: [input.top1],
+    top3: [input.top1],
+    winners: [],
+    settledAt: null,
+    excludedReason: null,
+    predictedRunnerCount: 2,
+    activeRunnerCount: 2,
+    predictionCoverage: 1,
+    marketPriceBasisVersion: FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION,
+    priceSnapshotScheduleVersion: FORWARD_VALUE_PRICE_SNAPSHOT_SCHEDULE_VERSION,
+    prices: { early: priceSnapshot, t180: null, t60: priceSnapshot },
+    selectedPriceProfitLoss: { early: null, t180: null, t60: null, bestEarly: null, finalSp: null },
   };
 }

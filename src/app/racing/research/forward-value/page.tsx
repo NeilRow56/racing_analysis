@@ -30,9 +30,10 @@ import { getRacecardRowsForRaceIds, getSportingLifeCurrentCardRaceStatuses, grou
 import { todayRaceHasConclusiveResult } from "@/lib/racing/today-race-status";
 import { loadTissueForward, TISSUE_V2_CONFIG } from "@/lib/racing/tissue-forward";
 import { RecentObservationsScroll } from "./recent-observations-scroll";
-import { loadAwTissueForward } from "@/lib/racing/aw-tissue-forward";
+import { cleanAwTissueRace, loadAwTissueForward, type AwTissueForwardData, type AwTissueRace } from "@/lib/racing/aw-tissue-forward";
 import { AwTissueValueSection, JumpTissueValueSection } from "./aw-tissue-value";
-import { loadJumpTissueForward } from "@/lib/racing/jump-tissue-forward";
+import { cleanJumpTissueRace, loadJumpTissueForward, type JumpTissueForwardData, type JumpTissueRace } from "@/lib/racing/jump-tissue-forward";
+import type { SportingLifeBookmakerQuote } from "@/lib/racing/todays-racing";
 
 export const dynamic = "force-dynamic";
 
@@ -99,7 +100,13 @@ export default async function ForwardValuePage({ searchParams }: PageProps) {
         <TurfModelDisagreementExplainer diagnostics={disagreementDiagnostics} />
         <AwTissueValueSection data={awTissueData} ratings={reportingScope.analyticalRecords} />
         <JumpTissueValueSection data={jumpTissueData} ratings={reportingScope.analyticalRecords} />
-        <RecentObservations filters={filters} observations={observations} reportingStatuses={reportingScope.statusByRaceId} canonicalResultRaceIds={canonicalResultRaceIds} />
+        <RecentObservations
+          filters={filters}
+          observations={observations}
+          tissueComparisons={buildFamilyTissueComparisons(observations, { aw: awTissueData, jump: jumpTissueData })}
+          reportingStatuses={reportingScope.statusByRaceId}
+          canonicalResultRaceIds={canonicalResultRaceIds}
+        />
       </div>
     </main>
   );
@@ -630,19 +637,112 @@ function outcomeSummary(value: { observations: number; settledObservations: numb
 type RecentProps = {
   filters: ForwardValueObservationFilters;
   observations: Awaited<ReturnType<typeof loadForwardValueData>>["races"];
+  tissueComparisons?: ReadonlyMap<string, FamilyTissueComparison>;
   reportingStatuses?: ReadonlyMap<string, ForwardValueReportingStatus>;
   canonicalResultRaceIds?: ReadonlySet<string>;
 };
 
 const recentObservationColumnWidths = [84, 46, 170, 52, 96, 64, 78, 66, 52, 96, 64, 78, 66, 52, 58, 56, 54, 48, 92];
 const recentObservationHeadings = [
-  "Date", "Time", "Course / race", "Family", "TPR horse", "TPR prob.", "TPR market price",
-  "TPR mkt.", "TPR edge", "Tissue horse", "Tissue prob.", "Tissue market price",
+  "Date", "Time", "Course / race", "Family", "Model horse", "Model prob.", "Model market price",
+  "Model mkt.", "Model edge", "Tissue horse", "Tissue prob.", "Tissue market price",
   "Tissue mkt.", "Tissue edge", "Agree", "Fav.", "Result", "Basis P/L", "Status",
 ];
 const recentObservationTableMinWidth = 1446;
 
-export function RecentObservations({ filters, observations, reportingStatuses, canonicalResultRaceIds = new Set() }: RecentProps) {
+type FamilyTissueComparison = {
+  runnerId: string | null;
+  horseName: string | null;
+  probability: number | null;
+  agreesWithModel: boolean | null;
+  capturedPrice: string | null;
+  capturedDecimalOdds: number | null;
+  marketProbability: number | null;
+  edgePercentagePoints: number | null;
+  priceCapturedAt: string | null;
+  forecastPrice: string | null;
+  forecastDecimalPrice: number | null;
+  bookmakerQuotes: SportingLifeBookmakerQuote[];
+  bestBookmakerPriceDecimal: number | null;
+  bestBookmakerPriceFractional: string | null;
+  bestBookmakerName: string | null;
+};
+
+type FamilyTissueSources = {
+  aw?: AwTissueForwardData;
+  jump?: JumpTissueForwardData;
+};
+
+export function buildFamilyTissueComparisons(
+  observations: readonly ForwardValueRecord[],
+  sources: FamilyTissueSources,
+): ReadonlyMap<string, FamilyTissueComparison> {
+  const comparisons = new Map<string, FamilyTissueComparison>();
+  for (const record of observations) {
+    if (record.family === "turf") {
+      comparisons.set(record.raceId, turfTissueComparison(record));
+      continue;
+    }
+    const race = record.family === "jump"
+      ? sources.jump?.races.find((candidate) => candidate.raceId === record.raceId)
+      : sources.aw?.races.find((candidate) => candidate.raceId === record.raceId);
+    if (!race) continue;
+    const clean = record.family === "jump"
+      ? cleanJumpTissueRace(race as JumpTissueRace)
+      : cleanAwTissueRace(race as AwTissueRace);
+    if (!clean) continue;
+    const comparison = record.family === "jump"
+      ? trackerTissueComparison(record, race as JumpTissueRace)
+      : trackerTissueComparison(record, race as AwTissueRace);
+    if (comparison) comparisons.set(record.raceId, comparison);
+  }
+  return comparisons;
+}
+
+function turfTissueComparison(record: ForwardValueRecord): FamilyTissueComparison {
+  return {
+    runnerId: record.tissueRunnerId,
+    horseName: record.tissueHorseName,
+    probability: record.tissueProbability,
+    agreesWithModel: record.tissueAgreesWithTpr,
+    capturedPrice: record.tissueCapturedPrice ?? null,
+    capturedDecimalOdds: record.tissueCapturedDecimalOdds ?? null,
+    marketProbability: record.tissueMarketProbability ?? null,
+    edgePercentagePoints: record.tissueEdgePercentagePoints ?? null,
+    priceCapturedAt: record.tissuePriceCapturedAt ?? null,
+    forecastPrice: record.tissueForecastPrice ?? null,
+    forecastDecimalPrice: record.tissueForecastDecimalPrice ?? null,
+    bookmakerQuotes: record.tissueBookmakerQuotes ?? [],
+    bestBookmakerPriceDecimal: record.tissueBestBookmakerPriceDecimal ?? null,
+    bestBookmakerPriceFractional: record.tissueBestBookmakerPriceFractional ?? null,
+    bestBookmakerName: record.tissueBestBookmakerName ?? null,
+  };
+}
+
+function trackerTissueComparison(record: ForwardValueRecord, race: AwTissueRace | JumpTissueRace): FamilyTissueComparison | null {
+  const runner = race.runners.find((candidate) => candidate.runnerId === race.top1);
+  if (!runner || runner.probability === null) return null;
+  const priceSnapshot = race.prices.t60 ?? race.prices.t180 ?? race.prices.early;
+  return {
+    runnerId: runner.runnerId,
+    horseName: runner.horseName,
+    probability: runner.probability,
+    agreesWithModel: race.top1 === null ? null : race.top1 === record.leaderRunnerId,
+    capturedPrice: priceSnapshot?.price ?? null,
+    capturedDecimalOdds: priceSnapshot?.marketPriceBasisVersion === FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION ? priceSnapshot.decimalPrice : null,
+    marketProbability: priceSnapshot?.marketPriceBasisVersion === FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION ? priceSnapshot.impliedProbability : null,
+    edgePercentagePoints: priceSnapshot?.marketPriceBasisVersion === FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION ? (runner.probability - priceSnapshot.impliedProbability) * 100 : null,
+    priceCapturedAt: priceSnapshot?.marketPriceBasisVersion === FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION ? priceSnapshot.capturedAt : null,
+    forecastPrice: priceSnapshot?.forecastPrice ?? null,
+    forecastDecimalPrice: priceSnapshot?.forecastDecimalPrice ?? null,
+    bookmakerQuotes: priceSnapshot?.bookmakerQuotes ?? [],
+    bestBookmakerPriceDecimal: priceSnapshot?.bestBookmakerPriceDecimal ?? null,
+    bestBookmakerPriceFractional: priceSnapshot?.bestBookmakerPriceFractional ?? null,
+    bestBookmakerName: priceSnapshot?.bestBookmakerName ?? null,
+  };
+}
+
+export function RecentObservations({ filters, observations, tissueComparisons, reportingStatuses, canonicalResultRaceIds = new Set() }: RecentProps) {
   return (
     <section aria-labelledby="recent-heading" className="mt-8 pb-10">
       <div className="border-b border-slate-300 pb-3">
@@ -678,6 +778,7 @@ export function RecentObservations({ filters, observations, reportingStatuses, c
               const exclusion = valueExclusionReason(race);
               const profitLoss = capturedPriceProfitLoss(race);
               const raceDescription = `${race.course}${race.raceName ? ` / ${race.raceName}` : ""}`;
+              const tissueComparison = tissueComparisons?.get(race.raceId) ?? turfTissueComparison(race);
               return (
                 <tr className={exclusion ? "bg-slate-50 text-slate-600" : ""} key={`${race.raceId}:${race.recordedAt}`}>
                   <td className="whitespace-nowrap px-2 py-2 tabular-nums">{race.raceDate}</td>
@@ -685,7 +786,7 @@ export function RecentObservations({ filters, observations, reportingStatuses, c
                   <td className="px-2 py-2" title={raceDescription}>
                     <span className="line-clamp-2 break-words font-medium leading-4">{raceDescription}</span>
                   </td>
-                  <td className="whitespace-nowrap px-2 py-2 font-medium">{forwardValueFamilyLabel(race.family)}</td>
+                  <td className="whitespace-nowrap px-2 py-2 font-medium" title={familyTissueHelp(race.family)}>{forwardValueFamilyLabel(race.family)}</td>
                   <td className="px-2 py-2 font-medium leading-4" title={race.leaderHorseName}>
                     <span className="line-clamp-2 break-words">{race.leaderHorseName}</span>
                     {race.family === "turf" && race.leaderTprConfidence ? (
@@ -704,12 +805,12 @@ export function RecentObservations({ filters, observations, reportingStatuses, c
                   <MarketPriceCell model="tpr" record={race} />
                   <CompactCell value={pct(race.capturedMarketProbability)} />
                   <CompactCell value={pp(race.edgePercentagePoints)} />
-                  <HorseCell value={race.tissueHorseName ?? "-"} />
-                  <CompactCell value={pct(race.tissueProbability)} />
-                  <MarketPriceCell model="tissue" record={race} />
-                  <CompactCell value={pct(race.tissueMarketProbability ?? null)} />
-                  <CompactCell value={pp(race.tissueEdgePercentagePoints ?? null)} />
-                  <CompactCell value={yesNo(race.tissueAgreesWithTpr)} />
+                  <HorseCell value={tissueComparison.horseName ?? "-"} />
+                  <CompactCell value={pct(tissueComparison.probability)} />
+                  <MarketPriceCell model="tissue" record={race} tissueComparison={tissueComparison} />
+                  <CompactCell value={pct(tissueComparison.marketProbability)} />
+                  <CompactCell value={pp(tissueComparison.edgePercentagePoints)} />
+                  <CompactCell value={yesNo(tissueComparison.agreesWithModel)} />
                   <CompactCell value={yesNo(race.leaderIsMarketFavourite ?? race.agreesWithMarketFavourite)} />
                   <CompactCell value={resultLabel(race, canonicalResultRaceIds)} />
                   <CompactCell value={`${race.marketPriceBasisVersion === FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION ? "Median " : "Legacy "}${money(profitLoss)}`} />
@@ -767,25 +868,31 @@ function CompactCell({ value }: { value: number | string }) {
   return <td className="whitespace-nowrap px-2 py-2 text-center tabular-nums">{value}</td>;
 }
 
-function MarketPriceCell({ model, record }: {
+function MarketPriceCell({ model, record, tissueComparison }: {
   model: "tpr" | "tissue";
   record: RecentProps["observations"][number];
+  tissueComparison?: FamilyTissueComparison;
 }) {
   const isTpr = model === "tpr";
   const displayed = price(
-    isTpr ? record.capturedPrice : record.tissueCapturedPrice ?? null,
-    isTpr ? record.capturedDecimalOdds : record.tissueCapturedDecimalOdds ?? null,
+    isTpr ? record.capturedPrice : tissueComparison?.capturedPrice ?? record.tissueCapturedPrice ?? null,
+    isTpr ? record.capturedDecimalOdds : tissueComparison?.capturedDecimalOdds ?? record.tissueCapturedDecimalOdds ?? null,
   );
-  if (record.marketPriceBasisVersion !== FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION) {
+  const isMedianBookmaker = isTpr
+    ? record.marketPriceBasisVersion === FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION
+    : tissueComparison
+      ? tissueComparison.capturedDecimalOdds !== null
+      : record.marketPriceBasisVersion === FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION;
+  if (!isMedianBookmaker) {
     return <CompactCell value={displayed} />;
   }
-  const quotes = isTpr ? record.bookmakerQuotes ?? [] : record.tissueBookmakerQuotes ?? [];
-  const bestDecimal = isTpr ? record.bestBookmakerPriceDecimal ?? null : record.tissueBestBookmakerPriceDecimal ?? null;
-  const bestFractional = isTpr ? record.bestBookmakerPriceFractional ?? null : record.tissueBestBookmakerPriceFractional ?? null;
-  const bestName = isTpr ? record.bestBookmakerName ?? null : record.tissueBestBookmakerName ?? null;
+  const quotes = isTpr ? record.bookmakerQuotes ?? [] : tissueComparison?.bookmakerQuotes ?? record.tissueBookmakerQuotes ?? [];
+  const bestDecimal = isTpr ? record.bestBookmakerPriceDecimal ?? null : tissueComparison?.bestBookmakerPriceDecimal ?? record.tissueBestBookmakerPriceDecimal ?? null;
+  const bestFractional = isTpr ? record.bestBookmakerPriceFractional ?? null : tissueComparison?.bestBookmakerPriceFractional ?? record.tissueBestBookmakerPriceFractional ?? null;
+  const bestName = isTpr ? record.bestBookmakerName ?? null : tissueComparison?.bestBookmakerName ?? record.tissueBestBookmakerName ?? null;
   const forecast = price(
-    isTpr ? record.forecastPrice ?? null : record.tissueForecastPrice ?? null,
-    isTpr ? record.forecastDecimalPrice ?? null : record.tissueForecastDecimalPrice ?? null,
+    isTpr ? record.forecastPrice ?? null : tissueComparison?.forecastPrice ?? record.tissueForecastPrice ?? null,
+    isTpr ? record.forecastDecimalPrice ?? null : tissueComparison?.forecastDecimalPrice ?? record.tissueForecastDecimalPrice ?? null,
   );
   return (
     <td className="whitespace-nowrap px-2 py-2 text-center tabular-nums">
@@ -820,6 +927,11 @@ function parseFilters(params: Awaited<PageProps["searchParams"]>): ForwardValueO
 }
 
 function scalar(value: string | string[] | undefined) { return Array.isArray(value) ? value[0] : value; }
+function familyTissueHelp(family: ForwardValueRecord["family"]) {
+  if (family === "turf") return "TPR compares with Turf Tissue";
+  if (family === "jump") return "JPR-A compares with Jump Tissue";
+  return "AW-D compares with AW Tissue";
+}
 function resultLabel(race: RecentProps["observations"][number], canonicalResultRaceIds: ReadonlySet<string>) {
   if (race.settledAt !== null) return race.leaderResultStatus === "non_runner" ? "Non-runner" : race.leaderWon ? "Won" : "Lost";
   return canonicalResultRaceIds.has(race.raceId) ? "Pending - tracker sync required" : "Pending";
