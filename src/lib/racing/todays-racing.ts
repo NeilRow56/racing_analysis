@@ -99,6 +99,7 @@ export type TodayRunner = {
   savedRuleMatches?: TodaySavedRuleMatch[];
   goingForm?: GoingForm;
   jumpRating?: JumpRatingRunner;
+  jumpTissue?: import("./jump-tissue-model").JumpTissuePrediction;
   awRating?: AwRatingRunner;
   awTissue?: import("./aw-tissue-model").AwTissuePrediction;
 };
@@ -156,6 +157,11 @@ export type TodayRace = {
   tprRatingCoverage?: RatingCoverage;
   jumpRatingCoverage?: {
     jprA: RatingCoverage;
+  };
+  jumpTissueCoverage?: {
+    activeRunnerCount: number;
+    predictedRunnerCount: number;
+    predictionCoverage: number;
   };
   awRatingCoverage?: {
     awD: AwRatingCoverage;

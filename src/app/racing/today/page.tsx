@@ -56,6 +56,8 @@ import { SpeedDisplayValue, TodaySpeedDisplay } from "./speed-display";
 import { TurfPerformanceRatingCell } from "./tpr-display";
 import { syncAwTissueMeetings } from "@/lib/racing/aw-tissue-sync";
 import { attachAwTissueToMeetings } from "@/lib/racing/aw-tissue-forward";
+import { syncJumpTissueMeetings } from "@/lib/racing/jump-tissue-sync";
+import { attachJumpTissueToMeetings } from "@/lib/racing/jump-tissue-forward";
 
 export const dynamic = "force-dynamic";
 
@@ -117,7 +119,8 @@ export default async function TodaysRacingPage({ searchParams }: PageProps) {
     }
     if (displayData.status === "ok") {
       const awTissue = await syncAwTissueMeetings(connection, displayData.meetings, raceDate);
-      displayData = { ...displayData, meetings: attachAwTissueToMeetings(displayData.meetings, awTissue) };
+      const jumpTissue = await syncJumpTissueMeetings(connection, displayData.meetings, raceDate);
+      displayData = { ...displayData, meetings: attachJumpTissueToMeetings(attachAwTissueToMeetings(displayData.meetings, awTissue), jumpTissue) };
     }
     await connection.client.end();
     connection = null;
@@ -399,6 +402,7 @@ function RaceBlock({ race }: {
   const awDCoverage = isAllWeatherRace ? race.awRatingCoverage?.awD : undefined;
   const tprCoverage = isTurfRace ? race.tprRatingCoverage : undefined;
   const jprACoverage = isJumpRace ? race.jumpRatingCoverage?.jprA : undefined;
+  const jumpTissueCoverage = isJumpRace ? race.jumpTissueCoverage : undefined;
 
   return (
     <section className="border-b border-slate-200 pb-7">
@@ -439,6 +443,12 @@ function RaceBlock({ race }: {
               {jprACoverage.ratingCoverageStatus === "insufficient_coverage" ? (
                 <> · Insufficient race coverage</>
               ) : null}
+            </p>
+          ) : null}
+          {jumpTissueCoverage ? (
+            <p className="mt-1 text-xs font-medium text-slate-600">
+              Jump Tissue predicted: {jumpTissueCoverage.predictedRunnerCount}/{jumpTissueCoverage.activeRunnerCount}
+              {" "}({(jumpTissueCoverage.predictionCoverage * 100).toFixed(0)}%)
             </p>
           ) : null}
         </div>
@@ -542,6 +552,7 @@ function RunnerTable({
                 JPR-A diag.
               </th>
             ) : null}
+            {isJumpRace ? <th className="w-24 px-1.5 py-1.5 font-medium">Jump Tissue (diagnostic)</th> : null}
             {isAllWeatherRace ? (
               <th
                 className="w-28 px-1.5 py-1.5 font-medium"
@@ -658,6 +669,7 @@ function RunnerRow({
           <JumpRatingCell coverage={jprACoverage} runner={runner} />
         </td>
       ) : null}
+      {isJumpRace ? <td className="px-1.5 py-2"><JumpTissueCell runner={runner} /></td> : null}
       {isAllWeatherRace ? (
         <td className="px-1.5 py-2">
           <AwRatingCell coverage={awDCoverage} runner={runner} />
@@ -684,6 +696,19 @@ export function AwTissueCell({ runner }: { runner: TodayRunner }) {
     <span className="font-semibold">{(prediction.probability * 100).toFixed(1)}%</span>
     <span className="ml-1 text-slate-600">#{prediction.rank}</span>
     {prediction.zeroHistoryRunner ? <div className="text-[10px] text-slate-500">0 prior AW starts</div> : null}
+  </div>;
+}
+
+export function JumpTissueCell({ runner }: { runner: TodayRunner }) {
+  const prediction = runner.jumpTissue;
+  if (!prediction?.predictionAvailable || prediction.probability === null) return <span title={prediction?.unavailableReason ?? "No prospective capture"}>-</span>;
+  return <div className="tabular-nums">
+    <span className="font-semibold">{(prediction.probability * 100).toFixed(1)}%</span>
+    <span className="ml-1 text-slate-600">#{prediction.rank}</span>
+    <div className="text-[10px] text-slate-500">
+      JPR-A {runner.jumpRating?.jprA?.rank ? `#${runner.jumpRating.jprA.rank}` : "-"}
+    </div>
+    {prediction.historyBucket !== "unknown" ? <div className="text-[10px] text-slate-500">{prediction.historyBucket.replace("_", "+")} prior Jump</div> : null}
   </div>;
 }
 
