@@ -42,13 +42,33 @@ bun run jump-rating:sync
 bun run aw-rating:sync
 ```
 
-Run the same commands again when races are 75-45 minutes from their canonical scheduled off to capture T-60 prices, and again at 25-5 minutes before off to capture T-15 prices. Repeat syncs enrich the existing observation; they do not replace the frozen rating or early price and do not create duplicate observations. A missed window remains missing and is never reconstructed retrospectively.
+Run the same commands again when races are 210-150 minutes from their canonical scheduled off to capture T-180 prices, and again at 90-30 minutes before off to capture T-60 prices. Repeat syncs enrich the existing observation; they do not replace the frozen rating or early price and do not create duplicate observations. A missed window remains missing and is never reconstructed retrospectively.
+
+After racing, import canonical results first, then run each forward tracker sync so those trackers consume the imported results and settle their own records:
+
+```bash
+bun run sl:import-day YYYY-MM-DD --request-delay-seconds 2
+bun run tpr:sync
+bun run tissue:sync
+bun run jump-rating:sync
+bun run aw-rating:sync
+bun run aw-tissue:sync
+bun run jump-tissue:sync
+```
+
+Result import and tracker settlement are separate operations. `bun run sl:import-day YYYY-MM-DD --request-delay-seconds 2` writes the canonical Sporting Life results into the database; it does not automatically settle every forward tracker. Forward Value reads settlement from the family trackers, so a row can show as pending until the relevant sync has run.
 
 The reporting commands are read-only:
 
 ```bash
 bun run value:today
 bun run value:summary
+bun run tpr:summary
+bun run tissue:summary
+bun run jump-rating:summary
+bun run aw-rating:summary
+bun run aw-tissue:summary
+bun run jump-tissue:summary
 ```
 
 ## JPR-A0 Prospective Shadow

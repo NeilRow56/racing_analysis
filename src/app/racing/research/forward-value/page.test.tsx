@@ -161,13 +161,17 @@ describe("Forward Value dashboard", () => {
     assert.equal(turf.edgeBuckets.find((bucket) => bucket.band === "<=0pp")!.observations, 1);
   });
 
-  test("renders compact Edge Bucket tables with narrow responsive overflow fallbacks", () => {
+  test("renders readable Edge Bucket tables with internal overflow", () => {
     const html = renderToStaticMarkup(<EdgeBucketTables summary={summarizeForwardValue(data)} />);
     assert.equal(html.match(/data-testid="edge-bucket-scroll"/g)?.length, 3);
-    assert.equal(html.match(/min-w-\[420px\] table-fixed text-xs/g)?.length, 3);
+    assert.equal(html.match(/min-w-\[820px\] table-fixed text-xs/g)?.length, 3);
     assert.equal(html.match(/overflow-x-auto/g)?.length, 3);
-    assert.doesNotMatch(html, /min-w-\[680px\]/);
-    assert.match(html, /whitespace-nowrap px-1\.5 py-1\.5 text-right tabular-nums/);
+    assert.doesNotMatch(html, /min-w-\[420px\]/);
+    assert.match(html, /sticky left-0 z-10 bg-slate-100/);
+    assert.match(html, /sticky left-0 z-10 whitespace-nowrap bg-white/);
+    assert.match(html, /whitespace-nowrap px-2 py-2 text-right tabular-nums/);
+    assert.match(html, /Median P\/L/);
+    assert.match(html, /Legacy P\/L/);
     assert.match(html, /&gt; 10pp/);
   });
 
@@ -274,6 +278,52 @@ describe("Forward Value dashboard", () => {
     assert.match(summaryHtml, /\+3\.00/);
     assert.match(recentHtml, /\+4\.00/);
     assert.match(recentHtml, />14:00</);
+  });
+
+  test("result exists + tracker pending shows sync-required diagnostic", () => {
+    const pending = record({ raceId: "pending-with-result", settledAt: null, leaderWon: null, leaderResultStatus: null, leaderFinishingPosition: null });
+    const html = renderToStaticMarkup(
+      <RecentObservations
+        filters={{ family: "all", state: "all", edge: "all" }}
+        observations={[pending]}
+        canonicalResultRaceIds={new Set([pending.raceId])}
+      />,
+    );
+    assert.match(html, /Pending - tracker sync required/);
+  });
+
+  test("genuinely unsettled race shows normal Pending", () => {
+    const pending = record({ raceId: "genuine-pending", settledAt: null, leaderWon: null, leaderResultStatus: null, leaderFinishingPosition: null });
+    const html = renderToStaticMarkup(
+      <RecentObservations
+        filters={{ family: "all", state: "all", edge: "all" }}
+        observations={[pending]}
+        canonicalResultRaceIds={new Set()}
+      />,
+    );
+    assert.match(html, />Pending</);
+    assert.doesNotMatch(html, /tracker sync required/);
+  });
+
+  test("coverage warning appears only when pending observations have canonical results", () => {
+    const summary = summarizeForwardValue(data);
+    const warning = renderToStaticMarkup(<TopLevelCounts summary={summary} syncRequiredCount={2} />);
+    assert.match(warning, /2 observations have results available but are awaiting tracker sync/);
+    const clean = renderToStaticMarkup(<TopLevelCounts summary={summary} syncRequiredCount={0} />);
+    assert.doesNotMatch(clean, /awaiting tracker sync/);
+  });
+
+  test("no tracker mutation during page diagnostic render", () => {
+    const pending = record({ raceId: "mutation-check", settledAt: null, leaderWon: null, leaderResultStatus: null, leaderFinishingPosition: null });
+    const before = JSON.stringify(pending);
+    renderToStaticMarkup(
+      <RecentObservations
+        filters={{ family: "all", state: "all", edge: "all" }}
+        observations={[pending]}
+        canonicalResultRaceIds={new Set([pending.raceId])}
+      />,
+    );
+    assert.equal(JSON.stringify(pending), before);
   });
 
   test("renders Turf TPR-versus-Tissue race table columns", () => {

@@ -6,8 +6,10 @@ import {
   FORWARD_VALUE_PRICE_SNAPSHOT_SCHEDULE_VERSION,
   formatForwardValueRaceTime,
   forwardValuePriceSnapshot,
+  isCleanPhase2Observation,
   loadForwardValueData,
   valueExclusionReason,
+  type ForwardValueRecord,
 } from "@/lib/racing/forward-value";
 import {
   buildTurfModelDisagreementDiagnostics,
@@ -24,11 +26,13 @@ import {
   type ForwardValueReportingStatus,
   type TurfModelAgreementSummary,
 } from "@/lib/racing/forward-value-summary";
-import { getSportingLifeCurrentCardRaceStatuses } from "@/lib/racing/todays-racing";
+import { getRacecardRowsForRaceIds, getSportingLifeCurrentCardRaceStatuses, groupTodaysRacingRows } from "@/lib/racing/todays-racing";
+import { todayRaceHasConclusiveResult } from "@/lib/racing/today-race-status";
 import { loadTissueForward, TISSUE_V2_CONFIG } from "@/lib/racing/tissue-forward";
 import { RecentObservationsScroll } from "./recent-observations-scroll";
 import { loadAwTissueForward } from "@/lib/racing/aw-tissue-forward";
-import { AwTissueValueSection } from "./aw-tissue-value";
+import { AwTissueValueSection, JumpTissueValueSection } from "./aw-tissue-value";
+import { loadJumpTissueForward } from "@/lib/racing/jump-tissue-forward";
 
 export const dynamic = "force-dynamic";
 
@@ -37,19 +41,22 @@ type PageProps = {
 };
 
 export default async function ForwardValuePage({ searchParams }: PageProps) {
-  const [data, tissueData, awTissueData, params] = await Promise.all([
+  const [data, tissueData, awTissueData, jumpTissueData, params] = await Promise.all([
     loadForwardValueData(),
     loadTissueForward(TISSUE_V2_CONFIG.forwardPath, TISSUE_V2_CONFIG),
     loadAwTissueForward(),
+    loadJumpTissueForward(),
     searchParams,
   ]);
   const connection = createDbConnection();
   let currentCardStatuses;
+  let canonicalResultRaceIds;
   try {
-    currentCardStatuses = await getSportingLifeCurrentCardRaceStatuses(
-      connection.db,
-      data.races.map((race) => race.raceId),
-    );
+    const raceIds = data.races.map((race) => race.raceId);
+    [currentCardStatuses, canonicalResultRaceIds] = await Promise.all([
+      getSportingLifeCurrentCardRaceStatuses(connection.db, raceIds),
+      getCanonicalResultRaceIds(connection.db, raceIds),
+    ]);
   } finally {
     await connection.client.end();
   }
@@ -84,17 +91,39 @@ export default async function ForwardValuePage({ searchParams }: PageProps) {
 
         <SparseSampleWarning show={summary.sparseSampleWarning} />
 
-        <TopLevelCounts summary={summary} />
+        <TopLevelCounts summary={summary} syncRequiredCount={countPendingWithCanonicalResults(reportingScope.analyticalRecords, canonicalResultRaceIds)} />
         <FamilySummaryTable summary={summary} />
         <EdgeBucketTables summary={summary} />
         <PriceSnapshotDiagnostics observations={reportingScope.analyticalRecords} summary={summary} />
         <TurfModelAgreementCounts summary={summary.turfModelAgreement} />
         <TurfModelDisagreementExplainer diagnostics={disagreementDiagnostics} />
         <AwTissueValueSection data={awTissueData} ratings={reportingScope.analyticalRecords} />
-        <RecentObservations filters={filters} observations={observations} reportingStatuses={reportingScope.statusByRaceId} />
+        <JumpTissueValueSection data={jumpTissueData} ratings={reportingScope.analyticalRecords} />
+        <RecentObservations filters={filters} observations={observations} reportingStatuses={reportingScope.statusByRaceId} canonicalResultRaceIds={canonicalResultRaceIds} />
       </div>
     </main>
   );
+}
+
+async function getCanonicalResultRaceIds(
+  db: ReturnType<typeof createDbConnection>["db"],
+  raceIds: string[],
+): Promise<ReadonlySet<string>> {
+  const rows = await getRacecardRowsForRaceIds(db, raceIds);
+  return new Set(groupTodaysRacingRows(rows).flatMap((meeting) =>
+    meeting.races.filter(todayRaceHasConclusiveResult).map((race) => race.raceId)
+  ));
+}
+
+function countPendingWithCanonicalResults(
+  records: ForwardValueRecord[],
+  canonicalResultRaceIds: ReadonlySet<string>,
+) {
+  return records.filter((record) =>
+    isCleanPhase2Observation(record) &&
+    record.settledAt === null &&
+    canonicalResultRaceIds.has(record.raceId)
+  ).length;
 }
 
 export function SparseSampleWarning({ show }: { show: boolean }) {
@@ -105,7 +134,7 @@ export function SparseSampleWarning({ show }: { show: boolean }) {
   ) : null;
 }
 
-export function TopLevelCounts({ summary }: { summary: ForwardValueSummary }) {
+export function TopLevelCounts({ summary, syncRequiredCount = 0 }: { summary: ForwardValueSummary; syncRequiredCount?: number }) {
   const values = [
     ["Prospective", summary.totalProspectiveObservations],
     ["Clean settled", summary.cleanSettledObservations],
@@ -129,6 +158,11 @@ export function TopLevelCounts({ summary }: { summary: ForwardValueSummary }) {
       {Object.keys(summary.exclusionCounts).length > 0 ? (
         <p className="mt-2 text-xs text-slate-600">
           Exclusions: {Object.entries(summary.exclusionCounts).map(([reason, count]) => `${reason} ${count}`).join("; ")}
+        </p>
+      ) : null}
+      {syncRequiredCount > 0 ? (
+        <p className="mt-2 border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-medium text-amber-900">
+          {syncRequiredCount} observations have results available but are awaiting tracker sync.
         </p>
       ) : null}
     </section>
@@ -405,23 +439,24 @@ export function EdgeBucketTables({ summary }: { summary: ForwardValueSummary }) 
           <div key={family.family}>
             <h3 className="border-b border-slate-300 pb-2 text-sm font-semibold text-slate-800">{family.label}</h3>
             <div className="overflow-x-auto border-x border-b border-slate-200 bg-white" data-testid="edge-bucket-scroll">
-              <table className="w-full min-w-[420px] table-fixed text-xs">
-                <colgroup>
-                  {[66, 34, 36, 52, 58, 60, 50, 64].map((width, index) => (
-                    <col key={index} style={{ width }} />
-                  ))}
-                </colgroup>
-                <thead className="bg-slate-100 text-[10px] uppercase text-slate-600">
+              <table className="w-full min-w-[820px] table-fixed text-xs">
+                <EdgeBucketColGroup />
+                <thead className="bg-slate-100 text-[9px] uppercase tracking-normal text-slate-600">
                   <tr>
-                    {['Edge', 'Obs', 'Wins', 'Strike', 'Expected', 'Avg edge', 'Median P/L', 'Legacy P/L'].map((heading, index) => (
-                      <th className={`${index === 0 ? "text-left" : "text-right"} whitespace-nowrap px-1.5 py-1.5 font-semibold`} key={heading}>{heading}</th>
+                    {edgeBucketColumns.map((column, index) => (
+                      <th
+                        className={`${column.align === "left" ? "text-left" : "text-right"} whitespace-nowrap px-2 py-2 font-semibold leading-3 ${index === 0 ? "sticky left-0 z-10 bg-slate-100 shadow-[1px_0_0_0_rgb(203_213_225)]" : ""}`}
+                        key={column.heading}
+                      >
+                        {column.heading}
+                      </th>
                     ))}
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-200">
                   {family.edgeBuckets.map((bucket) => (
                     <tr key={bucket.band}>
-                      <th className="whitespace-nowrap px-1.5 py-1.5 text-left font-medium">{edgeLabel(bucket.band)}</th>
+                      <th className="sticky left-0 z-10 whitespace-nowrap bg-white px-2 py-2 text-left font-medium shadow-[1px_0_0_0_rgb(226_232_240)]">{edgeLabel(bucket.band)}</th>
                       <EdgeBucketCell value={bucket.observations} />
                       <EdgeBucketCell value={bucket.wins} />
                       <EdgeBucketCell value={pct(bucket.strikeRate)} />
@@ -438,6 +473,27 @@ export function EdgeBucketTables({ summary }: { summary: ForwardValueSummary }) 
         ))}
       </div>
     </section>
+  );
+}
+
+const edgeBucketColumns = [
+  { heading: "Edge", width: 104, align: "left" },
+  { heading: "Obs", width: 70, align: "right" },
+  { heading: "Wins", width: 70, align: "right" },
+  { heading: "Strike", width: 82, align: "right" },
+  { heading: "Expected", width: 92, align: "right" },
+  { heading: "Avg edge", width: 92, align: "right" },
+  { heading: "Median P/L", width: 150, align: "right" },
+  { heading: "Legacy P/L", width: 160, align: "right" },
+] as const;
+
+function EdgeBucketColGroup() {
+  return (
+    <colgroup>
+      {edgeBucketColumns.map((column) => (
+        <col key={column.heading} style={{ width: column.width }} />
+      ))}
+    </colgroup>
   );
 }
 
@@ -575,6 +631,7 @@ type RecentProps = {
   filters: ForwardValueObservationFilters;
   observations: Awaited<ReturnType<typeof loadForwardValueData>>["races"];
   reportingStatuses?: ReadonlyMap<string, ForwardValueReportingStatus>;
+  canonicalResultRaceIds?: ReadonlySet<string>;
 };
 
 const recentObservationColumnWidths = [84, 46, 170, 52, 96, 64, 78, 66, 52, 96, 64, 78, 66, 52, 58, 56, 54, 48, 92];
@@ -585,7 +642,7 @@ const recentObservationHeadings = [
 ];
 const recentObservationTableMinWidth = 1446;
 
-export function RecentObservations({ filters, observations, reportingStatuses }: RecentProps) {
+export function RecentObservations({ filters, observations, reportingStatuses, canonicalResultRaceIds = new Set() }: RecentProps) {
   return (
     <section aria-labelledby="recent-heading" className="mt-8 pb-10">
       <div className="border-b border-slate-300 pb-3">
@@ -654,7 +711,7 @@ export function RecentObservations({ filters, observations, reportingStatuses }:
                   <CompactCell value={pp(race.tissueEdgePercentagePoints ?? null)} />
                   <CompactCell value={yesNo(race.tissueAgreesWithTpr)} />
                   <CompactCell value={yesNo(race.leaderIsMarketFavourite ?? race.agreesWithMarketFavourite)} />
-                  <CompactCell value={resultLabel(race)} />
+                  <CompactCell value={resultLabel(race, canonicalResultRaceIds)} />
                   <CompactCell value={`${race.marketPriceBasisVersion === FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION ? "Median " : "Legacy "}${money(profitLoss)}`} />
                   <td className="px-2 py-2 font-medium leading-4" title={forwardValueObservationStatus(race, reportingStatuses?.get(race.raceId))}>
                     <span className="line-clamp-2 break-words">{forwardValueObservationStatus(race, reportingStatuses?.get(race.raceId))}</span>
@@ -703,7 +760,7 @@ function Cell({ compact = false, value }: { compact?: boolean; value: number | s
 }
 
 function EdgeBucketCell({ value }: { value: number | string }) {
-  return <td className="whitespace-nowrap px-1.5 py-1.5 text-right tabular-nums">{value}</td>;
+  return <td className="whitespace-nowrap px-2 py-2 text-right tabular-nums">{value}</td>;
 }
 
 function CompactCell({ value }: { value: number | string }) {
@@ -763,7 +820,10 @@ function parseFilters(params: Awaited<PageProps["searchParams"]>): ForwardValueO
 }
 
 function scalar(value: string | string[] | undefined) { return Array.isArray(value) ? value[0] : value; }
-function resultLabel(race: RecentProps["observations"][number]) { return race.settledAt === null ? "Pending" : race.leaderResultStatus === "non_runner" ? "Non-runner" : race.leaderWon ? "Won" : "Lost"; }
+function resultLabel(race: RecentProps["observations"][number], canonicalResultRaceIds: ReadonlySet<string>) {
+  if (race.settledAt !== null) return race.leaderResultStatus === "non_runner" ? "Non-runner" : race.leaderWon ? "Won" : "Lost";
+  return canonicalResultRaceIds.has(race.raceId) ? "Pending - tracker sync required" : "Pending";
+}
 function classificationLabel(value: TurfModelDisagreementDiagnostic["classification"]) {
   if (value === "same_horse_similar_probability") return "A. same horse / similar probability";
   if (value === "same_horse_materially_different_probability") return "B. same horse / materially different probability";
