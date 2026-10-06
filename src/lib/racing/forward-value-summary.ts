@@ -332,6 +332,16 @@ export type ForwardValueSummary = {
   families: ForwardValueFamilySummary[];
 };
 
+export type TissuePositiveEdgeRankOnePerformance = {
+  label: "Turf" | "Jump" | "All Weather" | "Combined";
+  selections: number;
+  settled: number;
+  winners: number;
+  strikeRate: number | null;
+  profitLoss: number | null;
+  roi: number | null;
+};
+
 export type SameLeaderProbabilityGapInput = {
   raceId: string;
   family: ValueFamily;
@@ -502,6 +512,121 @@ export function summarizeTurfModelAgreement(records: ForwardValueRecord[]): Turf
     if (turfModelDisagreementLargeDifference(race)) summary.largeDisagreements += 1;
   }
   return summary;
+}
+
+export function summarizeTissuePositiveEdgeRankOnePerformance(
+  records: ForwardValueRecord[],
+  sources: { jump?: JumpTissueForwardData; aw?: AwTissueForwardData } = {},
+): TissuePositiveEdgeRankOnePerformance[] {
+  const turfSelections = records.filter((record) => record.family === "turf" && isTissuePositiveEdgeRankOneSelection(record)).map(turfTissuePerformanceSelection);
+  const jumpSelections = (sources.jump?.races ?? []).filter(cleanJumpTissueRace).flatMap((race) => trackerTissuePerformanceSelection(race, "Jump"));
+  const awSelections = (sources.aw?.races ?? []).filter(cleanAwTissueRace).flatMap((race) => trackerTissuePerformanceSelection(race, "All Weather"));
+  const selections = [...turfSelections, ...jumpSelections, ...awSelections];
+  return [
+    summarizeTissuePerformance("Turf", turfSelections),
+    summarizeTissuePerformance("Jump", jumpSelections),
+    summarizeTissuePerformance("All Weather", awSelections),
+    summarizeTissuePerformance("Combined", selections),
+  ];
+}
+
+export function renderTissuePositiveEdgeRankOnePerformance(
+  records: ForwardValueRecord[],
+  sources: { jump?: JumpTissueForwardData; aw?: AwTissueForwardData } = {},
+): string {
+  const lines = ["Tissue positive-edge rank-1 performance", ""];
+  for (const family of summarizeTissuePositiveEdgeRankOnePerformance(records, sources)) {
+    lines.push(family.label);
+    lines.push(`Selections: ${family.selections}`);
+    lines.push(`Settled: ${family.settled}`);
+    lines.push(`Winners: ${family.winners}`);
+    lines.push(`Strike: ${formatPerformancePct(family.strikeRate)}`);
+    lines.push(`£1 P/L: ${formatPerformanceMoney(family.profitLoss)}`);
+    lines.push(`ROI: ${formatPerformancePct(family.roi)}`);
+    lines.push("");
+  }
+  return lines.join("\n").trimEnd();
+}
+
+function isTissuePositiveEdgeRankOneSelection(record: ForwardValueRecord): boolean {
+  return (
+    isCleanPhase2Observation(record) &&
+    record.tissueRunnerId !== null &&
+    record.tissueEdgePercentagePoints !== null &&
+    record.tissueEdgePercentagePoints !== undefined &&
+    record.tissueEdgePercentagePoints > 0 &&
+    record.tissueCapturedDecimalOdds !== null &&
+    record.tissueCapturedDecimalOdds !== undefined &&
+    Number.isFinite(record.tissueCapturedDecimalOdds) &&
+    record.tissueCapturedDecimalOdds > 1
+  );
+}
+
+function summarizeTissuePerformance(
+  label: TissuePositiveEdgeRankOnePerformance["label"],
+  selections: TissuePerformanceSelection[],
+): TissuePositiveEdgeRankOnePerformance {
+  const settled = selections.filter((selection) => selection.profitLoss !== null);
+  const profitLosses = settled.map((selection) => selection.profitLoss!);
+  const profitLoss = totalOrNull(profitLosses);
+  const winners = settled.filter((selection) => selection.won).length;
+  return {
+    label,
+    selections: selections.length,
+    settled: settled.length,
+    winners,
+    strikeRate: rate(winners, settled.length),
+    profitLoss,
+    roi: rate(profitLoss ?? 0, settled.length),
+  };
+}
+
+type TissuePerformanceSelection = {
+  won: boolean | null;
+  profitLoss: number | null;
+};
+
+function turfTissuePerformanceSelection(record: ForwardValueRecord): TissuePerformanceSelection {
+  return {
+    won: record.settledAt === null || record.leaderWon === null
+      ? null
+      : record.tissueRunnerId !== null && record.winnerRunnerIds.includes(record.tissueRunnerId),
+    profitLoss: record.settledAt === null || record.leaderWon === null ? null : tissueCapturedPriceProfitLoss(record),
+  };
+}
+
+function tissueCapturedPriceProfitLoss(record: ForwardValueRecord): number {
+  const won = record.tissueRunnerId !== null && record.winnerRunnerIds.includes(record.tissueRunnerId);
+  if (!won) return -1;
+  return record.tissueCapturedDecimalOdds! / Math.max(record.winnerRunnerIds.length, 1) - 1;
+}
+
+function trackerTissuePerformanceSelection(
+  race: JumpTissueRace | AwTissueRace,
+  family: "Jump" | "All Weather",
+): TissuePerformanceSelection[] {
+  const stage = race.prices.t60 ? "t60" : race.prices.t180 ? "t180" : race.prices.early ? "early" : null;
+  if (stage === null) return [];
+  const price = race.prices[stage];
+  if (!price || price.ratingEdgePercentagePoints <= 0) return [];
+  const leader = race.runners.find((runner) => runner.runnerId === race.top1);
+  if (!leader) return [];
+  const selectedPriceProfitLoss = family === "Jump"
+    ? (race as JumpTissueRace).selectedPriceProfitLoss
+    : (race as AwTissueRace).selectedPriceProfitLoss;
+  return [{
+    won: race.settledAt === null ? null : leader.outcome?.won ?? null,
+    profitLoss: race.settledAt === null ? null : selectedPriceProfitLoss[stage],
+  }];
+}
+
+function formatPerformancePct(value: number | null): string {
+  return value === null ? "-" : `${(value * 100).toFixed(1)}%`;
+}
+
+function formatPerformanceMoney(value: number | null): string {
+  if (value === null) return "-";
+  return value < 0 ? `-£${Math.abs(value).toFixed(2)}` : `£${value.toFixed(2)}`;
 }
 
 export function buildSameLeaderProbabilityGapDiagnostics(

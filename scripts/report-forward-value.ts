@@ -23,6 +23,7 @@ import { getLocalRacingDate, getSportingLifeCurrentCardRaceStatuses, getSporting
 import {
   buildForwardValueReportingScope,
   renderDailyPositiveTissueRankOneSummary,
+  renderTissuePositiveEdgeRankOnePerformance,
   summarizeForwardValue,
   summarizeForwardValueRecords,
   type ForwardValueMovementMetrics,
@@ -62,6 +63,7 @@ async function summary() {
   console.log(`Date range: ${sharedSummary.earliestObservationDate ? `${sharedSummary.earliestObservationDate} to ${sharedSummary.latestObservationDate}` : "-"}`);
   printExclusions(excluded);
   printFamilyCounts(analyticalRecords);
+  console.log(`\n${renderTissuePositiveEdgeRankOnePerformance(analyticalRecords, { jump: dailyReport.jumpTissue, aw: dailyReport.awTissue })}`);
   if (sharedSummary.sparseSampleWarning) {
     console.log("\nSample warning: fewer than 25 clean settled observations overall. Results are VERY EARLY and no profitability conclusion is supported.");
   }

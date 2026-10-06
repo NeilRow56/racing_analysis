@@ -1,7 +1,15 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
-import { renderDailyPositiveTissueRankOneSummary } from "./forward-value-summary";
+import { renderDailyPositiveTissueRankOneSummary, renderTissuePositiveEdgeRankOnePerformance } from "./forward-value-summary";
+import {
+  FORWARD_VALUE_MARKET_PRICE_BASIS_IMPLEMENTED_AT,
+  FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION,
+  FORWARD_VALUE_PRICE_SNAPSHOT_SCHEDULE_VERSION,
+  FORWARD_VALUE_SETTLEMENT_VERSION,
+  type ForwardValueRecord,
+  type ValueFamily,
+} from "./forward-value";
 import { TISSUE_V2_CONFIG, type TissueForwardData, type TissueForwardRace } from "./tissue-forward";
 import { AW_TISSUE_IMPLEMENTED_AT, AW_TISSUE_SCHEMA, AW_TISSUE_VERSION } from "./aw-tissue-model";
 import { type AwTissueForwardData, type AwTissueRace, AW_TISSUE_FORWARD_VERSION } from "./aw-tissue-forward";
@@ -70,6 +78,62 @@ test("daily positive-edge Tissue rank-1 summary prints None for empty families",
   assert.match(output, /Turf 0 \| Jump 0 \| AW 0 \| Total 0/);
 });
 
+test("Tissue positive-edge rank-1 performance summarizes family and combined settled returns", () => {
+  const output = renderTissuePositiveEdgeRankOnePerformance([
+    forwardValueRecord({ raceId: "turf-win", family: "turf", tissueEdgePercentagePoints: 10, tissueCapturedDecimalOdds: 5, winnerRunnerIds: ["turf-win-tissue"] }),
+    forwardValueRecord({ raceId: "turf-loss", family: "turf", tissueEdgePercentagePoints: 2, tissueCapturedDecimalOdds: 4, winnerRunnerIds: ["other"] }),
+    forwardValueRecord({ raceId: "turf-pending", family: "turf", tissueEdgePercentagePoints: 1, tissueCapturedDecimalOdds: 3, settled: false }),
+    forwardValueRecord({ raceId: "jump-win", family: "jump", tissueEdgePercentagePoints: 3, tissueCapturedDecimalOdds: 3, winnerRunnerIds: ["jump-win-tissue"] }),
+    forwardValueRecord({ raceId: "jump-negative", family: "jump", tissueEdgePercentagePoints: -1, tissueCapturedDecimalOdds: 5, winnerRunnerIds: ["jump-negative-tissue"] }),
+    forwardValueRecord({ raceId: "aw-missing-price", family: "aw", tissueEdgePercentagePoints: 5, tissueCapturedDecimalOdds: null, winnerRunnerIds: ["aw-missing-price-tissue"] }),
+  ], {
+    jump: jumpTrackerData([
+      trackerRace({ raceId: "jump-tracker-win", edge: 3, price: 3, won: true, profitLoss: 2 }),
+      trackerRace({ raceId: "jump-tracker-negative", edge: -1, price: 5, won: true, profitLoss: 4 }),
+    ]),
+    aw: awTrackerData([
+      trackerRace({ raceId: "aw-tracker-win", edge: 5, price: 2.5, won: true, profitLoss: 1.5 }),
+      trackerRace({ raceId: "aw-tracker-pending", edge: 4, price: 4, won: null, profitLoss: null, settled: false }),
+    ]),
+  });
+
+  assert.equal(output, [
+    "Tissue positive-edge rank-1 performance",
+    "",
+    "Turf",
+    "Selections: 3",
+    "Settled: 2",
+    "Winners: 1",
+    "Strike: 50.0%",
+    "£1 P/L: £3.00",
+    "ROI: 150.0%",
+    "",
+    "Jump",
+    "Selections: 1",
+    "Settled: 1",
+    "Winners: 1",
+    "Strike: 100.0%",
+    "£1 P/L: £2.00",
+    "ROI: 200.0%",
+    "",
+    "All Weather",
+    "Selections: 2",
+    "Settled: 1",
+    "Winners: 1",
+    "Strike: 100.0%",
+    "£1 P/L: £1.50",
+    "ROI: 150.0%",
+    "",
+    "Combined",
+    "Selections: 6",
+    "Settled: 4",
+    "Winners: 3",
+    "Strike: 75.0%",
+    "£1 P/L: £6.50",
+    "ROI: 162.5%",
+  ].join("\n"));
+});
+
 test("value scripts keep concise today and long-form summary paths", () => {
   const packageJson = JSON.parse(readFileSync("package.json", "utf8")) as { scripts: Record<string, string> };
   assert.equal(packageJson.scripts["value:today"], "bun run scripts/report-forward-value.ts today");
@@ -83,6 +147,180 @@ test("value scripts keep concise today and long-form summary paths", () => {
   assert.match(source, /printGapEdgeCrossTab\(cleanSettled, familyCalibration\)/);
   assert.match(source, /printFavouriteComparison\(cleanSettled\)/);
 });
+
+function forwardValueRecord(input: {
+  raceId: string;
+  family: ValueFamily;
+  tissueEdgePercentagePoints: number;
+  tissueCapturedDecimalOdds: number | null;
+  winnerRunnerIds?: string[];
+  settled?: boolean;
+}): ForwardValueRecord {
+  const settled = input.settled ?? true;
+  return {
+    family: input.family,
+    raceId: input.raceId,
+    raceDate: "2026-10-03",
+    raceDateTime: "2026-10-03T13:00:00.000Z",
+    raceTime: "13:00",
+    course: "Test",
+    raceName: null,
+    ratingVersion: "rating-v1",
+    calibrationVersion: "calibration-v1",
+    recordedAt: "2026-10-03T10:00:00.000Z",
+    recordedPreRace: true,
+    captureMode: "live_sync",
+    settlementVersion: FORWARD_VALUE_SETTLEMENT_VERSION,
+    phase2ExclusionReason: null,
+    leaderRunnerId: `${input.raceId}-leader`,
+    leaderHorseName: "Leader",
+    leaderRank: 1,
+    leaderScore: 1,
+    leaderGap: null,
+    calibratedProbability: .25,
+    capturedPrice: null,
+    marketPriceBasisVersion: FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION,
+    marketPriceBasisImplementedAt: FORWARD_VALUE_MARKET_PRICE_BASIS_IMPLEMENTED_AT,
+    forecastPrice: null,
+    forecastDecimalPrice: null,
+    bookmakerQuoteCount: 1,
+    bookmakerQuotes: [],
+    medianBookmakerPriceDecimal: 5,
+    medianBookmakerImpliedProbability: .2,
+    bestBookmakerPriceDecimal: 5,
+    bestBookmakerPriceFractional: "4/1",
+    bestBookmakerName: null,
+    priceSource: "sporting_life_imported_racecard",
+    priceCapturedAt: "2026-10-03T10:00:00.000Z",
+    minutesBeforeScheduledOff: 180,
+    capturedDecimalOdds: 5,
+    capturedMarketProbability: .2,
+    edgePercentagePoints: 5,
+    edgeBand: ">2-5pp",
+    priceSnapshotScheduleVersion: FORWARD_VALUE_PRICE_SNAPSHOT_SCHEDULE_VERSION,
+    earlyPriceSnapshot: null,
+    t180PriceSnapshot: null,
+    t60PriceSnapshot: null,
+    marketFavouriteRunnerIds: [],
+    marketFavouriteHorseNames: [],
+    agreesWithMarketFavourite: null,
+    leaderIsMarketFavourite: null,
+    tissueRunnerId: `${input.raceId}-tissue`,
+    tissueHorseName: "Tissue",
+    tissueProbability: .4,
+    tissueAgreesWithTpr: false,
+    tissueCapturedPrice: null,
+    tissueCapturedDecimalOdds: input.tissueCapturedDecimalOdds,
+    tissueMarketProbability: input.tissueCapturedDecimalOdds === null ? null : 1 / input.tissueCapturedDecimalOdds,
+    tissueEdgePercentagePoints: input.tissueEdgePercentagePoints,
+    tissuePriceCapturedAt: input.tissueCapturedDecimalOdds === null ? null : "2026-10-03T10:00:00.000Z",
+    tissueForecastPrice: null,
+    tissueForecastDecimalPrice: null,
+    tissueBookmakerQuoteCount: input.tissueCapturedDecimalOdds === null ? 0 : 1,
+    tissueBookmakerQuotes: [],
+    tissueMedianBookmakerPriceDecimal: input.tissueCapturedDecimalOdds,
+    tissueMedianBookmakerImpliedProbability: input.tissueCapturedDecimalOdds === null ? null : 1 / input.tissueCapturedDecimalOdds,
+    tissueBestBookmakerPriceDecimal: input.tissueCapturedDecimalOdds,
+    tissueBestBookmakerPriceFractional: null,
+    tissueBestBookmakerName: null,
+    tissueEarlyPriceSnapshot: null,
+    tissueT180PriceSnapshot: null,
+    tissueT60PriceSnapshot: null,
+    winnerRunnerIds: settled ? input.winnerRunnerIds ?? [] : [],
+    leaderResultStatus: settled ? "finished" : null,
+    leaderFinishingPosition: settled ? 2 : null,
+    leaderWon: settled ? false : null,
+    finalSp: settled ? 5 : null,
+    grossReturn: settled ? 0 : null,
+    profitLoss: settled ? -1 : null,
+    capturedPriceGrossReturn: settled ? 0 : null,
+    capturedPriceProfitLoss: settled ? -1 : null,
+    medianMarketPriceGrossReturn: settled ? 0 : null,
+    medianMarketPriceProfitLoss: settled ? -1 : null,
+    bestBookmakerPriceGrossReturn: settled ? 0 : null,
+    bestBookmakerPriceProfitLoss: settled ? -1 : null,
+    settledAt: settled ? "2026-10-03T14:00:00.000Z" : null,
+  };
+}
+
+function jumpTrackerData(races: ReturnType<typeof trackerRace>[]): JumpTissueForwardData {
+  return { version: JUMP_TISSUE_FORWARD_VERSION, modelVersion: JUMP_TISSUE_VERSION, featureSchemaVersion: JUMP_TISSUE_SCHEMA, implementedAt: JUMP_TISSUE_IMPLEMENTED_AT, races } as unknown as JumpTissueForwardData;
+}
+
+function awTrackerData(races: ReturnType<typeof trackerRace>[]): AwTissueForwardData {
+  return { version: AW_TISSUE_FORWARD_VERSION, modelVersion: AW_TISSUE_VERSION, featureSchemaVersion: AW_TISSUE_SCHEMA, implementedAt: AW_TISSUE_IMPLEMENTED_AT, races } as unknown as AwTissueForwardData;
+}
+
+function trackerRace(input: {
+  raceId: string;
+  edge: number;
+  price: number;
+  won: boolean | null;
+  profitLoss: number | null;
+  settled?: boolean;
+}) {
+  const settled = input.settled ?? true;
+  return {
+    raceId: input.raceId,
+    raceDate: "2026-10-03",
+    scheduledTime: "13:00",
+    scheduledOffAt: "2026-10-03T13:00:00.000Z",
+    currentOffAt: "2026-10-03T13:00:00.000Z",
+    course: "Test",
+    raceName: null,
+    recordedAt: "2026-10-03T10:00:00.000Z",
+    recordedPreRace: true,
+    predictedRunnerCount: 1,
+    activeRunnerCount: 1,
+    predictionCoverage: 1,
+    top1: `${input.raceId}-leader`,
+    top2: [`${input.raceId}-leader`],
+    top3: [`${input.raceId}-leader`],
+    prices: {
+      early: {
+        decimalPrice: input.price,
+        impliedProbability: 1 / input.price,
+        capturedAt: "2026-10-03T10:00:00.000Z",
+        minutesBeforeScheduledOff: 180,
+        ratingProbability: .4,
+        ratingEdgePercentagePoints: input.edge,
+        marketPriceBasisVersion: FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION,
+        forecastPrice: null,
+        forecastDecimalPrice: null,
+        bookmakerQuoteCount: 1,
+        bookmakerQuotes: [],
+        bestBookmakerPriceDecimal: input.price,
+        bestBookmakerPriceFractional: null,
+        bestBookmakerName: null,
+      },
+      t180: null,
+      t60: null,
+    },
+    runners: [{
+      runnerId: `${input.raceId}-leader`,
+      horseId: `${input.raceId}-horse`,
+      horseName: "Tracker Leader",
+      probability: .4,
+      rank: 1,
+      outcome: settled ? {
+        finishingPosition: input.won ? 1 : 2,
+        resultStatus: "finished",
+        won: input.won,
+        finalSp: input.price,
+        deadHeatDivisor: 1,
+        finalSpProfitLoss: input.profitLoss,
+      } : null,
+    }],
+    winners: input.won ? [`${input.raceId}-leader`] : [],
+    settledAt: settled ? "2026-10-03T14:00:00.000Z" : null,
+    excludedReason: null,
+    selectedPriceProfitLoss: { early: input.profitLoss, t180: null, t60: null, bestEarly: input.profitLoss, finalSp: input.profitLoss },
+    subtype: "Hurdle",
+    jprALeader: null,
+    jprBLeader: null,
+    awDLeader: null,
+  };
+}
 
 function turfData(races: TissueForwardRace[]): TissueForwardData {
   return {
