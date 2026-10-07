@@ -19,6 +19,7 @@ import {
   isJumpRaceForDisplay,
   type TodayRace,
 } from "@/lib/racing/todays-racing";
+import { currentDayProspectiveCapture } from "@/lib/racing/current-day-sync";
 import {
   buildForwardValueRecordsFromMeetings,
   enrichForwardValuePriceSnapshots,
@@ -43,8 +44,8 @@ async function sync(date: string) {
   const now = new Date();
   const connection = createDbConnection();
   try {
-    const [existing, existingValue, calibration] = await Promise.all([
-      loadJumpRatingForward(), loadForwardValueData(), loadForwardValueCalibration(),
+    const [existing, existingValue] = await Promise.all([
+      loadJumpRatingForward(), loadForwardValueData(),
     ]);
     const pendingBefore = pendingJumpRatingRaceIds(existing);
     const valuePending = pendingForwardValueRaceIds(existingValue, "jump");
@@ -52,11 +53,35 @@ async function sync(date: string) {
     const settlementStartedAt = performance.now();
     const priorSettlement = await settlePendingFromDb(connection.db, existing, now);
     let settlementMs = performance.now() - settlementStartedAt;
+    if (JSON.stringify(priorSettlement.data) !== JSON.stringify(existing)) {
+      await saveJumpRatingForward(priorSettlement.data);
+    }
+    let valueSettled = 0;
+    await mutateForwardValueData((latest) => {
+      const valuePrior = settleForwardValueRecords(latest, valuePriorRaces, now);
+      valueSettled = valuePrior.settled;
+      return valuePrior.data;
+    });
     const todayData = await getTodaysRacingData(connection.db, date, {
       raceFilter: isJumpRaceForDisplay,
     });
-    if (todayData.status !== "ok") throw new Error(todayData.message);
-    const candidates = todayData.meetings.flatMap((meeting) => meeting.races
+    const capture = currentDayProspectiveCapture(todayData);
+    if (capture.skipped) {
+      console.log([
+        `JUMP_RATING_SYNC date=${date}`,
+        `tracked=${priorSettlement.data.races.length}`,
+        `pending_before=${pendingBefore.length}`,
+        `settled_pending=${priorSettlement.settled}`,
+        `settlement_queries=${priorSettlement.queryCount}`,
+        `settlement_ms=${Math.round(settlementMs)}`,
+        `elapsed_ms=${Math.round(performance.now() - startedAt)}`,
+        `value_settled=${valueSettled}`,
+      ].join(" "));
+      console.log(capture.message);
+      return;
+    }
+    const calibration = await loadForwardValueCalibration();
+    const candidates = capture.meetings.flatMap((meeting) => meeting.races
       .map((race) => buildJumpRatingForwardRace({
         raceDate: date,
         course: meeting.courseName,
@@ -65,7 +90,7 @@ async function sync(date: string) {
       }))
       .filter((race): race is NonNullable<typeof race> => race !== null));
     let updated = upsertJumpRatingForwardRaces(priorSettlement.data, candidates);
-    const todayRaces = new Map(todayData.meetings.flatMap((meeting) =>
+    const todayRaces = new Map(capture.meetings.flatMap((meeting) =>
       meeting.races.map((race) => [race.raceId, race] as const)
     ));
     const currentSettlementStartedAt = performance.now();
@@ -76,18 +101,16 @@ async function sync(date: string) {
       await saveJumpRatingForward(updated);
     }
     const valueCandidates = buildForwardValueRecordsFromMeetings({
-      family: "jump", raceDate: date, meetings: todayData.meetings,
+      family: "jump", raceDate: date, meetings: capture.meetings,
       calibration: calibration.families.jump, recordedAt: now,
     });
-    let valueSettled = 0;
     const updatedValue = await mutateForwardValueData((latest) => {
-      const valuePrior = settleForwardValueRecords(latest, valuePriorRaces, now);
-      const valueCaptured = upsertForwardValueRecords(valuePrior.data, valueCandidates);
+      const valueCaptured = upsertForwardValueRecords(latest, valueCandidates);
       const valueEnriched = enrichForwardValuePriceSnapshots(valueCaptured, {
-        family: "jump", meetings: todayData.meetings, capturedAt: now,
+        family: "jump", meetings: capture.meetings, capturedAt: now,
       });
       const valueCurrent = settleForwardValueRecords(valueEnriched, todayRaces, now);
-      valueSettled = valuePrior.settled + valueCurrent.settled;
+      valueSettled += valueCurrent.settled;
       return valueCurrent.data;
     });
     const existingIds = new Set(existing.races.map((race) => race.raceId));

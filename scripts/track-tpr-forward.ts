@@ -14,6 +14,7 @@ import {
   isOrdinaryFlatTurfRaceForDisplay,
   type TodayRace,
 } from "@/lib/racing/todays-racing";
+import { currentDayProspectiveCapture } from "@/lib/racing/current-day-sync";
 import {
   buildForwardValueRecordsFromMeetings,
   enrichForwardValuePriceSnapshots,
@@ -46,21 +47,51 @@ async function sync(date: string) {
   const recordedAt = new Date();
   const connection = createDbConnection();
   try {
-    const [existing, existingValue, calibration, tissue] = await Promise.all([
+    const [existing, existingValue] = await Promise.all([
       loadTrackerData(),
       loadForwardValueData(),
-      loadForwardValueCalibration(),
-      loadTissueForward(TISSUE_V2_CONFIG.forwardPath, TISSUE_V2_CONFIG),
     ]);
     const pendingBefore = pendingTprForwardRaceIds(existing);
     const valuePending = pendingForwardValueRaceIds(existingValue, "turf");
     const priorResults = await loadRacesById(connection.db, [...new Set([...pendingBefore, ...valuePending])]);
+    let settledFromPending = 0;
+    let resultUpdates = 0;
+    const settledExisting = await mutateTrackerData((latest) => {
+      const priorSettlement = settlePendingTprForwardRaces(latest, priorResults);
+      settledFromPending = priorSettlement.settled;
+      resultUpdates = priorSettlement.updated;
+      return priorSettlement.data;
+    });
+    let valueSettled = 0;
+    await mutateForwardValueData((latest) => {
+      const valuePrior = settleForwardValueRecords(latest, priorResults, recordedAt);
+      valueSettled = valuePrior.settled;
+      return valuePrior.data;
+    });
     const todayData = await getTodaysRacingData(connection.db, date, {
       raceFilter: isOrdinaryFlatTurfRaceForDisplay,
     });
-    if (todayData.status !== "ok") throw new Error(todayData.message);
-    const candidates = tprForwardRacesFromMeetings(todayData.meetings, date, recordedAt);
-    const todayRaces = new Map(todayData.meetings.flatMap((meeting) =>
+    const capture = currentDayProspectiveCapture(todayData);
+    if (capture.skipped) {
+      console.log([
+        `TPR_SYNC date=${date}`,
+        `tracker=${DEFAULT_DATA_PATH}`,
+        `pending_before=${pendingBefore.length}`,
+        `settled_pending=${settledFromPending}`,
+        `result_updates=${resultUpdates}`,
+        `tracked=${settledExisting.races.filter((race) => race.family === "turf").length}`,
+        `value_settled=${valueSettled}`,
+        `elapsed_ms=${Math.round(performance.now() - startedAt)}`,
+      ].join(" "));
+      console.log(capture.message);
+      return;
+    }
+    const [calibration, tissue] = await Promise.all([
+      loadForwardValueCalibration(),
+      loadTissueForward(TISSUE_V2_CONFIG.forwardPath, TISSUE_V2_CONFIG),
+    ]);
+    const candidates = tprForwardRacesFromMeetings(capture.meetings, date, recordedAt);
+    const todayRaces = new Map(capture.meetings.flatMap((meeting) =>
       meeting.races.map((race) => [race.raceId, race] as const)
     ));
     const tissueByRaceId = new Map(tissue.races.flatMap((race) => {
@@ -68,36 +99,30 @@ async function sync(date: string) {
       const leader = [...race.runners].sort((a, b) => a.tissueRank - b.tissueRank || a.runnerId.localeCompare(b.runnerId))[0];
       return leader ? [[race.raceId, { runnerId: leader.runnerId, horseName: leader.horseName, probability: leader.probability }] as const] : [];
     }));
-    let settledFromPending = 0;
     let settledCurrent = 0;
-    let resultUpdates = 0;
     const updated = await mutateTrackerData((latest) => {
-      const priorSettlement = settlePendingTprForwardRaces(latest, priorResults);
-      const captured = upsertTprForwardRaces(priorSettlement.data, candidates);
+      const captured = upsertTprForwardRaces(latest, candidates);
       const currentSettlement = settlePendingTprForwardRaces(captured, todayRaces);
-      settledFromPending = priorSettlement.settled;
       settledCurrent = currentSettlement.settled;
-      resultUpdates = priorSettlement.updated + currentSettlement.updated;
+      resultUpdates += currentSettlement.updated;
       return currentSettlement.data;
     });
     const existingIdentities = new Set(existing.races.map(raceIdentity));
     const created = updated.races.filter((race) => !existingIdentities.has(raceIdentity(race)));
     const valueCandidates = buildForwardValueRecordsFromMeetings({
-      family: "turf", raceDate: date, meetings: todayData.meetings,
+      family: "turf", raceDate: date, meetings: capture.meetings,
       calibration: calibration.families.turf, recordedAt, tissueByRaceId,
     });
-    let valueSettled = 0;
     const updatedValue = await mutateForwardValueData((latest) => {
-      const valuePrior = settleForwardValueRecords(latest, priorResults, recordedAt);
-      const valueCaptured = upsertForwardValueRecords(valuePrior.data, valueCandidates);
+      const valueCaptured = upsertForwardValueRecords(latest, valueCandidates);
       const valueEnriched = enrichForwardValuePriceSnapshots(valueCaptured, {
-        family: "turf", meetings: todayData.meetings, capturedAt: recordedAt,
+        family: "turf", meetings: capture.meetings, capturedAt: recordedAt,
       });
       const valueCurrent = settleForwardValueRecords(valueEnriched, todayRaces, recordedAt);
-      valueSettled = valuePrior.settled + valueCurrent.settled;
+      valueSettled += valueCurrent.settled;
       return valueCurrent.data;
     });
-    const eligible = todayData.meetings.flatMap((meeting) => meeting.races)
+    const eligible = capture.meetings.flatMap((meeting) => meeting.races)
       .filter(isOrdinaryFlatTurfRaceForDisplay);
     const postStartSkipped = eligible.filter((race) =>
       race.raceDateTime !== null && recordedAt >= race.raceDateTime &&

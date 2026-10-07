@@ -3,7 +3,6 @@ import { loadJumpTissueModel } from "./jump-tissue-model";
 import {
   buildJumpTissueRace,
   captureJumpTissueRaces,
-  loadJumpTissueForward,
   mutateJumpTissueForward,
   updateJumpTissueForward,
   type JumpTissueForwardData,
@@ -12,20 +11,19 @@ import { getRacecardRowsForRaceIds, groupTodaysRacingRows, isJumpRaceForDisplay,
 import type { HistoricalComment } from "../../../scripts/diagnose-independent-tissue-feasibility";
 
 export async function syncJumpTissueMeetings(connection: ReturnType<typeof createDbConnection>, meetings: TodayMeeting[], raceDate: string): Promise<JumpTissueForwardData> {
-  const model = await loadJumpTissueModel().catch((error) => {
+  const jumps = meetings.flatMap((meeting) => meeting.races.filter(isJumpRaceForDisplay).map((race) => ({ race, course: meeting.courseName })));
+  const model = jumps.length ? await loadJumpTissueModel().catch((error) => {
     if ((error as NodeJS.ErrnoException).code === "ENOENT") return null;
     throw error;
-  });
-  if (!model) return loadJumpTissueForward();
-  const jumps = meetings.flatMap((meeting) => meeting.races.filter(isJumpRaceForDisplay).map((race) => ({ race, course: meeting.courseName })));
-  const commentsByHorse = await loadJumpTissueCommentsForRaces(connection.client, jumps.map(({ race }) => race));
+  }) : null;
+  const commentsByHorse = model === null ? new Map() : await loadJumpTissueCommentsForRaces(connection.client, jumps.map(({ race }) => race));
   return mutateJumpTissueForward(async (latest) => {
     const pending = latest.races.filter((race) => race.recordedPreRace && race.settledAt === null).map((race) => race.raceId);
     const results = pending.length ? groupTodaysRacingRows(await getRacecardRowsForRaceIds(connection.db, pending)).flatMap((meeting) => meeting.races) : [];
     const now = new Date();
     let updated = updateJumpTissueForward(latest, new Map(results.map((race) => [race.raceId, race])), now);
     const known = new Set(updated.races.map((race) => race.raceId));
-    const additions = jumps.filter(({ race }) => !known.has(race.raceId)).flatMap(({ race, course }) => {
+    const additions = model === null ? [] : jumps.filter(({ race }) => !known.has(race.raceId)).flatMap(({ race, course }) => {
       const captured = buildJumpTissueRace({ raceDate, course, race, commentsByHorse, model, recordedAt: now });
       return captured ? [captured] : [];
     });

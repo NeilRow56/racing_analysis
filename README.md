@@ -58,6 +58,8 @@ bun run jump-tissue:sync
 
 Result import and tracker settlement are separate operations. `bun run sl:import-day YYYY-MM-DD --request-delay-seconds 2` writes the canonical Sporting Life results into the database; it does not automatically settle every forward tracker. Forward Value reads settlement from the family trackers, so a row can show as pending until the relevant sync has run.
 
+For diagnostic AW shadow forward validation, run `bun run sync:aw-shadow` immediately after the normal AW V1 sync, before racing, and repeat after price-window and settlement syncs. This independent wrapper does not run or change production trackers. It warns about missing prospective captures, changed candidate leaders without frozen prices, and price snapshots predating prediction. See [AW shadow collection](docs/aw-tissue-shadow.md).
+
 The reporting commands are read-only:
 
 ```bash

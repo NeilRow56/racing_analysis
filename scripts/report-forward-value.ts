@@ -1,3 +1,6 @@
+import { writeFile } from "node:fs/promises";
+import { resolve } from "node:path";
+import { pathToFileURL } from "node:url";
 import {
   EDGE_BANDS,
   FORWARD_VALUE_CALIBRATION_PATH,
@@ -31,12 +34,23 @@ import {
   type ForwardValuePriceDiagnostics,
 } from "@/lib/racing/forward-value-summary";
 
-const command = process.argv[2] ?? "summary";
-if (command === "summary") await summary();
-else if (command === "today") await today(process.argv[3] ?? getLocalRacingDate());
-else throw new Error("Usage: report-forward-value.ts <summary|today> [YYYY-MM-DD]");
+export type ForwardValueSummaryOptions = {
+  details: boolean;
+};
 
-async function summary() {
+export const DEFAULT_JUMP_AW_DETAIL_REPORT_PATH = "/tmp/forward-value-jump-aw-details";
+
+const isMain = process.argv[1] !== undefined && import.meta.url === pathToFileURL(resolve(process.argv[1])).href;
+if (isMain) await main(process.argv.slice(2));
+
+export async function main(args: string[]) {
+  const { command, positional, details } = parseArgs(args);
+  if (command === "summary") await summary({ details });
+  else if (command === "today") await today(positional[0] ?? getLocalRacingDate());
+  else throw new Error("Usage: report-forward-value.ts <summary|today> [YYYY-MM-DD] [--verbose|--details]");
+}
+
+async function summary(options: ForwardValueSummaryOptions = { details: false }) {
   const today = getLocalRacingDate();
   const [data, calibration, dailyReport] = await Promise.all([
     loadForwardValueData(),
@@ -81,9 +95,17 @@ async function summary() {
     printFavouriteComparison(cleanSettled);
     if (family === "turf") printTissueComparison(cleanSettled);
   }
-  console.log(`\n${renderJumpTissueValue(dailyReport.jumpTissue, analyticalRecords)}`);
-  console.log(`\n${renderAwTissueValue(dailyReport.awTissue, analyticalRecords)}`);
+  const jumpAwReport = renderJumpAwDetailReport({
+    date: today,
+    jump: renderJumpTissueValue(dailyReport.jumpTissue, analyticalRecords),
+    aw: renderAwTissueValue(dailyReport.awTissue, analyticalRecords),
+  });
+  const jumpAwReportPath = jumpAwDetailReportPath(today);
+  await writeFile(jumpAwReportPath, `${jumpAwReport}\n`, "utf8");
+
+  console.log(`\n${renderJumpAwTerminalSummary(jumpAwReport, options)}`);
   console.log("\nDiagnostic research only. Fixed buckets and sample labels do not define betting selections.");
+  console.log(`Detailed Jump/AW report: ${jumpAwReportPath}`);
 }
 
 async function loadCurrentPrices(date: string) {
@@ -265,6 +287,44 @@ function printTissueComparison(records: ForwardValueRecord[]) {
     const selected = comparable.filter((race) => tissueValueAgreement(race) === agreement);
     console.log(`${agreement} | ${selected.length} | ${valueSampleStatus(selected.length)} | ${selected.filter((race) => race.leaderWon).length} | ${selected.filter((race) => race.tissueRunnerId !== null && race.winnerRunnerIds.includes(race.tissueRunnerId)).length} | ${pct(average(selected.map((race) => race.calibratedProbability)))} | ${pct(average(selected.map((race) => race.tissueProbability!)))} | ${pct(average(selected.map((race) => race.capturedMarketProbability!)))} | ${pct(average(selected.map((race) => race.tissueMarketProbability!)))} | ${ppPoints(average(selected.map((race) => race.edgePercentagePoints!)))} | ${ppPoints(average(selected.map((race) => race.tissueEdgePercentagePoints!)))}`);
   }
+}
+
+export function parseArgs(args: string[]) {
+  const positional: string[] = [];
+  let details = false;
+  for (const arg of args) {
+    if (arg === "--verbose" || arg === "--details") {
+      details = true;
+      continue;
+    }
+    positional.push(arg);
+  }
+  return { command: positional.shift() ?? "summary", positional, details };
+}
+
+export function jumpAwDetailReportPath(date: string) {
+  return `${DEFAULT_JUMP_AW_DETAIL_REPORT_PATH}-${date}.md`;
+}
+
+export function renderJumpAwDetailReport(input: { date: string; jump: string; aw: string }) {
+  return [
+    `# Jump/AW Forward Value Detail - ${input.date}`,
+    "",
+    input.jump.trimEnd(),
+    "",
+    input.aw.trimEnd(),
+  ].join("\n");
+}
+
+export function renderJumpAwTerminalSummary(report: string, options: ForwardValueSummaryOptions = { details: false }) {
+  if (options.details) return report.trimEnd();
+  const lines = report.split("\n");
+  return lines.filter((line) =>
+    line === "Jump Tissue / Forward Value (median_bookmaker_v1)" ||
+    line === "AW Tissue / Forward Value (median_bookmaker_v1)" ||
+    line.startsWith("Jump model agreement:") ||
+    line.startsWith("AW model agreement:")
+  ).join("\n");
 }
 
 function metrics(records: ForwardValueRecord[]) {

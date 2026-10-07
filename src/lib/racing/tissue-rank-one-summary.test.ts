@@ -134,7 +134,7 @@ test("Tissue positive-edge rank-1 performance summarizes family and combined set
   ].join("\n"));
 });
 
-test("value scripts keep concise today and long-form summary paths", () => {
+test("value scripts keep concise today and split Jump/AW detail from terminal summary", () => {
   const packageJson = JSON.parse(readFileSync("package.json", "utf8")) as { scripts: Record<string, string> };
   assert.equal(packageJson.scripts["value:today"], "bun run scripts/report-forward-value.ts today");
   assert.equal(packageJson.scripts["value:summary"], "bun run scripts/report-forward-value.ts summary");
@@ -146,6 +146,8 @@ test("value scripts keep concise today and long-form summary paths", () => {
   assert.match(source, /printEdgeBuckets\(cleanSettled\)/);
   assert.match(source, /printGapEdgeCrossTab\(cleanSettled, familyCalibration\)/);
   assert.match(source, /printFavouriteComparison\(cleanSettled\)/);
+  assert.match(source, /renderJumpAwTerminalSummary\(jumpAwReport, options\)/);
+  assert.match(source, /Detailed Jump\/AW report: \$\{jumpAwReportPath\}/);
 });
 
 function forwardValueRecord(input: {

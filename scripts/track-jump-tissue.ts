@@ -1,5 +1,6 @@
 import { createDbConnection } from "@/db";
 import { loadForwardValueData } from "@/lib/racing/forward-value";
+import { currentDayProspectiveCapture } from "@/lib/racing/current-day-sync";
 import { loadJumpTissueForward, renderJumpTissueSummary, renderJumpTissueToday, renderJumpTissueValue } from "@/lib/racing/jump-tissue-forward";
 import { syncJumpTissueMeetings } from "@/lib/racing/jump-tissue-sync";
 import { getLocalRacingDate, getSportingLifeCurrentPricesForDate, getTodaysRacingData, isJumpRaceForDisplay } from "@/lib/racing/todays-racing";
@@ -24,8 +25,10 @@ if (command === "summary") {
       getTodaysRacingData(connection.db, raceDate, { raceFilter: isJumpRaceForDisplay }),
       getSportingLifeCurrentPricesForDate(connection.db, raceDate),
     ]);
-    const updated = await syncJumpTissueMeetings(connection, today.status === "ok" ? today.meetings : [], raceDate);
+    const capture = currentDayProspectiveCapture(today);
+    const updated = await syncJumpTissueMeetings(connection, capture.meetings, raceDate);
     console.log(`JUMP_TISSUE_SYNC date=${raceDate} created=${updated.races.length - before.races.length} tracked=${updated.races.length} settled=${updated.races.filter((race) => race.settledAt !== null).length}`);
+    if (capture.skipped) console.log(capture.message);
     console.log(renderJumpTissueToday(updated, raceDate, currentPrices));
   } finally {
     await connection.client.end();

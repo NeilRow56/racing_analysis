@@ -22,6 +22,7 @@ import {
   type TissueForwardData,
   type TissueVersionConfig,
 } from "@/lib/racing/tissue-forward";
+import { currentDayProspectiveCapture } from "@/lib/racing/current-day-sync";
 import type { HistoricalComment } from "./diagnose-independent-tissue-feasibility";
 import { loadTrackerData } from "./diagnose-tpr-vs-timewise-forward";
 import {
@@ -58,15 +59,27 @@ async function sync(raceDate: string, selected: TissueVersionConfig) {
     await timed("pending_result_persistence_before_capture", async () => {
       if (JSON.stringify(beforeCapture) !== JSON.stringify(existing)) await saveTissueForward(beforeCapture, selected.forwardPath);
     });
-    const [today, model] = await Promise.all([
-      timed("today_metrics_load", () => getTodaysRacingData(connection.db, raceDate, {
+    const today = await timed("today_metrics_load", () => getTodaysRacingData(connection.db, raceDate, {
         onTiming: recordTiming,
         raceFilter: isOrdinaryFlatTurfRaceForDisplay,
-      })),
-      loadFrozenTissueModel(selected.modelPath, selected.modelVersion),
-    ]);
-    if (today.status !== "ok") throw new Error(today.message);
-    const declared = await timed("declared_horse_lookup", async () => declaredTurfTargets(today.meetings));
+      }));
+    const capture = currentDayProspectiveCapture(today);
+    if (capture.skipped) {
+      console.log([
+        `TISSUE_SYNC date=${raceDate}`,
+        `model=${selected.modelVersion}`,
+        `turf_speed=${selected.turfSpeedVersion}`,
+        `settlement_queries=${settlementQueryCount}`,
+        `settlement_ms=${Math.round(timing("pending_result_enrichment_before_capture") ?? 0)}`,
+        `settled_pending=${settledFromPending}`,
+        `total_sync_ms=${Math.round(syncTimer.elapsedMs())}`,
+        `tracked=${beforeCapture.races.length}`,
+      ].join(" "));
+      console.log(capture.message);
+      return;
+    }
+    const model = await loadFrozenTissueModel(selected.modelPath, selected.modelVersion);
+    const declared = await timed("declared_horse_lookup", async () => declaredTurfTargets(capture.meetings));
     const { commentsByHorse, rowCount: historicalCommentRows } = await timed("historical_comment_query", () =>
       loadCommentsForDeclaredHorses(connection.client, declared.horseTargets),
     );
@@ -84,7 +97,7 @@ async function sync(raceDate: string, selected: TissueVersionConfig) {
       if (JSON.stringify(updated) !== JSON.stringify(beforeCapture)) await saveTissueForward(updated, selected.forwardPath);
     });
     if (selected.forwardVersion === TISSUE_V2_CONFIG.forwardVersion) {
-      const currentRaces = new Map(today.meetings.flatMap((meeting) =>
+      const currentRaces = new Map(capture.meetings.flatMap((meeting) =>
         meeting.races.map((race) => [race.raceId, race] as const)
       ));
       const snapshots = new Map(updated.races.flatMap((race) => {
