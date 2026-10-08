@@ -26400,10 +26400,15 @@
           "awDRank": 1,
           "awAScore": 2,
           "awARank": 2,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 1,
+          "resultStatus": "finished",
+          "finalSp": 2.2,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 2.2,
+            "profitLoss": 1.2000000000000002,
+            "settlementOddsDecimal": 2.2
+          }
         },
         {
           "runnerId": "962e5f15-68d6-4b05-a5fb-6bd9fef9830d",
@@ -26420,10 +26425,15 @@
           "awDRank": null,
           "awAScore": null,
           "awARank": null,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 7,
+          "resultStatus": "finished",
+          "finalSp": 5.5,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 5.5
+          }
         },
         {
           "runnerId": "c50eca27-a419-47d0-a3e4-b7a4442f5f5c",
@@ -26440,10 +26450,15 @@
           "awDRank": 6,
           "awAScore": 5.5,
           "awARank": 5,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 5,
+          "resultStatus": "finished",
+          "finalSp": 9.5,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 9.5
+          }
         },
         {
           "runnerId": "4918e911-e138-4092-8ea0-af4aa1d43244",
@@ -26460,10 +26475,15 @@
           "awDRank": 2,
           "awAScore": 4,
           "awARank": 3,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 2,
+          "resultStatus": "finished",
+          "finalSp": 6,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 6
+          }
         },
         {
           "runnerId": "f33354d8-76ec-4a7b-bfcf-8d8d0f2d714e",
@@ -26480,10 +26500,15 @@
           "awDRank": 4,
           "awAScore": 7,
           "awARank": 6,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 3,
+          "resultStatus": "finished",
+          "finalSp": 10,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 10
+          }
         },
         {
           "runnerId": "fdf43dcf-c2c9-4b33-a4e0-b01b26e2b57b",
@@ -26500,10 +26525,15 @@
           "awDRank": null,
           "awAScore": null,
           "awARank": null,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 4,
+          "resultStatus": "finished",
+          "finalSp": 23,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 23
+          }
         },
         {
           "runnerId": "4cd4fe5d-8b05-4897-9df8-839ebd09f775",
@@ -26520,10 +26550,15 @@
           "awDRank": null,
           "awAScore": null,
           "awARank": null,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 6,
+          "resultStatus": "finished",
+          "finalSp": 17,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 17
+          }
         },
         {
           "runnerId": "082a765b-0660-4ea6-bcfd-01bcf3f44221",
@@ -26540,10 +26575,15 @@
           "awDRank": 2,
           "awAScore": 1.5,
           "awARank": 1,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 8,
+          "resultStatus": "finished",
+          "finalSp": 21,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 21
+          }
         },
         {
           "runnerId": "1f480b9d-acb9-4473-9899-a1bc173105b3",
@@ -26561,13 +26601,15 @@
           "awAScore": 5,
           "awARank": 4,
           "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
+          "resultStatus": "non_runner",
+          "finalSp": 34,
           "settlement": null
         }
       ],
-      "winnerRunnerIds": [],
-      "settledAt": null
+      "winnerRunnerIds": [
+        "0cf90669-d8a0-4e4d-a229-564932095a00"
+      ],
+      "settledAt": "2026-10-08T03:26:20.050Z"
     },
     {
       "raceDate": "2026-10-07",
@@ -27320,10 +27362,15 @@
           "awDRank": 1,
           "awAScore": 3,
           "awARank": 1,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 1,
+          "resultStatus": "finished",
+          "finalSp": 1.833,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 1.833,
+            "profitLoss": 0.833,
+            "settlementOddsDecimal": 1.833
+          }
         },
         {
           "runnerId": "0c45906b-e757-41b1-a120-97c0716563ce",
@@ -27340,10 +27387,15 @@
           "awDRank": 2,
           "awAScore": 3,
           "awARank": 1,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 4,
+          "resultStatus": "finished",
+          "finalSp": 4,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 4
+          }
         },
         {
           "runnerId": "eaa1f648-3cb7-4871-bce7-8dc8bdc11b14",
@@ -27360,10 +27412,15 @@
           "awDRank": null,
           "awAScore": null,
           "awARank": null,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 9,
+          "resultStatus": "finished",
+          "finalSp": 41,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 41
+          }
         },
         {
           "runnerId": "7241abd7-4e28-40c3-b80b-a96f8149d6b1",
@@ -27380,10 +27437,15 @@
           "awDRank": 9,
           "awAScore": 8.5,
           "awARank": 9,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 5,
+          "resultStatus": "finished",
+          "finalSp": 13,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 13
+          }
         },
         {
           "runnerId": "9fee7d5b-02f8-46ba-9596-da5ddfc65cf5",
@@ -27400,10 +27462,15 @@
           "awDRank": 3,
           "awAScore": 7,
           "awARank": 5,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 3,
+          "resultStatus": "finished",
+          "finalSp": 9,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 9
+          }
         },
         {
           "runnerId": "e4239555-c4f3-4e45-8257-9585c6a2c4fd",
@@ -27420,10 +27487,15 @@
           "awDRank": 12,
           "awAScore": 10,
           "awARank": 10,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 10,
+          "resultStatus": "finished",
+          "finalSp": 29,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 29
+          }
         },
         {
           "runnerId": "a3b78b9d-e20d-486a-91d2-3c2769fe4bb9",
@@ -27440,10 +27512,15 @@
           "awDRank": 8,
           "awAScore": 5,
           "awARank": 3,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 7,
+          "resultStatus": "finished",
+          "finalSp": 29,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 29
+          }
         },
         {
           "runnerId": "73ebd061-d344-49f9-806b-8b8a16270b4b",
@@ -27460,10 +27537,15 @@
           "awDRank": 11,
           "awAScore": 7.5,
           "awARank": 7,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 12,
+          "resultStatus": "finished",
+          "finalSp": 51,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 51
+          }
         },
         {
           "runnerId": "305b60a6-5bc2-4f32-b743-6f8d1662daf7",
@@ -27480,10 +27562,15 @@
           "awDRank": 3,
           "awAScore": 8,
           "awARank": 8,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 14,
+          "resultStatus": "finished",
+          "finalSp": 21,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 21
+          }
         },
         {
           "runnerId": "b01cbec1-e8d5-4450-aaf2-d4c2153bd1ba",
@@ -27500,10 +27587,15 @@
           "awDRank": 9,
           "awAScore": 10,
           "awARank": 10,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 6,
+          "resultStatus": "finished",
+          "finalSp": 26,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 26
+          }
         },
         {
           "runnerId": "091bb97c-58c4-4898-93b4-51cfb2470d0a",
@@ -27520,10 +27612,15 @@
           "awDRank": 13,
           "awAScore": 13.5,
           "awARank": 13,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 11,
+          "resultStatus": "finished",
+          "finalSp": 81,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 81
+          }
         },
         {
           "runnerId": "cb57cf09-b6bb-436a-af97-d6c1a7c0f154",
@@ -27540,10 +27637,15 @@
           "awDRank": 7,
           "awAScore": 10,
           "awARank": 10,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 13,
+          "resultStatus": "finished",
+          "finalSp": 29,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 29
+          }
         },
         {
           "runnerId": "bc2b4015-60b2-4def-97fc-11ae32011e6c",
@@ -27560,10 +27662,15 @@
           "awDRank": 5,
           "awAScore": 7,
           "awARank": 5,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 2,
+          "resultStatus": "finished",
+          "finalSp": 13,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 13
+          }
         },
         {
           "runnerId": "fa7046a4-0414-4e32-ab24-3d98c39c0bef",
@@ -27580,14 +27687,21 @@
           "awDRank": 6,
           "awAScore": 5,
           "awARank": 3,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 8,
+          "resultStatus": "finished",
+          "finalSp": 23,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 23
+          }
         }
       ],
-      "winnerRunnerIds": [],
-      "settledAt": null
+      "winnerRunnerIds": [
+        "b3d66231-4ba5-45a8-a5bd-2a1f96796afe"
+      ],
+      "settledAt": "2026-10-08T03:26:20.050Z"
     },
     {
       "raceDate": "2026-10-07",
@@ -27630,10 +27744,15 @@
           "awDRank": 1,
           "awAScore": 3,
           "awARank": 1,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 1,
+          "resultStatus": "finished",
+          "finalSp": 2.2,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 2.2,
+            "profitLoss": 1.2000000000000002,
+            "settlementOddsDecimal": 2.2
+          }
         },
         {
           "runnerId": "b5dcf609-d316-4ef2-88d6-12693d8ed921",
@@ -27650,10 +27769,15 @@
           "awDRank": 3,
           "awAScore": 5.5,
           "awARank": 5,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 11,
+          "resultStatus": "finished",
+          "finalSp": 11,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 11
+          }
         },
         {
           "runnerId": "afa04e0b-271b-4c03-8caf-6e6ed7e11e67",
@@ -27670,10 +27794,15 @@
           "awDRank": 6,
           "awAScore": 5.5,
           "awARank": 5,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 3,
+          "resultStatus": "finished",
+          "finalSp": 6,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 6
+          }
         },
         {
           "runnerId": "ee4cb531-6bf7-4c7b-b2ed-c51b39243646",
@@ -27690,10 +27819,15 @@
           "awDRank": null,
           "awAScore": null,
           "awARank": null,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 8,
+          "resultStatus": "finished",
+          "finalSp": 9,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 9
+          }
         },
         {
           "runnerId": "42d9faad-8f20-494b-b478-af75f121c7ff",
@@ -27710,10 +27844,15 @@
           "awDRank": 8,
           "awAScore": 5.5,
           "awARank": 5,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 2,
+          "resultStatus": "finished",
+          "finalSp": 9.5,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 9.5
+          }
         },
         {
           "runnerId": "40625a12-0e27-4384-8c98-fe149bafa693",
@@ -27730,10 +27869,15 @@
           "awDRank": null,
           "awAScore": null,
           "awARank": null,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 6,
+          "resultStatus": "finished",
+          "finalSp": 19,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 19
+          }
         },
         {
           "runnerId": "a7180c2f-f582-4283-a645-cc1faca8bd61",
@@ -27750,10 +27894,15 @@
           "awDRank": 3,
           "awAScore": 4.5,
           "awARank": 2,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 9,
+          "resultStatus": "finished",
+          "finalSp": 34,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 34
+          }
         },
         {
           "runnerId": "a09ab1f0-8518-45ff-9b1e-cc6626751f0c",
@@ -27770,10 +27919,15 @@
           "awDRank": null,
           "awAScore": null,
           "awARank": null,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 4,
+          "resultStatus": "finished",
+          "finalSp": 9,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 9
+          }
         },
         {
           "runnerId": "6e84833f-d79f-45f3-8ca5-c61cc86474ba",
@@ -27790,10 +27944,15 @@
           "awDRank": 5,
           "awAScore": 4.5,
           "awARank": 2,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 5,
+          "resultStatus": "finished",
+          "finalSp": 34,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 34
+          }
         },
         {
           "runnerId": "0a402f41-b47e-4912-8527-be3f8749450f",
@@ -27810,10 +27969,15 @@
           "awDRank": 7,
           "awAScore": 7,
           "awARank": 8,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 7,
+          "resultStatus": "finished",
+          "finalSp": 23,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 23
+          }
         },
         {
           "runnerId": "27e6985c-3201-4fe4-be19-7c59276f705f",
@@ -27830,10 +27994,15 @@
           "awDRank": 9,
           "awAScore": 9,
           "awARank": 9,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 10,
+          "resultStatus": "finished",
+          "finalSp": 41,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 41
+          }
         },
         {
           "runnerId": "eb603209-51e3-4a9b-b21e-51e9f2823370",
@@ -27851,13 +28020,15 @@
           "awAScore": 4.5,
           "awARank": 2,
           "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
+          "resultStatus": "non_runner",
+          "finalSp": 17,
           "settlement": null
         }
       ],
-      "winnerRunnerIds": [],
-      "settledAt": null
+      "winnerRunnerIds": [
+        "b608699d-cf74-4b01-8b03-a4be90e3acd9"
+      ],
+      "settledAt": "2026-10-08T03:26:20.050Z"
     },
     {
       "raceDate": "2026-10-07",
@@ -27900,10 +28071,15 @@
           "awDRank": 4,
           "awAScore": 4,
           "awARank": 2,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 5,
+          "resultStatus": "finished",
+          "finalSp": 3.5,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 3.5
+          }
         },
         {
           "runnerId": "007b0b68-9288-4e0d-99ee-bb05c7497f68",
@@ -27920,10 +28096,15 @@
           "awDRank": 1,
           "awAScore": 3,
           "awARank": 1,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 8,
+          "resultStatus": "finished",
+          "finalSp": 6.5,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 6.5
+          }
         },
         {
           "runnerId": "54bee3a9-5d39-41c1-9b98-75a504df15c5",
@@ -27940,10 +28121,15 @@
           "awDRank": 3,
           "awAScore": 5,
           "awARank": 5,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 6,
+          "resultStatus": "finished",
+          "finalSp": 4,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 4
+          }
         },
         {
           "runnerId": "425b24fd-5b75-4a0b-a547-f5c32260626f",
@@ -27960,10 +28146,15 @@
           "awDRank": 6,
           "awAScore": 4.5,
           "awARank": 4,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 4,
+          "resultStatus": "finished",
+          "finalSp": 9,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 9
+          }
         },
         {
           "runnerId": "8c6b2f39-5b48-484b-88eb-d9e325166bf2",
@@ -27980,10 +28171,15 @@
           "awDRank": 2,
           "awAScore": 4,
           "awARank": 2,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 1,
+          "resultStatus": "finished",
+          "finalSp": 9.5,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 9.5,
+            "profitLoss": 8.5,
+            "settlementOddsDecimal": 9.5
+          }
         },
         {
           "runnerId": "938290ce-a08b-483a-a5d1-49cadadb31cf",
@@ -28000,10 +28196,15 @@
           "awDRank": 7,
           "awAScore": 6,
           "awARank": 7,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 9,
+          "resultStatus": "finished",
+          "finalSp": 13,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 13
+          }
         },
         {
           "runnerId": "d541c11f-5883-4af7-a33f-e21c4e360ca3",
@@ -28020,10 +28221,15 @@
           "awDRank": 4,
           "awAScore": 5,
           "awARank": 5,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 2,
+          "resultStatus": "finished",
+          "finalSp": 7,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 7
+          }
         },
         {
           "runnerId": "c4ebb336-d63f-4ad2-9819-9c4bb1609d5e",
@@ -28040,10 +28246,15 @@
           "awDRank": 8,
           "awAScore": 7.5,
           "awARank": 8,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 7,
+          "resultStatus": "finished",
+          "finalSp": 26,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 26
+          }
         },
         {
           "runnerId": "e86672c7-ea08-415e-a623-22e3183b5bca",
@@ -28060,14 +28271,21 @@
           "awDRank": null,
           "awAScore": null,
           "awARank": null,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 3,
+          "resultStatus": "finished",
+          "finalSp": 67,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 67
+          }
         }
       ],
-      "winnerRunnerIds": [],
-      "settledAt": null
+      "winnerRunnerIds": [
+        "8c6b2f39-5b48-484b-88eb-d9e325166bf2"
+      ],
+      "settledAt": "2026-10-08T03:26:20.050Z"
     },
     {
       "raceDate": "2026-10-07",
@@ -28110,10 +28328,15 @@
           "awDRank": 2,
           "awAScore": 4.5,
           "awARank": 4,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 5,
+          "resultStatus": "finished",
+          "finalSp": 4,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 4
+          }
         },
         {
           "runnerId": "9efea24f-244b-433f-8851-0aed2b2e95b1",
@@ -28130,10 +28353,15 @@
           "awDRank": 3,
           "awAScore": 2,
           "awARank": 1,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 1,
+          "resultStatus": "finished",
+          "finalSp": 4.5,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 4.5,
+            "profitLoss": 3.5,
+            "settlementOddsDecimal": 4.5
+          }
         },
         {
           "runnerId": "684959fe-c62f-43f6-b7a6-d253dcbcf4e8",
@@ -28150,10 +28378,15 @@
           "awDRank": 12,
           "awAScore": 10,
           "awARank": 11,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 3,
+          "resultStatus": "finished",
+          "finalSp": 9,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 9
+          }
         },
         {
           "runnerId": "91e59672-fd9a-45d7-9525-e15da3219673",
@@ -28170,10 +28403,15 @@
           "awDRank": 1,
           "awAScore": 3.5,
           "awARank": 2,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 10,
+          "resultStatus": "finished",
+          "finalSp": 17,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 17
+          }
         },
         {
           "runnerId": "d9f9be84-b2f1-4f6e-bbb3-0a785818c870",
@@ -28190,10 +28428,15 @@
           "awDRank": 5,
           "awAScore": 8.5,
           "awARank": 9,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 2,
+          "resultStatus": "finished",
+          "finalSp": 4,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 4
+          }
         },
         {
           "runnerId": "f79580e2-a268-42ab-bb9f-3982385f1d51",
@@ -28210,10 +28453,15 @@
           "awDRank": 10,
           "awAScore": 10,
           "awARank": 11,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 9,
+          "resultStatus": "finished",
+          "finalSp": 9,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 9
+          }
         },
         {
           "runnerId": "2ddca2fc-c4c9-4d39-872b-508a9e57ef47",
@@ -28230,10 +28478,15 @@
           "awDRank": 7,
           "awAScore": 10,
           "awARank": 11,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 4,
+          "resultStatus": "finished",
+          "finalSp": 13,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 13
+          }
         },
         {
           "runnerId": "0705341f-9bd0-4a8f-8a2a-c3fb57d12002",
@@ -28250,10 +28503,15 @@
           "awDRank": 10,
           "awAScore": 7.5,
           "awARank": 5,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 11,
+          "resultStatus": "finished",
+          "finalSp": 29,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 29
+          }
         },
         {
           "runnerId": "c12b6466-0c61-45de-8c5a-2fdc3bc9e495",
@@ -28270,10 +28528,15 @@
           "awDRank": 3,
           "awAScore": 3.5,
           "awARank": 2,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 6,
+          "resultStatus": "finished",
+          "finalSp": 13,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 13
+          }
         },
         {
           "runnerId": "e7d8e6e1-44f7-43b2-8723-d5ac88ae9e41",
@@ -28290,10 +28553,15 @@
           "awDRank": 9,
           "awAScore": 7.5,
           "awARank": 5,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 7,
+          "resultStatus": "finished",
+          "finalSp": 51,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 51
+          }
         },
         {
           "runnerId": "7371d4c2-0347-4bb4-be4a-e5c1ca74b193",
@@ -28310,10 +28578,15 @@
           "awDRank": 7,
           "awAScore": 7.5,
           "awARank": 5,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 8,
+          "resultStatus": "finished",
+          "finalSp": 21,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 21
+          }
         },
         {
           "runnerId": "63a7f818-ca93-4a0e-8f6e-815ba5ec5a76",
@@ -28330,10 +28603,15 @@
           "awDRank": 13,
           "awAScore": 8.5,
           "awARank": 9,
-          "finishingPosition": null,
-          "resultStatus": null,
-          "finalSp": null,
-          "settlement": null
+          "finishingPosition": 13,
+          "resultStatus": "finished",
+          "finalSp": 51,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 51
+          }
         },
         {
           "runnerId": "ae65bbf0-4bca-4834-8452-e5f32851c4c0",
@@ -28350,6 +28628,2203 @@
           "awDRank": 5,
           "awAScore": 7.5,
           "awARank": 5,
+          "finishingPosition": 12,
+          "resultStatus": "finished",
+          "finalSp": 29,
+          "settlement": {
+            "stake": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settlementOddsDecimal": 29
+          }
+        }
+      ],
+      "winnerRunnerIds": [
+        "9efea24f-244b-433f-8851-0aed2b2e95b1"
+      ],
+      "settledAt": "2026-10-08T03:26:20.050Z"
+    },
+    {
+      "raceDate": "2026-10-08",
+      "raceDateTime": "2026-10-08T15:25:00.000Z",
+      "course": "Southwell",
+      "raceTime": "15:25",
+      "raceId": "08abbf4a-7d5b-4dce-bc6b-79219164fb23",
+      "sourceId": "942855",
+      "raceName": "Follow AtTheRaces On Instagram Nursery",
+      "distanceGroup": "sprint",
+      "handicapStatus": "handicap",
+      "fieldSize": 8,
+      "activeRunnerCount": 8,
+      "ratedRunnerCount": 2,
+      "ratingCoverage": 0.25,
+      "ratingCoverageStatus": "eligible",
+      "ratingCoverageGuardVersion": "aw_d_rating_coverage_guard_v1",
+      "ratingCoverageGuardImplementedAt": "2026-09-30T00:00:00.000Z",
+      "ratingCoverageExclusionReason": null,
+      "awDRankEligible": true,
+      "awDVersion": "AW_D_V1",
+      "awAVersion": "AW_A_V1",
+      "recordedAt": "2026-10-08T04:44:14.361Z",
+      "recordedPreRace": true,
+      "rank1Agreement": true,
+      "zeroHistoryRunnerCount": 5,
+      "runners": [
+        {
+          "runnerId": "846600dc-7c22-413d-a53a-9759e433444e",
+          "horseId": "c04337cc-e697-44b1-ba2a-0fa178ee264f",
+          "horseName": "Roxa Love",
+          "priorAwStarts": 1,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": 2,
+            "trainerPriorStrikeRate": 3,
+            "jockeyPriorStrikeRate": 4
+          },
+          "awDScore": 3,
+          "awDRank": 2,
+          "awAScore": 2.5,
+          "awARank": 2,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "018bb82b-307d-4cb2-a720-91569951b5c8",
+          "horseId": "2cc3943d-3293-4d0a-8382-f28ac7d87216",
+          "horseName": "Princesse D'orange",
+          "priorAwStarts": 0,
+          "zeroHistory": true,
+          "components": {
+            "averageAwSpeedLast3": null,
+            "trainerPriorStrikeRate": 6,
+            "jockeyPriorStrikeRate": 1
+          },
+          "awDScore": null,
+          "awDRank": null,
+          "awAScore": null,
+          "awARank": null,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "476cc2fb-ec8e-4e64-813b-7e65360f9d7c",
+          "horseId": "68aa6afb-4f5f-405e-95dc-57e8f2eb09e6",
+          "horseName": "Minzelle",
+          "priorAwStarts": 0,
+          "zeroHistory": true,
+          "components": {
+            "averageAwSpeedLast3": null,
+            "trainerPriorStrikeRate": 1,
+            "jockeyPriorStrikeRate": 2
+          },
+          "awDScore": null,
+          "awDRank": null,
+          "awAScore": null,
+          "awARank": null,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "4ba18258-8d5e-422e-b428-0d21f66dfbc8",
+          "horseId": "5ecdc47d-3341-42be-a58e-0e765ffabb03",
+          "horseName": "Dubai Charm",
+          "priorAwStarts": 0,
+          "zeroHistory": true,
+          "components": {
+            "averageAwSpeedLast3": null,
+            "trainerPriorStrikeRate": 4,
+            "jockeyPriorStrikeRate": 5
+          },
+          "awDScore": null,
+          "awDRank": null,
+          "awAScore": null,
+          "awARank": null,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "9c21d53d-87bd-4091-ae12-ac8922fc5a7c",
+          "horseId": "8e367253-df97-4b19-8511-ae578cf2bda8",
+          "horseName": "Lover Girl",
+          "priorAwStarts": 1,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": null,
+            "trainerPriorStrikeRate": 5,
+            "jockeyPriorStrikeRate": 8
+          },
+          "awDScore": null,
+          "awDRank": null,
+          "awAScore": null,
+          "awARank": null,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "95a9c72c-0674-4155-b553-f0c85f1a9703",
+          "horseId": "e453bba3-964d-48ed-9551-4764416ce10f",
+          "horseName": "Paper View",
+          "priorAwStarts": 0,
+          "zeroHistory": true,
+          "components": {
+            "averageAwSpeedLast3": null,
+            "trainerPriorStrikeRate": 7,
+            "jockeyPriorStrikeRate": 6
+          },
+          "awDScore": null,
+          "awDRank": null,
+          "awAScore": null,
+          "awARank": null,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "2f613a0b-a0e2-4913-ab12-793dd6c16a17",
+          "horseId": "2ebb8fff-f732-4832-b27c-25a8410f3115",
+          "horseName": "Needin' U",
+          "priorAwStarts": 0,
+          "zeroHistory": true,
+          "components": {
+            "averageAwSpeedLast3": null,
+            "trainerPriorStrikeRate": 8,
+            "jockeyPriorStrikeRate": 7
+          },
+          "awDScore": null,
+          "awDRank": null,
+          "awAScore": null,
+          "awARank": null,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "eb819e8e-243d-451d-a419-71fcf1540f9a",
+          "horseId": "0980b13c-bc89-4247-a111-818b485153cc",
+          "horseName": "Casino Star",
+          "priorAwStarts": 1,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": 1,
+            "trainerPriorStrikeRate": 1,
+            "jockeyPriorStrikeRate": 3
+          },
+          "awDScore": 1.6666666666666667,
+          "awDRank": 1,
+          "awAScore": 1,
+          "awARank": 1,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        }
+      ],
+      "winnerRunnerIds": [],
+      "settledAt": null
+    },
+    {
+      "raceDate": "2026-10-08",
+      "raceDateTime": "2026-10-08T16:00:00.000Z",
+      "course": "Southwell",
+      "raceTime": "16:00",
+      "raceId": "5ea83f21-ca43-4d07-af9d-33ff29ac7a92",
+      "sourceId": "942396",
+      "raceName": "Get Raceday Ready Handicap",
+      "distanceGroup": "staying",
+      "handicapStatus": "handicap",
+      "fieldSize": 12,
+      "activeRunnerCount": 12,
+      "ratedRunnerCount": 9,
+      "ratingCoverage": 0.75,
+      "ratingCoverageStatus": "eligible",
+      "ratingCoverageGuardVersion": "aw_d_rating_coverage_guard_v1",
+      "ratingCoverageGuardImplementedAt": "2026-09-30T00:00:00.000Z",
+      "ratingCoverageExclusionReason": null,
+      "awDRankEligible": true,
+      "awDVersion": "AW_D_V1",
+      "awAVersion": "AW_A_V1",
+      "recordedAt": "2026-10-08T04:44:14.361Z",
+      "recordedPreRace": true,
+      "rank1Agreement": false,
+      "zeroHistoryRunnerCount": 1,
+      "runners": [
+        {
+          "runnerId": "5fac8c87-36aa-4837-ae85-f294570cc790",
+          "horseId": "b306e08d-313a-4c93-a7c5-f2a5e2613f33",
+          "horseName": "Edwardtheninth",
+          "priorAwStarts": 12,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": 8,
+            "trainerPriorStrikeRate": 10,
+            "jockeyPriorStrikeRate": 12
+          },
+          "awDScore": 10,
+          "awDRank": 9,
+          "awAScore": 9,
+          "awARank": 9,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "010f6f57-6c1a-401b-92cc-82288e2968ae",
+          "horseId": "c9e2b9e5-71f4-41e0-86f9-c9f79c199605",
+          "horseName": "Time Turner",
+          "priorAwStarts": 9,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": 9,
+            "trainerPriorStrikeRate": 1,
+            "jockeyPriorStrikeRate": 1
+          },
+          "awDScore": 3.6666666666666665,
+          "awDRank": 1,
+          "awAScore": 5,
+          "awARank": 5,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "68b464e2-e58d-4fc9-a1a2-7d25b1f29458",
+          "horseId": "872a8af7-73fc-4592-8923-7616638e7a85",
+          "horseName": "Wedonttellthetruth",
+          "priorAwStarts": 7,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": 7,
+            "trainerPriorStrikeRate": 2,
+            "jockeyPriorStrikeRate": 4
+          },
+          "awDScore": 4.333333333333333,
+          "awDRank": 3,
+          "awAScore": 4.5,
+          "awARank": 2,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "dcc5ba7c-0bf7-410d-8eb7-130ed8e1a446",
+          "horseId": "cc7e3650-aba2-4042-b2f3-8231c1f0a018",
+          "horseName": "State Express",
+          "priorAwStarts": 2,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": 3,
+            "trainerPriorStrikeRate": 6,
+            "jockeyPriorStrikeRate": 2
+          },
+          "awDScore": 3.6666666666666665,
+          "awDRank": 1,
+          "awAScore": 4.5,
+          "awARank": 2,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "dc8fd856-e866-47ee-9c37-cdec78961314",
+          "horseId": "90a6e3a5-4b34-4b28-87d1-ab9b8c1e05aa",
+          "horseName": "Lady Of Clover",
+          "priorAwStarts": 8,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": 2,
+            "trainerPriorStrikeRate": 3,
+            "jockeyPriorStrikeRate": 8
+          },
+          "awDScore": 4.333333333333333,
+          "awDRank": 3,
+          "awAScore": 2.5,
+          "awARank": 1,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "1c6f8ba8-ec5f-4118-ab06-12409337c6ec",
+          "horseId": "1f30be79-76d9-4e5e-a896-bfcd200b4378",
+          "horseName": "Rubellite",
+          "priorAwStarts": 36,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": 4,
+            "trainerPriorStrikeRate": 9,
+            "jockeyPriorStrikeRate": 10
+          },
+          "awDScore": 7.666666666666667,
+          "awDRank": 8,
+          "awAScore": 6.5,
+          "awARank": 8,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "34cd3355-4eeb-4143-a008-5629403d01bf",
+          "horseId": "6d4b1bc8-8b10-4e57-b045-80760a6e8184",
+          "horseName": "Sisterandbrother",
+          "priorAwStarts": 18,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": 1,
+            "trainerPriorStrikeRate": 11,
+            "jockeyPriorStrikeRate": 5
+          },
+          "awDScore": 5.666666666666667,
+          "awDRank": 7,
+          "awAScore": 6,
+          "awARank": 7,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "4c97689a-dfd4-4bab-896e-9bb877eff37f",
+          "horseId": "188e8817-65a0-4c9e-ae71-6b0384bfc5f8",
+          "horseName": "Hellion",
+          "priorAwStarts": 1,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": 6,
+            "trainerPriorStrikeRate": 5,
+            "jockeyPriorStrikeRate": 3
+          },
+          "awDScore": 4.666666666666667,
+          "awDRank": 5,
+          "awAScore": 5.5,
+          "awARank": 6,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "3d3391a1-fdca-4481-9aec-e6fd94a712bb",
+          "horseId": "41c9bec3-95fd-4a34-a3ae-a7894737efab",
+          "horseName": "Flag Of Eva",
+          "priorAwStarts": 1,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": null,
+            "trainerPriorStrikeRate": 7,
+            "jockeyPriorStrikeRate": 6
+          },
+          "awDScore": null,
+          "awDRank": null,
+          "awAScore": null,
+          "awARank": null,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "f29161ce-daab-46cc-b274-edfb8b466b7c",
+          "horseId": "633f6960-dd1c-4ee6-beb3-36e7c4a44ac9",
+          "horseName": "Minerality",
+          "priorAwStarts": 4,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": 5,
+            "trainerPriorStrikeRate": 4,
+            "jockeyPriorStrikeRate": 7
+          },
+          "awDScore": 5.333333333333333,
+          "awDRank": 6,
+          "awAScore": 4.5,
+          "awARank": 2,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "c8b0ca1f-a3ee-4d19-bb4c-f59426d6ecb5",
+          "horseId": "cc34fd96-b7af-4739-892b-548db3f0416f",
+          "horseName": "Pop The Question",
+          "priorAwStarts": 1,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": null,
+            "trainerPriorStrikeRate": 12,
+            "jockeyPriorStrikeRate": 9
+          },
+          "awDScore": null,
+          "awDRank": null,
+          "awAScore": null,
+          "awARank": null,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "0f41f786-32bf-4668-8981-2e0d79131dba",
+          "horseId": "81478cbe-d3b9-4c31-8478-7ebe1b3b0e50",
+          "horseName": "Twin And Tonic",
+          "priorAwStarts": 0,
+          "zeroHistory": true,
+          "components": {
+            "averageAwSpeedLast3": null,
+            "trainerPriorStrikeRate": 8,
+            "jockeyPriorStrikeRate": 11
+          },
+          "awDScore": null,
+          "awDRank": null,
+          "awAScore": null,
+          "awARank": null,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        }
+      ],
+      "winnerRunnerIds": [],
+      "settledAt": null
+    },
+    {
+      "raceDate": "2026-10-08",
+      "raceDateTime": "2026-10-08T16:30:00.000Z",
+      "course": "Southwell",
+      "raceTime": "16:30",
+      "raceId": "bd253ae7-9185-4fda-804a-0086b284b19d",
+      "sourceId": "942397",
+      "raceName": "Free Tips On attheraces.com EBF Novice Stakes (GBB/GBBPlus Race)",
+      "distanceGroup": "intermediate",
+      "handicapStatus": "non_handicap",
+      "fieldSize": 7,
+      "activeRunnerCount": 7,
+      "ratedRunnerCount": 0,
+      "ratingCoverage": 0,
+      "ratingCoverageStatus": "insufficient_coverage",
+      "ratingCoverageGuardVersion": "aw_d_rating_coverage_guard_v1",
+      "ratingCoverageGuardImplementedAt": "2026-09-30T00:00:00.000Z",
+      "ratingCoverageExclusionReason": "insufficient_rating_coverage",
+      "awDRankEligible": false,
+      "awDVersion": "AW_D_V1",
+      "awAVersion": "AW_A_V1",
+      "recordedAt": "2026-10-08T04:44:14.361Z",
+      "recordedPreRace": true,
+      "rank1Agreement": null,
+      "zeroHistoryRunnerCount": 5,
+      "runners": [
+        {
+          "runnerId": "cba40c66-f7a5-4e33-a03d-5c27ead681ec",
+          "horseId": "e9915c0b-cd22-4a5c-8b28-3ac34569c537",
+          "horseName": "Summer In Paris",
+          "priorAwStarts": 1,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": null,
+            "trainerPriorStrikeRate": 6,
+            "jockeyPriorStrikeRate": 7
+          },
+          "awDScore": null,
+          "awDRank": null,
+          "awAScore": null,
+          "awARank": null,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "35dc4027-d52f-4cef-a332-b630291fe6e8",
+          "horseId": "6670ecc9-d8b6-46a6-805c-aee889ad29a9",
+          "horseName": "Master Of The Sky",
+          "priorAwStarts": 0,
+          "zeroHistory": true,
+          "components": {
+            "averageAwSpeedLast3": null,
+            "trainerPriorStrikeRate": 1,
+            "jockeyPriorStrikeRate": 4
+          },
+          "awDScore": null,
+          "awDRank": null,
+          "awAScore": null,
+          "awARank": null,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "f67c683c-d38e-4615-9549-08510535d8f7",
+          "horseId": "ff7288bf-e258-4e1c-9dba-f893038fda52",
+          "horseName": "Crown Of Crowns",
+          "priorAwStarts": 0,
+          "zeroHistory": true,
+          "components": {
+            "averageAwSpeedLast3": null,
+            "trainerPriorStrikeRate": 2,
+            "jockeyPriorStrikeRate": 1
+          },
+          "awDScore": null,
+          "awDRank": null,
+          "awAScore": null,
+          "awARank": null,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "ede2f0d1-918a-41db-b6b8-ea80fa916220",
+          "horseId": "227c82b2-ef88-46a2-841d-2a17691fafe6",
+          "horseName": "Emtinan",
+          "priorAwStarts": 1,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": null,
+            "trainerPriorStrikeRate": 4,
+            "jockeyPriorStrikeRate": 3
+          },
+          "awDScore": null,
+          "awDRank": null,
+          "awAScore": null,
+          "awARank": null,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "0002750c-7049-464f-9717-63be6ff1a9f3",
+          "horseId": "4640b1a4-d2f1-48ba-b780-8744adfb6c96",
+          "horseName": "Velardo",
+          "priorAwStarts": 0,
+          "zeroHistory": true,
+          "components": {
+            "averageAwSpeedLast3": null,
+            "trainerPriorStrikeRate": 7,
+            "jockeyPriorStrikeRate": 2
+          },
+          "awDScore": null,
+          "awDRank": null,
+          "awAScore": null,
+          "awARank": null,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "565124f7-2140-4b65-b977-d1c0ac1bce99",
+          "horseId": "e5badeca-d0bf-4ea5-b117-391f187a398f",
+          "horseName": "Dontelimurnamepike",
+          "priorAwStarts": 0,
+          "zeroHistory": true,
+          "components": {
+            "averageAwSpeedLast3": null,
+            "trainerPriorStrikeRate": 3,
+            "jockeyPriorStrikeRate": 5
+          },
+          "awDScore": null,
+          "awDRank": null,
+          "awAScore": null,
+          "awARank": null,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "6b903f7d-6fe5-4322-9a1b-4290b49597da",
+          "horseId": "80f1f45d-843a-47c0-a021-98ad6164233f",
+          "horseName": "Stateira Belle",
+          "priorAwStarts": 0,
+          "zeroHistory": true,
+          "components": {
+            "averageAwSpeedLast3": null,
+            "trainerPriorStrikeRate": 5,
+            "jockeyPriorStrikeRate": 6
+          },
+          "awDScore": null,
+          "awDRank": null,
+          "awAScore": null,
+          "awARank": null,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        }
+      ],
+      "winnerRunnerIds": [],
+      "settledAt": null
+    },
+    {
+      "raceDate": "2026-10-08",
+      "raceDateTime": "2026-10-08T17:00:00.000Z",
+      "course": "Southwell",
+      "raceTime": "17:00",
+      "raceId": "d6611f1a-d1e3-4ad1-a6b8-151895d54724",
+      "sourceId": "942398",
+      "raceName": "Sky Sports Racing Sky 415 Nursery (Div 1)",
+      "distanceGroup": "intermediate",
+      "handicapStatus": "handicap",
+      "fieldSize": 12,
+      "activeRunnerCount": 12,
+      "ratedRunnerCount": 4,
+      "ratingCoverage": 0.3333333333333333,
+      "ratingCoverageStatus": "eligible",
+      "ratingCoverageGuardVersion": "aw_d_rating_coverage_guard_v1",
+      "ratingCoverageGuardImplementedAt": "2026-09-30T00:00:00.000Z",
+      "ratingCoverageExclusionReason": null,
+      "awDRankEligible": true,
+      "awDVersion": "AW_D_V1",
+      "awAVersion": "AW_A_V1",
+      "recordedAt": "2026-10-08T04:44:14.361Z",
+      "recordedPreRace": true,
+      "rank1Agreement": true,
+      "zeroHistoryRunnerCount": 8,
+      "runners": [
+        {
+          "runnerId": "318cde6a-dc9e-43a0-a62d-cbaf9785d11b",
+          "horseId": "6ae3d2fa-9361-468f-8374-ca6ed833aadb",
+          "horseName": "Kaito",
+          "priorAwStarts": 0,
+          "zeroHistory": true,
+          "components": {
+            "averageAwSpeedLast3": null,
+            "trainerPriorStrikeRate": 1,
+            "jockeyPriorStrikeRate": 5
+          },
+          "awDScore": null,
+          "awDRank": null,
+          "awAScore": null,
+          "awARank": null,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "2781ebe4-88bc-4dcf-840a-7d94c0fb3450",
+          "horseId": "ff52002b-de39-4c35-8fdd-45bd07991c24",
+          "horseName": "Casablanca Dream",
+          "priorAwStarts": 2,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": 1,
+            "trainerPriorStrikeRate": 2,
+            "jockeyPriorStrikeRate": 3
+          },
+          "awDScore": 2,
+          "awDRank": 1,
+          "awAScore": 1.5,
+          "awARank": 1,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "6fd63370-1001-4a5a-a8ac-a1d88435ef79",
+          "horseId": "0cce440e-3806-4dc5-b917-2a77335886b3",
+          "horseName": "Temple Court",
+          "priorAwStarts": 0,
+          "zeroHistory": true,
+          "components": {
+            "averageAwSpeedLast3": null,
+            "trainerPriorStrikeRate": 6,
+            "jockeyPriorStrikeRate": 6
+          },
+          "awDScore": null,
+          "awDRank": null,
+          "awAScore": null,
+          "awARank": null,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "230be91b-7b14-4234-8e9b-43b8d3d06a4e",
+          "horseId": "a8c22fdc-dd8f-4332-a0c0-86f164306bf8",
+          "horseName": "Courage Best",
+          "priorAwStarts": 0,
+          "zeroHistory": true,
+          "components": {
+            "averageAwSpeedLast3": null,
+            "trainerPriorStrikeRate": 4,
+            "jockeyPriorStrikeRate": 10
+          },
+          "awDScore": null,
+          "awDRank": null,
+          "awAScore": null,
+          "awARank": null,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "aa4ccd57-c539-4535-8168-19f119982f31",
+          "horseId": "0a91e48e-27ec-431f-a599-dc1c5c72df2e",
+          "horseName": "Thunda Struck",
+          "priorAwStarts": 0,
+          "zeroHistory": true,
+          "components": {
+            "averageAwSpeedLast3": null,
+            "trainerPriorStrikeRate": 12,
+            "jockeyPriorStrikeRate": 4
+          },
+          "awDScore": null,
+          "awDRank": null,
+          "awAScore": null,
+          "awARank": null,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "171b6b0c-534e-4d47-b16e-65fea5b5983a",
+          "horseId": "c90191b3-e9fe-4e2c-aec9-90ec6bf592a2",
+          "horseName": "Arlecchino's Moon",
+          "priorAwStarts": 3,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": 4,
+            "trainerPriorStrikeRate": 11,
+            "jockeyPriorStrikeRate": 2
+          },
+          "awDScore": 5.666666666666667,
+          "awDRank": 2,
+          "awAScore": 7.5,
+          "awARank": 4,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "7b8bbee1-5944-4c43-8dc3-4bc71daec32e",
+          "horseId": "c155ffad-070d-4029-80e4-58965ffc0e33",
+          "horseName": "Strong Performance",
+          "priorAwStarts": 0,
+          "zeroHistory": true,
+          "components": {
+            "averageAwSpeedLast3": null,
+            "trainerPriorStrikeRate": 3,
+            "jockeyPriorStrikeRate": 1
+          },
+          "awDScore": null,
+          "awDRank": null,
+          "awAScore": null,
+          "awARank": null,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "e3e12a10-415c-4ba4-bfe7-b3834f6022ae",
+          "horseId": "68e8e567-8cfe-4d39-9112-3daaf1c0919d",
+          "horseName": "Le Grand Etoile",
+          "priorAwStarts": 0,
+          "zeroHistory": true,
+          "components": {
+            "averageAwSpeedLast3": null,
+            "trainerPriorStrikeRate": 5,
+            "jockeyPriorStrikeRate": 8
+          },
+          "awDScore": null,
+          "awDRank": null,
+          "awAScore": null,
+          "awARank": null,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "a2c236a7-8826-464c-9d2b-a81ec8a46b8b",
+          "horseId": "62532d1e-1582-4d35-8767-35295f792470",
+          "horseName": "Solar Mission",
+          "priorAwStarts": 2,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": 2,
+            "trainerPriorStrikeRate": 7,
+            "jockeyPriorStrikeRate": 12
+          },
+          "awDScore": 7,
+          "awDRank": 3,
+          "awAScore": 4.5,
+          "awARank": 2,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "6ab1b23b-d906-49bc-93c9-108e9387f4a9",
+          "horseId": "ac6baaa9-e6c4-417f-b92b-ccc03004ed1d",
+          "horseName": "Unbeatable Fame",
+          "priorAwStarts": 1,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": 3,
+            "trainerPriorStrikeRate": 10,
+            "jockeyPriorStrikeRate": 11
+          },
+          "awDScore": 8,
+          "awDRank": 4,
+          "awAScore": 6.5,
+          "awARank": 3,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "fec68cd7-cec8-47fb-954d-6b38a72e76b4",
+          "horseId": "2f2c2479-83a2-48a2-af49-b7bf614a7d15",
+          "horseName": "Purrista",
+          "priorAwStarts": 0,
+          "zeroHistory": true,
+          "components": {
+            "averageAwSpeedLast3": null,
+            "trainerPriorStrikeRate": 8,
+            "jockeyPriorStrikeRate": 7
+          },
+          "awDScore": null,
+          "awDRank": null,
+          "awAScore": null,
+          "awARank": null,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "2dbb964e-1942-4494-9baf-1aec3802668a",
+          "horseId": "b43f0482-d836-41ec-9022-e26df5038015",
+          "horseName": "Ubettanotblink",
+          "priorAwStarts": 0,
+          "zeroHistory": true,
+          "components": {
+            "averageAwSpeedLast3": null,
+            "trainerPriorStrikeRate": 9,
+            "jockeyPriorStrikeRate": 9
+          },
+          "awDScore": null,
+          "awDRank": null,
+          "awAScore": null,
+          "awARank": null,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        }
+      ],
+      "winnerRunnerIds": [],
+      "settledAt": null
+    },
+    {
+      "raceDate": "2026-10-08",
+      "raceDateTime": "2026-10-08T17:30:00.000Z",
+      "course": "Southwell",
+      "raceTime": "17:30",
+      "raceId": "85b1ddee-6015-4ff7-8588-1024b8cbe207",
+      "sourceId": "942399",
+      "raceName": "Sky Sports Racing Sky 415 Nursery (Div 2)",
+      "distanceGroup": "intermediate",
+      "handicapStatus": "handicap",
+      "fieldSize": 11,
+      "activeRunnerCount": 11,
+      "ratedRunnerCount": 8,
+      "ratingCoverage": 0.7272727272727273,
+      "ratingCoverageStatus": "eligible",
+      "ratingCoverageGuardVersion": "aw_d_rating_coverage_guard_v1",
+      "ratingCoverageGuardImplementedAt": "2026-09-30T00:00:00.000Z",
+      "ratingCoverageExclusionReason": null,
+      "awDRankEligible": true,
+      "awDVersion": "AW_D_V1",
+      "awAVersion": "AW_A_V1",
+      "recordedAt": "2026-10-08T04:44:14.361Z",
+      "recordedPreRace": true,
+      "rank1Agreement": false,
+      "zeroHistoryRunnerCount": 1,
+      "runners": [
+        {
+          "runnerId": "2ef2928c-92fb-4925-97de-d8937233f980",
+          "horseId": "ecb26082-8837-4a17-9e9a-97f2ccf1e084",
+          "horseName": "Revoked",
+          "priorAwStarts": 1,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": 2,
+            "trainerPriorStrikeRate": 2,
+            "jockeyPriorStrikeRate": 8
+          },
+          "awDScore": 4,
+          "awDRank": 1,
+          "awAScore": 2,
+          "awARank": 1,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "92d37a65-6ec4-4bfd-b98d-24c178e43e65",
+          "horseId": "5aff0362-4abf-4a21-a083-c38d8f047654",
+          "horseName": "Whiskey Galore",
+          "priorAwStarts": 1,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": 1,
+            "trainerPriorStrikeRate": 4,
+            "jockeyPriorStrikeRate": 7
+          },
+          "awDScore": 4,
+          "awDRank": 1,
+          "awAScore": 2.5,
+          "awARank": 2,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "894a6741-89bd-426d-bbf8-65fbb27b439d",
+          "horseId": "9e4c8e26-4c69-4589-a7a0-aaa8694d1fd0",
+          "horseName": "Hello You Ten",
+          "priorAwStarts": 0,
+          "zeroHistory": true,
+          "components": {
+            "averageAwSpeedLast3": null,
+            "trainerPriorStrikeRate": 8,
+            "jockeyPriorStrikeRate": 3
+          },
+          "awDScore": null,
+          "awDRank": null,
+          "awAScore": null,
+          "awARank": null,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "89e6a0e5-496a-4c34-973b-f43c3e331a96",
+          "horseId": "5cdf6967-a04c-4d56-be73-21691fb6fb49",
+          "horseName": "Lunar Blossom",
+          "priorAwStarts": 3,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": 6,
+            "trainerPriorStrikeRate": 5,
+            "jockeyPriorStrikeRate": 1
+          },
+          "awDScore": 4,
+          "awDRank": 1,
+          "awAScore": 5.5,
+          "awARank": 4,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "667f7750-0f01-48cc-bb79-cc5bb4610c8a",
+          "horseId": "cbb8fe80-ac7a-4ec6-8e71-600273cf6771",
+          "horseName": "Astral Calling",
+          "priorAwStarts": 1,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": null,
+            "trainerPriorStrikeRate": 1,
+            "jockeyPriorStrikeRate": 4
+          },
+          "awDScore": null,
+          "awDRank": null,
+          "awAScore": null,
+          "awARank": null,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "1325f65f-ee3c-4e90-b54e-f502fab21c9e",
+          "horseId": "c982d399-a910-4755-b1a5-aa302c1899f8",
+          "horseName": "Pen Lan Icon",
+          "priorAwStarts": 1,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": 4,
+            "trainerPriorStrikeRate": 10,
+            "jockeyPriorStrikeRate": 2
+          },
+          "awDScore": 5.333333333333333,
+          "awDRank": 5,
+          "awAScore": 7,
+          "awARank": 5,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "676c5acf-55c3-4b92-962b-44e336c48e7c",
+          "horseId": "fa45fdee-6edb-485a-9429-543a111363e4",
+          "horseName": "Soldier's Echo",
+          "priorAwStarts": 2,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": 3,
+            "trainerPriorStrikeRate": 6,
+            "jockeyPriorStrikeRate": 5
+          },
+          "awDScore": 4.666666666666667,
+          "awDRank": 4,
+          "awAScore": 4.5,
+          "awARank": 3,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "573c43ce-3c35-4d92-936a-3e75039dcf3a",
+          "horseId": "3b5e5fc2-a071-4bec-876a-d28e3cad9c8e",
+          "horseName": "Lady Nenaz",
+          "priorAwStarts": 2,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": 5,
+            "trainerPriorStrikeRate": 11,
+            "jockeyPriorStrikeRate": 9
+          },
+          "awDScore": 8.333333333333334,
+          "awDRank": 7,
+          "awAScore": 8,
+          "awARank": 7,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "3439d7df-3deb-4bef-9955-c1f4bba83c3d",
+          "horseId": "b58bd531-258f-408d-984f-f5fbdeff8b5f",
+          "horseName": "Mohangel",
+          "priorAwStarts": 2,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": 8,
+            "trainerPriorStrikeRate": 9,
+            "jockeyPriorStrikeRate": 11
+          },
+          "awDScore": 9.333333333333334,
+          "awDRank": 8,
+          "awAScore": 8.5,
+          "awARank": 8,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "a65e3a2d-99a0-4344-9f10-cc935e04d72b",
+          "horseId": "82e7f3c1-15af-4432-86bf-089e492d3eb1",
+          "horseName": "Best Yet",
+          "priorAwStarts": 1,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": null,
+            "trainerPriorStrikeRate": 3,
+            "jockeyPriorStrikeRate": 6
+          },
+          "awDScore": null,
+          "awDRank": null,
+          "awAScore": null,
+          "awARank": null,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "96f45066-1bd9-48d8-b0b6-e1583f838cd9",
+          "horseId": "31a88d41-021d-4551-a640-dbd96fb9d891",
+          "horseName": "The Kalonji Man",
+          "priorAwStarts": 1,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": 7,
+            "trainerPriorStrikeRate": 7,
+            "jockeyPriorStrikeRate": 10
+          },
+          "awDScore": 8,
+          "awDRank": 6,
+          "awAScore": 7,
+          "awARank": 5,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        }
+      ],
+      "winnerRunnerIds": [],
+      "settledAt": null
+    },
+    {
+      "raceDate": "2026-10-08",
+      "raceDateTime": "2026-10-08T18:00:00.000Z",
+      "course": "Southwell",
+      "raceTime": "18:00",
+      "raceId": "0305012f-dff7-4362-94b9-a577b4c4e0a0",
+      "sourceId": "942400",
+      "raceName": "Sky Sports Racing Virgin 512 Fillies' Handicap",
+      "distanceGroup": "intermediate",
+      "handicapStatus": "handicap",
+      "fieldSize": 9,
+      "activeRunnerCount": 9,
+      "ratedRunnerCount": 4,
+      "ratingCoverage": 0.4444444444444444,
+      "ratingCoverageStatus": "eligible",
+      "ratingCoverageGuardVersion": "aw_d_rating_coverage_guard_v1",
+      "ratingCoverageGuardImplementedAt": "2026-09-30T00:00:00.000Z",
+      "ratingCoverageExclusionReason": null,
+      "awDRankEligible": true,
+      "awDVersion": "AW_D_V1",
+      "awAVersion": "AW_A_V1",
+      "recordedAt": "2026-10-08T04:44:14.361Z",
+      "recordedPreRace": true,
+      "rank1Agreement": false,
+      "zeroHistoryRunnerCount": 0,
+      "runners": [
+        {
+          "runnerId": "6c0bf2d4-b196-45a3-aef5-491f45199edb",
+          "horseId": "89b6dc12-3609-4777-8a2d-e8a6c35bfd19",
+          "horseName": "Poets Praise",
+          "priorAwStarts": 1,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": 2,
+            "trainerPriorStrikeRate": 1,
+            "jockeyPriorStrikeRate": 8
+          },
+          "awDScore": 3.6666666666666665,
+          "awDRank": 1,
+          "awAScore": 1.5,
+          "awARank": 1,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "e6557e2d-53cc-4286-acac-149751339023",
+          "horseId": "b9326426-231a-45ad-a1d3-c9832b7fc12d",
+          "horseName": "Rogue Citation",
+          "priorAwStarts": 2,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": null,
+            "trainerPriorStrikeRate": 3,
+            "jockeyPriorStrikeRate": 1
+          },
+          "awDScore": null,
+          "awDRank": null,
+          "awAScore": null,
+          "awARank": null,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "b3ea6701-0702-4557-8912-08608718c7e8",
+          "horseId": "17811e2f-6a0d-436c-b880-f5eefae544dd",
+          "horseName": "Likeness",
+          "priorAwStarts": 6,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": null,
+            "trainerPriorStrikeRate": 4,
+            "jockeyPriorStrikeRate": 5
+          },
+          "awDScore": null,
+          "awDRank": null,
+          "awAScore": null,
+          "awARank": null,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "9913e286-a6a7-4cd6-b02b-413e9888f22d",
+          "horseId": "de01d210-2a22-418e-9366-73d778573d35",
+          "horseName": "Kamaway",
+          "priorAwStarts": 4,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": null,
+            "trainerPriorStrikeRate": 9,
+            "jockeyPriorStrikeRate": 4
+          },
+          "awDScore": null,
+          "awDRank": null,
+          "awAScore": null,
+          "awARank": null,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "cab8e283-b538-45f6-8fbc-5e5f52e7a62b",
+          "horseId": "72759db7-12c6-4692-b8ba-fef1494f1350",
+          "horseName": "Lovers Leap",
+          "priorAwStarts": 2,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": 4,
+            "trainerPriorStrikeRate": 6,
+            "jockeyPriorStrikeRate": 2
+          },
+          "awDScore": 4,
+          "awDRank": 3,
+          "awAScore": 5,
+          "awARank": 4,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "d303d5c8-c8f7-42e9-90a1-599774bec445",
+          "horseId": "b6a5b6e6-0fa5-4ca7-9581-c9d351aebdd5",
+          "horseName": "Wondrous Light",
+          "priorAwStarts": 4,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": null,
+            "trainerPriorStrikeRate": 8,
+            "jockeyPriorStrikeRate": 6
+          },
+          "awDScore": null,
+          "awDRank": null,
+          "awAScore": null,
+          "awARank": null,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "a62984da-b923-4325-815f-0bccab2eb417",
+          "horseId": "1636f686-05f2-4f6d-b335-3502f9d6b5f5",
+          "horseName": "Jojo's Legacy",
+          "priorAwStarts": 1,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": 3,
+            "trainerPriorStrikeRate": 5,
+            "jockeyPriorStrikeRate": 9
+          },
+          "awDScore": 5.666666666666667,
+          "awDRank": 4,
+          "awAScore": 4,
+          "awARank": 2,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "0f4ea6d1-d084-4824-b74e-ecb8c0ab2102",
+          "horseId": "326a9c85-2f17-4272-a71e-dbbb4b301a53",
+          "horseName": "Style Of Life",
+          "priorAwStarts": 5,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": null,
+            "trainerPriorStrikeRate": 2,
+            "jockeyPriorStrikeRate": 7
+          },
+          "awDScore": null,
+          "awDRank": null,
+          "awAScore": null,
+          "awARank": null,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "47a2a334-3f85-49a2-ab93-a2f83db64c57",
+          "horseId": "ddb9aa8b-b14b-4e94-a400-79ea868e822c",
+          "horseName": "Silken Bay",
+          "priorAwStarts": 4,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": 1,
+            "trainerPriorStrikeRate": 7,
+            "jockeyPriorStrikeRate": 3
+          },
+          "awDScore": 3.6666666666666665,
+          "awDRank": 1,
+          "awAScore": 4,
+          "awARank": 2,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        }
+      ],
+      "winnerRunnerIds": [],
+      "settledAt": null
+    },
+    {
+      "raceDate": "2026-10-08",
+      "raceDateTime": "2026-10-08T18:30:00.000Z",
+      "course": "Southwell",
+      "raceTime": "18:30",
+      "raceId": "a53f12ef-437c-4015-b2bb-ad6e01ebfef5",
+      "sourceId": "942401",
+      "raceName": "Download The Raceday Ready App Handicap",
+      "distanceGroup": "intermediate",
+      "handicapStatus": "handicap",
+      "fieldSize": 14,
+      "activeRunnerCount": 14,
+      "ratedRunnerCount": 13,
+      "ratingCoverage": 0.9285714285714286,
+      "ratingCoverageStatus": "eligible",
+      "ratingCoverageGuardVersion": "aw_d_rating_coverage_guard_v1",
+      "ratingCoverageGuardImplementedAt": "2026-09-30T00:00:00.000Z",
+      "ratingCoverageExclusionReason": null,
+      "awDRankEligible": true,
+      "awDVersion": "AW_D_V1",
+      "awAVersion": "AW_A_V1",
+      "recordedAt": "2026-10-08T04:44:14.361Z",
+      "recordedPreRace": true,
+      "rank1Agreement": false,
+      "zeroHistoryRunnerCount": 0,
+      "runners": [
+        {
+          "runnerId": "e5d1bab3-b7ad-47d1-8bc6-053ec4c79672",
+          "horseId": "5822f2da-7b3b-4fda-ad9b-4447918c942e",
+          "horseName": "Spirit Lead Me",
+          "priorAwStarts": 15,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": 2,
+            "trainerPriorStrikeRate": 2,
+            "jockeyPriorStrikeRate": 6
+          },
+          "awDScore": 3.3333333333333335,
+          "awDRank": 1,
+          "awAScore": 2,
+          "awARank": 2,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "867372ce-1a39-4f7a-9e5e-da72b61c50bd",
+          "horseId": "ed499f11-241d-42a5-ad5f-c7ce412ec435",
+          "horseName": "Ernie's Valentine",
+          "priorAwStarts": 32,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": 6,
+            "trainerPriorStrikeRate": 4,
+            "jockeyPriorStrikeRate": 5
+          },
+          "awDScore": 5,
+          "awDRank": 2,
+          "awAScore": 5,
+          "awARank": 3,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "f169ac8b-c970-4d11-bc14-2279c1d824c2",
+          "horseId": "d0f026eb-b68d-42fb-9c78-0b6eda1e1909",
+          "horseName": "Captain Cess",
+          "priorAwStarts": 1,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": null,
+            "trainerPriorStrikeRate": 8,
+            "jockeyPriorStrikeRate": 11
+          },
+          "awDScore": null,
+          "awDRank": null,
+          "awAScore": null,
+          "awARank": null,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "06e5f369-d211-4c0a-84ed-c9ab9e061bbe",
+          "horseId": "002a3b30-116b-4404-9e87-f1c424e3384a",
+          "horseName": "Volto Di Medusa",
+          "priorAwStarts": 14,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": 8,
+            "trainerPriorStrikeRate": 6,
+            "jockeyPriorStrikeRate": 1
+          },
+          "awDScore": 5,
+          "awDRank": 2,
+          "awAScore": 7,
+          "awARank": 7,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "85f2b205-db27-462b-a5d5-61998589844e",
+          "horseId": "d1de54e0-30c0-4730-b355-7973c725cee7",
+          "horseName": "Moon Beginnings",
+          "priorAwStarts": 5,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": 5,
+            "trainerPriorStrikeRate": 7,
+            "jockeyPriorStrikeRate": 8
+          },
+          "awDScore": 6.666666666666667,
+          "awDRank": 7,
+          "awAScore": 6,
+          "awARank": 4,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "64cdf7a7-7d5e-4cd7-b763-b12ba6488bf8",
+          "horseId": "f8ede869-d01f-4dee-bee7-7027be0bf19d",
+          "horseName": "Asian Journey",
+          "priorAwStarts": 11,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": 1,
+            "trainerPriorStrikeRate": 1,
+            "jockeyPriorStrikeRate": 13
+          },
+          "awDScore": 5,
+          "awDRank": 2,
+          "awAScore": 1,
+          "awARank": 1,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "8db8faa1-539a-432e-8b4b-ad63917da0f1",
+          "horseId": "21639e6e-fcdf-442e-9e7c-cddcc373d90a",
+          "horseName": "Union Island",
+          "priorAwStarts": 18,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": 12,
+            "trainerPriorStrikeRate": 5,
+            "jockeyPriorStrikeRate": 3
+          },
+          "awDScore": 6.666666666666667,
+          "awDRank": 7,
+          "awAScore": 8.5,
+          "awARank": 9,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "0c7f7e40-ce9a-49b8-a288-64de6f341290",
+          "horseId": "52b26099-b373-45f1-9e8e-069f2306e1ca",
+          "horseName": "Have You A Minute",
+          "priorAwStarts": 15,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": 4,
+            "trainerPriorStrikeRate": 9,
+            "jockeyPriorStrikeRate": 4
+          },
+          "awDScore": 5.666666666666667,
+          "awDRank": 5,
+          "awAScore": 6.5,
+          "awARank": 5,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "55e4d4d4-e48e-469d-bfc0-1aa3e39d1be4",
+          "horseId": "19dbf8d5-4aba-4ba7-919a-81fea20b8a34",
+          "horseName": "Shaw Park",
+          "priorAwStarts": 26,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": 9,
+            "trainerPriorStrikeRate": 11,
+            "jockeyPriorStrikeRate": 14
+          },
+          "awDScore": 11.333333333333334,
+          "awDRank": 13,
+          "awAScore": 10,
+          "awARank": 11,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "dd1698ad-b87c-4a24-9b6d-066fc777bf5d",
+          "horseId": "1685ee95-313e-45b7-ac17-6d122564c882",
+          "horseName": "Man Of Desert",
+          "priorAwStarts": 5,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": 13,
+            "trainerPriorStrikeRate": 3,
+            "jockeyPriorStrikeRate": 2
+          },
+          "awDScore": 6,
+          "awDRank": 6,
+          "awAScore": 8,
+          "awARank": 8,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "129e0cfc-ae1a-482c-a5ec-e8de01eb12ef",
+          "horseId": "76fe15e3-54fe-44c6-9cb8-25045b20bed8",
+          "horseName": "Big Alex Walmsley",
+          "priorAwStarts": 2,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": 3,
+            "trainerPriorStrikeRate": 10,
+            "jockeyPriorStrikeRate": 10
+          },
+          "awDScore": 7.666666666666667,
+          "awDRank": 9,
+          "awAScore": 6.5,
+          "awARank": 5,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "a3c3d23f-dc2b-4ddc-aaa0-8e11700f146a",
+          "horseId": "406ae24c-111e-4806-a3aa-c26582d67a5f",
+          "horseName": "Pretty Spirited",
+          "priorAwStarts": 5,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": 10,
+            "trainerPriorStrikeRate": 14,
+            "jockeyPriorStrikeRate": 9
+          },
+          "awDScore": 11,
+          "awDRank": 12,
+          "awAScore": 12,
+          "awARank": 13,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "81ba8a30-634c-4d38-9e0c-3aeffde2af1f",
+          "horseId": "1c5b09c1-604d-41fc-8380-2768ab530c40",
+          "horseName": "Enpassant",
+          "priorAwStarts": 30,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": 7,
+            "trainerPriorStrikeRate": 11,
+            "jockeyPriorStrikeRate": 12
+          },
+          "awDScore": 10,
+          "awDRank": 11,
+          "awAScore": 9,
+          "awARank": 10,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "877cd42d-aa24-443f-9bf7-b71c624e286d",
+          "horseId": "72fc0ef5-80fd-446e-8650-a92a847386f9",
+          "horseName": "King Of York",
+          "priorAwStarts": 37,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": 11,
+            "trainerPriorStrikeRate": 11,
+            "jockeyPriorStrikeRate": 7
+          },
+          "awDScore": 9.666666666666666,
+          "awDRank": 10,
+          "awAScore": 11,
+          "awARank": 12,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        }
+      ],
+      "winnerRunnerIds": [],
+      "settledAt": null
+    },
+    {
+      "raceDate": "2026-10-08",
+      "raceDateTime": "2026-10-08T19:00:00.000Z",
+      "course": "Southwell",
+      "raceTime": "19:00",
+      "raceId": "31d76439-b73b-4d7f-aad5-625798316292",
+      "sourceId": "942402",
+      "raceName": "Free Bets On attheraces.com EBF Restricted Maiden Stakes (GBB Race)",
+      "distanceGroup": "intermediate",
+      "handicapStatus": "non_handicap",
+      "fieldSize": 11,
+      "activeRunnerCount": 11,
+      "ratedRunnerCount": 4,
+      "ratingCoverage": 0.36363636363636365,
+      "ratingCoverageStatus": "eligible",
+      "ratingCoverageGuardVersion": "aw_d_rating_coverage_guard_v1",
+      "ratingCoverageGuardImplementedAt": "2026-09-30T00:00:00.000Z",
+      "ratingCoverageExclusionReason": null,
+      "awDRankEligible": true,
+      "awDVersion": "AW_D_V1",
+      "awAVersion": "AW_A_V1",
+      "recordedAt": "2026-10-08T04:44:14.361Z",
+      "recordedPreRace": true,
+      "rank1Agreement": false,
+      "zeroHistoryRunnerCount": 6,
+      "runners": [
+        {
+          "runnerId": "d310db35-b0e6-4866-9d0e-195ab59811c8",
+          "horseId": "2656e19e-9bcd-4828-be73-b4b0a0f3a4d0",
+          "horseName": "Dorigo",
+          "priorAwStarts": 1,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": null,
+            "trainerPriorStrikeRate": 8,
+            "jockeyPriorStrikeRate": 6
+          },
+          "awDScore": null,
+          "awDRank": null,
+          "awAScore": null,
+          "awARank": null,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "7ea42ab9-7a6a-4c94-89af-841ed2c68406",
+          "horseId": "cca91c25-c4c1-41d6-a47d-74cfdb56b182",
+          "horseName": "Cool King",
+          "priorAwStarts": 2,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": 3,
+            "trainerPriorStrikeRate": 5,
+            "jockeyPriorStrikeRate": 1
+          },
+          "awDScore": 3,
+          "awDRank": 1,
+          "awAScore": 4,
+          "awARank": 2,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "eee38e16-cb78-4518-b48b-11c3816e0e9f",
+          "horseId": "64ab50ea-1c83-45ad-9769-a8ecca98c9f3",
+          "horseName": "Edge of Desire",
+          "priorAwStarts": 0,
+          "zeroHistory": true,
+          "components": {
+            "averageAwSpeedLast3": null,
+            "trainerPriorStrikeRate": 4,
+            "jockeyPriorStrikeRate": 3
+          },
+          "awDScore": null,
+          "awDRank": null,
+          "awAScore": null,
+          "awARank": null,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "79e6e366-fb6a-4e5c-a1e8-0413d85c14e5",
+          "horseId": "84b6ade0-0b21-4692-8d8d-15f6e977cad5",
+          "horseName": "Dun Eideann",
+          "priorAwStarts": 3,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": 4,
+            "trainerPriorStrikeRate": 9,
+            "jockeyPriorStrikeRate": 4
+          },
+          "awDScore": 5.666666666666667,
+          "awDRank": 3,
+          "awAScore": 6.5,
+          "awARank": 4,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "2cba16e7-179e-4b3e-85c0-71c80bc652fe",
+          "horseId": "07dd45c1-220f-4f0d-bcd3-3b45933ef0e7",
+          "horseName": "Christmas Is Comin",
+          "priorAwStarts": 1,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": 1,
+            "trainerPriorStrikeRate": 10,
+            "jockeyPriorStrikeRate": 11
+          },
+          "awDScore": 7.333333333333333,
+          "awDRank": 4,
+          "awAScore": 5.5,
+          "awARank": 3,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "ce2e59ab-ef81-47fc-88d0-3e8ba64197c9",
+          "horseId": "6c8236a9-66ef-44c6-99ba-2305e647b825",
+          "horseName": "Eagle Storm",
+          "priorAwStarts": 1,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": 2,
+            "trainerPriorStrikeRate": 1,
+            "jockeyPriorStrikeRate": 9
+          },
+          "awDScore": 4,
+          "awDRank": 2,
+          "awAScore": 1.5,
+          "awARank": 1,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "a948d4ea-82a2-4064-ac90-3bb31f88d4c2",
+          "horseId": "35c271e6-be9d-4e12-b024-b3a95d96b8fb",
+          "horseName": "Maeveontime",
+          "priorAwStarts": 0,
+          "zeroHistory": true,
+          "components": {
+            "averageAwSpeedLast3": null,
+            "trainerPriorStrikeRate": 7,
+            "jockeyPriorStrikeRate": 2
+          },
+          "awDScore": null,
+          "awDRank": null,
+          "awAScore": null,
+          "awARank": null,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "0f373f5c-e95f-4983-9ae6-212dde4ec186",
+          "horseId": "c91ac96d-ba90-43b5-95fd-c925c7961708",
+          "horseName": "Inchi's Mooch",
+          "priorAwStarts": 0,
+          "zeroHistory": true,
+          "components": {
+            "averageAwSpeedLast3": null,
+            "trainerPriorStrikeRate": 3,
+            "jockeyPriorStrikeRate": 8
+          },
+          "awDScore": null,
+          "awDRank": null,
+          "awAScore": null,
+          "awARank": null,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "2cc0e8a5-987f-4474-9e13-b27f5add5a18",
+          "horseId": "bf102a80-b32f-4819-8bb6-3a2aefa0d41a",
+          "horseName": "Denver Sluice",
+          "priorAwStarts": 0,
+          "zeroHistory": true,
+          "components": {
+            "averageAwSpeedLast3": null,
+            "trainerPriorStrikeRate": 6,
+            "jockeyPriorStrikeRate": 7
+          },
+          "awDScore": null,
+          "awDRank": null,
+          "awAScore": null,
+          "awARank": null,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "9443b8e0-4cb0-420d-a09f-6bbdec80c1de",
+          "horseId": "a55f26de-2dcf-4db9-9e23-bd08f95c35c1",
+          "horseName": "Jaydee's Dream",
+          "priorAwStarts": 0,
+          "zeroHistory": true,
+          "components": {
+            "averageAwSpeedLast3": null,
+            "trainerPriorStrikeRate": 11,
+            "jockeyPriorStrikeRate": 5
+          },
+          "awDScore": null,
+          "awDRank": null,
+          "awAScore": null,
+          "awARank": null,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "910ea040-7f53-4a09-b784-2983371b02a8",
+          "horseId": "c0bf89e6-6544-470c-8269-fc2906b1334e",
+          "horseName": "Peacock's Way",
+          "priorAwStarts": 0,
+          "zeroHistory": true,
+          "components": {
+            "averageAwSpeedLast3": null,
+            "trainerPriorStrikeRate": 1,
+            "jockeyPriorStrikeRate": 10
+          },
+          "awDScore": null,
+          "awDRank": null,
+          "awAScore": null,
+          "awARank": null,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        }
+      ],
+      "winnerRunnerIds": [],
+      "settledAt": null
+    },
+    {
+      "raceDate": "2026-10-08",
+      "raceDateTime": "2026-10-08T19:30:00.000Z",
+      "course": "Southwell",
+      "raceTime": "19:30",
+      "raceId": "901dafd6-ffc1-4f96-84fd-c70a126e616f",
+      "sourceId": "942403",
+      "raceName": "Download The At The Races App Handicap",
+      "distanceGroup": "intermediate",
+      "handicapStatus": "handicap",
+      "fieldSize": 12,
+      "activeRunnerCount": 12,
+      "ratedRunnerCount": 9,
+      "ratingCoverage": 0.75,
+      "ratingCoverageStatus": "eligible",
+      "ratingCoverageGuardVersion": "aw_d_rating_coverage_guard_v1",
+      "ratingCoverageGuardImplementedAt": "2026-09-30T00:00:00.000Z",
+      "ratingCoverageExclusionReason": null,
+      "awDRankEligible": true,
+      "awDVersion": "AW_D_V1",
+      "awAVersion": "AW_A_V1",
+      "recordedAt": "2026-10-08T04:44:14.361Z",
+      "recordedPreRace": true,
+      "rank1Agreement": false,
+      "zeroHistoryRunnerCount": 1,
+      "runners": [
+        {
+          "runnerId": "43b935fb-84f9-45fe-ba37-e8fbfcd12b95",
+          "horseId": "1114f847-54a4-4658-970c-ab97c433d44d",
+          "horseName": "Nostrum",
+          "priorAwStarts": 1,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": 1,
+            "trainerPriorStrikeRate": 7,
+            "jockeyPriorStrikeRate": 3
+          },
+          "awDScore": 3.6666666666666665,
+          "awDRank": 1,
+          "awAScore": 4,
+          "awARank": 4,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "e768adb0-160f-4654-907e-f4a397e2deb9",
+          "horseId": "f04c37d4-847e-4dfe-90db-c789bba5cc8f",
+          "horseName": "Not That Guy",
+          "priorAwStarts": 1,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": 4,
+            "trainerPriorStrikeRate": 6,
+            "jockeyPriorStrikeRate": 2
+          },
+          "awDScore": 4,
+          "awDRank": 2,
+          "awAScore": 5,
+          "awARank": 6,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "c714e169-f31d-459f-9aac-4ca137bd5cca",
+          "horseId": "6c5c84a1-fd1e-4958-b027-52d8547c020a",
+          "horseName": "Billyb",
+          "priorAwStarts": 5,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": null,
+            "trainerPriorStrikeRate": 8,
+            "jockeyPriorStrikeRate": 1
+          },
+          "awDScore": null,
+          "awDRank": null,
+          "awAScore": null,
+          "awARank": null,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "858b917e-27d7-43e6-b937-01d8794778e5",
+          "horseId": "08467fc6-5b40-46e6-9474-88a16a992a33",
+          "horseName": "King Of Ithaca",
+          "priorAwStarts": 23,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": 6,
+            "trainerPriorStrikeRate": 1,
+            "jockeyPriorStrikeRate": 5
+          },
+          "awDScore": 4,
+          "awDRank": 2,
+          "awAScore": 3.5,
+          "awARank": 2,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "2934650a-03cd-481e-9cc1-56b718725c1c",
+          "horseId": "f1c71dd4-ef90-407a-8579-781af3b64dcb",
+          "horseName": "Elite Approach",
+          "priorAwStarts": 3,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": 9,
+            "trainerPriorStrikeRate": 12,
+            "jockeyPriorStrikeRate": 4
+          },
+          "awDScore": 8.333333333333334,
+          "awDRank": 8,
+          "awAScore": 10.5,
+          "awARank": 9,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "98142e10-4c1f-4c12-8474-d31dcfd03642",
+          "horseId": "e13fb06d-0531-4835-bbb6-15a81d4460a5",
+          "horseName": "Supreme Clarets",
+          "priorAwStarts": 0,
+          "zeroHistory": true,
+          "components": {
+            "averageAwSpeedLast3": null,
+            "trainerPriorStrikeRate": 9,
+            "jockeyPriorStrikeRate": 7
+          },
+          "awDScore": null,
+          "awDRank": null,
+          "awAScore": null,
+          "awARank": null,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "7d53f16b-04c7-4ad0-88d8-5d50d6db998f",
+          "horseId": "9e97f1aa-2805-4a46-9d9a-42067c7c1b0e",
+          "horseName": "Enacting",
+          "priorAwStarts": 3,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": 8,
+            "trainerPriorStrikeRate": 2,
+            "jockeyPriorStrikeRate": 10
+          },
+          "awDScore": 6.666666666666667,
+          "awDRank": 7,
+          "awAScore": 5,
+          "awARank": 6,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "ddbb9939-ba96-47b4-b76b-ea7a2963582e",
+          "horseId": "7042b895-bef3-4ea5-a8a3-68bddb5a4ef9",
+          "horseName": "Aisling Oscar",
+          "priorAwStarts": 22,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": 2,
+            "trainerPriorStrikeRate": 3,
+            "jockeyPriorStrikeRate": 9
+          },
+          "awDScore": 4.666666666666667,
+          "awDRank": 5,
+          "awAScore": 2.5,
+          "awARank": 1,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "d396ae13-9601-43a3-9dd7-d16c1326b4e7",
+          "horseId": "388b7d17-1f88-4b94-be0b-b4bc53613248",
+          "horseName": "Montezin",
+          "priorAwStarts": 4,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": null,
+            "trainerPriorStrikeRate": 11,
+            "jockeyPriorStrikeRate": 12
+          },
+          "awDScore": null,
+          "awDRank": null,
+          "awAScore": null,
+          "awARank": null,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "05bf0948-75fe-438f-bc51-0bef5c0b1cbb",
+          "horseId": "e9526195-884a-484d-9054-fb51d50fecb7",
+          "horseName": "Jersey Maverick",
+          "priorAwStarts": 8,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": 5,
+            "trainerPriorStrikeRate": 4,
+            "jockeyPriorStrikeRate": 8
+          },
+          "awDScore": 5.666666666666667,
+          "awDRank": 6,
+          "awAScore": 4.5,
+          "awARank": 5,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "93e4a4c2-c38b-4c76-8209-606ea2f14131",
+          "horseId": "e45e3fe9-c6bf-42f6-9d64-5f95bfac11a3",
+          "horseName": "War Howl",
+          "priorAwStarts": 6,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": 3,
+            "trainerPriorStrikeRate": 4,
+            "jockeyPriorStrikeRate": 6
+          },
+          "awDScore": 4.333333333333333,
+          "awDRank": 4,
+          "awAScore": 3.5,
+          "awARank": 2,
+          "finishingPosition": null,
+          "resultStatus": null,
+          "finalSp": null,
+          "settlement": null
+        },
+        {
+          "runnerId": "0f089ddb-6e2e-4d12-873c-1d097e37b954",
+          "horseId": "afc0a95d-f9f2-497a-92cd-dbdd421db550",
+          "horseName": "Prince Of Pillo",
+          "priorAwStarts": 12,
+          "zeroHistory": false,
+          "components": {
+            "averageAwSpeedLast3": 7,
+            "trainerPriorStrikeRate": 9,
+            "jockeyPriorStrikeRate": 11
+          },
+          "awDScore": 9,
+          "awDRank": 9,
+          "awAScore": 8,
+          "awARank": 8,
           "finishingPosition": null,
           "resultStatus": null,
           "finalSp": null,
