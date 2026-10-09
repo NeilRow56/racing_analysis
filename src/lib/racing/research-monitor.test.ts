@@ -120,7 +120,7 @@ test("weight shadow merges with Turf Tissue, preserves qualifying price and repo
   assert.match(dashboard.horses[0].signals[1].context, /Qualifying median 10.00/);
   data.observations = [{ ...row, outcome: { status: "settled", resultStatus: "finished", finishingPosition: 1,
     won: true, deadHeatDivisor: 1, finalSp: 6, qualifyingPriceProfitLoss: 9, finalSpProfitLoss: 5 }, settledAt: `${date}T13:05:00Z` }];
-  const monitor = buildResearchDashboard({ ...input, todaysRatingWeight: data }).monitors.at(-1)!;
+  const monitor = buildResearchDashboard({ ...input, todaysRatingWeight: data }).monitors.find((monitor) => monitor.name === RESEARCH_SIGNALS.todays_rating_weight.name)!;
   assert.equal(monitor.ae, 10); assert.equal(monitor.roi, 9); assert.equal(monitor.roiBasis, "qualifying_median");
   assert.equal(buildResearchDashboard({ ...input, todaysRatingWeight: data }).monitors[0].tracked, 1);
 });
@@ -177,9 +177,9 @@ test("empty states distinguish no imported racecards from no signals", () => {
 });
 
 test("category/status mappings include the separate weight shadow stream", () => {
-  assert.deepEqual(Object.values(RESEARCH_SIGNALS).map((signal) => signal.category), ["VALUE", "VALUE", "VALUE", "SHADOW", "SHADOW"]);
-  assert.equal(RESEARCH_STATUS.length, 8);
-  assert.deepEqual(buildResearchDashboard(inputs()).monitors.map((monitor) => monitor.status), ["FROZEN", "MONITORING", "MONITORING", "SHADOW", "SHADOW"]);
+  assert.deepEqual(Object.values(RESEARCH_SIGNALS).map((signal) => signal.category), ["VALUE", "VALUE", "VALUE", "SHADOW", "SHADOW", "DISAGREEMENT"]);
+  assert.equal(RESEARCH_STATUS.length, 9);
+  assert.deepEqual(buildResearchDashboard(inputs()).monitors.map((monitor) => monitor.status), ["FROZEN", "MONITORING", "MONITORING", "SHADOW", "SHADOW", "MONITORING"]);
 });
 
 test("price movement uses stored median snapshots without a forecast fallback", () => {

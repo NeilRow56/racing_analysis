@@ -18,6 +18,19 @@ import {
 } from "./todays-racing";
 
 describe("Today frozen rule matching", () => {
+  test("research matching preserves saved definitions and historical snapshots", () => {
+    const rules = [exampleFrozenRule({ ranks: [] }), savedRule("draft", "Draft research", exampleRule(), "draft")];
+    const before = structuredClone(rules);
+    const meeting = meetingWithRace(race(), [runner("research-match", { latestPerformanceRating: 100 })]);
+
+    const matched = attachFrozenRuleMatchesToToday([meeting], rules, "2026-09-11");
+    summarizeTodayFrozenRuleMatches(matched, 1);
+    buildTodayRuleSelections(matched);
+
+    assert.deepEqual(rules, before);
+    assert.equal(matched[0]?.races[0]?.runners[0]?.savedRuleMatches?.[0]?.ruleId, rules[0]?.id);
+  });
+
   test("matches frozen Jump subtype rules and keeps legacy Jump rules broad", () => {
     const hurdleRule = savedRule("hurdles", "Hurdles", {
       ...defaultResearchRule("jump"),

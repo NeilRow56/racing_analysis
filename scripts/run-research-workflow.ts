@@ -2,7 +2,7 @@ import { spawn } from "node:child_process";
 import { pathToFileURL } from "node:url";
 import { resolve } from "node:path";
 
-type WorkflowMode = "morning" | "after";
+type WorkflowMode = "night" | "morning" | "late" | "after";
 
 type WorkflowStep = {
   label: string;
@@ -29,18 +29,18 @@ export function parseArgs(args: string[], now = new Date()): { mode: WorkflowMod
   const modeValue = modeIndex >= 0 ? args[modeIndex + 1] : undefined;
 
   if (modeIndex < 0 || modeValue === undefined) {
-    throw new Error("Usage: run-research-workflow.ts --mode <morning|after> [YYYY-MM-DD]");
+    throw new Error("Usage: run-research-workflow.ts --mode <night|morning|late|after> [YYYY-MM-DD]");
   }
-  if (modeValue !== "morning" && modeValue !== "after") {
-    throw new Error(`Invalid mode "${modeValue}". Use "morning" or "after".`);
+  if (modeValue !== "night" && modeValue !== "morning" && modeValue !== "late" && modeValue !== "after") {
+    throw new Error(`Invalid mode "${modeValue}". Use "night", "morning", "late", or "after".`);
   }
 
   const positional = args.filter((_, index) => index !== modeIndex && index !== modeIndex + 1);
   if (positional.length > 1) {
-    throw new Error("Usage: run-research-workflow.ts --mode <morning|after> [YYYY-MM-DD]");
+    throw new Error("Usage: run-research-workflow.ts --mode <night|morning|late|after> [YYYY-MM-DD]");
   }
 
-  const date = positional[0] ?? localDateString(now);
+  const date = positional[0] ?? (modeValue === "night" ? nextLocalDateString(now) : localDateString(now));
   if (!isValidDate(date)) {
     throw new Error(`Invalid date "${date}". Use YYYY-MM-DD.`);
   }
@@ -49,6 +49,18 @@ export function parseArgs(args: string[], now = new Date()): { mode: WorkflowMod
 }
 
 export function workflowSteps(mode: WorkflowMode, date: string): WorkflowStep[] {
+  if (mode === "night") {
+    return [
+      { label: "Importing next-day racecards", script: "sl:import-racecards", args: [date, "--request-delay-seconds", "2"] },
+      { label: "Model disagreement night-before sync", script: "disagreement:night", args: [date] },
+    ];
+  }
+  if (mode === "late") {
+    return [
+      { label: "Refreshing racecards/prices", script: "sl:import-racecards", args: [date, "--request-delay-seconds", "2"] },
+      { label: "Model disagreement late-morning sync", script: "disagreement:late", args: [date] },
+    ];
+  }
   const importStep: WorkflowStep = mode === "morning"
     ? {
         label: "Importing racecards",
@@ -61,7 +73,7 @@ export function workflowSteps(mode: WorkflowMode, date: string): WorkflowStep[] 
         args: [date, "--request-delay-seconds", "2"],
       };
 
-  return [
+  const steps = [
     importStep,
     { label: "TPR sync", script: "tpr:sync", args: [date] },
     { label: "Tissue sync", script: "tissue:sync", args: [date] },
@@ -73,6 +85,9 @@ export function workflowSteps(mode: WorkflowMode, date: string): WorkflowStep[] 
     { label: "AW tissue sync", script: "aw-tissue:sync", args: [date] },
     { label: "AW shadow sync", script: "sync:aw-shadow", args: [date] },
   ];
+  return mode === "morning"
+    ? [...steps, { label: "Model disagreement morning sync", script: "disagreement:morning", args: [date] }]
+    : [...steps, { label: "Model disagreement final sync", script: "disagreement:sync", args: [date] }];
 }
 
 export async function runWorkflow(
@@ -112,6 +127,12 @@ export function runBunScript(step: WorkflowStep) {
 export function localDateString(date: Date) {
   const part = (value: number) => String(value).padStart(2, "0");
   return `${date.getFullYear()}-${part(date.getMonth() + 1)}-${part(date.getDate())}`;
+}
+
+export function nextLocalDateString(date: Date) {
+  const next = new Date(date);
+  next.setDate(next.getDate() + 1);
+  return localDateString(next);
 }
 
 export function isValidDate(value: string) {

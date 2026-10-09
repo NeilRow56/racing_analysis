@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SavedRuleResearchNote } from "../saved-rule-research-note";
 import { RESEARCH_SIGNALS, RESEARCH_STATUS, type ProspectiveMonitor, type ResearchDashboard } from "@/lib/racing/research-monitor";
 
 export function DailyResearchDashboard({ dashboard }: { dashboard: ResearchDashboard }) {
@@ -64,6 +65,12 @@ export function ResearchHistory() {
       <dl className="mt-3 grid gap-x-8 gap-y-2 text-xs md:grid-cols-2">
         {RESEARCH_STATUS.map(([name, status]) => <div className="flex flex-wrap justify-between gap-x-4 gap-y-1" key={name}><dt className="text-slate-700">{name}</dt><dd className="text-slate-500">{status}</dd></div>)}
       </dl>
+      <div className="mt-4">
+        <Link href="/racing/research#saved-rules" className="text-sm text-slate-600 hover:text-emerald-800 hover:underline">
+          Saved rule research
+        </Link>
+        <SavedRuleResearchNote />
+      </div>
     </section>
   );
 }

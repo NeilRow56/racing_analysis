@@ -6,10 +6,8 @@ import { parseResearchRule } from "@/lib/racing/research-rule";
 import { refreshEligibleTodaySelectionResults } from "@/lib/racing/today-result-refresh";
 import {
   attachFrozenRuleMatchesToToday,
-  buildTodayRuleSelections,
   summarizeTodayFrozenRuleMatches,
   type TodayFrozenRuleMatchSummary,
-  type TodayRuleSelections,
   type TodayTrainerCohortsByRule,
 } from "@/lib/racing/today-rule-matches";
 import { getTrainerCohortForRule, trainerCohortYearFromDate } from "@/lib/racing/trainer-cohorts";
@@ -58,6 +56,7 @@ import { syncAwTissueMeetings } from "@/lib/racing/aw-tissue-sync";
 import { attachAwTissueToMeetings } from "@/lib/racing/aw-tissue-forward";
 import { syncJumpTissueMeetings } from "@/lib/racing/jump-tissue-sync";
 import { attachJumpTissueToMeetings } from "@/lib/racing/jump-tissue-forward";
+import { SavedRuleResearchNote } from "../research/saved-rule-research-note";
 
 export const dynamic = "force-dynamic";
 
@@ -166,9 +165,8 @@ export default async function TodaysRacingPage({ searchParams }: PageProps) {
               ) : null}
             </div>
           </header>
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <FrozenRuleMatchSummary summary={matchSummary} />
-            <form action={refreshTodaySelectionResultsAction} className="mt-4 sm:mt-0">
+          <div className="mt-4 flex justify-end">
+            <form action={refreshTodaySelectionResultsAction}>
               <input name="raceDate" type="hidden" value={raceDate} />
               <RefreshResultsButton />
             </form>
@@ -184,6 +182,16 @@ export default async function TodaysRacingPage({ searchParams }: PageProps) {
               shadowSummary={shadowSummary}
             />
           )}
+          <details className="mt-8 border-t border-slate-200 py-4">
+            <summary className="cursor-pointer text-sm font-semibold">Details / research</summary>
+            <div className="mt-4">
+              <Link href="/racing/research#saved-rules" className="text-sm text-slate-600 hover:text-emerald-800 hover:underline">
+                Saved rule research
+              </Link>
+              <SavedRuleResearchNote />
+              <FrozenRuleMatchSummary summary={matchSummary} />
+            </div>
+          </details>
         </section>
       </main>
     );
@@ -224,7 +232,7 @@ function FrozenRuleMatchSummary({ summary }: { summary: TodayFrozenRuleMatchSumm
         <span> · Rule matches: {summary.ruleMatches}</span>
       ) : null}
       {summary.frozenRulesChecked === 0 ? (
-        <span className="ml-2 text-slate-500">Save and freeze a Research rule to enable Today matching.</span>
+        <span className="ml-2 text-slate-500">No frozen research rules.</span>
       ) : null}
     </div>
   );
@@ -237,8 +245,6 @@ function TodaysRacing({
   meetings: TodayMeeting[];
   shadowSummary: TurfPerformanceShadowSummary | null;
 }) {
-  const ruleSelections = buildTodayRuleSelections(meetings);
-
   return (
     <>
       <nav
@@ -285,82 +291,7 @@ function TodaysRacing({
           ))}
         </div>
       </TodaySpeedDisplay>
-      <TodayRuleSelectionsTable selections={ruleSelections} />
     </>
-  );
-}
-
-function TodayRuleSelectionsTable({ selections }: { selections: TodayRuleSelections }) {
-  return (
-    <section className="mt-10 border-t border-slate-300 pt-6">
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <h2 className="text-xl font-semibold tracking-normal">Today&apos;s rule selections</h2>
-          <p className="mt-1 text-sm text-slate-600">
-            Rule selections today: {selections.summary.selections}
-            {selections.summary.selections > 0 ? (
-              <>
-                {" "}· Settled: {selections.summary.settled} · Daily P/L:{" "}
-                {formatProfitLoss(selections.summary.profitLoss)}
-              </>
-            ) : null}
-          </p>
-        </div>
-      </div>
-
-      {selections.rows.length === 0 ? (
-        <p className="mt-4 text-sm text-slate-600">No frozen-rule selections today.</p>
-      ) : (
-        <div className="mt-4 overflow-x-auto">
-          <table className="w-full min-w-[880px] text-left text-sm">
-            <thead className="border-y border-slate-200 text-xs uppercase text-slate-500">
-              <tr>
-                <th className="py-2 pr-3 font-medium">Time</th>
-                <th className="py-2 pr-3 font-medium">Course</th>
-                <th className="py-2 pr-3 font-medium">Horse</th>
-                <th className="py-2 pr-3 font-medium">Rule</th>
-                <th className="py-2 pr-3 font-medium">Odds</th>
-                <th className="py-2 pr-3 font-medium">Result</th>
-                <th className="py-2 pr-3 font-medium">£1 P/L</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {selections.rows.map((selection) => (
-                <tr key={`${selection.raceId}:${selection.runnerId}`}>
-                  <td className="py-2 pr-3">{formatRaceTimeForDisplay(selection)}</td>
-                  <td className="py-2 pr-3">{selection.courseName}</td>
-                  <td className="py-2 pr-3">
-                    <Link
-                      className="font-medium text-emerald-800 hover:text-emerald-950 hover:underline"
-                      href={`/horses/${selection.horseId}`}
-                    >
-                      {selection.horseName}
-                    </Link>
-                    {selection.raceName ? (
-                      <div className="mt-0.5 max-w-xs truncate text-xs text-slate-500">
-                        {selection.raceName}
-                      </div>
-                    ) : null}
-                  </td>
-                  <td className="py-2 pr-3">
-                    <div className="max-w-xs text-slate-700">
-                      {selection.ruleNames.join("; ")}
-                    </div>
-                  </td>
-                  <td className="py-2 pr-3">{selection.odds ?? "-"}</td>
-                  <td className="py-2 pr-3">{selection.result}</td>
-                  <td className="py-2 pr-3">
-                    {selection.settlement
-                      ? formatProfitLoss(selection.settlement.profitLoss)
-                      : "—"}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-    </section>
   );
 }
 
@@ -816,7 +747,7 @@ function SavedRuleMatches({ matches }: { matches: NonNullable<TodayRunner["saved
         {matches.map((match) => (
           <div key={match.ruleId}>
             <div className="font-semibold text-slate-900">{match.ruleName}</div>
-            <div className="mt-1 font-medium text-amber-800">Development rule — not holdout validated</div>
+            <div className="mt-1 text-slate-600">Historical research only</div>
             <dl className="mt-1 grid grid-cols-2 gap-x-3 gap-y-1">
               <RuleEvidence label="Selections" value={match.development.selections} />
               <RuleEvidence label="Winners" value={match.development.winners} />
@@ -926,13 +857,6 @@ function formatPercent(value: number | null): string {
 function formatMoney(value: number | null): string {
   if (value === null) return "-";
   return value < 0 ? `-£${Math.abs(value).toFixed(2)}` : `£${value.toFixed(2)}`;
-}
-
-function formatProfitLoss(value: number): string {
-  if (value < 0) {
-    return `-£${Math.abs(value).toFixed(2)}`;
-  }
-  return `+£${value.toFixed(2)}`;
 }
 
 function formatCountry(value: string): string {

@@ -75,6 +75,7 @@ import {
 import { RuleStabilityPanel } from "./rule-stability-panel";
 import { SaveRuleSubmitButton } from "./save-rule-submit-button";
 import { SavedRuleActionForms } from "./saved-rule-actions-client";
+import { SavedRuleResearchNote } from "./saved-rule-research-note";
 import {
   LegacySettlementWarning,
   SettlementVersionBadge,
@@ -518,12 +519,10 @@ function ResearchResults({
 
 function SavedRulesSection({ savedRules }: { savedRules: SavedResearchRule[] }) {
   return (
-    <section className="mt-6 border border-slate-200 bg-white p-5 shadow-sm">
+    <section id="saved-rules" className="mt-6 scroll-mt-6 border border-slate-200 bg-white p-5 shadow-sm">
       <div className="mb-4">
         <h2 className="text-xl font-semibold">Saved research rules</h2>
-        <p className="mt-1 text-sm text-slate-600">
-          Frozen rules preserve their strategy definition for future holdout validation.
-        </p>
+        <SavedRuleResearchNote />
       </div>
       {savedRules.length === 0 ? (
         <div className="border border-dashed border-slate-300 bg-slate-50 p-4 text-sm text-slate-600">

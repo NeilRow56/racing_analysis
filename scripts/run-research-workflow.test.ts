@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, test } from "node:test";
 import {
   isValidDate,
   localDateString,
+  nextLocalDateString,
   parseArgs,
   runWorkflow,
   workflowSteps,
@@ -21,7 +22,7 @@ afterEach(() => {
   console.error = originalError;
 });
 
-function commandLinesFor(mode: "morning" | "after", date = "2026-10-09") {
+function commandLinesFor(mode: "night" | "morning" | "late" | "after", date = "2026-10-09") {
   return workflowSteps(mode, date).map((step) => [step.script, ...(step.args ?? [])].join(" "));
 }
 
@@ -46,6 +47,7 @@ describe("research workflow wrapper", () => {
       "aw-rating:sync 2026-10-09",
       "aw-tissue:sync 2026-10-09",
       "sync:aw-shadow 2026-10-09",
+      "disagreement:morning 2026-10-09",
     ]);
   });
 
@@ -69,6 +71,30 @@ describe("research workflow wrapper", () => {
       "aw-rating:sync 2026-10-09",
       "aw-tissue:sync 2026-10-09",
       "sync:aw-shadow 2026-10-09",
+      "disagreement:sync 2026-10-09",
+    ]);
+  });
+
+  test("runs the night workflow for tomorrow with only next-day card capture", () => {
+    assert.deepEqual(parseArgs(["--mode", "night"], new Date(2026, 9, 9, 20)), {
+      mode: "night",
+      date: "2026-10-10",
+    });
+    assert.deepEqual(commandLinesFor("night", "2026-10-10"), [
+      "sl:import-racecards 2026-10-10 --request-delay-seconds 2",
+      "disagreement:night 2026-10-10",
+    ]);
+    assert.equal(nextLocalDateString(new Date(2026, 11, 31)), "2027-01-01");
+  });
+
+  test("runs the late workflow for today with only price refresh capture", () => {
+    assert.deepEqual(parseArgs(["--mode", "late"], new Date(2026, 9, 9, 11)), {
+      mode: "late",
+      date: "2026-10-09",
+    });
+    assert.deepEqual(commandLinesFor("late"), [
+      "sl:import-racecards 2026-10-09 --request-delay-seconds 2",
+      "disagreement:late 2026-10-09",
     ]);
   });
 

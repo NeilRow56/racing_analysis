@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { describe, test } from "node:test";
 import { renderToStaticMarkup } from "react-dom/server";
 import {
@@ -32,6 +33,7 @@ import {
   removeSelectedId,
 } from "./research-form-client";
 import { ResearchHorseNameLink } from "./research-horse-link";
+import { SavedRuleResearchNote } from "./saved-rule-research-note";
 import {
   isSaveRuleSubmitDisabled,
   saveRuleSubmitButtonLabel,
@@ -55,6 +57,19 @@ import {
 } from "./price-filter-version-display";
 
 describe("research filters page", () => {
+  test("retains the saved-rule research destination and labels its evidence", () => {
+    const source = readFileSync(new URL("./page.tsx", import.meta.url), "utf8");
+    assert.match(source, /id="saved-rules"/);
+    assert.match(source, /<SavedRulesSection savedRules=\{savedRules\}/);
+    assert.match(source, /<SavedRuleResearchNote \/>/);
+    assert.match(source, /<SavedRuleDetails rule=\{rule\}/);
+    assert.match(source, /<SavedRuleActions rule=\{rule\}/);
+    const html = renderToStaticMarkup(SavedRuleResearchNote());
+    assert.match(html, /Saved rules are retained for historical research/);
+    assert.match(html, /not shown replicated outperformance against SP market expectation/);
+    assert.doesNotMatch(html, /betting selections|lay signal|anti-selection/i);
+  });
+
   test("renders paired calendar month controls and stores only complete ranges", () => {
     const text = renderResearchForm({
       ...defaultResearchRule("jump"),

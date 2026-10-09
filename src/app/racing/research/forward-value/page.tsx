@@ -41,6 +41,7 @@ import { cleanJumpTissueRace, loadJumpTissueForward, type JumpTissueForwardData,
 import type { SportingLifeBookmakerQuote } from "@/lib/racing/todays-racing";
 import { loadJumpG4Forward } from "@/lib/racing/jump-g4-forward";
 import { loadTodaysRatingWeightForward } from "@/lib/racing/todays-rating-weight-forward";
+import { loadModelDisagreementForward } from "@/lib/racing/model-disagreement-forward";
 import { buildResearchDashboard } from "@/lib/racing/research-monitor";
 import { DailyResearchDashboard, ResearchHistory } from "./research-dashboard";
 
@@ -52,13 +53,14 @@ type PageProps = {
 
 export default async function ForwardValuePage({ searchParams }: PageProps) {
   const raceDate = getLocalRacingDate();
-  const [data, tissueData, awTissueData, jumpTissueData, g4Data, weightData, params] = await Promise.all([
+  const [data, tissueData, awTissueData, jumpTissueData, g4Data, weightData, modelDisagreementData, params] = await Promise.all([
     loadForwardValueData(),
     loadTissueForward(TISSUE_V2_CONFIG.forwardPath, TISSUE_V2_CONFIG),
     loadAwTissueForward(),
     loadJumpTissueForward(),
     loadJumpG4Forward(),
     loadTodaysRatingWeightForward(),
+    loadModelDisagreementForward(),
     searchParams,
   ]);
   const connection = createDbConnection();
@@ -76,7 +78,7 @@ export default async function ForwardValuePage({ searchParams }: PageProps) {
     await connection.client.end();
   }
   const reportingScope = buildForwardValueReportingScope(data.races, currentCardStatuses);
-  const dashboard = buildResearchDashboard({ date: raceDate, prices: currentPrices, turf: tissueData, jump: jumpTissueData, aw: awTissueData, g4: g4Data, todaysRatingWeight: weightData, ratings: reportingScope.analyticalRecords });
+  const dashboard = buildResearchDashboard({ date: raceDate, prices: currentPrices, turf: tissueData, jump: jumpTissueData, aw: awTissueData, g4: g4Data, todaysRatingWeight: weightData, modelDisagreement: modelDisagreementData, ratings: reportingScope.analyticalRecords });
   const filters = parseFilters(params);
   const summary = summarizeForwardValue(data, reportingScope);
   const disagreementDiagnostics = buildTurfModelDisagreementDiagnostics(reportingScope.analyticalRecords, tissueData).slice(0, 25);

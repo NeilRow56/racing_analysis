@@ -112,6 +112,22 @@ describe("Today race status label", () => {
 });
 
 describe("Today request orchestration", () => {
+  test("retires the combined saved-rule list and keeps research access secondary", () => {
+    const source = readFileSync(new URL("./page.tsx", import.meta.url), "utf8");
+
+    assert.doesNotMatch(source, /TodayRuleSelectionsTable|buildTodayRuleSelections|rule selections/i);
+    assert.doesNotMatch(source, /Save and freeze a Research rule to enable Today matching/);
+    const details = source.slice(source.indexOf('<details className="mt-8'), source.indexOf("</details>"));
+    assert.match(details, /Details \/ research/);
+    assert.match(details, /href="\/racing\/research#saved-rules"/);
+    assert.match(details, /Saved rule research/);
+    assert.match(details, /<SavedRuleResearchNote \/>/);
+    assert.match(details, /<FrozenRuleMatchSummary summary=\{matchSummary\}/);
+    assert.doesNotMatch(details, /\bopen[\s=>]/);
+    assert.equal(source.match(/<FrozenRuleMatchSummary\b/g)?.length, 1);
+    assert.match(source, /attachFrozenRuleMatchesToToday\(/);
+  });
+
   test("renders the frozen JPR-A diagnostic for Jump runners only", () => {
     const source = readFileSync(new URL("./page.tsx", import.meta.url), "utf8");
     assert.match(source, /JPR-A diag\./);
@@ -169,7 +185,8 @@ describe("Today request orchestration", () => {
       assert.match(source, new RegExp(heading));
     }
     assert.match(source, /px-1\.5 py-2/);
-    assert.match(source, /formatTodayTprRankGap\(rating\.rank, rating\.gap\)/);
+    const tprDisplay = readFileSync(new URL("./tpr-display.tsx", import.meta.url), "utf8");
+    assert.match(tprDisplay, /formatTodayTprRankGap\(rating\.rank, rating\.gap\)/);
   });
 
   test("labels bookmaker median, best price, and forecast provenance", () => {

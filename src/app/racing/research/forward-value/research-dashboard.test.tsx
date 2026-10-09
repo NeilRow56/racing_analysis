@@ -3,6 +3,32 @@ import { test } from "node:test";
 import { renderToStaticMarkup } from "react-dom/server";
 import { DailyResearchDashboard, ResearchHistory } from "./research-dashboard";
 import type { ResearchDashboard } from "@/lib/racing/research-monitor";
+import { RESEARCH_SIGNALS } from "@/lib/racing/research-monitor";
+
+test("primary monitor retains all prospective signal types without a saved-rule selection list", () => {
+  const dashboard: ResearchDashboard = {
+    date: "2026-10-09", emptyMessage: null, monitors: [],
+    horses: [{ raceId: "race", runnerId: "runner", horseId: "horse", horseName: "Prospective Horse",
+      course: "Teston", time: "14:00", sortTime: "", price: 8, priceSource: "imported_card",
+      signals: (Object.keys(RESEARCH_SIGNALS) as Array<keyof typeof RESEARCH_SIGNALS>).map(kind => ({
+        kind, reason: `${kind} qualification`, context: "Prospective observation", movement: null,
+      })),
+    }],
+  };
+  const html = renderToStaticMarkup(<DailyResearchDashboard dashboard={dashboard} />);
+  for (const signal of Object.values(RESEARCH_SIGNALS)) assert.ok(html.includes(signal.name.replaceAll("'", "&#x27;")));
+  assert.equal(html.match(/>VALUE</g)?.length, 3);
+  assert.equal(html.match(/>SHADOW</g)?.length, 2);
+  assert.doesNotMatch(html, /rule selections|Saved rule research|Saved rules are retained/i);
+});
+
+test("secondary research details link directly to historical saved rules", () => {
+  const html = renderToStaticMarkup(<ResearchHistory />);
+  assert.match(html, /href="\/racing\/research#saved-rules"/);
+  assert.match(html, />Saved rule research<\/a>/);
+  assert.match(html, /Saved rules are retained for historical research/);
+  assert.doesNotMatch(html, /rule selections/i);
+});
 
 test("daily display renders one multi-signal horse, both reasons and unavailable market", () => {
   const dashboard: ResearchDashboard = { date: "2026-10-09", emptyMessage: null, monitors: [], horses: [{ raceId: "race", runnerId: "runner", horseId: "horse", horseName: "Overlap Horse", course: "Teston", time: "14:00", sortTime: "", price: null, priceSource: null,
