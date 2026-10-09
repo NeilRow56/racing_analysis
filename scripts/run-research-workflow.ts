@@ -65,6 +65,7 @@ export function workflowSteps(mode: WorkflowMode, date: string): WorkflowStep[] 
     importStep,
     { label: "TPR sync", script: "tpr:sync", args: [date] },
     { label: "Tissue sync", script: "tissue:sync", args: [date] },
+    { label: "Today's Rating weight shadow sync", script: "todays-rating-weight:sync", args: [date] },
     { label: "Jump rating sync", script: "jump-rating:sync", args: [date] },
     { label: "Jump tissue sync", script: "jump-tissue:sync", args: [date] },
     { label: "Jump G4 sync", script: "jump-g4:sync", args: [date] },

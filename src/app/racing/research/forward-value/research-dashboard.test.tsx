@@ -52,3 +52,17 @@ test("monitor labels separate calibration, market A/E and stored-price ROI evide
   assert.match(html, /Final SP ROI/);
   assert.match(html, /10 of 10 settled have final SP returns/);
 });
+
+test("weight shadow displays market A/E and qualifying-median ROI without VALUE labelling", () => {
+  const dashboard: ResearchDashboard = { date: "2026-10-09", emptyMessage: null, horses: [{ raceId: "race", runnerId: "runner",
+    horseId: "horse", horseName: "Weight Horse", course: "York", time: "14:00", sortTime: "", price: 8, priceSource: "weight_capture",
+    signals: [{ kind: "todays_rating_weight", reason: "Today's Rating #1 · 8 lb lighter", context: "Qualifying median 8.00", movement: null }] }],
+    monitors: [{ name: "Today's Rating - Lighter Weight", status: "SHADOW", tracked: 2, settled: 1, winners: 1,
+      strike: 1, ae: 8, roi: 7, roiBasis: "qualifying_median", pricedSettled: 1, cohort: "Today's Rating #1 · 4+ lb lighter" }] };
+  const html = renderToStaticMarkup(<DailyResearchDashboard dashboard={dashboard} />);
+  assert.match(html, /SHADOW/);
+  assert.match(html, /Market A\/E/);
+  assert.match(html, /Qualifying median ROI/);
+  assert.match(html, /Weight shadow capture/);
+  assert.doesNotMatch(html, /VALUE|Actual \/ model expected|Final SP ROI/);
+});

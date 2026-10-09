@@ -98748,9 +98748,14 @@
       "raceDate": "2026-10-09",
       "course": "Newmarket",
       "raceTime": "12:15",
-      "winner": null,
-      "winnerSp": null,
-      "winners": [],
+      "winner": "Mussab",
+      "winnerSp": 9,
+      "winners": [
+        {
+          "horseName": "Mussab",
+          "decimalOdds": 9
+        }
+      ],
       "tprRank1": "Flann Sunna",
       "tprRank2": "This Moment",
       "tprRank1NonRunner": false,
@@ -99167,14 +99172,14 @@
       "awBestL3SpeedRank1": null,
       "awBestL3PerformanceRank1": null,
       "orRank1": "Carry The Flag",
-      "winnerOrRank": null,
+      "winnerOrRank": 3,
       "recordedAt": "2026-10-09T05:14:36.569Z",
       "recordedPreRace": true,
       "timewiseRecordedAt": "2026-10-09T05:14:36.569Z",
       "timewiseRecordedPreRace": true,
       "timewiseUpdatedAt": null,
-      "winnerWasTprRank1": null,
-      "winnerWasTprTop2": null,
+      "winnerWasTprRank1": false,
+      "winnerWasTprTop2": false,
       "winnerWasTimewiseRank1": null,
       "winnerWasTimewiseTop2": null,
       "rank1Agree": null,
@@ -99185,7 +99190,7 @@
       "tpr1AgreesWithOr1": false,
       "w50AgreesWithOr1": false,
       "timewise1AgreesWithOr1": null,
-      "winnerIsOr1": null
+      "winnerIsOr1": false
     },
     {
       "family": "turf",
@@ -99195,9 +99200,14 @@
       "raceDate": "2026-10-09",
       "course": "York",
       "raceTime": "12:30",
-      "winner": null,
-      "winnerSp": null,
-      "winners": [],
+      "winner": "Mr Swivell",
+      "winnerSp": 10,
+      "winners": [
+        {
+          "horseName": "Mr Swivell",
+          "decimalOdds": 10
+        }
+      ],
       "tprRank1": "Ozat",
       "tprRank2": "Beagle Bay",
       "tprRank1NonRunner": false,
@@ -99764,14 +99774,14 @@
       "awBestL3SpeedRank1": null,
       "awBestL3PerformanceRank1": null,
       "orRank1": "Power Fizz",
-      "winnerOrRank": null,
+      "winnerOrRank": 6,
       "recordedAt": "2026-10-09T05:14:36.569Z",
       "recordedPreRace": true,
       "timewiseRecordedAt": "2026-10-09T05:14:36.569Z",
       "timewiseRecordedPreRace": true,
       "timewiseUpdatedAt": null,
-      "winnerWasTprRank1": null,
-      "winnerWasTprTop2": null,
+      "winnerWasTprRank1": false,
+      "winnerWasTprTop2": false,
       "winnerWasTimewiseRank1": null,
       "winnerWasTimewiseTop2": null,
       "rank1Agree": null,
@@ -99782,7 +99792,7 @@
       "tpr1AgreesWithOr1": false,
       "w50AgreesWithOr1": false,
       "timewise1AgreesWithOr1": null,
-      "winnerIsOr1": null
+      "winnerIsOr1": false
     },
     {
       "family": "turf",

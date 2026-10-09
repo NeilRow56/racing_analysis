@@ -9,6 +9,7 @@ import { buildResearchDashboard, mergeResearchSignals, priceMovement, RESEARCH_S
 import { currentPositiveJumpTissueRankOneEdges } from "./jump-tissue-forward";
 import type { SportingLifeCurrentPrice } from "./todays-racing";
 import type { TissueForwardData, TissueForwardRace } from "./tissue-forward";
+import { emptyTodaysRatingWeightForward, type TodaysRatingWeightObservation } from "./todays-rating-weight-forward";
 
 const date = "2026-10-09";
 function inputs() {
@@ -97,6 +98,33 @@ test("Turf and AW use their existing rank-one positive-edge semantics", () => {
   assert.equal(buildResearchDashboard(input).horses.length, 0);
 });
 
+test("weight shadow merges with Turf Tissue, preserves qualifying price and reports separate market metrics", () => {
+  const input = inputs(); input.prices = [price()]; input.turf.races = [turfRace()];
+  const data = emptyTodaysRatingWeightForward();
+  const row: TodaysRatingWeightObservation = { raceId: "race", sourceId: null, runnerId: "runner", horseId: "horse", horseName: "Turf Horse",
+    raceDate: date, course: "Teston", scheduledOff: `${date}T13:00:00Z`, scheduledTime: "14:00", recordedAt: `${date}T12:00:00Z`,
+    recordedPreRace: true, ratingVersion: "todays_rating_v1", todaysRating: 102.4, latestSpeed: 94.4, bestL3Speed: 98, avgL3Speed: 93,
+    tpr: null, todayWeight: 125, priorRun: { runnerId: "prior", raceDateTime: "2026-08-30T12:00:00Z", weightCarriedLbs: 133, speed: 94.4 },
+    signedWeightChange: -8, weightBand: "8+ lb lighter", todaysRatingRank: 1, latestSpeedRank: 2, bestL3Rank: 2, tprRank: null,
+    latestSpeedLeaders: [], market: { qualifying: { capturedAt: `${date}T12:00:00Z`, priceCapturedAt: `${date}T12:00:00Z`,
+      source: "sporting_life_stored_bookmaker_median_at_capture_v1", marketPriceBasisVersion: FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION,
+      medianDecimal: 10, impliedProbability: .1, bookmakerQuoteCount: 2, bookmakerQuotes: [] }, later: [], finalStoredPreRace: null },
+    outcome: null, settledAt: null };
+  data.observations = [row];
+  const dashboard = buildResearchDashboard({ ...input, todaysRatingWeight: data });
+  assert.equal(dashboard.horses.length, 1);
+  assert.deepEqual(dashboard.horses[0].signals.map((signal) => signal.kind), ["turf_tissue", "todays_rating_weight"]);
+  assert.equal(dashboard.horses[0].price, 8);
+  assert.equal(RESEARCH_SIGNALS.todays_rating_weight.category, "SHADOW");
+  assert.match(dashboard.horses[0].signals[1].reason, /Today's Rating #1 · 8 lb lighter/);
+  assert.match(dashboard.horses[0].signals[1].context, /Qualifying median 10.00/);
+  data.observations = [{ ...row, outcome: { status: "settled", resultStatus: "finished", finishingPosition: 1,
+    won: true, deadHeatDivisor: 1, finalSp: 6, qualifyingPriceProfitLoss: 9, finalSpProfitLoss: 5 }, settledAt: `${date}T13:05:00Z` }];
+  const monitor = buildResearchDashboard({ ...input, todaysRatingWeight: data }).monitors.at(-1)!;
+  assert.equal(monitor.ae, 10); assert.equal(monitor.roi, 9); assert.equal(monitor.roiBasis, "qualifying_median");
+  assert.equal(buildResearchDashboard({ ...input, todaysRatingWeight: data }).monitors[0].tracked, 1);
+});
+
 function turfRace(): TissueForwardRace {
   return { raceId: "race", sourceId: null, raceDate: date, course: "Teston", raceTime: "14:00", raceName: null, tissueModelVersion: "tissue_model_v2", tissueModelChecksum: "frozen", recordedAt: `${date}T09:00:00Z`, recordedPreRace: true, settledAt: null, winners: [],
     runners: [{ runnerId: "runner", horseId: "horse", horseName: "Turf Horse", probability: .2, tissueRank: 1, fairDecimalOdds: 5, commentFeatures: [], finishingPosition: null, finalSp: null, marketImpliedProbability: null, marketRank: null }],
@@ -148,10 +176,10 @@ test("empty states distinguish no imported racecards from no signals", () => {
   assert.equal(buildResearchDashboard(input).emptyMessage, "No research signals today.");
 });
 
-test("category/status mappings expose the four real streams only", () => {
-  assert.deepEqual(Object.values(RESEARCH_SIGNALS).map((signal) => signal.category), ["VALUE", "VALUE", "VALUE", "SHADOW"]);
-  assert.equal(RESEARCH_STATUS.length, 7);
-  assert.deepEqual(buildResearchDashboard(inputs()).monitors.map((monitor) => monitor.status), ["FROZEN", "MONITORING", "MONITORING", "SHADOW"]);
+test("category/status mappings include the separate weight shadow stream", () => {
+  assert.deepEqual(Object.values(RESEARCH_SIGNALS).map((signal) => signal.category), ["VALUE", "VALUE", "VALUE", "SHADOW", "SHADOW"]);
+  assert.equal(RESEARCH_STATUS.length, 8);
+  assert.deepEqual(buildResearchDashboard(inputs()).monitors.map((monitor) => monitor.status), ["FROZEN", "MONITORING", "MONITORING", "SHADOW", "SHADOW"]);
 });
 
 test("price movement uses stored median snapshots without a forecast fallback", () => {

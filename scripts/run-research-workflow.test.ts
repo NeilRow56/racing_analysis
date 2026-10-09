@@ -39,6 +39,7 @@ describe("research workflow wrapper", () => {
       "sl:import-racecards 2026-10-09 --request-delay-seconds 2",
       "tpr:sync 2026-10-09",
       "tissue:sync 2026-10-09",
+      "todays-rating-weight:sync 2026-10-09",
       "jump-rating:sync 2026-10-09",
       "jump-tissue:sync 2026-10-09",
       "jump-g4:sync 2026-10-09",
@@ -61,6 +62,7 @@ describe("research workflow wrapper", () => {
       "sl:import-day 2026-10-09 --request-delay-seconds 2",
       "tpr:sync 2026-10-09",
       "tissue:sync 2026-10-09",
+      "todays-rating-weight:sync 2026-10-09",
       "jump-rating:sync 2026-10-09",
       "jump-tissue:sync 2026-10-09",
       "jump-g4:sync 2026-10-09",
@@ -114,6 +116,7 @@ describe("research workflow wrapper", () => {
       "sl:import-racecards",
       "tpr:sync",
       "tissue:sync",
+      "todays-rating-weight:sync",
       "jump-rating:sync",
       "jump-tissue:sync",
     ]);

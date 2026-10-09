@@ -40,7 +40,7 @@ export function DailyResearchDashboard({ dashboard }: { dashboard: ResearchDashb
     </section>
     <section className="mt-6 border-t border-slate-200 pt-6" aria-labelledby="monitors-heading">
       <h2 className="text-lg font-semibold" id="monitors-heading">Prospective monitors</h2>
-      <div className="mt-3 grid gap-3 sm:grid-cols-2 2xl:grid-cols-4">
+      <div className="mt-3 grid gap-3 sm:grid-cols-2 2xl:grid-cols-5">
         {dashboard.monitors.map((monitor) => <article className="min-w-0 rounded border border-slate-200 bg-white p-4" key={monitor.name}>
           <div className="flex flex-wrap items-center justify-between gap-2"><h3 className="text-sm font-semibold">{monitor.name}</h3><span className="text-[10px] font-semibold text-slate-500">{monitor.status}</span></div>
           <p className="mt-2 text-xs text-slate-500">{monitor.cohort}</p>
@@ -68,24 +68,28 @@ export function ResearchHistory() {
   );
 }
 function pct(value: number | null) { return value === null ? "—" : `${(value * 100).toFixed(1)}%`; }
-function aeLabel(monitor: ProspectiveMonitor) { return monitor.roiBasis === "final_sp" ? "Market A/E" : "Actual / model expected"; }
+function aeLabel(monitor: ProspectiveMonitor) { return monitor.roiBasis === "median" ? "Actual / model expected" : "Market A/E"; }
 function aeValue(monitor: ProspectiveMonitor) {
   if (monitor.settled === 0) return "Awaiting results";
   return monitor.ae === null ? "Unavailable" : monitor.ae.toFixed(2);
 }
-function roiLabel(monitor: ProspectiveMonitor) { return monitor.roiBasis === "final_sp" ? "Final SP ROI" : "Stored median ROI"; }
+function roiLabel(monitor: ProspectiveMonitor) {
+  return monitor.roiBasis === "final_sp" ? "Final SP ROI" : monitor.roiBasis === "qualifying_median" ? "Qualifying median ROI" : "Stored median ROI";
+}
 function roiValue(monitor: ProspectiveMonitor) {
   if (monitor.roi !== null) return pct(monitor.roi);
   if (monitor.settled === 0) return "Awaiting returns";
-  return monitor.roiBasis === "median" ? "Insufficient stored-price evidence" : "Unavailable";
+  return monitor.roiBasis !== "final_sp" ? "Insufficient stored-price evidence" : "Unavailable";
 }
-function priceSourceLabel(source: "imported_card" | "stored_snapshot" | "g4_capture") {
+function priceSourceLabel(source: "imported_card" | "stored_snapshot" | "g4_capture" | "weight_capture") {
   if (source === "imported_card") return "Latest imported card";
   if (source === "stored_snapshot") return "Stored qualification price";
+  if (source === "weight_capture") return "Weight shadow capture";
   return "G4 capture";
 }
 function evidenceText(monitor: ProspectiveMonitor) {
   const sample = monitor.settled < 30 ? "Early sample" : "Prospective evidence";
   if (monitor.roiBasis === "final_sp") return `${sample} · ${monitor.pricedSettled} of ${monitor.settled} settled have final SP returns.`;
+  if (monitor.roiBasis === "qualifying_median") return `${sample} · ${monitor.pricedSettled} of ${monitor.settled} settled have qualifying median returns.`;
   return `${sample} · ${monitor.pricedSettled} of ${monitor.settled} settled have stored median returns; ROI needs stored prospective market prices.`;
 }

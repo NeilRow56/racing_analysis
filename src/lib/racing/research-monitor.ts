@@ -4,20 +4,23 @@ import { FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION, type ForwardValuePriceSnapsho
 import { summarizeJumpG4Forward, type JumpG4ForwardData } from "./jump-g4-forward";
 import { currentPositiveTurfTissueRankOneEdges, type TissueForwardData } from "./tissue-forward";
 import { formatRaceTimeForDisplay, type SportingLifeCurrentPrice } from "./todays-racing";
+import { emptyTodaysRatingWeightForward, summarizeTodaysRatingWeight, type TodaysRatingWeightForwardData } from "./todays-rating-weight-forward";
 
-export type ResearchSignalKind = "turf_tissue" | "jump_tissue" | "aw_tissue" | "jump_g4";
+export type ResearchSignalKind = "turf_tissue" | "jump_tissue" | "aw_tissue" | "jump_g4" | "todays_rating_weight";
 export type ResearchSignalCategory = "VALUE" | "SHADOW" | "DISAGREEMENT";
 export const RESEARCH_SIGNALS: Record<ResearchSignalKind, { name: string; category: ResearchSignalCategory }> = {
   turf_tissue: { name: "Turf Tissue", category: "VALUE" },
   jump_tissue: { name: "Jump Tissue", category: "VALUE" },
   aw_tissue: { name: "AW Tissue", category: "VALUE" },
   jump_g4: { name: "Jump G4", category: "SHADOW" },
+  todays_rating_weight: { name: "Today's Rating - Lighter Weight", category: "SHADOW" },
 };
 export const RESEARCH_STATUS = [
   ["Turf Tissue", "Frozen — prospective monitoring"],
   ["Jump Tissue", "Frozen model — prospective monitoring"],
   ["AW Tissue", "Frozen model — prospective monitoring"],
   ["Jump G4", "New prospective shadow"],
+  ["Today's Rating - Lighter Weight", "New prospective shadow"],
   ["Historical Jump trainer form", "Closed — weak / unstable"],
   ["AW feature expansion", "Closed — no replicated improvement"],
   ["Residual models", "Closed — weak / unstable"],
@@ -26,12 +29,12 @@ export const RESEARCH_STATUS = [
 export type ResearchSignal = { kind: ResearchSignalKind; reason: string; context: string; movement: string | null };
 export type DailyResearchHorse = {
   raceId: string; runnerId: string; horseId: string; horseName: string; course: string;
-  time: string; sortTime: string; price: number | null; priceSource: "imported_card" | "stored_snapshot" | "g4_capture" | null; signals: ResearchSignal[];
+  time: string; sortTime: string; price: number | null; priceSource: "imported_card" | "stored_snapshot" | "g4_capture" | "weight_capture" | null; signals: ResearchSignal[];
 };
 export type ProspectiveMonitor = {
   name: string; status: "FROZEN" | "MONITORING" | "SHADOW";
   tracked: number; settled: number; winners: number; strike: number | null;
-  ae: number | null; roi: number | null; roiBasis: "median" | "final_sp"; pricedSettled: number; cohort: string;
+  ae: number | null; roi: number | null; roiBasis: "median" | "final_sp" | "qualifying_median"; pricedSettled: number; cohort: string;
 };
 export type ResearchDashboard = { date: string; horses: DailyResearchHorse[]; emptyMessage: string | null; monitors: ProspectiveMonitor[] };
 
@@ -56,8 +59,10 @@ export function buildResearchDashboard(input: {
   date: string; prices: SportingLifeCurrentPrice[]; turf: TissueForwardData;
   jump: JumpTissueForwardData; aw: AwTissueForwardData; g4: JumpG4ForwardData;
   ratings: ForwardValueRecord[];
+  todaysRatingWeight?: TodaysRatingWeightForwardData;
 }): ResearchDashboard {
   const { date, prices, turf, jump, aw, g4, ratings } = input;
+  const weightData = input.todaysRatingWeight ?? emptyTodaysRatingWeightForward();
   const current = new Set(prices.map((row) => `${row.raceId}|${row.runnerId}`));
   const rows: DailyResearchHorse[] = [];
   const addTissue = (kind: ResearchSignalKind, race: { raceId: string; course: string }, runner: { runnerId: string; horseId: string; horseName: string }, probability: number, price: SportingLifeCurrentPrice, edge: number, off: string, movement: string, qualification?: { stage: string; capturedAt: string; latestPrice: SportingLifeCurrentPrice | null }) => {
@@ -100,9 +105,24 @@ export function buildResearchDashboard(input: {
         ].join(" · "), movement: null }],
     });
   }
+  for (const row of weightData.observations.filter((row) => row.raceDate === date && row.recordedPreRace &&
+    row.recordedAt >= weightData.epoch && row.recordedAt < row.scheduledOff && row.outcome?.status !== "void" && current.has(`${row.raceId}|${row.runnerId}`))) {
+    const latest = prices.find((price) => price.raceId === row.raceId && price.runnerId === row.runnerId);
+    const stored = row.market.finalStoredPreRace?.medianDecimal ?? row.market.qualifying.medianDecimal;
+    const imported = latest?.bookmakerQuoteCount && latest.marketDecimalOdds !== null ? latest.marketDecimalOdds : null;
+    rows.push({ raceId: row.raceId, runnerId: row.runnerId, horseId: row.horseId, horseName: row.horseName, course: row.course,
+      time: formatRaceTimeForDisplay({ raceDateTime: new Date(row.scheduledOff), scheduledTime: row.scheduledTime }), sortTime: row.scheduledOff,
+      price: imported ?? stored, priceSource: imported !== null ? "imported_card" : stored === null ? null : "weight_capture",
+      signals: [{ kind: "todays_rating_weight", reason: `Today's Rating #1 · ${-row.signedWeightChange} lb lighter`,
+        context: [`Latest Speed ${rank(row.latestSpeedRank)}`, `Best L3 ${rank(row.bestL3Rank)}`,
+          row.market.qualifying.medianDecimal === null ? "Qualifying market unavailable" : `Qualifying median ${row.market.qualifying.medianDecimal.toFixed(2)}`].join(" · "),
+        movement: row.market.later.length && row.market.qualifying.medianDecimal !== null && stored !== null
+          ? `Qualifying ${row.market.qualifying.medianDecimal.toFixed(2)} → last stored pre-race ${stored.toFixed(2)}` : null }],
+    });
+  }
   const horses = mergeResearchSignals(rows);
   return { date, horses, emptyMessage: prices.length === 0 ? `No racecards imported for ${date}.` : horses.length === 0 ? "No research signals today." : null,
-    monitors: buildProspectiveMonitors(turf, jump, aw, g4) };
+    monitors: buildProspectiveMonitors(turf, jump, aw, g4, weightData) };
 }
 
 export function priceMovement(prices: { early?: ForwardValuePriceSnapshot | null; t180?: ForwardValuePriceSnapshot | null; t60?: ForwardValuePriceSnapshot | null }): string {
@@ -114,7 +134,7 @@ function medianSnapshot(snapshot: ForwardValuePriceSnapshot | null | undefined) 
   return snapshot?.marketPriceBasisVersion === FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION && (snapshot.bookmakerQuoteCount ?? 0) > 0 ? snapshot : null;
 }
 
-function buildProspectiveMonitors(turf: TissueForwardData, jump: JumpTissueForwardData, aw: AwTissueForwardData, g4: JumpG4ForwardData): ProspectiveMonitor[] {
+function buildProspectiveMonitors(turf: TissueForwardData, jump: JumpTissueForwardData, aw: AwTissueForwardData, g4: JumpG4ForwardData, weightData: TodaysRatingWeightForwardData): ProspectiveMonitor[] {
   const turfRows = turf.races.filter((race) => race.recordedPreRace === true).flatMap((race) => {
     const leader = race.runners.find((runner) => runner.tissueRank === 1);
     return leader ? [{ won: race.winners.length ? race.winners.includes(leader.horseName) : null, probability: leader.probability, profit: null }] : [];
@@ -125,10 +145,14 @@ function buildProspectiveMonitors(turf: TissueForwardData, jump: JumpTissueForwa
     return leader ? [{ won: leader.outcome?.won ?? null, probability: leader.probability, profit: stage ? race.selectedPriceProfitLoss[stage] : null }] : [];
   }), "Clean rank-one model observations");
   const g4Summary = summarizeJumpG4Forward(g4);
+  const weight = summarizeTodaysRatingWeight(weightData.observations);
   return [summarizeMonitor("Turf Tissue", "FROZEN", turfRows, "Clean rank-one model observations"),
     tissueMonitor("Jump Tissue", jump.races.filter(cleanJumpTissueRace)), tissueMonitor("AW Tissue", aw.races.filter(cleanAwTissueRace)),
     { name: "Jump G4", status: "SHADOW", tracked: g4Summary.tracked, settled: g4Summary.settled, winners: g4Summary.winners, strike: g4Summary.strike,
-      ae: g4Summary.ae, roi: g4Summary.roi, roiBasis: "final_sp", pricedSettled: g4.observations.filter((row) => row.outcome?.won != null && row.outcome.profitLoss != null).length, cohort: "Prospective G4 qualifiers" }];
+      ae: g4Summary.ae, roi: g4Summary.roi, roiBasis: "final_sp", pricedSettled: g4.observations.filter((row) => row.outcome?.won != null && row.outcome.profitLoss != null).length, cohort: "Prospective G4 qualifiers" },
+    { name: RESEARCH_SIGNALS.todays_rating_weight.name, status: "SHADOW", tracked: weight.tracked, settled: weight.settled,
+      winners: weight.winners, strike: weight.strike, ae: weight.ae, roi: weight.roi, roiBasis: "qualifying_median",
+      pricedSettled: weight.pricedSettled, cohort: "Today's Rating #1 · 4+ lb lighter" }];
 }
 function summarizeMonitor(name: string, status: ProspectiveMonitor["status"], rows: Array<{ won: boolean | null; probability: number | null; profit: number | null }>, cohort: string): ProspectiveMonitor {
   const settled = rows.filter((row) => row.won !== null);
