@@ -19,18 +19,19 @@ function price(runnerId = "runner", odds: number | null = 8): SportingLifeCurren
   return { raceId: "race", runnerId, marketPrice: odds === null ? null : String(odds), marketDecimalOdds: odds, bookmakerQuoteCount: odds === null ? 0 : 2, forecastPrice: "99/1", forecastDecimalOdds: 100, displayRaceTime: "14:00" };
 }
 function jumpRace(): JumpTissueRace {
+  const probability = .2;
   return { raceId: "race", sourceId: null, raceName: "Test Hurdle", subtype: "Hurdle", nhFlat: false, fieldSize: 2,
     modelVersion: JUMP_TISSUE_VERSION, featureSchemaVersion: JUMP_TISSUE_SCHEMA, modelHash: "frozen",
     marketPriceBasisVersion: FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION, priceSnapshotScheduleVersion: FORWARD_VALUE_PRICE_SNAPSHOT_SCHEDULE_VERSION,
     top2: ["runner"], top3: ["runner"], jprALeader: null, jprBLeader: null,
     raceDate: date, course: "Teston", scheduledTime: "13:00", scheduledOffAt: `${date}T13:00:00Z`, currentOffAt: `${date}T13:00:00Z`, recordedAt: `${date}T09:00:00Z`, recordedPreRace: true,
     excludedReason: null, predictedRunnerCount: 2, activeRunnerCount: 2, predictionCoverage: 1, settledAt: null, top1: "runner", winners: [],
-    runners: [{ runnerId: "runner", horseId: "horse", horseName: "Overlap Horse", rank: 1, probability: .2, outcome: null,
+    runners: [{ runnerId: "runner", horseId: "horse", horseName: "Overlap Horse", rank: 1, probability, outcome: null,
       predictionAvailable: true, unavailableReason: null, rawInputs: [], modelInputs: [], modelVersion: JUMP_TISSUE_VERSION, featureSchemaVersion: JUMP_TISSUE_SCHEMA,
       priorJumpStarts: 2, historyBucket: "two", zeroPriorJumpStarts: false, onePriorJumpStart: false, twoPriorJumpStarts: true, threePlusPriorJumpStarts: false,
       commentProvenance: { representationVersion: JUMP_TISSUE_SCHEMA, sourceObservationCutoff: null, priorCommentCount: 0, activeCommentFeatures: [], chronologySafe: true, targetRacePostResultCommentExcluded: true },
     }],
-    prices: { early: null, t180: null, t60: null }, selectedPriceProfitLoss: { early: null, t180: null, t60: null, bestEarly: null, finalSp: null },
+    prices: { early: snapshot(8, probability), t180: null, t60: null }, selectedPriceProfitLoss: { early: null, t180: null, t60: null, bestEarly: null, finalSp: null },
   };
 }
 function g4(): JumpG4Observation {
@@ -47,6 +48,7 @@ test("merges actual Jump Tissue and G4 signals into one horse with both reasons"
   assert.equal(dashboard.horses.length, 1);
   assert.deepEqual(dashboard.horses[0].signals.map((signal) => signal.kind), ["jump_tissue", "jump_g4"]);
   assert.match(dashboard.horses[0].signals[0].reason, /Tissue 20.0% · market 12.5% · \+7.5pp/);
+  assert.match(dashboard.horses[0].signals[0].context, /qualified at 8\.00 EARLY/);
   assert.match(dashboard.horses[0].signals[1].reason, /Avg L3 #2 · class drop 4→5 · latest speed 118 > 109/);
   assert.equal(dashboard.horses[0].price, 8);
   assert.equal(dashboard.horses[0].priceSource, "imported_card");
@@ -67,7 +69,7 @@ test("overlap preserves the displayed price source and the separate G4 captured 
 });
 
 test("G4 stays visible without bookmaker price and forecasts never qualify Tissue value", () => {
-  const input = inputs(); input.prices = [price("runner", null)]; input.jump.races = [jumpRace()]; input.g4.observations = [g4()];
+  const input = inputs(); input.prices = [price("runner", null)]; input.jump.races = [{ ...jumpRace(), prices: { early: null, t180: null, t60: null } }]; input.g4.observations = [g4()];
   const dashboard = buildResearchDashboard(input);
   assert.equal(dashboard.horses.length, 1);
   assert.deepEqual(dashboard.horses[0].signals.map((signal) => signal.kind), ["jump_g4"]);
@@ -77,7 +79,7 @@ test("G4 stays visible without bookmaker price and forecasts never qualify Tissu
 
 test("Tissue rank-one positive-edge qualification matches the existing helper at boundaries", () => {
   for (const odds of [2, 5, 5.01, 8, null]) {
-    const input = inputs(); input.prices = [price("runner", odds)]; input.jump.races = [jumpRace()];
+    const input = inputs(); input.prices = [price("runner", odds)]; input.jump.races = [{ ...jumpRace(), prices: { early: odds === null ? null : snapshot(odds, .2), t180: null, t60: null } }];
     assert.equal(buildResearchDashboard(input).horses.length, currentPositiveJumpTissueRankOneEdges(input.jump.races, input.prices).selections.length);
   }
   const input = inputs(); input.prices = [price()]; input.jump.races = [{ ...jumpRace(), recordedPreRace: false }];
@@ -98,6 +100,28 @@ test("Turf and AW use their existing rank-one positive-edge semantics", () => {
 function turfRace(): TissueForwardRace {
   return { raceId: "race", sourceId: null, raceDate: date, course: "Teston", raceTime: "14:00", raceName: null, tissueModelVersion: "tissue_model_v2", tissueModelChecksum: "frozen", recordedAt: `${date}T09:00:00Z`, recordedPreRace: true, settledAt: null, winners: [],
     runners: [{ runnerId: "runner", horseId: "horse", horseName: "Turf Horse", probability: .2, tissueRank: 1, fairDecimalOdds: 5, commentFeatures: [], finishingPosition: null, finalSp: null, marketImpliedProbability: null, marketRank: null }],
+  };
+}
+
+function snapshot(decimalPrice: number, probability: number): ForwardValuePriceSnapshot {
+  return {
+    price: null,
+    decimalPrice,
+    impliedProbability: 1 / decimalPrice,
+    capturedAt: `${date}T09:00:00Z`,
+    minutesBeforeScheduledOff: 240,
+    ratingProbability: probability,
+    ratingEdgePercentagePoints: (probability - 1 / decimalPrice) * 100,
+    marketPriceBasisVersion: FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION,
+    bookmakerQuoteCount: 2,
+    bookmakerQuotes: [],
+    medianBookmakerPriceDecimal: decimalPrice,
+    medianBookmakerImpliedProbability: 1 / decimalPrice,
+    bestBookmakerPriceDecimal: decimalPrice,
+    bestBookmakerPriceFractional: null,
+    bestBookmakerName: null,
+    forecastPrice: "99/1",
+    forecastDecimalPrice: 100,
   };
 }
 

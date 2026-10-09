@@ -26,7 +26,7 @@ export const RESEARCH_STATUS = [
 export type ResearchSignal = { kind: ResearchSignalKind; reason: string; context: string; movement: string | null };
 export type DailyResearchHorse = {
   raceId: string; runnerId: string; horseId: string; horseName: string; course: string;
-  time: string; sortTime: string; price: number | null; priceSource: "imported_card" | "g4_capture" | null; signals: ResearchSignal[];
+  time: string; sortTime: string; price: number | null; priceSource: "imported_card" | "stored_snapshot" | "g4_capture" | null; signals: ResearchSignal[];
 };
 export type ProspectiveMonitor = {
   name: string; status: "FROZEN" | "MONITORING" | "SHADOW";
@@ -60,11 +60,16 @@ export function buildResearchDashboard(input: {
   const { date, prices, turf, jump, aw, g4, ratings } = input;
   const current = new Set(prices.map((row) => `${row.raceId}|${row.runnerId}`));
   const rows: DailyResearchHorse[] = [];
-  const addTissue = (kind: ResearchSignalKind, race: { raceId: string; course: string }, runner: { runnerId: string; horseId: string; horseName: string }, probability: number, price: SportingLifeCurrentPrice, edge: number, off: string, movement: string) => {
+  const addTissue = (kind: ResearchSignalKind, race: { raceId: string; course: string }, runner: { runnerId: string; horseId: string; horseName: string }, probability: number, price: SportingLifeCurrentPrice, edge: number, off: string, movement: string, qualification?: { stage: string; capturedAt: string; latestPrice: SportingLifeCurrentPrice | null }) => {
+    const displayedPrice = qualification?.latestPrice?.marketDecimalOdds ?? price.marketDecimalOdds;
+    const qualificationContext = qualification
+      ? `Tissue rank #1 · qualified at ${price.marketDecimalOdds!.toFixed(2)} ${qualification.stage.toUpperCase()} ${qualification.capturedAt}`
+      : "Tissue rank #1";
     rows.push({ raceId: race.raceId, runnerId: runner.runnerId, horseId: runner.horseId, horseName: runner.horseName, course: race.course,
-      time: price.displayRaceTime, sortTime: off, price: price.marketDecimalOdds, priceSource: "imported_card",
+      time: price.displayRaceTime, sortTime: off, price: displayedPrice, priceSource: qualification?.latestPrice ? "imported_card" : "stored_snapshot",
       signals: [{ kind, reason: `Tissue ${percent(probability)} · market ${percent(1 / price.marketDecimalOdds!)} · +${(edge * 100).toFixed(1)}pp`, context: "Tissue rank #1", movement }],
     });
+    rows[rows.length - 1]!.signals[0]!.context = qualificationContext;
   };
   const turfToday = turf.races.filter((race) => race.raceDate === date && race.recordedPreRace === true);
   for (const { race, runner, comparison } of currentPositiveTurfTissueRankOneEdges(turfToday, prices).selections) {
@@ -77,7 +82,11 @@ export function buildResearchDashboard(input: {
     ["jump_tissue", currentPositiveJumpTissueRankOneEdges(jump.races.filter((race) => race.raceDate === date && cleanJumpTissueRace(race) && race.settledAt === null), prices).selections],
     ["aw_tissue", currentPositiveAwTissueRankOneEdges(aw.races.filter((race) => race.raceDate === date && cleanAwTissueRace(race) && race.settledAt === null), prices).selections],
   ] as const) {
-    for (const { race, runner, comparison } of selections) addTissue(kind, race, runner, runner.probability!, comparison.price, comparison.edge, race.scheduledOffAt, priceMovement(race.prices));
+    for (const { race, runner, comparison } of selections) addTissue(kind, race, runner, runner.probability!, comparison.price, comparison.edge, race.scheduledOffAt, priceMovement(race.prices), {
+      stage: comparison.qualificationStage,
+      capturedAt: comparison.qualificationPrice.capturedAt,
+      latestPrice: comparison.latestPrice,
+    });
   }
   for (const row of g4.observations.filter((row) => row.raceDate === date && row.recordedPreRace && row.recordedAt >= g4.epoch && row.recordedAt < row.scheduledOff && row.outcome?.won !== null && current.has(`${row.raceId}|${row.runnerId}`))) {
     const c = row.components;

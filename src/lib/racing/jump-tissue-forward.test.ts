@@ -18,6 +18,7 @@ import {
   currentPositiveJumpTissueRankOneEdges,
   settleJumpTissueRace,
 } from "./jump-tissue-forward";
+import { FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION, type ForwardValuePriceSnapshot } from "./forward-value";
 import type { TodayRace, TodayRunner } from "./todays-racing";
 
 describe("Jump Tissue forward tracking", () => {
@@ -94,12 +95,44 @@ describe("Jump Tissue forward tracking", () => {
     const record = buildJumpTissueRace({ raceDate: "2026-10-02", course: "Test", race: sampleRace(), commentsByHorse: new Map(), model: model(), recordedAt: new Date(JUMP_TISSUE_IMPLEMENTED_AT) })!;
     const leader = record.runners.find((runner) => runner.runnerId === record.top1)!;
     leader.probability = 0.4;
+    record.prices.early = snapshot(3, leader.probability);
     const result = currentPositiveJumpTissueRankOneEdges([record], [{ raceId: record.raceId, runnerId: leader.runnerId, marketPrice: "7/2", marketDecimalOdds: 3, bookmakerQuoteCount: 3, forecastPrice: "5/2", forecastDecimalOdds: 3.5, displayRaceTime: "14:00" }]);
     assert.equal(result.comparableRaces, 1);
     assert.equal(result.selections.length, 1);
     assert.equal(Math.round(result.selections[0]!.edge * 1000), 67);
   });
+
+  test("current card price alone cannot create Jump Tissue value without a frozen bookmaker snapshot", () => {
+    const record = buildJumpTissueRace({ raceDate: "2026-10-02", course: "Test", race: sampleRace(), commentsByHorse: new Map(), model: model(), recordedAt: new Date(JUMP_TISSUE_IMPLEMENTED_AT) })!;
+    const leader = record.runners.find((runner) => runner.runnerId === record.top1)!;
+    leader.probability = 0.4;
+    const result = currentPositiveJumpTissueRankOneEdges([record], [{ raceId: record.raceId, runnerId: leader.runnerId, marketPrice: "7/2", marketDecimalOdds: 3, bookmakerQuoteCount: 3, forecastPrice: "33/1", forecastDecimalOdds: 34, displayRaceTime: "14:00" }]);
+    assert.equal(result.comparableRaces, 0);
+    assert.equal(result.selections.length, 0);
+  });
 });
+
+function snapshot(decimalPrice: number, probability: number): ForwardValuePriceSnapshot {
+  return {
+    price: null,
+    decimalPrice,
+    impliedProbability: 1 / decimalPrice,
+    capturedAt: "2026-10-02T09:00:00Z",
+    minutesBeforeScheduledOff: 300,
+    ratingProbability: probability,
+    ratingEdgePercentagePoints: (probability - 1 / decimalPrice) * 100,
+    marketPriceBasisVersion: FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION,
+    bookmakerQuoteCount: 3,
+    bookmakerQuotes: [],
+    medianBookmakerPriceDecimal: decimalPrice,
+    medianBookmakerImpliedProbability: 1 / decimalPrice,
+    bestBookmakerPriceDecimal: decimalPrice,
+    bestBookmakerPriceFractional: null,
+    bestBookmakerName: null,
+    forecastPrice: "33/1",
+    forecastDecimalPrice: 34,
+  };
+}
 
 function model(): JumpTissueModel {
   const names = [...JUMP_TISSUE_FEATURE_NAMES];

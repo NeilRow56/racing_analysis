@@ -14,5 +14,59 @@
     "roi": 0.0426,
     "note": "Historical context only; no historical observations are backfilled into this prospective tracker."
   },
-  "observations": []
+  "observations": [
+    {
+      "raceId": "b8abeaa9-9d2c-4e14-beaf-3059677aa5fd",
+      "sourceId": "942539",
+      "raceDate": "2026-10-09",
+      "scheduledOff": "2026-10-09T12:57:00.000Z",
+      "scheduledTime": "12:57",
+      "course": "Chepstow",
+      "raceName": "Wasdell Group Novices' Hurdle (GBB Race) (Div 2)",
+      "subtype": "Hurdle",
+      "subtypeCode": "hurdle",
+      "handicapStatus": "non_handicap",
+      "fieldSize": 10,
+      "runnerId": "6f259401-ab31-4f9a-8914-89ebee0a5516",
+      "horseId": "0156385b-d210-48e7-86b7-7d825d2de3e0",
+      "horseName": "Dutch Corner",
+      "recordedAt": "2026-10-09T05:41:04.409Z",
+      "recordedPreRace": true,
+      "components": {
+        "averageL3JumpSpeed": 127.66828542210389,
+        "averageL3JumpSpeedRank": 2,
+        "latestJumpSpeed": 161.35629188717658,
+        "previousJumpSpeed": 101.95943783783791,
+        "latestMinusPrevious": 59.39685404933867,
+        "previousClass": 2,
+        "currentClass": 4,
+        "classDropAmount": 2
+      },
+      "context": {
+        "officialRating": 117,
+        "officialRatingRank": 1,
+        "officialRatingTop3": true,
+        "officialRatingGapToBest": 0,
+        "officialRatingRelativeToFieldMean": 5,
+        "trainerPriorRate": 21.504065040650406,
+        "jockeyPriorRate": 26.308985132514547,
+        "daysSinceRun": 166,
+        "priorUsableJumpSpeedCount": 6,
+        "jprARank": 1,
+        "jprBRank": 1,
+        "jumpTissueRank": 1,
+        "jumpTissueProbability": 0.35980108935202154
+      },
+      "market": {
+        "medianBookmakerDecimal": 2.25,
+        "impliedProbability": 0.4444444444444444,
+        "marketRank": 2,
+        "priceCapturedAt": "2026-10-09T05:41:04.409Z",
+        "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
+        "bookmakerQuoteCount": 3
+      },
+      "outcome": null,
+      "settledAt": null
+    }
+  ]
 }

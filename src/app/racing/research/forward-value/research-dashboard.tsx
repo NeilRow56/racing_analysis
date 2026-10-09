@@ -32,7 +32,7 @@ export function DailyResearchDashboard({ dashboard }: { dashboard: ResearchDashb
             <div className="col-start-2 text-sm xl:col-start-auto">
               <span className="mr-2 text-xs text-slate-500 xl:hidden">Bookmaker median</span>
               <span className={horse.price === null ? "text-slate-500" : "font-semibold tabular-nums"}>{horse.price === null ? "Market unavailable" : horse.price.toFixed(2)}</span>
-              {horse.priceSource ? <p className="mt-1 text-xs text-slate-500">{horse.priceSource === "imported_card" ? "Latest imported card" : "G4 capture"}</p> : null}
+              {horse.priceSource ? <p className="mt-1 text-xs text-slate-500">{priceSourceLabel(horse.priceSource)}</p> : null}
             </div>
           </li>)}
         </ul>
@@ -78,6 +78,11 @@ function roiValue(monitor: ProspectiveMonitor) {
   if (monitor.roi !== null) return pct(monitor.roi);
   if (monitor.settled === 0) return "Awaiting returns";
   return monitor.roiBasis === "median" ? "Insufficient stored-price evidence" : "Unavailable";
+}
+function priceSourceLabel(source: "imported_card" | "stored_snapshot" | "g4_capture") {
+  if (source === "imported_card") return "Latest imported card";
+  if (source === "stored_snapshot") return "Stored qualification price";
+  return "G4 capture";
 }
 function evidenceText(monitor: ProspectiveMonitor) {
   const sample = monitor.settled < 30 ? "Early sample" : "Prospective evidence";

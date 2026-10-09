@@ -14,7 +14,7 @@ import {
 } from "./aw-tissue-model";
 import { formatRaceTimeForDisplay, type SportingLifeCurrentPrice, type TodayMeeting, type TodayRace } from "./todays-racing";
 import type { createDbConnection } from "@/db";
-import { currentTissueRankOneEdge, formatTissueEdge, formatTissueProbability, isLargeTissueEdge, type TissueRankOneEdge } from "./tissue-rank-one-edge";
+import { formatTissueEdge, formatTissueProbability, frozenTissueRankOneEdge, isLargeTissueEdge, type FrozenTissueRankOneEdge } from "./tissue-rank-one-edge";
 
 export const AW_TISSUE_FORWARD_VERSION = "aw_tissue_forward_v1";
 export const AW_TISSUE_FORWARD_PATH = "data/research/aw-tissue-forward-v1.json";
@@ -249,7 +249,7 @@ export type AwTissueRankOnePriceEdge = {
   price: SportingLifeCurrentPrice;
   impliedProbability: number;
   edge: number;
-  comparison: TissueRankOneEdge;
+  comparison: FrozenTissueRankOneEdge;
 };
 
 export function currentPositiveAwTissueRankOneEdges(
@@ -262,7 +262,7 @@ export function currentPositiveAwTissueRankOneEdges(
   for (const race of races) {
     const runner = race.runners.find((candidate) => candidate.runnerId === race.top1);
     if (!runner) continue;
-    const comparison = currentTissueRankOneEdge(runner.probability, priceByRunner.get(`${race.raceId}|${runner.runnerId}`));
+    const comparison = frozenTissueRankOneEdge(runner.probability, race.raceId, runner.runnerId, race.prices, priceByRunner.get(`${race.raceId}|${runner.runnerId}`));
     if (!comparison) continue;
     comparableRaces += 1;
     if (comparison.edge > 0) selections.push({ race, runner, price: comparison.price, impliedProbability: comparison.impliedProbability, edge: comparison.edge, comparison });
@@ -290,11 +290,17 @@ export function renderAwTissueToday(
   "Current positive-edge AW Tissue rank-1 horses",
   ...(positiveEdges.selections.length > 0 ? positiveEdges.selections.flatMap(({ race, runner, price, impliedProbability, edge, comparison }) => [
     `${comparison.price.displayRaceTime || displayRaceTime(race)} ${race.course} | ${runner.horseName}`,
-    `Tissue ${percentage1(runner.probability!)} | Market ${price.marketPrice!.trim()} | Implied ${percentage1(impliedProbability)} | Edge ${signedPp1(edge * 100)} | Quotes ${price.bookmakerQuoteCount}${isLargeTissueEdge(edge) ? " | LARGE" : ""}`,
+    `Tissue ${percentage1(runner.probability!)} | Qualified ${price.marketPrice!.trim()} (${comparison.qualificationStage.toUpperCase()}) | Implied ${percentage1(impliedProbability)} | Edge ${signedPp1(edge * 100)} | Quotes ${price.bookmakerQuoteCount}${latestPriceLabel(comparison)}${isLargeTissueEdge(edge) ? " | LARGE" : ""}`,
     "",
   ]).slice(0, -1) : ["None"]),
   "",
   `Positive-edge rank-1 horses: ${positiveEdges.selections.length} / comparable races ${positiveEdges.comparableRaces}`].join("\n").trimEnd();
+}
+
+function latestPriceLabel(comparison: FrozenTissueRankOneEdge): string {
+  const latest = comparison.latestPrice;
+  if (!latest?.marketDecimalOdds || latest.marketDecimalOdds === comparison.qualificationPrice.decimalPrice) return "";
+  return ` | Latest ${latest.marketDecimalOdds.toFixed(2)}`;
 }
 
 export function awTissueValueAgreement(data: AwTissueForwardData, ratings: ForwardValueRecord[]) {

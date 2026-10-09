@@ -11,7 +11,7 @@ import {
   settleAwTissueRace, summarizeAwTissueForward, updateAwTissueForward,
 } from "./aw-tissue-forward";
 import { featureValues, predict as stage1Predict, type Example } from "../../../scripts/diagnose-aw-tissue-stage1";
-import { FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION, type ForwardValueRecord } from "./forward-value";
+import { FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION, type ForwardValuePriceSnapshot, type ForwardValueRecord } from "./forward-value";
 import type { HistoricalTargetRunnerMetricsRow } from "./historical-target-metrics";
 import type { HorseMetricsAsOf } from "./horse-metrics";
 import type { SportingLifeCurrentPrice, TodayRace, TodayRunner } from "./todays-racing";
@@ -146,48 +146,48 @@ describe("frozen AW Tissue and prospective tracking", () => {
   });
 
   test("today shortlist includes positive AW Tissue rank-1 edge with correct pp calculation", () => {
-    const record = withRankOneProbability(captured(), 0.263);
+    const record = withFrozenPrice(withRankOneProbability(captured(), 0.263), 5);
     const output = renderAwTissueToday({ ...emptyAwTissueForward(), races: [record] }, record.raceDate, [
       currentPrice(record, "4/1", 5),
     ]);
 
     assert.match(output, /Current positive-edge AW Tissue rank-1 horses/);
     assert.match(output, /10:16 Wolverhampton \| [A-Z]/);
-    assert.match(output, /Tissue 26\.3% \| Market 4\/1 \| Implied 20\.0% \| Edge \+6\.3pp \| Quotes 3/);
+    assert.match(output, /Tissue 26\.3% \| Qualified 5\.00 \(EARLY\) \| Implied 20\.0% \| Edge \+6\.3pp \| Quotes 3/);
     assert.match(output, /Positive-edge rank-1 horses: 1 \/ comparable races 1/);
   });
 
   test("today shortlist displays bookmaker quote count from the median market row", () => {
-    const record = withRankOneProbability(captured(), 0.263);
+    const record = withFrozenPrice(withRankOneProbability(captured(), 0.263), 5, { bookmakerQuoteCount: 7 });
     const output = renderAwTissueToday({ ...emptyAwTissueForward(), races: [record] }, record.raceDate, [
       currentPrice(record, "4/1", 5, { bookmakerQuoteCount: 7 }),
     ]);
 
-    assert.match(output, /Tissue 26\.3% \| Market 4\/1 \| Implied 20\.0% \| Edge \+6\.3pp \| Quotes 7/);
+    assert.match(output, /Tissue 26\.3% \| Qualified 5\.00 \(EARLY\) \| Implied 20\.0% \| Edge \+6\.3pp \| Quotes 7/);
   });
 
   test("today shortlist flags large positive edges at ten percentage points", () => {
-    const record = withRankOneProbability(captured(), 0.3);
+    const record = withFrozenPrice(withRankOneProbability(captured(), 0.3), 5);
     const output = renderAwTissueToday({ ...emptyAwTissueForward(), races: [record] }, record.raceDate, [
       currentPrice(record, "4/1", 5),
     ]);
 
-    assert.match(output, /Tissue 30\.0% \| Market 4\/1 \| Implied 20\.0% \| Edge \+10\.0pp \| Quotes 3 \| LARGE/);
+    assert.match(output, /Tissue 30\.0% \| Qualified 5\.00 \(EARLY\) \| Implied 20\.0% \| Edge \+10\.0pp \| Quotes 3 \| LARGE/);
   });
 
   test("today shortlist does not flag positive edges below ten percentage points", () => {
-    const record = withRankOneProbability(captured(), 0.299);
+    const record = withFrozenPrice(withRankOneProbability(captured(), 0.299), 5);
     const output = renderAwTissueToday({ ...emptyAwTissueForward(), races: [record] }, record.raceDate, [
       currentPrice(record, "4/1", 5),
     ]);
 
-    assert.match(output, /Tissue 29\.9% \| Market 4\/1 \| Implied 20\.0% \| Edge \+9\.9pp \| Quotes 3/);
+    assert.match(output, /Tissue 29\.9% \| Qualified 5\.00 \(EARLY\) \| Implied 20\.0% \| Edge \+9\.9pp \| Quotes 3/);
     assert.doesNotMatch(output, /\| LARGE/);
   });
 
   test("today shortlist excludes zero and negative AW Tissue rank-1 edges", () => {
-    const zero = withRankOneProbability({ ...captured(), raceId: "zero" }, 0.2);
-    const negative = withRankOneProbability({ ...captured(), raceId: "negative", currentOffAt: new Date(off.getTime() + 60_000).toISOString() }, 0.19);
+    const zero = withFrozenPrice(withRankOneProbability({ ...captured(), raceId: "zero" }, 0.2), 5);
+    const negative = withFrozenPrice(withRankOneProbability({ ...captured(), raceId: "negative", currentOffAt: new Date(off.getTime() + 60_000).toISOString() }, 0.19), 5);
     const result = currentPositiveAwTissueRankOneEdges([zero, negative], [
       currentPrice(zero, "4/1", 5),
       currentPrice(negative, "4/1", 5),
@@ -208,13 +208,13 @@ describe("frozen AW Tissue and prospective tracking", () => {
     assert.doesNotMatch(output, /\+22\.1pp|33\/1/);
   });
 
-  test("today shortlist uses median bookmaker price rather than forecast price", () => {
-    const record = withRankOneProbability(captured(), 0.25);
+  test("today shortlist uses frozen median bookmaker price rather than forecast or later current price", () => {
+    const record = withFrozenPrice(withRankOneProbability(captured(), 0.25), 5, { forecastPrice: "33/1", forecastDecimalPrice: 34 });
     const output = renderAwTissueToday({ ...emptyAwTissueForward(), races: [record] }, record.raceDate, [
-      currentPrice(record, "4/1", 5, { forecastPrice: "33/1", forecastDecimalOdds: 34 }),
+      currentPrice(record, "50/1", 51, { forecastPrice: "33/1", forecastDecimalOdds: 34 }),
     ]);
 
-    assert.match(output, /Tissue 25\.0% \| Market 4\/1 \| Implied 20\.0% \| Edge \+5\.0pp/);
+    assert.match(output, /Tissue 25\.0% \| Qualified 5\.00 \(EARLY\) \| Implied 20\.0% \| Edge \+5\.0pp \| Quotes 3 \| Latest 51\.00/);
     assert.doesNotMatch(output, /\+22\.1pp|33\/1/);
   });
 
@@ -300,6 +300,35 @@ function withRankOneProbability(record: ReturnType<typeof captured>, probability
     ...record,
     runners: record.runners.map((runner) => runner.runnerId === record.top1 ? { ...runner, probability } : runner),
   };
+}
+
+function withFrozenPrice(
+  record: ReturnType<typeof captured>,
+  decimalPrice: number,
+  overrides: Partial<ForwardValuePriceSnapshot> = {},
+): ReturnType<typeof captured> {
+  const leader = record.runners.find((runner) => runner.runnerId === record.top1)!;
+  const snapshot: ForwardValuePriceSnapshot = {
+    price: null,
+    decimalPrice,
+    impliedProbability: 1 / decimalPrice,
+    capturedAt: now.toISOString(),
+    minutesBeforeScheduledOff: (off.getTime() - now.getTime()) / 60_000,
+    ratingProbability: leader.probability!,
+    ratingEdgePercentagePoints: (leader.probability! - 1 / decimalPrice) * 100,
+    marketPriceBasisVersion: FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION,
+    bookmakerQuoteCount: 3,
+    bookmakerQuotes: [],
+    medianBookmakerPriceDecimal: decimalPrice,
+    medianBookmakerImpliedProbability: 1 / decimalPrice,
+    bestBookmakerPriceDecimal: decimalPrice,
+    bestBookmakerPriceFractional: null,
+    bestBookmakerName: null,
+    forecastPrice: null,
+    forecastDecimalPrice: null,
+    ...overrides,
+  };
+  return { ...record, prices: { ...record.prices, early: snapshot } };
 }
 
 function currentPrice(
