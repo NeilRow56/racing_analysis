@@ -198,7 +198,7 @@ function table(headers: string[], rows: Array<Array<string | number>>) {
     ];
 }
 const metricHeaders = ["Sample", "Candidate", "Races", "Runners", "Log loss", "Race Brier", "Top 1", "Top 2", "Top 3"];
-async function loadHistory(rows: Row[]) {
+export async function loadHistory(rows: Row[]) {
     const targets = new Map<string, Date>();
     for (const { features: f } of rows)
         if (!targets.has(f.horseId) || targets.get(f.horseId)! < f.raceDateTime)

@@ -31,7 +31,7 @@ import {
   type ForwardValueReportingStatus,
   type TurfModelAgreementSummary,
 } from "@/lib/racing/forward-value-summary";
-import { getRacecardRowsForRaceIds, getSportingLifeCurrentCardRaceStatuses, groupTodaysRacingRows } from "@/lib/racing/todays-racing";
+import { getLocalRacingDate, getSportingLifeCurrentPricesForDate, getRacecardRowsForRaceIds, getSportingLifeCurrentCardRaceStatuses, groupTodaysRacingRows } from "@/lib/racing/todays-racing";
 import { todayRaceHasConclusiveResult } from "@/lib/racing/today-race-status";
 import { loadTissueForward, TISSUE_V2_CONFIG } from "@/lib/racing/tissue-forward";
 import { RecentObservationsScroll } from "./recent-observations-scroll";
@@ -39,6 +39,9 @@ import { cleanAwTissueRace, loadAwTissueForward, type AwTissueForwardData, type 
 import { AwTissueValueSection, JumpTissueValueSection } from "./aw-tissue-value";
 import { cleanJumpTissueRace, loadJumpTissueForward, type JumpTissueForwardData, type JumpTissueRace } from "@/lib/racing/jump-tissue-forward";
 import type { SportingLifeBookmakerQuote } from "@/lib/racing/todays-racing";
+import { loadJumpG4Forward } from "@/lib/racing/jump-g4-forward";
+import { buildResearchDashboard } from "@/lib/racing/research-monitor";
+import { DailyResearchDashboard } from "./research-dashboard";
 
 export const dynamic = "force-dynamic";
 
@@ -47,26 +50,31 @@ type PageProps = {
 };
 
 export default async function ForwardValuePage({ searchParams }: PageProps) {
-  const [data, tissueData, awTissueData, jumpTissueData, params] = await Promise.all([
+  const raceDate = getLocalRacingDate();
+  const [data, tissueData, awTissueData, jumpTissueData, g4Data, params] = await Promise.all([
     loadForwardValueData(),
     loadTissueForward(TISSUE_V2_CONFIG.forwardPath, TISSUE_V2_CONFIG),
     loadAwTissueForward(),
     loadJumpTissueForward(),
+    loadJumpG4Forward(),
     searchParams,
   ]);
   const connection = createDbConnection();
   let currentCardStatuses;
   let canonicalResultRaceIds;
+  let currentPrices;
   try {
     const raceIds = data.races.map((race) => race.raceId);
-    [currentCardStatuses, canonicalResultRaceIds] = await Promise.all([
+    [currentCardStatuses, canonicalResultRaceIds, currentPrices] = await Promise.all([
       getSportingLifeCurrentCardRaceStatuses(connection.db, raceIds),
       getCanonicalResultRaceIds(connection.db, raceIds),
+      getSportingLifeCurrentPricesForDate(connection.db, raceDate),
     ]);
   } finally {
     await connection.client.end();
   }
   const reportingScope = buildForwardValueReportingScope(data.races, currentCardStatuses);
+  const dashboard = buildResearchDashboard({ date: raceDate, prices: currentPrices, turf: tissueData, jump: jumpTissueData, aw: awTissueData, g4: g4Data, ratings: reportingScope.analyticalRecords });
   const filters = parseFilters(params);
   const summary = summarizeForwardValue(data, reportingScope);
   const disagreementDiagnostics = buildTurfModelDisagreementDiagnostics(reportingScope.analyticalRecords, tissueData).slice(0, 25);
@@ -80,19 +88,21 @@ export default async function ForwardValuePage({ searchParams }: PageProps) {
   );
 
   return (
-    <main className="min-h-screen bg-stone-50 px-4 py-6 text-slate-950 sm:px-6 lg:px-8">
+    <main className="min-h-screen bg-gray-50 px-4 py-6 text-slate-950 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-[1600px]">
         <header className="flex flex-col gap-4 border-b border-slate-200 pb-5 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <Link className="text-sm font-medium text-emerald-800 hover:underline" href="/racing/research">
               Racing Research
             </Link>
-            <h1 className="mt-2 text-3xl font-semibold tracking-normal">Forward Value</h1>
-            <p className="mt-2 text-sm font-medium text-amber-800">
-              Prospective research — not a betting recommendation
+            <h1 className="mt-2 text-2xl font-semibold tracking-normal">Research Monitor</h1>
+            <p className="mt-2 text-sm text-slate-500">
+              Prospective signals and model observations — research only.
             </p>
           </div>
           <nav aria-label="Racing Research" className="flex flex-wrap gap-2 text-sm font-semibold">
+            <time className="self-center px-2 text-xs font-normal tabular-nums text-slate-500" dateTime={raceDate}>{raceDate}</time>
+            <a className="px-3 py-2 text-slate-700 hover:text-emerald-800" href="/racing/research/forward-value">Refresh</a>
             <Link className="border border-slate-300 bg-white px-3 py-2 text-slate-700 hover:border-emerald-400 hover:text-emerald-800" href="/racing/research">
               Research Filters
             </Link>
@@ -102,24 +112,30 @@ export default async function ForwardValuePage({ searchParams }: PageProps) {
           </nav>
         </header>
 
-        <SparseSampleWarning show={summary.sparseSampleWarning} />
-
-        <TopLevelCounts summary={summary} syncRequiredCount={countPendingWithCanonicalResults(reportingScope.analyticalRecords, canonicalResultRaceIds)} />
-        <FamilySummaryTable summary={summary} />
-        <EdgeBucketTables summary={summary} />
-        <PriceSnapshotDiagnostics observations={reportingScope.analyticalRecords} summary={summary} />
-        <TurfModelAgreementCounts summary={summary.turfModelAgreement} />
-        <SameLeaderProbabilityGapDiagnostics diagnostics={probabilityGapDiagnostics} />
-        <TurfModelDisagreementExplainer diagnostics={disagreementDiagnostics} />
-        <AwTissueValueSection data={awTissueData} ratings={reportingScope.analyticalRecords} />
-        <JumpTissueValueSection data={jumpTissueData} ratings={reportingScope.analyticalRecords} />
-        <RecentObservations
-          filters={filters}
-          observations={observations}
-          tissueComparisons={buildFamilyTissueComparisons(observations, { aw: awTissueData, jump: jumpTissueData })}
-          reportingStatuses={reportingScope.statusByRaceId}
-          canonicalResultRaceIds={canonicalResultRaceIds}
-        />
+        <DailyResearchDashboard dashboard={dashboard} />
+        <details className="mt-8 border-t border-slate-200 py-4">
+          <summary className="cursor-pointer text-sm font-semibold">Performance</summary>
+          <SparseSampleWarning show={summary.sparseSampleWarning} />
+          <TopLevelCounts summary={summary} syncRequiredCount={countPendingWithCanonicalResults(reportingScope.analyticalRecords, canonicalResultRaceIds)} />
+          <FamilySummaryTable summary={summary} />
+          <EdgeBucketTables summary={summary} />
+          <PriceSnapshotDiagnostics observations={reportingScope.analyticalRecords} summary={summary} />
+        </details>
+        <details className="border-t border-slate-200 py-4" open={Object.keys(params ?? {}).length > 0}>
+          <summary className="cursor-pointer text-sm font-semibold">Details · model comparisons and value records</summary>
+          <TurfModelAgreementCounts summary={summary.turfModelAgreement} />
+          <SameLeaderProbabilityGapDiagnostics diagnostics={probabilityGapDiagnostics} />
+          <TurfModelDisagreementExplainer diagnostics={disagreementDiagnostics} />
+          <AwTissueValueSection data={awTissueData} ratings={reportingScope.analyticalRecords} />
+          <JumpTissueValueSection data={jumpTissueData} ratings={reportingScope.analyticalRecords} />
+          <RecentObservations
+            filters={filters}
+            observations={observations}
+            tissueComparisons={buildFamilyTissueComparisons(observations, { aw: awTissueData, jump: jumpTissueData })}
+            reportingStatuses={reportingScope.statusByRaceId}
+            canonicalResultRaceIds={canonicalResultRaceIds}
+          />
+        </details>
       </div>
     </main>
   );

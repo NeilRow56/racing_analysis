@@ -57,6 +57,9 @@
     "jump-tissue:today": "bun run scripts/track-jump-tissue.ts today",
     "jump-tissue:sync": "bun --env-file=.env.local run scripts/track-jump-tissue.ts sync",
     "jump-tissue:summary": "bun run scripts/track-jump-tissue.ts summary",
+    "jump-g4:sync": "bun --env-file=.env.local run scripts/track-jump-g4-forward.ts sync",
+    "jump-g4:today": "bun run scripts/track-jump-g4-forward.ts today",
+    "jump-g4:summary": "bun run scripts/track-jump-g4-forward.ts summary",
     "aw-rating:sync": "bun --env-file=.env.local run scripts/track-aw-rating-forward.ts sync",
     "aw-rating:today": "bun --env-file=.env.local run scripts/track-aw-rating-forward.ts today",
     "aw-rating:summary": "bun run scripts/track-aw-rating-forward.ts summary",
@@ -66,7 +69,9 @@
     "sync:aw-shadow": "bun --env-file=.env.local run scripts/track-aw-tissue-shadow.ts sync",
     "value:calibrate": "bun run scripts/build-forward-value-calibration.ts",
     "value:today": "bun run scripts/report-forward-value.ts today",
-    "value:summary": "bun run scripts/report-forward-value.ts summary"
+    "value:summary": "bun run scripts/report-forward-value.ts summary",
+    "research:rank-one-audit": "bun run scripts/audit-rank-one-failures.ts",
+    "research:ranking-stage2": "bun run scripts/build-ranking-model-stage2.ts"
   },
   "dependencies": {
     "drizzle-orm": "^0.45.2",
