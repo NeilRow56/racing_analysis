@@ -70,6 +70,8 @@
     "value:calibrate": "bun run scripts/build-forward-value-calibration.ts",
     "value:today": "bun run scripts/report-forward-value.ts today",
     "value:summary": "bun run scripts/report-forward-value.ts summary",
+    "research:morning": "bun run scripts/run-research-workflow.ts --mode morning",
+    "research:after": "bun run scripts/run-research-workflow.ts --mode after",
     "research:rank-one-audit": "bun run scripts/audit-rank-one-failures.ts",
     "research:ranking-stage2": "bun run scripts/build-ranking-model-stage2.ts"
   },

@@ -1,0 +1,136 @@
+import assert from "node:assert/strict";
+import { afterEach, beforeEach, describe, test } from "node:test";
+import {
+  isValidDate,
+  localDateString,
+  parseArgs,
+  runWorkflow,
+  workflowSteps,
+} from "./run-research-workflow";
+
+const originalLog = console.log;
+const originalError = console.error;
+
+beforeEach(() => {
+  console.log = () => undefined;
+  console.error = () => undefined;
+});
+
+afterEach(() => {
+  console.log = originalLog;
+  console.error = originalError;
+});
+
+function commandLinesFor(mode: "morning" | "after", date = "2026-10-09") {
+  return workflowSteps(mode, date).map((step) => [step.script, ...(step.args ?? [])].join(" "));
+}
+
+describe("research workflow wrapper", () => {
+  test("runs the morning workflow commands in order", async () => {
+    const calls: string[] = [];
+
+    const result = await runWorkflow({ mode: "morning", date: "2026-10-09" }, async (step) => {
+      calls.push([step.script, ...(step.args ?? [])].join(" "));
+      return 0;
+    });
+
+    assert.equal(result.exitCode, 0);
+    assert.deepEqual(calls, [
+      "sl:import-racecards 2026-10-09 --request-delay-seconds 2",
+      "tpr:sync 2026-10-09",
+      "tissue:sync 2026-10-09",
+      "jump-rating:sync 2026-10-09",
+      "jump-tissue:sync 2026-10-09",
+      "jump-g4:sync 2026-10-09",
+      "aw-rating:sync 2026-10-09",
+      "aw-tissue:sync 2026-10-09",
+      "sync:aw-shadow 2026-10-09",
+    ]);
+  });
+
+  test("runs the after workflow commands in order", async () => {
+    const calls: string[] = [];
+
+    const result = await runWorkflow({ mode: "after", date: "2026-10-09" }, async (step) => {
+      calls.push([step.script, ...(step.args ?? [])].join(" "));
+      return 0;
+    });
+
+    assert.equal(result.exitCode, 0);
+    assert.deepEqual(calls, [
+      "sl:import-day 2026-10-09 --request-delay-seconds 2",
+      "tpr:sync 2026-10-09",
+      "tissue:sync 2026-10-09",
+      "jump-rating:sync 2026-10-09",
+      "jump-tissue:sync 2026-10-09",
+      "jump-g4:sync 2026-10-09",
+      "aw-rating:sync 2026-10-09",
+      "aw-tissue:sync 2026-10-09",
+      "sync:aw-shadow 2026-10-09",
+    ]);
+  });
+
+  test("passes an explicit YYYY-MM-DD override through every stage", () => {
+    assert.deepEqual(parseArgs(["--mode", "morning", "2026-11-14"]), {
+      mode: "morning",
+      date: "2026-11-14",
+    });
+    assert.ok(commandLinesFor("morning", "2026-11-14").every((line) => line.includes("2026-11-14")));
+    assert.ok(commandLinesFor("after", "2026-11-14").every((line) => line.includes("2026-11-14")));
+  });
+
+  test("resolves the default date from local Date fields", () => {
+    const localDate = new Date(2026, 0, 5, 23, 59, 59);
+
+    assert.equal(localDateString(localDate), "2026-01-05");
+    assert.deepEqual(parseArgs(["--mode", "after"], localDate), {
+      mode: "after",
+      date: "2026-01-05",
+    });
+  });
+
+  test("rejects invalid dates before workflow stages are built or run", () => {
+    for (const value of ["2026-13-01", "2026-02-30", "20261009", "not-a-date"]) {
+      assert.equal(isValidDate(value), false);
+      assert.throws(
+        () => parseArgs(["--mode", "morning", value]),
+        new RegExp(`Invalid date "${value}"`),
+      );
+    }
+  });
+
+  test("stops on a non-zero stage, returns non-zero, and identifies the failed stage", async () => {
+    const calls: string[] = [];
+
+    const result = await runWorkflow({ mode: "morning", date: "2026-10-09" }, async (step) => {
+      calls.push(step.script);
+      return step.script === "jump-tissue:sync" ? 7 : 0;
+    });
+
+    assert.equal(result.exitCode, 7);
+    assert.equal(result.failed?.step.script, "jump-tissue:sync");
+    assert.equal(result.failed?.exitCode, 7);
+    assert.deepEqual(calls, [
+      "sl:import-racecards",
+      "tpr:sync",
+      "tissue:sync",
+      "jump-rating:sync",
+      "jump-tissue:sync",
+    ]);
+  });
+
+  test("treats a zero-exit no-racecards child as success and continues", async () => {
+    const calls: string[] = [];
+    const childOutput: string[] = [];
+
+    const result = await runWorkflow({ mode: "morning", date: "2026-10-09" }, async (step) => {
+      calls.push(step.script);
+      if (step.script === "sl:import-racecards") childOutput.push("No racecards found for 2026-10-09");
+      return 0;
+    });
+
+    assert.equal(result.exitCode, 0);
+    assert.equal(childOutput[0], "No racecards found for 2026-10-09");
+    assert.deepEqual(calls, workflowSteps("morning", "2026-10-09").map((step) => step.script));
+  });
+});

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { RESEARCH_SIGNALS, RESEARCH_STATUS, type ResearchDashboard } from "@/lib/racing/research-monitor";
+import { RESEARCH_SIGNALS, RESEARCH_STATUS, type ProspectiveMonitor, type ResearchDashboard } from "@/lib/racing/research-monitor";
 
 export function DailyResearchDashboard({ dashboard }: { dashboard: ResearchDashboard }) {
   return <>
@@ -40,26 +40,47 @@ export function DailyResearchDashboard({ dashboard }: { dashboard: ResearchDashb
     </section>
     <section className="mt-6 border-t border-slate-200 pt-6" aria-labelledby="monitors-heading">
       <h2 className="text-lg font-semibold" id="monitors-heading">Prospective monitors</h2>
-      <div className="mt-3 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="mt-3 grid gap-3 sm:grid-cols-2 2xl:grid-cols-4">
         {dashboard.monitors.map((monitor) => <article className="min-w-0 rounded border border-slate-200 bg-white p-4" key={monitor.name}>
           <div className="flex flex-wrap items-center justify-between gap-2"><h3 className="text-sm font-semibold">{monitor.name}</h3><span className="text-[10px] font-semibold text-slate-500">{monitor.status}</span></div>
           <p className="mt-2 text-xs text-slate-500">{monitor.cohort}</p>
-          <dl className="mt-3 grid grid-cols-2 gap-x-3 gap-y-2 text-xs">
+          <dl className="mt-3 grid grid-cols-[minmax(0,1fr)_minmax(7rem,max-content)] gap-x-3 gap-y-2 text-xs">
             <dt className="text-slate-500">Tracked / settled</dt><dd className="text-right font-medium tabular-nums">{monitor.tracked} / {monitor.settled}</dd>
             <dt className="text-slate-500">Winners / strike</dt><dd className="text-right font-medium tabular-nums">{monitor.winners} / {pct(monitor.strike)}</dd>
-            <dt className="text-slate-500">A/E {monitor.status === "SHADOW" ? "(market)" : "(model)"}</dt><dd className="text-right font-medium tabular-nums">{monitor.settled === 0 ? "Awaiting results" : monitor.ae === null ? "Unavailable" : monitor.ae.toFixed(2)}</dd>
-            <dt className="text-slate-500">{monitor.roiBasis === "final_sp" ? "Final SP ROI" : "Median price ROI"}</dt><dd className="text-right font-medium tabular-nums">{pct(monitor.roi)}</dd>
+            <dt className="text-slate-500">{aeLabel(monitor)}</dt><dd className="text-right font-medium tabular-nums">{aeValue(monitor)}</dd>
+            <dt className="text-slate-500">{roiLabel(monitor)}</dt><dd className="text-right font-medium tabular-nums">{roiValue(monitor)}</dd>
           </dl>
-          <p className="mt-3 text-[11px] leading-relaxed text-slate-500">{monitor.settled < 30 ? "Early sample" : "Prospective evidence"} · {monitor.pricedSettled} settled with {monitor.roiBasis === "final_sp" ? "final SP" : "stored median"} returns</p>
+          <p className="mt-3 text-[11px] leading-relaxed text-slate-500">{evidenceText(monitor)}</p>
         </article>)}
       </div>
     </section>
-    <section className="mt-7 border-t border-slate-200 pt-5" aria-labelledby="research-status-heading">
+  </>;
+}
+
+export function ResearchHistory() {
+  return (
+    <section className="mt-8 border-t border-slate-200 pt-5" aria-labelledby="research-status-heading">
       <h2 className="text-sm font-semibold" id="research-status-heading">Research status</h2>
       <dl className="mt-3 grid gap-x-8 gap-y-2 text-xs md:grid-cols-2">
         {RESEARCH_STATUS.map(([name, status]) => <div className="flex flex-wrap justify-between gap-x-4 gap-y-1" key={name}><dt className="text-slate-700">{name}</dt><dd className="text-slate-500">{status}</dd></div>)}
       </dl>
     </section>
-  </>;
+  );
 }
 function pct(value: number | null) { return value === null ? "—" : `${(value * 100).toFixed(1)}%`; }
+function aeLabel(monitor: ProspectiveMonitor) { return monitor.roiBasis === "final_sp" ? "Market A/E" : "Actual / model expected"; }
+function aeValue(monitor: ProspectiveMonitor) {
+  if (monitor.settled === 0) return "Awaiting results";
+  return monitor.ae === null ? "Unavailable" : monitor.ae.toFixed(2);
+}
+function roiLabel(monitor: ProspectiveMonitor) { return monitor.roiBasis === "final_sp" ? "Final SP ROI" : "Stored median ROI"; }
+function roiValue(monitor: ProspectiveMonitor) {
+  if (monitor.roi !== null) return pct(monitor.roi);
+  if (monitor.settled === 0) return "Awaiting returns";
+  return monitor.roiBasis === "median" ? "Insufficient stored-price evidence" : "Unavailable";
+}
+function evidenceText(monitor: ProspectiveMonitor) {
+  const sample = monitor.settled < 30 ? "Early sample" : "Prospective evidence";
+  if (monitor.roiBasis === "final_sp") return `${sample} · ${monitor.pricedSettled} of ${monitor.settled} settled have final SP returns.`;
+  return `${sample} · ${monitor.pricedSettled} of ${monitor.settled} settled have stored median returns; ROI needs stored prospective market prices.`;
+}

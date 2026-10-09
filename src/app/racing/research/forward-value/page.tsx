@@ -41,7 +41,7 @@ import { cleanJumpTissueRace, loadJumpTissueForward, type JumpTissueForwardData,
 import type { SportingLifeBookmakerQuote } from "@/lib/racing/todays-racing";
 import { loadJumpG4Forward } from "@/lib/racing/jump-g4-forward";
 import { buildResearchDashboard } from "@/lib/racing/research-monitor";
-import { DailyResearchDashboard } from "./research-dashboard";
+import { DailyResearchDashboard, ResearchHistory } from "./research-dashboard";
 
 export const dynamic = "force-dynamic";
 
@@ -123,6 +123,7 @@ export default async function ForwardValuePage({ searchParams }: PageProps) {
         </details>
         <details className="border-t border-slate-200 py-4" open={Object.keys(params ?? {}).length > 0}>
           <summary className="cursor-pointer text-sm font-semibold">Details · model comparisons and value records</summary>
+          <ResearchHistory />
           <TurfModelAgreementCounts summary={summary.turfModelAgreement} />
           <SameLeaderProbabilityGapDiagnostics diagnostics={probabilityGapDiagnostics} />
           <TurfModelDisagreementExplainer diagnostics={disagreementDiagnostics} />
