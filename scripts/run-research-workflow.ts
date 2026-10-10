@@ -72,6 +72,7 @@ export function workflowSteps(mode: WorkflowMode, date: string): WorkflowStep[] 
       { label: "Jump G4 shadow status", script: "jump-g4:today", args: [date] },
       { label: "Today's Rating weight shadow status", script: "todays-rating-weight:today", args: [date] },
       { label: "AW paired research summary", script: "aw-pair:compact", args: [date] },
+      { label: "AW Turf-architecture challenger", script: "aw-pair:challenger", args: [date] },
     ];
   }
   if (mode === "after") {
@@ -80,6 +81,7 @@ export function workflowSteps(mode: WorkflowMode, date: string): WorkflowStep[] 
       { label: "Settling existing prospective trackers", script: "research:settle", args: [date] },
       { label: "Completed Tissue VALUE results", script: "value:results", args: [date] },
       { label: "AW paired research results", script: "aw-pair:results", args: [date] },
+      { label: "AW Turf-architecture challenger results", script: "aw-pair:challenger", args: [date] },
     ];
   }
   const importStep: WorkflowStep = mode === "morning"
@@ -107,7 +109,7 @@ export function workflowSteps(mode: WorkflowMode, date: string): WorkflowStep[] 
     { label: "AW paired Tissue research sync", script: "aw-pair:sync", args: [date] },
     { label: "AW shadow sync", script: "sync:aw-shadow", args: [date] },
   ];
-  return [...steps, { label: "Model disagreement morning sync", script: "disagreement:morning", args: [date] }, { label: "Tissue VALUE morning summary", script: "value:today", args: [date] }, { label: "AW paired research summary", script: "aw-pair:compact", args: [date] }];
+  return [...steps, { label: "Model disagreement morning sync", script: "disagreement:morning", args: [date] }, { label: "Tissue VALUE morning summary", script: "value:today", args: [date] }, { label: "AW Turf-architecture challenger", script: "aw-pair:challenger", args: [date] }];
 }
 
 export async function runWorkflow(

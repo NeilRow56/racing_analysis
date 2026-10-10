@@ -51,7 +51,7 @@ describe("research workflow wrapper", () => {
       "sync:aw-shadow 2026-10-09",
       "disagreement:morning 2026-10-09",
       "value:today 2026-10-09",
-      "aw-pair:compact 2026-10-09",
+      "aw-pair:challenger 2026-10-09",
     ]);
   });
 
@@ -69,6 +69,7 @@ describe("research workflow wrapper", () => {
       "research:settle 2026-10-09",
       "value:results 2026-10-09",
       "aw-pair:results 2026-10-09",
+      "aw-pair:challenger 2026-10-09",
     ]);
     assert.doesNotMatch(calls.join("\n"), /sl:import-racecards|:sync|disagreement:/);
   });
@@ -85,6 +86,7 @@ describe("research workflow wrapper", () => {
       "jump-g4:today 2026-10-09",
       "todays-rating-weight:today 2026-10-09",
       "aw-pair:compact 2026-10-09",
+      "aw-pair:challenger 2026-10-09",
     ]);
     assert.doesNotMatch(commandLinesFor("live").join("\n"), /:sync|disagreement:/);
   });

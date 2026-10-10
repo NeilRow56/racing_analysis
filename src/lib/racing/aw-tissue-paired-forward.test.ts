@@ -24,6 +24,7 @@ import { COMMENT_FEATURE_NAMES, NUMERIC_FEATURES, type HistoricalComment } from 
 import { TISSUE_V2_CONFIG, type FrozenTissueModel } from "./tissue-forward";
 import type { HorseMetricsAsOf } from "./horse-metrics";
 import type { TodayRace, TodayRunner } from "./todays-racing";
+import { buildAwTurfChallengerReport, renderAwTurfChallengerToday } from "./aw-turf-challenger-report";
 
 const recordedAt = new Date("2026-10-10T08:00:00.000Z");
 const off = new Date("2026-10-10T14:00:00.000Z");
@@ -61,6 +62,53 @@ const turfModel: FrozenTissueModel = {
 };
 
 describe("AW Tissue paired prospective tracker", () => {
+  test("challenger reports only eligible daily captures, frozen prices and independent VALUE flags", () => {
+    const record = enrichAwTissuePairedPrices(build("disagree")!, sampleRace("disagree", { aPrice: 5, bPrice: 5 }), new Date("2026-10-10T11:00:00.000Z"));
+    const data = { ...emptyAwTissuePairedForward(), races: [
+      record,
+      { ...build("agree")!, raceId: "agree" },
+      { ...record, raceId: "excluded", excludedReason: "field_changed_after_capture" },
+      { ...record, raceId: "other-day", raceDate: "2026-10-11" },
+    ] };
+    const before = JSON.stringify(data);
+    const report = buildAwTurfChallengerReport(data, "2026-10-10", [{ raceId: record.raceId, runnerId: "b", marketPrice: "7/1", marketDecimalOdds: 8, bookmakerQuoteCount: 1, forecastPrice: null, forecastDecimalOdds: null, displayRaceTime: "15:00" }]);
+    assert.deepEqual(report.summary, { tracked: 2, agree: 1, disagree: 1, value: 1, settled: 0, winners: 0 });
+    const challenger = report.rows.find((row) => row.raceId === record.raceId)!;
+    const agreeing = report.rows.find((row) => row.raceId === "agree")!;
+    assert.equal(challenger.horse, "B");
+    assert.equal(challenger.marketProbability, .2);
+    assert.equal(challenger.capturedPrice, 5);
+    assert.equal(challenger.latestPrice, 8);
+    assert.equal(agreeing.capturedPrice, null);
+    assert.equal(agreeing.value, false);
+    assert.equal(JSON.stringify(data), before);
+    const text = renderAwTurfChallengerToday(data, "2026-10-10");
+    assert.match(text, /AW TURF-ARCHITECTURE CHALLENGER/);
+    assert.match(text, /15:00 \| Wolverhampton \| B \| [\d.]+% \| 5.00 \| DISAGREE/);
+    assert.match(text, /15:00 \| Wolverhampton \| A \| [\d.]+% \| - \| AGREE/);
+    assert.equal(text.split("\n").length, 5);
+    assert.match(renderAwTurfChallengerToday(data, "2026-10-12"), /No challenger selections/);
+  });
+
+  test("challenger reporting reflects live settlement without creating captures or changing prices", () => {
+    const record = enrichAwTissuePairedPrices(build("disagree")!, sampleRace("disagree", { bPrice: 5 }), new Date("2026-10-10T11:00:00.000Z"));
+    const original = { ...emptyAwTissuePairedForward(), races: [record] };
+    const results = new Map([[record.raceId, finishedRace("b")], ["untracked", { ...finishedRace("a"), raceId: "untracked" }]]);
+    const live = updateAwTissuePairedForward(original, results, new Date("2026-10-10T15:00:00.000Z"));
+    const after = updateAwTissuePairedForward(live, results, new Date("2026-10-11T08:00:00.000Z"));
+    assert.equal(after.races.length, 1);
+    assert.deepEqual(after.races[0]!.prices.firstAvailable, record.prices.firstAvailable);
+    assert.deepEqual(after, live);
+    const report = buildAwTurfChallengerReport(after, "2026-10-10");
+    assert.equal(report.rows[0]!.result, "Winner");
+    assert.equal(report.summary.settled, 1);
+    assert.equal(report.summary.winners, 1);
+    assert.match(renderAwTurfChallengerToday(after, "2026-10-10"), /Settled: 1 \| Winners: 1/);
+    const lost = buildAwTurfChallengerReport({ ...original, races: [settleWithPrice(record, "a", 5, 5)] }, "2026-10-10");
+    assert.match(lost.rows[0]!.result, /Finished/);
+    assert.equal(lost.summary.winners, 0);
+  });
+
   test("starts from a fresh empty epoch and rejects historical backfill", () => {
     const empty = emptyAwTissuePairedForward();
     assert.equal(empty.version, "AW_TISSUE_PAIRED_FORWARD_V1");

@@ -2,6 +2,7 @@ import { createDbConnection } from "@/db";
 import { currentDayProspectiveCapture } from "@/lib/racing/current-day-sync";
 import { loadAwTissuePairedForward, renderAwTissuePairedCompact, renderAwTissuePairedResults, renderAwTissuePairedSummary, renderAwTissuePairedToday } from "@/lib/racing/aw-tissue-paired-forward";
 import { syncAwTissuePairedMeetings } from "@/lib/racing/aw-tissue-paired-sync";
+import { renderAwTurfChallengerToday } from "@/lib/racing/aw-turf-challenger-report";
 import { getLocalRacingDate, getSportingLifeCurrentPricesForDate, getTodaysRacingData, isAllWeatherRaceForDisplay } from "@/lib/racing/todays-racing";
 
 const command = process.argv[2] ?? "summary";
@@ -16,6 +17,8 @@ if (command === "summary") {
   } finally {
     await connection.client.end();
   }
+} else if (command === "challenger") {
+  console.log(renderAwTurfChallengerToday(await loadAwTissuePairedForward(), raceDate));
 } else if (command === "compact") {
   console.log(renderAwTissuePairedCompact(await loadAwTissuePairedForward(), raceDate));
 } else if (command === "results") {
@@ -37,5 +40,5 @@ if (command === "summary") {
     await connection.client.end();
   }
 } else {
-  throw new Error("Usage: track-aw-tissue-paired.ts <today|compact|results|sync|summary> [YYYY-MM-DD]");
+  throw new Error("Usage: track-aw-tissue-paired.ts <today|challenger|compact|results|sync|summary> [YYYY-MM-DD]");
 }

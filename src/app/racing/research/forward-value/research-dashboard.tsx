@@ -1,8 +1,9 @@
 import Link from "next/link";
+import type { ReactNode } from "react";
 import { SavedRuleResearchNote } from "../saved-rule-research-note";
 import { RESEARCH_SIGNALS, RESEARCH_STATUS, type DailyResearchHorse, type ProspectiveMonitor, type ResearchDashboard, type ResearchSignal } from "@/lib/racing/research-monitor";
 
-export function DailyResearchDashboard({ dashboard }: { dashboard: ResearchDashboard }) {
+export function DailyResearchDashboard({ dashboard, children }: { dashboard: ResearchDashboard; children?: ReactNode }) {
   const tissueRows = tissueValueRows(dashboard.horses);
   const shadowRows = dashboard.horses.filter((horse) =>
     !horse.signals.some((signal) => RESEARCH_SIGNALS[signal.kind].category === "VALUE") &&
@@ -47,6 +48,7 @@ export function DailyResearchDashboard({ dashboard }: { dashboard: ResearchDashb
         {tissueRows.length === 0 ? <p className="px-3 py-6 text-sm text-slate-600">No Tissue VALUE selections today.</p> : null}
       </div>}
     </section>
+    {children}
     <details className="mt-6 border-t border-slate-200 py-4">
       <summary className="cursor-pointer text-sm font-semibold">Research shadows and disagreement signals</summary>
       {shadowRows.length === 0 ? <p className="py-5 text-sm text-slate-600">No secondary research signals today.</p> : <div>

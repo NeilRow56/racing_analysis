@@ -18,7 +18,6 @@ import {
 } from "@/lib/racing/forward-value-summary";
 import {
   buildFamilyTissueComparisons,
-  AwPairedResearchSection,
   EdgeBucketTables,
   FamilySummaryTable,
   PriceSnapshotDiagnostics,
@@ -29,6 +28,8 @@ import {
   TurfModelDisagreementExplainer,
   TurfModelAgreementCounts,
 } from "./page";
+import { AwTurfChallengerSection } from "./aw-turf-challenger";
+import { DailyResearchDashboard } from "./research-dashboard";
 import { emptyAwTissuePairedForward, type AwTissuePairedForwardData } from "@/lib/racing/aw-tissue-paired-forward";
 import { emptyAwTissueForward, type AwTissueForwardData, type AwTissueRace } from "@/lib/racing/aw-tissue-forward";
 import { emptyJumpTissueForward, type JumpTissueForwardData, type JumpTissueRace } from "@/lib/racing/jump-tissue-forward";
@@ -41,7 +42,7 @@ import {
 describe("Forward Value dashboard", () => {
   const data = fixtureData();
 
-  test("AW paired research is rendered as secondary compact detail", () => {
+  test("AW challenger research is rendered as a secondary section", () => {
     const paired: AwTissuePairedForwardData = {
       ...emptyAwTissuePairedForward(),
       races: [{
@@ -67,13 +68,38 @@ describe("Forward Value dashboard", () => {
       }],
     };
 
-    const html = renderToStaticMarkup(<AwPairedResearchSection data={paired} date="2026-10-09" />);
+    const html = renderToStaticMarkup(<AwTurfChallengerSection data={paired} date="2026-10-09" />);
 
-    assert.match(html, /AW Tissue paired research/);
-    assert.match(html, /Today races/);
+    assert.match(html, /AW TURF-ARCHITECTURE CHALLENGER/);
+    assert.match(html, /Tracked today/);
     assert.match(html, /Disagree/);
     assert.match(html, /AW Leader/);
     assert.match(html, /Turf Leader/);
+    assert.match(html, /DIFFERS FROM AW TISSUE/);
+    assert.match(html, /text-slate-500">AW Tissue #1: AW Leader/);
+    assert.match(html, /Pending/);
+    assert.doesNotMatch(html, /CHALLENGER VALUE<\/span>/);
+    assert.match(html, /<section aria-labelledby="aw-turf-challenger-heading"/);
+    assert.match(html, /text-sm font-semibold text-slate-700/);
+
+    const record = paired.races[0]!;
+    for (const valueQualified of [false, null, true]) {
+      const variant = { ...paired, races: [{ ...record, rank1Agreement: true, classification: "AGREE" as const, turfArch: { ...record.turfArch, valueQualified } }] };
+      const agreementHtml = renderToStaticMarkup(<AwTurfChallengerSection data={variant} date="2026-10-09" />);
+      assert.match(agreementHtml, /AGREES WITH AW TISSUE/);
+      assert.doesNotMatch(agreementHtml, /AW Tissue #1:/);
+      assert.equal(agreementHtml.includes("CHALLENGER VALUE</span>"), valueQualified === true);
+      assert.match(agreementHtml, /Turf Leader/);
+    }
+
+    const primary = <DailyResearchDashboard dashboard={{ date: "2026-10-09", emptyMessage: null, monitors: [], horses: [{ raceId: record.raceId, runnerId: "aw-runner", horseId: "aw-horse", horseName: "AW Leader", course: "Kempton", time: "18:30", sortTime: "", price: 4, priceSource: "imported_card", signals: [{ kind: "aw_tissue", reason: "VALUE", context: "Rank #1", movement: null }] }] }} />;
+    const primaryHtml = renderToStaticMarkup(primary);
+    const combinedHtml = renderToStaticMarkup(<DailyResearchDashboard dashboard={primary.props.dashboard}><AwTurfChallengerSection data={paired} date="2026-10-09" /></DailyResearchDashboard>);
+    assert.equal(combinedHtml.slice(0, combinedHtml.indexOf('<section aria-labelledby="aw-turf-challenger-heading"')), primaryHtml.slice(0, primaryHtml.indexOf('<details')));
+    assert.doesNotMatch(primaryHtml, /Turf Leader|CHALLENGER/);
+    assert.equal(primaryHtml.match(/AW Leader/g)?.length, 1);
+    assert.ok(combinedHtml.indexOf("tissue-value-heading") < combinedHtml.indexOf("aw-turf-challenger-heading"));
+    assert.ok(combinedHtml.indexOf("aw-turf-challenger-heading") < combinedHtml.indexOf("Research shadows and disagreement signals"));
   });
 
   test("summary counts match tracker classifications", () => {
