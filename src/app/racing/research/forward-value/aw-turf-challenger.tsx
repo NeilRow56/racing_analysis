@@ -32,7 +32,7 @@ export function AwTurfChallengerSection({ data, date, prices }: { data: AwTissue
                   <td className="px-3 py-2 tabular-nums">{price(row.capturedPrice)}</td>
                   <td className="px-3 py-2 tabular-nums">{price(row.latestPrice)}</td>
                   <td className="whitespace-nowrap px-3 py-2">{row.result}</td>
-                  <td className="px-3 py-2 text-[10px] text-slate-600">{row.agrees ? "AGREES WITH AW TISSUE" : "DIFFERS FROM AW TISSUE"}{!row.agrees ? <div className="mt-1 text-xs text-slate-500">AW Tissue #1: {row.awHorse}</div> : null}</td>
+                  <td className="px-3 py-2 text-[10px] text-slate-600">{row.agrees ? "AGREES WITH AW TISSUE" : "DIFFERS FROM AW TISSUE"}{!row.agrees ? <div className="mt-1 text-xs text-slate-500">AW Tissue #1: {row.awHorse} · {percent(row.awProbability)}</div> : null}</td>
                 </tr>
               ))}
             </tbody>

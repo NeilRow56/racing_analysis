@@ -106,6 +106,7 @@ describe("AW Tissue paired prospective tracker", () => {
     const challenger = report.rows.find((row) => row.raceId === record.raceId)!;
     const agreeing = report.rows.find((row) => row.raceId === "agree")!;
     assert.equal(challenger.horse, "B");
+    assert.equal(challenger.awProbability, record.awTissue.rank1Probability);
     assert.equal(challenger.marketProbability, .2);
     assert.equal(challenger.capturedPrice, 5);
     assert.equal(challenger.latestPrice, 8);
@@ -114,8 +115,10 @@ describe("AW Tissue paired prospective tracker", () => {
     assert.equal(JSON.stringify(data), before);
     const text = renderAwTurfChallengerToday(data, "2026-10-10");
     assert.match(text, /AW TURF-ARCHITECTURE CHALLENGER/);
-    assert.match(text, /15:00 \| Wolverhampton \| B \| [\d.]+% \| 5.00 \| DISAGREE/);
-    assert.match(text, /15:00 \| Wolverhampton \| A \| [\d.]+% \| - \| AGREE/);
+    assert.match(text, /time \| course \| challenger \| challenger p \| AW Tissue #1 \| AW p \| agree\/disagree/);
+    assert.match(text, /15:00 \| Wolverhampton \| B \| [\d.]+% \| A \| [\d.]+% \| DISAGREE/);
+    assert.match(text, /15:00 \| Wolverhampton \| A \| [\d.]+% \| AGREE/);
+    assert.doesNotMatch(text, /15:00 \| Wolverhampton \| A \| [\d.]+% \| A \| [\d.]+% \| AGREE/);
     assert.equal(text.split("\n").length, 5);
     assert.match(renderAwTurfChallengerToday(data, "2026-10-12"), /No challenger selections/);
   });

@@ -180,7 +180,7 @@ test("empty states distinguish no imported racecards from no signals", () => {
 test("category/status mappings include the separate weight shadow stream", () => {
   assert.deepEqual(Object.values(RESEARCH_SIGNALS).map((signal) => signal.category), ["VALUE", "VALUE", "VALUE", "SHADOW", "SHADOW", "DISAGREEMENT"]);
   assert.equal(RESEARCH_STATUS.length, 9);
-  assert.deepEqual(buildResearchDashboard(inputs()).monitors.map((monitor) => monitor.status), ["FROZEN", "MONITORING", "MONITORING", "SHADOW", "SHADOW", "MONITORING"]);
+  assert.deepEqual(buildResearchDashboard(inputs()).monitors.map((monitor) => monitor.status), ["FROZEN", "MONITORING", "MONITORING", "SHADOW", "SHADOW"]);
 });
 
 test("price movement uses stored median snapshots without a forecast fallback", () => {
@@ -205,9 +205,9 @@ test("monitor returns use stored settlement and exclude void G4 observations", (
 });
 
 test("model disagreement monitor renders pending null outcomes without settled returns", () => {
-  const input = { ...inputs(), prices: [price()], modelDisagreement: disagreementData([disagreementRow({ outcome: null, settledAt: null })]) };
+  const input = { ...inputs(), prices: [price()], modelDisagreement: disagreementData([disagreementRow({ outcome: null, settledAt: null })]), includeModelDisagreementInDailySummary: true };
   const dashboard = buildResearchDashboard(input);
-  const monitor = disagreementMonitor(dashboard);
+  const monitor = disagreementMonitor(dashboard)!;
   assert.equal(dashboard.horses.length, 1);
   assert.equal(dashboard.horses[0].signals[0].kind, "model_disagreement");
   assert.equal(monitor.tracked, 1);
@@ -220,9 +220,9 @@ test("model disagreement monitor renders pending null outcomes without settled r
 });
 
 test("model agreement control rows stay tracked but do not render on the primary research monitor", () => {
-  const input = { ...inputs(), prices: [price()], modelDisagreement: disagreementData([disagreementRowWithProbabilities(.116, .118)]) };
+  const input = { ...inputs(), prices: [price()], modelDisagreement: disagreementData([disagreementRowWithProbabilities(.116, .118)]), includeModelDisagreementInDailySummary: true };
   const dashboard = buildResearchDashboard(input);
-  const monitor = disagreementMonitor(dashboard);
+  const monitor = disagreementMonitor(dashboard)!;
   assert.equal(dashboard.horses.length, 0);
   assert.equal(monitor.tracked, 1);
   assert.equal(monitor.settled, 0);
@@ -231,7 +231,7 @@ test("model agreement control rows stay tracked but do not render on the primary
 test("non-material model difference does not suppress an independent Tissue value signal", () => {
   const input = { ...inputs(), prices: [price()] };
   input.jump.races = [jumpRace()];
-  const dashboard = buildResearchDashboard({ ...input, modelDisagreement: disagreementData([disagreementRowWithProbabilities(.182, .231)]) });
+  const dashboard = buildResearchDashboard({ ...input, modelDisagreement: disagreementData([disagreementRowWithProbabilities(.182, .231)]), includeModelDisagreementInDailySummary: true });
   assert.equal(dashboard.horses.length, 1);
   assert.deepEqual(dashboard.horses[0].signals.map((signal) => signal.kind), ["jump_tissue"]);
   assert.doesNotMatch(dashboard.horses[0].signals.map((signal) => signal.reason).join(" "), /MODEL|MARKET FAVOURS/);
@@ -241,8 +241,8 @@ test("model disagreement monitor counts pending as tracked but settled rows driv
   const input = { ...inputs(), prices: [price()], modelDisagreement: disagreementData([
     disagreementRow({ runnerId: "pending", horseName: "Pending Horse", outcome: null, settledAt: null }),
     disagreementRow({ runnerId: "settled", horseName: "Settled Horse", outcome: settledDisagreementOutcome({ won: true, profitLoss: 4 }), settledAt: `${date}T13:10:00Z` }),
-  ]) };
-  const monitor = disagreementMonitor(buildResearchDashboard(input));
+  ]), includeModelDisagreementInDailySummary: true };
+  const monitor = disagreementMonitor(buildResearchDashboard(input))!;
   assert.equal(monitor.tracked, 2);
   assert.equal(monitor.settled, 1);
   assert.equal(monitor.winners, 1);
@@ -255,8 +255,8 @@ test("model disagreement monitor counts pending as tracked but settled rows driv
 test("model disagreement monitor includes valid qualifying-price profit loss", () => {
   const input = { ...inputs(), modelDisagreement: disagreementData([
     disagreementRow({ outcome: settledDisagreementOutcome({ won: false, profitLoss: -1 }), settledAt: `${date}T13:10:00Z` }),
-  ]) };
-  const monitor = disagreementMonitor(buildResearchDashboard(input));
+  ]), includeModelDisagreementInDailySummary: true };
+  const monitor = disagreementMonitor(buildResearchDashboard(input))!;
   assert.equal(monitor.settled, 1);
   assert.equal(monitor.winners, 0);
   assert.equal(monitor.roi, -1);
@@ -266,8 +266,8 @@ test("model disagreement monitor includes valid qualifying-price profit loss", (
 test("model disagreement monitor excludes settled rows without valid qualifying prices", () => {
   const input = { ...inputs(), modelDisagreement: disagreementData([
     disagreementRow({ firstQualifyingSnapshot: null, outcome: settledDisagreementOutcome({ won: false, profitLoss: null }), settledAt: `${date}T13:10:00Z` }),
-  ]) };
-  const monitor = disagreementMonitor(buildResearchDashboard(input));
+  ]), includeModelDisagreementInDailySummary: true };
+  const monitor = disagreementMonitor(buildResearchDashboard(input))!;
   assert.equal(monitor.tracked, 1);
   assert.equal(monitor.settled, 1);
   assert.equal(monitor.winners, 0);
@@ -278,8 +278,8 @@ test("model disagreement monitor excludes settled rows without valid qualifying 
 });
 
 test("model disagreement monitor renders safely with zero observations", () => {
-  const input = { ...inputs(), modelDisagreement: disagreementData([]) };
-  const monitor = disagreementMonitor(buildResearchDashboard(input));
+  const input = { ...inputs(), modelDisagreement: disagreementData([]), includeModelDisagreementInDailySummary: true };
+  const monitor = disagreementMonitor(buildResearchDashboard(input))!;
   assert.equal(monitor.tracked, 0);
   assert.equal(monitor.settled, 0);
   assert.equal(monitor.winners, 0);
@@ -289,8 +289,18 @@ test("model disagreement monitor renders safely with zero observations", () => {
   assert.equal(monitor.pricedSettled, 0);
 });
 
+test("model disagreement stays out of the normal daily summary unless explicitly requested", () => {
+  const input = { ...inputs(), prices: [price()], modelDisagreement: disagreementData([disagreementRow({ outcome: null, settledAt: null })]) };
+  const dashboard = buildResearchDashboard(input);
+  assert.equal(dashboard.horses.length, 0);
+  assert.equal(disagreementMonitor(dashboard), undefined);
+  const explicit = buildResearchDashboard({ ...input, includeModelDisagreementInDailySummary: true });
+  assert.equal(explicit.horses[0]!.signals[0]!.kind, "model_disagreement");
+  assert.equal(disagreementMonitor(explicit)!.tracked, 1);
+});
+
 function disagreementMonitor(dashboard: ReturnType<typeof buildResearchDashboard>) {
-  return dashboard.monitors.find((monitor) => monitor.name === RESEARCH_SIGNALS.model_disagreement.name)!;
+  return dashboard.monitors.find((monitor) => monitor.name === RESEARCH_SIGNALS.model_disagreement.name);
 }
 
 function disagreementData(observations: ModelDisagreementObservation[]) {

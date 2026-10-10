@@ -25,6 +25,7 @@ export function buildAwTurfChallengerReport(data: AwTissuePairedForwardData, dat
         result,
         agrees: race.rank1Agreement,
         awHorse: race.awTissue.rank1HorseName,
+        awProbability: race.awTissue.rank1Probability,
         value: model.valueQualified === true,
         settled: race.settledAt !== null,
         won: outcome?.won === true,
@@ -48,8 +49,12 @@ export function renderAwTurfChallengerToday(data: AwTissuePairedForwardData, dat
   return [
     "AW TURF-ARCHITECTURE CHALLENGER",
     `Tracked today: ${summary.tracked} | Agree: ${summary.agree} | Disagree: ${summary.disagree} | Challenger VALUE: ${summary.value} | Settled: ${summary.settled} | Winners: ${summary.winners}`,
-    "time | course | horse | probability | price | agree/disagree",
-    ...rows.map((row) => `${row.time} | ${row.course} | ${row.horse} | ${(row.probability * 100).toFixed(1)}% | ${row.capturedPrice?.toFixed(2) ?? "-"} | ${row.agrees ? "AGREE" : "DISAGREE"}`),
+    rows.some((row) => !row.agrees)
+      ? "time | course | challenger | challenger p | AW Tissue #1 | AW p | agree/disagree"
+      : "time | course | challenger | challenger p | agree/disagree",
+    ...rows.map((row) => row.agrees
+      ? `${row.time} | ${row.course} | ${row.horse} | ${(row.probability * 100).toFixed(1)}% | AGREE`
+      : `${row.time} | ${row.course} | ${row.horse} | ${(row.probability * 100).toFixed(1)}% | ${row.awHorse} | ${(row.awProbability * 100).toFixed(1)}% | DISAGREE`),
     ...(rows.length ? [] : ["No challenger selections recorded for this date."]),
   ].join("\n");
 }

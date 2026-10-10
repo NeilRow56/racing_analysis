@@ -76,7 +76,7 @@ describe("Forward Value dashboard", () => {
     assert.match(html, /AW Leader/);
     assert.match(html, /Turf Leader/);
     assert.match(html, /DIFFERS FROM AW TISSUE/);
-    assert.match(html, /text-slate-500">AW Tissue #1: AW Leader/);
+    assert.match(html, /text-slate-500">AW Tissue #1: AW Leader · 32\.0%/);
     assert.match(html, /Pending/);
     assert.doesNotMatch(html, /CHALLENGER VALUE<\/span>/);
     assert.match(html, /<section aria-labelledby="aw-turf-challenger-heading"/);
@@ -88,6 +88,7 @@ describe("Forward Value dashboard", () => {
       const agreementHtml = renderToStaticMarkup(<AwTurfChallengerSection data={variant} date="2026-10-09" />);
       assert.match(agreementHtml, /AGREES WITH AW TISSUE/);
       assert.doesNotMatch(agreementHtml, /AW Tissue #1:/);
+      assert.doesNotMatch(agreementHtml, /32\.0%/);
       assert.equal(agreementHtml.includes("CHALLENGER VALUE</span>"), valueQualified === true);
       assert.match(agreementHtml, /Turf Leader/);
     }
@@ -97,6 +98,7 @@ describe("Forward Value dashboard", () => {
     const combinedHtml = renderToStaticMarkup(<DailyResearchDashboard dashboard={primary.props.dashboard}><AwTurfChallengerSection data={paired} date="2026-10-09" /></DailyResearchDashboard>);
     assert.equal(combinedHtml.slice(0, combinedHtml.indexOf('<section aria-labelledby="aw-turf-challenger-heading"')), primaryHtml.slice(0, primaryHtml.indexOf('<details')));
     assert.doesNotMatch(primaryHtml, /Turf Leader|CHALLENGER/);
+    assert.match(primaryHtml, /tissue-value-heading/);
     assert.equal(primaryHtml.match(/AW Leader/g)?.length, 1);
     assert.ok(combinedHtml.indexOf("tissue-value-heading") < combinedHtml.indexOf("aw-turf-challenger-heading"));
     assert.ok(combinedHtml.indexOf("aw-turf-challenger-heading") < combinedHtml.indexOf("Research shadows and disagreement signals"));

@@ -113,7 +113,7 @@ export function workflowSteps(mode: WorkflowMode, date: string): WorkflowStep[] 
     { label: "AW paired Tissue research sync", script: "aw-pair:sync", args: [date] },
     { label: "AW shadow sync", script: "sync:aw-shadow", args: [date] },
   ];
-  return [...steps, { label: "Model disagreement morning sync", script: "disagreement:morning", args: [date] }, { label: "Tissue VALUE morning summary", script: "value:today", args: [date] }, { label: "AW Turf-architecture challenger", script: "aw-pair:challenger", args: [date] }];
+  return [...steps, { label: "Tissue VALUE morning summary", script: "value:today", args: [date] }, { label: "AW Turf-architecture challenger", script: "aw-pair:challenger", args: [date] }];
 }
 
 export async function runWorkflow(

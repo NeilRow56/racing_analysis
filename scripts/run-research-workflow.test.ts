@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { afterEach, beforeEach, describe, test } from "node:test";
 import {
   isValidDate,
@@ -114,10 +115,20 @@ describe("research workflow wrapper", () => {
       "aw-tissue:sync 2026-10-09",
       "aw-pair:sync 2026-10-09",
       "sync:aw-shadow 2026-10-09",
-      "disagreement:morning 2026-10-09",
       "value:today 2026-10-09",
       "aw-pair:challenger 2026-10-09",
     ]);
+    assert.doesNotMatch(calls.join("\n"), /disagreement:/);
+  });
+
+  test("manual model-disagreement commands remain available outside the morning workflow", () => {
+    const scripts = JSON.parse(readFileSync("package.json", "utf8")).scripts as Record<string, string>;
+    assert.equal(scripts["disagreement:today"], "bun run scripts/track-model-disagreement.ts today");
+    assert.equal(scripts["disagreement:summary"], "bun run scripts/track-model-disagreement.ts summary");
+    assert.equal(scripts["disagreement:night"], "bun run scripts/track-model-disagreement.ts night");
+    assert.equal(scripts["disagreement:morning"], "bun run scripts/track-model-disagreement.ts morning");
+    assert.equal(scripts["disagreement:late"], "bun run scripts/track-model-disagreement.ts late");
+    assert.equal(scripts["disagreement:sync"], "bun run scripts/track-model-disagreement.ts sync");
   });
 
   test("runs the after workflow as result import plus settlement only", async () => {

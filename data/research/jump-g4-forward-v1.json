@@ -118,8 +118,15 @@
         "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
         "bookmakerQuoteCount": 3
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "finishingPosition": 7,
+        "resultStatus": "finished",
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 7.5,
+        "profitLoss": -1
+      },
+      "settledAt": "2026-10-10T16:40:31.929Z"
     },
     {
       "raceId": "fa2c6124-7338-4d8b-9e03-29faf564803e",
@@ -171,8 +178,15 @@
         "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
         "bookmakerQuoteCount": 3
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "finishingPosition": 4,
+        "resultStatus": "finished",
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 7,
+        "profitLoss": -1
+      },
+      "settledAt": "2026-10-10T16:40:31.929Z"
     },
     {
       "raceId": "34939e64-609b-4d16-ab55-df580e504975",
@@ -224,8 +238,15 @@
         "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
         "bookmakerQuoteCount": 3
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "finishingPosition": 5,
+        "resultStatus": "finished",
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 8,
+        "profitLoss": -1
+      },
+      "settledAt": "2026-10-10T16:40:31.929Z"
     }
   ]
 }
