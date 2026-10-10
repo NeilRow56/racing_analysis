@@ -12,6 +12,9 @@ export const MODEL_DISAGREEMENT_FORWARD_PATH = "data/research/model-disagreement
 export const MODEL_DISAGREEMENT_FORWARD_EPOCH = "2026-10-09T00:00:00.000Z" as const;
 export const MODEL_DISAGREEMENT_PRICE_MOVEMENT_VERSION = "fixed_descriptive_v1" as const;
 export const MODEL_DISAGREEMENT_LABEL_VERSION = "fixed_signal_labels_v1" as const;
+export const MODEL_DISAGREEMENT_MATERIAL_VERSION = "fixed_material_disagreement_v1" as const;
+export const MODEL_DISAGREEMENT_MATERIAL_MIN_ABSOLUTE_PP = 5.0;
+export const MODEL_DISAGREEMENT_MATERIAL_MIN_RATIO = 1.5;
 
 export type ModelDisagreementFamily = "JUMP" | "ALL_WEATHER";
 export type MarketCapturePoint = "NIGHT_BEFORE" | "EARLY_MORNING" | "LATE_MORNING" | "FINAL_PRE_RACE";
@@ -22,6 +25,9 @@ export type DisagreementLabel =
   | "SPEED_HIGH_TISSUE_LOW"
   | "TISSUE_HIGH_RATING_LOW"
   | "MODEL_AGREEMENT";
+export type MaterialDisagreementLabel = "MODEL_HIGH_MARKET_LOW" | "MARKET_HIGH_MODEL_LOW";
+export type MaterialDisagreementDisplayLabel = "MODEL FAVOURS" | "MARKET FAVOURS";
+export type DisagreementSummaryCohort = "MATERIAL MODEL FAVOURS" | "MATERIAL MARKET FAVOURS" | "CONTROL / AGREEMENT";
 
 export type DisagreementMarketSnapshot = {
   capturePoint: MarketCapturePoint;
@@ -121,6 +127,8 @@ export function emptyModelDisagreementForwardData(): ModelDisagreementForwardDat
       "Fresh prospective tracker. No historical observations are backfilled.",
       "Pre-race snapshots are only stored when observed before scheduled off; SP is settlement context only.",
       "Movement and disagreement thresholds are fixed descriptive definitions, not optimised from history.",
+      "Material model/market disagreement V1 is fixed prospectively: absolute probability gap >= 5.0 percentage points and larger probability >= 1.50x smaller probability.",
+      "Existing raw frozen labels and first-capture provenance are preserved; material cohorts are derived from frozen model/market probabilities for display and reporting.",
       "NIGHT_BEFORE means FIRST_NEXT_DAY_CAPTURE: the first valid next-day racecard snapshot after tomorrow's cards become available, not a literal nighttime requirement.",
     ],
     observations: [],
@@ -319,12 +327,12 @@ export function movementLabel(percentagePriceChange: number): PriceMovementLabel
 }
 
 export function renderModelDisagreementToday(data: ModelDisagreementForwardData, raceDate: string) {
-  const rows = data.observations.filter((row) => row.raceDate === raceDate && row.settledAt === null)
+  const rows = data.observations.filter((row) => row.raceDate === raceDate && row.settledAt === null && materialModelMarketDisagreement(row) !== null)
     .sort((a, b) => a.scheduledOff.localeCompare(b.scheduledOff) || a.course.localeCompare(b.course) || a.horseName.localeCompare(b.horseName));
-  if (!rows.length) return `Model Disagreement Today - ${raceDate}\n\nNo tracked model/market disagreement rows.`;
+  if (!rows.length) return `Model Disagreement Today - ${raceDate}\n\nNo material model/market disagreement rows.`;
   return [`Model Disagreement Today - ${raceDate}`, "",
     ...rows.map((row) => `${formatRaceTimeForDisplay({ raceDateTime: new Date(row.scheduledOff), scheduledTime: row.scheduledTime })} | ${row.course} | ${row.horseName}
-${row.frozen.label}
+${materialDisagreementDisplayLabel(materialModelMarketDisagreement(row)!)}
 Model ${pct(row.frozen.modelProbability)} vs market ${pct(row.frozen.marketImpliedProbability)}
 ${pricePath(row)}
 ${latestMovement(row)}`),
@@ -332,8 +340,11 @@ ${latestMovement(row)}`),
 }
 
 export function summarizeModelDisagreementForward(data: ModelDisagreementForwardData) {
-  const byLabel = group(data.observations, (row) => row.frozen.label);
-  return [...byLabel.entries()].map(([label, rows]) => {
+  const byCohort = group(data.observations, materialDisagreementSummaryCohort);
+  const order: DisagreementSummaryCohort[] = ["MATERIAL MODEL FAVOURS", "MATERIAL MARKET FAVOURS", "CONTROL / AGREEMENT"];
+  return order.flatMap((label) => {
+    const rows = byCohort.get(label) ?? [];
+    if (!rows.length && label !== "CONTROL / AGREEMENT") return [];
     const settled = rows.filter((row) => row.outcome?.status === "settled");
     const winners = settled.filter((row) => row.outcome?.won === true);
     const priced = settled.flatMap((row) => {
@@ -357,7 +368,7 @@ export function summarizeModelDisagreementForward(data: ModelDisagreementForward
       shortenedNightFinal: movementRate(rows, "NIGHT_BEFORE", "FINAL_PRE_RACE"),
       averageImpliedProbabilityMovement: movementAverage,
     };
-  }).sort((a, b) => a.label.localeCompare(b.label));
+  });
 }
 
 export function renderModelDisagreementSummary(data: ModelDisagreementForwardData) {
@@ -365,6 +376,7 @@ export function renderModelDisagreementSummary(data: ModelDisagreementForwardDat
     "Model Disagreement Forward Summary",
     `Version: ${data.version} | epoch: ${data.epoch}`,
     "No historical backfill; NIGHT_BEFORE means first next-day capture; SP is settlement context only.",
+    `Material V1: absolute gap >= ${MODEL_DISAGREEMENT_MATERIAL_MIN_ABSOLUTE_PP.toFixed(1)}pp and larger probability >= ${MODEL_DISAGREEMENT_MATERIAL_MIN_RATIO.toFixed(2)}x smaller probability. Raw frozen labels and first-capture provenance are preserved.`,
     "",
     "Label | Tracked | Settled | Winners | Strike | Exp winners | A/E | ROI | N→E shorten | E→L shorten | N→F shorten | Avg implied move",
     ...summarizeModelDisagreementForward(data).map((row) => [
@@ -379,7 +391,7 @@ export function renderModelDisagreementSummary(data: ModelDisagreementForwardDat
 }
 
 export function modelDisagreementResearchRows(data: ModelDisagreementForwardData, raceDate: string) {
-  return data.observations.filter((row) => row.raceDate === raceDate && row.settledAt === null).map((row) => ({
+  return data.observations.filter((row) => row.raceDate === raceDate && row.settledAt === null && materialModelMarketDisagreement(row) !== null).map((row) => ({
     raceId: row.raceId,
     runnerId: row.runnerId,
     horseId: row.horseId,
@@ -388,10 +400,35 @@ export function modelDisagreementResearchRows(data: ModelDisagreementForwardData
     time: formatRaceTimeForDisplay({ raceDateTime: new Date(row.scheduledOff), scheduledTime: row.scheduledTime }),
     sortTime: row.scheduledOff,
     price: latestSnapshot(row)?.medianBookmakerDecimal ?? null,
-    reason: `${row.frozen.label} · Model ${pct(row.frozen.modelProbability)} vs market ${pct(row.frozen.marketImpliedProbability)}`,
+    reason: `${materialDisagreementDisplayLabel(materialModelMarketDisagreement(row)!)} · Model ${pct(row.frozen.modelProbability)} vs market ${pct(row.frozen.marketImpliedProbability)}`,
     context: pricePath(row),
     movement: latestMovement(row),
   }));
+}
+
+export function materialModelMarketDisagreement(row: ModelDisagreementObservation): MaterialDisagreementLabel | null {
+  return materialModelMarketDisagreementForProbabilities(row.frozen.modelProbability, row.frozen.marketImpliedProbability);
+}
+
+export function materialModelMarketDisagreementForProbabilities(modelProbability: number | null, marketProbability: number | null): MaterialDisagreementLabel | null {
+  if (!finite(modelProbability) || !finite(marketProbability) || modelProbability === marketProbability) return null;
+  const absoluteGapPp = Math.abs(modelProbability - marketProbability) * 100;
+  const larger = Math.max(modelProbability, marketProbability);
+  const smaller = Math.min(modelProbability, marketProbability);
+  const ratio = smaller === 0 ? (larger > 0 ? Infinity : 1) : larger / smaller;
+  if (absoluteGapPp + 1e-12 < MODEL_DISAGREEMENT_MATERIAL_MIN_ABSOLUTE_PP || ratio + 1e-12 < MODEL_DISAGREEMENT_MATERIAL_MIN_RATIO) return null;
+  return modelProbability > marketProbability ? "MODEL_HIGH_MARKET_LOW" : "MARKET_HIGH_MODEL_LOW";
+}
+
+export function materialDisagreementDisplayLabel(label: MaterialDisagreementLabel): MaterialDisagreementDisplayLabel {
+  return label === "MODEL_HIGH_MARKET_LOW" ? "MODEL FAVOURS" : "MARKET FAVOURS";
+}
+
+export function materialDisagreementSummaryCohort(row: ModelDisagreementObservation): DisagreementSummaryCohort {
+  const material = materialModelMarketDisagreement(row);
+  if (material === "MODEL_HIGH_MARKET_LOW") return "MATERIAL MODEL FAVOURS";
+  if (material === "MARKET_HIGH_MODEL_LOW") return "MATERIAL MARKET FAVOURS";
+  return "CONTROL / AGREEMENT";
 }
 
 function raceFamily(race: TodayRace): ModelDisagreementFamily | null {
@@ -440,11 +477,8 @@ function signalsForRunner(runner: TodayRunner, ranks: ReturnType<typeof raceRank
 }
 
 function disagreementLabel(signals: DisagreementSignals, snapshot: DisagreementMarketSnapshot | null): DisagreementLabel {
-  if (signals.tissueProbability !== null && snapshot?.impliedProbability !== undefined) {
-    const edge = (signals.tissueProbability - snapshot.impliedProbability) * 100;
-    if (edge >= 5) return "MODEL_HIGH_MARKET_LOW";
-    if (edge <= -5) return "MARKET_HIGH_MODEL_LOW";
-  }
+  const material = materialModelMarketDisagreementForProbabilities(signals.tissueProbability, snapshot?.impliedProbability ?? null);
+  if (material) return material;
   if ((signals.avgL3SpeedRank !== null && signals.avgL3SpeedRank <= 3 || signals.latestSpeedRank !== null && signals.latestSpeedRank <= 3) &&
     (signals.tissueRank === null || signals.tissueRank >= 5)) return "SPEED_HIGH_TISSUE_LOW";
   if (signals.tissueRank !== null && signals.tissueRank <= 2 && (signals.primaryRatingRank === null || signals.primaryRatingRank >= 5)) return "TISSUE_HIGH_RATING_LOW";

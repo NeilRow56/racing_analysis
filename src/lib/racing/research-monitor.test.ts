@@ -219,6 +219,24 @@ test("model disagreement monitor renders pending null outcomes without settled r
   assert.equal(monitor.pricedSettled, 0);
 });
 
+test("model agreement control rows stay tracked but do not render on the primary research monitor", () => {
+  const input = { ...inputs(), prices: [price()], modelDisagreement: disagreementData([disagreementRowWithProbabilities(.116, .118)]) };
+  const dashboard = buildResearchDashboard(input);
+  const monitor = disagreementMonitor(dashboard);
+  assert.equal(dashboard.horses.length, 0);
+  assert.equal(monitor.tracked, 1);
+  assert.equal(monitor.settled, 0);
+});
+
+test("non-material model difference does not suppress an independent Tissue value signal", () => {
+  const input = { ...inputs(), prices: [price()] };
+  input.jump.races = [jumpRace()];
+  const dashboard = buildResearchDashboard({ ...input, modelDisagreement: disagreementData([disagreementRowWithProbabilities(.182, .231)]) });
+  assert.equal(dashboard.horses.length, 1);
+  assert.deepEqual(dashboard.horses[0].signals.map((signal) => signal.kind), ["jump_tissue"]);
+  assert.doesNotMatch(dashboard.horses[0].signals.map((signal) => signal.reason).join(" "), /MODEL|MARKET FAVOURS/);
+});
+
 test("model disagreement monitor counts pending as tracked but settled rows drive performance", () => {
   const input = { ...inputs(), prices: [price()], modelDisagreement: disagreementData([
     disagreementRow({ runnerId: "pending", horseName: "Pending Horse", outcome: null, settledAt: null }),
@@ -315,6 +333,24 @@ function disagreementRow(overrides: DisagreementRowOverrides = {}): ModelDisagre
     outcome: null,
     settledAt: null,
     ...rowOverrides,
+  };
+}
+
+function disagreementRowWithProbabilities(modelProbability: number, marketProbability: number, overrides: DisagreementRowOverrides = {}) {
+  const row = disagreementRow({ ...overrides, firstQualifyingSnapshot: disagreementSnapshot(1 / marketProbability) });
+  return {
+    ...row,
+    frozen: {
+      ...row.frozen,
+      label: Math.abs(modelProbability - marketProbability) * 100 >= 5 && Math.max(modelProbability, marketProbability) / Math.min(modelProbability, marketProbability) >= 1.5
+        ? modelProbability > marketProbability ? "MODEL_HIGH_MARKET_LOW" as const : "MARKET_HIGH_MODEL_LOW" as const
+        : "MODEL_AGREEMENT" as const,
+      modelProbability,
+      marketImpliedProbability: marketProbability,
+      edgePercentagePoints: (modelProbability - marketProbability) * 100,
+      signalRanks: { ...row.frozen.signalRanks, tissueProbability: modelProbability },
+    },
+    snapshots: { NIGHT_BEFORE: { ...disagreementSnapshot(1 / marketProbability), impliedProbability: marketProbability } },
   };
 }
 

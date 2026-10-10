@@ -3,12 +3,18 @@ import { describe, test } from "node:test";
 import {
   buildModelDisagreementObservations,
   emptyModelDisagreementForwardData,
+  materialDisagreementDisplayLabel,
+  materialModelMarketDisagreementForProbabilities,
   movementLabel,
   priceMovements,
   refreshModelDisagreementSnapshots,
+  renderModelDisagreementSummary,
+  renderModelDisagreementToday,
   settleModelDisagreementObservations,
   upsertModelDisagreementObservations,
+  type DisagreementLabel,
   type DisagreementMarketSnapshot,
+  type ModelDisagreementObservation,
 } from "./model-disagreement-forward";
 import { FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION } from "./forward-value";
 import type { TodayMeeting, TodayRace, TodayRunner } from "./todays-racing";
@@ -23,6 +29,40 @@ describe("model disagreement prospective tracker", () => {
     assert.deepEqual(data.observations, []);
     assert.match(data.notes.join(" "), /No historical observations are backfilled/);
     assert.match(data.notes.join(" "), /FIRST_NEXT_DAY_CAPTURE/);
+    assert.match(data.notes.join(" "), /Material model\/market disagreement V1/);
+  });
+
+  test("applies fixed V1 material disagreement probability thresholds", () => {
+    assert.equal(materialModelMarketDisagreementForProbabilities(.076, .02), "MODEL_HIGH_MARKET_LOW");
+    assert.equal(materialDisagreementDisplayLabel("MODEL_HIGH_MARKET_LOW"), "MODEL FAVOURS");
+    assert.equal(materialModelMarketDisagreementForProbabilities(.074, .20), "MARKET_HIGH_MODEL_LOW");
+    assert.equal(materialDisagreementDisplayLabel("MARKET_HIGH_MODEL_LOW"), "MARKET FAVOURS");
+    assert.equal(materialModelMarketDisagreementForProbabilities(.182, .231), null);
+    assert.equal(materialModelMarketDisagreementForProbabilities(.134, .091), null);
+    assert.equal(materialModelMarketDisagreementForProbabilities(.116, .118), null);
+    assert.equal(materialModelMarketDisagreementForProbabilities(.15, .10), "MODEL_HIGH_MARKET_LOW");
+    assert.equal(materialModelMarketDisagreementForProbabilities(.16, .11), null);
+    assert.equal(materialModelMarketDisagreementForProbabilities(.044, .066), null);
+  });
+
+  test("daily disagreement report only renders material rows while summary keeps controls", () => {
+    const data = emptyModelDisagreementForwardData();
+    data.observations = [
+      observation("material-model", .076, .02),
+      observation("material-market", .074, .20),
+      observation("control", .116, .118),
+    ];
+
+    const today = renderModelDisagreementToday(data, date);
+    assert.match(today, /MODEL FAVOURS/);
+    assert.match(today, /MARKET FAVOURS/);
+    assert.doesNotMatch(today, /Control/);
+    assert.doesNotMatch(today, /MODEL_AGREEMENT/);
+
+    const summary = renderModelDisagreementSummary(data);
+    assert.match(summary, /MATERIAL MODEL FAVOURS \| 1/);
+    assert.match(summary, /MATERIAL MARKET FAVOURS \| 1/);
+    assert.match(summary, /CONTROL \/ AGREEMENT \| 1/);
   });
 
   test("captures night once and preserves frozen evidence on duplicate sync", () => {
@@ -126,4 +166,51 @@ function snap(capturePoint: DisagreementMarketSnapshot["capturePoint"], price: n
   return { capturePoint, capturedAt: `2026-10-10T0${price}:00:00Z`, medianBookmakerDecimal: price, impliedProbability: 1 / price,
     bestBookmakerDecimal: price, bestBookmakerFractional: null, bestBookmakerName: null, bookmakerQuoteCount: 1, bookmakerQuotes: [],
     marketPriceBasisVersion: FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION };
+}
+
+function observation(id: string, modelProbability: number, marketProbability: number): ModelDisagreementObservation {
+  const snapshot: DisagreementMarketSnapshot = {
+    capturePoint: "NIGHT_BEFORE",
+    capturedAt: "2026-10-10T09:00:00Z",
+    medianBookmakerDecimal: 1 / marketProbability,
+    impliedProbability: marketProbability,
+    bestBookmakerDecimal: 1 / marketProbability,
+    bestBookmakerFractional: null,
+    bestBookmakerName: null,
+    bookmakerQuoteCount: 1,
+    bookmakerQuotes: [],
+    marketPriceBasisVersion: FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION,
+  };
+  const label: DisagreementLabel = materialModelMarketDisagreementForProbabilities(modelProbability, marketProbability) ?? "MODEL_AGREEMENT";
+  return {
+    raceDate: date,
+    raceId: `race-${id}`,
+    sourceId: null,
+    scheduledOff: "2026-10-10T13:00:00Z",
+    scheduledTime: "13:00",
+    course: "Teston",
+    raceName: "Test Hurdle",
+    family: "JUMP" as const,
+    runnerId: id,
+    horseId: `horse-${id}`,
+    horseName: id === "control" ? "Control Horse" : "Material Horse",
+    recordedAt: "2026-10-10T09:00:00Z",
+    recordedPreRace: true as const,
+    frozen: {
+      label,
+      labelledAt: "2026-10-10T09:00:00Z",
+      modelProbability,
+      modelRank: 1,
+      marketImpliedProbability: marketProbability,
+      edgePercentagePoints: (modelProbability - marketProbability) * 100,
+      firstQualifyingSnapshot: snapshot,
+      signalRanks: { tissueRank: 1, tissueProbability: modelProbability, primaryRatingRank: 1, avgL3SpeedRank: 1, latestSpeedRank: 1,
+        bestL3Rank: 1, officialRatingRank: 1, jumpG4Qualified: false, todaysRating: 100, todaysRatingRank: 1 },
+    },
+    snapshots: { NIGHT_BEFORE: snapshot },
+    movements: [],
+    finalSp: null,
+    outcome: null,
+    settledAt: null,
+  };
 }
