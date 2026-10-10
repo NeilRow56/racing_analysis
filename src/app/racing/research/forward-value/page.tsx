@@ -44,6 +44,7 @@ import { loadTodaysRatingWeightForward } from "@/lib/racing/todays-rating-weight
 import { loadModelDisagreementForward } from "@/lib/racing/model-disagreement-forward";
 import { buildResearchDashboard } from "@/lib/racing/research-monitor";
 import { DailyResearchDashboard, ResearchHistory } from "./research-dashboard";
+import { loadAwTissuePairedForward, type AwTissuePairedForwardData } from "@/lib/racing/aw-tissue-paired-forward";
 
 export const dynamic = "force-dynamic";
 
@@ -53,11 +54,12 @@ type PageProps = {
 
 export default async function ForwardValuePage({ searchParams }: PageProps) {
   const raceDate = getLocalRacingDate();
-  const [data, tissueData, awTissueData, jumpTissueData, g4Data, weightData, modelDisagreementData, params] = await Promise.all([
+  const [data, tissueData, awTissueData, jumpTissueData, awPairedData, g4Data, weightData, modelDisagreementData, params] = await Promise.all([
     loadForwardValueData(),
     loadTissueForward(TISSUE_V2_CONFIG.forwardPath, TISSUE_V2_CONFIG),
     loadAwTissueForward(),
     loadJumpTissueForward(),
+    loadAwTissuePairedForward(),
     loadJumpG4Forward(),
     loadTodaysRatingWeightForward(),
     loadModelDisagreementForward(),
@@ -99,9 +101,9 @@ export default async function ForwardValuePage({ searchParams }: PageProps) {
             <Link className="text-sm font-medium text-emerald-800 hover:underline" href="/racing/research">
               Racing Research
             </Link>
-            <h1 className="mt-2 text-2xl font-semibold tracking-normal">Research Monitor</h1>
+            <h1 className="mt-2 text-2xl font-semibold tracking-normal">Tissue VALUE Monitor</h1>
             <p className="mt-2 text-sm text-slate-500">
-              Prospective signals and model observations — research only.
+              Daily Tissue VALUE first; shadows and diagnostics stay secondary.
             </p>
           </div>
           <nav aria-label="Racing Research" className="flex flex-wrap gap-2 text-sm font-semibold">
@@ -117,6 +119,7 @@ export default async function ForwardValuePage({ searchParams }: PageProps) {
         </header>
 
         <DailyResearchDashboard dashboard={dashboard} />
+        <AwPairedResearchSection data={awPairedData} date={raceDate} />
         <details className="mt-8 border-t border-slate-200 py-4">
           <summary className="cursor-pointer text-sm font-semibold">Performance</summary>
           <SparseSampleWarning show={summary.sparseSampleWarning} />
@@ -144,6 +147,55 @@ export default async function ForwardValuePage({ searchParams }: PageProps) {
       </div>
     </main>
   );
+}
+
+export function AwPairedResearchSection({ data, date }: { data: AwTissuePairedForwardData; date: string }) {
+  const races = data.races
+    .filter((race) => race.raceDate === date && race.excludedReason === null)
+    .sort((left, right) => left.currentOffAt.localeCompare(right.currentOffAt));
+  const disagreements = races.filter((race) => race.classification === "DISAGREE");
+  return (
+    <details className="mt-6 border-t border-slate-200 py-4">
+      <summary className="cursor-pointer text-sm font-semibold">AW Tissue paired research</summary>
+      <dl className="mt-4 grid border border-slate-200 bg-white sm:grid-cols-3">
+        {[
+          ["Today races", races.length],
+          ["Agree", races.filter((race) => race.classification === "AGREE").length],
+          ["Disagree", disagreements.length],
+        ].map(([label, value]) => (
+          <div className="border-b border-slate-200 px-4 py-3 last:border-b-0 sm:border-r sm:border-b-0" key={label}>
+            <dt className="text-xs font-semibold uppercase text-slate-500">{label}</dt>
+            <dd className="mt-1 text-xl font-semibold tabular-nums text-slate-950">{value}</dd>
+          </div>
+        ))}
+      </dl>
+      {disagreements.length > 0 ? (
+        <div className="mt-4 overflow-x-auto border border-slate-200 bg-white">
+          <table className="w-full min-w-[720px] text-left text-sm">
+            <thead className="bg-slate-100 text-xs uppercase text-slate-600">
+              <tr>{["Time", "Course", "AW Tissue #1", "Turf-architecture #1"].map((heading) => <th className="px-3 py-3 font-semibold" key={heading}>{heading}</th>)}</tr>
+            </thead>
+            <tbody className="divide-y divide-slate-200">
+              {disagreements.map((race) => (
+                <tr key={race.raceId}>
+                  <td className="whitespace-nowrap px-3 py-3 font-semibold tabular-nums">{formatAwPairedTime(race.currentOffAt, race.scheduledTime)}</td>
+                  <td className="whitespace-nowrap px-3 py-3 text-slate-700">{race.course}</td>
+                  <td className="px-3 py-3 font-medium text-slate-950">{race.awTissue.rank1HorseName}</td>
+                  <td className="px-3 py-3 font-medium text-slate-950">{race.turfArch.rank1HorseName}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : null}
+    </details>
+  );
+}
+
+function formatAwPairedTime(currentOffAt: string, scheduledTime: string) {
+  const date = new Date(currentOffAt);
+  if (!Number.isFinite(date.getTime())) return scheduledTime.slice(0, 5);
+  return new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Europe/London" }).format(date);
 }
 
 async function getCanonicalResultRaceIds(

@@ -21,7 +21,7 @@ import type { SportingLifeCurrentPrice } from "./todays-racing";
 import { currentPositiveTurfTissueRankOneEdges, type TissueForwardData, type TissueForwardRace, type TissueForwardRunner } from "./tissue-forward";
 import { cleanAwTissueRace, currentPositiveAwTissueRankOneEdges, type AwTissueForwardData, type AwTissueRace } from "./aw-tissue-forward";
 import { cleanJumpTissueRace, currentPositiveJumpTissueRankOneEdges, type JumpTissueForwardData, type JumpTissueRace } from "./jump-tissue-forward";
-import { formatPositiveTissueRankOneEdgeLine, LARGE_PROBABILITY_GAP_PP, type TissueRankOneEdge } from "./tissue-rank-one-edge";
+import { LARGE_PROBABILITY_GAP_PP, type TissueRankOneEdge } from "./tissue-rank-one-edge";
 
 export { LARGE_PROBABILITY_GAP_PP };
 
@@ -50,34 +50,31 @@ export type DailyPositiveTissueRankOneSummaryInput = {
 
 export function renderDailyPositiveTissueRankOneSummary(input: DailyPositiveTissueRankOneSummaryInput): string {
   const families = dailyPositiveTissueRankOneFamilies(input);
-  const lines = ["Today's positive-edge Tissue rank-1 horses", ""];
+  const lines = ["TODAY'S TISSUE VALUE", ""];
   for (const family of families) {
     lines.push(family.heading);
     if (family.selections.length === 0) {
       lines.push("None", "");
       continue;
     }
+    lines.push("time | course | horse | Tissue probability | qualifying price");
     for (const selection of family.selections) {
-      lines.push(`${selection.displayTime} ${selection.course} - ${selection.horseName}`);
-      lines.push(formatPositiveTissueRankOneEdgeLine({
-        tissueProbability: selection.tissueProbability,
-        marketPrice: selection.comparison.price.marketPrice!,
-        edge: selection.comparison.edge,
-        bookmakerQuoteCount: selection.comparison.price.bookmakerQuoteCount,
-      }));
-      lines.push("");
+      lines.push([
+        selection.displayTime,
+        selection.course,
+        selection.horseName,
+        percent(selection.tissueProbability),
+        selection.comparison.price.marketPrice ?? decimalOrDash(selection.comparison.price.marketDecimalOdds),
+      ].join(" | "));
     }
+    lines.push("");
   }
   const turf = families[0]!.selections.length;
   const jump = families[1]!.selections.length;
   const aw = families[2]!.selections.length;
   const total = turf + jump + aw;
-  const large = families.reduce((sum, family) => sum + family.selections.filter((selection) => selection.comparison.edge * 100 >= LARGE_PROBABILITY_GAP_PP - 1e-9).length, 0);
-  lines.push("Daily positive-edge rank-1 summary:");
-  lines.push(`Turf ${turf} | Jump ${jump} | AW ${aw} | Total ${total}`);
-  lines.push(`Large edges >=${LARGE_PROBABILITY_GAP_PP}pp: ${large}`);
-  lines.push("");
-  lines.push("Monitoring only; not a betting recommendation.");
+  lines.push("TOTAL TISSUE VALUE");
+  lines.push(`Selections: ${total}`);
   return lines.join("\n").trimEnd();
 }
 
@@ -123,6 +120,63 @@ function dailyPositiveTissueRankOneFamilies(input: DailyPositiveTissueRankOneSum
       })),
     },
   ] satisfies Array<{ heading: string; selections: DailyPositiveTissueRankOneSelection[] }>;
+}
+
+function percent(value: number): string {
+  return `${(value * 100).toFixed(1)}%`;
+}
+
+function decimalOrDash(value: number | null | undefined): string {
+  return value === null || value === undefined ? "-" : value.toFixed(2);
+}
+
+export function renderTissueValueResultsSummary(input: {
+  date: string;
+  records: ForwardValueRecord[];
+  jump?: JumpTissueForwardData;
+  aw?: AwTissueForwardData;
+}): string {
+  const turfSelections = input.records
+    .filter((record) => record.raceDate === input.date && record.family === "turf" && record.tissueEdgePercentagePoints != null && record.tissueEdgePercentagePoints > 0 && record.tissueCapturedDecimalOdds !== null)
+    .map(turfTissuePerformanceSelection);
+  const jumpSelections = (input.jump?.races ?? [])
+    .filter((race) => race.raceDate === input.date && cleanJumpTissueRace(race))
+    .flatMap((race) => trackerTissuePerformanceSelection(race, "Jump"));
+  const awSelections = (input.aw?.races ?? [])
+    .filter((race) => race.raceDate === input.date && cleanAwTissueRace(race))
+    .flatMap((race) => trackerTissuePerformanceSelection(race, "All Weather"));
+  const summaries = [
+    summarizeTissuePerformance("Turf", turfSelections),
+    summarizeTissuePerformance("Jump", jumpSelections),
+    summarizeTissuePerformance("All Weather", awSelections),
+  ];
+  const combined = summarizeTissuePerformance("Combined", [...turfSelections, ...jumpSelections, ...awSelections]);
+  const pending = [...turfSelections, ...jumpSelections, ...awSelections].filter((selection) => selection.won === null).length;
+
+  const lines = [`RESULTS FOR ${input.date}`, ""];
+  for (const summary of summaries) {
+    lines.push(tissueValueResultHeading(summary.label));
+    lines.push(`Selections: ${summary.selections}`);
+    lines.push(`Winners: ${summary.winners}`);
+    lines.push(`Qualifying-price P/L: ${formatPerformanceMoney(summary.profitLoss)}`);
+    lines.push(`ROI: ${formatPerformancePct(summary.roi)}`);
+    lines.push("");
+  }
+  lines.push("TOTAL TISSUE VALUE");
+  lines.push(`Selections: ${combined.selections}`);
+  lines.push(`Winners: ${combined.winners}`);
+  lines.push(`P/L: ${formatPerformanceMoney(combined.profitLoss)}`);
+  lines.push(`ROI: ${formatPerformancePct(combined.roi)}`);
+  lines.push("");
+  lines.push(`Pending: ${pending}`);
+  lines.push("Voids: 0");
+  return lines.join("\n");
+}
+
+function tissueValueResultHeading(label: TissuePositiveEdgeRankOnePerformance["label"]): string {
+  if (label === "Turf") return "TURF TISSUE VALUE";
+  if (label === "Jump") return "JUMP TISSUE VALUE";
+  return "AW TISSUE VALUE";
 }
 
 type DailyPositiveTissueRankOneSelection = {

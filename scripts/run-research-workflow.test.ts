@@ -5,6 +5,7 @@ import {
   localDateString,
   nextLocalDateString,
   parseArgs,
+  previousLocalDateString,
   runWorkflow,
   workflowSteps,
 } from "./run-research-workflow";
@@ -22,7 +23,7 @@ afterEach(() => {
   console.error = originalError;
 });
 
-function commandLinesFor(mode: "night" | "morning" | "late" | "after", date = "2026-10-09") {
+function commandLinesFor(mode: "night" | "morning" | "live" | "late" | "after", date = "2026-10-09") {
   return workflowSteps(mode, date).map((step) => [step.script, ...(step.args ?? [])].join(" "));
 }
 
@@ -46,12 +47,15 @@ describe("research workflow wrapper", () => {
       "jump-g4:sync 2026-10-09",
       "aw-rating:sync 2026-10-09",
       "aw-tissue:sync 2026-10-09",
+      "aw-pair:sync 2026-10-09",
       "sync:aw-shadow 2026-10-09",
       "disagreement:morning 2026-10-09",
+      "value:today 2026-10-09",
+      "aw-pair:compact 2026-10-09",
     ]);
   });
 
-  test("runs the after workflow commands in order", async () => {
+  test("runs the after workflow as result import plus settlement only", async () => {
     const calls: string[] = [];
 
     const result = await runWorkflow({ mode: "after", date: "2026-10-09" }, async (step) => {
@@ -62,17 +66,35 @@ describe("research workflow wrapper", () => {
     assert.equal(result.exitCode, 0);
     assert.deepEqual(calls, [
       "sl:import-day 2026-10-09 --request-delay-seconds 2",
-      "tpr:sync 2026-10-09",
-      "tissue:sync 2026-10-09",
-      "todays-rating-weight:sync 2026-10-09",
-      "jump-rating:sync 2026-10-09",
-      "jump-tissue:sync 2026-10-09",
-      "jump-g4:sync 2026-10-09",
-      "aw-rating:sync 2026-10-09",
-      "aw-tissue:sync 2026-10-09",
-      "sync:aw-shadow 2026-10-09",
-      "disagreement:sync 2026-10-09",
+      "research:settle 2026-10-09",
+      "value:results 2026-10-09",
+      "aw-pair:results 2026-10-09",
     ]);
+    assert.doesNotMatch(calls.join("\n"), /sl:import-racecards|:sync|disagreement:/);
+  });
+
+  test("runs the live workflow as a result-only refresh for today", async () => {
+    assert.deepEqual(parseArgs(["--mode", "live"], new Date(2026, 9, 9, 15)), {
+      mode: "live",
+      date: "2026-10-09",
+    });
+    assert.deepEqual(commandLinesFor("live"), [
+      "sl:import-day 2026-10-09 --request-delay-seconds 2",
+      "research:settle 2026-10-09",
+      "value:today 2026-10-09",
+      "jump-g4:today 2026-10-09",
+      "todays-rating-weight:today 2026-10-09",
+      "aw-pair:compact 2026-10-09",
+    ]);
+    assert.doesNotMatch(commandLinesFor("live").join("\n"), /:sync|disagreement:/);
+  });
+
+  test("passes an explicit live date through the result refresh", () => {
+    assert.deepEqual(parseArgs(["--mode", "live", "2026-11-14"]), {
+      mode: "live",
+      date: "2026-11-14",
+    });
+    assert.ok(commandLinesFor("live", "2026-11-14").every((line) => line.includes("2026-11-14")));
   });
 
   test("runs the night workflow for tomorrow with only next-day card capture", () => {
@@ -111,9 +133,26 @@ describe("research workflow wrapper", () => {
     const localDate = new Date(2026, 0, 5, 23, 59, 59);
 
     assert.equal(localDateString(localDate), "2026-01-05");
+    assert.deepEqual(parseArgs(["--mode", "morning"], localDate), {
+      mode: "morning",
+      date: "2026-01-05",
+    });
+  });
+
+  test("after defaults to yesterday in local Date fields", () => {
+    const localDate = new Date(2026, 0, 1, 6, 0, 0);
+
+    assert.equal(previousLocalDateString(localDate), "2025-12-31");
     assert.deepEqual(parseArgs(["--mode", "after"], localDate), {
       mode: "after",
-      date: "2026-01-05",
+      date: "2025-12-31",
+    });
+  });
+
+  test("after respects an explicit date exactly", () => {
+    assert.deepEqual(parseArgs(["--mode", "after", "2026-10-10"], new Date(2026, 9, 11, 6)), {
+      mode: "after",
+      date: "2026-10-10",
     });
   });
 

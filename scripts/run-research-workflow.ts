@@ -2,7 +2,7 @@ import { spawn } from "node:child_process";
 import { pathToFileURL } from "node:url";
 import { resolve } from "node:path";
 
-type WorkflowMode = "night" | "morning" | "late" | "after";
+type WorkflowMode = "night" | "morning" | "live" | "late" | "after";
 
 type WorkflowStep = {
   label: string;
@@ -29,18 +29,21 @@ export function parseArgs(args: string[], now = new Date()): { mode: WorkflowMod
   const modeValue = modeIndex >= 0 ? args[modeIndex + 1] : undefined;
 
   if (modeIndex < 0 || modeValue === undefined) {
-    throw new Error("Usage: run-research-workflow.ts --mode <night|morning|late|after> [YYYY-MM-DD]");
+    throw new Error("Usage: run-research-workflow.ts --mode <night|morning|live|late|after> [YYYY-MM-DD]");
   }
-  if (modeValue !== "night" && modeValue !== "morning" && modeValue !== "late" && modeValue !== "after") {
-    throw new Error(`Invalid mode "${modeValue}". Use "night", "morning", "late", or "after".`);
+  if (modeValue !== "night" && modeValue !== "morning" && modeValue !== "live" && modeValue !== "late" && modeValue !== "after") {
+    throw new Error(`Invalid mode "${modeValue}". Use "night", "morning", "live", "late", or "after".`);
   }
 
   const positional = args.filter((_, index) => index !== modeIndex && index !== modeIndex + 1);
   if (positional.length > 1) {
-    throw new Error("Usage: run-research-workflow.ts --mode <night|morning|late|after> [YYYY-MM-DD]");
+    throw new Error("Usage: run-research-workflow.ts --mode <night|morning|live|late|after> [YYYY-MM-DD]");
   }
 
-  const date = positional[0] ?? (modeValue === "night" ? nextLocalDateString(now) : localDateString(now));
+  const date = positional[0] ??
+    (modeValue === "night" ? nextLocalDateString(now) :
+      modeValue === "after" ? previousLocalDateString(now) :
+        localDateString(now));
   if (!isValidDate(date)) {
     throw new Error(`Invalid date "${date}". Use YYYY-MM-DD.`);
   }
@@ -59,6 +62,24 @@ export function workflowSteps(mode: WorkflowMode, date: string): WorkflowStep[] 
     return [
       { label: "Refreshing racecards/prices", script: "sl:import-racecards", args: [date, "--request-delay-seconds", "2"] },
       { label: "Model disagreement late-morning sync", script: "disagreement:late", args: [date] },
+    ];
+  }
+  if (mode === "live") {
+    return [
+      { label: "Importing in-progress results", script: "sl:import-day", args: [date, "--request-delay-seconds", "2"] },
+      { label: "Settling existing prospective trackers", script: "research:settle", args: [date] },
+      { label: "Tissue VALUE live summary", script: "value:today", args: [date] },
+      { label: "Jump G4 shadow status", script: "jump-g4:today", args: [date] },
+      { label: "Today's Rating weight shadow status", script: "todays-rating-weight:today", args: [date] },
+      { label: "AW paired research summary", script: "aw-pair:compact", args: [date] },
+    ];
+  }
+  if (mode === "after") {
+    return [
+      { label: "Importing complete results", script: "sl:import-day", args: [date, "--request-delay-seconds", "2"] },
+      { label: "Settling existing prospective trackers", script: "research:settle", args: [date] },
+      { label: "Completed Tissue VALUE results", script: "value:results", args: [date] },
+      { label: "AW paired research results", script: "aw-pair:results", args: [date] },
     ];
   }
   const importStep: WorkflowStep = mode === "morning"
@@ -83,11 +104,10 @@ export function workflowSteps(mode: WorkflowMode, date: string): WorkflowStep[] 
     { label: "Jump G4 sync", script: "jump-g4:sync", args: [date] },
     { label: "AW rating sync", script: "aw-rating:sync", args: [date] },
     { label: "AW tissue sync", script: "aw-tissue:sync", args: [date] },
+    { label: "AW paired Tissue research sync", script: "aw-pair:sync", args: [date] },
     { label: "AW shadow sync", script: "sync:aw-shadow", args: [date] },
   ];
-  return mode === "morning"
-    ? [...steps, { label: "Model disagreement morning sync", script: "disagreement:morning", args: [date] }]
-    : [...steps, { label: "Model disagreement final sync", script: "disagreement:sync", args: [date] }];
+  return [...steps, { label: "Model disagreement morning sync", script: "disagreement:morning", args: [date] }, { label: "Tissue VALUE morning summary", script: "value:today", args: [date] }, { label: "AW paired research summary", script: "aw-pair:compact", args: [date] }];
 }
 
 export async function runWorkflow(
@@ -133,6 +153,12 @@ export function nextLocalDateString(date: Date) {
   const next = new Date(date);
   next.setDate(next.getDate() + 1);
   return localDateString(next);
+}
+
+export function previousLocalDateString(date: Date) {
+  const previous = new Date(date);
+  previous.setDate(previous.getDate() - 1);
+  return localDateString(previous);
 }
 
 export function isValidDate(value: string) {

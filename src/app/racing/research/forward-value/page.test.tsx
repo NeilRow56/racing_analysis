@@ -18,6 +18,7 @@ import {
 } from "@/lib/racing/forward-value-summary";
 import {
   buildFamilyTissueComparisons,
+  AwPairedResearchSection,
   EdgeBucketTables,
   FamilySummaryTable,
   PriceSnapshotDiagnostics,
@@ -28,6 +29,7 @@ import {
   TurfModelDisagreementExplainer,
   TurfModelAgreementCounts,
 } from "./page";
+import { emptyAwTissuePairedForward, type AwTissuePairedForwardData } from "@/lib/racing/aw-tissue-paired-forward";
 import { emptyAwTissueForward, type AwTissueForwardData, type AwTissueRace } from "@/lib/racing/aw-tissue-forward";
 import { emptyJumpTissueForward, type JumpTissueForwardData, type JumpTissueRace } from "@/lib/racing/jump-tissue-forward";
 import {
@@ -38,6 +40,41 @@ import {
 
 describe("Forward Value dashboard", () => {
   const data = fixtureData();
+
+  test("AW paired research is rendered as secondary compact detail", () => {
+    const paired: AwTissuePairedForwardData = {
+      ...emptyAwTissuePairedForward(),
+      races: [{
+        raceId: "aw-pair-race",
+        sourceId: null,
+        raceDate: "2026-10-09",
+        course: "Kempton",
+        raceName: null,
+        scheduledTime: "18:30",
+        scheduledOffAt: "2026-10-09T17:30:00.000Z",
+        currentOffAt: "2026-10-09T17:30:00.000Z",
+        firstCapturedAt: "2026-10-09T08:00:00.000Z",
+        runners: [],
+        awTissue: { modelVersion: "aw", modelHash: "aw-hash", probabilities: [], rankOrder: [], rank1RunnerId: "aw-runner", rank1HorseName: "AW Leader", rank1Probability: .32, valueQualified: null, selectedPriceProfitLoss: null },
+        turfArch: { modelVersion: "turf", modelHash: "turf-hash", probabilities: [], rankOrder: [], rank1RunnerId: "turf-runner", rank1HorseName: "Turf Leader", rank1Probability: .28, valueQualified: null, selectedPriceProfitLoss: null },
+        rank1Agreement: false,
+        classification: "DISAGREE",
+        valueBucket: "NEITHER_VALUE",
+        prices: { firstAvailable: { awTissue: null, turfArch: null }, earlyMorning: { awTissue: null, turfArch: null }, late: { awTissue: null, turfArch: null }, finalPreRace: { awTissue: null, turfArch: null }, sp: { awTissue: null, turfArch: null } },
+        winners: [],
+        settledAt: null,
+        excludedReason: null,
+      }],
+    };
+
+    const html = renderToStaticMarkup(<AwPairedResearchSection data={paired} date="2026-10-09" />);
+
+    assert.match(html, /AW Tissue paired research/);
+    assert.match(html, /Today races/);
+    assert.match(html, /Disagree/);
+    assert.match(html, /AW Leader/);
+    assert.match(html, /Turf Leader/);
+  });
 
   test("summary counts match tracker classifications", () => {
     const summary = summarizeForwardValue(data);

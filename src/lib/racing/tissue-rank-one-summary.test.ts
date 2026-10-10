@@ -49,17 +49,15 @@ test("daily positive-edge Tissue rank-1 summary covers Turf, Jump and AW with sh
       price("aw-positive", "aw-positive-runner", "7/2", 4.5, 2, "15:16"),
       price("aw-missing", "aw-missing-runner", null, null, 0, "16:00", "2/1", 3),
     ],
-    currentRaceIds: new Set(["turf-late", "turf-early", "turf-zero", "turf-forecast"]),
+    currentRaceIds: new Set(["turf-late", "turf-early", "turf-zero", "turf-forecast", "jump-positive", "jump-negative", "aw-positive", "aw-missing"]),
   });
 
-  assert.match(output, /Today's positive-edge Tissue rank-1 horses/);
-  assert.match(output, /TURF\n13:50 Ascot - Fluorescence\nTissue 30\.0% \| Market 4\/1 \| Edge \+10\.0pp \| Quotes 3 \| LARGE\n\n14:00 Ascot - By The Book/);
-  assert.match(output, /JUMP\n14:30 Gowran Park - Jump Horse\nTissue 26\.0% \| Market 3\/1 \| Edge \+1\.0pp \| Quotes 4/);
-  assert.match(output, /ALL WEATHER\n15:16 Wolverhampton - AW Horse\nTissue 40\.0% \| Market 7\/2 \| Edge \+17\.8pp \| Quotes 2 \| LARGE/);
+  assert.match(output, /TODAY'S TISSUE VALUE/);
+  assert.match(output, /TURF\ntime \| course \| horse \| Tissue probability \| qualifying price\n13:50 \| Ascot \| Fluorescence \| 30\.0% \| 4\/1\n14:00 \| Ascot \| By The Book \| 31\.0% \| 7\/2/);
+  assert.match(output, /JUMP\ntime \| course \| horse \| Tissue probability \| qualifying price\n14:30 \| Gowran Park \| Jump Horse \| 26\.0% \| 4\.00/);
+  assert.match(output, /ALL WEATHER\ntime \| course \| horse \| Tissue probability \| qualifying price\n15:16 \| Wolverhampton \| AW Horse \| 40\.0% \| 4\.50/);
   assert.doesNotMatch(output, /Zero Edge|Jump Negative|AW Missing|Forecast Only/);
-  assert.match(output, /Daily positive-edge rank-1 summary:\nTurf 2 \| Jump 1 \| AW 1 \| Total 4/);
-  assert.match(output, /Large edges >=10pp: 2/);
-  assert.match(output, /Monitoring only; not a betting recommendation\./);
+  assert.match(output, /TOTAL TISSUE VALUE\nSelections: 4/);
   assert.doesNotMatch(output, /Edge Buckets|Price Snapshots|Favourite Status|Rating Gap x Market Edge/);
   assert.equal(JSON.stringify({ turf, jump, aw }), before);
 });
@@ -75,7 +73,7 @@ test("daily positive-edge Tissue rank-1 summary prints None for empty families",
   });
 
   assert.match(output, /TURF\nNone\n\nJUMP\nNone\n\nALL WEATHER\nNone/);
-  assert.match(output, /Turf 0 \| Jump 0 \| AW 0 \| Total 0/);
+  assert.match(output, /TOTAL TISSUE VALUE\nSelections: 0/);
 });
 
 test("Tissue positive-edge rank-1 performance summarizes family and combined settled returns", () => {
@@ -423,7 +421,7 @@ function tissueRace(input: {
     subtype: input.versionedFamily === "jump" ? "Hurdle" : undefined,
     nhFlat: false,
     fieldSize: 2,
-    recordedAt: "2026-10-03T09:00:00.000Z",
+    recordedAt: input.versionedFamily === "jump" ? "2026-10-03T14:00:00.000Z" : "2026-10-03T09:00:00.000Z",
     recordedPreRace: true,
     modelVersion: input.modelVersion,
     featureSchemaVersion: input.featureSchemaVersion,
@@ -454,8 +452,31 @@ function tissueRace(input: {
     excludedReason: null,
     marketPriceBasisVersion: "median_bookmaker_v1",
     priceSnapshotScheduleVersion: "early_t180_t60_v1",
-    prices: { early: null, t180: null, t60: null },
+    prices: { early: tissueRacePriceSnapshot(input), t180: null, t60: null },
     selectedPriceProfitLoss: { early: null, t180: null, t60: null, bestEarly: null, finalSp: null },
+  };
+}
+
+function tissueRacePriceSnapshot(input: {
+  raceId: string;
+  probability: number;
+  versionedFamily: "jump" | "aw";
+}) {
+  const decimalPrice = input.raceId.includes("missing")
+    ? null
+    : input.raceId.includes("negative")
+      ? 5
+      : input.versionedFamily === "jump" ? 4 : 4.5;
+  if (decimalPrice === null) return null;
+  return {
+    decimalPrice,
+    impliedProbability: 1 / decimalPrice,
+    capturedAt: input.versionedFamily === "jump" ? "2026-10-03T14:00:00.000Z" : "2026-10-03T09:00:00.000Z",
+    minutesBeforeScheduledOff: 30,
+    ratingProbability: input.probability,
+    ratingEdgePercentagePoints: (input.probability - 1 / decimalPrice) * 100,
+    marketPriceBasisVersion: FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION,
+    bookmakerQuoteCount: input.versionedFamily === "jump" ? 4 : 2,
   };
 }
 

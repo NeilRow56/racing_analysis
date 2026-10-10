@@ -26,6 +26,7 @@ import { getLocalRacingDate, getSportingLifeCurrentCardRaceStatuses, getSporting
 import {
   buildForwardValueReportingScope,
   renderDailyPositiveTissueRankOneSummary,
+  renderTissueValueResultsSummary,
   renderTissuePositiveEdgeRankOnePerformance,
   summarizeForwardValue,
   summarizeForwardValueRecords,
@@ -47,7 +48,8 @@ export async function main(args: string[]) {
   const { command, positional, details } = parseArgs(args);
   if (command === "summary") await summary({ details });
   else if (command === "today") await today(positional[0] ?? getLocalRacingDate());
-  else throw new Error("Usage: report-forward-value.ts <summary|today> [YYYY-MM-DD] [--verbose|--details]");
+  else if (command === "results") await results(positional[0] ?? getLocalRacingDate());
+  else throw new Error("Usage: report-forward-value.ts <summary|today|results> [YYYY-MM-DD] [--verbose|--details]");
 }
 
 async function summary(options: ForwardValueSummaryOptions = { details: false }) {
@@ -177,6 +179,20 @@ function printPersistence(label: string, value: ForwardValuePersistenceMetrics) 
 
 async function today(date: string) {
   console.log((await loadDailyPositiveTissueRankOneReport(date)).output);
+}
+
+async function results(date: string) {
+  const [data, jumpTissue, awTissue] = await Promise.all([
+    loadForwardValueData(),
+    loadJumpTissueForward(),
+    loadAwTissueForward(),
+  ]);
+  console.log(renderTissueValueResultsSummary({
+    date,
+    records: data.races,
+    jump: jumpTissue,
+    aw: awTissue,
+  }));
 }
 
 async function loadDailyPositiveTissueRankOneReport(date: string) {

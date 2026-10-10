@@ -5,7 +5,7 @@ import { DailyResearchDashboard, ResearchHistory } from "./research-dashboard";
 import type { ResearchDashboard } from "@/lib/racing/research-monitor";
 import { RESEARCH_SIGNALS } from "@/lib/racing/research-monitor";
 
-test("primary monitor retains all prospective signal types without a saved-rule selection list", () => {
+test("primary monitor is Tissue VALUE first and keeps other research secondary", () => {
   const dashboard: ResearchDashboard = {
     date: "2026-10-09", emptyMessage: null, monitors: [],
     horses: [{ raceId: "race", runnerId: "runner", horseId: "horse", horseName: "Prospective Horse",
@@ -16,9 +16,13 @@ test("primary monitor retains all prospective signal types without a saved-rule 
     }],
   };
   const html = renderToStaticMarkup(<DailyResearchDashboard dashboard={dashboard} />);
-  for (const signal of Object.values(RESEARCH_SIGNALS)) assert.ok(html.includes(signal.name.replaceAll("'", "&#x27;")));
-  assert.equal(html.match(/>VALUE</g)?.length, 3);
-  assert.equal(html.match(/>SHADOW</g)?.length, 2);
+  assert.match(html, /Today&#x27;s Tissue VALUE/);
+  assert.match(html, /Turf|Jump|AW/);
+  assert.match(html, /Research shadows and disagreement signals/);
+  assert.match(html, /Also tracked by/);
+  assert.match(html, /Model \/ Market Disagreement/);
+  assert.match(html, />1 selections</);
+  assert.equal(html.match(/Prospective Horse/g)?.length, 1);
   assert.doesNotMatch(html, /rule selections|Saved rule research|Saved rules are retained/i);
 });
 
@@ -36,15 +40,14 @@ test("daily display renders one multi-signal horse, both reasons and unavailable
   }] };
   const html = renderToStaticMarkup(<DailyResearchDashboard dashboard={dashboard} />);
   assert.equal(html.match(/Overlap Horse/g)?.length, 1);
-  for (const text of ["VALUE", "SHADOW", "Jump Tissue", "Jump G4", "Market unavailable", "class drop", "No later snapshot"]) assert.ok(html.includes(text));
+  for (const text of ["Tissue VALUE", "Jump", "Jump G4", "class drop", "No later snapshot"]) assert.ok(html.includes(text));
+  assert.doesNotMatch(html, /Market unavailable/);
   assert.ok(html.includes("/horses/horse"));
   assert.doesNotMatch(html, /Research status/);
   assert.match(renderToStaticMarkup(<ResearchHistory />), /Closed — weak \/ unstable/);
   assert.match(renderToStaticMarkup(<ResearchHistory />), /Frozen model — prospective monitoring/);
   const priced: ResearchDashboard = { ...dashboard, horses: dashboard.horses.map((horse) => ({ ...horse, price: 8, priceSource: "imported_card" })) };
-  assert.match(renderToStaticMarkup(<DailyResearchDashboard dashboard={priced} />), /Latest imported card/);
-  priced.horses[0] = { ...priced.horses[0], priceSource: "g4_capture" };
-  assert.match(renderToStaticMarkup(<DailyResearchDashboard dashboard={priced} />), /G4 capture/);
+  assert.match(renderToStaticMarkup(<DailyResearchDashboard dashboard={priced} />), /Latest price/);
 });
 
 test("empty signals do not render an empty table or list", () => {
@@ -90,5 +93,6 @@ test("weight shadow displays market A/E and qualifying-median ROI without VALUE 
   assert.match(html, /Market A\/E/);
   assert.match(html, /Qualifying median ROI/);
   assert.match(html, /Weight shadow capture/);
-  assert.doesNotMatch(html, /VALUE|Actual \/ model expected|Final SP ROI/);
+  assert.match(html, /No Tissue VALUE selections today/);
+  assert.doesNotMatch(html, /Actual \/ model expected|Final SP ROI/);
 });

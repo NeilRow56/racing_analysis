@@ -29,7 +29,17 @@ export const RESEARCH_STATUS = [
   ["Residual models", "Closed — weak / unstable"],
 ] as const;
 
-export type ResearchSignal = { kind: ResearchSignalKind; reason: string; context: string; movement: string | null };
+export type ResearchSignal = {
+  kind: ResearchSignalKind;
+  reason: string;
+  context: string;
+  movement: string | null;
+  tissueProbability?: number | null;
+  marketProbability?: number | null;
+  qualifyingPrice?: number | null;
+  latestPrice?: number | null;
+  result?: "pending" | "settled" | "void" | null;
+};
 export type DailyResearchHorse = {
   raceId: string; runnerId: string; horseId: string; horseName: string; course: string;
   time: string; sortTime: string; price: number | null; priceSource: "imported_card" | "stored_snapshot" | "g4_capture" | "weight_capture" | null; signals: ResearchSignal[];
@@ -76,7 +86,17 @@ export function buildResearchDashboard(input: {
       : "Tissue rank #1";
     rows.push({ raceId: race.raceId, runnerId: runner.runnerId, horseId: runner.horseId, horseName: runner.horseName, course: race.course,
       time: price.displayRaceTime, sortTime: off, price: displayedPrice, priceSource: qualification?.latestPrice ? "imported_card" : "stored_snapshot",
-      signals: [{ kind, reason: `Tissue ${percent(probability)} · market ${percent(1 / price.marketDecimalOdds!)} · +${(edge * 100).toFixed(1)}pp`, context: "Tissue rank #1", movement }],
+      signals: [{
+        kind,
+        reason: `Tissue ${percent(probability)} · market ${percent(1 / price.marketDecimalOdds!)} · +${(edge * 100).toFixed(1)}pp`,
+        context: "Tissue rank #1",
+        movement,
+        tissueProbability: probability,
+        marketProbability: 1 / price.marketDecimalOdds!,
+        qualifyingPrice: price.marketDecimalOdds,
+        latestPrice: displayedPrice,
+        result: "pending",
+      }],
     });
     rows[rows.length - 1]!.signals[0]!.context = qualificationContext;
   };

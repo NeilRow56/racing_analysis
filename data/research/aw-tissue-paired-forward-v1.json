@@ -1,0 +1,16 @@
+{
+  "version": "AW_TISSUE_PAIRED_FORWARD_V1",
+  "epoch": "2026-10-10T00:00:00.000Z",
+  "awTissue": {
+    "version": "AW_TISSUE_V1",
+    "schema": "aw_tissue_stage1_features_v1",
+    "implementedAt": "2026-10-02T05:16:55.000Z"
+  },
+  "turfArch": {
+    "version": "TURF_ARCH_AW_V1",
+    "tissueVersion": "tissue_model_v2",
+    "tissueModelPath": "data/research/tissue-model-v2.json",
+    "featureMapping": "turf_v2_structural_aw_speed_v1"
+  },
+  "races": []
+}

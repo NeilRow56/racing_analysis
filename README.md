@@ -34,29 +34,19 @@ bun run build
 
 ## Forward Value Daily Workflow
 
-After importing fresh Sporting Life racecards, run the normal family syncs early in the day to create the prospective observations:
+The concise operator workflow is:
 
 ```bash
-bun run tpr:sync
-bun run jump-rating:sync
-bun run aw-rating:sync
+bun run research:night
+bun run research:morning
+bun run research:live
+bun run research:late
+bun run research:after [YYYY-MM-DD]
 ```
 
-Run the same commands again when races are 210-150 minutes from their canonical scheduled off to capture T-180 prices, and again at 90-30 minutes before off to capture T-60 prices. Repeat syncs enrich the existing observation; they do not replace the frozen rating or early price and do not create duplicate observations. A missed window remains missing and is never reconstructed retrospectively.
+`research:night` captures first next-day cards. `research:morning` imports current cards, runs the normal Tissue VALUE and shadow syncs, and includes AW paired research sync automatically after its inputs are ready. `research:live` imports available results and settles existing prospective observations only; it does not create missed selections or rewrite qualifying prices. `research:late` is an optional late price refresh. `research:after` defaults to yesterday when no date is supplied, imports complete results, settles existing rows, and prints the result summary.
 
-After racing, import canonical results first, then run each forward tracker sync so those trackers consume the imported results and settle their own records:
-
-```bash
-bun run sl:import-day YYYY-MM-DD --request-delay-seconds 2
-bun run tpr:sync
-bun run tissue:sync
-bun run jump-rating:sync
-bun run aw-rating:sync
-bun run aw-tissue:sync
-bun run jump-tissue:sync
-```
-
-Result import and tracker settlement are separate operations. `bun run sl:import-day YYYY-MM-DD --request-delay-seconds 2` writes the canonical Sporting Life results into the database; it does not automatically settle every forward tracker. Forward Value reads settlement from the family trackers, so a row can show as pending until the relevant sync has run.
+Result import and tracker settlement are separate operations inside the wrappers. `bun run sl:import-day YYYY-MM-DD --request-delay-seconds 2` writes canonical Sporting Life results into the database; `bun run research:settle YYYY-MM-DD` settles previously captured prospective tracker rows without creating new captures. A row can show as pending until result import and settlement have both run.
 
 For diagnostic AW shadow forward validation, run `bun run sync:aw-shadow` immediately after the normal AW V1 sync, before racing, and repeat after price-window and settlement syncs. This independent wrapper does not run or change production trackers. It warns about missing prospective captures, changed candidate leaders without frozen prices, and price snapshots predating prediction. See [AW shadow collection](docs/aw-tissue-shadow.md).
 
