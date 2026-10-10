@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { renderToStaticMarkup } from "react-dom/server";
-import { DailyResearchDashboard, ResearchHistory } from "./research-dashboard";
+import { DailyResearchDashboard, ResearchHistory, summarizeSettledTissueRows } from "./research-dashboard";
 import type { ResearchDashboard } from "@/lib/racing/research-monitor";
 import { RESEARCH_SIGNALS } from "@/lib/racing/research-monitor";
 
@@ -96,3 +96,138 @@ test("weight shadow displays market A/E and qualifying-median ROI without VALUE 
   assert.match(html, /No Tissue VALUE selections today/);
   assert.doesNotMatch(html, /Actual \/ model expected|Final SP ROI/);
 });
+
+test("splits pending and settled Tissue VALUE rows with same-day settlement returns", () => {
+  const dashboard: ResearchDashboard = {
+    date: "2026-10-09",
+    emptyMessage: null,
+    monitors: [],
+    horses: [
+      tissueHorse("pending", "13:00", "Pending Pete", { kind: "jump_tissue", result: "pending", outcome: null, profitLoss: null }),
+      tissueHorse("winner", "13:30", "Winner Wendy", { kind: "turf_tissue", result: "settled", outcome: "WIN", finishingPosition: 1, profitLoss: 4 }),
+      tissueHorse("loser", "14:00", "Loser Lenny", { kind: "jump_tissue", result: "settled", outcome: "LOSS", finishingPosition: 4, profitLoss: -1 }),
+      tissueHorse("void", "14:30", "Void Vera", { kind: "aw_tissue", result: "void", outcome: "VOID", finishingPosition: null, resultStatus: "non_runner", profitLoss: 0 }),
+    ],
+  };
+  const html = renderToStaticMarkup(
+    <DailyResearchDashboard dashboard={dashboard}>
+      <section aria-labelledby="aw-turf-challenger-heading"><h2 id="aw-turf-challenger-heading">AW TURF-ARCHITECTURE CHALLENGER</h2><p>Challenger Choice</p></section>
+    </DailyResearchDashboard>,
+  );
+  const pendingEnd = html.indexOf("Settled Tissue VALUE Today");
+  const pendingHtml = html.slice(0, pendingEnd);
+  const settledHtml = html.slice(pendingEnd);
+  assert.match(pendingHtml, /Pending Pete/);
+  assert.doesNotMatch(pendingHtml, /Winner Wendy|Loser Lenny|Void Vera/);
+  assert.match(settledHtml, /Winner Wendy/);
+  assert.match(settledHtml, /Loser Lenny/);
+  assert.match(settledHtml, /Void Vera/);
+  assert.match(settledHtml, /Finished 1/);
+  assert.match(settledHtml, /Finished 4/);
+  assert.match(settledHtml, /WIN/);
+  assert.match(settledHtml, /LOSS/);
+  assert.match(settledHtml, /VOID/);
+  assert.match(settledHtml, /\+£4\.00/);
+  assert.match(settledHtml, /-£1\.00/);
+  assert.match(settledHtml, /£0\.00/);
+  assert.match(settledHtml, /2 bets · 1 winner · £1 P\/L \+£3\.00 · ROI \+150\.0%/);
+  assert.match(html, /4 selections \/ 3 settled \/ 1 winners/);
+  assert.match(html, /P\/L \+£3\.00/);
+  assert.ok(html.indexOf("Settled Tissue VALUE Today") < html.indexOf("AW TURF-ARCHITECTURE CHALLENGER"));
+  assert.doesNotMatch(settledHtml.slice(0, settledHtml.indexOf("AW TURF-ARCHITECTURE CHALLENGER")), /Challenger Choice/);
+});
+
+test("settled Tissue VALUE summary counts bets, winners and summed positive and negative returns", () => {
+  const rows = [
+    settledTissueRow("winner", { outcome: "WIN", profitLoss: 9 }),
+    settledTissueRow("loser", { outcome: "LOSS", profitLoss: -1 }),
+    settledTissueRow("second-loser", { outcome: "LOSS", profitLoss: -1 }),
+  ];
+  assert.deepEqual(summarizeSettledTissueRows(rows), {
+    bets: 3,
+    winners: 1,
+    profitLoss: 7,
+    pricedBets: 3,
+    unavailableReturns: 0,
+  });
+});
+
+test("settled Tissue VALUE summary handles voids and missing qualifying-price returns", () => {
+  const rows = [
+    settledTissueRow("winner", { outcome: "WIN", profitLoss: 4 }),
+    settledTissueRow("missing", { outcome: "LOSS", profitLoss: null }),
+    settledTissueRow("nan", { outcome: "LOSS", profitLoss: Number.NaN }),
+    settledTissueRow("void", { result: "void", outcome: "VOID", profitLoss: 0 }),
+  ];
+  assert.deepEqual(summarizeSettledTissueRows(rows), {
+    bets: 3,
+    winners: 1,
+    profitLoss: 4,
+    pricedBets: 1,
+    unavailableReturns: 2,
+  });
+});
+
+test("settled Tissue VALUE summary is zeroed when no settled selections exist", () => {
+  assert.deepEqual(summarizeSettledTissueRows([]), {
+    bets: 0,
+    winners: 0,
+    profitLoss: 0,
+    pricedBets: 0,
+    unavailableReturns: 0,
+  });
+});
+
+test("settled Tissue VALUE heading reports missing returns when all P/L values are missing", () => {
+  const dashboard: ResearchDashboard = {
+    date: "2026-10-09",
+    emptyMessage: null,
+    monitors: [],
+    horses: [
+      tissueHorse("missing-one", "13:30", "Missing One", { kind: "turf_tissue", result: "settled", outcome: "LOSS", finishingPosition: 3, profitLoss: null }),
+      tissueHorse("missing-two", "14:00", "Missing Two", { kind: "jump_tissue", result: "settled", outcome: "LOSS", finishingPosition: 4, profitLoss: undefined }),
+    ],
+  };
+  const html = renderToStaticMarkup(<DailyResearchDashboard dashboard={dashboard} />);
+  assert.match(html, /2 bets · 0 winners · £1 P\/L £0\.00 · 2 returns unavailable/);
+  assert.doesNotMatch(html, /ROI/);
+});
+
+function tissueHorse(
+  id: string,
+  time: string,
+  horseName: string,
+  overrides: Partial<ResearchDashboard["horses"][number]["signals"][number]>,
+): ResearchDashboard["horses"][number] {
+  return {
+    raceId: `${id}-race`,
+    runnerId: `${id}-runner`,
+    horseId: `${id}-horse`,
+    horseName,
+    course: "Teston",
+    time,
+    sortTime: `2026-10-09T${time}:00Z`,
+    price: 5,
+    priceSource: "stored_snapshot",
+    signals: [{
+      kind: "jump_tissue",
+      reason: "Tissue 25.0% · market 20.0% · +5.0pp",
+      context: "Tissue rank #1",
+      movement: null,
+      tissueProbability: .25,
+      marketProbability: .2,
+      qualifyingPrice: 5,
+      latestPrice: 5,
+      result: "pending",
+      ...overrides,
+    }],
+  };
+}
+
+function settledTissueRow(
+  id: string,
+  overrides: Partial<ResearchDashboard["horses"][number]["signals"][number]>,
+) {
+  const horse = tissueHorse(id, "13:00", id, { result: "settled", ...overrides });
+  return { horse, signal: horse.signals[0]! };
+}

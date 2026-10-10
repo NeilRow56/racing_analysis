@@ -5,6 +5,9 @@ import { RESEARCH_SIGNALS, RESEARCH_STATUS, type DailyResearchHorse, type Prospe
 
 export function DailyResearchDashboard({ dashboard, children }: { dashboard: ResearchDashboard; children?: ReactNode }) {
   const tissueRows = tissueValueRows(dashboard.horses);
+  const pendingTissueRows = tissueRows.filter(({ signal }) => signal.result !== "settled" && signal.result !== "void");
+  const settledTissueRows = tissueRows.filter(({ signal }) => signal.result === "settled" || signal.result === "void");
+  const settledTissueSummary = summarizeSettledTissueRows(settledTissueRows);
   const shadowRows = dashboard.horses.filter((horse) =>
     !horse.signals.some((signal) => RESEARCH_SIGNALS[signal.kind].category === "VALUE") &&
     horse.signals.some((signal) => RESEARCH_SIGNALS[signal.kind].category !== "VALUE")
@@ -15,8 +18,9 @@ export function DailyResearchDashboard({ dashboard, children }: { dashboard: Res
         <h2 className="text-xl font-semibold" id="tissue-value-heading">Today&apos;s Tissue VALUE</h2>
         <span className="text-sm tabular-nums text-slate-500">{tissueRows.length} selections</span>
       </div>
-      <TissueMonitorSummary monitors={dashboard.monitors} />
-      {dashboard.emptyMessage && tissueRows.length === 0 ? <p className="py-10 text-sm text-slate-600">{dashboard.emptyMessage}</p> : <div className="mt-5 overflow-x-auto border border-slate-200 bg-white">
+      <TissueMonitorSummary monitors={dashboard.monitors} rows={tissueRows} />
+      {dashboard.emptyMessage && tissueRows.length === 0 ? <p className="py-10 text-sm text-slate-600">{dashboard.emptyMessage}</p> : <>
+      <div className="mt-5 overflow-x-auto border border-slate-200 bg-white">
         <table className="w-full min-w-[980px] text-left text-sm">
           <thead className="bg-slate-100 text-xs uppercase text-slate-600">
             <tr>
@@ -26,7 +30,7 @@ export function DailyResearchDashboard({ dashboard, children }: { dashboard: Res
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-200">
-            {tissueRows.map(({ horse, signal }) => (
+            {pendingTissueRows.map(({ horse, signal }) => (
               <tr key={`${horse.raceId}|${horse.runnerId}|${signal.kind}`}>
                 <td className="whitespace-nowrap px-3 py-3 font-semibold tabular-nums">{horse.time}</td>
                 <td className="whitespace-nowrap px-3 py-3 text-slate-700">{horse.course}</td>
@@ -45,8 +49,43 @@ export function DailyResearchDashboard({ dashboard, children }: { dashboard: Res
             ))}
           </tbody>
         </table>
-        {tissueRows.length === 0 ? <p className="px-3 py-6 text-sm text-slate-600">No Tissue VALUE selections today.</p> : null}
-      </div>}
+        {pendingTissueRows.length === 0 ? <p className="px-3 py-6 text-sm text-slate-600">{tissueRows.length === 0 ? "No Tissue VALUE selections today." : "No pending Tissue VALUE selections today."}</p> : null}
+      </div>
+      <section className="mt-6" aria-labelledby="settled-tissue-value-heading">
+        <div className="flex items-baseline justify-between gap-3 border-b border-slate-200 pb-2">
+          <h3 id="settled-tissue-value-heading" className="text-sm font-semibold uppercase text-slate-700">Settled Tissue VALUE Today</h3>
+          <span className="text-xs tabular-nums text-slate-500">{formatSettledTissueSummary(settledTissueSummary)}</span>
+        </div>
+        <div className="mt-3 overflow-x-auto border border-slate-200 bg-white">
+          <table className="w-full min-w-[860px] text-left text-sm">
+            <thead className="bg-slate-100 text-xs uppercase text-slate-600">
+              <tr>
+                {["Time", "Course", "Horse", "Family", "Qualifying price", "Finishing position / result", "Outcome", "£1 P/L"].map((heading) => (
+                  <th className="px-3 py-3 font-semibold" key={heading}>{heading}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-200">
+              {settledTissueRows.map(({ horse, signal }) => (
+                <tr key={`${horse.raceId}|${horse.runnerId}|${signal.kind}|settled`}>
+                  <td className="whitespace-nowrap px-3 py-3 font-semibold tabular-nums">{horse.time}</td>
+                  <td className="whitespace-nowrap px-3 py-3 text-slate-700">{horse.course}</td>
+                  <td className="px-3 py-3">
+                    <Link href={`/horses/${horse.horseId}`} className="font-semibold text-slate-950 hover:text-emerald-800 hover:underline">{horse.horseName}</Link>
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-3"><span className="bg-emerald-50 px-2 py-1 text-xs font-semibold text-emerald-800">{familyLabel(signal.kind)}</span></td>
+                  <td className="whitespace-nowrap px-3 py-3 tabular-nums">{decimal(signal.qualifyingPrice ?? null)}</td>
+                  <td className="whitespace-nowrap px-3 py-3 text-slate-700">{settledResultLabel(signal)}</td>
+                  <td className="whitespace-nowrap px-3 py-3 font-semibold">{signal.outcome ?? "VOID"}</td>
+                  <td className="whitespace-nowrap px-3 py-3 font-semibold tabular-nums">{money(signal.profitLoss ?? (signal.outcome === "VOID" ? 0 : null))}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {settledTissueRows.length === 0 ? <p className="px-3 py-6 text-sm text-slate-600">No settled Tissue VALUE selections today.</p> : null}
+        </div>
+      </section>
+      </>}
     </section>
     {children}
     <details className="mt-6 border-t border-slate-200 py-4">
@@ -115,25 +154,25 @@ function SecondarySignals({ horse }: { horse: DailyResearchHorse }) {
   );
 }
 
-function TissueMonitorSummary({ monitors }: { monitors: ProspectiveMonitor[] }) {
+function TissueMonitorSummary({ monitors, rows }: { monitors: ProspectiveMonitor[]; rows: ReturnType<typeof tissueValueRows> }) {
   const tissue = monitors.filter((monitor) => ["Turf Tissue", "Jump Tissue", "AW Tissue"].includes(monitor.name));
-  const totals = tissue.reduce((value, monitor) => ({
-    tracked: value.tracked + monitor.tracked,
-    settled: value.settled + monitor.settled,
-    winners: value.winners + monitor.winners,
-    profit: value.profit + (monitor.roi === null ? 0 : monitor.roi * monitor.pricedSettled),
-    priced: value.priced + monitor.pricedSettled,
-  }), { tracked: 0, settled: 0, winners: 0, profit: 0, priced: 0 });
-  const rows = [...tissue, { name: "Today", tracked: totals.tracked, settled: totals.settled, winners: totals.winners, roi: totals.priced ? totals.profit / totals.priced : null } as Pick<ProspectiveMonitor, "name" | "tracked" | "settled" | "winners" | "roi">];
+  const displayTotals = rows.reduce((value, row) => ({
+    tracked: value.tracked + 1,
+    settled: value.settled + (row.signal.result === "settled" || row.signal.result === "void" ? 1 : 0),
+    winners: value.winners + (row.signal.outcome === "WIN" ? 1 : 0),
+    profit: value.profit + (row.signal.profitLoss ?? 0),
+  }), { tracked: 0, settled: 0, winners: 0, profit: 0 });
+  const summaryRows = [...tissue.map((monitor) => ({ ...monitor, profit: monitor.roi === null ? null : monitor.roi * monitor.pricedSettled })),
+    { name: "Today", tracked: displayTotals.tracked, settled: displayTotals.settled, winners: displayTotals.winners, roi: null, profit: displayTotals.profit }];
   return (
     <dl className="mt-4 grid border border-slate-200 bg-white sm:grid-cols-2 lg:grid-cols-4">
-      {rows.map((monitor) => (
+      {summaryRows.map((monitor) => (
         <div className="border-b border-slate-200 px-4 py-3 last:border-b-0 sm:border-r lg:border-b-0" key={monitor.name}>
           <dt className="text-xs font-semibold uppercase text-slate-500">{monitor.name === "Today" ? "Today" : `${monitor.name.replace(" Tissue", "")} VALUE`}</dt>
           <dd className="mt-2 text-sm tabular-nums text-slate-900">
-            {monitor.tracked} tracked / {monitor.settled} settled / {monitor.winners} winners
+            {monitor.tracked} selections / {monitor.settled} settled / {monitor.winners} winners
           </dd>
-          <dd className="mt-1 text-xs tabular-nums text-slate-500">P/L basis ROI {pct(monitor.roi)}</dd>
+          <dd className="mt-1 text-xs tabular-nums text-slate-500">P/L {monitor.profit === null ? "—" : money(monitor.profit)}</dd>
         </div>
       ))}
     </dl>
@@ -145,6 +184,33 @@ function tissueValueRows(horses: DailyResearchHorse[]): Array<{ horse: DailyRese
     const signal = horse.signals.find((entry) => RESEARCH_SIGNALS[entry.kind].category === "VALUE");
     return signal ? [{ horse, signal }] : [];
   });
+}
+
+type TissueValueRow = ReturnType<typeof tissueValueRows>[number];
+
+export function summarizeSettledTissueRows(rows: TissueValueRow[]) {
+  return rows.reduce((summary, row) => {
+    if (row.signal.outcome === "VOID" || row.signal.result === "void") return summary;
+    const profitLoss = row.signal.profitLoss;
+    return {
+      bets: summary.bets + 1,
+      winners: summary.winners + (row.signal.outcome === "WIN" ? 1 : 0),
+      profitLoss: Number.isFinite(profitLoss) ? summary.profitLoss + profitLoss! : summary.profitLoss,
+      pricedBets: Number.isFinite(profitLoss) ? summary.pricedBets + 1 : summary.pricedBets,
+      unavailableReturns: Number.isFinite(profitLoss) ? summary.unavailableReturns : summary.unavailableReturns + 1,
+    };
+  }, { bets: 0, winners: 0, profitLoss: 0, pricedBets: 0, unavailableReturns: 0 });
+}
+
+function formatSettledTissueSummary(summary: ReturnType<typeof summarizeSettledTissueRows>) {
+  const parts = [
+    `${summary.bets} ${summary.bets === 1 ? "bet" : "bets"}`,
+    `${summary.winners} ${summary.winners === 1 ? "winner" : "winners"}`,
+    `£1 P/L ${money(summary.profitLoss)}`,
+  ];
+  if (summary.pricedBets > 0) parts.push(`ROI ${signedPct(summary.profitLoss / summary.pricedBets)}`);
+  if (summary.unavailableReturns > 0) parts.push(`${summary.unavailableReturns} ${summary.unavailableReturns === 1 ? "return" : "returns"} unavailable`);
+  return parts.join(" · ");
 }
 
 export function ResearchHistory() {
@@ -164,6 +230,10 @@ export function ResearchHistory() {
   );
 }
 function pct(value: number | null) { return value === null ? "—" : `${(value * 100).toFixed(1)}%`; }
+function signedPct(value: number) {
+  const sign = value > 0 ? "+" : value < 0 ? "-" : "";
+  return `${sign}${Math.abs(value * 100).toFixed(1)}%`;
+}
 function decimal(value: number | null) { return value === null ? "—" : value.toFixed(2); }
 function familyLabel(kind: ResearchSignal["kind"]) {
   if (kind === "turf_tissue") return "Turf";
@@ -175,6 +245,16 @@ function resultLabel(value: ResearchSignal["result"]) {
   if (value === "settled") return "Settled";
   if (value === "void") return "Void";
   return "Pending";
+}
+function settledResultLabel(signal: ResearchSignal) {
+  if (signal.result === "void" || signal.outcome === "VOID") return "Void";
+  if (signal.finishingPosition !== null && signal.finishingPosition !== undefined) return `Finished ${signal.finishingPosition}`;
+  return signal.resultStatus ?? "Settled";
+}
+function money(value: number | null) {
+  if (value === null) return "—";
+  const sign = value > 0 ? "+" : value < 0 ? "-" : "";
+  return `${sign}£${Math.abs(value).toFixed(2)}`;
 }
 function aeLabel(monitor: ProspectiveMonitor) { return monitor.roiBasis === "median" ? "Actual / model expected" : "Market A/E"; }
 function aeValue(monitor: ProspectiveMonitor) {

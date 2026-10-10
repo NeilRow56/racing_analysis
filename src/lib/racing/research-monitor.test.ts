@@ -3,7 +3,7 @@ import { test } from "node:test";
 import { emptyAwTissueForward, type AwTissueRace } from "./aw-tissue-forward";
 import { emptyJumpTissueForward, type JumpTissueRace } from "./jump-tissue-forward";
 import { emptyJumpG4ForwardData, type JumpG4Observation } from "./jump-g4-forward";
-import { FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION, FORWARD_VALUE_PRICE_SNAPSHOT_SCHEDULE_VERSION, type ForwardValuePriceSnapshot } from "./forward-value";
+import { FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION, FORWARD_VALUE_PRICE_SNAPSHOT_SCHEDULE_VERSION, type ForwardValuePriceSnapshot, type ForwardValueRecord } from "./forward-value";
 import { JUMP_TISSUE_SCHEMA, JUMP_TISSUE_VERSION } from "./jump-tissue-model";
 import { buildResearchDashboard, mergeResearchSignals, priceMovement, RESEARCH_SIGNALS, RESEARCH_STATUS, type DailyResearchHorse } from "./research-monitor";
 import { currentPositiveJumpTissueRankOneEdges } from "./jump-tissue-forward";
@@ -15,7 +15,7 @@ import { emptyModelDisagreementForwardData, type DisagreementMarketSnapshot, typ
 const date = "2026-10-09";
 function inputs() {
   return { date, prices: [] as SportingLifeCurrentPrice[], turf: { version: "tissue_forward_v2", tissueModelVersion: "tissue_model_v2", forwardStart: date, races: [] } as TissueForwardData,
-    jump: emptyJumpTissueForward(), aw: emptyAwTissueForward(), g4: emptyJumpG4ForwardData(), ratings: [] };
+    jump: emptyJumpTissueForward(), aw: emptyAwTissueForward(), g4: emptyJumpG4ForwardData(), ratings: [] as ForwardValueRecord[] };
 }
 function price(runnerId = "runner", odds: number | null = 8): SportingLifeCurrentPrice {
   return { raceId: "race", runnerId, marketPrice: odds === null ? null : String(odds), marketDecimalOdds: odds, bookmakerQuoteCount: odds === null ? 0 : 2, forecastPrice: "99/1", forecastDecimalOdds: 100, displayRaceTime: "14:00" };
@@ -97,6 +97,69 @@ test("Turf and AW use their existing rank-one positive-edge semantics", () => {
   assert.equal(buildResearchDashboard(input).horses[0].signals[0].kind, "aw_tissue");
   input.aw.races[0].top1 = "other";
   assert.equal(buildResearchDashboard(input).horses.length, 0);
+});
+
+test("same-day settled Jump and AW selections retain frozen qualifying-price returns without live prices", () => {
+  for (const family of ["jump", "aw"] as const) {
+    for (const result of [
+      { won: true, finishingPosition: 1, resultStatus: "finished", profitLoss: 7 },
+      { won: false, finishingPosition: 4, resultStatus: "finished", profitLoss: -1 },
+      { won: null, finishingPosition: null, resultStatus: "non_runner", profitLoss: null },
+      { won: true, finishingPosition: 1, resultStatus: "finished", profitLoss: 3.5 },
+    ]) {
+      const input = inputs();
+      const race = jumpRace();
+      input[family].races = [race as JumpTissueRace & AwTissueRace];
+      assert.equal(buildResearchDashboard(input).horses[0].signals[0].result, "pending");
+      race.settledAt = `${date}T14:05:00Z`;
+      race.runners[0].outcome = {
+        won: result.won, finishingPosition: result.finishingPosition, resultStatus: result.resultStatus,
+        finalSp: result.won === null ? null : 4, deadHeatDivisor: result.profitLoss === 3.5 ? 2 : 1,
+        finalSpProfitLoss: result.won === null ? null : result.won ? 3 : -1,
+      };
+      race.selectedPriceProfitLoss.early = result.profitLoss;
+      const rows = buildResearchDashboard(input).horses;
+      assert.equal(rows.length, 1);
+      const signal = rows[0].signals[0];
+      assert.equal(signal.kind, `${family}_tissue`);
+      assert.equal(signal.result, result.won === null ? "void" : "settled");
+      assert.equal(signal.outcome, result.won === null ? "VOID" : result.won ? "WIN" : "LOSS");
+      assert.equal(signal.qualifyingPrice, 8);
+      assert.equal(signal.profitLoss, result.profitLoss ?? 0);
+      assert.equal(signal.finishingPosition, result.finishingPosition);
+      assert.equal(rows[0].time, "14:00");
+      assert.equal(buildResearchDashboard({ ...input, date: "2026-10-10" }).horses.length, 0);
+    }
+  }
+});
+
+test("settled Turf VALUE selections use captured Tissue price and canonical dead-heat returns", () => {
+  for (const result of [
+    { finishingPosition: 1, finalSp: 3, winners: ["Turf Horse"], outcome: "WIN", profitLoss: 4 },
+    { finishingPosition: 4, finalSp: 3, winners: ["Other Horse"], outcome: "LOSS", profitLoss: -1 },
+    { finishingPosition: null, finalSp: null, winners: ["Other Horse"], outcome: "VOID", profitLoss: 0 },
+    { finishingPosition: 1, finalSp: 3, winners: ["Turf Horse", "Other Horse"], outcome: "WIN", profitLoss: 2 },
+  ]) {
+    const input = inputs();
+    const race = turfRace();
+    race.settledAt = `${date}T14:05:00Z`;
+    race.winners = result.winners;
+    race.runners[0].finishingPosition = result.finishingPosition;
+    race.runners[0].finalSp = result.finalSp;
+    input.turf.races = [race];
+    input.ratings = [{
+      raceId: race.raceId, family: "turf", raceDate: date, raceDateTime: `${date}T13:00:00Z`,
+      tissueRunnerId: "runner", tissueCapturedDecimalOdds: 5, tissueEdgePercentagePoints: 10,
+    } as ForwardValueRecord];
+    const rows = buildResearchDashboard(input).horses;
+    assert.equal(rows.length, 1);
+    assert.equal(rows[0].signals[0].outcome, result.outcome);
+    assert.equal(rows[0].signals[0].qualifyingPrice, 5);
+    assert.equal(rows[0].signals[0].profitLoss, result.profitLoss);
+    assert.equal(buildResearchDashboard({ ...input, date: "2026-10-10" }).horses.length, 0);
+    input.ratings[0].tissueEdgePercentagePoints = 0;
+    assert.equal(buildResearchDashboard(input).horses.length, 0);
+  }
 });
 
 test("weight shadow merges with Turf Tissue, preserves qualifying price and reports separate market metrics", () => {

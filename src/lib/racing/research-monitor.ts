@@ -1,4 +1,5 @@
 import { cleanAwTissueRace, currentPositiveAwTissueRankOneEdges, type AwTissueForwardData } from "./aw-tissue-forward";
+import { settleSelection } from "./backtest";
 import { cleanJumpTissueRace, currentPositiveJumpTissueRankOneEdges, type JumpTissueForwardData } from "./jump-tissue-forward";
 import { FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION, type ForwardValuePriceSnapshot, type ForwardValueRecord } from "./forward-value";
 import { summarizeJumpG4Forward, type JumpG4ForwardData } from "./jump-g4-forward";
@@ -39,6 +40,10 @@ export type ResearchSignal = {
   qualifyingPrice?: number | null;
   latestPrice?: number | null;
   result?: "pending" | "settled" | "void" | null;
+  finishingPosition?: number | null;
+  resultStatus?: string | null;
+  outcome?: "WIN" | "LOSS" | "VOID" | null;
+  profitLoss?: number | null;
 };
 export type DailyResearchHorse = {
   raceId: string; runnerId: string; horseId: string; horseName: string; course: string;
@@ -80,13 +85,14 @@ export function buildResearchDashboard(input: {
   const weightData = input.todaysRatingWeight ?? emptyTodaysRatingWeightForward();
   const current = new Set(prices.map((row) => `${row.raceId}|${row.runnerId}`));
   const rows: DailyResearchHorse[] = [];
-  const addTissue = (kind: ResearchSignalKind, race: { raceId: string; course: string }, runner: { runnerId: string; horseId: string; horseName: string }, probability: number, price: SportingLifeCurrentPrice, edge: number, off: string, movement: string, qualification?: { stage: string; capturedAt: string; latestPrice: SportingLifeCurrentPrice | null }) => {
+  const addTissue = (kind: ResearchSignalKind, race: { raceId: string; course: string }, runner: { runnerId: string; horseId: string; horseName: string }, probability: number, price: SportingLifeCurrentPrice, edge: number, off: string, movement: string, qualification?: { stage: string; capturedAt: string; latestPrice: SportingLifeCurrentPrice | null }, settlement?: TissueSettlementDisplay | null) => {
     const displayedPrice = qualification?.latestPrice?.marketDecimalOdds ?? price.marketDecimalOdds;
+    const displayTime = price.displayRaceTime || formatRaceTimeForDisplay({ raceDateTime: new Date(off), scheduledTime: null });
     const qualificationContext = qualification
       ? `Tissue rank #1 · qualified at ${price.marketDecimalOdds!.toFixed(2)} ${qualification.stage.toUpperCase()} ${qualification.capturedAt}`
       : "Tissue rank #1";
     rows.push({ raceId: race.raceId, runnerId: runner.runnerId, horseId: runner.horseId, horseName: runner.horseName, course: race.course,
-      time: price.displayRaceTime, sortTime: off, price: displayedPrice, priceSource: qualification?.latestPrice ? "imported_card" : "stored_snapshot",
+      time: displayTime, sortTime: off, price: displayedPrice, priceSource: qualification?.latestPrice ? "imported_card" : "stored_snapshot",
       signals: [{
         kind,
         reason: `Tissue ${percent(probability)} · market ${percent(1 / price.marketDecimalOdds!)} · +${(edge * 100).toFixed(1)}pp`,
@@ -96,7 +102,11 @@ export function buildResearchDashboard(input: {
         marketProbability: 1 / price.marketDecimalOdds!,
         qualifyingPrice: price.marketDecimalOdds,
         latestPrice: displayedPrice,
-        result: "pending",
+        result: settlement?.outcome === "VOID" ? "void" : settlement ? "settled" : "pending",
+        finishingPosition: settlement?.finishingPosition ?? null,
+        resultStatus: settlement?.resultStatus ?? null,
+        outcome: settlement?.outcome ?? null,
+        profitLoss: settlement?.profitLoss ?? null,
       }],
     });
     rows[rows.length - 1]!.signals[0]!.context = qualificationContext;
@@ -108,14 +118,33 @@ export function buildResearchDashboard(input: {
       record?.raceDateTime ?? `${date}T${comparison.price.displayRaceTime}:00`,
       priceMovement({ early: record?.tissueEarlyPriceSnapshot, t180: record?.tissueT180PriceSnapshot, t60: record?.tissueT60PriceSnapshot }));
   }
+  for (const { race, runner, record } of settledTurfTissueValueRows(turfToday, ratings)) {
+    addTissue("turf_tissue", race, runner, runner.probability, {
+      raceId: race.raceId,
+      runnerId: runner.runnerId,
+      marketPrice: record.tissueCapturedPrice ?? record.tissueCapturedDecimalOdds!.toFixed(2),
+      marketDecimalOdds: record.tissueCapturedDecimalOdds!,
+      bookmakerQuoteCount: record.tissueBookmakerQuoteCount ?? 1,
+      forecastPrice: record.tissueForecastPrice ?? null,
+      forecastDecimalOdds: record.tissueForecastDecimalPrice ?? null,
+      displayRaceTime: race.raceTime,
+    }, record.tissueEdgePercentagePoints! / 100, record.raceDateTime,
+      priceMovement({ early: record.tissueEarlyPriceSnapshot, t180: record.tissueT180PriceSnapshot, t60: record.tissueT60PriceSnapshot }),
+      undefined, turfTissueSettlement(race, runner, record.tissueCapturedDecimalOdds!));
+  }
   for (const [kind, selections] of [
-    ["jump_tissue", currentPositiveJumpTissueRankOneEdges(jump.races.filter((race) => race.raceDate === date && cleanJumpTissueRace(race) && race.settledAt === null), prices).selections],
-    ["aw_tissue", currentPositiveAwTissueRankOneEdges(aw.races.filter((race) => race.raceDate === date && cleanAwTissueRace(race) && race.settledAt === null), prices).selections],
+    ["jump_tissue", currentPositiveJumpTissueRankOneEdges(jump.races.filter((race) => race.raceDate === date && cleanJumpTissueRace(race)), prices).selections],
+    ["aw_tissue", currentPositiveAwTissueRankOneEdges(aw.races.filter((race) => race.raceDate === date && cleanAwTissueRace(race)), prices).selections],
   ] as const) {
     for (const { race, runner, comparison } of selections) addTissue(kind, race, runner, runner.probability!, comparison.price, comparison.edge, race.scheduledOffAt, priceMovement(race.prices), {
       stage: comparison.qualificationStage,
       capturedAt: comparison.qualificationPrice.capturedAt,
-      latestPrice: comparison.latestPrice,
+      latestPrice: race.settledAt === null ? comparison.latestPrice : null,
+    }, race.settledAt === null ? null : {
+      finishingPosition: runner.outcome?.finishingPosition ?? null,
+      resultStatus: runner.outcome?.resultStatus ?? null,
+      outcome: runner.outcome?.won === null ? "VOID" : runner.outcome?.won ? "WIN" : "LOSS",
+      profitLoss: runner.outcome?.won === null ? 0 : race.selectedPriceProfitLoss[comparison.qualificationStage],
     });
   }
   for (const row of g4.observations.filter((row) => row.raceDate === date && row.recordedPreRace && row.recordedAt >= g4.epoch && row.recordedAt < row.scheduledOff && row.outcome?.won !== null && current.has(`${row.raceId}|${row.runnerId}`))) {
@@ -163,6 +192,47 @@ export function priceMovement(prices: { early?: ForwardValuePriceSnapshot | null
 }
 function medianSnapshot(snapshot: ForwardValuePriceSnapshot | null | undefined) {
   return snapshot?.marketPriceBasisVersion === FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION && (snapshot.bookmakerQuoteCount ?? 0) > 0 ? snapshot : null;
+}
+
+type TissueSettlementDisplay = {
+  finishingPosition: number | null;
+  resultStatus: string | null;
+  outcome: "WIN" | "LOSS" | "VOID";
+  profitLoss: number | null;
+};
+
+function settledTurfTissueValueRows(turfToday: TissueForwardData["races"], ratings: ForwardValueRecord[]) {
+  const tissueByRaceId = new Map(turfToday.filter((race) => race.settledAt !== null && race.winners.length > 0).map((race) => [race.raceId, race]));
+  return ratings.flatMap((record) => {
+    if (record.family !== "turf" || record.tissueRunnerId === null || record.tissueCapturedDecimalOdds == null || record.tissueEdgePercentagePoints == null || record.tissueEdgePercentagePoints <= 0) return [];
+    const race = tissueByRaceId.get(record.raceId);
+    if (!race) return [];
+    const runner = race.runners.find((candidate) => candidate.runnerId === record.tissueRunnerId);
+    return runner ? [{ race, runner, record }] : [];
+  });
+}
+
+function turfTissueSettlement(race: TissueForwardData["races"][number], runner: TissueForwardData["races"][number]["runners"][number], qualifyingPrice: number): TissueSettlementDisplay {
+  const deadHeatDivisor = Math.max(1, race.winners.length);
+  const won = race.winners.some((winner) => sameHorseName(winner, runner.horseName));
+  const voided = runner.finishingPosition === null && runner.finalSp === null;
+  if (voided) return { finishingPosition: null, resultStatus: "non_runner", outcome: "VOID", profitLoss: 0 };
+  const settlement = settleSelection({
+    targetRaceId: race.raceId,
+    targetRunnerId: runner.runnerId,
+    finishingPosition: runner.finishingPosition,
+    resultStatus: "finished",
+    won,
+    placed: null,
+    startingPrice: null,
+    startingPriceDecimal: String(qualifyingPrice),
+    deadHeatDivisor,
+  });
+  return { finishingPosition: runner.finishingPosition, resultStatus: "finished", outcome: won ? "WIN" : "LOSS", profitLoss: settlement?.profitLoss ?? null };
+}
+
+function sameHorseName(left: string, right: string) {
+  return left.trim().toLowerCase() === right.trim().toLowerCase();
 }
 
 function buildProspectiveMonitors(turf: TissueForwardData, jump: JumpTissueForwardData, aw: AwTissueForwardData, g4: JumpG4ForwardData, weightData: TodaysRatingWeightForwardData, modelDisagreement?: ModelDisagreementForwardData): ProspectiveMonitor[] {
