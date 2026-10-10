@@ -68,6 +68,7 @@ def import_racecard(
     cursor: psycopg.Cursor,
     *,
     payload: dict[str, Any],
+    authoritative_race_date: str | None = None,
 ) -> dict[str, int | str]:
     page_props = payload["props"]["pageProps"]
     race = page_props["race"]
@@ -81,7 +82,7 @@ def import_racecard(
         payload=payload,
     )
     course_id = upsert_racecard_course(cursor, page_props)
-    race_row_id = upsert_racecard_race(cursor, race, course_id)
+    race_row_id = upsert_racecard_race(cursor, race, course_id, authoritative_race_date=authoritative_race_date)
     counts = upsert_racecard_runners(cursor, race, race_row_id)
 
     return {
@@ -206,11 +207,14 @@ def upsert_racecard_race(
     cursor: psycopg.Cursor,
     race: dict[str, Any],
     course_id: str,
+    *,
+    authoritative_race_date: str | None = None,
 ) -> str:
     race_summary = race["race_summary"]
+    race_date = authoritative_race_date or race_summary["date"]
     scheduled_time = parse_time(race_summary.get("time"))
-    race_datetime = parse_race_datetime(race_summary["date"], race_summary.get("time"))
-    local_race_datetime = parse_race_datetime(race_summary["date"], race_summary.get("time"))
+    race_datetime = parse_race_datetime(race_date, race_summary.get("time"))
+    local_race_datetime = parse_race_datetime(race_date, race_summary.get("time"))
 
     cursor.execute(
         """
@@ -247,7 +251,7 @@ def upsert_racecard_race(
         (
             SOURCE,
             str(race_summary["race_summary_reference"]["id"]),
-            race_summary["date"],
+            race_date,
             course_id,
             scheduled_time,
             None,

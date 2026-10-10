@@ -51,8 +51,8 @@ export function parseArgs(args: string[], now = new Date()): { mode: WorkflowMod
 export function workflowSteps(mode: WorkflowMode, date: string): WorkflowStep[] {
   if (mode === "night") {
     return [
-      { label: "Importing next-day racecards", script: "sl:import-racecards", args: [date, "--request-delay-seconds", "2"] },
-      { label: "Model disagreement night-before sync", script: "disagreement:night", args: [date] },
+      { label: "Importing first next-day racecards", script: "sl:import-racecards", args: [date, "--request-delay-seconds", "2", "--skip-existing-racecards"] },
+      { label: "Model disagreement first next-day sync", script: "disagreement:night", args: [date] },
     ];
   }
   if (mode === "late") {

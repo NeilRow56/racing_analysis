@@ -121,6 +121,7 @@ export function emptyModelDisagreementForwardData(): ModelDisagreementForwardDat
       "Fresh prospective tracker. No historical observations are backfilled.",
       "Pre-race snapshots are only stored when observed before scheduled off; SP is settlement context only.",
       "Movement and disagreement thresholds are fixed descriptive definitions, not optimised from history.",
+      "NIGHT_BEFORE means FIRST_NEXT_DAY_CAPTURE: the first valid next-day racecard snapshot after tomorrow's cards become available, not a literal nighttime requirement.",
     ],
     observations: [],
   };
@@ -219,7 +220,7 @@ export function buildModelDisagreementObservations(input: {
           firstQualifyingSnapshot: snapshot,
           signalRanks: signals,
         },
-        snapshots: snapshot ? { [input.capturePoint]: snapshot, FINAL_PRE_RACE: snapshot } : {},
+        snapshots: snapshot ? { [input.capturePoint]: snapshot } : {},
         movements: [],
         finalSp: null,
         outcome: null,
@@ -262,7 +263,6 @@ export function refreshModelDisagreementSnapshots(
     const snapshots = { ...row.snapshots };
     if (capturePoint !== "FINAL_PRE_RACE" && snapshots[capturePoint]) return row;
     snapshots[capturePoint] = snapshot;
-    snapshots.FINAL_PRE_RACE = snapshot;
     changed = true;
     return { ...row, snapshots, movements: priceMovements(snapshots) };
   });
@@ -336,8 +336,12 @@ export function summarizeModelDisagreementForward(data: ModelDisagreementForward
   return [...byLabel.entries()].map(([label, rows]) => {
     const settled = rows.filter((row) => row.outcome?.status === "settled");
     const winners = settled.filter((row) => row.outcome?.won === true);
-    const priced = settled.filter((row) => row.outcome?.qualifyingPriceProfitLoss !== null && row.frozen.firstQualifyingSnapshot?.impliedProbability !== undefined);
-    const expected = priced.reduce((sum, row) => sum + row.frozen.firstQualifyingSnapshot!.impliedProbability, 0);
+    const priced = settled.flatMap((row) => {
+      const impliedProbability = row.frozen.firstQualifyingSnapshot?.impliedProbability;
+      const profitLoss = row.outcome?.qualifyingPriceProfitLoss;
+      return finite(impliedProbability) && finite(profitLoss) ? [{ impliedProbability, profitLoss }] : [];
+    });
+    const expected = priced.reduce((sum, row) => sum + row.impliedProbability, 0);
     const movementAverage = average(rows.flatMap((row) => row.movements.map((movement) => movement.impliedProbabilityChange)));
     return {
       label,
@@ -347,7 +351,7 @@ export function summarizeModelDisagreementForward(data: ModelDisagreementForward
       strike: settled.length ? winners.length / settled.length : null,
       expectedWinners: expected,
       ae: expected ? winners.length / expected : null,
-      roi: priced.length ? priced.reduce((sum, row) => sum + row.outcome!.qualifyingPriceProfitLoss!, 0) / priced.length : null,
+      roi: priced.length ? priced.reduce((sum, row) => sum + row.profitLoss, 0) / priced.length : null,
       shortenedNightEarly: movementRate(rows, "NIGHT_BEFORE", "EARLY_MORNING"),
       shortenedEarlyLate: movementRate(rows, "EARLY_MORNING", "LATE_MORNING"),
       shortenedNightFinal: movementRate(rows, "NIGHT_BEFORE", "FINAL_PRE_RACE"),
@@ -360,7 +364,7 @@ export function renderModelDisagreementSummary(data: ModelDisagreementForwardDat
   const lines = [
     "Model Disagreement Forward Summary",
     `Version: ${data.version} | epoch: ${data.epoch}`,
-    "No historical backfill; SP is settlement context only.",
+    "No historical backfill; NIGHT_BEFORE means first next-day capture; SP is settlement context only.",
     "",
     "Label | Tracked | Settled | Winners | Strike | Exp winners | A/E | ROI | N→E shorten | E→L shorten | N→F shorten | Avg implied move",
     ...summarizeModelDisagreementForward(data).map((row) => [
@@ -507,12 +511,16 @@ function latestSnapshot(row: ModelDisagreementObservation) {
 }
 
 function pricePath(row: ModelDisagreementObservation) {
-  const parts = [
-    ["Night", row.snapshots.NIGHT_BEFORE],
+  const labelledSnapshots = [
+    ["First", row.snapshots.NIGHT_BEFORE],
     ["Early", row.snapshots.EARLY_MORNING],
     ["Late", row.snapshots.LATE_MORNING],
-    ["Latest", latestSnapshot(row)],
-  ].flatMap(([label, snapshot]) => snapshot ? [`${label} ${(snapshot as DisagreementMarketSnapshot).medianBookmakerDecimal.toFixed(2)}`] : []);
+    ["Final", row.snapshots.FINAL_PRE_RACE],
+  ] as const;
+  const parts = labelledSnapshots.flatMap(([label, snapshot]) => snapshot ? [`${label} ${snapshot.medianBookmakerDecimal.toFixed(2)}`] : []);
+  const latest = latestSnapshot(row);
+  const latestIsNamed = labelledSnapshots.some(([, snapshot]) => snapshot?.capturedAt === latest?.capturedAt);
+  if (latest && !latestIsNamed) parts.push(`Latest ${latest.medianBookmakerDecimal.toFixed(2)}`);
   return parts.length ? parts.join(" -> ") : "No bookmaker median captured";
 }
 

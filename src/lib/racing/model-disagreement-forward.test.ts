@@ -22,6 +22,7 @@ describe("model disagreement prospective tracker", () => {
     assert.equal(data.epoch, "2026-10-09T00:00:00.000Z");
     assert.deepEqual(data.observations, []);
     assert.match(data.notes.join(" "), /No historical observations are backfilled/);
+    assert.match(data.notes.join(" "), /FIRST_NEXT_DAY_CAPTURE/);
   });
 
   test("captures night once and preserves frozen evidence on duplicate sync", () => {
@@ -58,6 +59,18 @@ describe("model disagreement prospective tracker", () => {
     const settled = settleModelDisagreementObservations(initial, settledRaceMap("5"), new Date("2026-10-10T13:10:00Z")).data;
     assert.equal(settled.observations[0].snapshots.FINAL_PRE_RACE, undefined);
     assert.equal(settled.observations[0].finalSp, 5);
+  });
+
+  test("non-final captures do not populate the final pre-race slot", () => {
+    let data = upsertModelDisagreementObservations(emptyModelDisagreementForwardData(),
+      buildModelDisagreementObservations({ meetings: [meeting(6)], raceDate: date, capturePoint: "NIGHT_BEFORE", recordedAt: new Date("2026-10-09T13:30:00Z") }));
+    data = refreshModelDisagreementSnapshots(data, raceMap(5), "EARLY_MORNING", new Date("2026-10-10T07:00:00Z"));
+    data = refreshModelDisagreementSnapshots(data, raceMap(4.5), "LATE_MORNING", new Date("2026-10-10T10:30:00Z"));
+
+    assert.equal(data.observations[0].snapshots.NIGHT_BEFORE?.medianBookmakerDecimal, 6);
+    assert.equal(data.observations[0].snapshots.EARLY_MORNING?.medianBookmakerDecimal, 5);
+    assert.equal(data.observations[0].snapshots.LATE_MORNING?.medianBookmakerDecimal, 4.5);
+    assert.equal(data.observations[0].snapshots.FINAL_PRE_RACE, undefined);
   });
 
   test("movement calculation uses fixed descriptive thresholds", () => {

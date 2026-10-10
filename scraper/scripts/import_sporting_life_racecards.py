@@ -22,8 +22,8 @@ sys.path.insert(0, str(REPO_ROOT / "scraper"))
 
 from sporting_life.client import SportingLifeClient, SportingLifeRequestError  # noqa: E402
 from sporting_life.extract import (  # noqa: E402
-    BASE_URL,
     RacecardLink,
+    build_racecards_index_url,
     discover_uk_ire_racecard_links,
     fetch_racecard,
     fetch_racecards_index,
@@ -108,18 +108,34 @@ def import_sporting_life_racecards(
         skip_existing_racecards = False
     delay = request_delay_seconds if request_delay_seconds is not None else 2.0
     client = client or SportingLifeClient(request_delay_seconds=delay)
-    index_url = f"{BASE_URL}/racing/racecards/{race_date.isoformat()}"
+    target_race_date = race_date.isoformat()
+    index_url = build_racecards_index_url(race_date)
+    print(
+        "RACECARD_INDEX_REQUEST "
+        f"target_date={target_race_date} url={index_url}",
+        flush=True,
+    )
     index = fetch_with_conservative_retries(
         lambda: fetch_racecards_index(race_date, client),
         url=index_url,
     )
     links = discover_uk_ire_racecard_links(index)
+    mismatched_links = [link for link in links if link.race_date != target_race_date]
+    if mismatched_links:
+        examples = ", ".join(
+            f"{link.course_name} {link.race_time} race_id={link.race_id} discovered_date={link.race_date}"
+            for link in mismatched_links[:5]
+        )
+        raise RuntimeError(
+            "Sporting Life racecard index returned races for a different date: "
+            f"target_date={target_race_date} page_url={index.page_url} examples={examples}"
+        )
 
     write_raw_payload(
         raw_dir=RAW_OUTPUT_DIR,
-        race_date=race_date.isoformat(),
+        race_date=target_race_date,
         course_name="racecards-index",
-        race_id=race_date.isoformat(),
+        race_id=target_race_date,
         payload_type="racecard-index-next-data",
         payload=index.payload,
     )
@@ -157,6 +173,7 @@ def import_sporting_life_racecards(
                 if skip_completed_results and full_result_source_import_exists(
                     cursor,
                     link.race_id,
+                    target_race_date,
                 ):
                     skipped_completed_results += 1
                     print(
@@ -193,18 +210,42 @@ def import_sporting_life_racecards(
                 continue
 
             race_summary = race["race_summary"]
+            detail_race_id = str(race_summary["race_summary_reference"]["id"])
+            detail_race_date = race_summary["date"]
+            if detail_race_id != link.race_id:
+                print(
+                    "RACECARD_SKIPPED "
+                    f"reason=detail_race_id_mismatch target_date={target_race_date} "
+                    f"course={link.course_name!r} time={link.race_time} "
+                    f"discovered_race_id={link.race_id} detail_race_id={detail_race_id} "
+                    f"url={link.url}",
+                    flush=True,
+                )
+                continue
+            if detail_race_date != target_race_date:
+                print(
+                    "RACECARD_DETAIL_DATE_MISMATCH "
+                    f"target_date={target_race_date} detail_date={detail_race_date} "
+                    f"course={link.course_name!r} time={link.race_time} "
+                    f"race_id={link.race_id} action=using_target_date",
+                    flush=True,
+                )
             write_raw_payload(
                 raw_dir=RAW_OUTPUT_DIR,
-                race_date=race_summary["date"],
+                race_date=target_race_date,
                 course_name=race_summary["course_name"],
-                race_id=str(race_summary["race_summary_reference"]["id"]),
+                race_id=detail_race_id,
                 payload_type="racecard-next-data",
                 payload=racecard.payload,
             )
             raw_files += 1
 
             with connection.cursor() as cursor:
-                counts = import_racecard(cursor, payload=racecard.payload)
+                counts = import_racecard(
+                    cursor,
+                    payload=racecard.payload,
+                    authoritative_race_date=target_race_date,
+                )
             connection.commit()
             imported_links.append(link)
             for key in ("courses", "races", "horses", "trainers", "jockeys", "runners"):
@@ -243,17 +284,41 @@ def racecard_source_import_exists(cursor: psycopg.Cursor, race_id: str) -> bool:
     return cursor.fetchone() is not None
 
 
-def full_result_source_import_exists(cursor: psycopg.Cursor, race_id: str) -> bool:
+def full_result_source_import_exists(
+    cursor: psycopg.Cursor,
+    race_id: str,
+    race_date: str | None = None,
+) -> bool:
+    if race_date is None:
+        cursor.execute(
+            """
+            select 1
+            from source_imports
+            where source = %s
+              and source_type = %s
+              and source_id = %s
+            limit 1
+            """,
+            (SOURCE, FULL_RESULT_SOURCE_TYPE, race_id),
+        )
+        return cursor.fetchone() is not None
     cursor.execute(
         """
         select 1
-        from source_imports
-        where source = %s
-          and source_type = %s
-          and source_id = %s
+        from source_imports si
+        left join races r
+          on r.source = si.source
+         and r.source_id = si.source_id
+        where si.source = %s
+          and si.source_type = %s
+          and si.source_id = %s
+          and (
+            r.race_date = %s
+            or si.payload #>> '{props,pageProps,race,race_summary,date}' = %s
+          )
         limit 1
         """,
-        (SOURCE, FULL_RESULT_SOURCE_TYPE, race_id),
+        (SOURCE, FULL_RESULT_SOURCE_TYPE, race_id, race_date, race_date),
     )
     return cursor.fetchone() is not None
 

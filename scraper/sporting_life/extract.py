@@ -2,7 +2,8 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass
-from datetime import date
+from datetime import date, datetime
+from zoneinfo import ZoneInfo
 
 from lxml import html
 
@@ -10,6 +11,7 @@ from .client import SportingLifeClient, SportingLifeRequestError
 
 
 BASE_URL = "https://www.sportinglife.com"
+RACING_TIME_ZONE = ZoneInfo("Europe/London")
 UK_IRELAND_COUNTRY_ALIASES = {
     "ENG",
     "SCO",
@@ -126,6 +128,7 @@ class RacecardLink:
     course_id: str
     course_name: str
     race_id: str
+    race_date: str
     race_time: str
     race_title: str
     url: str
@@ -165,8 +168,22 @@ def fetch_racecards_index(
     client: SportingLifeClient | None = None,
 ) -> RacecardsIndexPayload:
     client = client or SportingLifeClient()
-    page_url = f"{BASE_URL}/racing/racecards/{race_date.isoformat()}"
+    page_url = build_racecards_index_url(race_date)
     return RacecardsIndexPayload(page_url=page_url, payload=fetch_page_next_data(page_url, client))
+
+
+def build_racecards_index_url(race_date: date, *, now: datetime | None = None) -> str:
+    today = local_racing_date(now)
+    if race_date == today:
+        return f"{BASE_URL}/racing/racecards"
+    return f"{BASE_URL}/racing/racecards/{race_date.isoformat()}"
+
+
+def local_racing_date(now: datetime | None = None) -> date:
+    current = now or datetime.now(tz=RACING_TIME_ZONE)
+    if current.tzinfo is None:
+        current = current.replace(tzinfo=RACING_TIME_ZONE)
+    return current.astimezone(RACING_TIME_ZONE).date()
 
 
 def fetch_full_result(page_url: str, client: SportingLifeClient | None = None) -> FullResultPayload:
@@ -251,6 +268,7 @@ def discover_uk_ire_racecard_links(index: RacecardsIndexPayload) -> list[Racecar
                     course_id=course_id,
                     course_name=course_name,
                     race_id=race_id,
+                    race_date=race["date"],
                     race_time=race["time"],
                     race_title=race_title,
                     url=build_racecard_url(

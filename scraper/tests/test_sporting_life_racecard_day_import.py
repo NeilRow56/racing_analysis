@@ -97,7 +97,80 @@ class SportingLifeRacecardDayImportTest(unittest.TestCase):
         self.assertEqual(result.imported_links, [])
         self.assertEqual(result.skipped_completed_results, 1)
         self.assertEqual(client.racecard_urls, [])
-        self.assertEqual(fake_connection.full_result_lookup_ids, ["937435"])
+        self.assertEqual(fake_connection.full_result_lookup_ids, [("937435", "2026-09-09")])
+
+    def test_full_result_for_different_date_does_not_skip_future_racecard(self) -> None:
+        client = FakeSportingLifeClient(
+            {
+                f"{BASE_URL}/racing/racecards/2026-09-09": next_data_html(index_payload()),
+                f"{BASE_URL}/racing/racecards/2026-09-09/carlisle/racecard/937435/carlisle-novice": next_data_html(
+                    racecard_payload(),
+                ),
+            },
+        )
+        fake_connection = FakeConnection(existing_full_result_ids={"937435"}, full_result_dates={"937435": "2026-09-08"})
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            with patch.object(racecard_importer, "RAW_OUTPUT_DIR", Path(tmp_dir)):
+                with patch.object(racecard_importer.psycopg, "connect", return_value=fake_connection):
+                    result = racecard_importer.import_sporting_life_racecards(
+                        race_date=date(2026, 9, 9),
+                        database_url="postgresql://example.test/db",
+                        request_delay_seconds=0,
+                        client=client,
+                    )
+
+        self.assertEqual([link.race_id for link in result.imported_links], ["937435"])
+        self.assertEqual(result.skipped_completed_results, 0)
+        self.assertEqual(fake_connection.full_result_lookup_ids, [("937435", "2026-09-09")])
+
+    def test_index_date_mismatch_fails_before_importing_stale_current_day_data(self) -> None:
+        payload = index_payload()
+        payload["props"]["pageProps"]["meetings"][0]["races"][0]["date"] = "2026-09-08"
+        client = FakeSportingLifeClient(
+            {
+                f"{BASE_URL}/racing/racecards/2026-09-09": next_data_html(payload),
+            },
+        )
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            with patch.object(racecard_importer, "RAW_OUTPUT_DIR", Path(tmp_dir)):
+                with patch.object(racecard_importer.psycopg, "connect") as connect:
+                    with self.assertRaisesRegex(RuntimeError, "different date"):
+                        racecard_importer.import_sporting_life_racecards(
+                            race_date=date(2026, 9, 9),
+                            database_url="postgresql://example.test/db",
+                            request_delay_seconds=0,
+                            client=client,
+                        )
+
+        connect.assert_not_called()
+
+    def test_detail_payload_date_mismatch_is_imported_under_requested_date(self) -> None:
+        payload = racecard_payload()
+        payload["props"]["pageProps"]["race"]["race_summary"]["date"] = "2026-09-08"
+        client = FakeSportingLifeClient(
+            {
+                f"{BASE_URL}/racing/racecards/2026-09-09": next_data_html(index_payload()),
+                f"{BASE_URL}/racing/racecards/2026-09-09/carlisle/racecard/937435/carlisle-novice": next_data_html(
+                    payload,
+                ),
+            },
+        )
+        fake_connection = FakeConnection()
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            with patch.object(racecard_importer, "RAW_OUTPUT_DIR", Path(tmp_dir)):
+                with patch.object(racecard_importer.psycopg, "connect", return_value=fake_connection):
+                    result = racecard_importer.import_sporting_life_racecards(
+                        race_date=date(2026, 9, 9),
+                        database_url="postgresql://example.test/db",
+                        request_delay_seconds=0,
+                        client=client,
+                    )
+
+        self.assertEqual([link.race_id for link in result.imported_links], ["937435"])
+        self.assertEqual(fake_connection.imported_race_dates, ["2026-09-09"])
 
     def test_access_control_status_stops_without_retry(self) -> None:
         attempts = 0
@@ -206,11 +279,16 @@ class FakeConnection:
         *,
         existing_racecard_ids: set[str] | None = None,
         existing_full_result_ids: set[str] | None = None,
+        full_result_dates: dict[str, str] | None = None,
     ) -> None:
         self.existing_racecard_ids = existing_racecard_ids or set()
         self.existing_full_result_ids = existing_full_result_ids or set()
+        self.full_result_dates = full_result_dates or {
+            race_id: "2026-09-09" for race_id in self.existing_full_result_ids
+        }
         self.racecard_lookup_ids: list[str] = []
-        self.full_result_lookup_ids: list[str] = []
+        self.full_result_lookup_ids: list[tuple[str, str | None]] = []
+        self.imported_race_dates: list[str] = []
         self.row_count = 0
 
     def __enter__(self) -> "FakeConnection":
@@ -246,9 +324,17 @@ class FakeCursor:
                 self.next_row = ["existing"] if source_id in self.connection.existing_racecard_ids else None
                 return
             if source_type == FULL_RESULT_SOURCE_TYPE:
-                self.connection.full_result_lookup_ids.append(source_id)
-                self.next_row = ["existing"] if source_id in self.connection.existing_full_result_ids else None
+                race_date = str(params[3]) if len(params) > 3 else None
+                self.connection.full_result_lookup_ids.append((source_id, race_date))
+                self.next_row = (
+                    ["existing"]
+                    if source_id in self.connection.existing_full_result_ids
+                    and (race_date is None or self.connection.full_result_dates.get(source_id) == race_date)
+                    else None
+                )
                 return
+        if "insert into races" in query:
+            self.connection.imported_race_dates.append(str(params[2]))
         if "returning id" in query:
             self.connection.row_count += 1
             self.next_row = [f"row-{self.connection.row_count}"]

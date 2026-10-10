@@ -2,12 +2,21 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+import sys
 import unittest
 from typing import Any
 
+from datetime import datetime
+from zoneinfo import ZoneInfo
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(REPO_ROOT / "scraper"))
+
 from sporting_life.extract import (
+    BASE_URL,
     RacecardPayload,
     RacecardsIndexPayload,
+    build_racecards_index_url,
     discover_uk_ire_racecard_links,
     fetch_page_next_data,
     looks_like_access_control_page,
@@ -16,10 +25,23 @@ from sporting_life.client import SportingLifeRequestError
 from sporting_life.importing import import_full_result, import_racecard, racecard_result_status
 
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
-
-
 class RacecardExtractionTest(unittest.TestCase):
+    def test_racecards_index_url_uses_today_and_dated_modes(self) -> None:
+        now = datetime(2026, 10, 9, 23, 30, tzinfo=ZoneInfo("Europe/London"))
+
+        self.assertEqual(
+            build_racecards_index_url(datetime(2026, 10, 9).date(), now=now),
+            f"{BASE_URL}/racing/racecards",
+        )
+        self.assertEqual(
+            build_racecards_index_url(datetime(2026, 10, 10).date(), now=now),
+            f"{BASE_URL}/racing/racecards/2026-10-10",
+        )
+        self.assertEqual(
+            build_racecards_index_url(datetime(2026, 10, 12).date(), now=now),
+            f"{BASE_URL}/racing/racecards/2026-10-12",
+        )
+
     def test_racecard_page_exposes_race_payload(self) -> None:
         payload = sample_racecard_payload()
 
@@ -49,6 +71,7 @@ class RacecardExtractionTest(unittest.TestCase):
         self.assertEqual([link.race_id for link in links], ["937435", "937407"])
         self.assertEqual(links[1].meeting_id, "121266")
         self.assertEqual(links[1].course_id, "344")
+        self.assertEqual(links[1].race_date, "2026-09-09")
         self.assertEqual(
             links[1].url,
             "https://www.sportinglife.com/racing/racecards/2026-09-09/cork/racecard/937407/irish-ebf-auction-series-race",
@@ -197,6 +220,17 @@ class RacecardImportTest(unittest.TestCase):
         self.assertEqual(first_runner_params[19], 82)
         self.assertEqual(first_runner_params[22], "6/1")
         self.assertEqual(first_runner_params[23], "7.000")
+
+    def test_import_racecard_can_persist_requested_target_date_as_authoritative(self) -> None:
+        cursor = FakeCursor()
+        payload = sample_racecard_payload()
+        payload["props"]["pageProps"]["race"]["race_summary"]["date"] = "2026-10-09"
+
+        import_racecard(cursor, payload=payload, authoritative_race_date="2026-10-10")
+
+        race_params = cursor.first_query_containing("insert into races")[1]
+        self.assertEqual(race_params[2], "2026-10-10")
+        self.assertEqual(race_params[6].date().isoformat(), "2026-10-10")
 
     def test_import_racecard_records_non_runner_state_without_finish_position(self) -> None:
         cursor = FakeCursor()

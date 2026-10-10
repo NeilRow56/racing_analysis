@@ -81,7 +81,7 @@ describe("research workflow wrapper", () => {
       date: "2026-10-10",
     });
     assert.deepEqual(commandLinesFor("night", "2026-10-10"), [
-      "sl:import-racecards 2026-10-10 --request-delay-seconds 2",
+      "sl:import-racecards 2026-10-10 --request-delay-seconds 2 --skip-existing-racecards",
       "disagreement:night 2026-10-10",
     ]);
     assert.equal(nextLocalDateString(new Date(2026, 11, 31)), "2027-01-01");

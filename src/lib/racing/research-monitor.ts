@@ -160,7 +160,12 @@ function buildProspectiveMonitors(turf: TissueForwardData, jump: JumpTissueForwa
   const disagreementSettled = disagreement.reduce((sum, row) => sum + row.settled, 0);
   const disagreementWinners = disagreement.reduce((sum, row) => sum + row.winners, 0);
   const disagreementExpected = disagreement.reduce((sum, row) => sum + row.expectedWinners, 0);
-  const disagreementPriced = modelDisagreement?.observations.filter((row) => row.outcome?.qualifyingPriceProfitLoss !== null) ?? [];
+  const disagreementPriced = modelDisagreement?.observations.flatMap((row) => {
+    if (row.outcome?.status !== "settled") return [];
+    const qualifyingPrice = row.frozen.firstQualifyingSnapshot?.medianBookmakerDecimal;
+    const profitLoss = row.outcome.qualifyingPriceProfitLoss;
+    return finite(qualifyingPrice) && finite(profitLoss) ? [{ profitLoss }] : [];
+  }) ?? [];
   return [summarizeMonitor("Turf Tissue", "FROZEN", turfRows, "Clean rank-one model observations"),
     tissueMonitor("Jump Tissue", jump.races.filter(cleanJumpTissueRace)), tissueMonitor("AW Tissue", aw.races.filter(cleanAwTissueRace)),
     { name: "Jump G4", status: "SHADOW", tracked: g4Summary.tracked, settled: g4Summary.settled, winners: g4Summary.winners, strike: g4Summary.strike,
@@ -171,7 +176,7 @@ function buildProspectiveMonitors(turf: TissueForwardData, jump: JumpTissueForwa
     { name: RESEARCH_SIGNALS.model_disagreement.name, status: "MONITORING", tracked: modelDisagreement?.observations.length ?? 0,
       settled: disagreementSettled, winners: disagreementWinners, strike: disagreementSettled ? disagreementWinners / disagreementSettled : null,
       ae: disagreementExpected ? disagreementWinners / disagreementExpected : null,
-      roi: disagreementPriced.length ? disagreementPriced.reduce((sum, row) => sum + row.outcome!.qualifyingPriceProfitLoss!, 0) / disagreementPriced.length : null,
+      roi: disagreementPriced.length ? disagreementPriced.reduce((sum, row) => sum + row.profitLoss, 0) / disagreementPriced.length : null,
       roiBasis: "qualifying_median", pricedSettled: disagreementPriced.length, cohort: "Jump/AW fixed-label price paths" }];
 }
 function summarizeMonitor(name: string, status: ProspectiveMonitor["status"], rows: Array<{ won: boolean | null; probability: number | null; profit: number | null }>, cohort: string): ProspectiveMonitor {
@@ -187,3 +192,4 @@ function summarizeMonitor(name: string, status: ProspectiveMonitor["status"], ro
 function percent(value: number) { return `${(value * 100).toFixed(1)}%`; }
 function number(value: number) { return Number(value.toFixed(1)).toString(); }
 function rank(value: number | null) { return value === null ? "unavailable" : `#${value}`; }
+function finite(value: unknown): value is number { return typeof value === "number" && Number.isFinite(value); }

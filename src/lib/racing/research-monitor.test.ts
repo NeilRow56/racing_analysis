@@ -10,6 +10,7 @@ import { currentPositiveJumpTissueRankOneEdges } from "./jump-tissue-forward";
 import type { SportingLifeCurrentPrice } from "./todays-racing";
 import type { TissueForwardData, TissueForwardRace } from "./tissue-forward";
 import { emptyTodaysRatingWeightForward, type TodaysRatingWeightObservation } from "./todays-rating-weight-forward";
+import { emptyModelDisagreementForwardData, type DisagreementMarketSnapshot, type ModelDisagreementObservation } from "./model-disagreement-forward";
 
 const date = "2026-10-09";
 function inputs() {
@@ -202,3 +203,128 @@ test("monitor returns use stored settlement and exclude void G4 observations", (
   assert.equal(monitor.roiBasis, "final_sp");
   assert.equal(monitor.tracked, 2);
 });
+
+test("model disagreement monitor renders pending null outcomes without settled returns", () => {
+  const input = { ...inputs(), prices: [price()], modelDisagreement: disagreementData([disagreementRow({ outcome: null, settledAt: null })]) };
+  const dashboard = buildResearchDashboard(input);
+  const monitor = disagreementMonitor(dashboard);
+  assert.equal(dashboard.horses.length, 1);
+  assert.equal(dashboard.horses[0].signals[0].kind, "model_disagreement");
+  assert.equal(monitor.tracked, 1);
+  assert.equal(monitor.settled, 0);
+  assert.equal(monitor.winners, 0);
+  assert.equal(monitor.strike, null);
+  assert.equal(monitor.ae, null);
+  assert.equal(monitor.roi, null);
+  assert.equal(monitor.pricedSettled, 0);
+});
+
+test("model disagreement monitor counts pending as tracked but settled rows drive performance", () => {
+  const input = { ...inputs(), prices: [price()], modelDisagreement: disagreementData([
+    disagreementRow({ runnerId: "pending", horseName: "Pending Horse", outcome: null, settledAt: null }),
+    disagreementRow({ runnerId: "settled", horseName: "Settled Horse", outcome: settledDisagreementOutcome({ won: true, profitLoss: 4 }), settledAt: `${date}T13:10:00Z` }),
+  ]) };
+  const monitor = disagreementMonitor(buildResearchDashboard(input));
+  assert.equal(monitor.tracked, 2);
+  assert.equal(monitor.settled, 1);
+  assert.equal(monitor.winners, 1);
+  assert.equal(monitor.strike, 1);
+  assert.equal(monitor.ae, 5);
+  assert.equal(monitor.roi, 4);
+  assert.equal(monitor.pricedSettled, 1);
+});
+
+test("model disagreement monitor includes valid qualifying-price profit loss", () => {
+  const input = { ...inputs(), modelDisagreement: disagreementData([
+    disagreementRow({ outcome: settledDisagreementOutcome({ won: false, profitLoss: -1 }), settledAt: `${date}T13:10:00Z` }),
+  ]) };
+  const monitor = disagreementMonitor(buildResearchDashboard(input));
+  assert.equal(monitor.settled, 1);
+  assert.equal(monitor.winners, 0);
+  assert.equal(monitor.roi, -1);
+  assert.equal(monitor.pricedSettled, 1);
+});
+
+test("model disagreement monitor excludes settled rows without valid qualifying prices", () => {
+  const input = { ...inputs(), modelDisagreement: disagreementData([
+    disagreementRow({ firstQualifyingSnapshot: null, outcome: settledDisagreementOutcome({ won: false, profitLoss: null }), settledAt: `${date}T13:10:00Z` }),
+  ]) };
+  const monitor = disagreementMonitor(buildResearchDashboard(input));
+  assert.equal(monitor.tracked, 1);
+  assert.equal(monitor.settled, 1);
+  assert.equal(monitor.winners, 0);
+  assert.equal(monitor.strike, 0);
+  assert.equal(monitor.ae, null);
+  assert.equal(monitor.roi, null);
+  assert.equal(monitor.pricedSettled, 0);
+});
+
+test("model disagreement monitor renders safely with zero observations", () => {
+  const input = { ...inputs(), modelDisagreement: disagreementData([]) };
+  const monitor = disagreementMonitor(buildResearchDashboard(input));
+  assert.equal(monitor.tracked, 0);
+  assert.equal(monitor.settled, 0);
+  assert.equal(monitor.winners, 0);
+  assert.equal(monitor.strike, null);
+  assert.equal(monitor.ae, null);
+  assert.equal(monitor.roi, null);
+  assert.equal(monitor.pricedSettled, 0);
+});
+
+function disagreementMonitor(dashboard: ReturnType<typeof buildResearchDashboard>) {
+  return dashboard.monitors.find((monitor) => monitor.name === RESEARCH_SIGNALS.model_disagreement.name)!;
+}
+
+function disagreementData(observations: ModelDisagreementObservation[]) {
+  return { ...emptyModelDisagreementForwardData(), observations };
+}
+
+type DisagreementRowOverrides = Partial<ModelDisagreementObservation> & { firstQualifyingSnapshot?: DisagreementMarketSnapshot | null };
+
+function disagreementRow(overrides: DisagreementRowOverrides = {}): ModelDisagreementObservation {
+  const { firstQualifyingSnapshot: snapshotOverride, ...rowOverrides } = overrides;
+  const firstQualifyingSnapshot = "firstQualifyingSnapshot" in overrides ? snapshotOverride ?? null : disagreementSnapshot(5);
+  return {
+    raceDate: date,
+    raceId: overrides.raceId ?? `race-${overrides.runnerId ?? "runner"}`,
+    sourceId: null,
+    scheduledOff: `${date}T13:00:00Z`,
+    scheduledTime: "13:00",
+    course: "Teston",
+    raceName: "Test Chase",
+    family: "JUMP",
+    runnerId: "runner",
+    horseId: "horse",
+    horseName: "Disagreement Horse",
+    recordedAt: `${date}T09:00:00Z`,
+    recordedPreRace: true,
+    frozen: {
+      label: "MODEL_HIGH_MARKET_LOW",
+      labelledAt: `${date}T09:00:00Z`,
+      modelProbability: .3,
+      modelRank: 1,
+      marketImpliedProbability: firstQualifyingSnapshot?.impliedProbability ?? null,
+      edgePercentagePoints: firstQualifyingSnapshot ? (.3 - firstQualifyingSnapshot.impliedProbability) * 100 : null,
+      firstQualifyingSnapshot,
+      signalRanks: { tissueRank: 1, tissueProbability: .3, primaryRatingRank: 4, avgL3SpeedRank: 2, latestSpeedRank: 3,
+        bestL3Rank: 2, officialRatingRank: 5, jumpG4Qualified: false, todaysRating: 100, todaysRatingRank: 2 },
+    },
+    snapshots: firstQualifyingSnapshot ? { NIGHT_BEFORE: firstQualifyingSnapshot } : {},
+    movements: [],
+    finalSp: null,
+    outcome: null,
+    settledAt: null,
+    ...rowOverrides,
+  };
+}
+
+function settledDisagreementOutcome({ won, profitLoss }: { won: boolean; profitLoss: number | null }): ModelDisagreementObservation["outcome"] {
+  return { status: "settled", resultStatus: "finished", finishingPosition: won ? 1 : 2, won,
+    deadHeatDivisor: 1, finalSp: won ? 4 : 6, qualifyingPriceProfitLoss: profitLoss, finalSpProfitLoss: won ? 3 : -1 };
+}
+
+function disagreementSnapshot(decimalPrice: number): DisagreementMarketSnapshot {
+  return { capturePoint: "NIGHT_BEFORE", capturedAt: `${date}T09:00:00Z`, medianBookmakerDecimal: decimalPrice, impliedProbability: 1 / decimalPrice,
+    bestBookmakerDecimal: decimalPrice, bestBookmakerFractional: null, bestBookmakerName: null, bookmakerQuoteCount: 2, bookmakerQuotes: [],
+    marketPriceBasisVersion: FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION };
+}
