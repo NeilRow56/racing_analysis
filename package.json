@@ -82,7 +82,7 @@
     "value:summary": "bun run scripts/report-forward-value.ts summary",
     "research:settle": "bun --env-file=.env.local run scripts/settle-research-results.ts",
     "research:night": "bun run scripts/run-research-workflow.ts --mode night",
-    "research:morning": "bun run scripts/run-research-workflow.ts --mode morning",
+    "research:morning": "bun --env-file=.env.local run scripts/run-research-workflow.ts --mode morning",
     "research:live": "bun run scripts/run-research-workflow.ts --mode live",
     "research:late": "bun run scripts/run-research-workflow.ts --mode late",
     "research:after": "bun run scripts/run-research-workflow.ts --mode after",

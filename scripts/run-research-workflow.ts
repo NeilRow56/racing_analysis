@@ -1,6 +1,7 @@
 import { spawn } from "node:child_process";
 import { pathToFileURL } from "node:url";
 import { resolve } from "node:path";
+import { checkStoredRacecards, isRacecardAcquisitionFailure, type StoredRacecardStatus } from "./research-racecard-fallback";
 
 type WorkflowMode = "night" | "morning" | "live" | "late" | "after";
 
@@ -8,9 +9,11 @@ type WorkflowStep = {
   label: string;
   script: string;
   args?: string[];
+  env?: Record<string, string>;
 };
 
-type ChildRunner = (step: WorkflowStep) => Promise<number>;
+type ChildResult = number | { exitCode: number; output: string };
+type ChildRunner = (step: WorkflowStep) => Promise<ChildResult>;
 
 type WorkflowFailure = {
   step: WorkflowStep;
@@ -20,6 +23,7 @@ type WorkflowFailure = {
 type WorkflowResult = {
   exitCode: number;
   failed?: WorkflowFailure;
+  existingCards?: StoredRacecardStatus;
 };
 
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
@@ -115,16 +119,29 @@ export function workflowSteps(mode: WorkflowMode, date: string): WorkflowStep[] 
 export async function runWorkflow(
   options: { mode: WorkflowMode; date: string },
   runner: ChildRunner = runBunScript,
+  cardChecker = checkStoredRacecards,
 ): Promise<WorkflowResult> {
   const steps = workflowSteps(options.mode, options.date);
+  let existingCards: StoredRacecardStatus | undefined;
 
   console.log(`Research ${options.mode} - ${options.date}`);
   console.log();
 
   for (const [index, step] of steps.entries()) {
     console.log(`[${index + 1}/${steps.length}] ${step.label}...`);
-    const exitCode = await runner(step);
+    const result = await runner(existingCards ? { ...step, env: { RESEARCH_EXISTING_CARDS_DATE: options.date } } : step);
+    const exitCode = typeof result === "number" ? result : result.exitCode;
     if (exitCode !== 0) {
+      if (options.mode === "morning" && index === 0 && typeof result !== "number" && isRacecardAcquisitionFailure(result.output)) {
+        const status = await cardChecker(options.date);
+        console.log(`LOCAL_RACECARDS date=${status.date} races=${status.races} meetings=${status.meetings} runners=${status.runners} usable=${status.usable}`);
+        if (status.usable && status.date === options.date) {
+          existingCards = status;
+          console.warn(`RACECARD_REFRESH_FAILED_USING_EXISTING date=${options.date} races=${status.races} meetings=${status.meetings} runners=${status.runners} reason=Sporting Life request failed`);
+          console.warn("No new market snapshot: stored quotes will not be recaptured. Prices/runners may be stale.");
+          continue;
+        }
+      }
       console.error(`Step failed: ${step.label} (${step.script}) exited with code ${exitCode}`);
       return { exitCode, failed: { step, exitCode } };
     }
@@ -132,17 +149,29 @@ export async function runWorkflow(
     console.log();
   }
 
+  if (existingCards) console.warn("Racecards:\nUSING EXISTING LOCAL CARDS - Sporting Life refresh failed");
   console.log(`Research ${options.mode} complete.`);
-  return { exitCode: 0 };
+  return existingCards ? { exitCode: 0, existingCards } : { exitCode: 0 };
 }
 
 export function runBunScript(step: WorkflowStep) {
-  return new Promise<number>((resolve, reject) => {
+  return new Promise<ChildResult>((resolve, reject) => {
+    const captureOutput = step.script === "sl:import-racecards";
+    const output = ["", ""];
     const child = spawn("bun", ["run", step.script, ...(step.args ?? [])], {
-      stdio: "inherit",
+      stdio: captureOutput ? ["inherit", "pipe", "pipe"] : "inherit",
+      env: { ...process.env, ...step.env },
     });
+    if (captureOutput) {
+      for (const [index, [stream, destination]] of ([[child.stdout, process.stdout], [child.stderr, process.stderr]] as const).entries()) {
+        stream?.on("data", (chunk: Buffer) => {
+          output[index] = (output[index] + chunk.toString()).slice(-64_000);
+          destination.write(chunk);
+        });
+      }
+    }
     child.once("error", reject);
-    child.once("close", (code) => resolve(code ?? 1));
+    child.once("close", (code) => resolve(captureOutput ? { exitCode: code ?? 1, output: output.join("\n") } : code ?? 1));
   });
 }
 

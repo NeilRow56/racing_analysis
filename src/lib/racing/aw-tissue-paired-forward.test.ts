@@ -25,6 +25,7 @@ import { TISSUE_V2_CONFIG, type FrozenTissueModel } from "./tissue-forward";
 import type { HorseMetricsAsOf } from "./horse-metrics";
 import type { TodayRace, TodayRunner } from "./todays-racing";
 import { buildAwTurfChallengerReport, renderAwTurfChallengerToday } from "./aw-turf-challenger-report";
+import { currentDayProspectiveCapture, withoutStaleBookmakerQuotes } from "./current-day-sync";
 
 const recordedAt = new Date("2026-10-10T08:00:00.000Z");
 const off = new Date("2026-10-10T14:00:00.000Z");
@@ -62,6 +63,35 @@ const turfModel: FrozenTissueModel = {
 };
 
 describe("AW Tissue paired prospective tracker", () => {
+  test("morning existing-card fallback preserves prices without fabricating a later snapshot", () => {
+    const previous = process.env.RESEARCH_EXISTING_CARDS_DATE;
+    const date = "2026-10-10";
+    const race = sampleRace("disagree");
+    const record = enrichAwTissuePairedPrices(build("disagree")!, race, new Date("2026-10-10T11:00:00.000Z"));
+    const before = JSON.stringify(race);
+    try {
+      process.env.RESEARCH_EXISTING_CARDS_DATE = date;
+      const capture = currentDayProspectiveCapture({ status: "ok", raceDate: date, displayDate: date, refreshedAt: recordedAt, sportingLifeCurrentCardVersion: "reconciled_v1", meetings: [{ courseId: "course", courseSourceId: "course", courseName: "Wolverhampton", country: "GB", order: 0, races: [race] }] });
+      assert.equal(capture.skipped, false);
+      const storedRace = capture.meetings[0]!.races[0]!;
+      assert.deepEqual(storedRace.runners.map((runner) => runner.metrics), race.runners.map((runner) => runner.metrics));
+      assert.ok(storedRace.runners.every((runner) => !runner.bookmakerQuotes?.length && runner.oddsDecimal === null));
+      const noRefresh = enrichAwTissuePairedPrices(record, storedRace, new Date("2026-10-10T13:15:00.000Z"));
+      assert.strictEqual(noRefresh, record);
+      assert.equal(record.prices.finalPreRace.turfArch, null);
+      assert.equal(JSON.stringify(race), before);
+      const pendingRunner = withoutStaleBookmakerQuotes({ ...race.runners[0]!, raceDate: date });
+      assert.deepEqual(pendingRunner.bookmakerQuotes, []);
+      assert.equal(pendingRunner.oddsDecimal, race.runners[0]!.oddsDecimal);
+      const completed = finishedRace("b");
+      const safeResult = { ...completed, runners: completed.runners.map((runner) => withoutStaleBookmakerQuotes({ ...runner, raceDate: date })) };
+      assert.deepEqual(settleAwTissuePairedRace(record, safeResult, new Date("2026-10-10T15:00:00.000Z")), settleAwTissuePairedRace(record, completed, new Date("2026-10-10T15:00:00.000Z")));
+    } finally {
+      if (previous === undefined) delete process.env.RESEARCH_EXISTING_CARDS_DATE;
+      else process.env.RESEARCH_EXISTING_CARDS_DATE = previous;
+    }
+  });
+
   test("challenger reports only eligible daily captures, frozen prices and independent VALUE flags", () => {
     const record = enrichAwTissuePairedPrices(build("disagree")!, sampleRace("disagree", { aPrice: 5, bPrice: 5 }), new Date("2026-10-10T11:00:00.000Z"));
     const data = { ...emptyAwTissuePairedForward(), races: [

@@ -1,6 +1,7 @@
 import { and, asc, desc, eq, inArray, sql } from "drizzle-orm";
 import type { TprConfidenceContext } from "./tpr-confidence-context";
 import { createDbConnection } from "@/db";
+import { withoutStaleBookmakerQuotes } from "./current-day-sync";
 import {
   courses,
   horses,
@@ -549,7 +550,7 @@ export async function getRacecardRowsForRaceIds(
 ): Promise<TodayRacecardRow[]> {
   const uniqueRaceIds = [...new Set(raceIds)];
   if (uniqueRaceIds.length === 0) return [];
-  return getRacecardRowsWhere(db, inArray(races.id, uniqueRaceIds));
+  return (await getRacecardRowsWhere(db, inArray(races.id, uniqueRaceIds))).map(withoutStaleBookmakerQuotes);
 }
 
 export type SportingLifeCurrentCardRaceStatuses = Omit<
