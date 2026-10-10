@@ -3,7 +3,7 @@ import { dirname } from "node:path";
 import type { HistoricalPreRaceFeatureRow } from "./historical-target-metrics";
 import type { TodayRace, TodayRunner } from "./todays-racing";
 import type { SportingLifeCurrentPrice } from "./todays-racing";
-import { isOrdinaryFlatTurfRaceForDisplay } from "./todays-racing";
+import { formatSportingLifeRaceTime, isOrdinaryFlatTurfRaceForDisplay } from "./todays-racing";
 import {
   currentTissueRankOneEdge,
   formatPositiveTissueRankOneEdgeLine,
@@ -322,7 +322,7 @@ function tissueTodayDisplayTime(
   race: TissueForwardRace,
   racecardContext: SportingLifeCurrentPrice[],
 ): string {
-  return racecardContext.find((entry) => entry.raceId === race.raceId)?.displayRaceTime ?? race.raceTime;
+  return racecardContext.find((entry) => entry.raceId === race.raceId)?.displayRaceTime || formatSportingLifeRaceTime(race.raceDate, race.raceTime);
 }
 
 export type TissueMarketPriceComparison = {

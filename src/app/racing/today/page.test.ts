@@ -112,6 +112,12 @@ describe("Today race status label", () => {
 });
 
 describe("Today request orchestration", () => {
+  test("race headings use the shared timezone-aware formatter", () => {
+    const source = readFileSync(new URL("./page.tsx", import.meta.url), "utf8");
+    assert.match(source, /\{formatRaceTimeForDisplay\(race\)\}/);
+    assert.doesNotMatch(source, /\{race\.scheduledTime(?:\?\.)?\.slice/);
+  });
+
   test("retires the combined saved-rule list and keeps research access secondary", () => {
     const source = readFileSync(new URL("./page.tsx", import.meta.url), "utf8");
 

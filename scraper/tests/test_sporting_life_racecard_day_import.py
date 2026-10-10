@@ -29,7 +29,7 @@ class SportingLifeRacecardDayImportTest(unittest.TestCase):
     def test_existing_racecard_is_refreshed_by_default(self) -> None:
         client = FakeSportingLifeClient(
             {
-                f"{BASE_URL}/racing/racecards/2026-09-09": next_data_html(index_payload()),
+                f"{BASE_URL}/api/horse-racing/racing/racecards/2026-09-09": json.dumps(index_payload()["props"]["pageProps"]["meetings"]),
                 f"{BASE_URL}/racing/racecards/2026-09-09/carlisle/racecard/937435/carlisle-novice": next_data_html(
                     racecard_payload(),
                 ),
@@ -55,7 +55,7 @@ class SportingLifeRacecardDayImportTest(unittest.TestCase):
     def test_skip_existing_flag_preserves_resume_mode(self) -> None:
         client = FakeSportingLifeClient(
             {
-                f"{BASE_URL}/racing/racecards/2026-09-09": next_data_html(index_payload()),
+                f"{BASE_URL}/api/horse-racing/racing/racecards/2026-09-09": json.dumps(index_payload()["props"]["pageProps"]["meetings"]),
             },
         )
         fake_connection = FakeConnection(existing_racecard_ids={"937435"})
@@ -79,7 +79,7 @@ class SportingLifeRacecardDayImportTest(unittest.TestCase):
     def test_completed_full_result_skips_racecard_fetch(self) -> None:
         client = FakeSportingLifeClient(
             {
-                f"{BASE_URL}/racing/racecards/2026-09-09": next_data_html(index_payload()),
+                f"{BASE_URL}/api/horse-racing/racing/racecards/2026-09-09": json.dumps(index_payload()["props"]["pageProps"]["meetings"]),
             },
         )
         fake_connection = FakeConnection(existing_full_result_ids={"937435"})
@@ -102,7 +102,7 @@ class SportingLifeRacecardDayImportTest(unittest.TestCase):
     def test_full_result_for_different_date_does_not_skip_future_racecard(self) -> None:
         client = FakeSportingLifeClient(
             {
-                f"{BASE_URL}/racing/racecards/2026-09-09": next_data_html(index_payload()),
+                f"{BASE_URL}/api/horse-racing/racing/racecards/2026-09-09": json.dumps(index_payload()["props"]["pageProps"]["meetings"]),
                 f"{BASE_URL}/racing/racecards/2026-09-09/carlisle/racecard/937435/carlisle-novice": next_data_html(
                     racecard_payload(),
                 ),
@@ -129,7 +129,7 @@ class SportingLifeRacecardDayImportTest(unittest.TestCase):
         payload["props"]["pageProps"]["meetings"][0]["races"][0]["date"] = "2026-09-08"
         client = FakeSportingLifeClient(
             {
-                f"{BASE_URL}/racing/racecards/2026-09-09": next_data_html(payload),
+                f"{BASE_URL}/api/horse-racing/racing/racecards/2026-09-09": json.dumps(payload["props"]["pageProps"]["meetings"]),
             },
         )
 
@@ -146,12 +146,12 @@ class SportingLifeRacecardDayImportTest(unittest.TestCase):
 
         connect.assert_not_called()
 
-    def test_detail_payload_date_mismatch_is_imported_under_requested_date(self) -> None:
+    def test_detail_payload_date_mismatch_fails_without_silent_date_coercion(self) -> None:
         payload = racecard_payload()
         payload["props"]["pageProps"]["race"]["race_summary"]["date"] = "2026-09-08"
         client = FakeSportingLifeClient(
             {
-                f"{BASE_URL}/racing/racecards/2026-09-09": next_data_html(index_payload()),
+                f"{BASE_URL}/api/horse-racing/racing/racecards/2026-09-09": json.dumps(index_payload()["props"]["pageProps"]["meetings"]),
                 f"{BASE_URL}/racing/racecards/2026-09-09/carlisle/racecard/937435/carlisle-novice": next_data_html(
                     payload,
                 ),
@@ -162,15 +162,15 @@ class SportingLifeRacecardDayImportTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp_dir:
             with patch.object(racecard_importer, "RAW_OUTPUT_DIR", Path(tmp_dir)):
                 with patch.object(racecard_importer.psycopg, "connect", return_value=fake_connection):
-                    result = racecard_importer.import_sporting_life_racecards(
-                        race_date=date(2026, 9, 9),
-                        database_url="postgresql://example.test/db",
-                        request_delay_seconds=0,
-                        client=client,
-                    )
+                    with self.assertRaisesRegex(RuntimeError, "detail returned a different date"):
+                        racecard_importer.import_sporting_life_racecards(
+                            race_date=date(2026, 9, 9),
+                            database_url="postgresql://example.test/db",
+                            request_delay_seconds=0,
+                            client=client,
+                        )
 
-        self.assertEqual([link.race_id for link in result.imported_links], ["937435"])
-        self.assertEqual(fake_connection.imported_race_dates, ["2026-09-09"])
+        self.assertEqual(fake_connection.imported_race_dates, [])
 
     def test_access_control_status_stops_without_retry(self) -> None:
         attempts = 0
@@ -191,7 +191,7 @@ class SportingLifeRacecardDayImportTest(unittest.TestCase):
     def test_captcha_page_without_next_data_stops_as_access_control(self) -> None:
         client = FakeSportingLifeClient(
             {
-                f"{BASE_URL}/racing/racecards/2026-09-09": (
+                f"{BASE_URL}/api/horse-racing/racing/racecards/2026-09-09": (
                     "<html><title>Access denied</title>"
                     "<body>Captcha: verify you are human</body></html>"
                 ),
@@ -213,7 +213,7 @@ class SportingLifeRacecardDayImportTest(unittest.TestCase):
     def test_legacy_refresh_parameter_still_forces_refresh(self) -> None:
         client = FakeSportingLifeClient(
             {
-                f"{BASE_URL}/racing/racecards/2026-09-09": next_data_html(index_payload()),
+                f"{BASE_URL}/api/horse-racing/racing/racecards/2026-09-09": json.dumps(index_payload()["props"]["pageProps"]["meetings"]),
                 f"{BASE_URL}/racing/racecards/2026-09-09/carlisle/racecard/937435/carlisle-novice": next_data_html(
                     racecard_payload(),
                 ),
@@ -239,7 +239,7 @@ class SportingLifeRacecardDayImportTest(unittest.TestCase):
     def test_legacy_refresh_parameter_false_does_not_enable_skip_mode(self) -> None:
         client = FakeSportingLifeClient(
             {
-                f"{BASE_URL}/racing/racecards/2026-09-09": next_data_html(index_payload()),
+                f"{BASE_URL}/api/horse-racing/racing/racecards/2026-09-09": json.dumps(index_payload()["props"]["pageProps"]["meetings"]),
                 f"{BASE_URL}/racing/racecards/2026-09-09/carlisle/racecard/937435/carlisle-novice": next_data_html(
                     racecard_payload(),
                 ),

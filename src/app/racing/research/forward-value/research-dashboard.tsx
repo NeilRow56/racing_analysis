@@ -122,6 +122,7 @@ export function DailyResearchDashboard({ dashboard, children }: { dashboard: Res
     </details>
     <section className="mt-6 border-t border-slate-200 pt-6" aria-labelledby="monitors-heading">
       <h2 className="text-lg font-semibold" id="monitors-heading">Prospective monitors</h2>
+      <HistoricalTissueEvidence monitors={dashboard.historicalTissueMonitors ?? []} />
       <div className="mt-3 grid gap-3 sm:grid-cols-2 2xl:grid-cols-5">
         {dashboard.monitors.map((monitor) => <article className="min-w-0 rounded border border-slate-200 bg-white p-4" key={monitor.name}>
           <div className="flex flex-wrap items-center justify-between gap-2"><h3 className="text-sm font-semibold">{monitor.name}</h3><span className="text-[10px] font-semibold text-slate-500">{monitor.status}</span></div>
@@ -156,16 +157,15 @@ function SecondarySignals({ horse }: { horse: DailyResearchHorse }) {
 
 function TissueMonitorSummary({ monitors, rows }: { monitors: ProspectiveMonitor[]; rows: ReturnType<typeof tissueValueRows> }) {
   const tissue = monitors.filter((monitor) => ["Turf Tissue", "Jump Tissue", "AW Tissue"].includes(monitor.name));
-  const displayTotals = rows.reduce((value, row) => ({
-    tracked: value.tracked + 1,
-    settled: value.settled + (row.signal.result === "settled" || row.signal.result === "void" ? 1 : 0),
-    winners: value.winners + (row.signal.outcome === "WIN" ? 1 : 0),
-    profit: value.profit + (row.signal.profitLoss ?? 0),
-  }), { tracked: 0, settled: 0, winners: 0, profit: 0 });
-  const summaryRows = [...tissue.map((monitor) => ({ ...monitor, profit: monitor.roi === null ? null : monitor.roi * monitor.pricedSettled })),
-    { name: "Today", tracked: displayTotals.tracked, settled: displayTotals.settled, winners: displayTotals.winners, roi: null, profit: displayTotals.profit }];
+  const displayTotals = summarizeSettledTissueRows(rows);
+  const familyTotals = summarizeTodayFamilies(rows);
+  const todaySettled = rows.filter((row) => row.signal.result === "settled" || row.signal.result === "void").length;
+  const summaryRows = [...tissue.map((monitor) => ({ ...monitor, profit: monitor.profitLoss ?? (monitor.tracked === 0 ? 0 : monitor.roi === null ? null : monitor.roi * monitor.pricedSettled) })),
+    { name: "Today", tracked: rows.length, settled: todaySettled, winners: displayTotals.winners, roi: null, profit: displayTotals.profitLoss, unavailableReturns: displayTotals.unavailableReturns }];
   return (
-    <dl className="mt-4 grid border border-slate-200 bg-white sm:grid-cols-2 lg:grid-cols-4">
+    <div className="mt-4">
+      <p className="mb-2 text-xs text-slate-500">Clean priced prospective record from 11 Oct 2026</p>
+      <dl className="grid border border-slate-200 bg-white sm:grid-cols-2 lg:grid-cols-4">
       {summaryRows.map((monitor) => (
         <div className="border-b border-slate-200 px-4 py-3 last:border-b-0 sm:border-r lg:border-b-0" key={monitor.name}>
           <dt className="text-xs font-semibold uppercase text-slate-500">{monitor.name === "Today" ? "Today" : `${monitor.name.replace(" Tissue", "")} VALUE`}</dt>
@@ -173,9 +173,16 @@ function TissueMonitorSummary({ monitors, rows }: { monitors: ProspectiveMonitor
             {monitor.tracked} selections / {monitor.settled} settled / {monitor.winners} winners
           </dd>
           <dd className="mt-1 text-xs tabular-nums text-slate-500">P/L {monitor.profit === null ? "—" : money(monitor.profit)}</dd>
+          {monitor.name === "Today" ? (
+            <dd className="mt-1 text-xs tabular-nums text-slate-500">{familyTotals.map(formatTodayFamilyTotal).join(" · ")}</dd>
+          ) : (
+            <dd className="mt-1 text-xs tabular-nums text-slate-500">ROI {monitor.roi === null ? "—" : signedPct(monitor.roi)}</dd>
+          )}
+          {(monitor.unavailableReturns ?? 0) > 0 ? <dd className="mt-1 text-xs text-slate-500">{monitor.unavailableReturns} {monitor.unavailableReturns === 1 ? "return" : "returns"} unavailable</dd> : null}
         </div>
       ))}
-    </dl>
+      </dl>
+    </div>
   );
 }
 
@@ -190,6 +197,7 @@ type TissueValueRow = ReturnType<typeof tissueValueRows>[number];
 
 export function summarizeSettledTissueRows(rows: TissueValueRow[]) {
   return rows.reduce((summary, row) => {
+    if (row.signal.result !== "settled" && row.signal.result !== "void") return summary;
     if (row.signal.outcome === "VOID" || row.signal.result === "void") return summary;
     const profitLoss = row.signal.profitLoss;
     return {
@@ -200,6 +208,41 @@ export function summarizeSettledTissueRows(rows: TissueValueRow[]) {
       unavailableReturns: Number.isFinite(profitLoss) ? summary.unavailableReturns : summary.unavailableReturns + 1,
     };
   }, { bets: 0, winners: 0, profitLoss: 0, pricedBets: 0, unavailableReturns: 0 });
+}
+
+function summarizeTodayFamilies(rows: TissueValueRow[]) {
+  return (["turf_tissue", "jump_tissue", "aw_tissue"] as const).map((kind) => {
+    const summary = summarizeSettledTissueRows(rows.filter((row) => row.signal.kind === kind));
+    return { kind, ...summary };
+  });
+}
+
+function formatTodayFamilyTotal(summary: ReturnType<typeof summarizeTodayFamilies>[number]) {
+  const unavailable = summary.unavailableReturns > 0 ? ` · ${summary.unavailableReturns} ${summary.unavailableReturns === 1 ? "return" : "returns"} unavailable` : "";
+  return `${familyLabel(summary.kind)} P/L ${money(summary.profitLoss)}${unavailable}`;
+}
+
+function HistoricalTissueEvidence({ monitors }: { monitors: ProspectiveMonitor[] }) {
+  if (monitors.length === 0) return null;
+  return (
+    <section className="mt-4" aria-labelledby="historical-tissue-evidence-heading">
+      <h3 id="historical-tissue-evidence-heading" className="text-sm font-semibold">Historical Tissue evidence</h3>
+      <p className="mt-1 text-xs text-slate-500">Pre clean-price epoch</p>
+      <div className="mt-3 grid gap-3 md:grid-cols-3">
+        {monitors.map((monitor) => (
+          <article className="border border-slate-200 bg-white p-3" key={monitor.name}>
+            <h4 className="text-xs font-semibold uppercase text-slate-500">{monitor.name}</h4>
+            <dl className="mt-2 grid grid-cols-[minmax(0,1fr)_max-content] gap-x-3 gap-y-1 text-xs">
+              <dt className="text-slate-500">Tracked / settled</dt><dd className="tabular-nums">{monitor.tracked} / {monitor.settled}</dd>
+              <dt className="text-slate-500">Winners / strike</dt><dd className="tabular-nums">{monitor.winners} / {pct(monitor.strike)}</dd>
+              <dt className="text-slate-500">A/E</dt><dd className="tabular-nums">{aeValue(monitor)}</dd>
+            </dl>
+            <p className="mt-2 text-[11px] leading-relaxed text-slate-500">Historical ROI is not manufactured when qualifying-price returns are unavailable.</p>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
 }
 
 function formatSettledTissueSummary(summary: ReturnType<typeof summarizeSettledTissueRows>) {

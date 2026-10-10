@@ -16,8 +16,10 @@ from sporting_life.extract import (
     BASE_URL,
     RacecardPayload,
     RacecardsIndexPayload,
+    build_racecards_api_url,
     build_racecards_index_url,
     discover_uk_ire_racecard_links,
+    fetch_json_data,
     fetch_page_next_data,
     looks_like_access_control_page,
 )
@@ -35,11 +37,15 @@ class RacecardExtractionTest(unittest.TestCase):
         )
         self.assertEqual(
             build_racecards_index_url(datetime(2026, 10, 10).date(), now=now),
-            f"{BASE_URL}/racing/racecards/2026-10-10",
+            f"{BASE_URL}/api/horse-racing/racing/racecards/2026-10-10",
         )
         self.assertEqual(
             build_racecards_index_url(datetime(2026, 10, 12).date(), now=now),
-            f"{BASE_URL}/racing/racecards/2026-10-12",
+            f"{BASE_URL}/api/horse-racing/racing/racecards/2026-10-12",
+        )
+        self.assertEqual(
+            build_racecards_api_url(datetime(2026, 10, 11).date()),
+            f"{BASE_URL}/api/horse-racing/racing/racecards/2026-10-11",
         )
 
     def test_racecard_page_exposes_race_payload(self) -> None:
@@ -76,6 +82,26 @@ class RacecardExtractionTest(unittest.TestCase):
             links[1].url,
             "https://www.sportinglife.com/racing/racecards/2026-09-09/cork/racecard/937407/irish-ebf-auction-series-race",
         )
+
+    def test_future_racecard_api_payload_discovers_only_uk_ire_target_date(self) -> None:
+        payload = [
+            sample_index_meeting("121895", "323", "Goodwood", "ENG", "England", "943001"),
+            sample_index_meeting("121896", "334", "Naas", "IRE", "Ireland", "943002"),
+            sample_index_meeting("121897", "700", "Longchamp", "FR", "France", "943003"),
+        ]
+        for meeting in payload[:2]:
+            meeting["races"][0]["date"] = "2026-10-11"
+        payload[2]["races"][0]["date"] = "2026-10-12"
+
+        links = discover_uk_ire_racecard_links(
+            RacecardsIndexPayload(
+                page_url=f"{BASE_URL}/api/horse-racing/racing/racecards/2026-10-11",
+                payload=payload,
+            ),
+        )
+
+        self.assertEqual([link.course_name for link in links], ["Goodwood", "Naas"])
+        self.assertEqual({link.race_date for link in links}, {"2026-10-11"})
 
     def test_all_supported_uk_and_ireland_country_aliases_are_discovered(self) -> None:
         country_names = [
@@ -183,6 +209,12 @@ class RacecardExtractionTest(unittest.TestCase):
 
         self.assertEqual(fetch_page_next_data("https://example.test/racecard", client), payload)
 
+    def test_fetch_json_data_reads_api_payload(self) -> None:
+        payload = [{"meeting_summary": {"meeting_reference": {"id": 1}}, "races": []}]
+        client = FakeClient(json.dumps(payload))
+
+        self.assertEqual(fetch_json_data("https://example.test/api", client), payload)
+
     def test_access_control_markers_are_case_insensitive_and_conservative(self) -> None:
         self.assertTrue(looks_like_access_control_page("VERIFY YOU ARE HUMAN"))
         self.assertTrue(looks_like_access_control_page("Security Check"))
@@ -221,16 +253,16 @@ class RacecardImportTest(unittest.TestCase):
         self.assertEqual(first_runner_params[22], "6/1")
         self.assertEqual(first_runner_params[23], "7.000")
 
-    def test_import_racecard_can_persist_requested_target_date_as_authoritative(self) -> None:
+    def test_import_racecard_uses_payload_date_without_coercion(self) -> None:
         cursor = FakeCursor()
         payload = sample_racecard_payload()
         payload["props"]["pageProps"]["race"]["race_summary"]["date"] = "2026-10-09"
 
-        import_racecard(cursor, payload=payload, authoritative_race_date="2026-10-10")
+        import_racecard(cursor, payload=payload)
 
         race_params = cursor.first_query_containing("insert into races")[1]
-        self.assertEqual(race_params[2], "2026-10-10")
-        self.assertEqual(race_params[6].date().isoformat(), "2026-10-10")
+        self.assertEqual(race_params[2], "2026-10-09")
+        self.assertEqual(race_params[6].date().isoformat(), "2026-10-09")
 
     def test_import_racecard_records_non_runner_state_without_finish_position(self) -> None:
         cursor = FakeCursor()

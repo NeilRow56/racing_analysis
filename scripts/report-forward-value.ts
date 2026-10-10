@@ -178,14 +178,21 @@ function printPersistence(label: string, value: ForwardValuePersistenceMetrics) 
 }
 
 async function today(date: string) {
-  console.log((await loadDailyPositiveTissueRankOneReport(date)).output);
+  const [daily, cumulative] = await Promise.all([
+    loadDailyPositiveTissueRankOneReport(date),
+    loadCleanTissueValuePerformanceReport(),
+  ]);
+  console.log(daily.output);
+  console.log("");
+  console.log(cumulative);
 }
 
 async function results(date: string) {
-  const [data, jumpTissue, awTissue] = await Promise.all([
+  const [data, jumpTissue, awTissue, cumulative] = await Promise.all([
     loadForwardValueData(),
     loadJumpTissueForward(),
     loadAwTissueForward(),
+    loadCleanTissueValuePerformanceReport(),
   ]);
   console.log(renderTissueValueResultsSummary({
     date,
@@ -193,6 +200,8 @@ async function results(date: string) {
     jump: jumpTissue,
     aw: awTissue,
   }));
+  console.log("");
+  console.log(cumulative);
 }
 
 async function loadDailyPositiveTissueRankOneReport(date: string) {
@@ -229,6 +238,16 @@ async function loadReportingScope(data: ForwardValueData) {
   } finally {
     await connection.client.end();
   }
+}
+
+async function loadCleanTissueValuePerformanceReport() {
+  const [data, jump, aw] = await Promise.all([
+    loadForwardValueData(),
+    loadJumpTissueForward(),
+    loadAwTissueForward(),
+  ]);
+  const reportingScope = await loadReportingScope(data);
+  return renderTissuePositiveEdgeRankOnePerformance(reportingScope.analyticalRecords, { jump, aw });
 }
 
 function printExclusions(records: ForwardValueRecord[]) {

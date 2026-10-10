@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
-import { renderDailyPositiveTissueRankOneSummary, renderTissuePositiveEdgeRankOnePerformance } from "./forward-value-summary";
+import { renderDailyPositiveTissueRankOneSummary, renderTissuePositiveEdgeRankOnePerformance, summarizeTissuePositiveEdgeRankOnePerformance, TISSUE_VALUE_DISPLAY_EPOCH } from "./forward-value-summary";
 import {
   FORWARD_VALUE_MARKET_PRICE_BASIS_IMPLEMENTED_AT,
   FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION,
@@ -76,6 +76,30 @@ test("daily positive-edge Tissue rank-1 summary prints None for empty families",
   assert.match(output, /TOTAL TISSUE VALUE\nSelections: 0/);
 });
 
+test("daily summary formats cached Jump and AW UTC instants when current cards are absent", () => {
+  const jump = jumpRace("jump-clock", "13:00", "Chepstow", "Jump Clock", .4);
+  jump.recordedAt = "2026-10-03T09:00:00Z";
+  jump.prices.early!.capturedAt = jump.recordedAt;
+  const output = renderDailyPositiveTissueRankOneSummary({
+    date: "2026-10-03", turf: turfData([]),
+    jump: jumpData([jump]),
+    aw: awData([awRace("aw-clock", "13:00", "Southwell", "AW Clock", .4)]),
+    currentPrices: [],
+  });
+  assert.match(output, /14:00 \| Chepstow \| Jump Clock/);
+  assert.match(output, /14:00 \| Southwell \| AW Clock/);
+  assert.doesNotMatch(output, /13:00 \|/);
+});
+
+test("Turf summary converts the source UTC clock when a current price has no display time", () => {
+  const output = renderDailyPositiveTissueRankOneSummary({
+    date: "2026-10-03", turf: turfData([turfRace("turf-clock", "13:00", "York", "Turf Clock", .4)]),
+    jump: jumpData([]), aw: awData([]),
+    currentPrices: [price("turf-clock", "turf-clock-runner", "4/1", 5, 2, "")],
+  });
+  assert.match(output, /14:00 \| York \| Turf Clock/);
+});
+
 test("Tissue positive-edge rank-1 performance summarizes family and combined settled returns", () => {
   const output = renderTissuePositiveEdgeRankOnePerformance([
     forwardValueRecord({ raceId: "turf-win", family: "turf", tissueEdgePercentagePoints: 10, tissueCapturedDecimalOdds: 5, winnerRunnerIds: ["turf-win-tissue"] }),
@@ -93,10 +117,11 @@ test("Tissue positive-edge rank-1 performance summarizes family and combined set
       trackerRace({ raceId: "aw-tracker-win", edge: 5, price: 2.5, won: true, profitLoss: 1.5 }),
       trackerRace({ raceId: "aw-tracker-pending", edge: 4, price: 4, won: null, profitLoss: null, settled: false }),
     ]),
-  });
+  }, { epoch: null });
 
   assert.equal(output, [
     "Tissue positive-edge rank-1 performance",
+    "Full historical display",
     "",
     "Turf",
     "Selections: 3",
@@ -132,13 +157,51 @@ test("Tissue positive-edge rank-1 performance summarizes family and combined set
   ].join("\n"));
 });
 
+test("Tissue VALUE display epoch starts a clean priced cohort while historical evidence remains available", () => {
+  const historicalTurf = forwardValueRecord({ raceId: "turf-old", raceDate: "2026-10-10", family: "turf", tissueEdgePercentagePoints: 10, tissueCapturedDecimalOdds: 6, winnerRunnerIds: ["turf-old-tissue"] });
+  const epochTurf = forwardValueRecord({ raceId: "turf-epoch", raceDate: TISSUE_VALUE_DISPLAY_EPOCH, family: "turf", tissueEdgePercentagePoints: 10, tissueCapturedDecimalOdds: 5, winnerRunnerIds: ["turf-epoch-tissue"] });
+  const jump = jumpTrackerData([
+    trackerRace({ raceId: "jump-old", raceDate: "2026-10-10", edge: 4, price: 4, won: true, profitLoss: 3 }),
+    trackerRace({ raceId: "jump-epoch", raceDate: TISSUE_VALUE_DISPLAY_EPOCH, edge: 4, price: 4, won: false, profitLoss: -1 }),
+  ]);
+  const aw = awTrackerData([
+    trackerRace({ raceId: "aw-old", raceDate: "2026-10-10", edge: 4, price: 5, won: true, profitLoss: 4 }),
+    trackerRace({ raceId: "aw-epoch", raceDate: TISSUE_VALUE_DISPLAY_EPOCH, edge: 4, price: 3, won: true, profitLoss: 2 }),
+  ]);
+
+  const clean = summarizeTissuePositiveEdgeRankOnePerformance([historicalTurf, epochTurf], { jump, aw });
+  const historical = summarizeTissuePositiveEdgeRankOnePerformance([historicalTurf, epochTurf], { jump, aw }, { epoch: null });
+
+  assert.deepEqual(clean.map(({ label, selections, settled, winners, profitLoss, roi }) => ({ label, selections, settled, winners, profitLoss, roi })), [
+    { label: "Turf", selections: 1, settled: 1, winners: 1, profitLoss: 4, roi: 4 },
+    { label: "Jump", selections: 1, settled: 1, winners: 0, profitLoss: -1, roi: -1 },
+    { label: "All Weather", selections: 1, settled: 1, winners: 1, profitLoss: 2, roi: 2 },
+    { label: "Combined", selections: 3, settled: 3, winners: 2, profitLoss: 5, roi: 5 / 3 },
+  ]);
+  assert.equal(historical.find((row) => row.label === "Turf")?.selections, 2);
+  assert.equal(historical.find((row) => row.label === "Jump")?.selections, 2);
+  assert.equal(historical.find((row) => row.label === "All Weather")?.selections, 2);
+});
+
+test("clean Tissue VALUE cohort reports missing stored returns explicitly", () => {
+  const output = renderTissuePositiveEdgeRankOnePerformance([], {
+    jump: jumpTrackerData([trackerRace({ raceId: "jump-missing", raceDate: TISSUE_VALUE_DISPLAY_EPOCH, edge: 4, price: 4, won: true, profitLoss: null })]),
+    aw: awTrackerData([]),
+  });
+
+  assert.match(output, /Clean priced prospective record from 11 Oct 2026/);
+  assert.match(output, /Jump\nSelections: 1\nSettled: 1\nWinners: 1\nStrike: 100\.0%\n£1 P\/L: -\nROI: -\n1 return unavailable/);
+});
+
 test("value scripts keep concise today and split Jump/AW detail from terminal summary", () => {
   const packageJson = JSON.parse(readFileSync("package.json", "utf8")) as { scripts: Record<string, string> };
   assert.equal(packageJson.scripts["value:today"], "bun run scripts/report-forward-value.ts today");
   assert.equal(packageJson.scripts["value:summary"], "bun run scripts/report-forward-value.ts summary");
 
   const source = readFileSync("scripts/report-forward-value.ts", "utf8");
-  assert.match(source, /async function today\(date: string\) \{\s*console\.log\(\(await loadDailyPositiveTissueRankOneReport\(date\)\)\.output\);\s*\}/);
+  assert.match(source, /loadCleanTissueValuePerformanceReport\(\)/);
+  assert.match(source, /console\.log\(daily\.output\)/);
+  assert.match(source, /console\.log\(renderTissueValueResultsSummary\(\{/);
   assert.match(source, /loadDailyPositiveTissueRankOneReport\(today\)/);
   assert.match(source, /# Forward Value Framework - Phase 2/);
   assert.match(source, /printEdgeBuckets\(cleanSettled\)/);
@@ -150,6 +213,7 @@ test("value scripts keep concise today and split Jump/AW detail from terminal su
 
 function forwardValueRecord(input: {
   raceId: string;
+  raceDate?: string;
   family: ValueFamily;
   tissueEdgePercentagePoints: number;
   tissueCapturedDecimalOdds: number | null;
@@ -157,17 +221,18 @@ function forwardValueRecord(input: {
   settled?: boolean;
 }): ForwardValueRecord {
   const settled = input.settled ?? true;
+  const raceDate = input.raceDate ?? "2026-10-03";
   return {
     family: input.family,
     raceId: input.raceId,
-    raceDate: "2026-10-03",
-    raceDateTime: "2026-10-03T13:00:00.000Z",
+    raceDate,
+    raceDateTime: `${raceDate}T13:00:00.000Z`,
     raceTime: "13:00",
     course: "Test",
     raceName: null,
     ratingVersion: "rating-v1",
     calibrationVersion: "calibration-v1",
-    recordedAt: "2026-10-03T10:00:00.000Z",
+    recordedAt: `${raceDate}T10:00:00.000Z`,
     recordedPreRace: true,
     captureMode: "live_sync",
     settlementVersion: FORWARD_VALUE_SETTLEMENT_VERSION,
@@ -191,7 +256,7 @@ function forwardValueRecord(input: {
     bestBookmakerPriceFractional: "4/1",
     bestBookmakerName: null,
     priceSource: "sporting_life_imported_racecard",
-    priceCapturedAt: "2026-10-03T10:00:00.000Z",
+    priceCapturedAt: `${raceDate}T10:00:00.000Z`,
     minutesBeforeScheduledOff: 180,
     capturedDecimalOdds: 5,
     capturedMarketProbability: .2,
@@ -213,7 +278,7 @@ function forwardValueRecord(input: {
     tissueCapturedDecimalOdds: input.tissueCapturedDecimalOdds,
     tissueMarketProbability: input.tissueCapturedDecimalOdds === null ? null : 1 / input.tissueCapturedDecimalOdds,
     tissueEdgePercentagePoints: input.tissueEdgePercentagePoints,
-    tissuePriceCapturedAt: input.tissueCapturedDecimalOdds === null ? null : "2026-10-03T10:00:00.000Z",
+    tissuePriceCapturedAt: input.tissueCapturedDecimalOdds === null ? null : `${raceDate}T10:00:00.000Z`,
     tissueForecastPrice: null,
     tissueForecastDecimalPrice: null,
     tissueBookmakerQuoteCount: input.tissueCapturedDecimalOdds === null ? 0 : 1,
@@ -239,7 +304,7 @@ function forwardValueRecord(input: {
     medianMarketPriceProfitLoss: settled ? -1 : null,
     bestBookmakerPriceGrossReturn: settled ? 0 : null,
     bestBookmakerPriceProfitLoss: settled ? -1 : null,
-    settledAt: settled ? "2026-10-03T14:00:00.000Z" : null,
+    settledAt: settled ? `${raceDate}T14:00:00.000Z` : null,
   };
 }
 
@@ -253,6 +318,7 @@ function awTrackerData(races: ReturnType<typeof trackerRace>[]): AwTissueForward
 
 function trackerRace(input: {
   raceId: string;
+  raceDate?: string;
   edge: number;
   price: number;
   won: boolean | null;
@@ -260,15 +326,16 @@ function trackerRace(input: {
   settled?: boolean;
 }) {
   const settled = input.settled ?? true;
+  const raceDate = input.raceDate ?? "2026-10-03";
   return {
     raceId: input.raceId,
-    raceDate: "2026-10-03",
+    raceDate,
     scheduledTime: "13:00",
-    scheduledOffAt: "2026-10-03T13:00:00.000Z",
-    currentOffAt: "2026-10-03T13:00:00.000Z",
+    scheduledOffAt: `${raceDate}T13:00:00.000Z`,
+    currentOffAt: `${raceDate}T13:00:00.000Z`,
     course: "Test",
     raceName: null,
-    recordedAt: "2026-10-03T10:00:00.000Z",
+    recordedAt: `${raceDate}T10:00:00.000Z`,
     recordedPreRace: true,
     predictedRunnerCount: 1,
     activeRunnerCount: 1,
@@ -280,7 +347,7 @@ function trackerRace(input: {
       early: {
         decimalPrice: input.price,
         impliedProbability: 1 / input.price,
-        capturedAt: "2026-10-03T10:00:00.000Z",
+        capturedAt: `${raceDate}T10:00:00.000Z`,
         minutesBeforeScheduledOff: 180,
         ratingProbability: .4,
         ratingEdgePercentagePoints: input.edge,
@@ -312,7 +379,7 @@ function trackerRace(input: {
       } : null,
     }],
     winners: input.won ? [`${input.raceId}-leader`] : [],
-    settledAt: settled ? "2026-10-03T14:00:00.000Z" : null,
+    settledAt: settled ? `${raceDate}T14:00:00.000Z` : null,
     excludedReason: null,
     selectedPriceProfitLoss: { early: input.profitLoss, t180: null, t60: null, bestEarly: input.profitLoss, finalSp: input.profitLoss },
     subtype: "Hurdle",

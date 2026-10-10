@@ -5,8 +5,9 @@ import { FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION, type ForwardValuePriceSnapsho
 import { summarizeJumpG4Forward, type JumpG4ForwardData } from "./jump-g4-forward";
 import { modelDisagreementResearchRows, summarizeModelDisagreementForward, type ModelDisagreementForwardData } from "./model-disagreement-forward";
 import { currentPositiveTurfTissueRankOneEdges, type TissueForwardData } from "./tissue-forward";
-import { formatRaceTimeForDisplay, type SportingLifeCurrentPrice } from "./todays-racing";
+import { formatRaceTimeForDisplay, formatSportingLifeRaceTime, type SportingLifeCurrentPrice } from "./todays-racing";
 import { emptyTodaysRatingWeightForward, summarizeTodaysRatingWeight, type TodaysRatingWeightForwardData } from "./todays-rating-weight-forward";
+import { summarizeTissuePositiveEdgeRankOnePerformance, TISSUE_VALUE_DISPLAY_EPOCH } from "./forward-value-summary";
 
 export type ResearchSignalKind = "turf_tissue" | "jump_tissue" | "aw_tissue" | "jump_g4" | "todays_rating_weight" | "model_disagreement";
 export type ResearchSignalCategory = "VALUE" | "SHADOW" | "DISAGREEMENT";
@@ -53,8 +54,10 @@ export type ProspectiveMonitor = {
   name: string; status: "FROZEN" | "MONITORING" | "SHADOW";
   tracked: number; settled: number; winners: number; strike: number | null;
   ae: number | null; roi: number | null; roiBasis: "median" | "final_sp" | "qualifying_median"; pricedSettled: number; cohort: string;
+  profitLoss?: number | null;
+  unavailableReturns?: number;
 };
-export type ResearchDashboard = { date: string; horses: DailyResearchHorse[]; emptyMessage: string | null; monitors: ProspectiveMonitor[] };
+export type ResearchDashboard = { date: string; horses: DailyResearchHorse[]; emptyMessage: string | null; monitors: ProspectiveMonitor[]; historicalTissueMonitors?: ProspectiveMonitor[] };
 
 export function mergeResearchSignals(rows: DailyResearchHorse[]): DailyResearchHorse[] {
   const unique = new Map<string, DailyResearchHorse>();
@@ -127,7 +130,7 @@ export function buildResearchDashboard(input: {
       bookmakerQuoteCount: record.tissueBookmakerQuoteCount ?? 1,
       forecastPrice: record.tissueForecastPrice ?? null,
       forecastDecimalOdds: record.tissueForecastDecimalPrice ?? null,
-      displayRaceTime: race.raceTime,
+      displayRaceTime: formatSportingLifeRaceTime(race.raceDate, race.raceTime),
     }, record.tissueEdgePercentagePoints! / 100, record.raceDateTime,
       priceMovement({ early: record.tissueEarlyPriceSnapshot, t180: record.tissueT180PriceSnapshot, t60: record.tissueT60PriceSnapshot }),
       undefined, turfTissueSettlement(race, runner, record.tissueCapturedDecimalOdds!));
@@ -181,8 +184,9 @@ export function buildResearchDashboard(input: {
     });
   }
   const horses = mergeResearchSignals(rows);
+  const { display, historical } = buildProspectiveMonitors(turf, jump, aw, g4, weightData, ratings, input.includeModelDisagreementInDailySummary ? input.modelDisagreement : undefined);
   return { date, horses, emptyMessage: prices.length === 0 ? `No racecards imported for ${date}.` : horses.length === 0 ? "No research signals today." : null,
-    monitors: buildProspectiveMonitors(turf, jump, aw, g4, weightData, input.includeModelDisagreementInDailySummary ? input.modelDisagreement : undefined) };
+    monitors: display, historicalTissueMonitors: historical };
 }
 
 export function priceMovement(prices: { early?: ForwardValuePriceSnapshot | null; t180?: ForwardValuePriceSnapshot | null; t60?: ForwardValuePriceSnapshot | null }): string {
@@ -235,7 +239,7 @@ function sameHorseName(left: string, right: string) {
   return left.trim().toLowerCase() === right.trim().toLowerCase();
 }
 
-function buildProspectiveMonitors(turf: TissueForwardData, jump: JumpTissueForwardData, aw: AwTissueForwardData, g4: JumpG4ForwardData, weightData: TodaysRatingWeightForwardData, modelDisagreement?: ModelDisagreementForwardData): ProspectiveMonitor[] {
+function buildProspectiveMonitors(turf: TissueForwardData, jump: JumpTissueForwardData, aw: AwTissueForwardData, g4: JumpG4ForwardData, weightData: TodaysRatingWeightForwardData, ratings: ForwardValueRecord[], modelDisagreement?: ModelDisagreementForwardData): { display: ProspectiveMonitor[]; historical: ProspectiveMonitor[] } {
   const turfRows = turf.races.filter((race) => race.recordedPreRace === true).flatMap((race) => {
     const leader = race.runners.find((runner) => runner.tissueRank === 1);
     return leader ? [{ won: race.winners.length ? race.winners.includes(leader.horseName) : null, probability: leader.probability, profit: null }] : [];
@@ -257,8 +261,27 @@ function buildProspectiveMonitors(turf: TissueForwardData, jump: JumpTissueForwa
     const profitLoss = row.outcome.qualifyingPriceProfitLoss;
     return finite(qualifyingPrice) && finite(profitLoss) ? [{ profitLoss }] : [];
   }) ?? [];
-  return [summarizeMonitor("Turf Tissue", "FROZEN", turfRows, "Clean rank-one model observations"),
-    tissueMonitor("Jump Tissue", jump.races.filter(cleanJumpTissueRace)), tissueMonitor("AW Tissue", aw.races.filter(cleanAwTissueRace)),
+  const historical = [
+    summarizeMonitor("Turf Tissue", "FROZEN", turfRows, "Pre clean-price epoch"),
+    tissueMonitor("Jump Tissue", jump.races.filter(cleanJumpTissueRace)),
+    tissueMonitor("AW Tissue", aw.races.filter(cleanAwTissueRace)),
+  ];
+  const tissueDisplay = summarizeTissuePositiveEdgeRankOnePerformance(ratings, { jump, aw }).slice(0, 3).map((summary): ProspectiveMonitor => ({
+    name: summary.label === "All Weather" ? "AW Tissue" : `${summary.label} Tissue`,
+    status: summary.label === "Turf" ? "FROZEN" : "MONITORING",
+    tracked: summary.selections,
+    settled: summary.settled,
+    winners: summary.winners,
+    strike: summary.strikeRate,
+    ae: null,
+    roi: summary.roi,
+    roiBasis: "qualifying_median",
+    pricedSettled: summary.pricedSettled,
+    profitLoss: summary.profitLoss,
+    unavailableReturns: summary.unavailableReturns,
+    cohort: `Clean priced prospective record from ${TISSUE_VALUE_DISPLAY_EPOCH}`,
+  }));
+  return { historical, display: [...tissueDisplay,
     { name: "Jump G4", status: "SHADOW", tracked: g4Summary.tracked, settled: g4Summary.settled, winners: g4Summary.winners, strike: g4Summary.strike,
       ae: g4Summary.ae, roi: g4Summary.roi, roiBasis: "final_sp", pricedSettled: g4.observations.filter((row) => row.outcome?.won != null && row.outcome.profitLoss != null).length, cohort: "Prospective G4 qualifiers" },
     { name: RESEARCH_SIGNALS.todays_rating_weight.name, status: "SHADOW", tracked: weight.tracked, settled: weight.settled,
@@ -268,7 +291,8 @@ function buildProspectiveMonitors(turf: TissueForwardData, jump: JumpTissueForwa
       settled: disagreementSettled, winners: disagreementWinners, strike: disagreementSettled ? disagreementWinners / disagreementSettled : null,
       ae: disagreementExpected ? disagreementWinners / disagreementExpected : null,
       roi: disagreementPriced.length ? disagreementPriced.reduce((sum, row) => sum + row.profitLoss, 0) / disagreementPriced.length : null,
-      roiBasis: "qualifying_median" as const, pricedSettled: disagreementPriced.length, cohort: "Jump/AW fixed-label price paths" }] : [])];
+      roiBasis: "qualifying_median" as const, pricedSettled: disagreementPriced.length, cohort: "Jump/AW fixed-label price paths" }] : [])
+  ] };
 }
 function summarizeMonitor(name: string, status: ProspectiveMonitor["status"], rows: Array<{ won: boolean | null; probability: number | null; profit: number | null }>, cohort: string): ProspectiveMonitor {
   const settled = rows.filter((row) => row.won !== null);

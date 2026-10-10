@@ -8,6 +8,7 @@ import {
   parseArgs,
   previousLocalDateString,
   runWorkflow,
+  isNextDayCardsUnavailable,
   workflowSteps,
 } from "./run-research-workflow";
 
@@ -175,16 +176,46 @@ describe("research workflow wrapper", () => {
     assert.ok(commandLinesFor("live", "2026-11-14").every((line) => line.includes("2026-11-14")));
   });
 
-  test("runs the night workflow for tomorrow with only next-day card capture", () => {
+  test("runs the night workflow for tomorrow with only next-day card and first-price capture", () => {
     assert.deepEqual(parseArgs(["--mode", "night"], new Date(2026, 9, 9, 20)), {
       mode: "night",
       date: "2026-10-10",
     });
     assert.deepEqual(commandLinesFor("night", "2026-10-10"), [
       "sl:import-racecards 2026-10-10 --request-delay-seconds 2 --skip-existing-racecards",
-      "disagreement:night 2026-10-10",
     ]);
+    assert.doesNotMatch(commandLinesFor("night", "2026-10-10").join("\n"), /disagreement:|track-model-disagreement|sl:import-day|research:settle|backfill/i);
     assert.equal(nextLocalDateString(new Date(2026, 11, 31)), "2027-01-01");
+  });
+
+  test("night workflow preserves stored racecard prices by only running the importer", async () => {
+    const calls: string[] = [];
+    const result = await runWorkflow({ mode: "night", date: "2026-10-10" }, async (step) => {
+      calls.push([step.script, ...(step.args ?? [])].join(" "));
+      assert.equal(step.env, undefined);
+      return { exitCode: 0, output: "RACECARDS_IMPORTED races=30 runners=319 bookmaker_prices=319" };
+    });
+
+    assert.equal(result.exitCode, 0);
+    assert.deepEqual(calls, ["sl:import-racecards 2026-10-10 --request-delay-seconds 2 --skip-existing-racecards"]);
+  });
+
+  test("night workflow exits cleanly when next-day cards are unavailable and does not fallback to today", async () => {
+    let fallbackChecked = false;
+    const calls: string[] = [];
+    const result = await runWorkflow({ mode: "night", date: "2026-10-11" }, async (step) => {
+      calls.push(step.script);
+      return { exitCode: 0, output: "NO_UK_IRE_RACECARDS date=2026-10-11\nDISCOVERED_RACES=0" };
+    }, async () => {
+      fallbackChecked = true;
+      return storedCards;
+    });
+
+    assert.equal(result.exitCode, 0);
+    assert.deepEqual(calls, ["sl:import-racecards"]);
+    assert.equal(fallbackChecked, false);
+    assert.equal(isNextDayCardsUnavailable("NO_UK_IRE_RACECARDS date=2026-10-11", "2026-10-11"), true);
+    assert.equal(isNextDayCardsUnavailable("NO_UK_IRE_RACECARDS date=2026-10-10", "2026-10-11"), false);
   });
 
   test("runs the late workflow for today with only price refresh capture", () => {

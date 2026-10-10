@@ -409,6 +409,16 @@ describe("independent tissue forward tracker", () => {
     assert.match(output, /17:40 Listowel/);
     assert.doesNotMatch(output, /16:40 Listowel/);
   });
+
+  test("Tissue report without current cards formats stored source clocks in BST and GMT", () => {
+    for (const [raceDate, raceTime] of [["2026-09-25", "13:00"], ["2026-12-05", "14:00"]]) {
+      const race = reportRace({ raceDate, raceTime });
+      const before = JSON.stringify(race);
+      const output = renderTissueTodayReport({ ...emptyData(), races: [race] }, []);
+      assert.match(output, /14:00 Newmarket/);
+      assert.equal(JSON.stringify(race), before);
+    }
+  });
 });
 
 function emptyData(): TissueForwardData { return { version: TISSUE_FORWARD_VERSION, tissueModelVersion: TISSUE_MODEL_VERSION, forwardStart: TISSUE_FORWARD_START, races: [] }; }

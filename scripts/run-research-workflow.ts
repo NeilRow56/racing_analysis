@@ -59,7 +59,6 @@ export function workflowSteps(mode: WorkflowMode, date: string): WorkflowStep[] 
   if (mode === "night") {
     return [
       { label: "Importing first next-day racecards", script: "sl:import-racecards", args: [date, "--request-delay-seconds", "2", "--skip-existing-racecards"] },
-      { label: "Model disagreement first next-day sync", script: "disagreement:night", args: [date] },
     ];
   }
   if (mode === "late") {
@@ -145,6 +144,16 @@ export async function runWorkflow(
       console.error(`Step failed: ${step.label} (${step.script}) exited with code ${exitCode}`);
       return { exitCode, failed: { step, exitCode } };
     }
+    if (
+      options.mode === "night" &&
+      index === 0 &&
+      typeof result !== "number" &&
+      isNextDayCardsUnavailable(result.output, options.date)
+    ) {
+      console.log(`NEXT_DAY_CARDS_UNAVAILABLE date=${options.date} message="next-day cards unavailable"`);
+      console.log(`Research ${options.mode} complete.`);
+      return { exitCode: 0 };
+    }
     console.log("complete");
     console.log();
   }
@@ -199,6 +208,10 @@ export function isValidDate(value: string) {
   return date.getFullYear() === year &&
     date.getMonth() === month - 1 &&
     date.getDate() === day;
+}
+
+export function isNextDayCardsUnavailable(output: string, date: string) {
+  return output.includes(`NO_UK_IRE_RACECARDS date=${date}`);
 }
 
 export async function main(args: string[]) {

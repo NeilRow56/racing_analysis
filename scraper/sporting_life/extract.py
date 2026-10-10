@@ -104,7 +104,9 @@ class RacecardsIndexPayload:
 
     @property
     def page_props(self) -> dict:
-        return self.payload["props"]["pageProps"]
+        if isinstance(self.payload, dict) and isinstance(self.payload.get("props"), dict):
+            return self.payload["props"]["pageProps"]
+        return {"meetings": self.payload}
 
     @property
     def meetings(self) -> list[dict]:
@@ -169,6 +171,8 @@ def fetch_racecards_index(
 ) -> RacecardsIndexPayload:
     client = client or SportingLifeClient()
     page_url = build_racecards_index_url(race_date)
+    if is_racecards_api_url(page_url):
+        return RacecardsIndexPayload(page_url=page_url, payload=fetch_json_data(page_url, client))
     return RacecardsIndexPayload(page_url=page_url, payload=fetch_page_next_data(page_url, client))
 
 
@@ -176,7 +180,15 @@ def build_racecards_index_url(race_date: date, *, now: datetime | None = None) -
     today = local_racing_date(now)
     if race_date == today:
         return f"{BASE_URL}/racing/racecards"
-    return f"{BASE_URL}/racing/racecards/{race_date.isoformat()}"
+    return build_racecards_api_url(race_date)
+
+
+def build_racecards_api_url(race_date: date) -> str:
+    return f"{BASE_URL}/api/horse-racing/racing/racecards/{race_date.isoformat()}"
+
+
+def is_racecards_api_url(url: str) -> bool:
+    return "/api/horse-racing/racing/racecards/" in url
 
 
 def local_racing_date(now: datetime | None = None) -> date:
@@ -298,6 +310,20 @@ def fetch_page_next_data(page_url: str, client: SportingLifeClient) -> dict:
         raise RuntimeError(f"No __NEXT_DATA__ script found at {page_url}")
 
     return json.loads(raw_next_data)
+
+
+def fetch_json_data(url: str, client: SportingLifeClient) -> dict | list:
+    page_text = client.get_text(url)
+    if looks_like_access_control_page(page_text):
+        raise SportingLifeRequestError(
+            f"Sporting Life access-control page returned instead of JSON at {url}",
+            status_code=200,
+            access_control_signal=True,
+        )
+    try:
+        return json.loads(page_text)
+    except json.JSONDecodeError as error:
+        raise RuntimeError(f"Sporting Life JSON endpoint did not return JSON at {url}") from error
 
 
 def looks_like_access_control_page(page_text: str) -> bool:

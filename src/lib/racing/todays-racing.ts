@@ -358,6 +358,19 @@ export function formatRaceTimeForDisplay(input: {
   }).format(input.raceDateTime);
 }
 
+// Sporting Life payload clocks are UTC, unlike the local clocks on its pages.
+export function formatSportingLifeRaceTime(raceDate: string, sourceTime: string | null, courseCountry?: string | null): string {
+  const clock = sourceTime?.slice(0, 8);
+  const instant = clock && /^\d{2}:\d{2}(:\d{2})?$/.test(clock)
+    ? new Date(`${raceDate}T${clock.length === 5 ? `${clock}:00` : clock}Z`)
+    : null;
+  return formatRaceTimeForDisplay({
+    raceDateTime: instant && Number.isFinite(instant.getTime()) ? instant : null,
+    scheduledTime: sourceTime,
+    courseCountry,
+  });
+}
+
 export function formatTodayTprRankGap(rank: number, gap: number | null): string {
   if (gap === null) return `Rank ${rank}`;
   const absolute = Math.abs(gap).toFixed(1);

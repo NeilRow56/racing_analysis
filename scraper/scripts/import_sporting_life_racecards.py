@@ -23,6 +23,7 @@ sys.path.insert(0, str(REPO_ROOT / "scraper"))
 from sporting_life.client import SportingLifeClient, SportingLifeRequestError  # noqa: E402
 from sporting_life.extract import (  # noqa: E402
     RacecardLink,
+    build_racecards_api_url,
     build_racecards_index_url,
     discover_uk_ire_racecard_links,
     fetch_racecard,
@@ -130,13 +131,24 @@ def import_sporting_life_racecards(
             "Sporting Life racecard index returned races for a different date: "
             f"target_date={target_race_date} page_url={index.page_url} examples={examples}"
         )
+    if index.page_url == build_racecards_api_url(race_date):
+        date_counts = Counter(link.race_date for link in links)
+        print(
+            "RACECARD_DISCOVERY_SOURCE "
+            f"target_date={target_race_date} source={index.page_url} "
+            f"meetings={len(distinct_meeting_links(links))} races={len(links)} "
+            f"date_counts={format_date_counts(date_counts)}",
+            flush=True,
+        )
 
     write_raw_payload(
         raw_dir=RAW_OUTPUT_DIR,
         race_date=target_race_date,
         course_name="racecards-index",
         race_id=target_race_date,
-        payload_type="racecard-index-next-data",
+        payload_type="racecard-index-api-data"
+        if index.page_url == build_racecards_api_url(race_date)
+        else "racecard-index-next-data",
         payload=index.payload,
     )
 
@@ -223,12 +235,11 @@ def import_sporting_life_racecards(
                 )
                 continue
             if detail_race_date != target_race_date:
-                print(
-                    "RACECARD_DETAIL_DATE_MISMATCH "
+                raise RuntimeError(
+                    "Sporting Life racecard detail returned a different date: "
                     f"target_date={target_race_date} detail_date={detail_race_date} "
                     f"course={link.course_name!r} time={link.race_time} "
-                    f"race_id={link.race_id} action=using_target_date",
-                    flush=True,
+                    f"race_id={link.race_id} url={link.url}"
                 )
             write_raw_payload(
                 raw_dir=RAW_OUTPUT_DIR,
@@ -244,7 +255,6 @@ def import_sporting_life_racecards(
                 counts = import_racecard(
                     cursor,
                     payload=racecard.payload,
-                    authoritative_race_date=target_race_date,
                 )
             connection.commit()
             imported_links.append(link)
@@ -400,6 +410,12 @@ def distinct_meeting_links(links: list[RacecardLink]) -> list[RacecardLink]:
         seen.add(link.meeting_id)
         distinct.append(link)
     return distinct
+
+
+def format_date_counts(counts: Counter[str]) -> str:
+    if not counts:
+        return "{}"
+    return "{" + ",".join(f"{date}:{count}" for date, count in sorted(counts.items())) + "}"
 
 
 if __name__ == "__main__":

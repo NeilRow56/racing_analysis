@@ -68,7 +68,6 @@ def import_racecard(
     cursor: psycopg.Cursor,
     *,
     payload: dict[str, Any],
-    authoritative_race_date: str | None = None,
 ) -> dict[str, int | str]:
     page_props = payload["props"]["pageProps"]
     race = page_props["race"]
@@ -82,7 +81,7 @@ def import_racecard(
         payload=payload,
     )
     course_id = upsert_racecard_course(cursor, page_props)
-    race_row_id = upsert_racecard_race(cursor, race, course_id, authoritative_race_date=authoritative_race_date)
+    race_row_id = upsert_racecard_race(cursor, race, course_id)
     counts = upsert_racecard_runners(cursor, race, race_row_id)
 
     return {
@@ -207,11 +206,9 @@ def upsert_racecard_race(
     cursor: psycopg.Cursor,
     race: dict[str, Any],
     course_id: str,
-    *,
-    authoritative_race_date: str | None = None,
 ) -> str:
     race_summary = race["race_summary"]
-    race_date = authoritative_race_date or race_summary["date"]
+    race_date = race_summary["date"]
     scheduled_time = parse_time(race_summary.get("time"))
     race_datetime = parse_race_datetime(race_date, race_summary.get("time"))
     local_race_datetime = parse_race_datetime(race_date, race_summary.get("time"))
@@ -649,6 +646,15 @@ def jockey_reference_id(jockey: dict[str, Any] | None) -> Any:
 
 
 def parse_race_datetime(race_date: str, race_time: str | None) -> datetime | None:
+    """Sporting Life's timezone-less race_summary.time clock represents UTC."""
+    parsed_time = parse_time(race_time)
+    if parsed_time is None:
+        return None
+    return datetime.combine(date.fromisoformat(race_date), parsed_time, tzinfo=timezone.utc)
+
+
+def parse_local_race_datetime(race_date: str, race_time: str | None) -> datetime | None:
+    """Convert an explicitly local published UK/Irish clock to an absolute instant."""
     parsed_time = parse_time(race_time)
     if parsed_time is None:
         return None

@@ -193,6 +193,42 @@ test("settled Tissue VALUE heading reports missing returns when all P/L values a
   assert.doesNotMatch(html, /ROI/);
 });
 
+test("headline Tissue cards use clean display epoch while historical monitors remain visible", () => {
+  const dashboard: ResearchDashboard = {
+    date: "2026-10-11",
+    emptyMessage: null,
+    monitors: [
+      { name: "Turf Tissue", status: "FROZEN", tracked: 0, settled: 0, winners: 0, strike: null, ae: null, roi: null, roiBasis: "qualifying_median", pricedSettled: 0, profitLoss: 0, cohort: "Clean priced prospective record from 2026-10-11" },
+      { name: "Jump Tissue", status: "MONITORING", tracked: 1, settled: 1, winners: 0, strike: 0, ae: null, roi: -1, roiBasis: "qualifying_median", pricedSettled: 1, profitLoss: -1, cohort: "Clean priced prospective record from 2026-10-11" },
+      { name: "AW Tissue", status: "MONITORING", tracked: 1, settled: 1, winners: 1, strike: 1, ae: null, roi: 2, roiBasis: "qualifying_median", pricedSettled: 1, profitLoss: 2, cohort: "Clean priced prospective record from 2026-10-11" },
+    ],
+    historicalTissueMonitors: [
+      { name: "Turf Tissue", status: "FROZEN", tracked: 295, settled: 267, winners: 37, strike: 37 / 267, ae: 1.05, roi: null, roiBasis: "median", pricedSettled: 0, cohort: "Pre clean-price epoch" },
+    ],
+    horses: [
+      tissueHorse("turf-loss", "13:30", "Daily Turf Loss", { kind: "turf_tissue", result: "settled", outcome: "LOSS", finishingPosition: 4, profitLoss: -7 }),
+      tissueHorse("turf-missing", "14:00", "Daily Turf Missing", { kind: "turf_tissue", result: "settled", outcome: "LOSS", finishingPosition: 5, profitLoss: null }),
+      tissueHorse("jump-win", "14:30", "Daily Jump Win", { kind: "jump_tissue", result: "settled", outcome: "WIN", finishingPosition: 1, profitLoss: 2 }),
+      tissueHorse("aw-pending", "18:30", "Daily AW Pending", { kind: "aw_tissue", result: "pending", outcome: null, profitLoss: null }),
+    ],
+  };
+
+  const html = renderToStaticMarkup(<DailyResearchDashboard dashboard={dashboard} />);
+
+  assert.match(html, /Clean priced prospective record from 11 Oct 2026/);
+  assert.match(html, /Turf VALUE/);
+  assert.match(html, /0 selections \/ 0 settled \/ 0 winners/);
+  assert.match(html, /P\/L £0\.00/);
+  assert.match(html, /ROI —/);
+  assert.match(html, /Turf P\/L -£7\.00 · 1 return unavailable/);
+  assert.match(html, /Jump P\/L \+£2\.00/);
+  assert.match(html, /AW P\/L £0\.00/);
+  assert.match(html, /Historical Tissue evidence/);
+  assert.match(html, /Pre clean-price epoch/);
+  assert.match(html, /295 \/ 267/);
+  assert.match(html, /Historical ROI is not manufactured/);
+});
+
 function tissueHorse(
   id: string,
   time: string,

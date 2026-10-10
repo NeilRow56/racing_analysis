@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { describe, test } from "node:test";
 import {
   formatRaceTimeForDisplay,
+  formatSportingLifeRaceTime,
   formatTodayTprRankGap,
   formatRacingDate,
   getLocalRacingDate,
@@ -26,6 +27,27 @@ import type { GoingForm } from "./going-form";
 import { getTprConfidenceContext } from "./tpr-confidence-context";
 
 describe("Today racing grouping", () => {
+  test("Today and shared source displays preserve 14:00 across UK and Irish DST boundaries", () => {
+    for (const [date, utcHour] of [
+      ["2026-07-01", "13"], ["2026-12-01", "14"],
+      ["2026-03-28", "14"], ["2026-03-29", "13"], ["2026-03-30", "13"],
+      ["2026-10-24", "13"], ["2026-10-25", "14"], ["2026-10-26", "14"],
+    ]) {
+      for (const country of ["ENG", "EIRE"]) {
+        const instant = new Date(`${date}T${utcHour}:00:00Z`);
+        const meetings = groupTodaysRacingRows([row({ raceDate: date, raceDateTime: instant, scheduledTime: `${utcHour}:00:00`, country })], new Map(), new Map());
+        assert.equal(formatRaceTimeForDisplay(meetings[0]!.races[0]!), "14:00");
+        assert.equal(formatSportingLifeRaceTime(date, `${utcHour}:00`, country), "14:00");
+        assert.equal(formatRaceTimeForDisplay({ raceDateTime: new Date(instant.toISOString()), scheduledTime: "14:00", courseCountry: country }), "14:00");
+      }
+    }
+  });
+
+  test("offset-bearing published local time is converted once", () => {
+    assert.equal(formatRaceTimeForDisplay({ raceDateTime: new Date("2026-07-01T14:00:00+01:00"), scheduledTime: null }), "14:00");
+    assert.equal(formatSportingLifeRaceTime("2026-10-11", "14:12"), "15:12");
+  });
+
   test("attaches actual-history context without changing ratings, ranks or snapshot inputs", () => {
     const context = getTprConfidenceContext([1, 2].map(id => ({ runnerId: String(id), raceDateTime: new Date(`2026-01-0${id}`), resultStatus: "finished", finishingPosition: 4, weightCarriedLbs: 135, turfSpeedRating: { rating: 100 } })), new Date("2026-10-01"));
     const form = metric({ latestTurfPerformanceRating: 67.853, latestTurfSpeedRating: 100.853 });

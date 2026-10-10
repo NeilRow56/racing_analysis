@@ -153,6 +153,7 @@ test("settled Turf VALUE selections use captured Tissue price and canonical dead
     } as ForwardValueRecord];
     const rows = buildResearchDashboard(input).horses;
     assert.equal(rows.length, 1);
+    assert.equal(rows[0].time, "15:00");
     assert.equal(rows[0].signals[0].outcome, result.outcome);
     assert.equal(rows[0].signals[0].qualifyingPrice, 5);
     assert.equal(rows[0].signals[0].profitLoss, result.profitLoss);

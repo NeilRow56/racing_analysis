@@ -17,13 +17,15 @@ import {
   type ValueFamily,
   type ValueSampleStatus,
 } from "./forward-value";
-import type { SportingLifeCurrentPrice } from "./todays-racing";
+import { formatRaceTimeForDisplay, formatSportingLifeRaceTime, type SportingLifeCurrentPrice } from "./todays-racing";
 import { currentPositiveTurfTissueRankOneEdges, type TissueForwardData, type TissueForwardRace, type TissueForwardRunner } from "./tissue-forward";
 import { cleanAwTissueRace, currentPositiveAwTissueRankOneEdges, type AwTissueForwardData, type AwTissueRace } from "./aw-tissue-forward";
 import { cleanJumpTissueRace, currentPositiveJumpTissueRankOneEdges, type JumpTissueForwardData, type JumpTissueRace } from "./jump-tissue-forward";
 import { LARGE_PROBABILITY_GAP_PP, type TissueRankOneEdge } from "./tissue-rank-one-edge";
 
 export { LARGE_PROBABILITY_GAP_PP };
+
+export const TISSUE_VALUE_DISPLAY_EPOCH = "2026-10-11" as const;
 
 export type ForwardValueObservationState = "all" | "settled" | "unsettled" | "excluded" | "superseded";
 export type ForwardValueEdgeFilter = "all" | "positive" | "non_positive";
@@ -102,7 +104,7 @@ function dailyPositiveTissueRankOneFamilies(input: DailyPositiveTissueRankOneSum
     {
       heading: "JUMP",
       selections: currentPositiveJumpTissueRankOneEdges(jumpRaces, input.currentPrices).selections.map(({ race, runner, comparison }) => ({
-        displayTime: comparison.price.displayRaceTime || race.scheduledTime.slice(0, 5),
+        displayTime: comparison.price.displayRaceTime || formatRaceTimeForDisplay({ raceDateTime: new Date(race.currentOffAt), scheduledTime: race.scheduledTime }),
         course: race.course,
         horseName: runner.horseName,
         tissueProbability: runner.probability!,
@@ -112,7 +114,7 @@ function dailyPositiveTissueRankOneFamilies(input: DailyPositiveTissueRankOneSum
     {
       heading: "ALL WEATHER",
       selections: currentPositiveAwTissueRankOneEdges(awRaces, input.currentPrices).selections.map(({ race, runner, comparison }) => ({
-        displayTime: comparison.price.displayRaceTime || race.scheduledTime.slice(0, 5),
+        displayTime: comparison.price.displayRaceTime || formatRaceTimeForDisplay({ raceDateTime: new Date(race.currentOffAt), scheduledTime: race.scheduledTime }),
         course: race.course,
         horseName: runner.horseName,
         tissueProbability: runner.probability!,
@@ -188,7 +190,7 @@ type DailyPositiveTissueRankOneSelection = {
 };
 
 function turfDisplayTime(race: TissueForwardRace, currentPrices: SportingLifeCurrentPrice[]): string {
-  return currentPrices.find((entry) => entry.raceId === race.raceId)?.displayRaceTime ?? race.raceTime;
+  return currentPrices.find((entry) => entry.raceId === race.raceId)?.displayRaceTime || formatSportingLifeRaceTime(race.raceDate, race.raceTime);
 }
 
 export type ForwardValueMetrics = {
@@ -394,6 +396,8 @@ export type TissuePositiveEdgeRankOnePerformance = {
   strikeRate: number | null;
   profitLoss: number | null;
   roi: number | null;
+  pricedSettled: number;
+  unavailableReturns: number;
 };
 
 export type SameLeaderProbabilityGapInput = {
@@ -571,10 +575,19 @@ export function summarizeTurfModelAgreement(records: ForwardValueRecord[]): Turf
 export function summarizeTissuePositiveEdgeRankOnePerformance(
   records: ForwardValueRecord[],
   sources: { jump?: JumpTissueForwardData; aw?: AwTissueForwardData } = {},
+  options: { epoch?: string | null } = { epoch: TISSUE_VALUE_DISPLAY_EPOCH },
 ): TissuePositiveEdgeRankOnePerformance[] {
-  const turfSelections = records.filter((record) => record.family === "turf" && isTissuePositiveEdgeRankOneSelection(record)).map(turfTissuePerformanceSelection);
-  const jumpSelections = (sources.jump?.races ?? []).filter(cleanJumpTissueRace).flatMap((race) => trackerTissuePerformanceSelection(race, "Jump"));
-  const awSelections = (sources.aw?.races ?? []).filter(cleanAwTissueRace).flatMap((race) => trackerTissuePerformanceSelection(race, "All Weather"));
+  const epoch = options.epoch === undefined ? TISSUE_VALUE_DISPLAY_EPOCH : options.epoch;
+  const inEpoch = (raceDate: string) => epoch === null || raceDate >= epoch;
+  const turfSelections = records
+    .filter((record) => inEpoch(record.raceDate) && record.family === "turf" && isTissuePositiveEdgeRankOneSelection(record))
+    .map(turfTissuePerformanceSelection);
+  const jumpSelections = (sources.jump?.races ?? [])
+    .filter((race) => inEpoch(race.raceDate) && cleanJumpTissueRace(race))
+    .flatMap((race) => trackerTissuePerformanceSelection(race, "Jump"));
+  const awSelections = (sources.aw?.races ?? [])
+    .filter((race) => inEpoch(race.raceDate) && cleanAwTissueRace(race))
+    .flatMap((race) => trackerTissuePerformanceSelection(race, "All Weather"));
   const selections = [...turfSelections, ...jumpSelections, ...awSelections];
   return [
     summarizeTissuePerformance("Turf", turfSelections),
@@ -587,9 +600,15 @@ export function summarizeTissuePositiveEdgeRankOnePerformance(
 export function renderTissuePositiveEdgeRankOnePerformance(
   records: ForwardValueRecord[],
   sources: { jump?: JumpTissueForwardData; aw?: AwTissueForwardData } = {},
+  options: { epoch?: string | null } = { epoch: TISSUE_VALUE_DISPLAY_EPOCH },
 ): string {
-  const lines = ["Tissue positive-edge rank-1 performance", ""];
-  for (const family of summarizeTissuePositiveEdgeRankOnePerformance(records, sources)) {
+  const epoch = options.epoch === undefined ? TISSUE_VALUE_DISPLAY_EPOCH : options.epoch;
+  const lines = [
+    "Tissue positive-edge rank-1 performance",
+    epoch === null ? "Full historical display" : `Clean priced prospective record from ${formatEpochDate(epoch)}`,
+    "",
+  ];
+  for (const family of summarizeTissuePositiveEdgeRankOnePerformance(records, sources, options)) {
     lines.push(family.label);
     lines.push(`Selections: ${family.selections}`);
     lines.push(`Settled: ${family.settled}`);
@@ -597,6 +616,7 @@ export function renderTissuePositiveEdgeRankOnePerformance(
     lines.push(`Strike: ${formatPerformancePct(family.strikeRate)}`);
     lines.push(`£1 P/L: ${formatPerformanceMoney(family.profitLoss)}`);
     lines.push(`ROI: ${formatPerformancePct(family.roi)}`);
+    if (family.unavailableReturns > 0) lines.push(`${family.unavailableReturns} ${family.unavailableReturns === 1 ? "return" : "returns"} unavailable`);
     lines.push("");
   }
   return lines.join("\n").trimEnd();
@@ -620,8 +640,9 @@ function summarizeTissuePerformance(
   label: TissuePositiveEdgeRankOnePerformance["label"],
   selections: TissuePerformanceSelection[],
 ): TissuePositiveEdgeRankOnePerformance {
-  const settled = selections.filter((selection) => selection.profitLoss !== null);
-  const profitLosses = settled.map((selection) => selection.profitLoss!);
+  const settled = selections.filter((selection) => selection.won !== null);
+  const priced = settled.filter((selection) => finite(selection.profitLoss));
+  const profitLosses = priced.map((selection) => selection.profitLoss!);
   const profitLoss = totalOrNull(profitLosses);
   const winners = settled.filter((selection) => selection.won).length;
   return {
@@ -631,7 +652,9 @@ function summarizeTissuePerformance(
     winners,
     strikeRate: rate(winners, settled.length),
     profitLoss,
-    roi: rate(profitLoss ?? 0, settled.length),
+    roi: rate(profitLoss ?? 0, priced.length),
+    pricedSettled: priced.length,
+    unavailableReturns: settled.length - priced.length,
   };
 }
 
@@ -674,6 +697,12 @@ function trackerTissuePerformanceSelection(
   }];
 }
 
+function formatEpochDate(epoch: string): string {
+  const [year, month, day] = epoch.split("-");
+  const date = new Date(Date.UTC(Number(year), Number(month) - 1, Number(day)));
+  return new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" }).format(date);
+}
+
 function formatPerformancePct(value: number | null): string {
   return value === null ? "-" : `${(value * 100).toFixed(1)}%`;
 }
@@ -681,6 +710,9 @@ function formatPerformancePct(value: number | null): string {
 function formatPerformanceMoney(value: number | null): string {
   if (value === null) return "-";
   return value < 0 ? `-£${Math.abs(value).toFixed(2)}` : `£${value.toFixed(2)}`;
+}
+function finite(value: unknown): value is number {
+  return typeof value === "number" && Number.isFinite(value);
 }
 
 export function buildSameLeaderProbabilityGapDiagnostics(
