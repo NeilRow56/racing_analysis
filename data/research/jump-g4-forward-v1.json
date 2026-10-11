@@ -247,6 +247,112 @@
         "profitLoss": -1
       },
       "settledAt": "2026-10-10T16:40:31.929Z"
+    },
+    {
+      "raceId": "e7784272-d7d9-48e2-8334-1f7acb1916d0",
+      "sourceId": "942783",
+      "raceDate": "2026-10-11",
+      "scheduledOff": "2026-10-11T14:12:00.000Z",
+      "scheduledTime": "14:12",
+      "course": "Chepstow",
+      "raceName": "DragonBet Best Odds Guaranteed Handicap Hurdle",
+      "subtype": "Hurdle",
+      "subtypeCode": "hurdle",
+      "handicapStatus": "handicap",
+      "fieldSize": 13,
+      "runnerId": "c7355f2f-bcc1-43e5-a3a7-0e051bafdd69",
+      "horseId": "50b9578d-01ec-4ea6-b7b1-f1ab33d81ff6",
+      "horseName": "Baltray",
+      "recordedAt": "2026-10-11T03:44:19.528Z",
+      "recordedPreRace": true,
+      "components": {
+        "averageL3JumpSpeed": 109.85351860994716,
+        "averageL3JumpSpeedRank": 2,
+        "latestJumpSpeed": 107.91073512600536,
+        "previousJumpSpeed": 94.28760577824886,
+        "latestMinusPrevious": 13.623129347756503,
+        "previousClass": 4,
+        "currentClass": 5,
+        "classDropAmount": 1
+      },
+      "context": {
+        "officialRating": 99,
+        "officialRatingRank": 7,
+        "officialRatingTop3": false,
+        "officialRatingGapToBest": 6,
+        "officialRatingRelativeToFieldMean": 1.538461538461533,
+        "trainerPriorRate": 16.08751608751609,
+        "jockeyPriorRate": 10.236220472440944,
+        "daysSinceRun": 43,
+        "priorUsableJumpSpeedCount": 9,
+        "jprARank": 1,
+        "jprBRank": 2,
+        "jumpTissueRank": 6,
+        "jumpTissueProbability": 0.05520464288305631
+      },
+      "market": {
+        "medianBookmakerDecimal": 13,
+        "impliedProbability": 0.07692307692307693,
+        "marketRank": 7,
+        "priceCapturedAt": "2026-10-11T03:44:19.528Z",
+        "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
+        "bookmakerQuoteCount": 3
+      },
+      "outcome": null,
+      "settledAt": null
+    },
+    {
+      "raceId": "4b86a486-7d94-4dcc-8171-fcc1cf4d02d2",
+      "sourceId": "942785",
+      "raceDate": "2026-10-11",
+      "scheduledOff": "2026-10-11T15:22:00.000Z",
+      "scheduledTime": "15:22",
+      "course": "Chepstow",
+      "raceName": "DragonBet Born In Wales Seniors' Handicap Hurdle",
+      "subtype": "Hurdle",
+      "subtypeCode": "hurdle",
+      "handicapStatus": "handicap",
+      "fieldSize": 10,
+      "runnerId": "e20342d5-9278-48c5-a259-6fda3596bcd7",
+      "horseId": "25897db0-571c-4abd-9dc4-9f9fd90a0393",
+      "horseName": "Stream Of Stars",
+      "recordedAt": "2026-10-11T03:44:19.528Z",
+      "recordedPreRace": true,
+      "components": {
+        "averageL3JumpSpeed": 107.32817813068641,
+        "averageL3JumpSpeedRank": 2,
+        "latestJumpSpeed": 128.58545165575748,
+        "previousJumpSpeed": 81.36203015757567,
+        "latestMinusPrevious": 47.22342149818181,
+        "previousClass": 2,
+        "currentClass": 3,
+        "classDropAmount": 1
+      },
+      "context": {
+        "officialRating": 128,
+        "officialRatingRank": 4,
+        "officialRatingTop3": false,
+        "officialRatingGapToBest": 2,
+        "officialRatingRelativeToFieldMean": 6.099999999999994,
+        "trainerPriorRate": 16.85823754789272,
+        "jockeyPriorRate": 17.515274949083505,
+        "daysSinceRun": 283,
+        "priorUsableJumpSpeedCount": 12,
+        "jprARank": 2,
+        "jprBRank": 2,
+        "jumpTissueRank": 6,
+        "jumpTissueProbability": 0.09216999839878659
+      },
+      "market": {
+        "medianBookmakerDecimal": 4.5,
+        "impliedProbability": 0.2222222222222222,
+        "marketRank": 3,
+        "priceCapturedAt": "2026-10-11T03:44:19.528Z",
+        "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
+        "bookmakerQuoteCount": 3
+      },
+      "outcome": null,
+      "settledAt": null
     }
   ]
 }

@@ -1,12 +1,13 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { renderToStaticMarkup } from "react-dom/server";
-import { AwTissueValueSection, JumpTissueValueSection } from "./aw-tissue-value";
+import { AwTissueValueSection, JumpTissueValueSection, TurfTissueValueSection } from "./aw-tissue-value";
 import { emptyAwTissueForward, type AwTissueForwardData } from "@/lib/racing/aw-tissue-forward";
-import type { ForwardValuePriceSnapshot } from "@/lib/racing/forward-value";
+import type { ForwardValuePriceSnapshot, ForwardValueRecord } from "@/lib/racing/forward-value";
 import { emptyJumpTissueForward, type JumpTissueForwardData } from "@/lib/racing/jump-tissue-forward";
 import { AwTissueCell } from "../../today/page";
 import type { TodayRunner } from "@/lib/racing/todays-racing";
+import { emptyTissueValueReviewData, upsertTissueValueReview } from "@/lib/racing/tissue-value-review";
 
 test("AW Forward Value has a separate responsive section and explicit empty state", () => {
   const html = renderToStaticMarkup(<AwTissueValueSection data={emptyAwTissueForward()} ratings={[]} />);
@@ -58,6 +59,38 @@ test("Jump Tissue renders summary and detail rows", () => {
   assert.match(html, /T-180/);
   assert.match(html, /T-60/);
   assert.match(html, /Settlement\/status/);
+});
+
+test("Turf Tissue VALUE renders settled review controls from the shared review store", () => {
+  const reviews = upsertTissueValueReview(emptyTissueValueReviewData(), {
+    family: "turf",
+    raceId: "turf-review",
+    runnerId: "turf-runner",
+    status: "reviewed",
+    outcomeSummary: "unplaced",
+    tags: ["wide_trip", "going_concern"],
+    couldHaveBeenIdentifiedPreRace: "yes",
+    note: "Drawn wide and never got cover.",
+    updatedAt: "2026-10-02T09:00:00.000Z",
+  });
+  const html = renderToStaticMarkup(<TurfTissueValueSection records={[turfValueRecord()]} reviews={reviews} />);
+  assert.match(html, /Turf Tissue VALUE/);
+  assert.match(html, /Turf Tissue probability/);
+  assert.match(html, /Turf Horse/);
+  assert.match(html, /Reviewed/);
+  assert.match(html, /Wide trip/);
+  assert.match(html, /Going concern/);
+  assert.match(html, /name="family" value="turf"/);
+  assert.match(html, /Post-race review diagnostics/);
+});
+
+test("Turf Tissue VALUE does not render non-positive or unsettled rows for review", () => {
+  const html = renderToStaticMarkup(<TurfTissueValueSection records={[
+    turfValueRecord({ raceId: "negative", tissueEdgePercentagePoints: -1 }),
+    turfValueRecord({ raceId: "pending", settledAt: null }),
+  ]} />);
+  assert.match(html, /No settled Turf Tissue VALUE selections/);
+  assert.doesNotMatch(html, /Turf Horse/);
 });
 
 test("Today shows frozen AW probability/rank, zero history and explicit unavailable state", () => {
@@ -205,5 +238,58 @@ function baseJumpPrediction(runnerId: string) {
       chronologySafe: true,
       targetRacePostResultCommentExcluded: true,
     },
+  };
+}
+
+function turfValueRecord(overrides: Partial<ForwardValueRecord> = {}): ForwardValueRecord {
+  return {
+    family: "turf",
+    raceId: "turf-review",
+    raceDate: "2026-10-03",
+    raceDateTime: "2026-10-03T14:00:00Z",
+    raceTime: "14:00",
+    course: "Newmarket",
+    raceName: "Turf Stakes",
+    ratingVersion: "tpr",
+    calibrationVersion: "TPR_CAL_V1",
+    recordedAt: "2026-10-03T09:00:00Z",
+    recordedPreRace: true,
+    leaderRunnerId: "model-runner",
+    leaderHorseName: "Model Horse",
+    leaderRank: 1,
+    leaderScore: 100,
+    leaderGap: 5,
+    calibratedProbability: .2,
+    capturedPrice: "4/1",
+    capturedDecimalOdds: 5,
+    capturedMarketProbability: .2,
+    edgePercentagePoints: 0,
+    edgeBand: "<=0pp",
+    marketFavouriteRunnerIds: [],
+    marketFavouriteHorseNames: [],
+    agreesWithMarketFavourite: null,
+    tissueRunnerId: "turf-runner",
+    tissueHorseName: "Turf Horse",
+    tissueProbability: .34,
+    tissueAgreesWithTpr: false,
+    tissueCapturedPrice: "5/1",
+    tissueCapturedDecimalOdds: 6,
+    tissueMarketProbability: 1 / 6,
+    tissueEdgePercentagePoints: 17.333333333333336,
+    tissuePriceCapturedAt: "2026-10-03T09:00:00Z",
+    tissueBookmakerQuoteCount: 2,
+    tissueBookmakerQuotes: [{ bookmakerId: 1, bookmakerName: "Book", fractionalOdds: "5/1", decimalOdds: 6 }],
+    tissueBestBookmakerPriceDecimal: 6.5,
+    tissueBestBookmakerPriceFractional: "11/2",
+    tissueBestBookmakerName: "Best Book",
+    winnerRunnerIds: ["winner"],
+    leaderResultStatus: "finished",
+    leaderFinishingPosition: 4,
+    leaderWon: false,
+    finalSp: 5,
+    grossReturn: 0,
+    profitLoss: -1,
+    settledAt: "2026-10-03T15:00:00Z",
+    ...overrides,
   };
 }

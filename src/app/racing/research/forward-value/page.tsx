@@ -36,7 +36,7 @@ import { todayRaceHasConclusiveResult } from "@/lib/racing/today-race-status";
 import { loadTissueForward, TISSUE_V2_CONFIG } from "@/lib/racing/tissue-forward";
 import { RecentObservationsScroll } from "./recent-observations-scroll";
 import { cleanAwTissueRace, loadAwTissueForward, type AwTissueForwardData, type AwTissueRace } from "@/lib/racing/aw-tissue-forward";
-import { AwTissueValueSection, JumpTissueValueSection } from "./aw-tissue-value";
+import { AwTissueValueSection, JumpTissueValueSection, TurfTissueValueSection } from "./aw-tissue-value";
 import { cleanJumpTissueRace, loadJumpTissueForward, type JumpTissueForwardData, type JumpTissueRace } from "@/lib/racing/jump-tissue-forward";
 import type { SportingLifeBookmakerQuote } from "@/lib/racing/todays-racing";
 import { loadJumpG4Forward } from "@/lib/racing/jump-g4-forward";
@@ -46,6 +46,7 @@ import { buildResearchDashboard } from "@/lib/racing/research-monitor";
 import { DailyResearchDashboard, ResearchHistory } from "./research-dashboard";
 import { loadAwTissuePairedForward } from "@/lib/racing/aw-tissue-paired-forward";
 import { AwTurfChallengerSection } from "./aw-turf-challenger";
+import { loadTissueValueReviews } from "@/lib/racing/tissue-value-review";
 
 export const dynamic = "force-dynamic";
 
@@ -55,7 +56,7 @@ type PageProps = {
 
 export default async function ForwardValuePage({ searchParams }: PageProps) {
   const raceDate = getLocalRacingDate();
-  const [data, tissueData, awTissueData, jumpTissueData, awPairedData, g4Data, weightData, modelDisagreementData, params] = await Promise.all([
+  const [data, tissueData, awTissueData, jumpTissueData, awPairedData, g4Data, weightData, modelDisagreementData, reviewData, params] = await Promise.all([
     loadForwardValueData(),
     loadTissueForward(TISSUE_V2_CONFIG.forwardPath, TISSUE_V2_CONFIG),
     loadAwTissueForward(),
@@ -64,6 +65,7 @@ export default async function ForwardValuePage({ searchParams }: PageProps) {
     loadJumpG4Forward(),
     loadTodaysRatingWeightForward(),
     loadModelDisagreementForward(),
+    loadTissueValueReviews(),
     searchParams,
   ]);
   const connection = createDbConnection();
@@ -136,8 +138,9 @@ export default async function ForwardValuePage({ searchParams }: PageProps) {
           <TurfModelAgreementCounts summary={summary.turfModelAgreement} />
           <SameLeaderProbabilityGapDiagnostics diagnostics={probabilityGapDiagnostics} />
           <TurfModelDisagreementExplainer diagnostics={disagreementDiagnostics} />
-          <AwTissueValueSection data={awTissueData} ratings={reportingScope.analyticalRecords} />
-          <JumpTissueValueSection data={jumpTissueData} ratings={reportingScope.analyticalRecords} />
+          <TurfTissueValueSection records={reportingScope.analyticalRecords} reviews={reviewData} />
+          <AwTissueValueSection data={awTissueData} ratings={reportingScope.analyticalRecords} reviews={reviewData} />
+          <JumpTissueValueSection data={jumpTissueData} ratings={reportingScope.analyticalRecords} reviews={reviewData} />
           <RecentObservations
             filters={filters}
             observations={observations}
