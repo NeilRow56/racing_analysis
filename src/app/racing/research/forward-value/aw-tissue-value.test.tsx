@@ -4,6 +4,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { AwTissueValueSection, JumpTissueValueSection, TurfTissueValueSection } from "./aw-tissue-value";
 import { emptyAwTissueForward, type AwTissueForwardData } from "@/lib/racing/aw-tissue-forward";
 import type { ForwardValuePriceSnapshot, ForwardValueRecord } from "@/lib/racing/forward-value";
+import { summarizeTissuePositiveEdgeRankOnePerformance, turfTissueQualifyingPriceProfitLoss } from "@/lib/racing/forward-value-summary";
 import { emptyJumpTissueForward, type JumpTissueForwardData } from "@/lib/racing/jump-tissue-forward";
 import { AwTissueCell } from "../../today/page";
 import type { TodayRunner } from "@/lib/racing/todays-racing";
@@ -91,6 +92,47 @@ test("Turf Tissue VALUE does not render non-positive or unsettled rows for revie
   ]} />);
   assert.match(html, /No settled Turf Tissue VALUE selections/);
   assert.doesNotMatch(html, /Turf Horse/);
+});
+
+test("Turf Tissue VALUE review table displays the shared settled qualifying-price P/L", () => {
+  const winner = turfValueRecord({
+    raceId: "royal-acclamation",
+    tissueHorseName: "Royal Acclamation",
+    tissueCapturedPrice: "11/10",
+    tissueCapturedDecimalOdds: 2.1,
+    tissueMarketProbability: 1 / 2.1,
+    tissueEdgePercentagePoints: 1.1,
+    winnerRunnerIds: ["turf-runner"],
+  });
+  const loser = turfValueRecord({
+    raceId: "turf-loser",
+    tissueHorseName: "Turf Loser",
+    winnerRunnerIds: ["other-runner"],
+  });
+  const pending = turfValueRecord({
+    raceId: "turf-pending",
+    tissueHorseName: "Pending Turf",
+    settledAt: null,
+  });
+
+  assert.equal(turfTissueQualifyingPriceProfitLoss(winner), 1.1);
+  assert.equal(turfTissueQualifyingPriceProfitLoss(loser), -1);
+  assert.equal(turfTissueQualifyingPriceProfitLoss(pending), null);
+
+  const html = renderToStaticMarkup(<TurfTissueValueSection records={[winner, loser, pending]} />);
+  assert.match(html, /Royal Acclamation/);
+  assert.match(html, /\+£1\.10/);
+  assert.match(html, /Turf Loser/);
+  assert.match(html, /-£1\.00/);
+  assert.doesNotMatch(html, /Pending Turf/);
+
+  const turfSummary = summarizeTissuePositiveEdgeRankOnePerformance([winner, loser, pending], {}, { epoch: null })
+    .find((family) => family.label === "Turf")!;
+  assert.equal(turfSummary.selections, 3);
+  assert.equal(turfSummary.settled, 2);
+  assert.equal(turfSummary.winners, 1);
+  assert.equal(turfSummary.profitLoss, 0.10000000000000009);
+  assert.equal(turfSummary.profitLoss, [winner, loser].reduce((total, record) => total + turfTissueQualifyingPriceProfitLoss(record)!, 0));
 });
 
 test("Today shows frozen AW probability/rank, zero history and explicit unavailable state", () => {

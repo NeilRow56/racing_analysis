@@ -1,5 +1,6 @@
 import { awTissueValueAgreement, cleanAwTissueRace, type AwTissueForwardData } from "@/lib/racing/aw-tissue-forward";
 import { FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION, type ForwardValueRecord, type ForwardValuePriceSnapshot } from "@/lib/racing/forward-value";
+import { turfTissueQualifyingPriceProfitLoss } from "@/lib/racing/forward-value-summary";
 import { cleanJumpTissueRace, jumpTissueValueAgreement, type JumpTissueForwardData } from "@/lib/racing/jump-tissue-forward";
 import { formatRaceTimeForDisplay } from "@/lib/racing/todays-racing";
 import {
@@ -56,7 +57,7 @@ export function TurfTissueValueSection({ records, reviews = emptyTissueValueRevi
             t60: race.tissueT60PriceSnapshot ?? null,
           },
           finalSp: null,
-          profit: null,
+          profit: turfTissueQualifyingPriceProfitLoss(race),
           status: turfTissueStatusLabel(race),
           settled: race.settledAt !== null,
           defaultOutcomeSummary: outcomeSummaryFromTurfTissueRecord(race),
@@ -220,7 +221,7 @@ function TissueTable({ emptyText, family, probabilityHeading, rows }: { emptyTex
             <td className="px-2 py-2 tabular-nums">{price?.bookmakerQuoteCount ?? 0}</td>
             <TissueSnapshot snapshot={row.prices.early} /><TissueSnapshot snapshot={row.prices.t180} /><TissueSnapshot snapshot={row.prices.t60} />
             <td className="px-2 py-2 tabular-nums">{decimal(row.finalSp)}</td>
-            <td className="px-2 py-2 tabular-nums">{decimal(row.profit)}</td>
+            <td className="px-2 py-2 tabular-nums">{row.family === "turf" ? money(row.profit) : decimal(row.profit)}</td>
             <td className="px-2 py-2 font-medium">{row.status}</td>
             <td className="w-[260px] px-2 py-2"><ReviewCell row={row} family={family} /></td>
           </tr>;
@@ -403,5 +404,6 @@ function statusLabel(settledAt: string | null, won: boolean | null) {
   return won === null ? "Settled" : won ? "Won" : "Lost";
 }
 
+function money(value: number | null | undefined) { return value == null ? "-" : `${value >= 0 ? "+" : "-"}£${Math.abs(value).toFixed(2)}`; }
 function decimal(value: number | null | undefined) { return value == null ? "-" : value.toFixed(2); }
 function pct(value: number | null | undefined) { return value == null ? "-" : `${(value * 100).toFixed(1)}%`; }

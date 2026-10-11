@@ -668,11 +668,12 @@ function turfTissuePerformanceSelection(record: ForwardValueRecord): TissuePerfo
     won: record.settledAt === null || record.leaderWon === null
       ? null
       : record.tissueRunnerId !== null && record.winnerRunnerIds.includes(record.tissueRunnerId),
-    profitLoss: record.settledAt === null || record.leaderWon === null ? null : tissueCapturedPriceProfitLoss(record),
+    profitLoss: turfTissueQualifyingPriceProfitLoss(record),
   };
 }
 
-function tissueCapturedPriceProfitLoss(record: ForwardValueRecord): number {
+export function turfTissueQualifyingPriceProfitLoss(record: ForwardValueRecord): number | null {
+  if (record.settledAt === null || record.leaderWon === null) return null;
   const won = record.tissueRunnerId !== null && record.winnerRunnerIds.includes(record.tissueRunnerId);
   if (!won) return -1;
   return record.tissueCapturedDecimalOdds! / Math.max(record.winnerRunnerIds.length, 1) - 1;
