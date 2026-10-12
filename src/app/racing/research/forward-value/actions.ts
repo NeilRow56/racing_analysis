@@ -2,17 +2,15 @@
 
 import { revalidatePath } from "next/cache";
 import {
-  RACE_EVENT_REVIEW_TAGS,
-  PRE_RACE_REVIEW_TAGS,
+  POST_RACE_REVIEW_TAGS,
   saveTissueValueReview,
-  type CouldHaveBeenIdentifiedPreRace,
   type OutcomeSummary,
   type ReviewStatus,
   type ReviewTag,
   type TissueValueReviewFamily,
 } from "@/lib/racing/tissue-value-review";
 
-const TAGS = new Set<string>([...PRE_RACE_REVIEW_TAGS, ...RACE_EVENT_REVIEW_TAGS]);
+const TAGS = new Set<string>(POST_RACE_REVIEW_TAGS);
 
 export async function saveTissueValueReviewAction(formData: FormData) {
   const family = stringValue(formData, "family");
@@ -20,7 +18,6 @@ export async function saveTissueValueReviewAction(formData: FormData) {
   const runnerId = stringValue(formData, "runnerId");
   const status = stringValue(formData, "status");
   const outcomeSummary = stringValue(formData, "outcomeSummary");
-  const identified = optionalStringValue(formData, "couldHaveBeenIdentifiedPreRace");
   const note = stringValue(formData, "note", "");
   const tags = formData.getAll("tags").map(String).filter((tag): tag is ReviewTag => TAGS.has(tag));
 
@@ -31,7 +28,7 @@ export async function saveTissueValueReviewAction(formData: FormData) {
     status: assertStatus(status),
     outcomeSummary: assertOutcomeSummary(outcomeSummary),
     tags,
-    couldHaveBeenIdentifiedPreRace: assertCouldHaveBeenIdentifiedPreRace(identified),
+    couldHaveBeenIdentifiedPreRace: null,
     note,
   });
   revalidatePath("/racing/research/forward-value");
@@ -42,11 +39,6 @@ function stringValue(formData: FormData, key: string, fallback?: string) {
   if (typeof value === "string") return value;
   if (fallback !== undefined) return fallback;
   throw new Error(`Missing ${key}`);
-}
-
-function optionalStringValue(formData: FormData, key: string) {
-  const value = formData.get(key);
-  return typeof value === "string" && value.length > 0 ? value : null;
 }
 
 function assertFamily(value: string): TissueValueReviewFamily {
@@ -64,7 +56,3 @@ function assertOutcomeSummary(value: string): OutcomeSummary {
   throw new Error(`Unsupported outcome summary: ${value}`);
 }
 
-function assertCouldHaveBeenIdentifiedPreRace(value: string | null): CouldHaveBeenIdentifiedPreRace {
-  if (value === null || value === "yes" || value === "no" || value === "unclear") return value;
-  throw new Error(`Unsupported pre-race identifiable value: ${value}`);
-}

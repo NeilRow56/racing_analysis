@@ -13,7 +13,7 @@ import { emptyTissueValueReviewData, upsertTissueValueReview } from "@/lib/racin
 test("AW Forward Value has a separate responsive section and explicit empty state", () => {
   const html = renderToStaticMarkup(<AwTissueValueSection data={emptyAwTissueForward()} ratings={[]} />);
   assert.match(html, /AW Tissue \(diagnostic\)/);
-  assert.match(html, /No prospective AW Tissue observations/);
+  assert.match(html, /No settled AW Tissue VALUE selections/);
   assert.match(html, /Median bookmaker/);
   assert.match(html, /T-180/);
   assert.match(html, /Final SP/);
@@ -39,7 +39,7 @@ test("AW Tissue expanded detail markup keeps the observation table", () => {
 
 test("AW Tissue detail limits initial display to 100 newest observations", () => {
   const html = renderToStaticMarkup(<AwTissueValueSection data={awTissueData(101)} ratings={[]} />);
-  assert.equal(html.match(/AW Horse/g)?.length, 100);
+  assert.equal(html.match(/Add review/g)?.length, 100);
   assert.match(html, /AW Horse 100/);
   assert.doesNotMatch(html, /AW Horse 0</);
 });
@@ -47,7 +47,7 @@ test("AW Tissue detail limits initial display to 100 newest observations", () =>
 test("Jump Tissue renders empty state without hiding section", () => {
   const html = renderToStaticMarkup(<JumpTissueValueSection data={emptyJumpTissueForward()} ratings={[]} />);
   assert.match(html, /Jump Tissue \(diagnostic\)/);
-  assert.match(html, /No prospective Jump Tissue observations yet/);
+  assert.match(html, /No settled Jump Tissue VALUE selections yet/);
   assert.match(html, /Comparable JPR-A races/);
 });
 
@@ -69,8 +69,8 @@ test("Turf Tissue VALUE renders settled review controls from the shared review s
     runnerId: "turf-runner",
     status: "reviewed",
     outcomeSummary: "unplaced",
-    tags: ["wide_trip", "going_concern"],
-    couldHaveBeenIdentifiedPreRace: "yes",
+    tags: ["BAD_DRAW_OR_WIDE_TRIP", "GROUND_UNSUITABLE"],
+    couldHaveBeenIdentifiedPreRace: null,
     note: "Drawn wide and never got cover.",
     updatedAt: "2026-10-02T09:00:00.000Z",
   });
@@ -78,9 +78,9 @@ test("Turf Tissue VALUE renders settled review controls from the shared review s
   assert.match(html, /Turf Tissue VALUE/);
   assert.match(html, /Turf Tissue probability/);
   assert.match(html, /Turf Horse/);
-  assert.match(html, /Reviewed/);
-  assert.match(html, /Wide trip/);
-  assert.match(html, /Going concern/);
+  assert.match(html, /View \/ edit review/);
+  assert.match(html, /Bad draw \/ wide trip/);
+  assert.match(html, /Ground unsuitable/);
   assert.match(html, /name="family" value="turf"/);
   assert.match(html, /Post-race review diagnostics/);
 });
@@ -211,7 +211,7 @@ function baseTissueRace(index: number, horsePrefix: string) {
     featureSchemaVersion: "test",
     modelHash: "hash",
     winners: [],
-    settledAt: null,
+    settledAt: "2026-10-03T15:00:00Z",
     excludedReason: null,
     marketPriceBasisVersion: "median_bookmaker_v1",
     priceSnapshotScheduleVersion: "early_t180_t60_v1",

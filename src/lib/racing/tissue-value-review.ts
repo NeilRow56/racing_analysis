@@ -3,55 +3,51 @@ import { dirname, resolve } from "node:path";
 
 export const TISSUE_VALUE_REVIEW_VERSION = "tissue_value_review_v1" as const;
 export const TISSUE_VALUE_REVIEW_PATH = "data/research/tissue-value-reviews.json" as const;
+export const TISSUE_VALUE_REVIEW_NOTE_MAX_LENGTH = 1000 as const;
 
-export const PRE_RACE_REVIEW_TAGS = [
-  "draw_concern",
-  "going_concern",
-  "distance_trip_concern",
-  "class_concern",
-  "pace_setup_concern",
-  "long_absence_fitness_concern",
-  "weight_handicap_concern",
-  "course_suitability_concern",
-  "other_pre_race_concern",
-] as const;
-
-export const RACE_EVENT_REVIEW_TAGS = [
-  "poor_start",
-  "trouble_in_running",
-  "wide_trip",
-  "unsuitable_pace",
-  "pulled_hard",
-  "never_travelled",
-  "possible_physical_issue",
-  "other_race_day_factor",
+export const POST_RACE_REVIEW_TAGS = [
+  "NO_OBVIOUS_EXCUSE",
+  "HAMPERED",
+  "DENIED_CLEAR_RUN",
+  "RACED_KEENLY",
+  "POOR_JUMP_OR_MISTAKE",
+  "PACE_UNSUITABLE",
+  "GROUND_UNSUITABLE",
+  "TRIP_TOO_SHORT",
+  "DID_NOT_STAY",
+  "HELD_UP_TOO_FAR_BACK",
+  "BAD_DRAW_OR_WIDE_TRIP",
+  "WEAKENED_QUICKLY",
+  "NEVER_TRAVELLED",
+  "NON_COMPLETION",
+  "WORTH_FOLLOWING",
+  "OTHER",
 ] as const;
 
 export const REVIEW_TAG_LABELS = {
-  draw_concern: "Draw concern",
-  going_concern: "Going concern",
-  distance_trip_concern: "Distance/trip concern",
-  class_concern: "Class concern",
-  pace_setup_concern: "Pace/setup concern",
-  long_absence_fitness_concern: "Long absence / fitness concern",
-  weight_handicap_concern: "Weight/handicap concern",
-  course_suitability_concern: "Course suitability concern",
-  other_pre_race_concern: "Other pre-race concern",
-  poor_start: "Poor start",
-  trouble_in_running: "Trouble in running",
-  wide_trip: "Wide trip",
-  unsuitable_pace: "Unsuitable pace",
-  pulled_hard: "Pulled hard",
-  never_travelled: "Never travelled",
-  possible_physical_issue: "Possible physical issue",
-  other_race_day_factor: "Other race-day factor",
+  NO_OBVIOUS_EXCUSE: "No obvious excuse",
+  HAMPERED: "Hampered",
+  DENIED_CLEAR_RUN: "Denied clear run",
+  RACED_KEENLY: "Raced keenly",
+  POOR_JUMP_OR_MISTAKE: "Poor jump / mistake",
+  PACE_UNSUITABLE: "Pace unsuitable",
+  GROUND_UNSUITABLE: "Ground unsuitable",
+  TRIP_TOO_SHORT: "Trip too short",
+  DID_NOT_STAY: "Did not stay",
+  HELD_UP_TOO_FAR_BACK: "Held up too far back",
+  BAD_DRAW_OR_WIDE_TRIP: "Bad draw / wide trip",
+  WEAKENED_QUICKLY: "Weakened quickly",
+  NEVER_TRAVELLED: "Never travelled",
+  NON_COMPLETION: "Non-completion",
+  WORTH_FOLLOWING: "Worth following",
+  OTHER: "Other",
 } satisfies Record<ReviewTag, string>;
 
 export type TissueValueReviewFamily = "turf" | "aw" | "jump";
 export type ReviewStatus = "not_reviewed" | "reviewed";
 export type OutcomeSummary = "winner" | "placed_non_winner" | "unplaced" | "non_runner";
 export type CouldHaveBeenIdentifiedPreRace = "yes" | "no" | "unclear" | null;
-export type ReviewTag = typeof PRE_RACE_REVIEW_TAGS[number] | typeof RACE_EVENT_REVIEW_TAGS[number];
+export type ReviewTag = typeof POST_RACE_REVIEW_TAGS[number];
 
 export type TissueValueReview = {
   family: TissueValueReviewFamily;
@@ -130,7 +126,7 @@ export function upsertTissueValueReview(data: TissueValueReviewData, input: Save
   const now = input.updatedAt ?? new Date().toISOString();
   const review = normalizeReview({
     ...input,
-    note: input.note.trim(),
+    note: cleanNote(input.note),
     reviewedAt: input.status === "reviewed" ? input.reviewedAt ?? now : null,
     updatedAt: now,
   });
@@ -161,8 +157,7 @@ export function summarizeTissueValueReviews(data: TissueValueReviewData) {
   return {
     reviewed: reviewed.length,
     reviewedLosers: reviewedLosers.length,
-    preRaceTaggedReviews: reviewed.filter((review) => review.tags.some(isPreRaceReviewTag)).length,
-    identifiedBeforeRaceYes: reviewed.filter((review) => review.couldHaveBeenIdentifiedPreRace === "yes").length,
+    taggedReviews: reviewed.filter((review) => review.tags.length > 0).length,
     tagCounts,
     resultsByTag,
   };
@@ -175,7 +170,7 @@ function emptyOutcomeCounts(): OutcomeCounts {
 }
 
 function normalizeReview(input: TissueValueReview): TissueValueReview {
-  const tags = [...new Set(input.tags)].filter(isReviewTag);
+  const tags = [...new Set(input.tags.map(normalizeReviewTag).filter(isReviewTag))];
   return {
     family: assertFamily(input.family),
     raceId: input.raceId,
@@ -184,7 +179,7 @@ function normalizeReview(input: TissueValueReview): TissueValueReview {
     outcomeSummary: assertOutcomeSummary(input.outcomeSummary),
     tags,
     couldHaveBeenIdentifiedPreRace: assertCouldHaveBeenIdentifiedPreRace(input.couldHaveBeenIdentifiedPreRace),
-    note: input.note,
+    note: cleanNote(input.note),
     reviewedAt: input.status === "reviewed" ? input.reviewedAt : null,
     updatedAt: input.updatedAt,
   };
@@ -195,16 +190,40 @@ function compareReviews(left: TissueValueReview, right: TissueValueReview) {
 }
 
 function allTags(): ReviewTag[] {
-  return [...PRE_RACE_REVIEW_TAGS, ...RACE_EVENT_REVIEW_TAGS];
-}
-
-function isPreRaceReviewTag(value: ReviewTag) {
-  return (PRE_RACE_REVIEW_TAGS as readonly string[]).includes(value);
+  return [...POST_RACE_REVIEW_TAGS];
 }
 
 function isReviewTag(value: string): value is ReviewTag {
   return (allTags() as string[]).includes(value);
 }
+
+function cleanNote(value: string) {
+  return value.trim().slice(0, TISSUE_VALUE_REVIEW_NOTE_MAX_LENGTH);
+}
+
+function normalizeReviewTag(value: string): string {
+  return LEGACY_REVIEW_TAG_MAP[value] ?? value;
+}
+
+const LEGACY_REVIEW_TAG_MAP: Record<string, ReviewTag> = {
+  draw_concern: "BAD_DRAW_OR_WIDE_TRIP",
+  going_concern: "GROUND_UNSUITABLE",
+  distance_trip_concern: "DID_NOT_STAY",
+  class_concern: "OTHER",
+  pace_setup_concern: "PACE_UNSUITABLE",
+  long_absence_fitness_concern: "OTHER",
+  weight_handicap_concern: "OTHER",
+  course_suitability_concern: "OTHER",
+  other_pre_race_concern: "OTHER",
+  poor_start: "OTHER",
+  trouble_in_running: "DENIED_CLEAR_RUN",
+  wide_trip: "BAD_DRAW_OR_WIDE_TRIP",
+  unsuitable_pace: "PACE_UNSUITABLE",
+  pulled_hard: "RACED_KEENLY",
+  never_travelled: "NEVER_TRAVELLED",
+  possible_physical_issue: "OTHER",
+  other_race_day_factor: "OTHER",
+};
 
 function assertFamily(value: string): TissueValueReviewFamily {
   if (value === "turf" || value === "aw" || value === "jump") return value;

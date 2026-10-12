@@ -33,8 +33,8 @@ describe("Tissue VALUE post-race reviews", () => {
       runnerId: "runner-1",
       status: "reviewed",
       outcomeSummary: "unplaced",
-      tags: ["draw_concern"],
-      couldHaveBeenIdentifiedPreRace: "yes",
+      tags: ["BAD_DRAW_OR_WIDE_TRIP"],
+      couldHaveBeenIdentifiedPreRace: null,
       note: "Wide stall over sharp 5f.",
       updatedAt: "2026-10-02T09:00:00.000Z",
     });
@@ -50,11 +50,11 @@ describe("Tissue VALUE post-race reviews", () => {
         raceId: "race-1",
         runnerId: "runner-1",
         outcomeSummary: "unplaced",
-        tags: ["draw_concern", "wide_trip"],
+        tags: ["BAD_DRAW_OR_WIDE_TRIP", "DENIED_CLEAR_RUN"],
       },
     ]);
     const review = data.reviews[0]!;
-    assert.deepEqual(review.tags, ["draw_concern", "wide_trip"]);
+    assert.deepEqual(review.tags, ["BAD_DRAW_OR_WIDE_TRIP", "DENIED_CLEAR_RUN"]);
   });
 
   test("persists reviews after reload", async () => {
@@ -67,15 +67,15 @@ describe("Tissue VALUE post-race reviews", () => {
         runnerId: "runner-2",
         status: "reviewed",
         outcomeSummary: "winner",
-        tags: ["class_concern", "never_travelled"],
-        couldHaveBeenIdentifiedPreRace: "unclear",
+        tags: ["OTHER", "NEVER_TRAVELLED"],
+        couldHaveBeenIdentifiedPreRace: null,
         note: "Won despite review note.",
         updatedAt: "2026-10-02T09:00:00.000Z",
       }, path);
       const reloaded = await loadTissueValueReviews(path);
       const review = tissueValueReviewMap(reloaded).get(tissueValueReviewKey({ family: "jump", raceId: "race-2", runnerId: "runner-2" }));
       assert.equal(review?.status, "reviewed");
-      assert.deepEqual(review?.tags, ["class_concern", "never_travelled"]);
+      assert.deepEqual(review?.tags, ["OTHER", "NEVER_TRAVELLED"]);
     } finally {
       await rm(dir, { recursive: true, force: true });
     }
@@ -91,8 +91,8 @@ describe("Tissue VALUE post-race reviews", () => {
         runnerId: "turf-runner",
         status: "reviewed",
         outcomeSummary: "unplaced",
-        tags: ["wide_trip", "going_concern"],
-        couldHaveBeenIdentifiedPreRace: "yes",
+        tags: ["BAD_DRAW_OR_WIDE_TRIP", "GROUND_UNSUITABLE"],
+        couldHaveBeenIdentifiedPreRace: null,
         note: "Wide throughout on ground softer than ideal.",
         updatedAt: "2026-10-02T09:00:00.000Z",
       }, path);
@@ -100,7 +100,7 @@ describe("Tissue VALUE post-race reviews", () => {
       const review = tissueValueReviewMap(reloaded).get("turf:turf-race:turf-runner");
       assert.equal(review?.family, "turf");
       assert.equal(review?.status, "reviewed");
-      assert.deepEqual(review?.tags, ["wide_trip", "going_concern"]);
+      assert.deepEqual(review?.tags, ["BAD_DRAW_OR_WIDE_TRIP", "GROUND_UNSUITABLE"]);
     } finally {
       await rm(dir, { recursive: true, force: true });
     }
@@ -115,8 +115,8 @@ describe("Tissue VALUE post-race reviews", () => {
         runnerId: "shared-runner",
         status: "reviewed",
         outcomeSummary: "unplaced",
-        tags: ["draw_concern"],
-        couldHaveBeenIdentifiedPreRace: "yes",
+        tags: ["BAD_DRAW_OR_WIDE_TRIP"],
+        couldHaveBeenIdentifiedPreRace: null,
         note: family,
         updatedAt: "2026-10-02T09:00:00.000Z",
       });
@@ -134,14 +134,14 @@ describe("Tissue VALUE post-race reviews", () => {
 
   test("allows winners and losers to both be reviewed", () => {
     const data = reviewData([
-      { raceId: "race-1", runnerId: "runner-1", outcomeSummary: "winner", tags: ["pace_setup_concern"] },
-      { raceId: "race-2", runnerId: "runner-2", outcomeSummary: "unplaced", tags: ["poor_start"] },
+      { raceId: "race-1", runnerId: "runner-1", outcomeSummary: "winner", tags: ["PACE_UNSUITABLE"] },
+      { raceId: "race-2", runnerId: "runner-2", outcomeSummary: "unplaced", tags: ["HAMPERED"] },
     ]);
     const summary = summarizeTissueValueReviews(data);
     assert.equal(summary.reviewed, 2);
     assert.equal(summary.reviewedLosers, 1);
-    assert.equal(summary.resultsByTag.pace_setup_concern.winner, 1);
-    assert.equal(summary.resultsByTag.poor_start.unplaced, 1);
+    assert.equal(summary.resultsByTag.PACE_UNSUITABLE.winner, 1);
+    assert.equal(summary.resultsByTag.HAMPERED.unplaced, 1);
   });
 
   test("does not alter clean P/L or settlement fields", () => {
@@ -158,8 +158,8 @@ describe("Tissue VALUE post-race reviews", () => {
       runnerId: "runner-1",
       status: "reviewed",
       outcomeSummary: "unplaced",
-      tags: ["trouble_in_running"],
-      couldHaveBeenIdentifiedPreRace: "no",
+      tags: ["DENIED_CLEAR_RUN"],
+      couldHaveBeenIdentifiedPreRace: null,
       note: "Checked in running.",
       updatedAt: "2026-10-02T09:00:00.000Z",
     });
@@ -168,19 +168,18 @@ describe("Tissue VALUE post-race reviews", () => {
 
   test("builds diagnostic tag counts and grouped outcomes", () => {
     const data = reviewData([
-      { raceId: "race-1", runnerId: "runner-1", outcomeSummary: "unplaced", tags: ["draw_concern", "wide_trip"], couldHaveBeenIdentifiedPreRace: "yes" },
-      { raceId: "race-2", runnerId: "runner-2", outcomeSummary: "placed_non_winner", tags: ["draw_concern"] },
-      { raceId: "race-3", runnerId: "runner-3", outcomeSummary: "winner", tags: ["wide_trip"] },
+      { raceId: "race-1", runnerId: "runner-1", outcomeSummary: "unplaced", tags: ["BAD_DRAW_OR_WIDE_TRIP", "DENIED_CLEAR_RUN"] },
+      { raceId: "race-2", runnerId: "runner-2", outcomeSummary: "placed_non_winner", tags: ["BAD_DRAW_OR_WIDE_TRIP"] },
+      { raceId: "race-3", runnerId: "runner-3", outcomeSummary: "winner", tags: ["DENIED_CLEAR_RUN"] },
     ]);
     const summary = summarizeTissueValueReviews(data);
     assert.equal(summary.reviewedLosers, 2);
-    assert.equal(summary.preRaceTaggedReviews, 2);
-    assert.equal(summary.identifiedBeforeRaceYes, 1);
-    assert.equal(summary.tagCounts.draw_concern, 2);
-    assert.equal(summary.tagCounts.wide_trip, 2);
-    assert.equal(summary.resultsByTag.draw_concern.unplaced, 1);
-    assert.equal(summary.resultsByTag.draw_concern.placed_non_winner, 1);
-    assert.equal(summary.resultsByTag.wide_trip.winner, 1);
+    assert.equal(summary.taggedReviews, 3);
+    assert.equal(summary.tagCounts.BAD_DRAW_OR_WIDE_TRIP, 2);
+    assert.equal(summary.tagCounts.DENIED_CLEAR_RUN, 2);
+    assert.equal(summary.resultsByTag.BAD_DRAW_OR_WIDE_TRIP.unplaced, 1);
+    assert.equal(summary.resultsByTag.BAD_DRAW_OR_WIDE_TRIP.placed_non_winner, 1);
+    assert.equal(summary.resultsByTag.DENIED_CLEAR_RUN.winner, 1);
   });
 
   test("Turf review tags appear in diagnostics without changing prospective evidence", () => {
@@ -200,17 +199,47 @@ describe("Tissue VALUE post-race reviews", () => {
       runnerId: "runner-1",
       status: "reviewed",
       outcomeSummary: "unplaced",
-      tags: ["wide_trip", "trouble_in_running", "going_concern"],
-      couldHaveBeenIdentifiedPreRace: "unclear",
+      tags: ["BAD_DRAW_OR_WIDE_TRIP", "DENIED_CLEAR_RUN", "GROUND_UNSUITABLE"],
+      couldHaveBeenIdentifiedPreRace: null,
       note: "Kept wide and met trouble.",
       updatedAt: "2026-10-02T09:00:00.000Z",
     });
     const summary = summarizeTissueValueReviews(data);
-    assert.equal(summary.tagCounts.wide_trip, 1);
-    assert.equal(summary.tagCounts.trouble_in_running, 1);
-    assert.equal(summary.tagCounts.going_concern, 1);
-    assert.equal(summary.resultsByTag.wide_trip.unplaced, 1);
+    assert.equal(summary.tagCounts.BAD_DRAW_OR_WIDE_TRIP, 1);
+    assert.equal(summary.tagCounts.DENIED_CLEAR_RUN, 1);
+    assert.equal(summary.tagCounts.GROUND_UNSUITABLE, 1);
+    assert.equal(summary.resultsByTag.BAD_DRAW_OR_WIDE_TRIP.unplaced, 1);
     assert.deepEqual(frozenEvidence, before);
+  });
+
+  test("normalizes older review tags into the post-race vocabulary", () => {
+    const data = upsertTissueValueReview(emptyTissueValueReviewData(), {
+      family: "aw",
+      raceId: "race-legacy",
+      runnerId: "runner-legacy",
+      status: "reviewed",
+      outcomeSummary: "unplaced",
+      tags: ["wide_trip", "trouble_in_running", "going_concern"] as never,
+      couldHaveBeenIdentifiedPreRace: "yes",
+      note: "Legacy tags should stay useful.",
+      updatedAt: "2026-10-02T09:00:00.000Z",
+    });
+    assert.deepEqual(data.reviews[0]!.tags, ["BAD_DRAW_OR_WIDE_TRIP", "DENIED_CLEAR_RUN", "GROUND_UNSUITABLE"]);
+  });
+
+  test("trims post-race review notes to a short research note", () => {
+    const data = upsertTissueValueReview(emptyTissueValueReviewData(), {
+      family: "jump",
+      raceId: "race-note",
+      runnerId: "runner-note",
+      status: "reviewed",
+      outcomeSummary: "unplaced",
+      tags: ["OTHER"],
+      couldHaveBeenIdentifiedPreRace: null,
+      note: ` ${"x".repeat(1200)} `,
+      updatedAt: "2026-10-02T09:00:00.000Z",
+    });
+    assert.equal(data.reviews[0]!.note.length, 1000);
   });
 });
 
@@ -218,7 +247,7 @@ function reviewData(entries: Array<{
   raceId: string;
   runnerId: string;
   outcomeSummary: "winner" | "placed_non_winner" | "unplaced" | "non_runner";
-  tags: Array<"draw_concern" | "wide_trip" | "class_concern" | "never_travelled" | "pace_setup_concern" | "poor_start" | "trouble_in_running">;
+  tags: Array<"BAD_DRAW_OR_WIDE_TRIP" | "DENIED_CLEAR_RUN" | "OTHER" | "NEVER_TRAVELLED" | "PACE_UNSUITABLE" | "HAMPERED" | "GROUND_UNSUITABLE">;
   couldHaveBeenIdentifiedPreRace?: "yes" | "no" | "unclear" | null;
 }>): TissueValueReviewData {
   return entries.reduce((data, entry) => upsertTissueValueReview(data, {

@@ -4,8 +4,8 @@ import { turfTissueQualifyingPriceProfitLoss } from "@/lib/racing/forward-value-
 import { cleanJumpTissueRace, jumpTissueValueAgreement, type JumpTissueForwardData } from "@/lib/racing/jump-tissue-forward";
 import { formatRaceTimeForDisplay } from "@/lib/racing/todays-racing";
 import {
-  PRE_RACE_REVIEW_TAGS,
-  RACE_EVENT_REVIEW_TAGS,
+  POST_RACE_REVIEW_TAGS,
+  TISSUE_VALUE_REVIEW_NOTE_MAX_LENGTH,
   REVIEW_TAG_LABELS,
   emptyTissueValueReviewData,
   summarizeTissueValueReviews,
@@ -59,6 +59,8 @@ export function TurfTissueValueSection({ records, reviews = emptyTissueValueRevi
           finalSp: null,
           profit: turfTissueQualifyingPriceProfitLoss(race),
           status: turfTissueStatusLabel(race),
+          resultLabel: turfTissueResultLabel(race),
+          selectionResult: turfTissueSelectionResult(race),
           settled: race.settledAt !== null,
           defaultOutcomeSummary: outcomeSummaryFromTurfTissueRecord(race),
           review: runnerId ? reviewByKey.get(tissueValueReviewKey({ family: "turf", raceId: race.raceId, runnerId })) ?? null : null,
@@ -72,7 +74,7 @@ export function AwTissueValueSection({ data, ratings, reviews = emptyTissueValue
   const agreement = awTissueValueAgreement(data, ratings);
   const familyReviews = reviewsForFamily(reviews, "aw");
   const reviewByKey = tissueValueReviewMap(familyReviews);
-  const races = data.races.filter(cleanAwTissueRace).sort(newestFirst).slice(0, 100);
+  const races = data.races.filter(cleanAwTissueRace).filter(isSettledTissueValueRace).sort(newestFirst).slice(0, 100);
   return <DiagnosticDetails
     headingId="aw-tissue-value-heading"
     title="AW Tissue (diagnostic)"
@@ -84,7 +86,7 @@ export function AwTissueValueSection({ data, ratings, reviews = emptyTissueValue
   >
     <ReviewDiagnostics reviews={familyReviews} />
     <TissueTable
-      emptyText="No prospective AW Tissue observations."
+      emptyText="No settled AW Tissue VALUE selections."
       family="aw"
       probabilityHeading="AW Tissue probability"
       rows={races.map((race) => {
@@ -105,6 +107,8 @@ export function AwTissueValueSection({ data, ratings, reviews = emptyTissueValue
           finalSp: leader?.outcome?.finalSp ?? null,
           profit: race.prices.t60 ? race.selectedPriceProfitLoss.t60 : race.prices.t180 ? race.selectedPriceProfitLoss.t180 : race.selectedPriceProfitLoss.early,
           status: statusLabel(race.settledAt, leader?.outcome?.won ?? null),
+          resultLabel: resultLabel(leader?.outcome ?? null),
+          selectionResult: selectionResultLabel(leader?.outcome?.won ?? null),
           settled: race.settledAt !== null,
           defaultOutcomeSummary: outcomeSummaryFromLeader(leader?.outcome ?? null),
           review: runnerId ? reviewByKey.get(tissueValueReviewKey({ family: "aw", raceId: race.raceId, runnerId })) ?? null : null,
@@ -118,7 +122,7 @@ export function JumpTissueValueSection({ data, ratings, reviews = emptyTissueVal
   const agreement = jumpTissueValueAgreement(data, ratings);
   const familyReviews = reviewsForFamily(reviews, "jump");
   const reviewByKey = tissueValueReviewMap(familyReviews);
-  const races = data.races.filter(cleanJumpTissueRace).sort(newestFirst).slice(0, 100);
+  const races = data.races.filter(cleanJumpTissueRace).filter(isSettledTissueValueRace).sort(newestFirst).slice(0, 100);
   return <DiagnosticDetails
     headingId="jump-tissue-value-heading"
     title="Jump Tissue (diagnostic)"
@@ -130,7 +134,7 @@ export function JumpTissueValueSection({ data, ratings, reviews = emptyTissueVal
   >
     <ReviewDiagnostics reviews={familyReviews} />
     <TissueTable
-      emptyText="No prospective Jump Tissue observations yet."
+      emptyText="No settled Jump Tissue VALUE selections yet."
       family="jump"
       probabilityHeading="Jump Tissue probability"
       rows={races.map((race) => {
@@ -151,6 +155,8 @@ export function JumpTissueValueSection({ data, ratings, reviews = emptyTissueVal
           finalSp: leader?.outcome?.finalSp ?? null,
           profit: race.prices.t60 ? race.selectedPriceProfitLoss.t60 : race.prices.t180 ? race.selectedPriceProfitLoss.t180 : race.selectedPriceProfitLoss.early,
           status: statusLabel(race.settledAt, leader?.outcome?.won ?? null),
+          resultLabel: resultLabel(leader?.outcome ?? null),
+          selectionResult: selectionResultLabel(leader?.outcome?.won ?? null),
           settled: race.settledAt !== null,
           defaultOutcomeSummary: outcomeSummaryFromLeader(leader?.outcome ?? null),
           review: runnerId ? reviewByKey.get(tissueValueReviewKey({ family: "jump", raceId: race.raceId, runnerId })) ?? null : null,
@@ -195,6 +201,8 @@ type TissueTableRow = {
   finalSp: number | null;
   profit: number | null;
   status: string;
+  resultLabel: string;
+  selectionResult: "WIN" | "LOSS" | "VOID";
   settled: boolean;
   defaultOutcomeSummary: OutcomeSummary;
   review: TissueValueReview | null;
@@ -211,7 +219,7 @@ function TissueTable({ emptyText, family, probabilityHeading, rows }: { emptyTex
           const price = row.prices.t60 ?? row.prices.t180 ?? row.prices.early;
           return <tr key={row.key}>
             <td className="whitespace-nowrap px-2 py-2">{row.raceDate}<br />{formatRaceTimeForDisplay({ raceDateTime: new Date(row.currentOffAt), scheduledTime: row.scheduledTime })}</td>
-            <td className="px-2 py-2"><span className="font-medium">{row.course}</span><br />{row.horseName}</td>
+            <td className="px-2 py-2"><span className="font-medium">{row.course}</span><br />{row.horseName}<ReviewTagSummary review={row.review} /></td>
             <td className="px-2 py-2 tabular-nums">{pct(row.probability)}</td>
             <td className="px-2 py-2 tabular-nums">{decimal(price?.decimalPrice)}</td>
             <td className="px-2 py-2 tabular-nums">{pct(price?.impliedProbability)}</td>
@@ -221,7 +229,7 @@ function TissueTable({ emptyText, family, probabilityHeading, rows }: { emptyTex
             <td className="px-2 py-2 tabular-nums">{price?.bookmakerQuoteCount ?? 0}</td>
             <TissueSnapshot snapshot={row.prices.early} /><TissueSnapshot snapshot={row.prices.t180} /><TissueSnapshot snapshot={row.prices.t60} />
             <td className="px-2 py-2 tabular-nums">{decimal(row.finalSp)}</td>
-            <td className="px-2 py-2 tabular-nums">{row.family === "turf" ? money(row.profit) : decimal(row.profit)}</td>
+            <td className="px-2 py-2 tabular-nums">{money(row.profit)}</td>
             <td className="px-2 py-2 font-medium">{row.status}</td>
             <td className="w-[260px] px-2 py-2"><ReviewCell row={row} family={family} /></td>
           </tr>;
@@ -244,14 +252,13 @@ function TissueSnapshot({ snapshot }: { snapshot: ForwardValuePriceSnapshot | nu
 
 function ReviewDiagnostics({ reviews }: { reviews: TissueValueReviewData }) {
   const summary = summarizeTissueValueReviews(reviews);
-  const activeTags = [...PRE_RACE_REVIEW_TAGS, ...RACE_EVENT_REVIEW_TAGS].filter((tag) => summary.tagCounts[tag] > 0);
+  const activeTags = POST_RACE_REVIEW_TAGS.filter((tag) => summary.tagCounts[tag] > 0);
   return <div className="mt-4 border border-slate-200 bg-slate-50 p-3">
     <h4 className="text-xs font-semibold uppercase text-slate-600">Post-race review diagnostics</h4>
     <dl className="mt-2 flex flex-wrap gap-x-5 gap-y-2 text-xs">
       <Metric label="Reviewed" value={summary.reviewed} />
       <Metric label="Reviewed losers" value={summary.reviewedLosers} />
-      <Metric label="With pre-race tags" value={summary.preRaceTaggedReviews} />
-      <Metric label="Identifiable before race: yes" value={summary.identifiedBeforeRaceYes} />
+      <Metric label="With tags" value={summary.taggedReviews} />
     </dl>
     {activeTags.length ? <table className="mt-3 w-full text-left text-[11px]">
       <thead className="text-[10px] uppercase text-slate-500"><tr>{["Tag", "Count", "Winner", "Placed", "Unplaced", "Non-runner"].map((heading) => <th key={heading} className="py-1 pr-3 font-semibold">{heading}</th>)}</tr></thead>
@@ -283,53 +290,59 @@ function ReviewCell({ row, family }: { row: TissueTableRow; family: TissueValueR
   const outcome = review?.outcomeSummary ?? row.defaultOutcomeSummary;
   return <details>
     <summary className="cursor-pointer whitespace-nowrap font-medium text-emerald-800">
-      {status === "reviewed" ? "Reviewed" : "Not reviewed"}
+      {status === "reviewed" ? "View / edit review" : "Add review"}
+      {status === "reviewed" ? <span className="ml-2 font-normal text-slate-500">Note added</span> : null}
     </summary>
-    <form action={saveTissueValueReviewAction} className="mt-2 w-[300px] space-y-2 border border-slate-200 bg-white p-3 shadow-sm">
+    <form action={saveTissueValueReviewAction} className="mt-2 w-[360px] space-y-3 border border-slate-200 bg-white p-3 shadow-sm">
       <input type="hidden" name="family" value={family} />
       <input type="hidden" name="raceId" value={row.raceId} />
       <input type="hidden" name="runnerId" value={row.runnerId} />
-      <label className="block text-[11px] font-semibold text-slate-600">
-        Status
-        <select name="status" defaultValue={status} className="mt-1 w-full border border-slate-300 bg-white px-2 py-1 text-xs">
-          <option value="not_reviewed">Not reviewed</option>
-          <option value="reviewed">Reviewed</option>
-        </select>
-      </label>
-      <label className="block text-[11px] font-semibold text-slate-600">
-        Outcome
-        <select name="outcomeSummary" defaultValue={outcome} className="mt-1 w-full border border-slate-300 bg-white px-2 py-1 text-xs">
-          <option value="winner">Winner</option>
-          <option value="placed_non_winner">Placed/non-winner</option>
-          <option value="unplaced">Unplaced</option>
-          <option value="non_runner">Non-runner</option>
-        </select>
-      </label>
-      <ReviewTagGroup title="Pre-race identifiable" tags={PRE_RACE_REVIEW_TAGS} selected={review?.tags ?? []} />
-      <ReviewTagGroup title="Race/event factors" tags={RACE_EVENT_REVIEW_TAGS} selected={review?.tags ?? []} />
-      <label className="block text-[11px] font-semibold text-slate-600">
-        Identifiable before race?
-        <select name="couldHaveBeenIdentifiedPreRace" defaultValue={review?.couldHaveBeenIdentifiedPreRace ?? ""} className="mt-1 w-full border border-slate-300 bg-white px-2 py-1 text-xs">
-          <option value="">Unrecorded</option>
-          <option value="yes">Yes</option>
-          <option value="no">No</option>
-          <option value="unclear">Unclear</option>
-        </select>
-      </label>
+      <input type="hidden" name="status" value="reviewed" />
+      <input type="hidden" name="outcomeSummary" value={outcome} />
+      <ReviewContext row={row} family={family} />
+      <ReviewTagGroup tags={POST_RACE_REVIEW_TAGS} selected={review?.tags ?? []} />
       <label className="block text-[11px] font-semibold text-slate-600">
         Note
-        <textarea name="note" defaultValue={review?.note ?? ""} rows={3} className="mt-1 w-full border border-slate-300 px-2 py-1 text-xs" />
+        <textarea
+          name="note"
+          defaultValue={review?.note ?? ""}
+          maxLength={TISSUE_VALUE_REVIEW_NOTE_MAX_LENGTH}
+          rows={4}
+          className="mt-1 w-full border border-slate-300 px-2 py-1 text-xs"
+        />
       </label>
       <button type="submit" className="border border-emerald-700 bg-emerald-700 px-3 py-1 text-xs font-semibold text-white hover:bg-emerald-800">Save review</button>
     </form>
   </details>;
 }
 
-function ReviewTagGroup({ selected, tags, title }: { selected: ReviewTag[]; tags: readonly ReviewTag[]; title: string }) {
+function ReviewContext({ row, family }: { row: TissueTableRow; family: TissueValueReviewFamily }) {
+  const price = row.prices.t60 ?? row.prices.t180 ?? row.prices.early;
+  const items: Array<[string, string]> = [
+    ["Horse", row.horseName],
+    ["Date", row.raceDate],
+    ["Course", row.course],
+    ["Race time", formatRaceTimeForDisplay({ raceDateTime: new Date(row.currentOffAt), scheduledTime: row.scheduledTime })],
+    ["Family", familyLabel(family)],
+    ["Tissue probability", pct(row.probability)],
+    ["Qualifying price", decimal(price?.decimalPrice)],
+    ["Finishing position/result", row.resultLabel],
+    ["Settlement", row.selectionResult],
+    ["£1 P/L", money(row.profit)],
+  ];
+  return <dl className="grid grid-cols-2 gap-x-3 gap-y-1 border border-slate-200 bg-slate-50 p-2 text-[11px]">
+    {items.map(([label, value]) => <div key={label}>
+      <dt className="font-semibold text-slate-500">{label}</dt>
+      <dd className="mt-0.5 text-slate-800">{value}</dd>
+    </div>)}
+  </dl>;
+}
+
+function ReviewTagGroup({ selected, tags }: { selected: ReviewTag[]; tags: readonly ReviewTag[] }) {
   const selectedTags = new Set(selected);
   return <fieldset className="space-y-1">
-    <legend className="text-[11px] font-semibold text-slate-600">{title}</legend>
-    <div className="grid grid-cols-1 gap-1">
+    <legend className="text-[11px] font-semibold text-slate-600">Tags</legend>
+    <div className="grid grid-cols-2 gap-1">
       {tags.map((tag) => <label key={tag} className="flex items-start gap-2 text-[11px] text-slate-700">
         <input type="checkbox" name="tags" value={tag} defaultChecked={selectedTags.has(tag)} className="mt-0.5" />
         <span>{REVIEW_TAG_LABELS[tag]}</span>
@@ -338,8 +351,22 @@ function ReviewTagGroup({ selected, tags, title }: { selected: ReviewTag[]; tags
   </fieldset>;
 }
 
+function ReviewTagSummary({ review }: { review: TissueValueReview | null }) {
+  if (!review || review.status !== "reviewed") return null;
+  const tags = review.tags.slice(0, 3);
+  return <div className="mt-1 text-[11px] text-slate-500">
+    <span className="font-medium text-slate-600">Reviewed</span>
+    {tags.length ? `: ${tags.map((tag) => REVIEW_TAG_LABELS[tag]).join(", ")}${review.tags.length > tags.length ? "..." : ""}` : ""}
+  </div>;
+}
+
 function reviewsForFamily(data: TissueValueReviewData, family: TissueValueReviewFamily): TissueValueReviewData {
   return { ...data, reviews: data.reviews.filter((review) => review.family === family) };
+}
+
+function isSettledTissueValueRace(race: { settledAt: string | null; prices: TissueTableRow["prices"] }) {
+  const price = race.prices.t60 ?? race.prices.t180 ?? race.prices.early;
+  return race.settledAt !== null && price !== null && price.ratingEdgePercentagePoints > 0;
 }
 
 function isTurfTissueValueSelection(record: ForwardValueRecord): boolean {
@@ -388,6 +415,17 @@ function turfTissueStatusLabel(record: ForwardValueRecord) {
   return record.winnerRunnerIds.includes(record.tissueRunnerId) ? "Won" : "Lost";
 }
 
+function turfTissueResultLabel(record: ForwardValueRecord) {
+  if (record.tissueRunnerId === null) return "Void";
+  if (record.winnerRunnerIds.includes(record.tissueRunnerId)) return "Finished 1";
+  return record.leaderResultStatus ?? "Lost";
+}
+
+function turfTissueSelectionResult(record: ForwardValueRecord): "WIN" | "LOSS" | "VOID" {
+  if (record.tissueRunnerId === null) return "VOID";
+  return record.winnerRunnerIds.includes(record.tissueRunnerId) ? "WIN" : "LOSS";
+}
+
 function outcomeSummaryFromLeader(outcome: { resultStatus: string | null; finishingPosition: number | null; won: boolean | null } | null): OutcomeSummary {
   if (!outcome || outcome.resultStatus === "non_runner" || outcome.won === null) return "non_runner";
   if (outcome.won === true) return "winner";
@@ -402,6 +440,23 @@ function newestFirst(left: { recordedAt: string }, right: { recordedAt: string }
 function statusLabel(settledAt: string | null, won: boolean | null) {
   if (settledAt === null) return "Pending";
   return won === null ? "Settled" : won ? "Won" : "Lost";
+}
+
+function resultLabel(outcome: { resultStatus: string | null; finishingPosition: number | null; won: boolean | null } | null) {
+  if (!outcome || outcome.resultStatus === "non_runner" || outcome.won === null) return "Void";
+  if (outcome.finishingPosition !== null) return `Finished ${outcome.finishingPosition}`;
+  return outcome.resultStatus ?? "Settled";
+}
+
+function selectionResultLabel(won: boolean | null): "WIN" | "LOSS" | "VOID" {
+  if (won === null) return "VOID";
+  return won ? "WIN" : "LOSS";
+}
+
+function familyLabel(family: TissueValueReviewFamily) {
+  if (family === "aw") return "AW Tissue";
+  if (family === "jump") return "Jump Tissue";
+  return "Turf Tissue";
 }
 
 function money(value: number | null | undefined) { return value == null ? "-" : `${value >= 0 ? "+" : "-"}£${Math.abs(value).toFixed(2)}`; }
