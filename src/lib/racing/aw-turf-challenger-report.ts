@@ -1,6 +1,10 @@
 import type { AwTissuePairedForwardData } from "./aw-tissue-paired-forward";
 import { formatRaceTimeForDisplay, type SportingLifeCurrentPrice } from "./todays-racing";
 
+const price = (value: number | null) => value?.toFixed(2) ?? "-";
+const adjustedRunnerSummary = (runners: Array<{ horseName: string; firstCapturedPriceDecimal: number | null }>) =>
+  runners.length ? runners.map((runner) => `${runner.horseName} ${price(runner.firstCapturedPriceDecimal)}`).join(", ") : "-";
+
 export function buildAwTurfChallengerReport(data: AwTissuePairedForwardData, date: string, prices: SportingLifeCurrentPrice[] = []) {
   const latest = new Map(prices.map((price) => [`${price.raceId}|${price.runnerId}`, price]));
   const rows = data.races
@@ -53,14 +57,14 @@ export function renderAwTurfChallengerToday(data: AwTissuePairedForwardData, dat
   const { rows, summary } = buildAwTurfChallengerReport(data, date);
   return [
     "AW LONGSHOT TRAINER/JOCKEY CHALLENGER",
-    "Market-conditioned research shadow: first captured valid bookmaker median price > 21.0 suppresses trainer/jockey for LONGSHOT_TJ_ZERO. AW VALUE cap remains unchanged.",
-    `Tracked today: ${summary.tracked} | Agree: ${summary.agree} | Disagree: ${summary.disagree} | Challenger edge: ${summary.value} | Suppressed runners: ${summary.suppressed} | Settled: ${summary.settled} | Winners: ${summary.winners}`,
+    "Market-conditioned research shadow: runners above 20/1 at first capture have trainer/jockey influence removed. The table shows the resulting challenger #1 horse, which may itself be priced below 20/1. The AW VALUE cap remains unchanged.",
+    `Tracked today: ${summary.tracked} | Agree: ${summary.agree} | Disagree: ${summary.disagree} | Challenger edge: ${summary.value} | >20/1 runners adjusted: ${summary.suppressed} | Settled: ${summary.settled} | Winners: ${summary.winners}`,
     rows.some((row) => !row.agrees)
-      ? "time | course | LONGSHOT_TJ_ZERO | challenger p | CONTROL #1 | control p | suppressed | agree/disagree"
-      : "time | course | LONGSHOT_TJ_ZERO | challenger p | suppressed | agree/disagree",
+      ? "time | course | LONGSHOT_TJ_ZERO | challenger p | CONTROL #1 | control p | >20/1 runners adjusted | adjusted runners | agree/disagree"
+      : "time | course | LONGSHOT_TJ_ZERO | challenger p | >20/1 runners adjusted | adjusted runners | agree/disagree",
     ...rows.map((row) => row.agrees
-      ? `${row.time} | ${row.course} | ${row.horse} | ${(row.probability * 100).toFixed(1)}% | ${row.suppressedCount} | AGREE`
-      : `${row.time} | ${row.course} | ${row.horse} | ${(row.probability * 100).toFixed(1)}% | ${row.awHorse} | ${(row.awProbability * 100).toFixed(1)}% | ${row.suppressedCount} | DISAGREE`),
+      ? `${row.time} | ${row.course} | ${row.horse} | ${(row.probability * 100).toFixed(1)}% | ${row.suppressedCount} | ${adjustedRunnerSummary(row.suppressed)} | AGREE`
+      : `${row.time} | ${row.course} | ${row.horse} | ${(row.probability * 100).toFixed(1)}% | ${row.awHorse} | ${(row.awProbability * 100).toFixed(1)}% | ${row.suppressedCount} | ${adjustedRunnerSummary(row.suppressed)} | DISAGREE`),
     ...(rows.length ? [] : ["No challenger selections recorded for this date."]),
   ].join("\n");
 }

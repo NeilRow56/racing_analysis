@@ -57,11 +57,30 @@ describe("Forward Value dashboard", () => {
         firstCapturedAt: "2026-10-09T08:00:00.000Z",
         runners: [],
         awTissue: { modelVersion: "aw", modelHash: "aw-hash", probabilities: [], rankOrder: [], rank1RunnerId: "aw-runner", rank1HorseName: "AW Leader", rank1Probability: .32, valueQualified: null, selectedPriceProfitLoss: null },
-        longshotTjZero: { modelVersion: "longshot", modelHash: "aw-hash", probabilities: [], rankOrder: [], rank1RunnerId: "longshot-runner", rank1HorseName: "Longshot Leader", rank1Probability: .28, valueQualified: null, selectedPriceProfitLoss: null },
+        longshotTjZero: {
+          modelVersion: "longshot",
+          modelHash: "aw-hash",
+          probabilities: [
+            { runnerId: "longshot-runner", horseId: "longshot-horse", horseName: "Longshot Leader", probability: .28, rank: 1, firstCapturedPriceDecimal: 5, longshotTrainerJockeyAdjusted: false, outcome: null },
+            { runnerId: "adjusted-runner", horseId: "adjusted-horse", horseName: "Wide Price", probability: .12, rank: 2, firstCapturedPriceDecimal: 26, longshotTrainerJockeyAdjusted: true, outcome: null },
+          ],
+          rankOrder: ["longshot-runner", "adjusted-runner"],
+          rank1RunnerId: "longshot-runner",
+          rank1HorseName: "Longshot Leader",
+          rank1Probability: .28,
+          valueQualified: null,
+          selectedPriceProfitLoss: null,
+        },
         rank1Agreement: false,
         classification: "DISAGREE",
         valueBucket: "NEITHER_VALUE",
-        prices: { firstAvailable: { awTissue: null, longshotTjZero: null }, earlyMorning: { awTissue: null, longshotTjZero: null }, late: { awTissue: null, longshotTjZero: null }, finalPreRace: { awTissue: null, longshotTjZero: null }, sp: { awTissue: null, longshotTjZero: null } },
+        prices: {
+          firstAvailable: { awTissue: null, longshotTjZero: { runnerId: "longshot-runner", medianDecimalPrice: 5, impliedProbability: .2, bookmakerQuoteCount: 1, capturedAt: "2026-10-09T08:00:00.000Z", snapshot: null } },
+          earlyMorning: { awTissue: null, longshotTjZero: null },
+          late: { awTissue: null, longshotTjZero: null },
+          finalPreRace: { awTissue: null, longshotTjZero: null },
+          sp: { awTissue: null, longshotTjZero: null },
+        },
         winners: [],
         settledAt: null,
         excludedReason: null,
@@ -73,9 +92,14 @@ describe("Forward Value dashboard", () => {
     assert.match(html, /AW LONGSHOT TRAINER\/JOCKEY CHALLENGER/);
     assert.match(html, /Tracked today/);
     assert.match(html, /Disagree/);
+    assert.match(html, /runners above 20\/1 at first capture have trainer\/jockey influence removed/);
+    assert.match(html, /which may itself be priced below 20\/1/);
+    assert.match(html, /&gt;20\/1 runners adjusted/);
     assert.match(html, /AW Leader/);
     assert.match(html, /Longshot Leader/);
-    assert.match(html, /DIFFERS FROM CONTROL/);
+    assert.match(html, /5\.00/);
+    assert.match(html, /Adjusted &gt;20\/1: 1 adjusted: Wide Price 26\.00/);
+    assert.match(html, /Adjusted longshots changed rank #1/);
     assert.match(html, /text-slate-500">CONTROL #1: AW Leader · 32\.0%/);
     assert.match(html, /Pending/);
     assert.doesNotMatch(html, /CHALLENGER EDGE<\/span>/);
@@ -87,6 +111,7 @@ describe("Forward Value dashboard", () => {
       const variant = { ...paired, races: [{ ...record, rank1Agreement: true, classification: "AGREE" as const, longshotTjZero: { ...record.longshotTjZero, valueQualified } }] };
       const agreementHtml = renderToStaticMarkup(<AwTurfChallengerSection data={variant} date="2026-10-09" />);
       assert.match(agreementHtml, /AGREES WITH CONTROL/);
+      assert.match(agreementHtml, /Adjusted longshots did not change rank #1/);
       assert.doesNotMatch(agreementHtml, /CONTROL #1:/);
       assert.doesNotMatch(agreementHtml, /32\.0%/);
       assert.equal(agreementHtml.includes("CHALLENGER EDGE</span>"), valueQualified === true);
