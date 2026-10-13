@@ -205,11 +205,12 @@ async function results(date: string) {
 }
 
 async function loadDailyPositiveTissueRankOneReport(date: string) {
-  const [turfTissue, jumpTissue, awTissue, currentPrices] = await Promise.all([
+  const [turfTissue, jumpTissue, awTissue, currentPrices, valueData] = await Promise.all([
     loadTissueForward(TISSUE_V2_CONFIG.forwardPath, TISSUE_V2_CONFIG),
     loadJumpTissueForward(),
     loadAwTissueForward(),
     loadCurrentPrices(date),
+    loadForwardValueData(),
   ]);
   return {
     turfTissue,
@@ -221,6 +222,7 @@ async function loadDailyPositiveTissueRankOneReport(date: string) {
       turf: turfTissue,
       jump: jumpTissue,
       aw: awTissue,
+      records: valueData.races,
       currentPrices,
       currentRaceIds: new Set(currentPrices.map((price) => price.raceId)),
     }),

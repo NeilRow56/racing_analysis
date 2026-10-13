@@ -119,7 +119,7 @@ test("Tissue positive-edge rank-1 performance summarizes family and combined set
     ]),
   }, { epoch: null });
 
-  assert.equal(output, [
+  assert.ok(output.startsWith([
     "Tissue positive-edge rank-1 performance",
     "Full historical display",
     "",
@@ -154,10 +154,11 @@ test("Tissue positive-edge rank-1 performance summarizes family and combined set
     "Strike: 75.0%",
     "£1 P/L: £6.50",
     "ROI: 162.5%",
-  ].join("\n"));
+  ].join("\n")));
+  assert.match(output, /HURDLE TISSUE VALUE HISTORY \(PRE-CAP\)/);
 });
 
-test("Tissue VALUE display epoch starts a clean priced cohort while historical evidence remains available", () => {
+test("AW/Turf pre-cap evidence stays in history outside the new main cohort", () => {
   const historicalTurf = forwardValueRecord({ raceId: "turf-old", raceDate: "2026-10-10", family: "turf", tissueEdgePercentagePoints: 10, tissueCapturedDecimalOdds: 6, winnerRunnerIds: ["turf-old-tissue"] });
   const epochTurf = forwardValueRecord({ raceId: "turf-epoch", raceDate: TISSUE_VALUE_DISPLAY_EPOCH, family: "turf", tissueEdgePercentagePoints: 10, tissueCapturedDecimalOdds: 5, winnerRunnerIds: ["turf-epoch-tissue"] });
   const jump = jumpTrackerData([
@@ -173,10 +174,10 @@ test("Tissue VALUE display epoch starts a clean priced cohort while historical e
   const historical = summarizeTissuePositiveEdgeRankOnePerformance([historicalTurf, epochTurf], { jump, aw }, { epoch: null });
 
   assert.deepEqual(clean.map(({ label, selections, settled, winners, profitLoss, roi }) => ({ label, selections, settled, winners, profitLoss, roi })), [
-    { label: "Turf", selections: 1, settled: 1, winners: 1, profitLoss: 4, roi: 4 },
-    { label: "Jump", selections: 1, settled: 1, winners: 0, profitLoss: -1, roi: -1 },
-    { label: "All Weather", selections: 1, settled: 1, winners: 1, profitLoss: 2, roi: 2 },
-    { label: "Combined", selections: 3, settled: 3, winners: 2, profitLoss: 5, roi: 5 / 3 },
+    { label: "Turf", selections: 0, settled: 0, winners: 0, profitLoss: null, roi: null },
+    { label: "Jump", selections: 0, settled: 0, winners: 0, profitLoss: null, roi: null },
+    { label: "All Weather", selections: 0, settled: 0, winners: 0, profitLoss: null, roi: null },
+    { label: "Combined", selections: 0, settled: 0, winners: 0, profitLoss: null, roi: null },
   ]);
   assert.equal(historical.find((row) => row.label === "Turf")?.selections, 2);
   assert.equal(historical.find((row) => row.label === "Jump")?.selections, 2);
@@ -185,7 +186,7 @@ test("Tissue VALUE display epoch starts a clean priced cohort while historical e
 
 test("clean Tissue VALUE cohort reports missing stored returns explicitly", () => {
   const output = renderTissuePositiveEdgeRankOnePerformance([], {
-    jump: jumpTrackerData([trackerRace({ raceId: "jump-missing", raceDate: TISSUE_VALUE_DISPLAY_EPOCH, edge: 4, price: 4, won: true, profitLoss: null })]),
+    jump: jumpTrackerData([{ ...trackerRace({ raceId: "jump-missing", raceDate: TISSUE_VALUE_DISPLAY_EPOCH, edge: 4, price: 4, won: true, profitLoss: null }), subtype: "Chase" }]),
     aw: awTrackerData([]),
   });
 

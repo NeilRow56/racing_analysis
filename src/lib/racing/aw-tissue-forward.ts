@@ -12,6 +12,13 @@ import {
   AW_TISSUE_IMPLEMENTED_AT, AW_TISSUE_SCHEMA, AW_TISSUE_VERSION, predictAwTissue,
   type AwTissueBook, type AwTissueModel, type AwTissuePrediction,
 } from "./aw-tissue-model";
+import {
+  capturedTissueValuePriceCapState,
+  capCategory,
+  newTissueValuePriceCapRuleState,
+  TISSUE_VALUE_PRICE_CAP_RULE_EPOCH,
+  type TissueValuePriceCapRuleState,
+} from "./tissue-value-price-cap-rule";
 import { formatRaceTimeForDisplay, type SportingLifeCurrentPrice, type TodayMeeting, type TodayRace } from "./todays-racing";
 import type { createDbConnection } from "@/db";
 import { formatTissueEdge, formatTissueProbability, frozenTissueRankOneEdge, isLargeTissueEdge, type FrozenTissueRankOneEdge } from "./tissue-rank-one-edge";
@@ -21,6 +28,7 @@ export const AW_TISSUE_FORWARD_PATH = "data/research/aw-tissue-forward-v1.json";
 type Outcome = { resultStatus: string | null; finishingPosition: number | null; won: boolean | null; finalSp: number | null; deadHeatDivisor: number; finalSpProfitLoss: number | null };
 export type AwTissueRunner = AwTissuePrediction & { horseId: string; horseName: string; outcome: Outcome | null };
 export type AwTissueRace = Omit<AwTissueBook, "runners"> & {
+  tissueValuePriceCapRule?: TissueValuePriceCapRuleState;
   raceId: string; sourceId: string | null; raceDate: string; course: string; raceName: string | null;
   scheduledTime: string; scheduledOffAt: string; currentOffAt: string; fieldSize: number;
   recordedAt: string; recordedPreRace: boolean; modelVersion: string; featureSchemaVersion: string; modelHash: string;
@@ -106,7 +114,11 @@ export function buildAwTissueRace(race: TodayRace, course: string, raceDate: str
   const leader = (kind: "awD" | "awA") => [...ratings].filter(([, r]) => r[kind] !== null).sort((a, b) => a[1][kind]!.score - b[1][kind]!.score || a[0].localeCompare(b[0]))[0]?.[0] ?? null;
   const ranked = [...book.runners].filter((r) => r.rank !== null).sort((a, b) => a.rank! - b.rank!);
   return {
-    ...book, raceId: race.raceId, sourceId: race.sourceId, raceDate, course, raceName: race.raceName,
+    ...book,
+    ...(recordedAt.toISOString() >= TISSUE_VALUE_PRICE_CAP_RULE_EPOCH
+      ? { tissueValuePriceCapRule: newTissueValuePriceCapRuleState({ family: "aw", modelVersion: model.version, capturedAt: recordedAt.toISOString() }) }
+      : {}),
+    raceId: race.raceId, sourceId: race.sourceId, raceDate, course, raceName: race.raceName,
     scheduledTime: race.scheduledTime, scheduledOffAt: off.toISOString(), currentOffAt: off.toISOString(), fieldSize: book.activeRunnerCount,
     recordedAt: recordedAt.toISOString(), recordedPreRace: true, modelVersion: model.version, featureSchemaVersion: model.featureSchemaVersion, modelHash: model.checksum,
     runners: book.runners.map((p) => ({ ...p, horseId: byId.get(p.runnerId)!.horseId, horseName: byId.get(p.runnerId)!.horseName, outcome: null })),
@@ -154,7 +166,8 @@ export function enrichAwTissuePrices(record: AwTissueRace, race: TodayRace, capt
   if (!prices.early) { prices.early = snapshot; changed = true; }
   if (stage === "t180" && !prices.t180) { prices.t180 = snapshot; changed = true; }
   if (stage === "t60" && !prices.t60) { prices.t60 = snapshot; changed = true; }
-  return changed ? { ...record, currentOffAt: off.toISOString(), prices } : record;
+  const priced = changed ? { ...record, currentOffAt: off.toISOString(), prices } : record;
+  return captureAwValuePriceCapQualification(priced, capturedAt);
 }
 
 export function settleAwTissueRace(record: AwTissueRace, race: TodayRace, settledAt = new Date()): AwTissueRace {
@@ -183,6 +196,13 @@ export function settleAwTissueRace(record: AwTissueRace, race: TodayRace, settle
       resultStatus: outcome.resultStatus, won: outcome.won, placed: null, startingPrice: null, startingPriceDecimal: String(price), deadHeatDivisor: outcome.deadHeatDivisor })?.profitLoss ?? null;
   };
   return { ...record, runners, winners: winners.map((r) => r.runnerId), settledAt: settledAt.toISOString(), excludedReason: changedField ? "field_changed_after_capture" : record.excludedReason,
+    ...(record.tissueValuePriceCapRule ? { tissueValuePriceCapRule: { ...record.tissueValuePriceCapRule,
+      qualifyingPriceProfitLoss: record.tissueValuePriceCapRule.qualification && leader?.outcome?.won === null
+        ? 0 : pricedProfit(record.tissueValuePriceCapRule.qualification?.qualifyingPrice),
+      qualifyingOutcome: !record.tissueValuePriceCapRule.qualification || !leader?.outcome ? null
+        : leader.outcome.won === null ? "VOID" : leader.outcome.won ? "WIN" : "LOSS",
+      qualifyingFinishingPosition: leader?.outcome?.finishingPosition ?? null,
+      qualifyingResultStatus: leader?.outcome?.resultStatus ?? null } } : {}),
     selectedPriceProfitLoss: { early: pricedProfit(record.prices.early?.decimalPrice), t180: pricedProfit(record.prices.t180?.decimalPrice),
       t60: pricedProfit(record.prices.t60?.decimalPrice), bestEarly: pricedProfit(record.prices.early?.bestBookmakerPriceDecimal), finalSp: leader?.outcome?.finalSpProfitLoss ?? null },
   };
@@ -199,6 +219,40 @@ const number = (n: number | null) => n === null ? "-" : n.toFixed(4);
 const percentage1 = (n: number) => formatTissueProbability(n);
 const signedPp1 = (n: number) => formatTissueEdge(n / 100);
 export function cleanAwTissueRace(race: AwTissueRace): boolean { return race.recordedPreRace && race.recordedAt >= AW_TISSUE_IMPLEMENTED_AT && race.recordedAt < race.scheduledOffAt && race.excludedReason === null && race.predictedRunnerCount === race.activeRunnerCount; }
+
+export function awTissueValueCategory(race: AwTissueRace): "MAIN" | "LONG_PRICE_SHADOW" | "PRE_CAP" | "UNAVAILABLE" {
+  return capCategory(race.tissueValuePriceCapRule);
+}
+
+export function isMainAwTissueValue(race: AwTissueRace, includePreCap = false) {
+  const category = awTissueValueCategory(race);
+  return category === "MAIN" || (includePreCap && category === "PRE_CAP");
+}
+
+export function awTissueQualificationPrices(race: AwTissueRace) {
+  const qualification = race.tissueValuePriceCapRule?.qualification;
+  return qualification ? { early: null, t180: null, t60: null, [qualification.stage]: qualification.snapshot } : race.prices;
+}
+
+function captureAwValuePriceCapQualification(record: AwTissueRace, capturedAt: Date): AwTissueRace {
+  if (!record.tissueValuePriceCapRule || record.tissueValuePriceCapRule.qualification || record.settledAt ||
+      capturedAt.toISOString() < record.tissueValuePriceCapRule.captureDateTime || capturedAt.toISOString() >= record.currentOffAt) return record;
+  const leader = record.runners.find((runner) => runner.runnerId === record.top1);
+  if (!leader?.probability) return record;
+  const comparison = frozenTissueRankOneEdge(leader.probability, record.raceId, leader.runnerId, record.prices, null);
+  if (!comparison || comparison.qualificationPrice.capturedAt < record.tissueValuePriceCapRule.epoch) return record;
+  const updated = capturedTissueValuePriceCapState(record.tissueValuePriceCapRule, {
+    capturedAt,
+    edge: comparison.edge,
+    qualification: {
+      capturedAt: comparison.qualificationPrice.capturedAt,
+      qualifyingPrice: comparison.qualificationPrice.decimalPrice,
+      stage: comparison.qualificationStage,
+      snapshot: comparison.qualificationPrice,
+    },
+  });
+  return !updated || updated === record.tissueValuePriceCapRule ? record : { ...record, tissueValuePriceCapRule: updated };
+}
 
 export function summarizeAwTissueForward(data: AwTissueForwardData) {
   const clean = data.races.filter(cleanAwTissueRace), settled = clean.filter((r) => r.settledAt !== null);
@@ -262,7 +316,7 @@ export function currentPositiveAwTissueRankOneEdges(
   for (const race of races) {
     const runner = race.runners.find((candidate) => candidate.runnerId === race.top1);
     if (!runner) continue;
-    const comparison = frozenTissueRankOneEdge(runner.probability, race.raceId, runner.runnerId, race.prices, priceByRunner.get(`${race.raceId}|${runner.runnerId}`));
+    const comparison = frozenTissueRankOneEdge(runner.probability, race.raceId, runner.runnerId, awTissueQualificationPrices(race), priceByRunner.get(`${race.raceId}|${runner.runnerId}`));
     if (!comparison) continue;
     comparableRaces += 1;
     if (comparison.edge > 0) selections.push({ race, runner, price: comparison.price, impliedProbability: comparison.impliedProbability, edge: comparison.edge, comparison });

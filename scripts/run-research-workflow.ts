@@ -75,7 +75,9 @@ export function workflowSteps(mode: WorkflowMode, date: string): WorkflowStep[] 
       { label: "Jump G4 shadow status", script: "jump-g4:today", args: [date] },
       { label: "Today's Rating weight shadow status", script: "todays-rating-weight:today", args: [date] },
       { label: "AW paired research summary", script: "aw-pair:compact", args: [date] },
-      { label: "AW Turf-architecture challenger", script: "aw-pair:challenger", args: [date] },
+      { label: "AW longshot trainer/jockey challenger", script: "aw-pair:challenger", args: [date] },
+      { label: "Hurdle paired challenger status", script: "hurdle-pair:today", args: [date] },
+      { label: "Chase paired challenger status", script: "chase-pair:today", args: [date] },
     ];
   }
   if (mode === "after") {
@@ -84,7 +86,9 @@ export function workflowSteps(mode: WorkflowMode, date: string): WorkflowStep[] 
       { label: "Settling existing prospective trackers", script: "research:settle", args: [date] },
       { label: "Completed Tissue VALUE results", script: "value:results", args: [date] },
       { label: "AW paired research results", script: "aw-pair:results", args: [date] },
-      { label: "AW Turf-architecture challenger results", script: "aw-pair:challenger", args: [date] },
+      { label: "AW longshot trainer/jockey challenger results", script: "aw-pair:challenger", args: [date] },
+      { label: "Hurdle paired challenger results", script: "hurdle-pair:results", args: [date] },
+      { label: "Chase paired challenger results", script: "chase-pair:results", args: [date] },
     ];
   }
   const importStep: WorkflowStep = mode === "morning"
@@ -106,13 +110,15 @@ export function workflowSteps(mode: WorkflowMode, date: string): WorkflowStep[] 
     { label: "Today's Rating weight shadow sync", script: "todays-rating-weight:sync", args: [date] },
     { label: "Jump rating sync", script: "jump-rating:sync", args: [date] },
     { label: "Jump tissue sync", script: "jump-tissue:sync", args: [date] },
+    { label: "Hurdle paired challenger sync", script: "hurdle-pair:sync", args: [date] },
+    { label: "Chase paired challenger sync", script: "chase-pair:sync", args: [date] },
     { label: "Jump G4 sync", script: "jump-g4:sync", args: [date] },
     { label: "AW rating sync", script: "aw-rating:sync", args: [date] },
     { label: "AW tissue sync", script: "aw-tissue:sync", args: [date] },
     { label: "AW paired Tissue research sync", script: "aw-pair:sync", args: [date] },
     { label: "AW shadow sync", script: "sync:aw-shadow", args: [date] },
   ];
-  return [...steps, { label: "Tissue VALUE morning summary", script: "value:today", args: [date] }, { label: "AW Turf-architecture challenger", script: "aw-pair:challenger", args: [date] }];
+  return [...steps, { label: "Tissue VALUE morning summary", script: "value:today", args: [date] }, { label: "AW longshot trainer/jockey challenger", script: "aw-pair:challenger", args: [date] }];
 }
 
 export async function runWorkflow(

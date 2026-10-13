@@ -7,12 +7,13 @@ export function buildAwTurfChallengerReport(data: AwTissuePairedForwardData, dat
     .filter((race) => race.raceDate === date && race.excludedReason === null)
     .sort((a, b) => a.currentOffAt.localeCompare(b.currentOffAt) || a.raceId.localeCompare(b.raceId))
     .map((race) => {
-      const model = race.turfArch;
+      const model = race.longshotTjZero;
       // Match the paired tracker's existing qualification-price precedence.
-      const market = race.prices.finalPreRace.turfArch ?? race.prices.late.turfArch ?? race.prices.earlyMorning.turfArch ?? race.prices.firstAvailable.turfArch;
+      const market = race.prices.finalPreRace.longshotTjZero ?? race.prices.late.longshotTjZero ?? race.prices.earlyMorning.longshotTjZero ?? race.prices.firstAvailable.longshotTjZero;
       const outcome = model.probabilities.find((runner) => runner.runnerId === model.rank1RunnerId)?.outcome;
       const current = latest.get(`${race.raceId}|${model.rank1RunnerId}`);
       const result = !race.settledAt || !outcome ? "Pending" : outcome.won === true ? "Winner" : outcome.won === null ? "Void" : outcome.finishingPosition !== null ? `Finished ${outcome.finishingPosition}` : outcome.resultStatus ?? "Settled";
+      const suppressed = model.probabilities.filter((runner) => runner.longshotTrainerJockeyAdjusted);
       return {
         raceId: race.raceId,
         time: formatRaceTimeForDisplay({ raceDateTime: new Date(race.currentOffAt), scheduledTime: race.scheduledTime }),
@@ -29,6 +30,9 @@ export function buildAwTurfChallengerReport(data: AwTissuePairedForwardData, dat
         value: model.valueQualified === true,
         settled: race.settledAt !== null,
         won: outcome?.won === true,
+        suppressed,
+        suppressedCount: suppressed.length,
+        marketConditioned: true,
       };
     });
   return {
@@ -40,6 +44,7 @@ export function buildAwTurfChallengerReport(data: AwTissuePairedForwardData, dat
       value: rows.filter((row) => row.value).length,
       settled: rows.filter((row) => row.settled).length,
       winners: rows.filter((row) => row.settled && row.won).length,
+      suppressed: rows.reduce((sum, row) => sum + row.suppressedCount, 0),
     },
   };
 }
@@ -47,14 +52,15 @@ export function buildAwTurfChallengerReport(data: AwTissuePairedForwardData, dat
 export function renderAwTurfChallengerToday(data: AwTissuePairedForwardData, date: string) {
   const { rows, summary } = buildAwTurfChallengerReport(data, date);
   return [
-    "AW TURF-ARCHITECTURE CHALLENGER",
-    `Tracked today: ${summary.tracked} | Agree: ${summary.agree} | Disagree: ${summary.disagree} | Challenger VALUE: ${summary.value} | Settled: ${summary.settled} | Winners: ${summary.winners}`,
+    "AW LONGSHOT TRAINER/JOCKEY CHALLENGER",
+    "Market-conditioned research shadow: first captured valid bookmaker median price > 21.0 suppresses trainer/jockey for LONGSHOT_TJ_ZERO. AW VALUE cap remains unchanged.",
+    `Tracked today: ${summary.tracked} | Agree: ${summary.agree} | Disagree: ${summary.disagree} | Challenger edge: ${summary.value} | Suppressed runners: ${summary.suppressed} | Settled: ${summary.settled} | Winners: ${summary.winners}`,
     rows.some((row) => !row.agrees)
-      ? "time | course | challenger | challenger p | AW Tissue #1 | AW p | agree/disagree"
-      : "time | course | challenger | challenger p | agree/disagree",
+      ? "time | course | LONGSHOT_TJ_ZERO | challenger p | CONTROL #1 | control p | suppressed | agree/disagree"
+      : "time | course | LONGSHOT_TJ_ZERO | challenger p | suppressed | agree/disagree",
     ...rows.map((row) => row.agrees
-      ? `${row.time} | ${row.course} | ${row.horse} | ${(row.probability * 100).toFixed(1)}% | AGREE`
-      : `${row.time} | ${row.course} | ${row.horse} | ${(row.probability * 100).toFixed(1)}% | ${row.awHorse} | ${(row.awProbability * 100).toFixed(1)}% | DISAGREE`),
+      ? `${row.time} | ${row.course} | ${row.horse} | ${(row.probability * 100).toFixed(1)}% | ${row.suppressedCount} | AGREE`
+      : `${row.time} | ${row.course} | ${row.horse} | ${(row.probability * 100).toFixed(1)}% | ${row.awHorse} | ${(row.awProbability * 100).toFixed(1)}% | ${row.suppressedCount} | DISAGREE`),
     ...(rows.length ? [] : ["No challenger selections recorded for this date."]),
   ].join("\n");
 }

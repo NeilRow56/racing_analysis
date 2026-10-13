@@ -7,6 +7,8 @@ import { loadTissueForward, pendingCleanPreRaceTissueRaceIds, saveTissueForward,
 import { mutateJumpTissueForward, updateJumpTissueForward } from "@/lib/racing/jump-tissue-forward";
 import { mutateAwTissueForward, updateAwTissueForward } from "@/lib/racing/aw-tissue-forward";
 import { mutateAwTissuePairedForward, updateAwTissuePairedForward } from "@/lib/racing/aw-tissue-paired-forward";
+import { loadHurdlePair, mutateHurdlePair, updateHurdlePairs } from "@/lib/racing/hurdle-tissue-challenger-forward";
+import { loadChasePair, mutateChasePair, updateChasePairs } from "@/lib/racing/chase-tissue-challenger-forward";
 import { mutateJumpG4Forward, pendingJumpG4RaceIds, updateJumpG4Settlements } from "@/lib/racing/jump-g4-forward";
 import { mutateTodaysRatingWeightForward, pendingTodaysRatingWeightRaceIds, updateTodaysRatingWeightSettlements } from "@/lib/racing/todays-rating-weight-forward";
 import { mutateModelDisagreementForward, pendingModelDisagreementRaceIds, settleModelDisagreementObservations } from "@/lib/racing/model-disagreement-forward";
@@ -38,6 +40,8 @@ export async function main(args: string[]) {
     let settledJumpTissue = 0;
     let settledAwTissue = 0;
     let settledAwPaired = 0;
+    let settledHurdlePaired = 0;
+    let settledChasePaired = 0;
     let settledG4 = 0;
     let settledWeight = 0;
     let settledDisagreement = 0;
@@ -73,6 +77,18 @@ export async function main(args: string[]) {
       settledAwPaired = next.races.filter((race) => race.settledAt !== null).length - before;
       return next;
     });
+    await mutateHurdlePair((latest) => {
+      const before = latest.races.filter((race) => race.settledAt !== null).length;
+      const next = updateHurdlePairs(latest, races, now, true);
+      settledHurdlePaired = next.races.filter((race) => race.settledAt !== null).length - before;
+      return next;
+    });
+    await mutateChasePair((latest) => {
+      const before = latest.races.filter((race) => race.settledAt !== null).length;
+      const next = updateChasePairs(latest, races, now, true);
+      settledChasePaired = next.races.filter((race) => race.settledAt !== null).length - before;
+      return next;
+    });
     await mutateJumpG4Forward((latest) => {
       const result = updateJumpG4Settlements(latest, races, now);
       settledG4 = result.settled;
@@ -97,6 +113,8 @@ export async function main(args: string[]) {
       `jump_tissue=${settledJumpTissue}`,
       `aw_tissue=${settledAwTissue}`,
       `aw_paired=${settledAwPaired}`,
+      `hurdle_paired=${settledHurdlePaired}`,
+      `chase_paired=${settledChasePaired}`,
       `jump_g4=${settledG4}`,
       `todays_rating_weight=${settledWeight}`,
       `model_disagreement=${settledDisagreement}`,
@@ -136,6 +154,8 @@ async function pendingFromMutationSources() {
     loadModelDisagreementForward(),
   ]);
   return [
+    ...(await loadHurdlePair()).races.filter((race) => race.settledAt === null).map((race) => race.raceId),
+    ...(await loadChasePair()).races.filter((race) => race.settledAt === null).map((race) => race.raceId),
     ...jump.races.filter((race) => race.settledAt === null).map((race) => race.raceId),
     ...aw.races.filter((race) => race.settledAt === null).map((race) => race.raceId),
     ...paired.races.filter((race) => race.settledAt === null).map((race) => race.raceId),

@@ -89,8 +89,22 @@ export function awTissueModelInputs(raw: Array<number | null>, model: AwTissueMo
   return [...raw.map((v, i) => v ?? model.model.means[i]!), ...raw.map((v) => v === null ? 1 : 0)];
 }
 
-export function awTissueProbabilities(inputs: number[][], model: AwTissueModel): number[] {
-  const scores = inputs.map((values) => values.reduce((sum, value, i) => sum + model.model.weights[i]! * ((value - model.model.means[i]!) / model.model.scales[i]!), 0));
+export function awTissueContribution(values: number[], model: AwTissueModel, featureName: string): number {
+  const index = model.model.names.indexOf(featureName);
+  if (index < 0) throw new Error(`Missing AW Tissue feature: ${featureName}`);
+  return model.model.weights[index]! * ((values[index]! - model.model.means[index]!) / model.model.scales[index]!);
+}
+
+export function awTissueScore(values: number[], model: AwTissueModel, contributionMultipliers: Partial<Record<string, number>> = {}): number {
+  return values.reduce((sum, value, i) => {
+    const name = model.model.names[i]!;
+    const multiplier = contributionMultipliers[name] ?? 1;
+    return sum + multiplier * model.model.weights[i]! * ((value - model.model.means[i]!) / model.model.scales[i]!);
+  }, 0);
+}
+
+export function awTissueProbabilities(inputs: number[][], model: AwTissueModel, contributionMultipliers: Partial<Record<string, number>> = {}): number[] {
+  const scores = inputs.map((values) => awTissueScore(values, model, contributionMultipliers));
   const maximum = Math.max(...scores);
   const weights = scores.map((value) => Math.exp(value - maximum));
   const total = weights.reduce((a, b) => a + b, 0);

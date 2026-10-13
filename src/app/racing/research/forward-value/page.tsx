@@ -47,6 +47,10 @@ import { DailyResearchDashboard, ResearchHistory } from "./research-dashboard";
 import { loadAwTissuePairedForward } from "@/lib/racing/aw-tissue-paired-forward";
 import { AwTurfChallengerSection } from "./aw-turf-challenger";
 import { loadTissueValueReviews } from "@/lib/racing/tissue-value-review";
+import { loadHurdlePair } from "@/lib/racing/hurdle-tissue-challenger-forward";
+import { HurdleTissueChallengerSection } from "./hurdle-tissue-challenger";
+import { loadChasePair } from "@/lib/racing/chase-tissue-challenger-forward";
+import { ChaseTissueChallengerSection } from "./chase-tissue-challenger";
 
 export const dynamic = "force-dynamic";
 
@@ -56,7 +60,7 @@ type PageProps = {
 
 export default async function ForwardValuePage({ searchParams }: PageProps) {
   const raceDate = getLocalRacingDate();
-  const [data, tissueData, awTissueData, jumpTissueData, awPairedData, g4Data, weightData, modelDisagreementData, reviewData, params] = await Promise.all([
+  const [data, tissueData, awTissueData, jumpTissueData, awPairedData, g4Data, weightData, modelDisagreementData, reviewData, hurdlePairData, chasePairData, params] = await Promise.all([
     loadForwardValueData(),
     loadTissueForward(TISSUE_V2_CONFIG.forwardPath, TISSUE_V2_CONFIG),
     loadAwTissueForward(),
@@ -66,6 +70,8 @@ export default async function ForwardValuePage({ searchParams }: PageProps) {
     loadTodaysRatingWeightForward(),
     loadModelDisagreementForward(),
     loadTissueValueReviews(),
+    loadHurdlePair(),
+    loadChasePair(),
     searchParams,
   ]);
   const connection = createDbConnection();
@@ -124,6 +130,8 @@ export default async function ForwardValuePage({ searchParams }: PageProps) {
         <DailyResearchDashboard dashboard={dashboard}>
           <AwTurfChallengerSection data={awPairedData} date={raceDate} prices={currentPrices} />
         </DailyResearchDashboard>
+        <HurdleTissueChallengerSection data={hurdlePairData} date={raceDate} />
+        <ChaseTissueChallengerSection data={chasePairData} date={raceDate} />
         <details className="mt-8 border-t border-slate-200 py-4">
           <summary className="cursor-pointer text-sm font-semibold">Performance</summary>
           <SparseSampleWarning show={summary.sparseSampleWarning} />

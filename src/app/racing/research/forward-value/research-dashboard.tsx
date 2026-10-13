@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { SavedRuleResearchNote } from "../saved-rule-research-note";
 import { RESEARCH_SIGNALS, RESEARCH_STATUS, type DailyResearchHorse, type ProspectiveMonitor, type ResearchDashboard, type ResearchSignal } from "@/lib/racing/research-monitor";
+import { HurdleLongPriceShadowSection } from "./hurdle-long-price-shadow";
 
 export function DailyResearchDashboard({ dashboard, children }: { dashboard: ResearchDashboard; children?: ReactNode }) {
   const tissueRows = tissueValueRows(dashboard.horses);
@@ -18,7 +19,7 @@ export function DailyResearchDashboard({ dashboard, children }: { dashboard: Res
         <h2 className="text-xl font-semibold" id="tissue-value-heading">Today&apos;s Tissue VALUE</h2>
         <span className="text-sm tabular-nums text-slate-500">{tissueRows.length} selections</span>
       </div>
-      <TissueMonitorSummary monitors={dashboard.monitors} rows={tissueRows} />
+      <TissueMonitorSummary monitors={[...dashboard.monitors, ...(dashboard.hurdleValueMonitor ? [dashboard.hurdleValueMonitor] : [])]} rows={tissueRows} />
       {dashboard.emptyMessage && tissueRows.length === 0 ? <p className="py-10 text-sm text-slate-600">{dashboard.emptyMessage}</p> : <>
       <div className="mt-5 overflow-x-auto border border-slate-200 bg-white">
         <table className="w-full min-w-[980px] text-left text-sm">
@@ -87,6 +88,7 @@ export function DailyResearchDashboard({ dashboard, children }: { dashboard: Res
       </section>
       </>}
     </section>
+    {dashboard.hurdleValues && <HurdleLongPriceShadowSection rows={dashboard.hurdleValues} date={dashboard.date} awTurfRows={dashboard.longPriceShadows ?? []} />}
     {children}
     <details className="mt-6 border-t border-slate-200 py-4">
       <summary className="cursor-pointer text-sm font-semibold">Research shadows and disagreement signals</summary>
@@ -156,7 +158,7 @@ function SecondarySignals({ horse }: { horse: DailyResearchHorse }) {
 }
 
 function TissueMonitorSummary({ monitors, rows }: { monitors: ProspectiveMonitor[]; rows: ReturnType<typeof tissueValueRows> }) {
-  const tissue = monitors.filter((monitor) => ["Turf Tissue", "Jump Tissue", "AW Tissue"].includes(monitor.name));
+  const tissue = monitors.filter((monitor) => ["Turf Tissue", "Jump Tissue", "AW Tissue", "Hurdle Tissue"].includes(monitor.name));
   const displayTotals = summarizeSettledTissueRows(rows);
   const familyTotals = summarizeTodayFamilies(rows);
   const todaySettled = rows.filter((row) => row.signal.result === "settled" || row.signal.result === "void").length;
@@ -165,10 +167,11 @@ function TissueMonitorSummary({ monitors, rows }: { monitors: ProspectiveMonitor
   return (
     <div className="mt-4">
       <p className="mb-2 text-xs text-slate-500">Clean priced prospective record from 11 Oct 2026</p>
-      <dl className="grid border border-slate-200 bg-white sm:grid-cols-2 lg:grid-cols-4">
+      <dl className={`grid border border-slate-200 bg-white sm:grid-cols-2 ${summaryRows.length > 4 ? "lg:grid-cols-5" : "lg:grid-cols-4"}`}>
       {summaryRows.map((monitor) => (
         <div className="border-b border-slate-200 px-4 py-3 last:border-b-0 sm:border-r lg:border-b-0" key={monitor.name}>
           <dt className="text-xs font-semibold uppercase text-slate-500">{monitor.name === "Today" ? "Today" : `${monitor.name.replace(" Tissue", "")} VALUE`}</dt>
+          {(monitor.name === "Hurdle Tissue" || monitor.name === "Jump Tissue") && "cohort" in monitor ? <dd className="mt-1 text-[10px] text-slate-500">{monitor.cohort}</dd> : null}
           <dd className="mt-2 text-sm tabular-nums text-slate-900">
             {monitor.tracked} selections / {monitor.settled} settled / {monitor.winners} winners
           </dd>

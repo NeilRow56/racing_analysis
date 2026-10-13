@@ -8,7 +8,6 @@ import {
   enrichAwTissuePairedPrices,
   renderAwTissuePairedSummary,
   settleAwTissuePairedRace,
-  structuralAwFeatureVector,
   summarizeAwTissuePairedForward,
   updateAwTissuePairedForward,
   type AwTissuePairedRace,
@@ -20,17 +19,14 @@ import {
   AW_TISSUE_VECTOR_NAMES,
   type AwTissueModel,
 } from "./aw-tissue-model";
-import { COMMENT_FEATURE_NAMES, NUMERIC_FEATURES, type HistoricalComment } from "../../../scripts/diagnose-independent-tissue-feasibility";
-import { TISSUE_V2_CONFIG, type FrozenTissueModel } from "./tissue-forward";
 import type { HorseMetricsAsOf } from "./horse-metrics";
 import type { TodayRace, TodayRunner } from "./todays-racing";
 import { buildAwTurfChallengerReport, renderAwTurfChallengerToday } from "./aw-turf-challenger-report";
 import { currentDayProspectiveCapture, withoutStaleBookmakerQuotes } from "./current-day-sync";
 
-const recordedAt = new Date("2026-10-10T08:00:00.000Z");
-const off = new Date("2026-10-10T14:00:00.000Z");
+const recordedAt = new Date("2026-10-13T08:00:00.000Z");
+const off = new Date("2026-10-13T14:00:00.000Z");
 const starts = new Map([["a", 1], ["b", 1], ["c", 1]]);
-const comments = new Map<string, HistoricalComment[]>();
 
 const awModel: AwTissueModel = {
   version: AW_TISSUE_VERSION,
@@ -45,29 +41,16 @@ const awModel: AwTissueModel = {
     names: [...AW_TISSUE_VECTOR_NAMES],
     means: Array(AW_TISSUE_VECTOR_NAMES.length).fill(0),
     scales: Array(AW_TISSUE_VECTOR_NAMES.length).fill(1),
-    weights: AW_TISSUE_VECTOR_NAMES.map((name) => name === "avg_l3_aw_speed" ? 1 : 0),
-  },
-};
-
-const turfModel: FrozenTissueModel = {
-  version: TISSUE_V2_CONFIG.modelVersion,
-  trainedAt: "2026-09-19T17:35:53.410Z",
-  trainingWindow: { from: "2025-01-01", to: "2025-12-31" },
-  checksum: "turf-test",
-  model: {
-    names: [...NUMERIC_FEATURES.map(([name]) => name), ...NUMERIC_FEATURES.map(([name]) => `${name}_missing`), ...COMMENT_FEATURE_NAMES],
-    means: Array(NUMERIC_FEATURES.length * 2 + COMMENT_FEATURE_NAMES.length).fill(0),
-    scales: Array(NUMERIC_FEATURES.length * 2 + COMMENT_FEATURE_NAMES.length).fill(1),
-    weights: [...NUMERIC_FEATURES.map(([name]) => name === "latest_turf_speed" ? 0.02 : 0), ...Array(NUMERIC_FEATURES.length + COMMENT_FEATURE_NAMES.length).fill(0)],
+    weights: AW_TISSUE_VECTOR_NAMES.map((name) => name === "avg_l3_aw_speed" ? 0.02 : name === "trainer_prior_rate" || name === "jockey_prior_rate" ? 1 : 0),
   },
 };
 
 describe("AW Tissue paired prospective tracker", () => {
   test("morning existing-card fallback preserves prices without fabricating a later snapshot", () => {
     const previous = process.env.RESEARCH_EXISTING_CARDS_DATE;
-    const date = "2026-10-10";
+    const date = "2026-10-13";
     const race = sampleRace("disagree");
-    const record = enrichAwTissuePairedPrices(build("disagree")!, race, new Date("2026-10-10T11:00:00.000Z"));
+    const record = enrichAwTissuePairedPrices(build("disagree")!, race, new Date("2026-10-13T11:00:00.000Z"));
     const before = JSON.stringify(race);
     try {
       process.env.RESEARCH_EXISTING_CARDS_DATE = date;
@@ -76,16 +59,16 @@ describe("AW Tissue paired prospective tracker", () => {
       const storedRace = capture.meetings[0]!.races[0]!;
       assert.deepEqual(storedRace.runners.map((runner) => runner.metrics), race.runners.map((runner) => runner.metrics));
       assert.ok(storedRace.runners.every((runner) => !runner.bookmakerQuotes?.length && runner.oddsDecimal === null));
-      const noRefresh = enrichAwTissuePairedPrices(record, storedRace, new Date("2026-10-10T13:15:00.000Z"));
+      const noRefresh = enrichAwTissuePairedPrices(record, storedRace, new Date("2026-10-13T13:15:00.000Z"));
       assert.strictEqual(noRefresh, record);
-      assert.equal(record.prices.finalPreRace.turfArch, null);
+      assert.equal(record.prices.finalPreRace.longshotTjZero, null);
       assert.equal(JSON.stringify(race), before);
       const pendingRunner = withoutStaleBookmakerQuotes({ ...race.runners[0]!, raceDate: date });
       assert.deepEqual(pendingRunner.bookmakerQuotes, []);
       assert.equal(pendingRunner.oddsDecimal, race.runners[0]!.oddsDecimal);
       const completed = finishedRace("b");
       const safeResult = { ...completed, runners: completed.runners.map((runner) => withoutStaleBookmakerQuotes({ ...runner, raceDate: date })) };
-      assert.deepEqual(settleAwTissuePairedRace(record, safeResult, new Date("2026-10-10T15:00:00.000Z")), settleAwTissuePairedRace(record, completed, new Date("2026-10-10T15:00:00.000Z")));
+      assert.deepEqual(settleAwTissuePairedRace(record, safeResult, new Date("2026-10-13T15:00:00.000Z")), settleAwTissuePairedRace(record, completed, new Date("2026-10-13T15:00:00.000Z")));
     } finally {
       if (previous === undefined) delete process.env.RESEARCH_EXISTING_CARDS_DATE;
       else process.env.RESEARCH_EXISTING_CARDS_DATE = previous;
@@ -93,16 +76,16 @@ describe("AW Tissue paired prospective tracker", () => {
   });
 
   test("challenger reports only eligible daily captures, frozen prices and independent VALUE flags", () => {
-    const record = enrichAwTissuePairedPrices(build("disagree")!, sampleRace("disagree", { aPrice: 5, bPrice: 5 }), new Date("2026-10-10T11:00:00.000Z"));
+    const record = enrichAwTissuePairedPrices(build("disagree")!, sampleRace("disagree", { aPrice: 25, bPrice: 5 }), new Date("2026-10-13T11:00:00.000Z"));
     const data = { ...emptyAwTissuePairedForward(), races: [
       record,
       { ...build("agree")!, raceId: "agree" },
       { ...record, raceId: "excluded", excludedReason: "field_changed_after_capture" },
-      { ...record, raceId: "other-day", raceDate: "2026-10-11" },
+      { ...record, raceId: "other-day", raceDate: "2026-10-14" },
     ] };
     const before = JSON.stringify(data);
-    const report = buildAwTurfChallengerReport(data, "2026-10-10", [{ raceId: record.raceId, runnerId: "b", marketPrice: "7/1", marketDecimalOdds: 8, bookmakerQuoteCount: 1, forecastPrice: null, forecastDecimalOdds: null, displayRaceTime: "15:00" }]);
-    assert.deepEqual(report.summary, { tracked: 2, agree: 1, disagree: 1, value: 1, settled: 0, winners: 0 });
+    const report = buildAwTurfChallengerReport(data, "2026-10-13", [{ raceId: record.raceId, runnerId: "b", marketPrice: "7/1", marketDecimalOdds: 8, bookmakerQuoteCount: 1, forecastPrice: null, forecastDecimalOdds: null, displayRaceTime: "15:00" }]);
+    assert.deepEqual(report.summary, { tracked: 2, agree: 1, disagree: 1, value: 1, settled: 0, winners: 0, suppressed: 1 });
     const challenger = report.rows.find((row) => row.raceId === record.raceId)!;
     const agreeing = report.rows.find((row) => row.raceId === "agree")!;
     assert.equal(challenger.horse, "B");
@@ -113,31 +96,31 @@ describe("AW Tissue paired prospective tracker", () => {
     assert.equal(agreeing.capturedPrice, null);
     assert.equal(agreeing.value, false);
     assert.equal(JSON.stringify(data), before);
-    const text = renderAwTurfChallengerToday(data, "2026-10-10");
-    assert.match(text, /AW TURF-ARCHITECTURE CHALLENGER/);
-    assert.match(text, /time \| course \| challenger \| challenger p \| AW Tissue #1 \| AW p \| agree\/disagree/);
-    assert.match(text, /15:00 \| Wolverhampton \| B \| [\d.]+% \| A \| [\d.]+% \| DISAGREE/);
-    assert.match(text, /15:00 \| Wolverhampton \| A \| [\d.]+% \| AGREE/);
-    assert.doesNotMatch(text, /15:00 \| Wolverhampton \| A \| [\d.]+% \| A \| [\d.]+% \| AGREE/);
-    assert.equal(text.split("\n").length, 5);
-    assert.match(renderAwTurfChallengerToday(data, "2026-10-12"), /No challenger selections/);
+    const text = renderAwTurfChallengerToday(data, "2026-10-13");
+    assert.match(text, /AW LONGSHOT TRAINER\/JOCKEY CHALLENGER/);
+    assert.match(text, /time \| course \| LONGSHOT_TJ_ZERO \| challenger p \| CONTROL #1 \| control p \| suppressed \| agree\/disagree/);
+    assert.match(text, /15:00 \| Wolverhampton \| B \| [\d.]+% \| A \| [\d.]+% \| 1 \| DISAGREE/);
+    assert.match(text, /15:00 \| Wolverhampton \| A \| [\d.]+% \| 0 \| AGREE/);
+    assert.doesNotMatch(text, /15:00 \| Wolverhampton \| A \| [\d.]+% \| A \| [\d.]+% \| 0 \| AGREE/);
+    assert.equal(text.split("\n").length, 6);
+    assert.match(renderAwTurfChallengerToday(data, "2026-10-15"), /No challenger selections/);
   });
 
   test("challenger reporting reflects live settlement without creating captures or changing prices", () => {
-    const record = enrichAwTissuePairedPrices(build("disagree")!, sampleRace("disagree", { bPrice: 5 }), new Date("2026-10-10T11:00:00.000Z"));
+    const record = enrichAwTissuePairedPrices(build("disagree")!, sampleRace("disagree", { bPrice: 5 }), new Date("2026-10-13T11:00:00.000Z"));
     const original = { ...emptyAwTissuePairedForward(), races: [record] };
     const results = new Map([[record.raceId, finishedRace("b")], ["untracked", { ...finishedRace("a"), raceId: "untracked" }]]);
-    const live = updateAwTissuePairedForward(original, results, new Date("2026-10-10T15:00:00.000Z"));
-    const after = updateAwTissuePairedForward(live, results, new Date("2026-10-11T08:00:00.000Z"));
+    const live = updateAwTissuePairedForward(original, results, new Date("2026-10-13T15:00:00.000Z"));
+    const after = updateAwTissuePairedForward(live, results, new Date("2026-10-14T08:00:00.000Z"));
     assert.equal(after.races.length, 1);
     assert.deepEqual(after.races[0]!.prices.firstAvailable, record.prices.firstAvailable);
     assert.deepEqual(after, live);
-    const report = buildAwTurfChallengerReport(after, "2026-10-10");
+    const report = buildAwTurfChallengerReport(after, "2026-10-13");
     assert.equal(report.rows[0]!.result, "Winner");
     assert.equal(report.summary.settled, 1);
     assert.equal(report.summary.winners, 1);
-    assert.match(renderAwTurfChallengerToday(after, "2026-10-10"), /Settled: 1 \| Winners: 1/);
-    const lost = buildAwTurfChallengerReport({ ...original, races: [settleWithPrice(record, "a", 5, 5)] }, "2026-10-10");
+    assert.match(renderAwTurfChallengerToday(after, "2026-10-13"), /Settled: 1 \| Winners: 1/);
+    const lost = buildAwTurfChallengerReport({ ...original, races: [settleWithPrice(record, "a", 5, 5)] }, "2026-10-13");
     assert.match(lost.rows[0]!.result, /Finished/);
     assert.equal(lost.summary.winners, 0);
   });
@@ -150,21 +133,38 @@ describe("AW Tissue paired prospective tracker", () => {
     assert.equal(build("disagree", new Date("2026-10-09T23:59:59.999Z")), null);
     assert.equal(build("disagree", off), null);
     const result = finishedRace("a");
-    assert.equal(buildAwTissuePairedRace({ raceDate: "2026-10-10", course: "Wolverhampton", race: result, awModel, turfModel, priorAwStarts: starts, commentsByHorse: comments, recordedAt }), null);
+    assert.equal(buildAwTissuePairedRace({ raceDate: "2026-10-13", course: "Wolverhampton", race: result, awModel, priorAwStarts: starts, recordedAt }), null);
   });
 
-  test("scores both frozen models on the same AW race and preserves structural AW speed mapping", () => {
+  test("scores control and longshot challenger on the same AW race and preserves ordinary runner scores", () => {
     const race = sampleRace("disagree");
-    const vector = structuralAwFeatureVector(race, race.runners[1]!);
-    assert.equal(vector[NUMERIC_FEATURES.findIndex(([name]) => name === "latest_turf_speed")], 90);
-    assert.equal(vector[NUMERIC_FEATURES.findIndex(([name]) => name === "best_l3_turf_speed")], 90);
-    assert.equal(vector[NUMERIC_FEATURES.findIndex(([name]) => name === "avg_l3_turf_speed")], 50);
-    const record = buildAwTissuePairedRace({ raceDate: "2026-10-10", course: "Wolverhampton", race, awModel, turfModel, priorAwStarts: starts, commentsByHorse: comments, recordedAt })!;
+    const record = buildAwTissuePairedRace({ raceDate: "2026-10-13", course: "Wolverhampton", race, awModel, priorAwStarts: starts, recordedAt })!;
     assert.equal(record.runners.length, 3);
     assert.equal(record.awTissue.rank1RunnerId, "a");
-    assert.equal(record.turfArch.rank1RunnerId, "b");
+    assert.equal(record.longshotTjZero.rank1RunnerId, "b");
     assert.ok(Math.abs(record.awTissue.probabilities.reduce((sum, runner) => sum + runner.probability, 0) - 1) < 1e-12);
-    assert.ok(Math.abs(record.turfArch.probabilities.reduce((sum, runner) => sum + runner.probability, 0) - 1) < 1e-12);
+    assert.ok(Math.abs(record.longshotTjZero.probabilities.reduce((sum, runner) => sum + runner.probability, 0) - 1) < 1e-12);
+    const ordinaryControl = record.awTissue.probabilities.find((runner) => runner.runnerId === "b")!;
+    const ordinaryChallenger = record.longshotTjZero.probabilities.find((runner) => runner.runnerId === "b")!;
+    assert.equal(ordinaryChallenger.firstCapturedPriceDecimal, 5);
+    assert.equal(ordinaryChallenger.longshotTrainerJockeyAdjusted, false);
+    assert.notEqual(ordinaryControl.probability, ordinaryChallenger.probability);
+    const allOrdinary = buildAwTissuePairedRace({ raceDate: "2026-10-13", course: "Wolverhampton", race: sampleRace("agree", { aPrice: 21, bPrice: 5 }), awModel, priorAwStarts: starts, recordedAt })!;
+    for (const control of allOrdinary.awTissue.probabilities) {
+      const challenger = allOrdinary.longshotTjZero.probabilities.find((runner) => runner.runnerId === control.runnerId)!;
+      assert.equal(challenger.longshotTrainerJockeyAdjusted, false);
+      assert.equal(challenger.probability, control.probability);
+      assert.equal(challenger.rank, control.rank);
+    }
+  });
+
+  test("price boundary is strict: 21.0 is normal and 21.01 is adjusted", () => {
+    const boundary = buildAwTissuePairedRace({ raceDate: "2026-10-13", course: "Wolverhampton", race: sampleRace("agree", { aPrice: 21 }), awModel, priorAwStarts: starts, recordedAt })!;
+    assert.equal(boundary.longshotTjZero.probabilities.find((runner) => runner.runnerId === "a")!.longshotTrainerJockeyAdjusted, false);
+    assert.equal(boundary.classification, "AGREE");
+    const over = buildAwTissuePairedRace({ raceDate: "2026-10-13", course: "Wolverhampton", race: sampleRace("disagree", { aPrice: 21.01 }), awModel, priorAwStarts: starts, recordedAt })!;
+    assert.equal(over.longshotTjZero.probabilities.find((runner) => runner.runnerId === "a")!.longshotTrainerJockeyAdjusted, true);
+    assert.equal(over.classification, "DISAGREE");
   });
 
   test("classifies rank agreement and disagreement", () => {
@@ -182,38 +182,38 @@ describe("AW Tissue paired prospective tracker", () => {
     data = captureAwTissuePairedRaces(data, [changed]);
     assert.equal(data.races.length, 1);
     assert.equal(data.races[0]!.classification, "DISAGREE");
-    assert.equal(data.races[0]!.turfArch.rank1RunnerId, "b");
+    assert.equal(data.races[0]!.longshotTjZero.rank1RunnerId, "b");
   });
 
   test("applies independent value flags without changing production value behavior", () => {
     const record = build("disagree")!;
-    const priced = enrichAwTissuePairedPrices(record, sampleRace("disagree", { aPrice: 5, bPrice: 1.1 }), new Date("2026-10-10T11:00:00.000Z"));
+    const priced = enrichAwTissuePairedPrices(record, sampleRace("disagree", { aPrice: 5, bPrice: 1.1 }), new Date("2026-10-13T11:00:00.000Z"));
     assert.equal(priced.awTissue.valueQualified, true);
-    assert.equal(priced.turfArch.valueQualified, false);
+    assert.equal(priced.longshotTjZero.valueQualified, false);
     assert.equal(priced.valueBucket, "AW_ONLY_VALUE");
     assert.equal(priced.prices.firstAvailable.awTissue?.medianDecimalPrice, 5);
   });
 
   test("canonical settlement records winners, P/L and duplicate sync idempotence", () => {
-    const record = enrichAwTissuePairedPrices(build("disagree")!, sampleRace("disagree", { aPrice: 5, bPrice: 2 }), new Date("2026-10-10T11:00:00.000Z"));
-    const settled = settleAwTissuePairedRace(record, finishedRace("a"), new Date("2026-10-10T15:00:00.000Z"));
+    const record = enrichAwTissuePairedPrices(build("disagree")!, sampleRace("disagree", { aPrice: 5, bPrice: 2 }), new Date("2026-10-13T11:00:00.000Z"));
+    const settled = settleAwTissuePairedRace(record, finishedRace("a"), new Date("2026-10-13T15:00:00.000Z"));
     assert.deepEqual(settled.winners, ["a"]);
     assert.equal(settled.awTissue.probabilities.find((runner) => runner.runnerId === "a")!.outcome?.won, true);
-    assert.equal(settled.turfArch.probabilities.find((runner) => runner.runnerId === "b")!.outcome?.won, false);
+    assert.equal(settled.longshotTjZero.probabilities.find((runner) => runner.runnerId === "b")!.outcome?.won, false);
     assert.equal(settled.awTissue.selectedPriceProfitLoss, 4);
-    const second = updateAwTissuePairedForward({ ...emptyAwTissuePairedForward(), races: [settled] }, new Map([[settled.raceId, finishedRace("a")]]), new Date("2026-10-10T16:00:00.000Z"));
+    const second = updateAwTissuePairedForward({ ...emptyAwTissuePairedForward(), races: [settled] }, new Map([[settled.raceId, finishedRace("a")]]), new Date("2026-10-13T16:00:00.000Z"));
     assert.equal(JSON.stringify(second.races[0]), JSON.stringify(settled));
   });
 
   test("summary comparisons include disagreement and value performance", () => {
     const awWin = settleWithPrice(build("disagree")!, "a", 5, 1.1);
-    const turfWin = settleWithPrice({ ...build("disagree")!, raceId: "race-two" }, "b", 5, 5);
-    const data = { ...emptyAwTissuePairedForward(), races: [awWin, turfWin] };
+    const challengerWin = settleWithPrice({ ...build("disagree")!, raceId: "race-two" }, "b", 25, 5);
+    const data = { ...emptyAwTissuePairedForward(), races: [awWin, challengerWin] };
     const summary = summarizeAwTissuePairedForward(data);
     assert.equal(summary.tracked, 2);
     assert.equal(summary.settled, 2);
     assert.equal(summary.disagreementPerformance.awWins, 1);
-    assert.equal(summary.disagreementPerformance.turfArchWins, 1);
+    assert.equal(summary.disagreementPerformance.longshotTjZeroWins, 1);
     assert.equal(summary.value.awOnly, 1);
     assert.equal(summary.value.both, 1);
     assert.ok(Number.isFinite(summary.probability.awTissue.logLoss!));
@@ -222,18 +222,18 @@ describe("AW Tissue paired prospective tracker", () => {
 });
 
 function build(shape: "agree" | "disagree", at = recordedAt) {
-  return buildAwTissuePairedRace({ raceDate: "2026-10-10", course: "Wolverhampton", race: sampleRace(shape), awModel, turfModel, priorAwStarts: starts, commentsByHorse: comments, recordedAt: at });
+  return buildAwTissuePairedRace({ raceDate: "2026-10-13", course: "Wolverhampton", race: sampleRace(shape), awModel, priorAwStarts: starts, recordedAt: at });
 }
 
 function settleWithPrice(record: AwTissuePairedRace, winner: string, aPrice: number, bPrice: number) {
-  const priced = enrichAwTissuePairedPrices(record, sampleRace("disagree", { aPrice, bPrice }), new Date("2026-10-10T11:00:00.000Z"));
-  return settleAwTissuePairedRace(priced, finishedRace(winner), new Date("2026-10-10T15:00:00.000Z"));
+  const priced = enrichAwTissuePairedPrices(record, sampleRace("disagree", { aPrice, bPrice }), new Date("2026-10-13T11:00:00.000Z"));
+  return settleAwTissuePairedRace(priced, finishedRace(winner), new Date("2026-10-13T15:00:00.000Z"));
 }
 
 function sampleRace(shape: "agree" | "disagree", prices: { aPrice?: number; bPrice?: number } = {}): TodayRace {
   const values = shape === "agree"
-    ? [["a", 100, 100, prices.aPrice ?? 5], ["b", 50, 50, prices.bPrice ?? 5], ["c", 20, 20, 9]] as const
-    : [["a", 100, 10, prices.aPrice ?? 5], ["b", 50, 90, prices.bPrice ?? 2], ["c", 20, 20, 9]] as const;
+    ? [["a", 100, 100, prices.aPrice ?? 5, 1], ["b", 80, 80, prices.bPrice ?? 5, 0], ["c", 20, 20, 9, 0]] as const
+    : [["a", 100, 10, prices.aPrice ?? 25, 1], ["b", 180, 90, prices.bPrice ?? 5, 0], ["c", 20, 20, 9, 0]] as const;
   return {
     raceId: "race-one",
     sourceId: "source-race-one",
@@ -251,7 +251,7 @@ function sampleRace(shape: "agree" | "disagree", prices: { aPrice?: number; bPri
     declaredRunnerCount: 3,
     actualRunnerCount: 3,
     winningTime: null,
-    runners: values.map(([runnerId, averageSpeed, latestSpeed, price]) => runner(runnerId, averageSpeed, latestSpeed, price)),
+    runners: values.map(([runnerId, averageSpeed, latestSpeed, price, tjRate]) => runner(runnerId, averageSpeed, latestSpeed, price, tjRate)),
   };
 }
 
@@ -265,7 +265,7 @@ function finishedRace(winner: string): TodayRace {
   return race;
 }
 
-function runner(runnerId: string, averageAwSpeedLast3: number, latestAwSpeedRating: number, price: number): TodayRunner {
+function runner(runnerId: string, averageAwSpeedLast3: number, latestAwSpeedRating: number, price: number, tjRate: number): TodayRunner {
   return {
     runnerId,
     runnerSourceId: runnerId,
@@ -287,8 +287,8 @@ function runner(runnerId: string, averageAwSpeedLast3: number, latestAwSpeedRati
     forecastDecimalOdds: null,
     resultStatus: null,
     finishingPosition: null,
-    trainerMetrics: { trainerPriorWinRate: 10, trainerPriorRuns: 100, trainerPriorWins: 10 },
-    jockeyMetrics: { jockeyPriorWinRate: 10, jockeyPriorRuns: 100, jockeyPriorWins: 10 },
+    trainerMetrics: { trainerPriorWinRate: tjRate, trainerPriorRuns: 100, trainerPriorWins: 10 },
+    jockeyMetrics: { jockeyPriorWinRate: tjRate, jockeyPriorRuns: 100, jockeyPriorWins: 10 },
     metrics: {
       averageAwSpeedLast3,
       latestAwSpeedRating,

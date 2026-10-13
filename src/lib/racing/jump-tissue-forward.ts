@@ -24,6 +24,7 @@ import {
 } from "./jump-tissue-model";
 import { formatRaceTimeForDisplay, type SportingLifeCurrentPrice, type TodayMeeting, type TodayRace } from "./todays-racing";
 import { formatTissueEdge, formatTissueProbability, frozenTissueRankOneEdge, isLargeTissueEdge, type FrozenTissueRankOneEdge } from "./tissue-rank-one-edge";
+import { captureHurdleValueQualification, HURDLE_VALUE_RULE_EPOCH, jumpTissueQualificationPrices, newHurdleValueRuleState, type HurdleValueRuleState } from "./hurdle-value-rule";
 
 export const JUMP_TISSUE_FORWARD_VERSION = "jump_tissue_forward_v1" as const;
 export const JUMP_TISSUE_FORWARD_PATH = "data/research/jump-tissue-forward-v1.json" as const;
@@ -37,6 +38,7 @@ export type JumpTissueRunner = JumpTissuePrediction & {
 };
 
 export type JumpTissueRace = Omit<JumpTissueBook, "runners"> & {
+  hurdleValueRule?: HurdleValueRuleState;
   raceId: string;
   sourceId: string | null;
   raceDate: string;
@@ -140,6 +142,8 @@ export function buildJumpTissueRace(input: {
   const ranked = [...book.runners].filter((runner) => runner.rank !== null).sort((left, right) => left.rank! - right.rank! || left.runnerId.localeCompare(right.runnerId));
   return {
     ...book,
+    ...(subtype.code === "hurdle" && recordedAt.toISOString() >= HURDLE_VALUE_RULE_EPOCH
+      ? { hurdleValueRule: newHurdleValueRuleState(recordedAt.toISOString()) } : {}),
     raceId: input.race.raceId,
     sourceId: input.race.sourceId,
     raceDate: input.raceDate,
@@ -185,6 +189,7 @@ export function captureJumpTissueRaces(data: JumpTissueForwardData, races: JumpT
 export function enrichJumpTissuePrices(record: JumpTissueRace, race: TodayRace, capturedAt = new Date()): JumpTissueRace {
   const off = race.raceDateTime;
   if (record.settledAt || !off || capturedAt >= off || capturedAt.toISOString() < record.recordedAt) return record;
+  if (record.hurdleValueRule && (race.winningTime || race.runners.some((runner) => runner.finishingPosition !== null || (runner.resultStatus !== null && runner.resultStatus !== "non_runner")))) return record;
   const leader = record.runners.find((runner) => runner.runnerId === record.top1);
   const current = race.runners.find((runner) => runner.runnerId === record.top1);
   if (!leader?.probability || !current || current.resultStatus === "non_runner") return record;
@@ -215,7 +220,7 @@ export function enrichJumpTissuePrices(record: JumpTissueRace, race: TodayRace, 
   if (!prices.early) { prices.early = snapshot; changed = true; }
   if (stage === "t180" && !prices.t180) { prices.t180 = snapshot; changed = true; }
   if (stage === "t60" && !prices.t60) { prices.t60 = snapshot; changed = true; }
-  return changed ? { ...record, currentOffAt: off.toISOString(), prices } : record;
+  return captureHurdleValueQualification(changed ? { ...record, currentOffAt: off.toISOString(), prices } : record, capturedAt);
 }
 
 export function settleJumpTissueRace(record: JumpTissueRace, race: TodayRace, settledAt = new Date()): JumpTissueRace {
@@ -242,6 +247,9 @@ export function settleJumpTissueRace(record: JumpTissueRace, race: TodayRace, se
   };
   return {
     ...record,
+    ...(record.hurdleValueRule ? { hurdleValueRule: { ...record.hurdleValueRule,
+      qualifyingPriceProfitLoss: leader?.outcome?.won === null && record.hurdleValueRule.qualification ? 0 : pricedProfit(record.hurdleValueRule.qualification?.qualifyingPrice),
+    } } : {}),
     runners,
     winners: winners.map((runner) => runner.runnerId),
     settledAt: settledAt.toISOString(),
@@ -327,7 +335,7 @@ export function currentPositiveJumpTissueRankOneEdges(races: JumpTissueRace[], c
   for (const race of races) {
     const runner = race.runners.find((candidate) => candidate.runnerId === race.top1);
     if (!runner) continue;
-    const comparison = frozenTissueRankOneEdge(runner.probability, race.raceId, runner.runnerId, race.prices, priceByRunner.get(`${race.raceId}|${runner.runnerId}`));
+    const comparison = frozenTissueRankOneEdge(runner.probability, race.raceId, runner.runnerId, jumpTissueQualificationPrices(race), priceByRunner.get(`${race.raceId}|${runner.runnerId}`));
     if (!comparison) continue;
     comparableRaces += 1;
     if (comparison.edge > 0) selections.push({ race, runner, price: comparison.price, impliedProbability: comparison.impliedProbability, edge: comparison.edge, comparison });

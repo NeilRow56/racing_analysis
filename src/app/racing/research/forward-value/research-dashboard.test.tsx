@@ -111,7 +111,7 @@ test("splits pending and settled Tissue VALUE rows with same-day settlement retu
   };
   const html = renderToStaticMarkup(
     <DailyResearchDashboard dashboard={dashboard}>
-      <section aria-labelledby="aw-turf-challenger-heading"><h2 id="aw-turf-challenger-heading">AW TURF-ARCHITECTURE CHALLENGER</h2><p>Challenger Choice</p></section>
+      <section aria-labelledby="aw-turf-challenger-heading"><h2 id="aw-turf-challenger-heading">AW LONGSHOT TRAINER/JOCKEY CHALLENGER</h2><p>Challenger Choice</p></section>
     </DailyResearchDashboard>,
   );
   const pendingEnd = html.indexOf("Settled Tissue VALUE Today");
@@ -133,8 +133,8 @@ test("splits pending and settled Tissue VALUE rows with same-day settlement retu
   assert.match(settledHtml, /2 bets · 1 winner · £1 P\/L \+£3\.00 · ROI \+150\.0%/);
   assert.match(html, /4 selections \/ 3 settled \/ 1 winners/);
   assert.match(html, /P\/L \+£3\.00/);
-  assert.ok(html.indexOf("Settled Tissue VALUE Today") < html.indexOf("AW TURF-ARCHITECTURE CHALLENGER"));
-  assert.doesNotMatch(settledHtml.slice(0, settledHtml.indexOf("AW TURF-ARCHITECTURE CHALLENGER")), /Challenger Choice/);
+  assert.ok(html.indexOf("Settled Tissue VALUE Today") < html.indexOf("AW LONGSHOT TRAINER/JOCKEY CHALLENGER"));
+  assert.doesNotMatch(settledHtml.slice(0, settledHtml.indexOf("AW LONGSHOT TRAINER/JOCKEY CHALLENGER")), /Challenger Choice/);
 });
 
 test("settled Tissue VALUE summary counts bets, winners and summed positive and negative returns", () => {

@@ -418,8 +418,15 @@
         "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
         "bookmakerQuoteCount": 3
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "finishingPosition": null,
+        "resultStatus": "non_runner",
+        "won": null,
+        "deadHeatDivisor": 1,
+        "finalSp": null,
+        "profitLoss": null
+      },
+      "settledAt": "2026-10-12T16:24:58.806Z"
     },
     {
       "raceId": "27008ebd-edcf-45f1-9447-d50f2e67399c",
@@ -471,8 +478,15 @@
         "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
         "bookmakerQuoteCount": 3
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "finishingPosition": 1,
+        "resultStatus": "finished",
+        "won": true,
+        "deadHeatDivisor": 1,
+        "finalSp": 1.2,
+        "profitLoss": 0.19999999999999996
+      },
+      "settledAt": "2026-10-12T16:24:58.806Z"
     },
     {
       "raceId": "d2806abe-e845-480d-a624-a6c6fbcc8c33",
@@ -524,8 +538,15 @@
         "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
         "bookmakerQuoteCount": 3
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "finishingPosition": 2,
+        "resultStatus": "finished",
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 3.75,
+        "profitLoss": -1
+      },
+      "settledAt": "2026-10-12T16:24:58.806Z"
     },
     {
       "raceId": "06a9bf48-d3a1-4ef4-a43b-4deb1f24541e",
@@ -577,8 +598,15 @@
         "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
         "bookmakerQuoteCount": 3
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "finishingPosition": null,
+        "resultStatus": "non_runner",
+        "won": null,
+        "deadHeatDivisor": 1,
+        "finalSp": null,
+        "profitLoss": null
+      },
+      "settledAt": "2026-10-12T16:24:58.806Z"
     },
     {
       "raceId": "06a9bf48-d3a1-4ef4-a43b-4deb1f24541e",
@@ -627,6 +655,225 @@
         "impliedProbability": 0.09090909090909091,
         "marketRank": 6,
         "priceCapturedAt": "2026-10-12T04:36:45.537Z",
+        "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
+        "bookmakerQuoteCount": 3
+      },
+      "outcome": {
+        "finishingPosition": 3,
+        "resultStatus": "finished",
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 7.5,
+        "profitLoss": -1
+      },
+      "settledAt": "2026-10-12T16:24:58.806Z"
+    },
+    {
+      "raceId": "ce1ed9f8-db5b-47ea-8744-8daa4edda2a6",
+      "sourceId": "943160",
+      "raceDate": "2026-10-13",
+      "scheduledOff": "2026-10-13T14:30:00.000Z",
+      "scheduledTime": "14:30",
+      "course": "Hereford",
+      "raceName": "Betting.Bet Free Bets Handicap Hurdle",
+      "subtype": "Hurdle",
+      "subtypeCode": "hurdle",
+      "handicapStatus": "handicap",
+      "fieldSize": 8,
+      "runnerId": "9e5605a4-a598-4892-bc2f-fd25690295b3",
+      "horseId": "450fa9b1-725c-4d8f-a66f-7fd80993f9a1",
+      "horseName": "Krak",
+      "recordedAt": "2026-10-13T06:04:31.800Z",
+      "recordedPreRace": true,
+      "components": {
+        "averageL3JumpSpeed": 107.74722270295955,
+        "averageL3JumpSpeedRank": 3,
+        "latestJumpSpeed": 117.74604928605716,
+        "previousJumpSpeed": 98.17197886866343,
+        "latestMinusPrevious": 19.574070417393727,
+        "previousClass": 3,
+        "currentClass": 4,
+        "classDropAmount": 1
+      },
+      "context": {
+        "officialRating": 120,
+        "officialRatingRank": 1,
+        "officialRatingTop3": true,
+        "officialRatingGapToBest": 0,
+        "officialRatingRelativeToFieldMean": 10.5,
+        "trainerPriorRate": 21.537842190016104,
+        "jockeyPriorRate": 9.511568123393316,
+        "daysSinceRun": 34,
+        "priorUsableJumpSpeedCount": 13,
+        "jprARank": 1,
+        "jprBRank": 1,
+        "jumpTissueRank": 1,
+        "jumpTissueProbability": 0.27190391896236593
+      },
+      "market": {
+        "medianBookmakerDecimal": 5,
+        "impliedProbability": 0.2,
+        "marketRank": 4,
+        "priceCapturedAt": "2026-10-13T06:04:31.800Z",
+        "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
+        "bookmakerQuoteCount": 3
+      },
+      "outcome": null,
+      "settledAt": null
+    },
+    {
+      "raceId": "99ebf95c-4c48-4f92-a4a7-dfdfdfd8c3af",
+      "sourceId": "943162",
+      "raceDate": "2026-10-13",
+      "scheduledOff": "2026-10-13T15:38:00.000Z",
+      "scheduledTime": "15:38",
+      "course": "Hereford",
+      "raceName": "Hereford Halloween Family Raceday 26th October Open Maiden NH Flat Race (GBB Race)",
+      "subtype": "NH Flat",
+      "subtypeCode": "nh_flat",
+      "handicapStatus": "non_handicap",
+      "fieldSize": 4,
+      "runnerId": "040a95c5-1cb7-4ed8-83e9-8c0c208e2ccb",
+      "horseId": "17172491-5fd1-485e-8a65-288f8b1f6761",
+      "horseName": "Lucy Glitters",
+      "recordedAt": "2026-10-13T06:04:31.800Z",
+      "recordedPreRace": true,
+      "components": {
+        "averageL3JumpSpeed": 101.30416785983121,
+        "averageL3JumpSpeedRank": 1,
+        "latestJumpSpeed": 111.31503723481391,
+        "previousJumpSpeed": 91.29329848484849,
+        "latestMinusPrevious": 20.021738749965422,
+        "previousClass": 4,
+        "currentClass": 5,
+        "classDropAmount": 1
+      },
+      "context": {
+        "officialRating": null,
+        "officialRatingRank": null,
+        "officialRatingTop3": null,
+        "officialRatingGapToBest": null,
+        "officialRatingRelativeToFieldMean": null,
+        "trainerPriorRate": 17.037037037037038,
+        "jockeyPriorRate": 16.897959183673468,
+        "daysSinceRun": 80,
+        "priorUsableJumpSpeedCount": 2,
+        "jprARank": 1,
+        "jprBRank": null,
+        "jumpTissueRank": 1,
+        "jumpTissueProbability": 0.36999384218750053
+      },
+      "market": {
+        "medianBookmakerDecimal": 1.83,
+        "impliedProbability": 0.5464480874316939,
+        "marketRank": 1,
+        "priceCapturedAt": "2026-10-13T06:04:31.800Z",
+        "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
+        "bookmakerQuoteCount": 3
+      },
+      "outcome": null,
+      "settledAt": null
+    },
+    {
+      "raceId": "fc05f875-1885-4dd7-832a-4d1556efd56c",
+      "sourceId": "943164",
+      "raceDate": "2026-10-13",
+      "scheduledOff": "2026-10-13T13:35:00.000Z",
+      "scheduledTime": "13:35",
+      "course": "Southwell",
+      "raceName": "Heb Group 'The Power Behind Everyday' Novices' Handicap Chase (GBB Race)",
+      "subtype": "Chase",
+      "subtypeCode": "chase",
+      "handicapStatus": "handicap",
+      "fieldSize": 6,
+      "runnerId": "1f6a70e5-8f86-4ecd-b3db-71d852c57e2f",
+      "horseId": "c1d5214b-5019-4af3-8895-425640ffc6e6",
+      "horseName": "Marche D'aligre",
+      "recordedAt": "2026-10-13T06:04:31.800Z",
+      "recordedPreRace": true,
+      "components": {
+        "averageL3JumpSpeed": 108.0804644416238,
+        "averageL3JumpSpeedRank": 3,
+        "latestJumpSpeed": 109.09755134163647,
+        "previousJumpSpeed": 107.06337754161112,
+        "latestMinusPrevious": 2.034173800025357,
+        "previousClass": 2,
+        "currentClass": 4,
+        "classDropAmount": 2
+      },
+      "context": {
+        "officialRating": 116,
+        "officialRatingRank": 2,
+        "officialRatingTop3": true,
+        "officialRatingGapToBest": 2,
+        "officialRatingRelativeToFieldMean": 4.666666666666671,
+        "trainerPriorRate": 24.840764331210192,
+        "jockeyPriorRate": 20.583717357910906,
+        "daysSinceRun": 192,
+        "priorUsableJumpSpeedCount": 9,
+        "jprARank": 1,
+        "jprBRank": 2,
+        "jumpTissueRank": 1,
+        "jumpTissueProbability": 0.2967487384161097
+      },
+      "market": {
+        "medianBookmakerDecimal": 5,
+        "impliedProbability": 0.2,
+        "marketRank": 3,
+        "priceCapturedAt": "2026-10-13T06:04:31.800Z",
+        "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
+        "bookmakerQuoteCount": 3
+      },
+      "outcome": null,
+      "settledAt": null
+    },
+    {
+      "raceId": "b3d8be53-7de8-453a-9d6a-f1e1ad0c0480",
+      "sourceId": "943168",
+      "raceDate": "2026-10-13",
+      "scheduledOff": "2026-10-13T15:52:00.000Z",
+      "scheduledTime": "15:52",
+      "course": "Southwell",
+      "raceName": "Celebrate With Sponsorship At Southwell Racecourse Novices' Limited Handicap Hurdle",
+      "subtype": "Hurdle",
+      "subtypeCode": "hurdle",
+      "handicapStatus": "handicap",
+      "fieldSize": 12,
+      "runnerId": "f0e2dd30-645a-418a-a1a7-972e461f5f1d",
+      "horseId": "01170294-7dc6-434d-bf08-b7729f6f58c7",
+      "horseName": "Golden Garden",
+      "recordedAt": "2026-10-13T06:04:31.800Z",
+      "recordedPreRace": true,
+      "components": {
+        "averageL3JumpSpeed": 121.55429155241868,
+        "averageL3JumpSpeedRank": 1,
+        "latestJumpSpeed": 121.55429155241868,
+        "previousJumpSpeed": 104.756912757908,
+        "latestMinusPrevious": 16.797378794510678,
+        "previousClass": 4,
+        "currentClass": 5,
+        "classDropAmount": 1
+      },
+      "context": {
+        "officialRating": 92,
+        "officialRatingRank": 2,
+        "officialRatingTop3": true,
+        "officialRatingGapToBest": 2,
+        "officialRatingRelativeToFieldMean": 9.25,
+        "trainerPriorRate": 15.163398692810457,
+        "jockeyPriorRate": 21.1734693877551,
+        "daysSinceRun": 23,
+        "priorUsableJumpSpeedCount": 3,
+        "jprARank": 1,
+        "jprBRank": 1,
+        "jumpTissueRank": 4,
+        "jumpTissueProbability": 0.10168017535035605
+      },
+      "market": {
+        "medianBookmakerDecimal": 10,
+        "impliedProbability": 0.1,
+        "marketRank": 6,
+        "priceCapturedAt": "2026-10-13T06:04:31.800Z",
         "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
         "bookmakerQuoteCount": 3
       },

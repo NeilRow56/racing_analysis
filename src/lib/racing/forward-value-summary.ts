@@ -19,13 +19,17 @@ import {
 } from "./forward-value";
 import { formatRaceTimeForDisplay, formatSportingLifeRaceTime, type SportingLifeCurrentPrice } from "./todays-racing";
 import { currentPositiveTurfTissueRankOneEdges, type TissueForwardData, type TissueForwardRace, type TissueForwardRunner } from "./tissue-forward";
-import { cleanAwTissueRace, currentPositiveAwTissueRankOneEdges, type AwTissueForwardData, type AwTissueRace } from "./aw-tissue-forward";
+import { awTissueQualificationPrices, awTissueValueCategory, cleanAwTissueRace, currentPositiveAwTissueRankOneEdges, isMainAwTissueValue, type AwTissueForwardData, type AwTissueRace } from "./aw-tissue-forward";
 import { cleanJumpTissueRace, currentPositiveJumpTissueRankOneEdges, type JumpTissueForwardData, type JumpTissueRace } from "./jump-tissue-forward";
-import { LARGE_PROBABILITY_GAP_PP, type TissueRankOneEdge } from "./tissue-rank-one-edge";
+import { frozenTissueRankOneEdge, LARGE_PROBABILITY_GAP_PP, type TissueRankOneEdge } from "./tissue-rank-one-edge";
+import { HURDLE_VALUE_RULE_EPOCH, isMainJumpTissueValue, jumpTissueQualificationPrices } from "./hurdle-value-rule";
+import { renderHurdleValueReport } from "./hurdle-value-report";
+import { capCategory, TISSUE_VALUE_PRICE_CAP_RULE_EPOCH } from "./tissue-value-price-cap-rule";
 
 export { LARGE_PROBABILITY_GAP_PP };
 
 export const TISSUE_VALUE_DISPLAY_EPOCH = "2026-10-11" as const;
+const TISSUE_VALUE_PRICE_CAP_RULE_EPOCH_DATE = TISSUE_VALUE_PRICE_CAP_RULE_EPOCH.slice(0, 10);
 
 export type ForwardValueObservationState = "all" | "settled" | "unsettled" | "excluded" | "superseded";
 export type ForwardValueEdgeFilter = "all" | "positive" | "non_positive";
@@ -48,11 +52,12 @@ export type DailyPositiveTissueRankOneSummaryInput = {
   aw: AwTissueForwardData;
   currentPrices: SportingLifeCurrentPrice[];
   currentRaceIds?: ReadonlySet<string>;
+  records?: ForwardValueRecord[];
 };
 
 export function renderDailyPositiveTissueRankOneSummary(input: DailyPositiveTissueRankOneSummaryInput): string {
   const families = dailyPositiveTissueRankOneFamilies(input);
-  const lines = ["TODAY'S TISSUE VALUE", ""];
+  const lines = ["TODAY'S TISSUE VALUE", "MAIN VALUE", ""];
   for (const family of families) {
     lines.push(family.heading);
     if (family.selections.length === 0) {
@@ -77,6 +82,8 @@ export function renderDailyPositiveTissueRankOneSummary(input: DailyPositiveTiss
   const total = turf + jump + aw;
   lines.push("TOTAL TISSUE VALUE");
   lines.push(`Selections: ${total}`);
+  lines.push("", renderHurdleValueReport(input.jump, input.date, input.currentPrices));
+  lines.push("", renderAwTurfLongPriceShadowReport(input.records ?? [], input.aw, input.date));
   return lines.join("\n").trimEnd();
 }
 
@@ -93,7 +100,7 @@ function dailyPositiveTissueRankOneFamilies(input: DailyPositiveTissueRankOneSum
   return [
     {
       heading: "TURF",
-      selections: currentPositiveTurfTissueRankOneEdges(turfRaces, input.currentPrices).selections.map(({ race, runner, comparison }) => ({
+      selections: qualifyingTurfTissueRankOneEdges(turfRaces, input.records ?? [], input.currentPrices, input.date).map(({ race, runner, comparison }) => ({
         displayTime: turfDisplayTime(race, input.currentPrices),
         course: race.course,
         horseName: runner.horseName,
@@ -103,7 +110,7 @@ function dailyPositiveTissueRankOneFamilies(input: DailyPositiveTissueRankOneSum
     },
     {
       heading: "JUMP",
-      selections: currentPositiveJumpTissueRankOneEdges(jumpRaces, input.currentPrices).selections.map(({ race, runner, comparison }) => ({
+      selections: currentPositiveJumpTissueRankOneEdges(jumpRaces, input.currentPrices).selections.filter(({ race }) => isMainJumpTissueValue(race, input.date < HURDLE_VALUE_RULE_EPOCH.slice(0, 10))).map(({ race, runner, comparison }) => ({
         displayTime: comparison.price.displayRaceTime || formatRaceTimeForDisplay({ raceDateTime: new Date(race.currentOffAt), scheduledTime: race.scheduledTime }),
         course: race.course,
         horseName: runner.horseName,
@@ -113,7 +120,7 @@ function dailyPositiveTissueRankOneFamilies(input: DailyPositiveTissueRankOneSum
     },
     {
       heading: "ALL WEATHER",
-      selections: currentPositiveAwTissueRankOneEdges(awRaces, input.currentPrices).selections.map(({ race, runner, comparison }) => ({
+      selections: currentPositiveAwTissueRankOneEdges(awRaces, input.currentPrices).selections.filter(({ race }) => isMainAwTissueValue(race, input.date < TISSUE_VALUE_PRICE_CAP_RULE_EPOCH_DATE)).map(({ race, runner, comparison }) => ({
         displayTime: comparison.price.displayRaceTime || formatRaceTimeForDisplay({ raceDateTime: new Date(race.currentOffAt), scheduledTime: race.scheduledTime }),
         course: race.course,
         horseName: runner.horseName,
@@ -122,6 +129,21 @@ function dailyPositiveTissueRankOneFamilies(input: DailyPositiveTissueRankOneSum
       })),
     },
   ] satisfies Array<{ heading: string; selections: DailyPositiveTissueRankOneSelection[] }>;
+}
+
+export function qualifyingTurfTissueRankOneEdges(races: TissueForwardRace[], records: ForwardValueRecord[], prices: SportingLifeCurrentPrice[], date: string) {
+  if (date < TISSUE_VALUE_PRICE_CAP_RULE_EPOCH_DATE) return currentPositiveTurfTissueRankOneEdges(races, prices).selections;
+  return races.filter((race) => race.recordedPreRace === true && race.settledAt === null).flatMap((race) => {
+    const record = records.find((entry) => entry.family === "turf" && entry.raceId === race.raceId);
+    const qualification = record?.tissueValuePriceCapRule?.qualification;
+    if (!record || !isTurfMainValueRecord(record) || !qualification) return [];
+    const runner = race.runners.find((entry) => entry.runnerId === record.tissueRunnerId && entry.tissueRank === 1);
+    if (!runner) return [];
+    const comparison = frozenTissueRankOneEdge(runner.probability, race.raceId, runner.runnerId,
+      { early: null, t180: null, t60: null, [qualification.stage]: qualification.snapshot },
+      prices.find((entry) => entry.raceId === race.raceId && entry.runnerId === runner.runnerId));
+    return comparison && comparison.edge > 0 ? [{ race, runner, comparison }] : [];
+  });
 }
 
 function percent(value: number): string {
@@ -139,13 +161,13 @@ export function renderTissueValueResultsSummary(input: {
   aw?: AwTissueForwardData;
 }): string {
   const turfSelections = input.records
-    .filter((record) => record.raceDate === input.date && record.family === "turf" && record.tissueEdgePercentagePoints != null && record.tissueEdgePercentagePoints > 0 && record.tissueCapturedDecimalOdds !== null)
+    .filter((record) => record.raceDate === input.date && record.family === "turf" && isTurfMainValueRecord(record, input.date < TISSUE_VALUE_PRICE_CAP_RULE_EPOCH_DATE) && (record.tissueValuePriceCapRule?.qualification?.snapshot.ratingEdgePercentagePoints ?? record.tissueEdgePercentagePoints ?? 0) > 0 && record.tissueCapturedDecimalOdds !== null)
     .map(turfTissuePerformanceSelection);
   const jumpSelections = (input.jump?.races ?? [])
-    .filter((race) => race.raceDate === input.date && cleanJumpTissueRace(race))
+    .filter((race) => race.raceDate === input.date && cleanJumpTissueRace(race) && isMainJumpTissueValue(race, input.date < HURDLE_VALUE_RULE_EPOCH.slice(0, 10)))
     .flatMap((race) => trackerTissuePerformanceSelection(race, "Jump"));
   const awSelections = (input.aw?.races ?? [])
-    .filter((race) => race.raceDate === input.date && cleanAwTissueRace(race))
+    .filter((race) => race.raceDate === input.date && cleanAwTissueRace(race) && isMainAwTissueValue(race, input.date < TISSUE_VALUE_PRICE_CAP_RULE_EPOCH_DATE))
     .flatMap((race) => trackerTissuePerformanceSelection(race, "All Weather"));
   const summaries = [
     summarizeTissuePerformance("Turf", turfSelections),
@@ -153,7 +175,8 @@ export function renderTissueValueResultsSummary(input: {
     summarizeTissuePerformance("All Weather", awSelections),
   ];
   const combined = summarizeTissuePerformance("Combined", [...turfSelections, ...jumpSelections, ...awSelections]);
-  const pending = [...turfSelections, ...jumpSelections, ...awSelections].filter((selection) => selection.won === null).length;
+  const allSelections = [...turfSelections, ...jumpSelections, ...awSelections];
+  const pending = allSelections.filter((selection) => selection.won === null && !selection.voided).length;
 
   const lines = [`RESULTS FOR ${input.date}`, ""];
   for (const summary of summaries) {
@@ -171,7 +194,9 @@ export function renderTissueValueResultsSummary(input: {
   lines.push(`ROI: ${formatPerformancePct(combined.roi)}`);
   lines.push("");
   lines.push(`Pending: ${pending}`);
-  lines.push("Voids: 0");
+  lines.push(`Voids: ${allSelections.filter((selection) => selection.voided).length}`);
+  if (input.jump) lines.push("", renderHurdleValueReport(input.jump, input.date));
+  lines.push("", renderAwTurfLongPriceShadowReport(input.records, input.aw, input.date));
   return lines.join("\n");
 }
 
@@ -580,13 +605,13 @@ export function summarizeTissuePositiveEdgeRankOnePerformance(
   const epoch = options.epoch === undefined ? TISSUE_VALUE_DISPLAY_EPOCH : options.epoch;
   const inEpoch = (raceDate: string) => epoch === null || raceDate >= epoch;
   const turfSelections = records
-    .filter((record) => inEpoch(record.raceDate) && record.family === "turf" && isTissuePositiveEdgeRankOneSelection(record))
+    .filter((record) => inEpoch(record.raceDate) && record.family === "turf" && isTurfMainValueRecord(record, epoch === null) && isTissuePositiveEdgeRankOneSelection(record))
     .map(turfTissuePerformanceSelection);
   const jumpSelections = (sources.jump?.races ?? [])
-    .filter((race) => inEpoch(race.raceDate) && cleanJumpTissueRace(race))
+    .filter((race) => inEpoch(race.raceDate) && cleanJumpTissueRace(race) && isMainJumpTissueValue(race, epoch === null))
     .flatMap((race) => trackerTissuePerformanceSelection(race, "Jump"));
   const awSelections = (sources.aw?.races ?? [])
-    .filter((race) => inEpoch(race.raceDate) && cleanAwTissueRace(race))
+    .filter((race) => inEpoch(race.raceDate) && cleanAwTissueRace(race) && isMainAwTissueValue(race, epoch === null))
     .flatMap((race) => trackerTissuePerformanceSelection(race, "All Weather"));
   const selections = [...turfSelections, ...jumpSelections, ...awSelections];
   return [
@@ -619,52 +644,70 @@ export function renderTissuePositiveEdgeRankOnePerformance(
     if (family.unavailableReturns > 0) lines.push(`${family.unavailableReturns} ${family.unavailableReturns === 1 ? "return" : "returns"} unavailable`);
     lines.push("");
   }
+  if (sources.jump) lines.push("", renderHurdleValueReport(sources.jump));
+  lines.push("", renderAwTurfLongPriceShadowReport(records, sources.aw));
+  if (epoch !== null) {
+    lines.push(`AW/Turf POST-CAP from ${TISSUE_VALUE_PRICE_CAP_RULE_EPOCH}: qualifying decimal <=21.0; earlier observations are PRE-CAP history`);
+    for (const [label, history] of [
+      ["TURF", records.filter((record) => record.family === "turf" && !record.tissueValuePriceCapRule && isTissuePositiveEdgeRankOneSelection(record)).map(turfTissuePerformanceSelection)],
+      ["AW", (sources.aw?.races ?? []).filter((race) => cleanAwTissueRace(race) && awTissueValueCategory(race) === "PRE_CAP").flatMap((race) => trackerTissuePerformanceSelection(race, "All Weather"))],
+    ] as const) {
+      const summary = summarizeTissuePerformance(label === "AW" ? "All Weather" : "Turf", history);
+      lines.push(`${label} PRE-CAP HISTORY: ${summary.selections} selections / ${summary.settled} settled / P/L ${formatPerformanceMoney(summary.profitLoss)}`);
+    }
+  }
   return lines.join("\n").trimEnd();
 }
 
 function isTissuePositiveEdgeRankOneSelection(record: ForwardValueRecord): boolean {
+  const qualification = record.tissueValuePriceCapRule?.qualification;
+  const price = qualification?.qualifyingPrice ?? record.tissueCapturedDecimalOdds;
+  const edge = qualification?.snapshot.ratingEdgePercentagePoints ?? record.tissueEdgePercentagePoints;
   return (
     isCleanPhase2Observation(record) &&
     record.tissueRunnerId !== null &&
-    record.tissueEdgePercentagePoints !== null &&
-    record.tissueEdgePercentagePoints !== undefined &&
-    record.tissueEdgePercentagePoints > 0 &&
-    record.tissueCapturedDecimalOdds !== null &&
-    record.tissueCapturedDecimalOdds !== undefined &&
-    Number.isFinite(record.tissueCapturedDecimalOdds) &&
-    record.tissueCapturedDecimalOdds > 1
+    edge != null && edge > 0 && price != null && Number.isFinite(price) && price > 1
   );
+}
+
+export function isTurfMainValueRecord(record: ForwardValueRecord, includePreCap = false): boolean {
+  if (record.family !== "turf") return true;
+  const category = capCategory(record.tissueValuePriceCapRule);
+  return category === "MAIN" || (includePreCap && category === "PRE_CAP");
 }
 
 function summarizeTissuePerformance(
   label: TissuePositiveEdgeRankOnePerformance["label"],
   selections: TissuePerformanceSelection[],
 ): TissuePositiveEdgeRankOnePerformance {
-  const settled = selections.filter((selection) => selection.won !== null);
-  const priced = settled.filter((selection) => finite(selection.profitLoss));
+  const settled = selections.filter((selection) => selection.won !== null || selection.voided);
+  const bets = settled.filter((selection) => !selection.voided);
+  const priced = bets.filter((selection) => finite(selection.profitLoss));
   const profitLosses = priced.map((selection) => selection.profitLoss!);
-  const profitLoss = totalOrNull(profitLosses);
+  const profitLoss = totalOrNull(profitLosses) ?? (settled.some((selection) => selection.voided) ? 0 : null);
   const winners = settled.filter((selection) => selection.won).length;
   return {
     label,
     selections: selections.length,
     settled: settled.length,
     winners,
-    strikeRate: rate(winners, settled.length),
+    strikeRate: rate(winners, bets.length),
     profitLoss,
     roi: rate(profitLoss ?? 0, priced.length),
     pricedSettled: priced.length,
-    unavailableReturns: settled.length - priced.length,
+    unavailableReturns: bets.length - priced.length,
   };
 }
 
 type TissuePerformanceSelection = {
   won: boolean | null;
   profitLoss: number | null;
+  voided?: boolean;
 };
 
 function turfTissuePerformanceSelection(record: ForwardValueRecord): TissuePerformanceSelection {
   return {
+    voided: record.tissueValuePriceCapRule?.qualifyingOutcome === "VOID",
     won: record.settledAt === null || record.leaderWon === null
       ? null
       : record.tissueRunnerId !== null && record.winnerRunnerIds.includes(record.tissueRunnerId),
@@ -674,6 +717,7 @@ function turfTissuePerformanceSelection(record: ForwardValueRecord): TissuePerfo
 
 export function turfTissueQualifyingPriceProfitLoss(record: ForwardValueRecord): number | null {
   if (record.settledAt === null || record.leaderWon === null) return null;
+  if (record.tissueValuePriceCapRule?.qualification) return record.tissueValuePriceCapRule.qualifyingPriceProfitLoss;
   const won = record.tissueRunnerId !== null && record.winnerRunnerIds.includes(record.tissueRunnerId);
   if (!won) return -1;
   return record.tissueCapturedDecimalOdds! / Math.max(record.winnerRunnerIds.length, 1) - 1;
@@ -683,9 +727,10 @@ function trackerTissuePerformanceSelection(
   race: JumpTissueRace | AwTissueRace,
   family: "Jump" | "All Weather",
 ): TissuePerformanceSelection[] {
-  const stage = race.prices.t60 ? "t60" : race.prices.t180 ? "t180" : race.prices.early ? "early" : null;
+  const prices = family === "Jump" ? jumpTissueQualificationPrices(race as JumpTissueRace) : awTissueQualificationPrices(race as AwTissueRace);
+  const stage = prices.t60 ? "t60" : prices.t180 ? "t180" : prices.early ? "early" : null;
   if (stage === null) return [];
-  const price = race.prices[stage];
+  const price = prices[stage];
   if (!price || price.ratingEdgePercentagePoints <= 0) return [];
   const leader = race.runners.find((runner) => runner.runnerId === race.top1);
   if (!leader) return [];
@@ -693,9 +738,29 @@ function trackerTissuePerformanceSelection(
     ? (race as JumpTissueRace).selectedPriceProfitLoss
     : (race as AwTissueRace).selectedPriceProfitLoss;
   return [{
+    voided: family === "All Weather" && (race as AwTissueRace).tissueValuePriceCapRule?.qualifyingOutcome === "VOID",
     won: race.settledAt === null ? null : leader.outcome?.won ?? null,
-    profitLoss: race.settledAt === null ? null : selectedPriceProfitLoss[stage],
+    profitLoss: race.settledAt === null ? null : family === "Jump" && (race as JumpTissueRace).hurdleValueRule?.qualification
+      ? (race as JumpTissueRace).hurdleValueRule!.qualifyingPriceProfitLoss
+      : family === "All Weather" && (race as AwTissueRace).tissueValuePriceCapRule?.qualification
+        ? (race as AwTissueRace).tissueValuePriceCapRule!.qualifyingPriceProfitLoss : selectedPriceProfitLoss[stage],
   }];
+}
+
+export function renderAwTurfLongPriceShadowReport(records: ForwardValueRecord[], aw?: AwTissueForwardData, date?: string): string {
+  const turf = records.filter((record) => record.family === "turf" && (!date || record.raceDate === date) && capCategory(record.tissueValuePriceCapRule) === "LONG_PRICE_SHADOW");
+  const awRaces = (aw?.races ?? []).filter((race) => cleanAwTissueRace(race) && (!date || race.raceDate === date) && awTissueValueCategory(race) === "LONG_PRICE_SHADOW");
+  const lines = ["AW / TURF LONG-PRICE SHADOW", "Research only - excluded from main VALUE because qualifying price >20/1", "family | horse | qualifying price | Tissue probability"];
+  for (const record of turf) lines.push(`TURF | ${record.tissueHorseName} | ${record.tissueValuePriceCapRule!.qualification!.qualifyingPrice.toFixed(2)} | ${percent(record.tissueProbability!)}`);
+  for (const race of awRaces) {
+    const runner = race.runners.find((entry) => entry.runnerId === race.top1)!;
+    lines.push(`AW | ${runner.horseName} | ${race.tissueValuePriceCapRule!.qualification!.qualifyingPrice.toFixed(2)} | ${percent(runner.probability!)}`);
+  }
+  for (const [label, selections] of [["TURF", turf.map(turfTissuePerformanceSelection)], ["AW", awRaces.flatMap((race) => trackerTissuePerformanceSelection(race, "All Weather"))]] as const) {
+    const summary = summarizeTissuePerformance(label === "AW" ? "All Weather" : "Turf", selections);
+    lines.push(`${label} shadow: ${summary.selections} selections / ${summary.settled} settled / ${summary.winners} winners / £1 P/L ${formatPerformanceMoney(summary.profitLoss)} / ROI ${formatPerformancePct(summary.roi)}`);
+  }
+  return lines.join("\n");
 }
 
 function formatEpochDate(epoch: string): string {

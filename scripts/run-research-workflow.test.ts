@@ -66,7 +66,7 @@ describe("research workflow wrapper", () => {
     assert.match(logs.join("\n"), /RACECARD_REFRESH_FAILED_USING_EXISTING date=2026-10-09 races=7 meetings=1 runners=65/);
     assert.match(logs.join("\n"), /No new market snapshot/);
     assert.match(logs.join("\n"), /Racecards:\nUSING EXISTING LOCAL CARDS - Sporting Life refresh failed/);
-    assert.ok(logs.findIndex((line) => line.startsWith("Racecards:")) > logs.findIndex((line) => line.includes("AW Turf-architecture challenger")));
+    assert.ok(logs.findIndex((line) => line.startsWith("Racecards:")) > logs.findIndex((line) => line.includes("AW longshot trainer/jockey challenger")));
   });
 
   test("network failure without usable exact-date cards remains a hard failure", async () => {
@@ -111,6 +111,8 @@ describe("research workflow wrapper", () => {
       "todays-rating-weight:sync 2026-10-09",
       "jump-rating:sync 2026-10-09",
       "jump-tissue:sync 2026-10-09",
+      "hurdle-pair:sync 2026-10-09",
+      "chase-pair:sync 2026-10-09",
       "jump-g4:sync 2026-10-09",
       "aw-rating:sync 2026-10-09",
       "aw-tissue:sync 2026-10-09",
@@ -147,6 +149,8 @@ describe("research workflow wrapper", () => {
       "value:results 2026-10-09",
       "aw-pair:results 2026-10-09",
       "aw-pair:challenger 2026-10-09",
+      "hurdle-pair:results 2026-10-09",
+      "chase-pair:results 2026-10-09",
     ]);
     assert.doesNotMatch(calls.join("\n"), /sl:import-racecards|:sync|disagreement:/);
   });
@@ -164,6 +168,8 @@ describe("research workflow wrapper", () => {
       "todays-rating-weight:today 2026-10-09",
       "aw-pair:compact 2026-10-09",
       "aw-pair:challenger 2026-10-09",
+      "hurdle-pair:today 2026-10-09",
+      "chase-pair:today 2026-10-09",
     ]);
     assert.doesNotMatch(commandLinesFor("live").join("\n"), /:sync|disagreement:/);
   });

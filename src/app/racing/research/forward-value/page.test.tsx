@@ -57,11 +57,11 @@ describe("Forward Value dashboard", () => {
         firstCapturedAt: "2026-10-09T08:00:00.000Z",
         runners: [],
         awTissue: { modelVersion: "aw", modelHash: "aw-hash", probabilities: [], rankOrder: [], rank1RunnerId: "aw-runner", rank1HorseName: "AW Leader", rank1Probability: .32, valueQualified: null, selectedPriceProfitLoss: null },
-        turfArch: { modelVersion: "turf", modelHash: "turf-hash", probabilities: [], rankOrder: [], rank1RunnerId: "turf-runner", rank1HorseName: "Turf Leader", rank1Probability: .28, valueQualified: null, selectedPriceProfitLoss: null },
+        longshotTjZero: { modelVersion: "longshot", modelHash: "aw-hash", probabilities: [], rankOrder: [], rank1RunnerId: "longshot-runner", rank1HorseName: "Longshot Leader", rank1Probability: .28, valueQualified: null, selectedPriceProfitLoss: null },
         rank1Agreement: false,
         classification: "DISAGREE",
         valueBucket: "NEITHER_VALUE",
-        prices: { firstAvailable: { awTissue: null, turfArch: null }, earlyMorning: { awTissue: null, turfArch: null }, late: { awTissue: null, turfArch: null }, finalPreRace: { awTissue: null, turfArch: null }, sp: { awTissue: null, turfArch: null } },
+        prices: { firstAvailable: { awTissue: null, longshotTjZero: null }, earlyMorning: { awTissue: null, longshotTjZero: null }, late: { awTissue: null, longshotTjZero: null }, finalPreRace: { awTissue: null, longshotTjZero: null }, sp: { awTissue: null, longshotTjZero: null } },
         winners: [],
         settledAt: null,
         excludedReason: null,
@@ -70,34 +70,34 @@ describe("Forward Value dashboard", () => {
 
     const html = renderToStaticMarkup(<AwTurfChallengerSection data={paired} date="2026-10-09" />);
 
-    assert.match(html, /AW TURF-ARCHITECTURE CHALLENGER/);
+    assert.match(html, /AW LONGSHOT TRAINER\/JOCKEY CHALLENGER/);
     assert.match(html, /Tracked today/);
     assert.match(html, /Disagree/);
     assert.match(html, /AW Leader/);
-    assert.match(html, /Turf Leader/);
-    assert.match(html, /DIFFERS FROM AW TISSUE/);
-    assert.match(html, /text-slate-500">AW Tissue #1: AW Leader · 32\.0%/);
+    assert.match(html, /Longshot Leader/);
+    assert.match(html, /DIFFERS FROM CONTROL/);
+    assert.match(html, /text-slate-500">CONTROL #1: AW Leader · 32\.0%/);
     assert.match(html, /Pending/);
-    assert.doesNotMatch(html, /CHALLENGER VALUE<\/span>/);
+    assert.doesNotMatch(html, /CHALLENGER EDGE<\/span>/);
     assert.match(html, /<section aria-labelledby="aw-turf-challenger-heading"/);
     assert.match(html, /text-sm font-semibold text-slate-700/);
 
     const record = paired.races[0]!;
     for (const valueQualified of [false, null, true]) {
-      const variant = { ...paired, races: [{ ...record, rank1Agreement: true, classification: "AGREE" as const, turfArch: { ...record.turfArch, valueQualified } }] };
+      const variant = { ...paired, races: [{ ...record, rank1Agreement: true, classification: "AGREE" as const, longshotTjZero: { ...record.longshotTjZero, valueQualified } }] };
       const agreementHtml = renderToStaticMarkup(<AwTurfChallengerSection data={variant} date="2026-10-09" />);
-      assert.match(agreementHtml, /AGREES WITH AW TISSUE/);
-      assert.doesNotMatch(agreementHtml, /AW Tissue #1:/);
+      assert.match(agreementHtml, /AGREES WITH CONTROL/);
+      assert.doesNotMatch(agreementHtml, /CONTROL #1:/);
       assert.doesNotMatch(agreementHtml, /32\.0%/);
-      assert.equal(agreementHtml.includes("CHALLENGER VALUE</span>"), valueQualified === true);
-      assert.match(agreementHtml, /Turf Leader/);
+      assert.equal(agreementHtml.includes("CHALLENGER EDGE</span>"), valueQualified === true);
+      assert.match(agreementHtml, /Longshot Leader/);
     }
 
     const primary = <DailyResearchDashboard dashboard={{ date: "2026-10-09", emptyMessage: null, monitors: [], horses: [{ raceId: record.raceId, runnerId: "aw-runner", horseId: "aw-horse", horseName: "AW Leader", course: "Kempton", time: "18:30", sortTime: "", price: 4, priceSource: "imported_card", signals: [{ kind: "aw_tissue", reason: "VALUE", context: "Rank #1", movement: null }] }] }} />;
     const primaryHtml = renderToStaticMarkup(primary);
     const combinedHtml = renderToStaticMarkup(<DailyResearchDashboard dashboard={primary.props.dashboard}><AwTurfChallengerSection data={paired} date="2026-10-09" /></DailyResearchDashboard>);
     assert.equal(combinedHtml.slice(0, combinedHtml.indexOf('<section aria-labelledby="aw-turf-challenger-heading"')), primaryHtml.slice(0, primaryHtml.indexOf('<details')));
-    assert.doesNotMatch(primaryHtml, /Turf Leader|CHALLENGER/);
+    assert.doesNotMatch(primaryHtml, /Longshot Leader|CHALLENGER/);
     assert.match(primaryHtml, /tissue-value-heading/);
     assert.equal(primaryHtml.match(/AW Leader/g)?.length, 1);
     assert.ok(combinedHtml.indexOf("tissue-value-heading") < combinedHtml.indexOf("aw-turf-challenger-heading"));

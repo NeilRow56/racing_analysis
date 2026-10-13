@@ -1,6 +1,6 @@
 import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
-import { settleSelection } from "./backtest";
+import { isVoidBetResultStatus, settleSelection } from "./backtest";
 import type { TprConfidenceContext } from "./tpr-confidence-context";
 import { calculateAwDRatingCoverage } from "./aw-performance-rating";
 import {
@@ -17,6 +17,12 @@ import {
   type TodayRace,
   type TodayRunner,
 } from "./todays-racing";
+import {
+  capturedTissueValuePriceCapState,
+  newTissueValuePriceCapRuleState,
+  TISSUE_VALUE_PRICE_CAP_RULE_EPOCH,
+  type TissueValuePriceCapRuleState,
+} from "./tissue-value-price-cap-rule";
 
 export const FORWARD_VALUE_VERSION = "forward_value_v1" as const;
 export const FORWARD_VALUE_PATH = "data/research/forward-value-v1.json";
@@ -184,6 +190,7 @@ export type ForwardValueRecord = {
   tissueEarlyPriceSnapshot?: ForwardValuePriceSnapshot | null;
   tissueT180PriceSnapshot?: ForwardValuePriceSnapshot | null;
   tissueT60PriceSnapshot?: ForwardValuePriceSnapshot | null;
+  tissueValuePriceCapRule?: TissueValuePriceCapRuleState;
   winnerRunnerIds: string[];
   leaderResultStatus: string | null;
   leaderFinishingPosition: number | null;
@@ -376,6 +383,29 @@ export function buildForwardValueRecord(input: {
     market: leaderMarket,
     runner: leader.runner,
   });
+  const tissueEarlyPriceSnapshot = tissue && tissueRunner && tissueDecimalOdds !== null
+    ? createPriceSnapshot({
+      price: null,
+      decimalPrice: tissueDecimalOdds,
+      capturedAt: recordedAt,
+      raceDateTime,
+      ratingProbability: tissue.probability,
+      market: tissueMarket,
+      runner: tissueRunner,
+    })
+    : null;
+  const turfCapRule = input.family === "turf" && recordedAt.toISOString() >= TISSUE_VALUE_PRICE_CAP_RULE_EPOCH
+    ? capturedTissueValuePriceCapState(
+      newTissueValuePriceCapRuleState({ family: "turf", modelVersion: "tissue_model_v2", capturedAt: recordedAt.toISOString() }),
+      {
+        capturedAt: recordedAt,
+        edge: tissueEdge === null ? null : tissueEdge / 100,
+        qualification: tissueEarlyPriceSnapshot && tissueDecimalOdds !== null
+          ? { capturedAt: tissueEarlyPriceSnapshot.capturedAt, qualifyingPrice: tissueDecimalOdds, stage: "early", snapshot: tissueEarlyPriceSnapshot }
+          : null,
+      },
+    )
+    : undefined;
   return {
     family: input.family,
     raceId: input.race.raceId,
@@ -446,19 +476,10 @@ export function buildForwardValueRecord(input: {
     tissueBestBookmakerPriceDecimal: tissueMarket.bestDecimalPrice,
     tissueBestBookmakerPriceFractional: tissueMarket.bestFractionalPrice,
     tissueBestBookmakerName: tissueMarket.bestBookmakerName,
-    tissueEarlyPriceSnapshot: tissue && tissueRunner && tissueDecimalOdds !== null
-      ? createPriceSnapshot({
-        price: null,
-        decimalPrice: tissueDecimalOdds,
-        capturedAt: recordedAt,
-        raceDateTime,
-        ratingProbability: tissue.probability,
-        market: tissueMarket,
-        runner: tissueRunner,
-      })
-      : null,
+    tissueEarlyPriceSnapshot,
     tissueT180PriceSnapshot: null,
     tissueT60PriceSnapshot: null,
+    ...(turfCapRule ? { tissueValuePriceCapRule: turfCapRule } : {}),
     winnerRunnerIds: [],
     leaderResultStatus: null,
     leaderFinishingPosition: null,
@@ -592,7 +613,9 @@ export function enrichForwardValuePriceSnapshots(
     const addTissueEarly = usesMedianMarket && tissueSnapshot !== null && !record.tissueEarlyPriceSnapshot;
     const addTissueT180 = usesMedianMarket && tissueSnapshot !== null && stage === "t180" && !record.tissueT180PriceSnapshot;
     const addTissueT60 = usesMedianMarket && tissueSnapshot !== null && stage === "t60" && !record.tissueT60PriceSnapshot;
-    if (!addEarly && !addT180 && !addT60 && !addT15 && !addTissueEarly && !addTissueT180 && !addTissueT60) return record;
+    const tissueCapRule = captureTurfValuePriceCapQualification(record, capturedAt,
+      addTissueEarly || addTissueT180 || addTissueT60 ? tissueSnapshot : null, stage);
+    if (!addEarly && !addT180 && !addT60 && !addT15 && !addTissueEarly && !addTissueT180 && !addTissueT60 && tissueCapRule === record.tissueValuePriceCapRule) return record;
     changed = true;
     return {
       ...record,
@@ -623,6 +646,7 @@ export function enrichForwardValuePriceSnapshots(
       } : {}),
       ...(addTissueT180 ? { tissueT180PriceSnapshot: tissueSnapshot } : {}),
       ...(addTissueT60 ? { tissueT60PriceSnapshot: tissueSnapshot } : {}),
+      ...(tissueCapRule && tissueCapRule !== record.tissueValuePriceCapRule ? { tissueValuePriceCapRule: tissueCapRule } : {}),
     };
   });
   return changed ? { ...data, races } : data;
@@ -634,6 +658,31 @@ export function forwardValuePriceMovement(
 ): number | null {
   if (!from || toDecimalPrice === null || !Number.isFinite(toDecimalPrice) || toDecimalPrice <= 1) return null;
   return toDecimalPrice / from.decimalPrice - 1;
+}
+
+function captureTurfValuePriceCapQualification(
+  record: ForwardValueRecord,
+  capturedAt: Date,
+  snapshot: ForwardValuePriceSnapshot | null,
+  stage: ForwardValuePriceStage | null,
+): TissueValuePriceCapRuleState | undefined {
+  if (record.family !== "turf") return record.tissueValuePriceCapRule;
+  const state = record.tissueValuePriceCapRule ?? (
+    record.recordedAt >= TISSUE_VALUE_PRICE_CAP_RULE_EPOCH
+      ? newTissueValuePriceCapRuleState({ family: "turf", modelVersion: "tissue_model_v2", capturedAt: record.recordedAt })
+      : undefined
+  );
+  if (!state || !snapshot || stage === "t15") return state;
+  return capturedTissueValuePriceCapState(state, {
+    capturedAt,
+    edge: snapshot.ratingEdgePercentagePoints / 100,
+    qualification: {
+      capturedAt: snapshot.capturedAt,
+      qualifyingPrice: snapshot.decimalPrice,
+      stage: stage ?? "early",
+      snapshot,
+    },
+  }) ?? undefined;
 }
 
 export function buildForwardValueRecordsFromMeetings(input: {
@@ -715,6 +764,23 @@ export function attachTissueValueSnapshots(
       })
       : null;
     const tissueStage = tissueSnapshot ? priceSnapshotStage(tissueSnapshot.minutesBeforeScheduledOff) : null;
+    const capSource = race.tissueValuePriceCapRule ?? (
+      race.recordedAt >= TISSUE_VALUE_PRICE_CAP_RULE_EPOCH
+        ? newTissueValuePriceCapRuleState({ family: "turf", modelVersion: "tissue_model_v2", capturedAt: race.recordedAt })
+        : undefined
+    );
+    const tissueCapRule = capSource && tissueSnapshot && tissueStage !== "t15"
+      ? capturedTissueValuePriceCapState(capSource, {
+        capturedAt: tissuePriceAt!,
+        edge: probability === null || marketProbability === null ? null : probability - marketProbability,
+        qualification: {
+          capturedAt: tissueSnapshot.capturedAt,
+          qualifyingPrice: tissueSnapshot.decimalPrice,
+          stage: tissueStage ?? "early",
+          snapshot: tissueSnapshot,
+        },
+      })
+      : capSource;
     updated = true;
     return {
       ...race,
@@ -743,6 +809,7 @@ export function attachTissueValueSnapshots(
         tissueT180PriceSnapshot: tissueStage === "t180" && !race.tissueT180PriceSnapshot ? tissueSnapshot : race.tissueT180PriceSnapshot,
         tissueT60PriceSnapshot: tissueStage === "t60" && !race.tissueT60PriceSnapshot ? tissueSnapshot : race.tissueT60PriceSnapshot,
       } : {}),
+      ...(tissueCapRule && tissueCapRule !== race.tissueValuePriceCapRule ? { tissueValuePriceCapRule: tissueCapRule } : {}),
     };
   });
   return updated ? { ...data, races } : data;
@@ -754,7 +821,7 @@ export function pendingForwardValueRaceIds(data: ForwardValueData, family?: Valu
 
 export function settleForwardValueRecords(data: ForwardValueData, racesById: Map<string, TodayRace>, settledAt = new Date()) {
   let settled = 0;
-  const races = data.races.map((record) => {
+  const races = data.races.map((record): ForwardValueRecord => {
     if (record.settledAt !== null) return record;
     const race = racesById.get(record.raceId);
     if (!race) return record;
@@ -805,8 +872,24 @@ export function settleForwardValueRecords(data: ForwardValueData, racesById: Map
           : null
     );
     settled += 1;
+    const tissueResult = race.runners.find((runner) => runner.runnerId === record.tissueRunnerId);
+    const tissueRule = record.tissueValuePriceCapRule;
+    const tissueCapSettlement = tissueRule?.qualification && tissueResult ? settleSelection({
+      targetRaceId: record.raceId, targetRunnerId: tissueResult.runnerId,
+      finishingPosition: tissueResult.finishingPosition, resultStatus: tissueResult.resultStatus,
+      won: tissueResult.finishingPosition === 1, placed: null, startingPrice: null,
+      startingPriceDecimal: String(tissueRule.qualification.qualifyingPrice), deadHeatDivisor: winners.length,
+    }) : null;
     return {
       ...record,
+      ...(tissueRule ? { tissueValuePriceCapRule: { ...tissueRule,
+        qualifyingPriceProfitLoss: tissueRule.qualification && tissueResult && isVoidBetResultStatus(tissueResult.resultStatus)
+          ? 0 : tissueCapSettlement?.profitLoss ?? null,
+        qualifyingOutcome: !tissueRule.qualification || !tissueResult ? null
+          : isVoidBetResultStatus(tissueResult.resultStatus) ? "VOID" : !tissueCapSettlement ? null
+            : tissueResult.finishingPosition === 1 ? "WIN" : "LOSS",
+        qualifyingFinishingPosition: tissueResult?.finishingPosition ?? null,
+        qualifyingResultStatus: tissueResult?.resultStatus ?? null } } : {}),
       winnerRunnerIds: winners.map((winner) => winner.runnerId),
       leaderResultStatus: result.resultStatus,
       leaderFinishingPosition: result.finishingPosition,
