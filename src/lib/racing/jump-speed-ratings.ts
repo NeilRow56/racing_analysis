@@ -1,6 +1,7 @@
 import { and, eq, inArray, lte, or, sql } from "drizzle-orm";
 import { createDbConnection } from "@/db";
 import { raceRunners, races } from "@/db/schema";
+import { jumpWinningTimeReviews } from "./jump-winning-time-references";
 import {
   calculateJumpSpeedRating,
   isJumpRace,
@@ -228,13 +229,15 @@ function calculateRatingsForTargets(
   context: RaceContextData,
   cumulativeByRunnerId: Map<string, { cumulativeBeatenLengths: number | null }>,
 ): Map<string, JumpSpeedRating> {
-  const deviations = raceDeviations(context.standardContexts, context.deviationRaceIds);
+  const timingReviews = jumpWinningTimeReviews(context.standardContexts);
+  const deviations = raceDeviations(context.standardContexts, context.deviationRaceIds, timingReviews);
   const deviationByRaceId = new Map(deviations.map((row) => [row.raceId, row]));
   const sameDayGroups = groupBy(deviations, sameDayKey);
   return new Map(targets.map((target) => {
     const deviation = deviationByRaceId.get(target.raceId);
     const sameDay = deviation ? sameDayAdjustmentFor(deviation, sameDayGroups) : null;
     return [target.runnerId, calculateJumpSpeedRating({
+      winningTimeReview: timingReviews.get(target.raceId),
       raceName: target.raceName,
       raceType: target.raceType,
       distanceYards: target.distanceYards,
@@ -541,8 +544,9 @@ async function loadRunnerMargins(
 function raceDeviations(
   raceRows: RaceContextRow[],
   deviationRaceIds: Set<string>,
+  reviews: ReturnType<typeof jumpWinningTimeReviews>,
 ): RaceDeviation[] {
-  const jumpRaces = raceRows.filter(isJumpRace);
+  const jumpRaces = raceRows.filter(isJumpRace).filter((r) => !reviews.get(r.raceId)?.shouldWithhold);
   const standardTimesByKey = standardTimesFor(jumpRaces);
   const rows: RaceDeviation[] = [];
 

@@ -5,6 +5,7 @@ import {
   sanityCheckWinningTime,
   secondsPerLength,
 } from "./speed-research";
+import type { assessJumpWinningTime } from "./jump-winning-time-integrity";
 
 export const JUMP_SPEED_RATING_CALCULATION_VERSION = "jump_speed_v1";
 
@@ -39,6 +40,7 @@ export type JumpRaceSubtype =
   | "unknown_other";
 
 export type JumpSpeedRating = {
+  winningTimeReview?: ReturnType<typeof assessJumpWinningTime>;
   rating: number | null;
   method: JumpSpeedRatingMethod;
   confidence: JumpSpeedRatingConfidence;
@@ -52,6 +54,7 @@ export type JumpSpeedRating = {
 };
 
 export type JumpSpeedRatingInput = {
+  winningTimeReview?: ReturnType<typeof assessJumpWinningTime>;
   raceName?: string | null;
   raceType?: string | null;
   distanceYards: number | null;
@@ -68,6 +71,7 @@ export function calculateJumpSpeedRating(
   input: JumpSpeedRatingInput,
 ): JumpSpeedRating {
   const unavailable = (withheldReason: string | null = null): JumpSpeedRating => ({
+    ...(input.winningTimeReview ? { winningTimeReview: input.winningTimeReview } : {}),
     rating: null,
     method: "unavailable",
     confidence: "unavailable",
@@ -89,6 +93,12 @@ export function calculateJumpSpeedRating(
     distanceYards: input.distanceYards,
   }).usableSeconds;
   const distanceFurlongs = distanceYardsToFurlongs(input.distanceYards);
+
+  if (input.winningTimeReview?.shouldWithhold) {
+    return { ...unavailable(input.winningTimeReview.missingMinute.classification === "LIKELY_MISSING_MINUTE"
+      ? "LIKELY_MISSING_MINUTE" : "implausible_winning_time_against_course_distance_standard"),
+      method: "withheld", confidence: "low", winningTimeReview: input.winningTimeReview };
+  }
 
   if (
     winningTime === null ||
@@ -147,6 +157,7 @@ export function calculateJumpSpeedRating(
 
   return {
     rating,
+    ...(input.winningTimeReview ? { winningTimeReview: input.winningTimeReview } : {}),
     method: sameDayAdjustedRating === null ? "base" : "same_day",
     confidence: confidenceFor(input, sameDayAdjustedRating !== null),
     baseRating,

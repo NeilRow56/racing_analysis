@@ -15,6 +15,7 @@ import {
   type HistoricalTargetRunnerMetricsRow,
 } from "./historical-target-metrics";
 import { JUMP_SPEED_RATING_CALCULATION_VERSION } from "./jump-speed-rating";
+import { JUMP_WINNING_TIME_GUARD_VERSION } from "./jump-winning-time-integrity";
 import { TURF_SPEED_RATING_CALCULATION_VERSION } from "./turf-speed-rating";
 import { TODAYS_RATING_CALCULATION_VERSION } from "./todays-rating";
 import { WEIGHT_PERFORMANCE_CALCULATION_VERSION } from "./weight-performance";
@@ -29,6 +30,8 @@ export const DEFAULT_CACHE_BUILD_BATCH_SIZE = 5_000;
 export type BacktestCacheFamily = BacktestRaceSegment | "all";
 
 export type BacktestFeatureCacheManifest = {
+  jumpWinningTimeGuardVersion?: string;
+  invalidatedBySourceCorrection?: { sourceId: string; reason: string; invalidatedAt: string; affectedRows: number };
   featureSchemaVersion: typeof BACKTEST_FEATURE_CACHE_VERSION;
   sourceFeatureVersion: typeof BACKTEST_FEATURE_SOURCE_VERSION;
   source: string;
@@ -172,6 +175,7 @@ export async function buildBacktestFeatureCache(input: {
   );
 
   const manifest: BacktestFeatureCacheManifest = {
+    ...((input.family === "jump" || input.family === "all") ? { jumpWinningTimeGuardVersion: JUMP_WINNING_TIME_GUARD_VERSION } : {}),
     featureSchemaVersion: BACKTEST_FEATURE_CACHE_VERSION,
     sourceFeatureVersion: BACKTEST_FEATURE_SOURCE_VERSION,
     source,
@@ -297,7 +301,9 @@ export function isCompatibleManifest(
     source?: string;
   },
 ): boolean {
-  return manifest.featureSchemaVersion === BACKTEST_FEATURE_CACHE_VERSION &&
+  return !manifest.invalidatedBySourceCorrection &&
+    ((input.family !== "jump" && input.family !== "all") || manifest.jumpWinningTimeGuardVersion === JUMP_WINNING_TIME_GUARD_VERSION) &&
+    manifest.featureSchemaVersion === BACKTEST_FEATURE_CACHE_VERSION &&
     manifest.sourceFeatureVersion === BACKTEST_FEATURE_SOURCE_VERSION &&
     manifest.from === input.from &&
     manifest.to === input.to &&

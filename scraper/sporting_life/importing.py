@@ -9,6 +9,7 @@ from zoneinfo import ZoneInfo
 
 import psycopg
 from psycopg.types.json import Jsonb
+from .winning_time_corrections import authoritative_winning_time
 
 
 SOURCE = "sporting_life"
@@ -330,7 +331,11 @@ def upsert_race(
             race_summary.get("going"),
             race_summary.get("ride_count"),
             len(race.get("rides", [])),
-            race_summary.get("winning_time"),
+            authoritative_winning_time(
+                str(race_summary["race_summary_reference"]["id"]),
+                str(race_summary["date"]),
+                race_summary.get("winning_time"),
+            ),
         ),
     )
     return str(cursor.fetchone()[0])

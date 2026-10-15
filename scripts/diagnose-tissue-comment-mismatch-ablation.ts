@@ -58,7 +58,7 @@ async function main() {
     loadFrozenTissueModel(TISSUE_V2_CONFIG.modelPath, TISSUE_V2_CONFIG.modelVersion),
     loadJumpTissueModel(),
     loadLatestBacktestFeatureCacheForYear({ year: "2026", family: "turf_flat" }),
-    loadBacktestFeatureCache({ from: "2026-01-01", to: "2026-12-31", family: "jump" }),
+    loadBacktestFeatureCache({ from: "2026-01-01", to: "2026-12-31", family: "jump", outputDir: process.env.JUMP_RESEARCH_CACHE_DIR }),
   ]);
   if (!turfCache) throw new Error("Missing compatible 2026 Turf backtest cache");
   if (!jumpCache) throw new Error("Missing compatible 2026 Jump backtest cache");

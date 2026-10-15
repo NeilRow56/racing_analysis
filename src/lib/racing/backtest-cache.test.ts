@@ -21,6 +21,7 @@ import {
   type BacktestFeatureCacheManifest,
 } from "./backtest-cache";
 import { BACKTEST_FEATURE_SOURCE_VERSION } from "./historical-target-metrics";
+import { JUMP_WINNING_TIME_GUARD_VERSION } from "./jump-winning-time-integrity";
 import type {
   HistoricalPostRaceOutcome,
   HistoricalPreRaceFeatureRow,
@@ -28,6 +29,18 @@ import type {
 } from "./historical-target-metrics";
 
 describe("backtest feature cache", () => {
+  test("guard metadata invalidates only Jump-dependent caches and accepts a rebuilt manifest", () => {
+    const fresh = manifestFor();
+    const scope = { from: fresh.from, to: fresh.to, family: fresh.family, source: fresh.source };
+    assert.equal(isCompatibleManifest({ ...fresh, jumpWinningTimeGuardVersion: undefined }, scope), false);
+    assert.equal(isCompatibleManifest(fresh, scope), true);
+    const aw = { ...fresh, family: "all_weather_flat" as const, jumpWinningTimeGuardVersion: undefined };
+    assert.equal(isCompatibleManifest(aw, { ...scope, family: "all_weather_flat" }), true);
+  });
+  test("rejects a source-correction invalidated cache without altering its feature or outcome data", () => {
+    const manifest = manifestFor({ invalidatedBySourceCorrection: { sourceId: "904023", reason: "winning_time corrected", invalidatedAt: "2026-10-14T00:00:00Z", affectedRows: 1 } });
+    assert.equal(isCompatibleManifest(manifest, { from: manifest.from, to: manifest.to, family: manifest.family, source: manifest.source }), false);
+  });
   test("reconstructs dead-heat divisors from cached finishing positions", () => {
     const features = [
       feature({ targetRunnerId: "winner-a" }),
@@ -275,6 +288,7 @@ function manifestFor(
   overrides: Partial<BacktestFeatureCacheManifest> = {},
 ): BacktestFeatureCacheManifest {
   return {
+    jumpWinningTimeGuardVersion: JUMP_WINNING_TIME_GUARD_VERSION,
     featureSchemaVersion: BACKTEST_FEATURE_CACHE_VERSION,
     sourceFeatureVersion: BACKTEST_FEATURE_SOURCE_VERSION,
     source: "sporting_life",

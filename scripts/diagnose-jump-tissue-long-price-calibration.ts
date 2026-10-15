@@ -47,7 +47,7 @@ type Summary = ReturnType<typeof summarize>;
 
 async function main() {
   const model = await loadJumpTissueModel(JUMP_TISSUE_MODEL_PATH);
-  const caches = await Promise.all(YEARS.map((year) => loadBacktestFeatureCache({ from: `${year}-01-01`, to: `${year}-12-31`, family: "jump" })));
+  const caches = await Promise.all(YEARS.map((year) => loadBacktestFeatureCache({ from: `${year}-01-01`, to: `${year}-12-31`, family: "jump", outputDir: process.env.JUMP_RESEARCH_CACHE_DIR })));
   if (caches.some((cache) => cache === null)) throw new Error("Missing compatible 2025/2026 jump backtest caches");
   const rows = caches.flatMap((cache) => cache!.rows);
 

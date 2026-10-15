@@ -4886,7 +4886,16 @@
           "runnerId": "4cdb3b51-1b87-4103-a86a-ac5646610c1f",
           "horseId": "8686f03a-de45-4c34-8a19-ed58fd55464e",
           "horseName": "Harvey",
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "resultStatus": "finished",
+            "finishingPosition": 11,
+            "won": false,
+            "deadHeatDivisor": 1,
+            "finalSp": 51,
+            "qualifyingPriceProfitLoss": null,
+            "finalSpProfitLoss": -1
+          }
         }
       ],
       "market": {
@@ -4950,8 +4959,17 @@
           ]
         }
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "status": "settled",
+        "resultStatus": "finished",
+        "finishingPosition": 8,
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 41,
+        "qualifyingPriceProfitLoss": -1,
+        "finalSpProfitLoss": -1
+      },
+      "settledAt": "2026-10-15T02:46:35.856Z"
     },
     {
       "raceDate": "2026-10-14",
@@ -4989,7 +5007,16 @@
           "runnerId": "f8691d5d-0948-4e55-a269-b308fb2aa824",
           "horseId": "0c07c68e-4249-4d98-b23b-7e98e239732f",
           "horseName": "Neptunes Staircase",
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "resultStatus": "finished",
+            "finishingPosition": 5,
+            "won": false,
+            "deadHeatDivisor": 1,
+            "finalSp": 13,
+            "qualifyingPriceProfitLoss": null,
+            "finalSpProfitLoss": -1
+          }
         }
       ],
       "market": {
@@ -5053,8 +5080,17 @@
           ]
         }
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "status": "settled",
+        "resultStatus": "finished",
+        "finishingPosition": 5,
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 13,
+        "qualifyingPriceProfitLoss": -1,
+        "finalSpProfitLoss": -1
+      },
+      "settledAt": "2026-10-15T02:46:35.856Z"
     },
     {
       "raceDate": "2026-10-14",
@@ -5092,7 +5128,16 @@
           "runnerId": "1c439252-93cb-4731-9f89-1309a77be15b",
           "horseId": "2469152d-e91d-4b60-a550-029fd3f7d242",
           "horseName": "Ubetterseethis",
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "resultStatus": "finished",
+            "finishingPosition": 3,
+            "won": false,
+            "deadHeatDivisor": 1,
+            "finalSp": 34,
+            "qualifyingPriceProfitLoss": null,
+            "finalSpProfitLoss": -1
+          }
         }
       ],
       "market": {
@@ -5156,8 +5201,17 @@
           ]
         }
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "status": "settled",
+        "resultStatus": "finished",
+        "finishingPosition": 5,
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 6,
+        "qualifyingPriceProfitLoss": -1,
+        "finalSpProfitLoss": -1
+      },
+      "settledAt": "2026-10-15T02:46:35.856Z"
     },
     {
       "raceDate": "2026-10-14",
@@ -5255,6 +5309,839 @@
               "bookmakerName": "Sky Bet v2",
               "fractionalOdds": "40/1",
               "decimalOdds": 41
+            }
+          ]
+        }
+      },
+      "outcome": {
+        "status": "void",
+        "resultStatus": "non_runner",
+        "finishingPosition": null,
+        "won": null,
+        "deadHeatDivisor": 1,
+        "finalSp": null,
+        "qualifyingPriceProfitLoss": 0,
+        "finalSpProfitLoss": 0
+      },
+      "settledAt": "2026-10-14T13:44:36.530Z"
+    },
+    {
+      "raceDate": "2026-10-15",
+      "raceId": "cb984919-c697-4aa1-ab87-1284bec34d02",
+      "sourceId": "944163",
+      "scheduledOff": "2026-10-15T12:32:00.000Z",
+      "scheduledTime": "12:32:00",
+      "course": "Brighton",
+      "horseId": "6f83e92e-257d-446e-bd35-5ad0e6846469",
+      "horseName": "Mart",
+      "runnerId": "526947b2-30cb-4a5b-8f0f-086fae2d7717",
+      "recordedAt": "2026-10-15T02:54:09.893Z",
+      "recordedPreRace": true,
+      "ratingVersion": "todays_rating_v1",
+      "todaysRating": 103.7087408055648,
+      "latestSpeed": 98.7087408055648,
+      "bestL3Speed": null,
+      "avgL3Speed": null,
+      "tpr": 102.26653437574151,
+      "todayWeight": 130,
+      "priorRun": {
+        "runnerId": "a9f8e8f9-11b4-4dad-be79-ddefbd0186d6",
+        "raceDateTime": "2026-08-07T15:30:00.000Z",
+        "weightCarriedLbs": 135,
+        "speed": 98.7087408055648
+      },
+      "signedWeightChange": -5,
+      "weightBand": "4-7 lb lighter",
+      "todaysRatingRank": 1,
+      "latestSpeedRank": 4,
+      "bestL3Rank": null,
+      "tprRank": 7,
+      "latestSpeedLeaders": [
+        {
+          "runnerId": "668ff50f-06d5-4c1d-93c3-96c7aa0ff223",
+          "horseId": "7deb7410-3dfd-4dcb-9db9-3c99e9c972af",
+          "horseName": "Bessie Wallis",
+          "outcome": null
+        }
+      ],
+      "market": {
+        "qualifying": {
+          "capturedAt": "2026-10-15T02:54:09.893Z",
+          "priceCapturedAt": "2026-10-15T02:54:09.893Z",
+          "source": "sporting_life_stored_bookmaker_median_at_capture_v1",
+          "marketPriceBasisVersion": "median_bookmaker_v1",
+          "medianDecimal": 11,
+          "impliedProbability": 0.09090909090909091,
+          "bookmakerQuoteCount": 3,
+          "bookmakerQuotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "10/1",
+              "decimalOdds": 11
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "10/1",
+              "decimalOdds": 11
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "10/1",
+              "decimalOdds": 11
+            }
+          ]
+        },
+        "later": [],
+        "finalStoredPreRace": {
+          "capturedAt": "2026-10-15T02:54:09.893Z",
+          "priceCapturedAt": "2026-10-15T02:54:09.893Z",
+          "source": "sporting_life_stored_bookmaker_median_at_capture_v1",
+          "marketPriceBasisVersion": "median_bookmaker_v1",
+          "medianDecimal": 11,
+          "impliedProbability": 0.09090909090909091,
+          "bookmakerQuoteCount": 3,
+          "bookmakerQuotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "10/1",
+              "decimalOdds": 11
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "10/1",
+              "decimalOdds": 11
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "10/1",
+              "decimalOdds": 11
+            }
+          ]
+        }
+      },
+      "outcome": null,
+      "settledAt": null
+    },
+    {
+      "raceDate": "2026-10-15",
+      "raceId": "6ddfffeb-b8f6-4e8f-875a-72d9eb664be2",
+      "sourceId": "943579",
+      "scheduledOff": "2026-10-15T13:05:00.000Z",
+      "scheduledTime": "13:05:00",
+      "course": "Brighton",
+      "horseId": "eb3f9cd1-95dc-4fbe-8c65-d6fbad400073",
+      "horseName": "Polly The Sniper",
+      "runnerId": "2631ef30-65ea-4fe3-898c-89b9b895f83c",
+      "recordedAt": "2026-10-15T02:54:09.893Z",
+      "recordedPreRace": true,
+      "ratingVersion": "todays_rating_v1",
+      "todaysRating": 105.32797655512228,
+      "latestSpeed": 97.32797655512228,
+      "bestL3Speed": 97.84533962207101,
+      "avgL3Speed": 97.58665808859664,
+      "tpr": 96.5314247659022,
+      "todayWeight": 125,
+      "priorRun": {
+        "runnerId": "af9fd8e3-c367-450b-ad79-22631f72ac61",
+        "raceDateTime": "2026-09-29T14:35:00.000Z",
+        "weightCarriedLbs": 133,
+        "speed": 97.32797655512228
+      },
+      "signedWeightChange": -8,
+      "weightBand": "8+ lb lighter",
+      "todaysRatingRank": 1,
+      "latestSpeedRank": 3,
+      "bestL3Rank": 4,
+      "tprRank": 4,
+      "latestSpeedLeaders": [
+        {
+          "runnerId": "da7a332d-c5ae-4736-b3d7-f6664b8fce3f",
+          "horseId": "34faf0ce-51f8-43fd-a20b-136dd3ac2caf",
+          "horseName": "Storm Force Ten",
+          "outcome": null
+        }
+      ],
+      "market": {
+        "qualifying": {
+          "capturedAt": "2026-10-15T02:54:09.893Z",
+          "priceCapturedAt": "2026-10-15T02:54:09.893Z",
+          "source": "sporting_life_stored_bookmaker_median_at_capture_v1",
+          "marketPriceBasisVersion": "median_bookmaker_v1",
+          "medianDecimal": 8.5,
+          "impliedProbability": 0.11764705882352941,
+          "bookmakerQuoteCount": 3,
+          "bookmakerQuotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "15/2",
+              "decimalOdds": 8.5
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "15/2",
+              "decimalOdds": 8.5
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "8/1",
+              "decimalOdds": 9
+            }
+          ]
+        },
+        "later": [],
+        "finalStoredPreRace": {
+          "capturedAt": "2026-10-15T02:54:09.893Z",
+          "priceCapturedAt": "2026-10-15T02:54:09.893Z",
+          "source": "sporting_life_stored_bookmaker_median_at_capture_v1",
+          "marketPriceBasisVersion": "median_bookmaker_v1",
+          "medianDecimal": 8.5,
+          "impliedProbability": 0.11764705882352941,
+          "bookmakerQuoteCount": 3,
+          "bookmakerQuotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "15/2",
+              "decimalOdds": 8.5
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "15/2",
+              "decimalOdds": 8.5
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "8/1",
+              "decimalOdds": 9
+            }
+          ]
+        }
+      },
+      "outcome": null,
+      "settledAt": null
+    },
+    {
+      "raceDate": "2026-10-15",
+      "raceId": "ebd46ff9-a9f4-40be-8ccb-d68d05da70eb",
+      "sourceId": "943366",
+      "scheduledOff": "2026-10-15T12:37:00.000Z",
+      "scheduledTime": "12:37:00",
+      "course": "Curragh",
+      "horseId": "7a7d1705-69b0-461e-8439-aa3fb702d5a2",
+      "horseName": "Go Athletico",
+      "runnerId": "f5b325fc-6323-45f2-a4c3-e8f0c56d78b6",
+      "recordedAt": "2026-10-15T02:54:09.893Z",
+      "recordedPreRace": true,
+      "ratingVersion": "todays_rating_v1",
+      "todaysRating": 108.27783003367007,
+      "latestSpeed": 93.27783003367007,
+      "bestL3Speed": 99.66711879830295,
+      "avgL3Speed": 94.63682913927721,
+      "tpr": 89.51758529711645,
+      "todayWeight": 120,
+      "priorRun": {
+        "runnerId": "5596191f-ad63-42de-a3bf-1806d9d71de2",
+        "raceDateTime": "2026-10-04T14:15:00.000Z",
+        "weightCarriedLbs": 135,
+        "speed": 93.27783003367007
+      },
+      "signedWeightChange": -15,
+      "weightBand": "8+ lb lighter",
+      "todaysRatingRank": 1,
+      "latestSpeedRank": 10,
+      "bestL3Rank": 8,
+      "tprRank": 13,
+      "latestSpeedLeaders": [
+        {
+          "runnerId": "1727c9d1-af11-41fc-a275-8aa11781ceb9",
+          "horseId": "b25b8a39-50af-499b-94e3-a8db70edadd9",
+          "horseName": "Moltophino",
+          "outcome": null
+        }
+      ],
+      "market": {
+        "qualifying": {
+          "capturedAt": "2026-10-15T02:54:09.893Z",
+          "priceCapturedAt": "2026-10-15T02:54:09.893Z",
+          "source": "sporting_life_stored_bookmaker_median_at_capture_v1",
+          "marketPriceBasisVersion": "median_bookmaker_v1",
+          "medianDecimal": 11,
+          "impliedProbability": 0.09090909090909091,
+          "bookmakerQuoteCount": 3,
+          "bookmakerQuotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "10/1",
+              "decimalOdds": 11
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "10/1",
+              "decimalOdds": 11
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "10/1",
+              "decimalOdds": 11
+            }
+          ]
+        },
+        "later": [],
+        "finalStoredPreRace": {
+          "capturedAt": "2026-10-15T02:54:09.893Z",
+          "priceCapturedAt": "2026-10-15T02:54:09.893Z",
+          "source": "sporting_life_stored_bookmaker_median_at_capture_v1",
+          "marketPriceBasisVersion": "median_bookmaker_v1",
+          "medianDecimal": 11,
+          "impliedProbability": 0.09090909090909091,
+          "bookmakerQuoteCount": 3,
+          "bookmakerQuotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "10/1",
+              "decimalOdds": 11
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "10/1",
+              "decimalOdds": 11
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "10/1",
+              "decimalOdds": 11
+            }
+          ]
+        }
+      },
+      "outcome": null,
+      "settledAt": null
+    },
+    {
+      "raceDate": "2026-10-15",
+      "raceId": "f0835eb5-4a91-42f4-8301-79e7d13983fd",
+      "sourceId": "943367",
+      "scheduledOff": "2026-10-15T13:12:00.000Z",
+      "scheduledTime": "13:12:00",
+      "course": "Curragh",
+      "horseId": "20753ebb-2a09-4ad0-bece-36351dd621d4",
+      "horseName": "Ocean Phoenix",
+      "runnerId": "0e6caead-c674-4671-83af-c48e89827ee8",
+      "recordedAt": "2026-10-15T02:54:09.893Z",
+      "recordedPreRace": true,
+      "ratingVersion": "todays_rating_v1",
+      "todaysRating": 113.15376072727273,
+      "latestSpeed": 107.15376072727273,
+      "bestL3Speed": 107.15376072727273,
+      "avgL3Speed": 107.15376072727273,
+      "tpr": 102.6460423968576,
+      "todayWeight": 123,
+      "priorRun": {
+        "runnerId": "b60ef42d-d119-4301-949a-a3b1f524da9b",
+        "raceDateTime": "2026-09-21T11:23:00.000Z",
+        "weightCarriedLbs": 129,
+        "speed": 107.15376072727273
+      },
+      "signedWeightChange": -6,
+      "weightBand": "4-7 lb lighter",
+      "todaysRatingRank": 1,
+      "latestSpeedRank": 1,
+      "bestL3Rank": 2,
+      "tprRank": 3,
+      "latestSpeedLeaders": [
+        {
+          "runnerId": "0e6caead-c674-4671-83af-c48e89827ee8",
+          "horseId": "20753ebb-2a09-4ad0-bece-36351dd621d4",
+          "horseName": "Ocean Phoenix",
+          "outcome": null
+        }
+      ],
+      "market": {
+        "qualifying": {
+          "capturedAt": "2026-10-15T02:54:09.893Z",
+          "priceCapturedAt": "2026-10-15T02:54:09.893Z",
+          "source": "sporting_life_stored_bookmaker_median_at_capture_v1",
+          "marketPriceBasisVersion": "median_bookmaker_v1",
+          "medianDecimal": 13,
+          "impliedProbability": 0.07692307692307693,
+          "bookmakerQuoteCount": 3,
+          "bookmakerQuotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "11/1",
+              "decimalOdds": 12
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "12/1",
+              "decimalOdds": 13
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "12/1",
+              "decimalOdds": 13
+            }
+          ]
+        },
+        "later": [],
+        "finalStoredPreRace": {
+          "capturedAt": "2026-10-15T02:54:09.893Z",
+          "priceCapturedAt": "2026-10-15T02:54:09.893Z",
+          "source": "sporting_life_stored_bookmaker_median_at_capture_v1",
+          "marketPriceBasisVersion": "median_bookmaker_v1",
+          "medianDecimal": 13,
+          "impliedProbability": 0.07692307692307693,
+          "bookmakerQuoteCount": 3,
+          "bookmakerQuotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "11/1",
+              "decimalOdds": 12
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "12/1",
+              "decimalOdds": 13
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "12/1",
+              "decimalOdds": 13
+            }
+          ]
+        }
+      },
+      "outcome": null,
+      "settledAt": null
+    },
+    {
+      "raceDate": "2026-10-15",
+      "raceId": "acedc891-5966-48d3-8c32-7f4c48f410e8",
+      "sourceId": "943368",
+      "scheduledOff": "2026-10-15T13:47:00.000Z",
+      "scheduledTime": "13:47:00",
+      "course": "Curragh",
+      "horseId": "96ad0c82-5fc5-416d-b07e-a364e12fd40c",
+      "horseName": "Marta's Prince",
+      "runnerId": "76cf5c7e-506a-44b4-b7aa-509f539df6e7",
+      "recordedAt": "2026-10-15T02:54:09.893Z",
+      "recordedPreRace": true,
+      "ratingVersion": "todays_rating_v1",
+      "todaysRating": 116.68517861719234,
+      "latestSpeed": 110.68517861719234,
+      "bestL3Speed": 110.68517861719234,
+      "avgL3Speed": 103.20521009904427,
+      "tpr": 109.14820432884558,
+      "todayWeight": 134,
+      "priorRun": {
+        "runnerId": "ebd77314-dec6-442e-9e38-42f718f91944",
+        "raceDateTime": "2026-08-01T16:35:00.000Z",
+        "weightCarriedLbs": 140,
+        "speed": 110.68517861719234
+      },
+      "signedWeightChange": -6,
+      "weightBand": "4-7 lb lighter",
+      "todaysRatingRank": 1,
+      "latestSpeedRank": 1,
+      "bestL3Rank": 6,
+      "tprRank": 4,
+      "latestSpeedLeaders": [
+        {
+          "runnerId": "76cf5c7e-506a-44b4-b7aa-509f539df6e7",
+          "horseId": "96ad0c82-5fc5-416d-b07e-a364e12fd40c",
+          "horseName": "Marta's Prince",
+          "outcome": null
+        }
+      ],
+      "market": {
+        "qualifying": {
+          "capturedAt": "2026-10-15T02:54:09.893Z",
+          "priceCapturedAt": "2026-10-15T02:54:09.893Z",
+          "source": "sporting_life_stored_bookmaker_median_at_capture_v1",
+          "marketPriceBasisVersion": "median_bookmaker_v1",
+          "medianDecimal": 51,
+          "impliedProbability": 0.0196078431372549,
+          "bookmakerQuoteCount": 3,
+          "bookmakerQuotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "50/1",
+              "decimalOdds": 51
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "50/1",
+              "decimalOdds": 51
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "50/1",
+              "decimalOdds": 51
+            }
+          ]
+        },
+        "later": [],
+        "finalStoredPreRace": {
+          "capturedAt": "2026-10-15T02:54:09.893Z",
+          "priceCapturedAt": "2026-10-15T02:54:09.893Z",
+          "source": "sporting_life_stored_bookmaker_median_at_capture_v1",
+          "marketPriceBasisVersion": "median_bookmaker_v1",
+          "medianDecimal": 51,
+          "impliedProbability": 0.0196078431372549,
+          "bookmakerQuoteCount": 3,
+          "bookmakerQuotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "50/1",
+              "decimalOdds": 51
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "50/1",
+              "decimalOdds": 51
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "50/1",
+              "decimalOdds": 51
+            }
+          ]
+        }
+      },
+      "outcome": null,
+      "settledAt": null
+    },
+    {
+      "raceDate": "2026-10-15",
+      "raceId": "264ba20d-f69a-496b-ac7f-f7e1d35fcdd0",
+      "sourceId": "943370",
+      "scheduledOff": "2026-10-15T14:57:00.000Z",
+      "scheduledTime": "14:57:00",
+      "course": "Curragh",
+      "horseId": "357df5c3-394d-4199-807e-518a3b26d7bc",
+      "horseName": "Flagstone Lady",
+      "runnerId": "683debea-6321-43f4-817f-e39314df4ff1",
+      "recordedAt": "2026-10-15T02:54:09.893Z",
+      "recordedPreRace": true,
+      "ratingVersion": "todays_rating_v1",
+      "todaysRating": 125.20173158977171,
+      "latestSpeed": 115.20173158977171,
+      "bestL3Speed": 115.20173158977171,
+      "avgL3Speed": 103.00973759329977,
+      "tpr": 99.98727504702573,
+      "todayWeight": 124,
+      "priorRun": {
+        "runnerId": "afd334ac-0bdf-426a-93ee-c5b2dfa49a85",
+        "raceDateTime": "2026-08-31T18:55:00.000Z",
+        "weightCarriedLbs": 134,
+        "speed": 115.20173158977171
+      },
+      "signedWeightChange": -10,
+      "weightBand": "8+ lb lighter",
+      "todaysRatingRank": 1,
+      "latestSpeedRank": 4,
+      "bestL3Rank": 4,
+      "tprRank": 13,
+      "latestSpeedLeaders": [
+        {
+          "runnerId": "ef0ca9ec-6e0a-44fd-a2bc-e84ee755ff8c",
+          "horseId": "fe5c5bb2-f632-4ba8-896e-379ba6379bb3",
+          "horseName": "Medadthebookie",
+          "outcome": null
+        }
+      ],
+      "market": {
+        "qualifying": {
+          "capturedAt": "2026-10-15T02:54:09.893Z",
+          "priceCapturedAt": "2026-10-15T02:54:09.893Z",
+          "source": "sporting_life_stored_bookmaker_median_at_capture_v1",
+          "marketPriceBasisVersion": "median_bookmaker_v1",
+          "medianDecimal": 11,
+          "impliedProbability": 0.09090909090909091,
+          "bookmakerQuoteCount": 3,
+          "bookmakerQuotes": [
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "9/1",
+              "decimalOdds": 10
+            },
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "10/1",
+              "decimalOdds": 11
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "10/1",
+              "decimalOdds": 11
+            }
+          ]
+        },
+        "later": [],
+        "finalStoredPreRace": {
+          "capturedAt": "2026-10-15T02:54:09.893Z",
+          "priceCapturedAt": "2026-10-15T02:54:09.893Z",
+          "source": "sporting_life_stored_bookmaker_median_at_capture_v1",
+          "marketPriceBasisVersion": "median_bookmaker_v1",
+          "medianDecimal": 11,
+          "impliedProbability": 0.09090909090909091,
+          "bookmakerQuoteCount": 3,
+          "bookmakerQuotes": [
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "9/1",
+              "decimalOdds": 10
+            },
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "10/1",
+              "decimalOdds": 11
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "10/1",
+              "decimalOdds": 11
+            }
+          ]
+        }
+      },
+      "outcome": null,
+      "settledAt": null
+    },
+    {
+      "raceDate": "2026-10-15",
+      "raceId": "31a961f1-412c-4f8d-ab7e-8174d7dd66f3",
+      "sourceId": "943371",
+      "scheduledOff": "2026-10-15T15:32:00.000Z",
+      "scheduledTime": "15:32:00",
+      "course": "Curragh",
+      "horseId": "db078fc5-0346-4726-bb9a-ff504d909163",
+      "horseName": "Steel Magnolia",
+      "runnerId": "ddf7f4c8-32e0-4d44-8732-d1a508f17048",
+      "recordedAt": "2026-10-15T02:54:09.893Z",
+      "recordedPreRace": true,
+      "ratingVersion": "todays_rating_v1",
+      "todaysRating": 111.4722512704509,
+      "latestSpeed": 98.4722512704509,
+      "bestL3Speed": 107.67631049696963,
+      "avgL3Speed": 100.0531388485819,
+      "tpr": 97.64128944452398,
+      "todayWeight": 125,
+      "priorRun": {
+        "runnerId": "3a3e2138-9b2d-4689-b4c2-4e745a5f1d5c",
+        "raceDateTime": "2026-10-01T13:20:00.000Z",
+        "weightCarriedLbs": 138,
+        "speed": 98.4722512704509
+      },
+      "signedWeightChange": -13,
+      "weightBand": "8+ lb lighter",
+      "todaysRatingRank": 1,
+      "latestSpeedRank": 4,
+      "bestL3Rank": 4,
+      "tprRank": 10,
+      "latestSpeedLeaders": [
+        {
+          "runnerId": "82a136e1-7545-4e0b-a1f5-4644fc4a3c4d",
+          "horseId": "14e5a38c-0455-4b4c-ac02-e06bdab61200",
+          "horseName": "Mary Shoelaces",
+          "outcome": null
+        }
+      ],
+      "market": {
+        "qualifying": {
+          "capturedAt": "2026-10-15T02:54:09.893Z",
+          "priceCapturedAt": "2026-10-15T02:54:09.893Z",
+          "source": "sporting_life_stored_bookmaker_median_at_capture_v1",
+          "marketPriceBasisVersion": "median_bookmaker_v1",
+          "medianDecimal": 5,
+          "impliedProbability": 0.2,
+          "bookmakerQuoteCount": 3,
+          "bookmakerQuotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "4/1",
+              "decimalOdds": 5
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "4/1",
+              "decimalOdds": 5
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "4/1",
+              "decimalOdds": 5
+            }
+          ]
+        },
+        "later": [],
+        "finalStoredPreRace": {
+          "capturedAt": "2026-10-15T02:54:09.893Z",
+          "priceCapturedAt": "2026-10-15T02:54:09.893Z",
+          "source": "sporting_life_stored_bookmaker_median_at_capture_v1",
+          "marketPriceBasisVersion": "median_bookmaker_v1",
+          "medianDecimal": 5,
+          "impliedProbability": 0.2,
+          "bookmakerQuoteCount": 3,
+          "bookmakerQuotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "4/1",
+              "decimalOdds": 5
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "4/1",
+              "decimalOdds": 5
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "4/1",
+              "decimalOdds": 5
+            }
+          ]
+        }
+      },
+      "outcome": null,
+      "settledAt": null
+    },
+    {
+      "raceDate": "2026-10-15",
+      "raceId": "de85f309-c380-4b3f-b648-0bfe2656c6cb",
+      "sourceId": "943372",
+      "scheduledOff": "2026-10-15T16:07:00.000Z",
+      "scheduledTime": "16:07:00",
+      "course": "Curragh",
+      "horseId": "2dfead1f-73b2-4815-af0d-bdbce242115d",
+      "horseName": "Kitty Bear",
+      "runnerId": "aaddb62b-aa79-496a-bd5a-b953a87fc8b0",
+      "recordedAt": "2026-10-15T02:54:09.893Z",
+      "recordedPreRace": true,
+      "ratingVersion": "todays_rating_v1",
+      "todaysRating": 127.27013430303025,
+      "latestSpeed": 98.27013430303025,
+      "bestL3Speed": 102.54651151515156,
+      "avgL3Speed": 100.40832290909091,
+      "tpr": 112.021986934613,
+      "todayWeight": 134,
+      "priorRun": {
+        "runnerId": "3a7c5534-ca80-49d9-b9cd-289d0f7d54a1",
+        "raceDateTime": "2026-09-10T16:49:00.000Z",
+        "weightCarriedLbs": 163,
+        "speed": 98.27013430303025
+      },
+      "signedWeightChange": -29,
+      "weightBand": "8+ lb lighter",
+      "todaysRatingRank": 1,
+      "latestSpeedRank": 6,
+      "bestL3Rank": 14,
+      "tprRank": 2,
+      "latestSpeedLeaders": [
+        {
+          "runnerId": "b6330845-fee3-44f7-a434-59a34d5ddc95",
+          "horseId": "dbcb206b-6f8c-4582-994f-79f1c090a133",
+          "horseName": "She's On The Ball",
+          "outcome": null
+        }
+      ],
+      "market": {
+        "qualifying": {
+          "capturedAt": "2026-10-15T02:54:09.893Z",
+          "priceCapturedAt": "2026-10-15T02:54:09.893Z",
+          "source": "sporting_life_stored_bookmaker_median_at_capture_v1",
+          "marketPriceBasisVersion": "median_bookmaker_v1",
+          "medianDecimal": 21,
+          "impliedProbability": 0.047619047619047616,
+          "bookmakerQuoteCount": 3,
+          "bookmakerQuotes": [
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "18/1",
+              "decimalOdds": 19
+            },
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "20/1",
+              "decimalOdds": 21
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "20/1",
+              "decimalOdds": 21
+            }
+          ]
+        },
+        "later": [],
+        "finalStoredPreRace": {
+          "capturedAt": "2026-10-15T02:54:09.893Z",
+          "priceCapturedAt": "2026-10-15T02:54:09.893Z",
+          "source": "sporting_life_stored_bookmaker_median_at_capture_v1",
+          "marketPriceBasisVersion": "median_bookmaker_v1",
+          "medianDecimal": 21,
+          "impliedProbability": 0.047619047619047616,
+          "bookmakerQuoteCount": 3,
+          "bookmakerQuotes": [
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "18/1",
+              "decimalOdds": 19
+            },
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "20/1",
+              "decimalOdds": 21
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "20/1",
+              "decimalOdds": 21
             }
           ]
         }

@@ -165,7 +165,7 @@ async function main() {
 }
 
 async function loadYear(year: Year) {
-  const cache = await loadLatestBacktestFeatureCacheForYear({ family: "jump", year });
+  const cache = await loadLatestBacktestFeatureCacheForYear({ family: "jump", year, outputDir: process.env.JUMP_RESEARCH_CACHE_DIR });
   if (!cache) throw new Error(`Missing jump backtest feature cache for ${year}`);
   return {
     year,
