@@ -166,7 +166,8 @@ function TissueMonitorSummary({ monitors, rows }: { monitors: ProspectiveMonitor
     { name: "Today", tracked: rows.length, settled: todaySettled, winners: displayTotals.winners, roi: null, profit: displayTotals.profitLoss, unavailableReturns: displayTotals.unavailableReturns }];
   return (
     <div className="mt-4">
-      <p className="mb-2 text-xs text-slate-500">Clean priced prospective record from 11 Oct 2026</p>
+      <p className="text-xs text-slate-500">Current VALUE-qualified prospective record from 11 Oct 2026</p>
+      <p className="mb-2 mt-1 text-xs text-slate-500">Current family price-cap rules apply: Hurdle 14/1, AW 20/1, Turf 20/1; Chase uncapped.</p>
       <dl className={`grid border border-slate-200 bg-white sm:grid-cols-2 ${summaryRows.length > 4 ? "lg:grid-cols-5" : "lg:grid-cols-4"}`}>
       {summaryRows.map((monitor) => (
         <div className="border-b border-slate-200 px-4 py-3 last:border-b-0 sm:border-r lg:border-b-0" key={monitor.name}>
@@ -229,8 +230,8 @@ function HistoricalTissueEvidence({ monitors }: { monitors: ProspectiveMonitor[]
   if (monitors.length === 0) return null;
   return (
     <section className="mt-4" aria-labelledby="historical-tissue-evidence-heading">
-      <h3 id="historical-tissue-evidence-heading" className="text-sm font-semibold">Historical Tissue evidence</h3>
-      <p className="mt-1 text-xs text-slate-500">Pre clean-price epoch</p>
+      <h3 id="historical-tissue-evidence-heading" className="text-sm font-semibold">Historical rank-one Tissue evidence</h3>
+      <p className="mt-1 text-xs text-slate-500">Saved prospective rank-one observations from before the clean VALUE record. These are not directly comparable with the current VALUE-qualified cards.</p>
       <div className="mt-3 grid gap-3 md:grid-cols-3">
         {monitors.map((monitor) => (
           <article className="border border-slate-200 bg-white p-3" key={monitor.name}>
@@ -238,8 +239,9 @@ function HistoricalTissueEvidence({ monitors }: { monitors: ProspectiveMonitor[]
             <dl className="mt-2 grid grid-cols-[minmax(0,1fr)_max-content] gap-x-3 gap-y-1 text-xs">
               <dt className="text-slate-500">Tracked / settled</dt><dd className="tabular-nums">{monitor.tracked} / {monitor.settled}</dd>
               <dt className="text-slate-500">Winners / strike</dt><dd className="tabular-nums">{monitor.winners} / {pct(monitor.strike)}</dd>
-              <dt className="text-slate-500">A/E</dt><dd className="tabular-nums">{aeValue(monitor)}</dd>
+              <dt className="text-slate-500">Market A/E</dt><dd className="tabular-nums">{aeValue(monitor)}</dd>
             </dl>
+            <p className="mt-2 text-[11px] leading-relaxed text-slate-500">Rank-one monitoring population — not current VALUE-rule performance.</p>
             <p className="mt-2 text-[11px] leading-relaxed text-slate-500">Historical ROI is not manufactured when qualifying-price returns are unavailable.</p>
           </article>
         ))}

@@ -193,7 +193,7 @@ test("settled Tissue VALUE heading reports missing returns when all P/L values a
   assert.doesNotMatch(html, /ROI/);
 });
 
-test("headline Tissue cards use clean display epoch while historical monitors remain visible", () => {
+test("headline VALUE cards distinguish current capped selections from historical rank-one monitoring", () => {
   const dashboard: ResearchDashboard = {
     date: "2026-10-11",
     emptyMessage: null,
@@ -215,7 +215,8 @@ test("headline Tissue cards use clean display epoch while historical monitors re
 
   const html = renderToStaticMarkup(<DailyResearchDashboard dashboard={dashboard} />);
 
-  assert.match(html, /Clean priced prospective record from 11 Oct 2026/);
+  assert.match(html, /Current VALUE-qualified prospective record from 11 Oct 2026/);
+  assert.match(html, /Current family price-cap rules apply: Hurdle 14\/1, AW 20\/1, Turf 20\/1; Chase uncapped\./);
   assert.match(html, /Turf VALUE/);
   assert.match(html, /0 selections \/ 0 settled \/ 0 winners/);
   assert.match(html, /P\/L £0\.00/);
@@ -223,10 +224,20 @@ test("headline Tissue cards use clean display epoch while historical monitors re
   assert.match(html, /Turf P\/L -£7\.00 · 1 return unavailable/);
   assert.match(html, /Jump P\/L \+£2\.00/);
   assert.match(html, /AW P\/L £0\.00/);
-  assert.match(html, /Historical Tissue evidence/);
-  assert.match(html, /Pre clean-price epoch/);
-  assert.match(html, /295 \/ 267/);
-  assert.match(html, /Historical ROI is not manufactured/);
+  const historicalHtml = html.match(/<section[^>]*aria-labelledby="historical-tissue-evidence-heading"[\s\S]*?<\/section>/)?.[0];
+  assert.ok(historicalHtml);
+  assert.match(historicalHtml, /Historical rank-one Tissue evidence/);
+  assert.match(historicalHtml, /Saved prospective rank-one observations from before the clean VALUE record\./);
+  assert.match(historicalHtml, /These are not directly comparable with the current VALUE-qualified cards\./);
+  assert.match(historicalHtml, /Tracked \/ settled/);
+  assert.match(historicalHtml, /Winners \/ strike/);
+  assert.match(historicalHtml, /Market A\/E/);
+  assert.match(historicalHtml, /Rank-one monitoring population — not current VALUE-rule performance\./);
+  assert.match(historicalHtml, /295 \/ 267/);
+  assert.match(historicalHtml, /37 \/ 13\.9%/);
+  assert.match(historicalHtml, />1\.05</);
+  assert.match(historicalHtml, /Historical ROI is not manufactured/);
+  assert.doesNotMatch(historicalHtml, /Pre clean-price epoch|Current family price-cap rules/);
 });
 
 function tissueHorse(
