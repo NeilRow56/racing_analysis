@@ -117,7 +117,7 @@ export default async function ResearchPage({
               className="border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:border-emerald-400 hover:text-emerald-800"
               href="/racing/research/forward-value"
             >
-              Forward Value
+              Forward Research
             </Link>
             <Link
               className="border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:border-emerald-400 hover:text-emerald-800"

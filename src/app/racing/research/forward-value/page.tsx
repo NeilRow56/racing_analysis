@@ -1,4 +1,5 @@
-import Link from "next/link";
+import { loadRankOne } from "@/lib/racing/rank-one-forward";
+import { RankOneMonitoring } from "./rank-one-monitoring";
 import { createDbConnection } from "@/db";
 import {
   capturedPriceProfitLoss,
@@ -43,7 +44,7 @@ import { loadJumpG4Forward } from "@/lib/racing/jump-g4-forward";
 import { loadTodaysRatingWeightForward } from "@/lib/racing/todays-rating-weight-forward";
 import { loadModelDisagreementForward } from "@/lib/racing/model-disagreement-forward";
 import { buildResearchDashboard } from "@/lib/racing/research-monitor";
-import { DailyResearchDashboard, ResearchHistory } from "./research-dashboard";
+import { DailyResearchDashboard, ResearchHistory, SecondaryResearchMonitoring } from "./research-dashboard";
 import { loadAwTissuePairedForward } from "@/lib/racing/aw-tissue-paired-forward";
 import { AwTurfChallengerSection } from "./aw-turf-challenger";
 import { loadTissueValueReviews } from "@/lib/racing/tissue-value-review";
@@ -51,6 +52,9 @@ import { loadHurdlePair } from "@/lib/racing/hurdle-tissue-challenger-forward";
 import { HurdleTissueChallengerSection } from "./hurdle-tissue-challenger";
 import { loadChasePair } from "@/lib/racing/chase-tissue-challenger-forward";
 import { ChaseTissueChallengerSection } from "./chase-tissue-challenger";
+import { loadHurdleRecency } from "@/lib/racing/hurdle-recency-forward";
+import { HurdleRecencyResearchSection } from "./hurdle-recency-research";
+import { ResearchPageLayout } from "./research-page-layout";
 
 export const dynamic = "force-dynamic";
 
@@ -60,7 +64,7 @@ type PageProps = {
 
 export default async function ForwardValuePage({ searchParams }: PageProps) {
   const raceDate = getLocalRacingDate();
-  const [data, tissueData, awTissueData, jumpTissueData, awPairedData, g4Data, weightData, modelDisagreementData, reviewData, hurdlePairData, chasePairData, params] = await Promise.all([
+  const [data, tissueData, awTissueData, jumpTissueData, awPairedData, g4Data, weightData, modelDisagreementData, reviewData, hurdlePairData, chasePairData, hurdleRecencyData, rankOneData, params] = await Promise.all([
     loadForwardValueData(),
     loadTissueForward(TISSUE_V2_CONFIG.forwardPath, TISSUE_V2_CONFIG),
     loadAwTissueForward(),
@@ -72,6 +76,8 @@ export default async function ForwardValuePage({ searchParams }: PageProps) {
     loadTissueValueReviews(),
     loadHurdlePair(),
     loadChasePair(),
+    loadHurdleRecency(),
+    loadRankOne(),
     searchParams,
   ]);
   const connection = createDbConnection();
@@ -103,62 +109,42 @@ export default async function ForwardValuePage({ searchParams }: PageProps) {
   );
 
   return (
-    <main className="min-h-screen bg-gray-50 px-4 py-6 text-slate-950 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-[1600px]">
-        <header className="flex flex-col gap-4 border-b border-slate-200 pb-5 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <Link className="text-sm font-medium text-emerald-800 hover:underline" href="/racing/research">
-              Racing Research
-            </Link>
-            <h1 className="mt-2 text-2xl font-semibold tracking-normal">Tissue VALUE Monitor</h1>
-            <p className="mt-2 text-sm text-slate-500">
-              Daily Tissue VALUE first; shadows and diagnostics stay secondary.
-            </p>
-          </div>
-          <nav aria-label="Racing Research" className="flex flex-wrap gap-2 text-sm font-semibold">
-            <time className="self-center px-2 text-xs font-normal tabular-nums text-slate-500" dateTime={raceDate}>{raceDate}</time>
-            <a className="px-3 py-2 text-slate-700 hover:text-emerald-800" href="/racing/research/forward-value">Refresh</a>
-            <Link className="border border-slate-300 bg-white px-3 py-2 text-slate-700 hover:border-emerald-400 hover:text-emerald-800" href="/racing/research">
-              Research Filters
-            </Link>
-            <Link className="border border-slate-300 bg-white px-3 py-2 text-slate-700 hover:border-emerald-400 hover:text-emerald-800" href="/racing/today">
-              Today&apos;s Racing
-            </Link>
-          </nav>
-        </header>
-
-        <DailyResearchDashboard dashboard={dashboard}>
-          <AwTurfChallengerSection data={awPairedData} date={raceDate} prices={currentPrices} />
-        </DailyResearchDashboard>
-        <HurdleTissueChallengerSection data={hurdlePairData} date={raceDate} />
-        <ChaseTissueChallengerSection data={chasePairData} date={raceDate} />
-        <details className="mt-8 border-t border-slate-200 py-4">
-          <summary className="cursor-pointer text-sm font-semibold">Performance</summary>
-          <SparseSampleWarning show={summary.sparseSampleWarning} />
-          <TopLevelCounts summary={summary} syncRequiredCount={countPendingWithCanonicalResults(reportingScope.analyticalRecords, canonicalResultRaceIds)} />
-          <FamilySummaryTable summary={summary} />
-          <EdgeBucketTables summary={summary} />
-          <PriceSnapshotDiagnostics observations={reportingScope.analyticalRecords} summary={summary} />
-        </details>
-        <details className="border-t border-slate-200 py-4" open={Object.keys(params ?? {}).length > 0}>
-          <summary className="cursor-pointer text-sm font-semibold">Details · model comparisons and value records</summary>
-          <ResearchHistory />
-          <TurfModelAgreementCounts summary={summary.turfModelAgreement} />
-          <SameLeaderProbabilityGapDiagnostics diagnostics={probabilityGapDiagnostics} />
-          <TurfModelDisagreementExplainer diagnostics={disagreementDiagnostics} />
-          <TurfTissueValueSection records={reportingScope.analyticalRecords} reviews={reviewData} />
-          <AwTissueValueSection data={awTissueData} ratings={reportingScope.analyticalRecords} reviews={reviewData} />
-          <JumpTissueValueSection data={jumpTissueData} ratings={reportingScope.analyticalRecords} reviews={reviewData} />
-          <RecentObservations
-            filters={filters}
-            observations={observations}
-            tissueComparisons={buildFamilyTissueComparisons(observations, { aw: awTissueData, jump: jumpTissueData })}
-            reportingStatuses={reportingScope.statusByRaceId}
-            canonicalResultRaceIds={canonicalResultRaceIds}
-          />
-        </details>
-      </div>
-    </main>
+    <ResearchPageLayout
+      date={raceDate}
+      active={<HurdleRecencyResearchSection data={hurdleRecencyData} />}
+      secondary={<><RankOneMonitoring data={rankOneData} date={raceDate} /><SecondaryResearchMonitoring dashboard={dashboard} /></>}
+    >
+      <DailyResearchDashboard dashboard={dashboard} excludeSecondaryMonitoring>
+        <AwTurfChallengerSection data={awPairedData} date={raceDate} prices={currentPrices} />
+      </DailyResearchDashboard>
+      <HurdleTissueChallengerSection data={hurdlePairData} date={raceDate} />
+      <ChaseTissueChallengerSection data={chasePairData} date={raceDate} />
+      <details className="mt-8 border-t border-slate-200 py-4">
+        <summary className="cursor-pointer text-sm font-semibold">Performance</summary>
+        <SparseSampleWarning show={summary.sparseSampleWarning} />
+        <TopLevelCounts summary={summary} syncRequiredCount={countPendingWithCanonicalResults(reportingScope.analyticalRecords, canonicalResultRaceIds)} />
+        <FamilySummaryTable summary={summary} />
+        <EdgeBucketTables summary={summary} />
+        <PriceSnapshotDiagnostics observations={reportingScope.analyticalRecords} summary={summary} />
+      </details>
+      <details className="border-t border-slate-200 py-4">
+        <summary className="cursor-pointer text-sm font-semibold">Details · model comparisons and value records</summary>
+        <ResearchHistory />
+        <TurfModelAgreementCounts summary={summary.turfModelAgreement} />
+        <SameLeaderProbabilityGapDiagnostics diagnostics={probabilityGapDiagnostics} />
+        <TurfModelDisagreementExplainer diagnostics={disagreementDiagnostics} />
+        <TurfTissueValueSection records={reportingScope.analyticalRecords} reviews={reviewData} />
+        <AwTissueValueSection data={awTissueData} ratings={reportingScope.analyticalRecords} reviews={reviewData} />
+        <JumpTissueValueSection data={jumpTissueData} ratings={reportingScope.analyticalRecords} reviews={reviewData} />
+        <RecentObservations
+          filters={filters}
+          observations={observations}
+          tissueComparisons={buildFamilyTissueComparisons(observations, { aw: awTissueData, jump: jumpTissueData })}
+          reportingStatuses={reportingScope.statusByRaceId}
+          canonicalResultRaceIds={canonicalResultRaceIds}
+        />
+      </details>
+    </ResearchPageLayout>
   );
 }
 

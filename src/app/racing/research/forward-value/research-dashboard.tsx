@@ -4,7 +4,18 @@ import { SavedRuleResearchNote } from "../saved-rule-research-note";
 import { RESEARCH_SIGNALS, RESEARCH_STATUS, type DailyResearchHorse, type ProspectiveMonitor, type ResearchDashboard, type ResearchSignal } from "@/lib/racing/research-monitor";
 import { HurdleLongPriceShadowSection } from "./hurdle-long-price-shadow";
 
-export function DailyResearchDashboard({ dashboard, children }: { dashboard: ResearchDashboard; children?: ReactNode }) {
+export function DailyResearchDashboard({ dashboard: originalDashboard, children, excludeSecondaryMonitoring = false }: {
+  dashboard: ResearchDashboard;
+  children?: ReactNode;
+  excludeSecondaryMonitoring?: boolean;
+}) {
+  // Presentation only: retain the original dashboard and every calculation unchanged.
+  const dashboard = excludeSecondaryMonitoring ? {
+    ...originalDashboard,
+    horses: originalDashboard.horses.map((horse) => ({ ...horse, signals: horse.signals.filter((signal) => signal.kind !== "todays_rating_weight") }))
+      .filter((horse) => horse.signals.length > 0),
+    monitors: originalDashboard.monitors.filter((monitor) => monitor.name !== RESEARCH_SIGNALS.todays_rating_weight.name),
+  } : originalDashboard;
   const tissueRows = tissueValueRows(dashboard.horses);
   const pendingTissueRows = tissueRows.filter(({ signal }) => signal.result !== "settled" && signal.result !== "void");
   const settledTissueRows = tissueRows.filter(({ signal }) => signal.result === "settled" || signal.result === "void");
@@ -92,12 +103,53 @@ export function DailyResearchDashboard({ dashboard, children }: { dashboard: Res
     {children}
     <details className="mt-6 border-t border-slate-200 py-4">
       <summary className="cursor-pointer text-sm font-semibold">Research shadows and disagreement signals</summary>
-      {shadowRows.length === 0 ? <p className="py-5 text-sm text-slate-600">No secondary research signals today.</p> : <div>
+      <ResearchShadowRows horses={shadowRows} />
+    </details>
+    <section className="mt-6 border-t border-slate-200 pt-6" aria-labelledby="monitors-heading">
+      <h2 className="text-lg font-semibold" id="monitors-heading">Prospective monitors</h2>
+      <HistoricalTissueEvidence monitors={dashboard.historicalTissueMonitors ?? []} />
+      <ResearchMonitorCards monitors={dashboard.monitors} />
+    </section>
+  </>;
+}
+
+export function SecondaryResearchMonitoring({ dashboard }: { dashboard: ResearchDashboard }) {
+  const horses = dashboard.horses.map((horse) => ({ ...horse, signals: horse.signals.filter((signal) => signal.kind === "todays_rating_weight") }))
+    .filter((horse) => horse.signals.length > 0);
+  const monitors = dashboard.monitors.filter((monitor) => monitor.name === RESEARCH_SIGNALS.todays_rating_weight.name);
+  return <div className="pt-3">
+    <p className="text-xs text-slate-500">Today&apos;s Rating - Lighter Weight observations retained for secondary monitoring.</p>
+    <ResearchMonitorCards monitors={monitors} />
+    <ResearchShadowRows horses={horses} />
+  </div>;
+}
+
+function ResearchMonitorCards({ monitors }: { monitors: ProspectiveMonitor[] }) {
+  return (
+    <div className="mt-3 grid gap-3 sm:grid-cols-2 2xl:grid-cols-5">
+      {monitors.map((monitor) => <article className="min-w-0 rounded border border-slate-200 bg-white p-4" key={monitor.name}>
+        <div className="flex flex-wrap items-center justify-between gap-2"><h3 className="text-sm font-semibold">{monitor.name}</h3><span className="text-[10px] font-semibold text-slate-500">{monitor.status}</span></div>
+        <p className="mt-2 text-xs text-slate-500">{monitor.cohort}</p>
+        <dl className="mt-3 grid grid-cols-[minmax(0,1fr)_minmax(7rem,max-content)] gap-x-3 gap-y-2 text-xs">
+          <dt className="text-slate-500">Tracked / settled</dt><dd className="text-right font-medium tabular-nums">{monitor.tracked} / {monitor.settled}</dd>
+          <dt className="text-slate-500">Winners / strike</dt><dd className="text-right font-medium tabular-nums">{monitor.winners} / {pct(monitor.strike)}</dd>
+          <dt className="text-slate-500">{aeLabel(monitor)}</dt><dd className="text-right font-medium tabular-nums">{aeValue(monitor)}</dd>
+          <dt className="text-slate-500">{roiLabel(monitor)}</dt><dd className="text-right font-medium tabular-nums">{roiValue(monitor)}</dd>
+        </dl>
+        <p className="mt-3 text-[11px] leading-relaxed text-slate-500">{evidenceText(monitor)}</p>
+      </article>)}
+    </div>
+  );
+}
+
+function ResearchShadowRows({ horses }: { horses: DailyResearchHorse[] }) {
+  return (
+    horses.length === 0 ? <p className="py-5 text-sm text-slate-600">No secondary research signals today.</p> : <div>
         <div className="hidden grid-cols-[5rem_minmax(12rem,1fr)_minmax(15rem,1.4fr)_9rem] gap-4 border-b border-slate-200 py-2 text-xs font-medium text-slate-500 xl:grid" aria-hidden="true">
           <span>Time</span><span>Course / horse</span><span>Signal / why shown</span><span>Bookmaker median</span>
         </div>
         <ul className="divide-y divide-slate-200">
-          {shadowRows.map((horse) => <li className="grid min-w-0 grid-cols-[3.5rem_minmax(0,1fr)] gap-x-3 gap-y-3 py-5 xl:grid-cols-[5rem_minmax(12rem,1fr)_minmax(15rem,1.4fr)_9rem] xl:gap-x-4" key={`${horse.raceId}|${horse.runnerId}`}>
+          {horses.map((horse) => <li className="grid min-w-0 grid-cols-[3.5rem_minmax(0,1fr)] gap-x-3 gap-y-3 py-5 xl:grid-cols-[5rem_minmax(12rem,1fr)_minmax(15rem,1.4fr)_9rem] xl:gap-x-4" key={`${horse.raceId}|${horse.runnerId}`}>
             <time className="text-sm font-semibold tabular-nums">{horse.time}</time>
             <div className="min-w-0">
               <Link href={`/horses/${horse.horseId}`} className="break-words text-base font-semibold text-slate-950 hover:text-emerald-800 hover:underline">{horse.horseName}</Link>
@@ -120,26 +172,8 @@ export function DailyResearchDashboard({ dashboard, children }: { dashboard: Res
             </div>
           </li>)}
         </ul>
-      </div>}
-    </details>
-    <section className="mt-6 border-t border-slate-200 pt-6" aria-labelledby="monitors-heading">
-      <h2 className="text-lg font-semibold" id="monitors-heading">Prospective monitors</h2>
-      <HistoricalTissueEvidence monitors={dashboard.historicalTissueMonitors ?? []} />
-      <div className="mt-3 grid gap-3 sm:grid-cols-2 2xl:grid-cols-5">
-        {dashboard.monitors.map((monitor) => <article className="min-w-0 rounded border border-slate-200 bg-white p-4" key={monitor.name}>
-          <div className="flex flex-wrap items-center justify-between gap-2"><h3 className="text-sm font-semibold">{monitor.name}</h3><span className="text-[10px] font-semibold text-slate-500">{monitor.status}</span></div>
-          <p className="mt-2 text-xs text-slate-500">{monitor.cohort}</p>
-          <dl className="mt-3 grid grid-cols-[minmax(0,1fr)_minmax(7rem,max-content)] gap-x-3 gap-y-2 text-xs">
-            <dt className="text-slate-500">Tracked / settled</dt><dd className="text-right font-medium tabular-nums">{monitor.tracked} / {monitor.settled}</dd>
-            <dt className="text-slate-500">Winners / strike</dt><dd className="text-right font-medium tabular-nums">{monitor.winners} / {pct(monitor.strike)}</dd>
-            <dt className="text-slate-500">{aeLabel(monitor)}</dt><dd className="text-right font-medium tabular-nums">{aeValue(monitor)}</dd>
-            <dt className="text-slate-500">{roiLabel(monitor)}</dt><dd className="text-right font-medium tabular-nums">{roiValue(monitor)}</dd>
-          </dl>
-          <p className="mt-3 text-[11px] leading-relaxed text-slate-500">{evidenceText(monitor)}</p>
-        </article>)}
       </div>
-    </section>
-  </>;
+  );
 }
 
 function SecondarySignals({ horse }: { horse: DailyResearchHorse }) {
@@ -265,6 +299,7 @@ export function ResearchHistory() {
   return (
     <section className="mt-8 border-t border-slate-200 pt-5" aria-labelledby="research-status-heading">
       <h2 className="text-sm font-semibold" id="research-status-heading">Research status</h2>
+      <p className="mt-1 text-xs text-slate-500">Legacy experiment labels describe the saved research history; they do not indicate current active signals.</p>
       <dl className="mt-3 grid gap-x-8 gap-y-2 text-xs md:grid-cols-2">
         {RESEARCH_STATUS.map(([name, status]) => <div className="flex flex-wrap justify-between gap-x-4 gap-y-1" key={name}><dt className="text-slate-700">{name}</dt><dd className="text-slate-500">{status}</dd></div>)}
       </dl>

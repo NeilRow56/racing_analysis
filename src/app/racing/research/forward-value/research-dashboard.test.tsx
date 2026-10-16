@@ -5,7 +5,7 @@ import { DailyResearchDashboard, ResearchHistory, summarizeSettledTissueRows } f
 import type { ResearchDashboard } from "@/lib/racing/research-monitor";
 import { RESEARCH_SIGNALS } from "@/lib/racing/research-monitor";
 
-test("primary monitor is Tissue VALUE first and keeps other research secondary", () => {
+test("legacy dashboard preserves Tissue VALUE and related research panels", () => {
   const dashboard: ResearchDashboard = {
     date: "2026-10-09", emptyMessage: null, monitors: [],
     horses: [{ raceId: "race", runnerId: "runner", horseId: "horse", horseName: "Prospective Horse",

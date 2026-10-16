@@ -106,6 +106,8 @@ describe("research workflow wrapper", () => {
     assert.equal(result.exitCode, 0);
     assert.deepEqual(calls, [
       "sl:import-racecards 2026-10-09 --request-delay-seconds 2",
+      "rank-one:sync 2026-10-09",
+      "hurdle-recency:sync 2026-10-09",
       "tpr:sync 2026-10-09",
       "tissue:sync 2026-10-09",
       "todays-rating-weight:sync 2026-10-09",
@@ -146,6 +148,8 @@ describe("research workflow wrapper", () => {
     assert.deepEqual(calls, [
       "sl:import-day 2026-10-09 --request-delay-seconds 2",
       "research:settle 2026-10-09",
+      "rank-one:results 2026-10-09",
+      "hurdle-recency:results 2026-10-09",
       "value:results 2026-10-09",
       "aw-pair:results 2026-10-09",
       "aw-pair:challenger 2026-10-09",
@@ -163,6 +167,8 @@ describe("research workflow wrapper", () => {
     assert.deepEqual(commandLinesFor("live"), [
       "sl:import-day 2026-10-09 --request-delay-seconds 2",
       "research:settle 2026-10-09",
+      "rank-one:results 2026-10-09",
+      "hurdle-recency:results 2026-10-09",
       "value:today 2026-10-09",
       "jump-g4:today 2026-10-09",
       "todays-rating-weight:today 2026-10-09",
@@ -294,6 +300,8 @@ describe("research workflow wrapper", () => {
     assert.equal(result.failed?.exitCode, 7);
     assert.deepEqual(calls, [
       "sl:import-racecards",
+      "rank-one:sync",
+      "hurdle-recency:sync",
       "tpr:sync",
       "tissue:sync",
       "todays-rating-weight:sync",
