@@ -1,4 +1,13 @@
-import type { TodayMeeting, TodayRunner, TodaysRacingData } from "./todays-racing";
+import type { TodayMeeting, TodayRace, TodayRunner, TodaysRacingData } from "./todays-racing";
+
+// Racecards supply declarations; actual starters are only known after results.
+// Counts may include or exclude declared non-runners, but must cover the loaded field.
+export function hasCompleteProspectiveField(race: TodayRace): boolean {
+  const active = race.runners.filter(runner => runner.resultStatus !== "non_runner");
+  const count = race.actualRunnerCount ?? race.declaredRunnerCount;
+  return active.length > 0 && new Set(race.runners.map(runner => runner.runnerId)).size === race.runners.length &&
+    (count === active.length || count === race.runners.length);
+}
 
 export type CurrentDayProspectiveCapture =
   | { skipped: false; meetings: TodayMeeting[] }

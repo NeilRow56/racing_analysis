@@ -2,8 +2,14 @@ import assert from "node:assert/strict";
 import { describe, test } from "node:test";
 import { currentDayProspectiveCapture, noCurrentDayRacecardsMessage, withoutStaleBookmakerQuotes } from "./current-day-sync";
 import type { TodayMeeting, TodaysRacingData } from "./todays-racing";
+import { getLocalRacingDate } from "./todays-racing";
 
 describe("current-day prospective sync guard", () => {
+  test("tracker dates use London BST at midnight, independently of the host timezone", () => {
+    assert.equal(getLocalRacingDate(new Date("2026-10-16T22:59:59Z")), "2026-10-16");
+    assert.equal(getLocalRacingDate(new Date("2026-10-16T23:00:00Z")), "2026-10-17");
+    assert.equal(getLocalRacingDate(new Date("2026-10-17T23:00:00Z")), "2026-10-18");
+  });
   test("existing-card quote suppression is limited to the fallback date and preserves results", () => {
     const prior = process.env.RESEARCH_EXISTING_CARDS_DATE;
     try {

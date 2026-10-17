@@ -1749,8 +1749,15 @@
         "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
         "bookmakerQuoteCount": 3
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "finishingPosition": 2,
+        "resultStatus": "finished",
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 2.25,
+        "profitLoss": -1
+      },
+      "settledAt": "2026-10-16T16:21:29.545Z"
     },
     {
       "raceId": "536bd0da-55e6-4263-bd90-1230692e8c39",
@@ -1802,8 +1809,15 @@
         "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
         "bookmakerQuoteCount": 3
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "finishingPosition": null,
+        "resultStatus": "non_runner",
+        "won": null,
+        "deadHeatDivisor": 1,
+        "finalSp": null,
+        "profitLoss": null
+      },
+      "settledAt": "2026-10-16T16:21:29.545Z"
     },
     {
       "raceId": "c1272944-40f2-45d6-9fb9-20a9e7670165",
@@ -1855,8 +1869,15 @@
         "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
         "bookmakerQuoteCount": 3
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "finishingPosition": 2,
+        "resultStatus": "finished",
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 2.625,
+        "profitLoss": -1
+      },
+      "settledAt": "2026-10-16T16:21:29.545Z"
     },
     {
       "raceId": "2afa6c08-2b0a-4c6a-96d2-ee0dc0fd42e1",
@@ -1908,8 +1929,15 @@
         "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
         "bookmakerQuoteCount": 3
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "finishingPosition": 6,
+        "resultStatus": "finished",
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 6.5,
+        "profitLoss": -1
+      },
+      "settledAt": "2026-10-16T16:21:29.545Z"
     },
     {
       "raceId": "2afa6c08-2b0a-4c6a-96d2-ee0dc0fd42e1",
@@ -1961,8 +1989,15 @@
         "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
         "bookmakerQuoteCount": 3
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "finishingPosition": 4,
+        "resultStatus": "finished",
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 13,
+        "profitLoss": -1
+      },
+      "settledAt": "2026-10-16T16:21:29.545Z"
     },
     {
       "raceId": "794c40bd-4aaa-4096-81de-6a289b81f73b",
@@ -2011,6 +2046,331 @@
         "impliedProbability": 0.6666666666666666,
         "marketRank": 1,
         "priceCapturedAt": "2026-10-16T04:44:38.587Z",
+        "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
+        "bookmakerQuoteCount": 3
+      },
+      "outcome": {
+        "finishingPosition": 3,
+        "resultStatus": "finished",
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 1.444,
+        "profitLoss": -1
+      },
+      "settledAt": "2026-10-16T16:21:29.545Z"
+    },
+    {
+      "raceId": "cbf2a154-0d5a-4401-a44b-3c061f3fc789",
+      "sourceId": "943985",
+      "raceDate": "2026-10-17",
+      "scheduledOff": "2026-10-17T12:50:00.000Z",
+      "scheduledTime": "12:50",
+      "course": "Market Rasen",
+      "raceName": "Pertemps Network Handicap Hurdle",
+      "subtype": "Hurdle",
+      "subtypeCode": "hurdle",
+      "handicapStatus": "handicap",
+      "fieldSize": 8,
+      "runnerId": "65a8a493-92ac-467b-9521-fab805c60332",
+      "horseId": "be874df5-e6ea-4df3-bffe-bcf097fd9d84",
+      "horseName": "Alan Bresil",
+      "recordedAt": "2026-10-17T02:04:04.989Z",
+      "recordedPreRace": true,
+      "components": {
+        "averageL3JumpSpeed": 108.59045845975128,
+        "averageL3JumpSpeedRank": 3,
+        "latestJumpSpeed": 101.28120349578334,
+        "previousJumpSpeed": 95.36641760861635,
+        "latestMinusPrevious": 5.914785887167,
+        "previousClass": 4,
+        "currentClass": 5,
+        "classDropAmount": 1
+      },
+      "context": {
+        "officialRating": 95,
+        "officialRatingRank": 2,
+        "officialRatingTop3": true,
+        "officialRatingGapToBest": 4,
+        "officialRatingRelativeToFieldMean": 6.5,
+        "trainerPriorRate": 16.822429906542055,
+        "jockeyPriorRate": 11.23244929797192,
+        "daysSinceRun": 12,
+        "priorUsableJumpSpeedCount": 11,
+        "jprARank": 2,
+        "jprBRank": 2,
+        "jumpTissueRank": 4,
+        "jumpTissueProbability": 0.08775769954135593
+      },
+      "market": {
+        "medianBookmakerDecimal": 19,
+        "impliedProbability": 0.05263157894736842,
+        "marketRank": 7,
+        "priceCapturedAt": "2026-10-17T02:04:04.989Z",
+        "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
+        "bookmakerQuoteCount": 3
+      },
+      "outcome": null,
+      "settledAt": null
+    },
+    {
+      "raceId": "58e08424-3da5-4984-99c6-6567861df0c6",
+      "sourceId": "943987",
+      "raceDate": "2026-10-17",
+      "scheduledOff": "2026-10-17T14:00:00.000Z",
+      "scheduledTime": "14:00",
+      "course": "Market Rasen",
+      "raceName": "Pertemps Network Handicap Hurdle (GBB Race)",
+      "subtype": "Hurdle",
+      "subtypeCode": "hurdle",
+      "handicapStatus": "handicap",
+      "fieldSize": 6,
+      "runnerId": "5aaf54c2-b36e-42c5-ba99-2dbdc5b25507",
+      "horseId": "8142620b-59e2-4273-862a-ae1ed5a2f2e9",
+      "horseName": "Transmission",
+      "recordedAt": "2026-10-17T02:04:04.989Z",
+      "recordedPreRace": true,
+      "components": {
+        "averageL3JumpSpeed": 115.43750533686634,
+        "averageL3JumpSpeedRank": 2,
+        "latestJumpSpeed": 128.66449559252612,
+        "previousJumpSpeed": 102.21051508120654,
+        "latestMinusPrevious": 26.453980511319585,
+        "previousClass": 1,
+        "currentClass": 2,
+        "classDropAmount": 1
+      },
+      "context": {
+        "officialRating": 135,
+        "officialRatingRank": 1,
+        "officialRatingTop3": true,
+        "officialRatingGapToBest": 0,
+        "officialRatingRelativeToFieldMean": 10.833333333333329,
+        "trainerPriorRate": 15.088013411567477,
+        "jockeyPriorRate": 21.15548003398471,
+        "daysSinceRun": 174,
+        "priorUsableJumpSpeedCount": 13,
+        "jprARank": 4,
+        "jprBRank": 1,
+        "jumpTissueRank": 4,
+        "jumpTissueProbability": 0.1532490769667045
+      },
+      "market": {
+        "medianBookmakerDecimal": 10,
+        "impliedProbability": 0.1,
+        "marketRank": 5,
+        "priceCapturedAt": "2026-10-17T02:04:04.989Z",
+        "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
+        "bookmakerQuoteCount": 3
+      },
+      "outcome": null,
+      "settledAt": null
+    },
+    {
+      "raceId": "c0a492a4-f346-4749-a05d-9c5eec59486a",
+      "sourceId": "943992",
+      "raceDate": "2026-10-17",
+      "scheduledOff": "2026-10-17T13:17:00.000Z",
+      "scheduledTime": "13:17",
+      "course": "Newton Abbot",
+      "raceName": "Bet With The On Course Bookies Handicap Chase",
+      "subtype": "Chase",
+      "subtypeCode": "chase",
+      "handicapStatus": "handicap",
+      "fieldSize": 6,
+      "runnerId": "184b3c0b-5ae3-4399-be5a-b01bcc8344d7",
+      "horseId": "af6f3dec-980e-4552-a634-c83c4ae2bfef",
+      "horseName": "Myrighthandman",
+      "recordedAt": "2026-10-17T02:04:04.989Z",
+      "recordedPreRace": true,
+      "components": {
+        "averageL3JumpSpeed": 108.92197808322697,
+        "averageL3JumpSpeedRank": 1,
+        "latestJumpSpeed": 124.52252104676697,
+        "previousJumpSpeed": 104.28019969696973,
+        "latestMinusPrevious": 20.242321349797237,
+        "previousClass": 4,
+        "currentClass": 5,
+        "classDropAmount": 1
+      },
+      "context": {
+        "officialRating": 105,
+        "officialRatingRank": 1,
+        "officialRatingTop3": true,
+        "officialRatingGapToBest": 0,
+        "officialRatingRelativeToFieldMean": 6.166666666666671,
+        "trainerPriorRate": 19.836400817995912,
+        "jockeyPriorRate": 16.94290976058932,
+        "daysSinceRun": 177,
+        "priorUsableJumpSpeedCount": 5,
+        "jprARank": 1,
+        "jprBRank": 1,
+        "jumpTissueRank": 3,
+        "jumpTissueProbability": 0.14842503803392593
+      },
+      "market": {
+        "medianBookmakerDecimal": 5.5,
+        "impliedProbability": 0.18181818181818182,
+        "marketRank": 4,
+        "priceCapturedAt": "2026-10-17T02:04:04.989Z",
+        "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
+        "bookmakerQuoteCount": 3
+      },
+      "outcome": null,
+      "settledAt": null
+    },
+    {
+      "raceId": "e40dfd29-04f0-4394-bbe3-55f0b2bce1be",
+      "sourceId": "943995",
+      "raceDate": "2026-10-17",
+      "scheduledOff": "2026-10-17T14:37:00.000Z",
+      "scheduledTime": "14:37",
+      "course": "Newton Abbot",
+      "raceName": "Dartmoor Magazine Intermediate Chase (GBB Race)",
+      "subtype": "Chase",
+      "subtypeCode": "chase",
+      "handicapStatus": "unknown",
+      "fieldSize": 4,
+      "runnerId": "f768dad2-6e39-477b-9df4-fb983de38cd3",
+      "horseId": "8f4e31ba-d304-44b1-bb26-d9e1420b10e3",
+      "horseName": "Quebecois",
+      "recordedAt": "2026-10-17T02:04:04.989Z",
+      "recordedPreRace": true,
+      "components": {
+        "averageL3JumpSpeed": 101.781690651177,
+        "averageL3JumpSpeedRank": 3,
+        "latestJumpSpeed": 114.17590149119995,
+        "previousJumpSpeed": 89.38747981115404,
+        "latestMinusPrevious": 24.788421680045914,
+        "previousClass": 1,
+        "currentClass": 2,
+        "classDropAmount": 1
+      },
+      "context": {
+        "officialRating": 142,
+        "officialRatingRank": 1,
+        "officialRatingTop3": true,
+        "officialRatingGapToBest": 0,
+        "officialRatingRelativeToFieldMean": 13.5,
+        "trainerPriorRate": 23.47972972972973,
+        "jockeyPriorRate": 17.575757575757574,
+        "daysSinceRun": 182,
+        "priorUsableJumpSpeedCount": 11,
+        "jprARank": 1,
+        "jprBRank": 1,
+        "jumpTissueRank": 2,
+        "jumpTissueProbability": 0.29130654303502324
+      },
+      "market": {
+        "medianBookmakerDecimal": 2,
+        "impliedProbability": 0.5,
+        "marketRank": 1,
+        "priceCapturedAt": "2026-10-17T02:04:04.989Z",
+        "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
+        "bookmakerQuoteCount": 3
+      },
+      "outcome": null,
+      "settledAt": null
+    },
+    {
+      "raceId": "36ed3c27-2a4c-4970-8f62-39316747732b",
+      "sourceId": "944014",
+      "raceDate": "2026-10-17",
+      "scheduledOff": "2026-10-17T13:13:00.000Z",
+      "scheduledTime": "13:13",
+      "course": "Stratford",
+      "raceName": "Bet With On Course Bookmakers Novices' Handicap Chase (GBB Race)",
+      "subtype": "Chase",
+      "subtypeCode": "chase",
+      "handicapStatus": "handicap",
+      "fieldSize": 4,
+      "runnerId": "15a97bbd-52fb-4723-83e4-f38e1c5b1300",
+      "horseId": "bca40fc3-d045-44d7-bfb4-3562ba292716",
+      "horseName": "Depalma",
+      "recordedAt": "2026-10-17T02:04:04.989Z",
+      "recordedPreRace": true,
+      "components": {
+        "averageL3JumpSpeed": 109.61801339494446,
+        "averageL3JumpSpeedRank": 2,
+        "latestJumpSpeed": 110.91342877838227,
+        "previousJumpSpeed": 103.71388949810208,
+        "latestMinusPrevious": 7.199539280280192,
+        "previousClass": 3,
+        "currentClass": 4,
+        "classDropAmount": 1
+      },
+      "context": {
+        "officialRating": 102,
+        "officialRatingRank": 4,
+        "officialRatingTop3": false,
+        "officialRatingGapToBest": 9,
+        "officialRatingRelativeToFieldMean": -5.25,
+        "trainerPriorRate": 21.58590308370044,
+        "jockeyPriorRate": 14.078674948240167,
+        "daysSinceRun": 19,
+        "priorUsableJumpSpeedCount": 10,
+        "jprARank": 2,
+        "jprBRank": 3,
+        "jumpTissueRank": 3,
+        "jumpTissueProbability": 0.13500495439021706
+      },
+      "market": {
+        "medianBookmakerDecimal": 4.33,
+        "impliedProbability": 0.23094688221709006,
+        "marketRank": 3,
+        "priceCapturedAt": "2026-10-17T02:04:04.989Z",
+        "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
+        "bookmakerQuoteCount": 3
+      },
+      "outcome": null,
+      "settledAt": null
+    },
+    {
+      "raceId": "b2284495-7159-407c-bc29-a2c7b5a9cc9b",
+      "sourceId": "944017",
+      "raceDate": "2026-10-17",
+      "scheduledOff": "2026-10-17T15:18:00.000Z",
+      "scheduledTime": "15:18",
+      "course": "Stratford",
+      "raceName": "Value With Oncourse Bookmakers Handicap Hurdle",
+      "subtype": "Hurdle",
+      "subtypeCode": "hurdle",
+      "handicapStatus": "handicap",
+      "fieldSize": 8,
+      "runnerId": "d4ae9262-94f4-4c1d-ac56-a64fae23cbf3",
+      "horseId": "909b2f76-c2f9-44cc-b107-9a0e1e65959a",
+      "horseName": "Seraphic",
+      "recordedAt": "2026-10-17T02:04:04.989Z",
+      "recordedPreRace": true,
+      "components": {
+        "averageL3JumpSpeed": 116.03720121212115,
+        "averageL3JumpSpeedRank": 1,
+        "latestJumpSpeed": 116.03720121212115,
+        "previousJumpSpeed": 110.14662160570373,
+        "latestMinusPrevious": 5.890579606417418,
+        "previousClass": 4,
+        "currentClass": 5,
+        "classDropAmount": 1
+      },
+      "context": {
+        "officialRating": 92,
+        "officialRatingRank": 4,
+        "officialRatingTop3": false,
+        "officialRatingGapToBest": 5,
+        "officialRatingRelativeToFieldMean": 3.375,
+        "trainerPriorRate": 18.689320388349515,
+        "jockeyPriorRate": 15.101522842639595,
+        "daysSinceRun": 165,
+        "priorUsableJumpSpeedCount": 8,
+        "jprARank": 1,
+        "jprBRank": 1,
+        "jumpTissueRank": 2,
+        "jumpTissueProbability": 0.16344602455314372
+      },
+      "market": {
+        "medianBookmakerDecimal": 10,
+        "impliedProbability": 0.1,
+        "marketRank": 4,
+        "priceCapturedAt": "2026-10-17T02:04:04.989Z",
         "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
         "bookmakerQuoteCount": 3
       },

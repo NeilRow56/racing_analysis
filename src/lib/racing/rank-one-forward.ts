@@ -2,6 +2,7 @@ import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { isVoidBetResultStatus, settleSelection } from "./backtest";
 import { summarizeBookmakerMarket } from "./forward-value";
+import { hasCompleteProspectiveField } from "./current-day-sync";
 import { classifyJumpRaceSubtype } from "./jump-speed-rating";
 import { isAllWeatherRaceForDisplay, isOrdinaryFlatTurfRaceForDisplay, getLocalRacingDate, type TodayMeeting, type TodayRace } from "./todays-racing";
 import { buildTissueForwardRace, TISSUE_V2_CONFIG, type FrozenTissueModel } from "./tissue-forward";
@@ -154,8 +155,7 @@ export function buildRankOneObservations(input: {
       race.runners.some(r => r.finishingPosition !== null || (r.resultStatus !== null && r.resultStatus !== "non_runner")))
       return [];
     const active = race.runners.filter(r => r.resultStatus !== "non_runner");
-    if (active.length < 2 || new Set(race.runners.map(r => r.runnerId)).size !== race.runners.length ||
-      (race.actualRunnerCount !== active.length && race.actualRunnerCount !== race.runners.length))
+    if (active.length < 2 || !hasCompleteProspectiveField(race))
       return [];
     const prices = active.map(r => ({ runner: r, market: summarizeBookmakerMarket(r.bookmakerQuotes) }));
     if (prices.some(p => p.market.decimalPrice === null))

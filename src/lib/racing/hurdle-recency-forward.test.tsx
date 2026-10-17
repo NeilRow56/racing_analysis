@@ -44,6 +44,24 @@ function observations(r = race(), capturedAt = now) {
   return buildHurdleRecencyObservations({ meetings: meetings(r), raceDate: date, historyByHorse: history(r), capturedAt });
 }
 function captured(r = race()) { return appendHurdleRecency(emptyHurdleRecency(), observations(r)); }
+test("loaded Hurdle declarations capture every runner with no actual starter count", () => {
+  const r = race();
+  r.actualRunnerCount = null;
+  const rows = observations(r);
+  assert.equal(rows.length, 6);
+  assert.deepEqual(rows.map(row => row.runnerId), r.runners.map(runner => runner.runnerId));
+  const data = appendHurdleRecency(emptyHurdleRecency(), rows);
+  assert.equal(appendHurdleRecency(data, observations(r)), data);
+  r.runners[0]!.resultStatus = "non_runner";
+  for (const count of [5, 6]) {
+    r.declaredRunnerCount = count;
+    assert.equal(observations(r).length, 5);
+  }
+  r.declaredRunnerCount = 7;
+  assert.deepEqual(observations(r), []);
+  r.declaredRunnerCount = null;
+  assert.deepEqual(observations(r), []);
+});
 function result(r = race()): TodayRace {
   return { ...r, winningTime: "4m 2s", runners: r.runners.map((runner, i) => ({ ...runner, resultStatus: "finished", finishingPosition: i + 1, oddsDecimal: null })) };
 }

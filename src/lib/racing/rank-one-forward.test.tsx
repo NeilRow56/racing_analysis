@@ -41,6 +41,24 @@ test("all four rank sources match existing production Tissue predictions", () =>
   }
 });
 test("Turf exact rank-1 ties select one stable ID", () => { const m = { ...models, turf: { ...models.turf, model: { ...models.turf.model, weights: models.turf.model.weights.map(() => 0) } } }; const r = race("TURF"); r.runners.reverse(); assert.equal(observations(r, m).length, 1); assert.equal(observations(r, m)[0]!.runnerId, "a"); });
+test("loaded racecards capture the authoritative rank one before actual starters are known", () => {
+  for (const family of ["TURF", "HURDLE", "CHASE", "AW"] as const) {
+    const r = race(family);
+    r.actualRunnerCount = null;
+    const rows = observations(r);
+    assert.equal(rows.length, 1);
+    assert.equal(rows[0]!.runnerId, currentRankOne(r, "Test Course", date, models, now)!.runnerId);
+    const data = appendRankOne(emptyRankOne(), rows);
+    assert.equal(appendRankOne(data, observations(r)), data);
+    r.declaredRunnerCount = 4;
+    assert.deepEqual(observations(r), []);
+    r.declaredRunnerCount = null;
+    assert.deepEqual(observations(r), []);
+    r.declaredRunnerCount = 3;
+    r.actualRunnerCount = 4;
+    assert.deepEqual(observations(r), []);
+  }
+});
 test("first valid median, normalized full-field probability and market rank frozen", () => {
   const r = race();
   const leader = currentRankOne(r, "Test Course", date, models, now)!;

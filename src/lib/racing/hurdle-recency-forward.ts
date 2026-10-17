@@ -2,6 +2,7 @@ import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { isVoidBetResultStatus, settleSelection } from "./backtest";
 import { summarizeBookmakerMarket } from "./forward-value";
+import { hasCompleteProspectiveField } from "./current-day-sync";
 import { classifyJumpRaceSubtype } from "./jump-speed-rating";
 import { classifyHandicapStatus } from "./research-rule";
 import { getLocalRacingDate, type TodayMeeting, type TodayRace } from "./todays-racing";
@@ -193,8 +194,7 @@ export function buildHurdleRecencyObservations(input: {
         getLocalRacingDate(race.raceDateTime) !== input.raceDate || race.winningTime ||
         race.runners.some((r) => r.finishingPosition !== null || (r.resultStatus !== null && r.resultStatus !== "non_runner"))) return [];
     const active = race.runners.filter((r) => r.resultStatus !== "non_runner");
-    if (!active.length || new Set(race.runners.map((r) => r.runnerId)).size !== race.runners.length ||
-        (race.actualRunnerCount !== active.length && race.actualRunnerCount !== race.runners.length)) return [];
+    if (!hasCompleteProspectiveField(race)) return [];
     const markets = active.map((runner) => ({ runner, market: summarizeBookmakerMarket(runner.bookmakerQuotes) }));
     // Normalize over the entire active field, never an incomplete priced subset or a forecast price.
     if (markets.some(({ market }) => market.decimalPrice === null)) return [];
