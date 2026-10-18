@@ -111,7 +111,7 @@ Create a fresh, verified weekly archive for manual upload to Google Drive with:
 bun run backup:weekly
 ```
 
-The command writes `racing-analysis-weekly-YYYY-MM-DD_HHMMSS.tar.gz` to the current user's `Documents` directory. It contains only the PostgreSQL custom-format dump, forward tracker JSON, and backup manifest.
+The command writes a verified `racing-analysis-weekly-YYYY-MM-DD_HHMMSS.tar.gz` archive to `backups/` by default. It includes the full PostgreSQL dump, all 18 required prospective tracker files, and a checksum manifest. Use `bun run backup:weekly --dry-run` for read-only preflight checks. Configure `RACING_BACKUP_DIR` and optional `RACING_BACKUP_OFFSITE_DIR` for other destinations. See [backup and restore instructions](docs/backup-restore.md) for the inventory, Google Drive copying, integrity checks, and safe restore testing. The daily commands above retain their legacy single-tracker format.
 
 To test a restore, create an empty test database and restore the custom-format dump into it:
 
