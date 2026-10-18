@@ -8021,7 +8021,16 @@
           "runnerId": "354ea20c-0971-4b0e-a133-8ec2c593f145",
           "horseId": "2ac7b5f8-b1ea-4fdf-a52a-4c41f7532c2f",
           "horseName": "Sanctijude",
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "resultStatus": "finished",
+            "finishingPosition": 8,
+            "won": false,
+            "deadHeatDivisor": 1,
+            "finalSp": 101,
+            "qualifyingPriceProfitLoss": null,
+            "finalSpProfitLoss": -1
+          }
         }
       ],
       "market": {
@@ -8085,8 +8094,17 @@
           ]
         }
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "status": "settled",
+        "resultStatus": "finished",
+        "finishingPosition": 8,
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 101,
+        "qualifyingPriceProfitLoss": -1,
+        "finalSpProfitLoss": -1
+      },
+      "settledAt": "2026-10-18T16:08:20.449Z"
     },
     {
       "raceDate": "2026-10-18",
@@ -8124,7 +8142,16 @@
           "runnerId": "37bf9cd5-f55c-4cde-9a4d-3634ec0af846",
           "horseId": "88b0e4c9-90d0-4bcf-9d68-3e23ac557331",
           "horseName": "Thyer",
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "resultStatus": "finished",
+            "finishingPosition": 1,
+            "won": true,
+            "deadHeatDivisor": 1,
+            "finalSp": 7,
+            "qualifyingPriceProfitLoss": null,
+            "finalSpProfitLoss": 6
+          }
         }
       ],
       "market": {
@@ -8188,8 +8215,17 @@
           ]
         }
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "status": "void",
+        "resultStatus": "non_runner",
+        "finishingPosition": null,
+        "won": null,
+        "deadHeatDivisor": 1,
+        "finalSp": null,
+        "qualifyingPriceProfitLoss": 0,
+        "finalSpProfitLoss": 0
+      },
+      "settledAt": "2026-10-18T16:08:20.449Z"
     },
     {
       "raceDate": "2026-10-18",
@@ -8227,7 +8263,16 @@
           "runnerId": "b1560706-c09a-411a-892b-ff907238d211",
           "horseId": "c3eb0da6-4a01-499d-b014-8b4c0606248d",
           "horseName": "Youcansaythatagain",
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "resultStatus": "finished",
+            "finishingPosition": 6,
+            "won": false,
+            "deadHeatDivisor": 1,
+            "finalSp": 23,
+            "qualifyingPriceProfitLoss": null,
+            "finalSpProfitLoss": -1
+          }
         }
       ],
       "market": {
@@ -8291,8 +8336,17 @@
           ]
         }
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "status": "settled",
+        "resultStatus": "finished",
+        "finishingPosition": 5,
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 29,
+        "qualifyingPriceProfitLoss": -1,
+        "finalSpProfitLoss": -1
+      },
+      "settledAt": "2026-10-18T16:08:20.449Z"
     }
   ]
 }
