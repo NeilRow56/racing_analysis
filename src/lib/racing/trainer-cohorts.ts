@@ -1,6 +1,7 @@
 import { and, eq, gte, lte, sql } from "drizzle-orm";
 import { createDbConnection } from "@/db";
-import { courses, raceRunners, races, sourceImports, trainers } from "@/db/schema";
+import { courses, raceRunners, races, trainers } from "@/db/schema";
+import { raceResultSurface } from "./race-result-surface";
 import { targetFamilyCondition, type BacktestCacheFamily } from "./backtest-cache";
 import type { ResearchRuleV1 } from "./research-rule";
 import {
@@ -123,7 +124,10 @@ export async function getTrainerCohortForRule(
     return null;
   }
   const referenceYear = cohortYear - 1;
-  const familyCondition = targetFamilyCondition(rule.family);
+  const familyCondition = targetFamilyCondition(
+    rule.family,
+    sql`upper(coalesce(${raceResultSurface("sporting_life")}, ''))`,
+  );
   const settledCondition = and(
     sql`${raceRunners.finishingPosition} is not null`,
     sql`coalesce(${raceRunners.resultStatus}, '') <> 'non_runner'`,
@@ -139,14 +143,6 @@ export async function getTrainerCohortForRule(
     .innerJoin(races, eq(raceRunners.raceId, races.id))
     .innerJoin(courses, eq(races.courseId, courses.id))
     .leftJoin(trainers, eq(raceRunners.trainerId, trainers.id))
-    .leftJoin(
-      sourceImports,
-      and(
-        eq(sourceImports.source, "sporting_life"),
-        eq(sourceImports.sourceId, races.sourceId),
-        eq(sourceImports.sourceType, "full-result-next-data"),
-      ),
-    )
     .where(and(
       eq(raceRunners.source, "sporting_life"),
       eq(races.source, "sporting_life"),

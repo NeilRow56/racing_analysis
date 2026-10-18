@@ -555,7 +555,7 @@ async function loadTargetRunnerIds(
   return rows.map((row) => row.runnerId);
 }
 
-export function targetFamilyCondition(family: BacktestCacheFamily): SQL | undefined {
+export function targetFamilyCondition(family: BacktestCacheFamily, resultSurface?: SQL): SQL | undefined {
   if (family === "all") {
     return undefined;
   }
@@ -601,7 +601,7 @@ export function targetFamilyCondition(family: BacktestCacheFamily): SQL | undefi
     )!;
   }
 
-  const surface = sql`upper(coalesce(${sourceImports.payload} #>> '{props,pageProps,race,race_summary,course_surface,surface}', ''))`;
+  const surface = resultSurface ?? sql`upper(coalesce(${sourceImports.payload} #>> '{props,pageProps,race,race_summary,course_surface,surface}', ''))`;
   return and(
     sql`${surface} = 'TURF'`,
     sql`not (${jumpText})`,

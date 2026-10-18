@@ -18,6 +18,7 @@ import {
   type TurfPerformanceShadowSummary,
 } from "@/lib/racing/turf-performance-rating-snapshots";
 import { GOING_FORM_TERMS, type GoingFormTerm } from "@/lib/racing/going-form";
+import { HistoricalFormBadges } from "./historical-form-badges";
 import {
   type AwRatingCoverage,
   AW_D_RATING_COVERAGE_GUARD_VERSION,
@@ -117,8 +118,10 @@ export default async function TodaysRacingPage({ searchParams }: PageProps) {
       }
     }
     if (displayData.status === "ok") {
-      const awTissue = await syncAwTissueMeetings(connection, displayData.meetings, raceDate);
-      const jumpTissue = await syncJumpTissueMeetings(connection, displayData.meetings, raceDate);
+      const [awTissue, jumpTissue] = await Promise.all([
+        syncAwTissueMeetings(connection, displayData.meetings, raceDate),
+        syncJumpTissueMeetings(connection, displayData.meetings, raceDate),
+      ]);
       displayData = { ...displayData, meetings: attachJumpTissueToMeetings(attachAwTissueToMeetings(displayData.meetings, awTissue), jumpTissue) };
     }
     await connection.client.end();
@@ -570,6 +573,7 @@ function RunnerRow({
           >
             {runner.horseName}
           </Link>
+          <HistoricalFormBadges flags={runner.historicalFormFlags} officialRating={runner.officialRating} />
           {nonRunner ? (
             <span className="border border-slate-300 bg-white px-1.5 py-0.5 text-xs font-semibold text-slate-600 no-underline">
               NR

@@ -1,6 +1,7 @@
 import { and, eq, inArray, lte, or, sql } from "drizzle-orm";
+import { raceResultSurface } from "./race-result-surface";
 import { createDbConnection } from "@/db";
-import { raceRunners, races, sourceImports } from "@/db/schema";
+import { raceRunners, races } from "@/db/schema";
 import {
   calculateTurfSpeedRating,
   isOrdinaryFlatTurfRace,
@@ -64,7 +65,6 @@ type TurfRatingContextInput = {
 
 const QUERY_CHUNK_SIZE = 5_000;
 const CONTEXT_KEY_CHUNK_SIZE = 200;
-const RESULT_SOURCE_TYPE = "full-result-next-data";
 const TURF_CONTEXT_CACHE_VERSION = "turf_speed_v2_context_v1";
 const TURF_CONTEXT_CACHE_MAX_ENTRIES = 24;
 
@@ -106,11 +106,10 @@ export async function getTurfSpeedRatingsForRunners(
             raceName: races.raceName,
             raceType: races.raceType,
             raceTypeCode: races.raceTypeCode,
-            surface: surfaceSql(),
+            surface: raceResultSurface(source),
           })
           .from(raceRunners)
           .innerJoin(races, eq(raceRunners.raceId, races.id))
-          .innerJoin(sourceImports, sourceImportJoinCondition(source))
           .where(
             and(
               inArray(raceRunners.id, runnerIdChunk),
@@ -354,14 +353,13 @@ async function loadRaceContextsForStandardKeys(
       const rows = await Promise.all(
         chunks(keys, CONTEXT_KEY_CHUNK_SIZE).map((keyChunk) =>
           db
-            .select(raceContextSelection)
+            .select(raceContextSelection(source))
             .from(races)
-            .innerJoin(sourceImports, sourceImportJoinCondition(source))
             .where(
               and(
                 eq(races.source, source),
                 completedTimingCondition(),
-                turfRaceCondition(),
+                turfRaceCondition(source),
                 cutoffCondition(calculationCutoffDateTime),
                 or(...keyChunk.map(standardKeyCondition)),
               ),
@@ -394,14 +392,13 @@ async function loadRaceContextsForSameDayKeys(
       const rows = await Promise.all(
         chunks(keys, CONTEXT_KEY_CHUNK_SIZE).map((keyChunk) =>
           db
-            .select(raceContextSelection)
+            .select(raceContextSelection(source))
             .from(races)
-            .innerJoin(sourceImports, sourceImportJoinCondition(source))
             .where(
               and(
                 eq(races.source, source),
                 completedTimingCondition(),
-                turfRaceCondition(),
+                turfRaceCondition(source),
                 cutoffCondition(calculationCutoffDateTime),
                 or(...keyChunk.map(sameDayKeyCondition)),
               ),
@@ -467,35 +464,25 @@ export function turfContextCacheKeyForTest(input: {
   return turfContextCacheKey(input);
 }
 
-const raceContextSelection = {
-  raceId: races.id,
-  source: races.source,
-  sourceId: races.sourceId,
-  raceDate: races.raceDate,
-  raceDateTime: races.raceDatetime,
-  courseId: races.courseId,
-  distanceYards: races.distanceYards,
-  winningTime: races.winningTime,
-  raceName: races.raceName,
-  raceType: races.raceType,
-  raceTypeCode: races.raceTypeCode,
-  surface: surfaceSql(),
-};
-
-function surfaceSql() {
-  return sql<string | null>`${sourceImports.payload} #>> '{props,pageProps,race,race_summary,course_surface,surface}'`;
+function raceContextSelection(source: string) {
+  return {
+    raceId: races.id,
+    source: races.source,
+    sourceId: races.sourceId,
+    raceDate: races.raceDate,
+    raceDateTime: races.raceDatetime,
+    courseId: races.courseId,
+    distanceYards: races.distanceYards,
+    winningTime: races.winningTime,
+    raceName: races.raceName,
+    raceType: races.raceType,
+    raceTypeCode: races.raceTypeCode,
+    surface: raceResultSurface(source),
+  };
 }
 
-function sourceImportJoinCondition(source: string) {
-  return and(
-    eq(sourceImports.source, source),
-    eq(sourceImports.sourceId, races.sourceId),
-    eq(sourceImports.sourceType, RESULT_SOURCE_TYPE),
-  )!;
-}
-
-function turfRaceCondition() {
-  const surface = sql`upper(coalesce(${sourceImports.payload} #>> '{props,pageProps,race,race_summary,course_surface,surface}', ''))`;
+function turfRaceCondition(source: string) {
+  const surface = sql`upper(coalesce(${raceResultSurface(source)}, ''))`;
   const text = raceTextSql();
   return and(
     sql`${surface} = 'TURF'`,

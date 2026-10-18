@@ -111,18 +111,12 @@ export async function getHorseForm(
       desc(sql<string>`coalesce(${races.sourceId}, '')`),
     );
 
-  const jumpSpeedRatings = await getJumpSpeedRatingsForRunners(
-    db,
-    runs.map((run) => run.runnerId),
-  );
-  const awSpeedRatings = await getAwSpeedRatingsForRunners(
-    db,
-    runs.map((run) => run.runnerId),
-  );
-  const turfSpeedRatings = await getTurfSpeedRatingsForRunners(
-    db,
-    runs.map((run) => run.runnerId),
-  );
+  const runnerIds = runs.map((run) => run.runnerId);
+  const [jumpSpeedRatings, awSpeedRatings, turfSpeedRatings] = await Promise.all([
+    getJumpSpeedRatingsForRunners(db, runnerIds),
+    getAwSpeedRatingsForRunners(db, runnerIds),
+    getTurfSpeedRatingsForRunners(db, runnerIds),
+  ]);
 
   return {
     horse,

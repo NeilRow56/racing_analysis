@@ -1,5 +1,6 @@
 import { and, asc, desc, eq, inArray, sql } from "drizzle-orm";
 import type { TprConfidenceContext } from "./tpr-confidence-context";
+import { getHistoricalFormFlagsForTargets, type HistoricalFormFlags } from "./historical-form-flags";
 import { createDbConnection } from "@/db";
 import { withoutStaleBookmakerQuotes } from "./current-day-sync";
 import {
@@ -99,6 +100,7 @@ export type TodayRunner = {
   jockeyMetrics?: JockeyPriorMetrics;
   savedRuleMatches?: TodaySavedRuleMatch[];
   goingForm?: GoingForm;
+  historicalFormFlags?: HistoricalFormFlags;
   jumpRating?: JumpRatingRunner;
   jumpTissue?: import("./jump-tissue-model").JumpTissuePrediction;
   awRating?: AwRatingRunner;
@@ -437,14 +439,11 @@ export async function getTodaysRacingData(
       : currentRows,
     options.onTiming,
   );
-  const metricRows = await measure("today_target_metrics_load", () => getTargetRunnerMetricsForDate(db, raceDate, SPORTING_LIFE_SOURCE, {
+  const metricRowsPromise = measure("today_target_metrics_load", () => getTargetRunnerMetricsForDate(db, raceDate, SPORTING_LIFE_SOURCE, {
     includeNonRunnerTargets: true,
     completedPriorRunsOnly: true,
     targetRunnerIds: targetRows.map((row) => row.runnerId),
   }));
-  const metricsByRunnerId = new Map(
-    metricRows.map((row) => [row.target.runnerId, row.metrics]),
-  );
   const targetsWithRaceDateTime = targetRows
     .filter((row): row is TodayRacecardRow & { raceDateTime: Date } => row.raceDateTime !== null);
   const goingFormTargets = targetsWithRaceDateTime.map((row) => ({
@@ -462,7 +461,8 @@ export async function getTodaysRacingData(
       surface: row.surface,
     }),
   }));
-  const [trainerMetricsByRunnerId, jockeyMetricsByRunnerId, goingFormByRunnerId] = await Promise.all([
+  const [metricRows, trainerMetricsByRunnerId, jockeyMetricsByRunnerId, goingFormByRunnerId, historicalFormFlagsByRunnerId] = await Promise.all([
+    metricRowsPromise,
     measure("today_trainer_metrics_load", () => getTrainerPriorMetricsForTargets(
       db,
       targetsWithRaceDateTime.map((row) => ({
@@ -486,7 +486,22 @@ export async function getTodaysRacingData(
       goingFormTargets,
       SPORTING_LIFE_SOURCE,
     )),
+    measure("today_historical_form_flags_load", () => getHistoricalFormFlagsForTargets(
+      db,
+      targetsWithRaceDateTime.map((row) => ({
+        targetRunnerId: row.runnerId, targetRaceId: row.raceId, horseId: row.horseId,
+        courseId: row.courseId, raceDateTime: row.raceDateTime, officialRating: row.officialRating,
+        raceName: row.raceName, raceType: row.raceType, raceTypeCode: row.raceTypeCode,
+        courseName: row.courseName, courseSourceId: row.courseSourceId,
+        going: row.going, surface: row.surface,
+      })),
+      SPORTING_LIFE_SOURCE,
+    )),
   ]);
+
+  const metricsByRunnerId = new Map(
+    metricRows.map((row) => [row.target.runnerId, row.metrics]),
+  );
 
   return {
     status: "ok",
@@ -501,6 +516,7 @@ export async function getTodaysRacingData(
       trainerMetricsByRunnerId,
       jockeyMetricsByRunnerId,
       goingFormByRunnerId,
+      historicalFormFlagsByRunnerId,
     ),
   };
 }
@@ -657,6 +673,7 @@ export function groupTodaysRacingRows(
   trainerMetricsByRunnerId: Map<string, TrainerPriorMetrics> = new Map(),
   jockeyMetricsByRunnerId: Map<string, JockeyPriorMetrics> = new Map(),
   goingFormByRunnerId: Map<string, GoingForm> = new Map(),
+  historicalFormFlagsByRunnerId: Map<string, HistoricalFormFlags> = new Map(),
 ): TodayMeeting[] {
   const meetingsByCourseId = new Map<string, TodayMeeting>();
   const racesById = new Map<string, TodayRace>();
@@ -728,6 +745,7 @@ export function groupTodaysRacingRows(
       trainerMetrics: trainerMetricsByRunnerId.get(row.runnerId),
       jockeyMetrics: jockeyMetricsByRunnerId.get(row.runnerId),
       goingForm: goingFormByRunnerId.get(row.runnerId),
+      historicalFormFlags: historicalFormFlagsByRunnerId.get(row.runnerId),
     });
   }
 

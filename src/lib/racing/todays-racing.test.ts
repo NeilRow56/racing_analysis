@@ -24,9 +24,29 @@ import {
 } from "./todays-racing";
 import type { HorseMetricsAsOf } from "./horse-metrics";
 import type { GoingForm } from "./going-form";
+import type { HistoricalFormFlags } from "./historical-form-flags";
 import { getTprConfidenceContext } from "./tpr-confidence-context";
 
 describe("Today racing grouping", () => {
+  test("attaches historical badges only to their runner without changing rating or market outputs", () => {
+    const rows = [row(), row({ runnerId: "runner-2", horseId: "horse-2" })];
+    const form = metric({ latestTurfPerformanceRating: 67.853, latestTurfSpeedRating: 100.853 });
+    const metrics = new Map([["runner-1", form], ["runner-2", form]]);
+    const flags: HistoricalFormFlags = {
+      lastWinWithin3lbOr: true, lastWinningOr: 109, winningOrDifference: 2,
+      courseFirstOrSecond: true, courseWins: 1, courseSeconds: 0,
+      latestCourseFinish: { position: 1, raceDateTime: "2026-09-01T14:00:00Z" },
+    };
+    const baseline = groupTodaysRacingRows(rows, new Map(), metrics);
+    const enriched = groupTodaysRacingRows(rows, new Map(), metrics, new Map(), new Map(), new Map(), new Map([["runner-1", flags]]));
+    const runners = enriched[0]!.races[0]!.runners;
+    assert.deepEqual(runners.find((runner) => runner.runnerId === "runner-1")!.historicalFormFlags, flags);
+    assert.equal(runners.find((runner) => runner.runnerId === "runner-2")!.historicalFormFlags, undefined);
+    // Removing display enrichment must recover the complete baseline, including order and rating inputs.
+    for (const runner of runners) delete runner.historicalFormFlags;
+    for (const runner of baseline[0]!.races[0]!.runners) delete runner.historicalFormFlags;
+    assert.deepEqual(enriched, baseline);
+  });
   test("Today and shared source displays preserve 14:00 across UK and Irish DST boundaries", () => {
     for (const [date, utcHour] of [
       ["2026-07-01", "13"], ["2026-12-01", "14"],

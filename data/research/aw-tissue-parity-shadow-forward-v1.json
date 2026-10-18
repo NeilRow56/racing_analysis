@@ -98333,7 +98333,14 @@
             1
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 8,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 3.75,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "0407f865-a7fc-4368-96d5-0079220416a0",
@@ -98423,7 +98430,14 @@
             0
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 11,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 5.5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "155ed561-d410-4ad7-abcf-849d7e872173",
@@ -98513,7 +98527,14 @@
             1
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 1,
+            "resultStatus": "finished",
+            "won": true,
+            "finalSp": 4.5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": 3.5
+          }
         },
         {
           "runnerId": "1c6d28de-96dd-49b4-a132-280a68acff85",
@@ -98603,7 +98624,14 @@
             0
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 10,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "99a9c94e-566b-4291-8768-df7e2276629d",
@@ -98693,7 +98721,14 @@
             0
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 6,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 8.5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "d1992a8e-006f-4d52-821c-115620f2d4e8",
@@ -98783,7 +98818,14 @@
             0
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 4,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 12,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "57414898-78b1-4a3b-ae79-f1d2c20871cf",
@@ -98873,7 +98915,14 @@
             0
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 2,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 15,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "64dcc183-e715-4e9f-bea8-0f32b37740ec",
@@ -98963,7 +99012,14 @@
             0
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": null,
+            "resultStatus": "non_runner",
+            "won": null,
+            "finalSp": null,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": null
+          }
         },
         {
           "runnerId": "b334de5d-52ee-4f86-a90c-0ef2375974e3",
@@ -99053,7 +99109,14 @@
             1
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 5,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 23,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "367c994a-9008-470e-aaa1-29980178e5ce",
@@ -99143,7 +99206,14 @@
             0
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 9,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 23,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "002d416f-e96a-4826-b5d4-63a344b01e86",
@@ -99233,7 +99303,14 @@
             0
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 3,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 34,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "d5dc8dcd-ee5d-4db4-94ad-79eb634e05fb",
@@ -99323,7 +99400,14 @@
             1
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": null,
+            "resultStatus": "non_runner",
+            "won": null,
+            "finalSp": null,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": null
+          }
         },
         {
           "runnerId": "f674b4bf-0ac6-4374-882b-d07339b4acd1",
@@ -99413,7 +99497,14 @@
             1
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 7,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 101,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "bc7b3aff-7cdc-4c5f-9a03-1d7d7da267db",
@@ -99503,11 +99594,20 @@
             2
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": null,
+            "resultStatus": "non_runner",
+            "won": null,
+            "finalSp": null,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": null
+          }
         }
       ],
-      "settledAt": null,
-      "winners": [],
+      "settledAt": "2026-10-17T15:57:32.996Z",
+      "winners": [
+        "155ed561-d410-4ad7-abcf-849d7e872173"
+      ],
       "excludedReason": null
     },
     {
@@ -99609,7 +99709,14 @@
             0
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 7,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 3,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "083a54ea-2854-4383-b246-7fcebacba8bc",
@@ -99699,7 +99806,14 @@
             0
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 1,
+            "resultStatus": "finished",
+            "won": true,
+            "finalSp": 2.875,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": 1.875
+          }
         },
         {
           "runnerId": "a77b4053-72e5-4bb9-8159-07e81c979784",
@@ -99789,7 +99903,14 @@
             0
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 2,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 5.5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "9c5e6702-6c86-46d9-ab23-2b47223f1617",
@@ -99879,7 +100000,14 @@
             0
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 5,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 10,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "8b849269-2c04-4d64-ba09-a08b8a14b234",
@@ -99969,7 +100097,14 @@
             0
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 4,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 9.5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "93926480-089f-4e78-9f9a-962f3fd5847c",
@@ -100059,7 +100194,14 @@
             1
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 3,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 23,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "486e450c-4fa0-4210-aaff-7ca39523e765",
@@ -100149,7 +100291,14 @@
             1
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 6,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 26,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "8c3eee54-daae-4e86-a9f6-56a0a427a3f5",
@@ -100239,11 +100388,20 @@
             0
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 8,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 34,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         }
       ],
-      "settledAt": null,
-      "winners": [],
+      "settledAt": "2026-10-18T02:49:54.162Z",
+      "winners": [
+        "083a54ea-2854-4383-b246-7fcebacba8bc"
+      ],
       "excludedReason": null
     },
     {
@@ -100344,8 +100502,57 @@
             0,
             0
           ],
-          "prices": {},
-          "outcome": null
+          "prices": {
+            "t60": {
+              "source": "aw_tissue",
+              "snapshot": {
+                "price": null,
+                "decimalPrice": 2.75,
+                "impliedProbability": 0.36363636363636365,
+                "capturedAt": "2026-10-17T15:57:32.996Z",
+                "minutesBeforeScheduledOff": 32.450066666666665,
+                "ratingProbability": 0.15350079049512563,
+                "ratingEdgePercentagePoints": -21.0135573141238,
+                "marketPriceBasisVersion": "median_bookmaker_v1",
+                "bookmakerQuoteCount": 3,
+                "bookmakerQuotes": [
+                  {
+                    "bookmakerId": 4,
+                    "bookmakerName": "Betfair Sportsbook",
+                    "fractionalOdds": "7/4",
+                    "decimalOdds": 2.75
+                  },
+                  {
+                    "bookmakerId": 6,
+                    "bookmakerName": "Paddy Power",
+                    "fractionalOdds": "7/4",
+                    "decimalOdds": 2.75
+                  },
+                  {
+                    "bookmakerId": 17,
+                    "bookmakerName": "Sky Bet v2",
+                    "fractionalOdds": "7/4",
+                    "decimalOdds": 2.75
+                  }
+                ],
+                "medianBookmakerPriceDecimal": 2.75,
+                "medianBookmakerImpliedProbability": 0.36363636363636365,
+                "bestBookmakerPriceDecimal": 2.75,
+                "bestBookmakerPriceFractional": "7/4",
+                "bestBookmakerName": null,
+                "forecastPrice": "13/8",
+                "forecastDecimalPrice": 2.625
+              }
+            }
+          },
+          "outcome": {
+            "finishingPosition": 8,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 6,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "9bff6382-0d0d-4214-af52-3a790d22edbe",
@@ -100435,7 +100642,14 @@
             0
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 2,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 2.75,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "ca26fccc-2f09-48fc-8e80-a158d2f071a9",
@@ -100525,7 +100739,14 @@
             1
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 1,
+            "resultStatus": "finished",
+            "won": true,
+            "finalSp": 3.75,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": 2.75
+          }
         },
         {
           "runnerId": "05dd99c7-ddf5-4683-8e47-90904108afd8",
@@ -100615,7 +100836,14 @@
             1
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 5,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 10,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "0452f7d8-148d-4090-a9a9-2ad55b5ae99a",
@@ -100705,7 +100933,14 @@
             1
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 4,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 12,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "741a7da2-1c43-400c-b777-3d74803f352d",
@@ -100795,7 +101030,14 @@
             1
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 9,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 41,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "fbecb3d6-eaba-40a3-b9a5-56d84094db68",
@@ -100885,7 +101127,14 @@
             1
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 3,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 11,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "9a9a3eda-527d-445c-a8a1-3949f4759cbb",
@@ -100975,7 +101224,14 @@
             2
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 7,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 13,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "c91c3063-fa0e-4381-96af-6d062835bf33",
@@ -101065,11 +101321,20 @@
             1
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 6,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 151,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         }
       ],
-      "settledAt": null,
-      "winners": [],
+      "settledAt": "2026-10-18T02:49:54.162Z",
+      "winners": [
+        "ca26fccc-2f09-48fc-8e80-a158d2f071a9"
+      ],
       "excludedReason": null
     },
     {
@@ -101170,8 +101435,57 @@
             0,
             0
           ],
-          "prices": {},
-          "outcome": null
+          "prices": {
+            "t60": {
+              "source": "aw_tissue",
+              "snapshot": {
+                "price": null,
+                "decimalPrice": 2.88,
+                "impliedProbability": 0.3472222222222222,
+                "capturedAt": "2026-10-17T15:57:32.996Z",
+                "minutesBeforeScheduledOff": 62.450066666666665,
+                "ratingProbability": 0.231733739039908,
+                "ratingEdgePercentagePoints": -11.548848318231423,
+                "marketPriceBasisVersion": "median_bookmaker_v1",
+                "bookmakerQuoteCount": 3,
+                "bookmakerQuotes": [
+                  {
+                    "bookmakerId": 4,
+                    "bookmakerName": "Betfair Sportsbook",
+                    "fractionalOdds": "15/8",
+                    "decimalOdds": 2.88
+                  },
+                  {
+                    "bookmakerId": 6,
+                    "bookmakerName": "Paddy Power",
+                    "fractionalOdds": "15/8",
+                    "decimalOdds": 2.88
+                  },
+                  {
+                    "bookmakerId": 17,
+                    "bookmakerName": "Sky Bet v2",
+                    "fractionalOdds": "15/8",
+                    "decimalOdds": 2.88
+                  }
+                ],
+                "medianBookmakerPriceDecimal": 2.88,
+                "medianBookmakerImpliedProbability": 0.3472222222222222,
+                "bestBookmakerPriceDecimal": 2.88,
+                "bestBookmakerPriceFractional": "15/8",
+                "bestBookmakerName": null,
+                "forecastPrice": "2/1",
+                "forecastDecimalPrice": 3
+              }
+            }
+          },
+          "outcome": {
+            "finishingPosition": 2,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 2.75,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "14b8ac41-22e8-4de8-aedb-5164bdb50fa9",
@@ -101261,7 +101575,14 @@
             2
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 4,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 4.5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "447ee394-e74c-4f68-a8d9-d0e7b5f5177a",
@@ -101351,7 +101672,14 @@
             1
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 3,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 5.5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "0caf95aa-960b-4be4-980e-b1d416541afb",
@@ -101441,7 +101769,14 @@
             0
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 9,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 8.5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "ef64236c-ce26-46da-9fe9-05ad97538081",
@@ -101531,7 +101866,14 @@
             1
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 1,
+            "resultStatus": "finished",
+            "won": true,
+            "finalSp": 12,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": 11
+          }
         },
         {
           "runnerId": "6c7ee8ff-c29d-4b7d-a8e5-ce8e0b12d1f0",
@@ -101621,7 +101963,14 @@
             0
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 5,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 15,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "469356e3-ec17-4877-ac52-32b78e005bb5",
@@ -101711,7 +102060,14 @@
             0
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 8,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 17,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "ba73b407-e25b-4faf-931a-d329fac8f8d9",
@@ -101801,7 +102157,14 @@
             0
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 7,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 12,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "226a69cc-7395-4123-ad92-152b4eae0ec9",
@@ -101891,11 +102254,20 @@
             0
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 6,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 201,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         }
       ],
-      "settledAt": null,
-      "winners": [],
+      "settledAt": "2026-10-18T02:49:54.162Z",
+      "winners": [
+        "ef64236c-ce26-46da-9fe9-05ad97538081"
+      ],
       "excludedReason": null
     },
     {
@@ -101997,7 +102369,14 @@
             0
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 1,
+            "resultStatus": "finished",
+            "won": true,
+            "finalSp": 1.909,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": 0.909
+          }
         },
         {
           "runnerId": "c5e0ac07-83ed-4ee3-872e-a13b43bdd21c",
@@ -102077,7 +102456,14 @@
             0
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 2,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 4.333,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "8a2babf4-e917-4e33-a789-cdd762c60212",
@@ -102157,7 +102543,14 @@
             0
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 11,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 41,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "c02c44bc-f2f7-4a4f-b9f0-7a517b0cf0f6",
@@ -102231,7 +102624,14 @@
             0
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 7,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 17,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "b295f4a3-1e60-4cbf-a074-764712ee3d5a",
@@ -102311,7 +102711,14 @@
             1
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 4,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 11,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "cb37cb36-1c11-4beb-9a36-e5d9cb0e0b5a",
@@ -102391,7 +102798,14 @@
             0
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 8,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 6.5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "88b9ffe4-9c6c-4c5e-8abf-c7da58f06564",
@@ -102476,7 +102890,14 @@
             0
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 3,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 41,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "4762ce93-0b70-4789-80d4-9f705f48470a",
@@ -102550,7 +102971,14 @@
             0
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 9,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 12,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "2d2dc5c6-66e6-4620-a610-10468be0d326",
@@ -102630,7 +103058,14 @@
             0
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 6,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 101,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "25ac3610-b0f3-497c-89b1-8cc2dafef200",
@@ -102720,7 +103155,14 @@
             1
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 10,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 126,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "607dbaf4-618c-4adf-b3f4-50f19e7ac30c",
@@ -102805,11 +103247,20 @@
             0
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 5,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 151,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         }
       ],
-      "settledAt": null,
-      "winners": [],
+      "settledAt": "2026-10-18T02:49:54.162Z",
+      "winners": [
+        "3f9c9a30-0841-4d08-80f2-3cd65842f589"
+      ],
       "excludedReason": null
     },
     {
@@ -102911,7 +103362,14 @@
             0
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 3,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 4.333,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "aced8aaf-2ccb-4fdf-a9a6-84a01a41995a",
@@ -103001,7 +103459,14 @@
             0
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 2,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 4.333,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "4ec2d88e-ce1f-4f9a-9490-a6540ff93eba",
@@ -103091,7 +103556,14 @@
             0
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 10,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 6,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "13cf2c0d-2236-45b2-9a46-145e24af5619",
@@ -103181,7 +103653,14 @@
             0
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 4,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 9,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "dbef1dac-3223-4e15-a2c3-d0e88069fc45",
@@ -103271,7 +103750,14 @@
             0
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 9,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 41,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "73e449d3-b529-47f3-a048-6bfa8c7d1939",
@@ -103361,7 +103847,14 @@
             0
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 12,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 6.5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "8fdf8748-7633-46fc-8f2a-c80d92489541",
@@ -103451,7 +103944,14 @@
             1
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 1,
+            "resultStatus": "finished",
+            "won": true,
+            "finalSp": 7,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": 6
+          }
         },
         {
           "runnerId": "0f6dcf9a-0c2d-42f7-b3ab-c40e7cf9e699",
@@ -103541,7 +104041,14 @@
             0
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 6,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 15,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "1be23cb1-206f-4cf1-8dcb-8f4fc2fa0bd2",
@@ -103631,7 +104138,14 @@
             3
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 8,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 34,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "bccd6683-cae9-461a-9192-dd2164e54f9b",
@@ -103721,7 +104235,14 @@
             1
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 7,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 34,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "f715e938-09f5-4ec6-ac9e-c5ee1488240c",
@@ -103811,7 +104332,14 @@
             2
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 11,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 26,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "32d15cf2-c364-4c26-8e91-3a18ca0f1c33",
@@ -103901,7 +104429,14 @@
             2
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": null,
+            "resultStatus": "non_runner",
+            "won": null,
+            "finalSp": null,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": null
+          }
         },
         {
           "runnerId": "492a9fde-687f-4850-a1fe-f6f49bdfd8c6",
@@ -103991,7 +104526,14 @@
             1
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 5,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 34,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "fee2fa7a-901e-4175-852b-919238acab58",
@@ -104081,11 +104623,20 @@
             2
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": null,
+            "resultStatus": "non_runner",
+            "won": null,
+            "finalSp": null,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": null
+          }
         }
       ],
-      "settledAt": null,
-      "winners": [],
+      "settledAt": "2026-10-18T02:49:54.162Z",
+      "winners": [
+        "8fdf8748-7633-46fc-8f2a-c80d92489541"
+      ],
       "excludedReason": null
     },
     {
@@ -104176,8 +104727,57 @@
             0,
             0
           ],
-          "prices": {},
-          "outcome": null
+          "prices": {
+            "t180": {
+              "source": "aw_tissue",
+              "snapshot": {
+                "price": null,
+                "decimalPrice": 1.73,
+                "impliedProbability": 0.5780346820809249,
+                "capturedAt": "2026-10-17T15:57:32.996Z",
+                "minutesBeforeScheduledOff": 152.45006666666666,
+                "ratingProbability": 0.15441590328454347,
+                "ratingEdgePercentagePoints": -42.36187787963814,
+                "marketPriceBasisVersion": "median_bookmaker_v1",
+                "bookmakerQuoteCount": 3,
+                "bookmakerQuotes": [
+                  {
+                    "bookmakerId": 4,
+                    "bookmakerName": "Betfair Sportsbook",
+                    "fractionalOdds": "8/11",
+                    "decimalOdds": 1.73
+                  },
+                  {
+                    "bookmakerId": 6,
+                    "bookmakerName": "Paddy Power",
+                    "fractionalOdds": "8/11",
+                    "decimalOdds": 1.73
+                  },
+                  {
+                    "bookmakerId": 17,
+                    "bookmakerName": "Sky Bet v2",
+                    "fractionalOdds": "8/11",
+                    "decimalOdds": 1.73
+                  }
+                ],
+                "medianBookmakerPriceDecimal": 1.73,
+                "medianBookmakerImpliedProbability": 0.5780346820809249,
+                "bestBookmakerPriceDecimal": 1.73,
+                "bestBookmakerPriceFractional": "8/11",
+                "bestBookmakerName": null,
+                "forecastPrice": "10/3",
+                "forecastDecimalPrice": 4.333
+              }
+            }
+          },
+          "outcome": {
+            "finishingPosition": 1,
+            "resultStatus": "finished",
+            "won": true,
+            "finalSp": 1.8,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": 0.8
+          }
         },
         {
           "runnerId": "8c6366d0-ff2c-4e99-b105-f8802812820b",
@@ -104267,7 +104867,14 @@
             0
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 2,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 4.333,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "2fa5835b-a663-4007-ad1d-5da6cd7806bf",
@@ -104347,7 +104954,14 @@
             0
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 6,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 17,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "4bebdad7-3d6f-4067-958f-de5ed05fe21a",
@@ -104427,7 +105041,14 @@
             1
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 12,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 13,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "34e9007b-3b67-474b-95f8-570908297652",
@@ -104512,7 +105133,14 @@
             0
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 7,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 29,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "4abf9152-3a2c-4c61-9499-3e92e4b7a8b3",
@@ -104602,7 +105230,14 @@
             1
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 5,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 23,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "33dc7e68-f469-4697-96d5-580479eb85d4",
@@ -104687,7 +105322,14 @@
             1
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 9,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 10,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "d4469f8c-e432-467e-82ba-4700097fbfb9",
@@ -104761,7 +105403,14 @@
             0
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 10,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 26,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "c4fad56f-7f08-429c-8083-994c520e04ac",
@@ -104846,7 +105495,14 @@
             0
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 8,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 81,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "0a4c3d25-4261-40c8-a80f-9f0303391f78",
@@ -104926,7 +105582,14 @@
             0
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 4,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 12,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "1c5b266d-193d-49b6-bbe8-6e1e1dc35578",
@@ -105011,7 +105674,14 @@
             1
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 11,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 151,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "2ce52e30-4e9f-452c-a591-e1c186341fba",
@@ -105096,11 +105766,20 @@
             2
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 3,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 67,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         }
       ],
-      "settledAt": null,
-      "winners": [],
+      "settledAt": "2026-10-18T02:49:54.162Z",
+      "winners": [
+        "368b96ec-57e6-4b16-a86a-50288efd2fe6"
+      ],
       "excludedReason": null
     },
     {
@@ -105201,8 +105880,57 @@
             0,
             0
           ],
-          "prices": {},
-          "outcome": null
+          "prices": {
+            "t180": {
+              "source": "aw_tissue",
+              "snapshot": {
+                "price": null,
+                "decimalPrice": 1.83,
+                "impliedProbability": 0.5464480874316939,
+                "capturedAt": "2026-10-17T15:57:32.996Z",
+                "minutesBeforeScheduledOff": 182.45006666666666,
+                "ratingProbability": 0.2985686675311255,
+                "ratingEdgePercentagePoints": -24.787941990056844,
+                "marketPriceBasisVersion": "median_bookmaker_v1",
+                "bookmakerQuoteCount": 3,
+                "bookmakerQuotes": [
+                  {
+                    "bookmakerId": 4,
+                    "bookmakerName": "Betfair Sportsbook",
+                    "fractionalOdds": "5/6",
+                    "decimalOdds": 1.83
+                  },
+                  {
+                    "bookmakerId": 6,
+                    "bookmakerName": "Paddy Power",
+                    "fractionalOdds": "5/6",
+                    "decimalOdds": 1.83
+                  },
+                  {
+                    "bookmakerId": 17,
+                    "bookmakerName": "Sky Bet v2",
+                    "fractionalOdds": "5/6",
+                    "decimalOdds": 1.83
+                  }
+                ],
+                "medianBookmakerPriceDecimal": 1.83,
+                "medianBookmakerImpliedProbability": 0.5464480874316939,
+                "bestBookmakerPriceDecimal": 1.83,
+                "bestBookmakerPriceFractional": "5/6",
+                "bestBookmakerName": null,
+                "forecastPrice": "1/1",
+                "forecastDecimalPrice": 2
+              }
+            }
+          },
+          "outcome": {
+            "finishingPosition": 3,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 2,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "db5f422e-2109-4124-86b4-95fe82c4a27a",
@@ -105292,7 +106020,14 @@
             0
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 2,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "d509a078-2a7c-4f5a-9722-d96ef4f32564",
@@ -105382,7 +106117,14 @@
             1
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 4,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 10,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "4a300241-53db-4186-a8c8-549d3b39703f",
@@ -105472,7 +106214,14 @@
             0
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 1,
+            "resultStatus": "finished",
+            "won": true,
+            "finalSp": 4.5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": 3.5
+          }
         },
         {
           "runnerId": "b7bccf7b-24e2-4a9d-bd81-62afa7b40f2a",
@@ -105562,7 +106311,14 @@
             2
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 6,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 13,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "28a78b54-31cf-443d-bcc8-a68ddc70a75e",
@@ -105652,7 +106408,14 @@
             1
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 5,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 41,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "95ff04f3-8d11-43e8-be5d-e54124ca4ab0",
@@ -105742,11 +106505,20 @@
             0
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": null,
+            "resultStatus": "non_runner",
+            "won": null,
+            "finalSp": null,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": null
+          }
         }
       ],
-      "settledAt": null,
-      "winners": [],
+      "settledAt": "2026-10-18T02:49:54.162Z",
+      "winners": [
+        "4a300241-53db-4186-a8c8-549d3b39703f"
+      ],
       "excludedReason": null
     },
     {
@@ -105848,7 +106620,14 @@
             0
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 1,
+            "resultStatus": "finished",
+            "won": true,
+            "finalSp": 3.5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": 2.5
+          }
         },
         {
           "runnerId": "0e9cc703-a05d-4ea1-b432-eb839cadaa1b",
@@ -105938,7 +106717,14 @@
             1
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 4,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 3.75,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "fc7e8cec-656f-4408-9362-040fc098b72b",
@@ -106028,7 +106814,14 @@
             0
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 5,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 4.5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "e64c1820-3a8d-4c0f-90cf-882030549765",
@@ -106118,7 +106911,14 @@
             1
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 3,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 9.5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "13700a57-3803-4e13-b377-7b99db3675ac",
@@ -106208,7 +107008,14 @@
             0
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 2,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 4.5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "53f4d293-53eb-43da-9ef8-6adfa357dfc7",
@@ -106298,11 +107105,20 @@
             1
           ],
           "prices": {},
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 6,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 21,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         }
       ],
-      "settledAt": null,
-      "winners": [],
+      "settledAt": "2026-10-18T02:49:54.162Z",
+      "winners": [
+        "ab98a0c1-6471-42cc-a04a-9ccd88e9e8f3"
+      ],
       "excludedReason": null
     }
   ]
