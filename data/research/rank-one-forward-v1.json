@@ -7635,6 +7635,4739 @@
         "profitLoss": null,
         "roi": null
       }
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "raceId": "db307cb5-35ce-44f8-8019-016fc267309a",
+      "runnerId": "8ddbbfd8-285d-49ac-b00d-e4ba37b9c5ed",
+      "horseId": "75ec90f9-7eeb-4264-81e5-0d0e2f898581",
+      "horseName": "Green Star",
+      "family": "TURF",
+      "raceDate": "2026-10-19",
+      "scheduledOff": "2026-10-19T12:53:00.000Z",
+      "course": "Pontefract",
+      "raceName": "Happy 80th Birthday William 'Bill' Carr Maiden Stakes (GBB Race)",
+      "rankSource": "Turf Tissue / tissue_model_v2 / tissueRank",
+      "modelHash": "d10c97e7de7e663d086f32e5764526b481520c7e0b6e56b7376ebcf1a6b99b61",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-19T09:01:15.995Z",
+      "capturedFieldRunnerIds": [
+        "8ddbbfd8-285d-49ac-b00d-e4ba37b9c5ed",
+        "612b6fba-8eb9-4097-b70a-68c2e20ff957",
+        "f29dabdf-303b-46fb-987d-f11f29c4a871",
+        "6138a9c2-4383-471b-8eb5-0f8f31bf1eeb",
+        "3242df50-f74b-4e27-aec6-c13d9d00a5d8",
+        "bf90fe73-0122-4b79-9e83-fdc1a4fba940"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 2.1,
+        "normalizedProbability": 0.4184794083449062,
+        "marketRank": 1,
+        "quotes": [
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "1/1",
+            "decimalOdds": 2
+          },
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "11/10",
+            "decimalOdds": 2.1
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "11/10",
+            "decimalOdds": 2.1
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "8ddbbfd8-285d-49ac-b00d-e4ba37b9c5ed",
+            "decimalPrice": 2.1
+          },
+          {
+            "runnerId": "612b6fba-8eb9-4097-b70a-68c2e20ff957",
+            "decimalPrice": 4.33
+          },
+          {
+            "runnerId": "f29dabdf-303b-46fb-987d-f11f29c4a871",
+            "decimalPrice": 5
+          },
+          {
+            "runnerId": "6138a9c2-4383-471b-8eb5-0f8f31bf1eeb",
+            "decimalPrice": 13
+          },
+          {
+            "runnerId": "3242df50-f74b-4e27-aec6-c13d9d00a5d8",
+            "decimalPrice": 13
+          },
+          {
+            "runnerId": "bf90fe73-0122-4b79-9e83-fdc1a4fba940",
+            "decimalPrice": 13
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "raceId": "ccea5725-e39b-42c6-a4a2-f7c562aba91e",
+      "runnerId": "adaa5281-5405-49fe-8870-e3e1241fc082",
+      "horseId": "ad09c2fb-bfd8-4e4f-919c-ca3411c797e8",
+      "horseName": "Aphra Behn",
+      "family": "TURF",
+      "raceDate": "2026-10-19",
+      "scheduledOff": "2026-10-19T13:23:00.000Z",
+      "course": "Pontefract",
+      "raceName": "William Hill Price Boosts Every Day Nursery",
+      "rankSource": "Turf Tissue / tissue_model_v2 / tissueRank",
+      "modelHash": "d10c97e7de7e663d086f32e5764526b481520c7e0b6e56b7376ebcf1a6b99b61",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-19T09:01:15.995Z",
+      "capturedFieldRunnerIds": [
+        "adaa5281-5405-49fe-8870-e3e1241fc082",
+        "376fb451-cb5f-40c8-ba35-e86120d87e9b",
+        "5a2c90f1-c458-4e55-86dc-2cfb15b591ab",
+        "f778ba04-96a1-4168-a615-40ec1565949c",
+        "511c9cec-2eb3-429b-b8a9-eec7d9e598ec",
+        "1141526c-285d-4008-ae6d-e87090d4c347",
+        "6a236a37-68b0-4eec-b04c-bfe56517fadc",
+        "6369040f-d5db-449a-91c9-b61e2374a2bd",
+        "8aed1d14-8805-4e50-8802-a8553ab196b7",
+        "49dfc020-0d29-4d61-9c59-8a0c7603eb99",
+        "52c8e8ff-de64-4ea2-9c52-572acac79ca4"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 3.25,
+        "normalizedProbability": 0.2495817764294603,
+        "marketRank": 1,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "9/4",
+            "decimalOdds": 3.25
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "9/4",
+            "decimalOdds": 3.25
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "5/2",
+            "decimalOdds": 3.5
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "adaa5281-5405-49fe-8870-e3e1241fc082",
+            "decimalPrice": 3.25
+          },
+          {
+            "runnerId": "376fb451-cb5f-40c8-ba35-e86120d87e9b",
+            "decimalPrice": 3.75
+          },
+          {
+            "runnerId": "5a2c90f1-c458-4e55-86dc-2cfb15b591ab",
+            "decimalPrice": 6
+          },
+          {
+            "runnerId": "f778ba04-96a1-4168-a615-40ec1565949c",
+            "decimalPrice": 6.5
+          },
+          {
+            "runnerId": "511c9cec-2eb3-429b-b8a9-eec7d9e598ec",
+            "decimalPrice": 11
+          },
+          {
+            "runnerId": "1141526c-285d-4008-ae6d-e87090d4c347",
+            "decimalPrice": 13
+          },
+          {
+            "runnerId": "6a236a37-68b0-4eec-b04c-bfe56517fadc",
+            "decimalPrice": 15
+          },
+          {
+            "runnerId": "6369040f-d5db-449a-91c9-b61e2374a2bd",
+            "decimalPrice": 21
+          },
+          {
+            "runnerId": "8aed1d14-8805-4e50-8802-a8553ab196b7",
+            "decimalPrice": 34
+          },
+          {
+            "runnerId": "49dfc020-0d29-4d61-9c59-8a0c7603eb99",
+            "decimalPrice": 71
+          },
+          {
+            "runnerId": "52c8e8ff-de64-4ea2-9c52-572acac79ca4",
+            "decimalPrice": 81
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "raceId": "d5d486fc-e309-43aa-8110-7ef2f078c39d",
+      "runnerId": "745f235a-f770-4791-97b7-4702086355e0",
+      "horseId": "315018f1-cb64-4c47-bb06-8533dab5fe5b",
+      "horseName": "King High",
+      "family": "TURF",
+      "raceDate": "2026-10-19",
+      "scheduledOff": "2026-10-19T13:53:00.000Z",
+      "course": "Pontefract",
+      "raceName": "British Stallion Studs EBF Silver Tankard Stakes (Listed)",
+      "rankSource": "Turf Tissue / tissue_model_v2 / tissueRank",
+      "modelHash": "d10c97e7de7e663d086f32e5764526b481520c7e0b6e56b7376ebcf1a6b99b61",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-19T09:01:15.995Z",
+      "capturedFieldRunnerIds": [
+        "3ece9e6e-329a-45c0-8e93-f368cb7922c3",
+        "26aa9640-62e9-48f0-b712-795d4c79d10e",
+        "745f235a-f770-4791-97b7-4702086355e0",
+        "ddced572-6efa-4a14-9907-8a2085bae8d5",
+        "9186589f-8e5c-499f-a940-8ae2a9e7403c",
+        "18d6465c-e4a9-420c-8529-c56b29b0f1f6",
+        "e7963e7b-9f5d-4108-a791-8eae0f0fc66c",
+        "b1a34521-76a4-4583-b507-4c6b545ab98a"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 4.33,
+        "normalizedProbability": 0.1938266044616871,
+        "marketRank": 3,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "3/1",
+            "decimalOdds": 4
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "10/3",
+            "decimalOdds": 4.33
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "10/3",
+            "decimalOdds": 4.33
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "3ece9e6e-329a-45c0-8e93-f368cb7922c3",
+            "decimalPrice": 3.75
+          },
+          {
+            "runnerId": "26aa9640-62e9-48f0-b712-795d4c79d10e",
+            "decimalPrice": 4
+          },
+          {
+            "runnerId": "745f235a-f770-4791-97b7-4702086355e0",
+            "decimalPrice": 4.33
+          },
+          {
+            "runnerId": "ddced572-6efa-4a14-9907-8a2085bae8d5",
+            "decimalPrice": 4.5
+          },
+          {
+            "runnerId": "9186589f-8e5c-499f-a940-8ae2a9e7403c",
+            "decimalPrice": 7
+          },
+          {
+            "runnerId": "18d6465c-e4a9-420c-8529-c56b29b0f1f6",
+            "decimalPrice": 29
+          },
+          {
+            "runnerId": "e7963e7b-9f5d-4108-a791-8eae0f0fc66c",
+            "decimalPrice": 34
+          },
+          {
+            "runnerId": "b1a34521-76a4-4583-b507-4c6b545ab98a",
+            "decimalPrice": 67
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "raceId": "3a187c1d-009d-422d-9aac-12beb4049f74",
+      "runnerId": "86db4993-7ac0-4808-9645-61c64cde57f4",
+      "horseId": "3d31f896-0a3c-4eb0-9650-96465d93e15d",
+      "horseName": "Sing The Blues",
+      "family": "TURF",
+      "raceDate": "2026-10-19",
+      "scheduledOff": "2026-10-19T14:23:00.000Z",
+      "course": "Pontefract",
+      "raceName": "British Stallion Studs EBF Fillies' Handicap",
+      "rankSource": "Turf Tissue / tissue_model_v2 / tissueRank",
+      "modelHash": "d10c97e7de7e663d086f32e5764526b481520c7e0b6e56b7376ebcf1a6b99b61",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-19T09:01:15.995Z",
+      "capturedFieldRunnerIds": [
+        "86db4993-7ac0-4808-9645-61c64cde57f4",
+        "8595fc1a-84fe-4a6d-896c-9390db604e16",
+        "b5504c06-0b73-4602-9b02-0f6cfb349d14",
+        "cb2fa096-b359-4b67-ae6b-8a7f4567f8ac",
+        "3786b4f9-15b0-434a-b7b0-52a3b91adcd2",
+        "b9879aef-275e-4bac-afb0-2ce397eb81be",
+        "4f1830b9-8872-4ebf-bcad-fe4ff00f303d",
+        "ed27efea-7664-4d52-9195-fcf9d2c00b1c",
+        "030001f2-2aa5-4bdc-a4c5-9e8af8573e4c",
+        "03cf4a72-e0d4-4a15-b444-5136bed35521"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 4.33,
+        "normalizedProbability": 0.18891742385210228,
+        "marketRank": 1,
+        "quotes": [
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "3/1",
+            "decimalOdds": 4
+          },
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "10/3",
+            "decimalOdds": 4.33
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "10/3",
+            "decimalOdds": 4.33
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "86db4993-7ac0-4808-9645-61c64cde57f4",
+            "decimalPrice": 4.33
+          },
+          {
+            "runnerId": "8595fc1a-84fe-4a6d-896c-9390db604e16",
+            "decimalPrice": 4.5
+          },
+          {
+            "runnerId": "b5504c06-0b73-4602-9b02-0f6cfb349d14",
+            "decimalPrice": 5
+          },
+          {
+            "runnerId": "cb2fa096-b359-4b67-ae6b-8a7f4567f8ac",
+            "decimalPrice": 7.5
+          },
+          {
+            "runnerId": "3786b4f9-15b0-434a-b7b0-52a3b91adcd2",
+            "decimalPrice": 8.5
+          },
+          {
+            "runnerId": "b9879aef-275e-4bac-afb0-2ce397eb81be",
+            "decimalPrice": 10
+          },
+          {
+            "runnerId": "4f1830b9-8872-4ebf-bcad-fe4ff00f303d",
+            "decimalPrice": 12
+          },
+          {
+            "runnerId": "ed27efea-7664-4d52-9195-fcf9d2c00b1c",
+            "decimalPrice": 13
+          },
+          {
+            "runnerId": "030001f2-2aa5-4bdc-a4c5-9e8af8573e4c",
+            "decimalPrice": 26
+          },
+          {
+            "runnerId": "03cf4a72-e0d4-4a15-b444-5136bed35521",
+            "decimalPrice": 51
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "raceId": "d0ebe05e-cd43-4bb7-9ea0-40d982e9060d",
+      "runnerId": "c0cc2119-b51b-414e-82d2-0e4e9f9211c8",
+      "horseId": "873fb75c-9ab7-4bc3-be5d-2bdf7f27ec4d",
+      "horseName": "Moon Over Miami",
+      "family": "TURF",
+      "raceDate": "2026-10-19",
+      "scheduledOff": "2026-10-19T14:53:00.000Z",
+      "course": "Pontefract",
+      "raceName": "Phil Bull Trophy Handicap (GBBPlus Race)",
+      "rankSource": "Turf Tissue / tissue_model_v2 / tissueRank",
+      "modelHash": "d10c97e7de7e663d086f32e5764526b481520c7e0b6e56b7376ebcf1a6b99b61",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-19T09:01:15.995Z",
+      "capturedFieldRunnerIds": [
+        "d8229c02-0d31-4624-9cec-f0e4f75fec23",
+        "c0cc2119-b51b-414e-82d2-0e4e9f9211c8",
+        "52c2c43c-e568-40a9-a5d8-a0a070ee8865",
+        "4f5dee75-34ca-46ac-ae64-95d3d7294a9a",
+        "391c560b-a9fa-4d15-b5c6-5d0eedbf0cd5",
+        "66a6fc2f-c4d4-4fd6-9614-31c68426533c",
+        "07b86153-8d03-469e-a725-d31e7d91dd1f",
+        "5e7f271d-7ebf-4d6f-b3e2-5b87a38ef4d3",
+        "a1f553f8-1ce3-4a8d-bbba-e6b0fde1d568"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 4.5,
+        "normalizedProbability": 0.1883650605459123,
+        "marketRank": 2,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "7/2",
+            "decimalOdds": 4.5
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "7/2",
+            "decimalOdds": 4.5
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "7/2",
+            "decimalOdds": 4.5
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "d8229c02-0d31-4624-9cec-f0e4f75fec23",
+            "decimalPrice": 2.5
+          },
+          {
+            "runnerId": "c0cc2119-b51b-414e-82d2-0e4e9f9211c8",
+            "decimalPrice": 4.5
+          },
+          {
+            "runnerId": "52c2c43c-e568-40a9-a5d8-a0a070ee8865",
+            "decimalPrice": 6
+          },
+          {
+            "runnerId": "4f5dee75-34ca-46ac-ae64-95d3d7294a9a",
+            "decimalPrice": 7.5
+          },
+          {
+            "runnerId": "391c560b-a9fa-4d15-b5c6-5d0eedbf0cd5",
+            "decimalPrice": 15
+          },
+          {
+            "runnerId": "66a6fc2f-c4d4-4fd6-9614-31c68426533c",
+            "decimalPrice": 15
+          },
+          {
+            "runnerId": "07b86153-8d03-469e-a725-d31e7d91dd1f",
+            "decimalPrice": 15
+          },
+          {
+            "runnerId": "5e7f271d-7ebf-4d6f-b3e2-5b87a38ef4d3",
+            "decimalPrice": 21
+          },
+          {
+            "runnerId": "a1f553f8-1ce3-4a8d-bbba-e6b0fde1d568",
+            "decimalPrice": 101
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "raceId": "68567ad8-1e9e-4eab-8fad-c45b8c39f364",
+      "runnerId": "22c323d6-0ba6-4569-ae66-40af504ba3f2",
+      "horseId": "78f05a2d-e141-40f8-8cdd-8195a3f19a4c",
+      "horseName": "Obito",
+      "family": "TURF",
+      "raceDate": "2026-10-19",
+      "scheduledOff": "2026-10-19T15:25:00.000Z",
+      "course": "Pontefract",
+      "raceName": "Napoleons Casino Bradford Handicap (GBBPlus Race)",
+      "rankSource": "Turf Tissue / tissue_model_v2 / tissueRank",
+      "modelHash": "d10c97e7de7e663d086f32e5764526b481520c7e0b6e56b7376ebcf1a6b99b61",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-19T09:01:15.995Z",
+      "capturedFieldRunnerIds": [
+        "91b7f5a9-16bb-4543-a2c5-5f1191032f6e",
+        "07c15edd-1f2a-4354-b0b3-40cd18a44c11",
+        "3ca5a261-d228-4f26-94b6-e8c387009155",
+        "22c323d6-0ba6-4569-ae66-40af504ba3f2",
+        "7b3d70bd-7c50-4dec-b64b-431402950ad2",
+        "222aec15-8720-4d4a-996d-55a97db00a91",
+        "0a7f6d1f-1e5b-42cf-9731-997e5019d343",
+        "0c9a5d84-5b4b-4e4f-a621-d042c6f1092d",
+        "4faec25c-5f0c-4c72-aaae-6a1b27ffc890"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 8,
+        "normalizedProbability": 0.10420169187846898,
+        "marketRank": 4,
+        "quotes": [
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "13/2",
+            "decimalOdds": 7.5
+          },
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "7/1",
+            "decimalOdds": 8
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "7/1",
+            "decimalOdds": 8
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "91b7f5a9-16bb-4543-a2c5-5f1191032f6e",
+            "decimalPrice": 3.25
+          },
+          {
+            "runnerId": "07c15edd-1f2a-4354-b0b3-40cd18a44c11",
+            "decimalPrice": 5.5
+          },
+          {
+            "runnerId": "3ca5a261-d228-4f26-94b6-e8c387009155",
+            "decimalPrice": 7.5
+          },
+          {
+            "runnerId": "22c323d6-0ba6-4569-ae66-40af504ba3f2",
+            "decimalPrice": 8
+          },
+          {
+            "runnerId": "7b3d70bd-7c50-4dec-b64b-431402950ad2",
+            "decimalPrice": 9
+          },
+          {
+            "runnerId": "222aec15-8720-4d4a-996d-55a97db00a91",
+            "decimalPrice": 10
+          },
+          {
+            "runnerId": "0a7f6d1f-1e5b-42cf-9731-997e5019d343",
+            "decimalPrice": 11
+          },
+          {
+            "runnerId": "0c9a5d84-5b4b-4e4f-a621-d042c6f1092d",
+            "decimalPrice": 11
+          },
+          {
+            "runnerId": "4faec25c-5f0c-4c72-aaae-6a1b27ffc890",
+            "decimalPrice": 17
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "raceId": "be83e4d3-9412-4604-ac1f-ae1775e01b95",
+      "runnerId": "7ced59d3-c864-429a-b29f-651a459fd360",
+      "horseId": "00644281-4051-4edf-8687-47ff3e0d46f5",
+      "horseName": "Brummell",
+      "family": "TURF",
+      "raceDate": "2026-10-19",
+      "scheduledOff": "2026-10-19T15:55:00.000Z",
+      "course": "Pontefract",
+      "raceName": "William Hill Best Odds Guaranteed Handicap",
+      "rankSource": "Turf Tissue / tissue_model_v2 / tissueRank",
+      "modelHash": "d10c97e7de7e663d086f32e5764526b481520c7e0b6e56b7376ebcf1a6b99b61",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-19T09:01:15.995Z",
+      "capturedFieldRunnerIds": [
+        "4c96fc27-f10e-47c4-a69f-3ce930ed182a",
+        "69ae9075-0d38-4309-8594-80e84884fc39",
+        "10aedb0e-2fda-4d09-94d0-34b81e9c7792",
+        "7ced59d3-c864-429a-b29f-651a459fd360",
+        "2ec94b94-c5f3-4d75-977e-6046f525a8ef",
+        "d3f38a77-f318-4081-b52e-4317942aa1ec",
+        "06462a32-2566-47f0-b4a9-dd3af57c7900",
+        "0b5c7f9d-bcee-4426-9306-f049c4974be6",
+        "ebb91c2a-3cde-4f8f-b5bf-1e488ee5ebae",
+        "c8d410ba-2a76-471e-a8f7-28e563e392e9"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 7,
+        "normalizedProbability": 0.11638791289702208,
+        "marketRank": 4,
+        "quotes": [
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "11/2",
+            "decimalOdds": 6.5
+          },
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "6/1",
+            "decimalOdds": 7
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "6/1",
+            "decimalOdds": 7
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "4c96fc27-f10e-47c4-a69f-3ce930ed182a",
+            "decimalPrice": 3.25
+          },
+          {
+            "runnerId": "69ae9075-0d38-4309-8594-80e84884fc39",
+            "decimalPrice": 4.5
+          },
+          {
+            "runnerId": "10aedb0e-2fda-4d09-94d0-34b81e9c7792",
+            "decimalPrice": 5
+          },
+          {
+            "runnerId": "7ced59d3-c864-429a-b29f-651a459fd360",
+            "decimalPrice": 7
+          },
+          {
+            "runnerId": "2ec94b94-c5f3-4d75-977e-6046f525a8ef",
+            "decimalPrice": 8.5
+          },
+          {
+            "runnerId": "d3f38a77-f318-4081-b52e-4317942aa1ec",
+            "decimalPrice": 15
+          },
+          {
+            "runnerId": "06462a32-2566-47f0-b4a9-dd3af57c7900",
+            "decimalPrice": 17
+          },
+          {
+            "runnerId": "0b5c7f9d-bcee-4426-9306-f049c4974be6",
+            "decimalPrice": 21
+          },
+          {
+            "runnerId": "ebb91c2a-3cde-4f8f-b5bf-1e488ee5ebae",
+            "decimalPrice": 29
+          },
+          {
+            "runnerId": "c8d410ba-2a76-471e-a8f7-28e563e392e9",
+            "decimalPrice": 34
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "raceId": "82662f6a-85c8-4432-b6b8-be7bc912f4ff",
+      "runnerId": "dda4bc44-d801-47cd-8d88-f548a37a8a0f",
+      "horseId": "23ac9045-61ce-4ed8-a870-f5fbfe4edf30",
+      "horseName": "Lilykoy",
+      "family": "TURF",
+      "raceDate": "2026-10-19",
+      "scheduledOff": "2026-10-19T12:47:00.000Z",
+      "course": "Bath",
+      "raceName": "SW Hire Amateur Jockeys' Handicap",
+      "rankSource": "Turf Tissue / tissue_model_v2 / tissueRank",
+      "modelHash": "d10c97e7de7e663d086f32e5764526b481520c7e0b6e56b7376ebcf1a6b99b61",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-19T09:01:15.995Z",
+      "capturedFieldRunnerIds": [
+        "dda4bc44-d801-47cd-8d88-f548a37a8a0f",
+        "d4e1ed42-12e4-43c6-830b-35cda07481b7",
+        "534af6e6-4665-42dc-b63f-d243b265bd71",
+        "b2085c7c-fe27-4648-a0d1-7e1b5c80a55c",
+        "55231663-50ad-4b4c-bf4e-b51794d4fc18",
+        "0ea2a4b8-3195-44bc-8135-3bf1b7e9c2bc",
+        "2cece46a-0ec5-4fb4-a9c5-f74ba6bf3fb3",
+        "2a0307de-1991-414c-a3a8-8bca71841a69",
+        "3bffe732-c8a1-41a2-97df-4a9aeddc715a",
+        "c341ed41-d0c4-458a-95d2-51b1da605067",
+        "853f5911-478b-4f2c-93af-200be8448d3f"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 3.5,
+        "normalizedProbability": 0.23379447727761823,
+        "marketRank": 1,
+        "quotes": [
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "9/4",
+            "decimalOdds": 3.25
+          },
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "5/2",
+            "decimalOdds": 3.5
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "5/2",
+            "decimalOdds": 3.5
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "dda4bc44-d801-47cd-8d88-f548a37a8a0f",
+            "decimalPrice": 3.5
+          },
+          {
+            "runnerId": "d4e1ed42-12e4-43c6-830b-35cda07481b7",
+            "decimalPrice": 5
+          },
+          {
+            "runnerId": "534af6e6-4665-42dc-b63f-d243b265bd71",
+            "decimalPrice": 5.5
+          },
+          {
+            "runnerId": "b2085c7c-fe27-4648-a0d1-7e1b5c80a55c",
+            "decimalPrice": 6
+          },
+          {
+            "runnerId": "55231663-50ad-4b4c-bf4e-b51794d4fc18",
+            "decimalPrice": 7.5
+          },
+          {
+            "runnerId": "0ea2a4b8-3195-44bc-8135-3bf1b7e9c2bc",
+            "decimalPrice": 7.5
+          },
+          {
+            "runnerId": "2cece46a-0ec5-4fb4-a9c5-f74ba6bf3fb3",
+            "decimalPrice": 15
+          },
+          {
+            "runnerId": "2a0307de-1991-414c-a3a8-8bca71841a69",
+            "decimalPrice": 67
+          },
+          {
+            "runnerId": "3bffe732-c8a1-41a2-97df-4a9aeddc715a",
+            "decimalPrice": 67
+          },
+          {
+            "runnerId": "c341ed41-d0c4-458a-95d2-51b1da605067",
+            "decimalPrice": 81
+          },
+          {
+            "runnerId": "853f5911-478b-4f2c-93af-200be8448d3f",
+            "decimalPrice": 81
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "raceId": "d9bbbff1-4368-4fba-be19-8fd170ff8437",
+      "runnerId": "0a462086-ce73-44c9-9fe8-99b9dab39727",
+      "horseId": "9d03f2f2-94c3-4b52-b53e-8a6a25ec2a1b",
+      "horseName": "Dreams Galore",
+      "family": "TURF",
+      "raceDate": "2026-10-19",
+      "scheduledOff": "2026-10-19T13:17:00.000Z",
+      "course": "Bath",
+      "raceName": "MJ Church Nursery",
+      "rankSource": "Turf Tissue / tissue_model_v2 / tissueRank",
+      "modelHash": "d10c97e7de7e663d086f32e5764526b481520c7e0b6e56b7376ebcf1a6b99b61",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-19T09:01:15.995Z",
+      "capturedFieldRunnerIds": [
+        "54e16845-2357-4b4b-b313-afaa42c53b4b",
+        "9b987827-2f2f-4054-b3f5-1572a7f546d1",
+        "0a462086-ce73-44c9-9fe8-99b9dab39727",
+        "d9dab798-1ed6-407b-939a-6300aa0ded55",
+        "63c29438-3ed6-4890-970c-8d2efd6fa434",
+        "3c628cbc-460c-4fa3-84da-49487350de31",
+        "d2bb9610-0cfe-476c-9d7f-393e45256599",
+        "9b5b986c-e22b-4968-9f36-8dbd6c8fa374",
+        "3de218cc-3fb2-4b88-9764-574e18067271"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 6,
+        "normalizedProbability": 0.13910930370958144,
+        "marketRank": 3,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "5/1",
+            "decimalOdds": 6
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "5/1",
+            "decimalOdds": 6
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "5/1",
+            "decimalOdds": 6
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "54e16845-2357-4b4b-b313-afaa42c53b4b",
+            "decimalPrice": 3.75
+          },
+          {
+            "runnerId": "9b987827-2f2f-4054-b3f5-1572a7f546d1",
+            "decimalPrice": 5
+          },
+          {
+            "runnerId": "0a462086-ce73-44c9-9fe8-99b9dab39727",
+            "decimalPrice": 6
+          },
+          {
+            "runnerId": "d9dab798-1ed6-407b-939a-6300aa0ded55",
+            "decimalPrice": 6
+          },
+          {
+            "runnerId": "63c29438-3ed6-4890-970c-8d2efd6fa434",
+            "decimalPrice": 9
+          },
+          {
+            "runnerId": "3c628cbc-460c-4fa3-84da-49487350de31",
+            "decimalPrice": 10
+          },
+          {
+            "runnerId": "d2bb9610-0cfe-476c-9d7f-393e45256599",
+            "decimalPrice": 11
+          },
+          {
+            "runnerId": "9b5b986c-e22b-4968-9f36-8dbd6c8fa374",
+            "decimalPrice": 15
+          },
+          {
+            "runnerId": "3de218cc-3fb2-4b88-9764-574e18067271",
+            "decimalPrice": 34
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "raceId": "2e7ed1bd-ede3-45e8-8293-3ff8cb7c707d",
+      "runnerId": "00591c73-6542-4359-9b24-28082b7f23f6",
+      "horseId": "57074e1d-9436-47c9-aaaf-7a82b17664da",
+      "horseName": "Silver Wraith",
+      "family": "TURF",
+      "raceDate": "2026-10-19",
+      "scheduledOff": "2026-10-19T13:47:00.000Z",
+      "course": "Bath",
+      "raceName": "Big Stage Hire Handicap",
+      "rankSource": "Turf Tissue / tissue_model_v2 / tissueRank",
+      "modelHash": "d10c97e7de7e663d086f32e5764526b481520c7e0b6e56b7376ebcf1a6b99b61",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-19T09:01:15.995Z",
+      "capturedFieldRunnerIds": [
+        "00591c73-6542-4359-9b24-28082b7f23f6",
+        "f8bda137-e3dc-4f30-b2a4-65b6c43f0c5e",
+        "f207e15a-4eca-4ac7-a2a8-1b5da6016e5e",
+        "4bb70e88-015b-40cc-8bfa-1997a485895b",
+        "b8e41d2f-5260-4ba0-a660-5127523d6307",
+        "ef474a26-190b-4d44-b855-b06097c0adb3",
+        "c5267045-8fc5-4754-b67b-dce3c3d22153",
+        "9d667f80-9db9-4847-8a63-eca82b8c0343"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 3,
+        "normalizedProbability": 0.2727857100491645,
+        "marketRank": 1,
+        "quotes": [
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "15/8",
+            "decimalOdds": 2.88
+          },
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "2/1",
+            "decimalOdds": 3
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "2/1",
+            "decimalOdds": 3
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "00591c73-6542-4359-9b24-28082b7f23f6",
+            "decimalPrice": 3
+          },
+          {
+            "runnerId": "f8bda137-e3dc-4f30-b2a4-65b6c43f0c5e",
+            "decimalPrice": 5
+          },
+          {
+            "runnerId": "f207e15a-4eca-4ac7-a2a8-1b5da6016e5e",
+            "decimalPrice": 5.5
+          },
+          {
+            "runnerId": "4bb70e88-015b-40cc-8bfa-1997a485895b",
+            "decimalPrice": 6
+          },
+          {
+            "runnerId": "b8e41d2f-5260-4ba0-a660-5127523d6307",
+            "decimalPrice": 7
+          },
+          {
+            "runnerId": "ef474a26-190b-4d44-b855-b06097c0adb3",
+            "decimalPrice": 10
+          },
+          {
+            "runnerId": "c5267045-8fc5-4754-b67b-dce3c3d22153",
+            "decimalPrice": 17
+          },
+          {
+            "runnerId": "9d667f80-9db9-4847-8a63-eca82b8c0343",
+            "decimalPrice": 26
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "raceId": "7017a530-e76f-46da-836a-ea9b4c48085b",
+      "runnerId": "1ae78de1-0d2c-4a39-810f-46a9db9972e5",
+      "horseId": "0af4b9ee-24d8-4e0b-80f8-e24e4a32a474",
+      "horseName": "Al Qayed",
+      "family": "TURF",
+      "raceDate": "2026-10-19",
+      "scheduledOff": "2026-10-19T14:17:00.000Z",
+      "course": "Bath",
+      "raceName": "Elite Racing Club Novice Stakes (GBB/GBBPlus Race)",
+      "rankSource": "Turf Tissue / tissue_model_v2 / tissueRank",
+      "modelHash": "d10c97e7de7e663d086f32e5764526b481520c7e0b6e56b7376ebcf1a6b99b61",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-19T09:01:15.995Z",
+      "capturedFieldRunnerIds": [
+        "1ae78de1-0d2c-4a39-810f-46a9db9972e5",
+        "18c72349-89b5-4536-a2c7-d26d5b45f637",
+        "79e611de-032a-42f1-bd69-b8b8c23eb01d",
+        "9d950c18-8806-496e-94f9-c1738fd14ace",
+        "4a9ca57c-bc99-48c7-8762-d19d47529499",
+        "4e7a457d-12cd-4b33-a2aa-346164719f6b",
+        "f4cbfb09-da69-416c-a3b8-9c23da96982a",
+        "49c26264-0014-4870-859b-83fbf8dcdc3a",
+        "9cf970ac-cffa-40c5-aa27-bbc6db649a1d",
+        "cbad8550-7c30-4895-b97b-fdad02eced01",
+        "86361788-53d1-4b25-9259-7e1a83dd5d89"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 1.73,
+        "normalizedProbability": 0.45869083214796724,
+        "marketRank": 1,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "8/11",
+            "decimalOdds": 1.73
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "8/11",
+            "decimalOdds": 1.73
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "8/11",
+            "decimalOdds": 1.73
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "1ae78de1-0d2c-4a39-810f-46a9db9972e5",
+            "decimalPrice": 1.73
+          },
+          {
+            "runnerId": "18c72349-89b5-4536-a2c7-d26d5b45f637",
+            "decimalPrice": 4.33
+          },
+          {
+            "runnerId": "79e611de-032a-42f1-bd69-b8b8c23eb01d",
+            "decimalPrice": 7.5
+          },
+          {
+            "runnerId": "9d950c18-8806-496e-94f9-c1738fd14ace",
+            "decimalPrice": 7.5
+          },
+          {
+            "runnerId": "4a9ca57c-bc99-48c7-8762-d19d47529499",
+            "decimalPrice": 17
+          },
+          {
+            "runnerId": "4e7a457d-12cd-4b33-a2aa-346164719f6b",
+            "decimalPrice": 31
+          },
+          {
+            "runnerId": "f4cbfb09-da69-416c-a3b8-9c23da96982a",
+            "decimalPrice": 34
+          },
+          {
+            "runnerId": "49c26264-0014-4870-859b-83fbf8dcdc3a",
+            "decimalPrice": 51
+          },
+          {
+            "runnerId": "9cf970ac-cffa-40c5-aa27-bbc6db649a1d",
+            "decimalPrice": 51
+          },
+          {
+            "runnerId": "cbad8550-7c30-4895-b97b-fdad02eced01",
+            "decimalPrice": 67
+          },
+          {
+            "runnerId": "86361788-53d1-4b25-9259-7e1a83dd5d89",
+            "decimalPrice": 101
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "raceId": "b95ebfc4-2554-4b28-8f3c-3942fe3b12f5",
+      "runnerId": "304db8f3-27b4-47bf-8945-b4a5ae5ccd84",
+      "horseId": "d1260ef5-4ac1-4f05-802f-f5c2af094c0f",
+      "horseName": "Scrappetalene",
+      "family": "TURF",
+      "raceDate": "2026-10-19",
+      "scheduledOff": "2026-10-19T14:47:00.000Z",
+      "course": "Bath",
+      "raceName": "Wiltshire And Bath Air Ambulance Nursery",
+      "rankSource": "Turf Tissue / tissue_model_v2 / tissueRank",
+      "modelHash": "d10c97e7de7e663d086f32e5764526b481520c7e0b6e56b7376ebcf1a6b99b61",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-19T09:01:15.995Z",
+      "capturedFieldRunnerIds": [
+        "f2bcb876-2303-43ae-8057-ec4e3c68d52b",
+        "61458c4b-bace-4d4a-9556-ea4f46f14b2e",
+        "4b440ca6-ea5a-47aa-984f-f01030cfd7fe",
+        "304db8f3-27b4-47bf-8945-b4a5ae5ccd84",
+        "26dc87ee-5811-4bb3-b67e-8923914a70e3",
+        "6dde46b1-2c25-472a-b840-aaa2bb884925",
+        "94c47dca-6acf-4a1a-b1a6-5e4c071e2ed2",
+        "75de3cc0-3898-423e-9260-bbee8b0af76e",
+        "c67bbb8d-67ce-43a7-8f51-19cfa10a8aaf",
+        "d1d303eb-6298-4762-9ae2-3a05029c7caf",
+        "8722a6be-1945-40b6-87c2-2072fa067961",
+        "88751485-55bd-4593-a77b-5b84e6d7f429",
+        "bfacf61e-f215-4521-89a4-e58fdf56c212"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 8,
+        "normalizedProbability": 0.09655559032254701,
+        "marketRank": 4,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "7/1",
+            "decimalOdds": 8
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "7/1",
+            "decimalOdds": 8
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "7/1",
+            "decimalOdds": 8
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "f2bcb876-2303-43ae-8057-ec4e3c68d52b",
+            "decimalPrice": 4
+          },
+          {
+            "runnerId": "61458c4b-bace-4d4a-9556-ea4f46f14b2e",
+            "decimalPrice": 5
+          },
+          {
+            "runnerId": "4b440ca6-ea5a-47aa-984f-f01030cfd7fe",
+            "decimalPrice": 7
+          },
+          {
+            "runnerId": "304db8f3-27b4-47bf-8945-b4a5ae5ccd84",
+            "decimalPrice": 8
+          },
+          {
+            "runnerId": "26dc87ee-5811-4bb3-b67e-8923914a70e3",
+            "decimalPrice": 8
+          },
+          {
+            "runnerId": "6dde46b1-2c25-472a-b840-aaa2bb884925",
+            "decimalPrice": 9
+          },
+          {
+            "runnerId": "94c47dca-6acf-4a1a-b1a6-5e4c071e2ed2",
+            "decimalPrice": 12
+          },
+          {
+            "runnerId": "75de3cc0-3898-423e-9260-bbee8b0af76e",
+            "decimalPrice": 17
+          },
+          {
+            "runnerId": "c67bbb8d-67ce-43a7-8f51-19cfa10a8aaf",
+            "decimalPrice": 19
+          },
+          {
+            "runnerId": "d1d303eb-6298-4762-9ae2-3a05029c7caf",
+            "decimalPrice": 23
+          },
+          {
+            "runnerId": "8722a6be-1945-40b6-87c2-2072fa067961",
+            "decimalPrice": 26
+          },
+          {
+            "runnerId": "88751485-55bd-4593-a77b-5b84e6d7f429",
+            "decimalPrice": 29
+          },
+          {
+            "runnerId": "bfacf61e-f215-4521-89a4-e58fdf56c212",
+            "decimalPrice": 34
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "raceId": "b5273d29-4a62-47f3-aba3-02859d27a865",
+      "runnerId": "9b5a9b78-e6b0-4169-9f9e-7ac8fb2813d8",
+      "horseId": "65c5b9ca-46fb-458c-a429-919e81bb9ad0",
+      "horseName": "Hot Cash",
+      "family": "TURF",
+      "raceDate": "2026-10-19",
+      "scheduledOff": "2026-10-19T15:20:00.000Z",
+      "course": "Bath",
+      "raceName": "DJSN Ltd Handicap",
+      "rankSource": "Turf Tissue / tissue_model_v2 / tissueRank",
+      "modelHash": "d10c97e7de7e663d086f32e5764526b481520c7e0b6e56b7376ebcf1a6b99b61",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-19T09:01:15.995Z",
+      "capturedFieldRunnerIds": [
+        "90a066b7-9288-4e01-9f52-e7debfa6af09",
+        "9b5a9b78-e6b0-4169-9f9e-7ac8fb2813d8",
+        "bfd074a9-0fd9-4169-8bb8-8530858293b9",
+        "03ae85d3-412d-4962-8424-9d6d9f1afbcf",
+        "bc5334ea-335d-4b41-abdc-bf1614842709",
+        "5b4bc686-e698-4b88-af49-2e38dc13c6c1",
+        "11578152-7a13-4d76-9b14-9b073e936f84",
+        "60ac70db-bedd-4755-af5f-9381d451dcae",
+        "2bde7648-c5e8-43a0-a753-18ce4faef417"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 4.5,
+        "normalizedProbability": 0.18438303049820565,
+        "marketRank": 2,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "10/3",
+            "decimalOdds": 4.33
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "7/2",
+            "decimalOdds": 4.5
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "7/2",
+            "decimalOdds": 4.5
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "90a066b7-9288-4e01-9f52-e7debfa6af09",
+            "decimalPrice": 4.33
+          },
+          {
+            "runnerId": "9b5a9b78-e6b0-4169-9f9e-7ac8fb2813d8",
+            "decimalPrice": 4.5
+          },
+          {
+            "runnerId": "bfd074a9-0fd9-4169-8bb8-8530858293b9",
+            "decimalPrice": 6
+          },
+          {
+            "runnerId": "03ae85d3-412d-4962-8424-9d6d9f1afbcf",
+            "decimalPrice": 6
+          },
+          {
+            "runnerId": "bc5334ea-335d-4b41-abdc-bf1614842709",
+            "decimalPrice": 6.5
+          },
+          {
+            "runnerId": "5b4bc686-e698-4b88-af49-2e38dc13c6c1",
+            "decimalPrice": 9
+          },
+          {
+            "runnerId": "11578152-7a13-4d76-9b14-9b073e936f84",
+            "decimalPrice": 11
+          },
+          {
+            "runnerId": "60ac70db-bedd-4755-af5f-9381d451dcae",
+            "decimalPrice": 26
+          },
+          {
+            "runnerId": "2bde7648-c5e8-43a0-a753-18ce4faef417",
+            "decimalPrice": 41
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "raceId": "c6c1d9ca-0290-4747-80c9-f40887d43cff",
+      "runnerId": "22d85621-9d57-4c26-afb9-8cec7bfcb07b",
+      "horseId": "5822f2da-7b3b-4fda-ad9b-4447918c942e",
+      "horseName": "Spirit Lead Me",
+      "family": "TURF",
+      "raceDate": "2026-10-19",
+      "scheduledOff": "2026-10-19T15:50:00.000Z",
+      "course": "Bath",
+      "raceName": "Elite Racing Club Handicap (Div 1)",
+      "rankSource": "Turf Tissue / tissue_model_v2 / tissueRank",
+      "modelHash": "d10c97e7de7e663d086f32e5764526b481520c7e0b6e56b7376ebcf1a6b99b61",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-19T09:01:15.995Z",
+      "capturedFieldRunnerIds": [
+        "22d85621-9d57-4c26-afb9-8cec7bfcb07b",
+        "7de2de3d-ec34-41b2-9e80-0d1ecab8e2cb",
+        "7c449866-2f58-44cd-ac10-fcb3aed65e01",
+        "bd3deba4-161c-44b8-83e5-c4d76256c32e",
+        "8619038a-533a-45c4-942f-3921c444c5f2",
+        "a53a0303-5ae6-47b7-b328-676aadc8f32d",
+        "70a7c49e-c354-4006-81bc-1f5fa0d4c512",
+        "2fb0fdc9-5cbe-4b3e-8795-3feeea045e01",
+        "1c996f7d-4243-45f7-aa2d-597e65af7407",
+        "3434fe5c-aa61-49a6-ab99-6721d752415f",
+        "71e52321-2808-49da-8812-c629744f0bc1",
+        "2c182c73-606f-4929-b7df-d0a13a88a149",
+        "f375be4d-4927-4e36-9536-a54d95030783",
+        "b033a904-5af9-44c0-b66e-ce87844b06f3"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 3,
+        "normalizedProbability": 0.25034879262190624,
+        "marketRank": 1,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "2/1",
+            "decimalOdds": 3
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "2/1",
+            "decimalOdds": 3
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "2/1",
+            "decimalOdds": 3
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "22d85621-9d57-4c26-afb9-8cec7bfcb07b",
+            "decimalPrice": 3
+          },
+          {
+            "runnerId": "7de2de3d-ec34-41b2-9e80-0d1ecab8e2cb",
+            "decimalPrice": 5
+          },
+          {
+            "runnerId": "7c449866-2f58-44cd-ac10-fcb3aed65e01",
+            "decimalPrice": 6
+          },
+          {
+            "runnerId": "bd3deba4-161c-44b8-83e5-c4d76256c32e",
+            "decimalPrice": 7
+          },
+          {
+            "runnerId": "8619038a-533a-45c4-942f-3921c444c5f2",
+            "decimalPrice": 10
+          },
+          {
+            "runnerId": "a53a0303-5ae6-47b7-b328-676aadc8f32d",
+            "decimalPrice": 11
+          },
+          {
+            "runnerId": "70a7c49e-c354-4006-81bc-1f5fa0d4c512",
+            "decimalPrice": 12
+          },
+          {
+            "runnerId": "2fb0fdc9-5cbe-4b3e-8795-3feeea045e01",
+            "decimalPrice": 23
+          },
+          {
+            "runnerId": "1c996f7d-4243-45f7-aa2d-597e65af7407",
+            "decimalPrice": 23
+          },
+          {
+            "runnerId": "3434fe5c-aa61-49a6-ab99-6721d752415f",
+            "decimalPrice": 23
+          },
+          {
+            "runnerId": "71e52321-2808-49da-8812-c629744f0bc1",
+            "decimalPrice": 29
+          },
+          {
+            "runnerId": "2c182c73-606f-4929-b7df-d0a13a88a149",
+            "decimalPrice": 51
+          },
+          {
+            "runnerId": "f375be4d-4927-4e36-9536-a54d95030783",
+            "decimalPrice": 67
+          },
+          {
+            "runnerId": "b033a904-5af9-44c0-b66e-ce87844b06f3",
+            "decimalPrice": 67
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "raceId": "8e9e440c-f7a3-4779-a177-dc21b8744c52",
+      "runnerId": "4a265992-dad2-49d8-9c31-e99245f03a1b",
+      "horseId": "1ef68d47-7b21-4ad1-be9d-d0db65099ace",
+      "horseName": "Guinness Lad",
+      "family": "TURF",
+      "raceDate": "2026-10-19",
+      "scheduledOff": "2026-10-19T16:22:00.000Z",
+      "course": "Bath",
+      "raceName": "Elite Racing Club Handicap (Div 2)",
+      "rankSource": "Turf Tissue / tissue_model_v2 / tissueRank",
+      "modelHash": "d10c97e7de7e663d086f32e5764526b481520c7e0b6e56b7376ebcf1a6b99b61",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-19T09:01:15.995Z",
+      "capturedFieldRunnerIds": [
+        "a441f6fd-481e-4f96-9217-741450141e45",
+        "6608cc1c-960a-47c6-993a-f166df131999",
+        "f11a15e6-f43f-4267-81a4-988e4609b4c3",
+        "d5a747cc-3fa8-4bc8-95aa-fa9639331437",
+        "7b1ef573-d2ba-4036-9a16-c78d3086733b",
+        "4a265992-dad2-49d8-9c31-e99245f03a1b",
+        "45d110d8-6f05-4ea6-9b54-1759f6a6717e",
+        "f2d255f8-94e9-489f-ad7a-dc09a8e1d12e",
+        "8ea1bfab-6eac-4f30-9f5d-7ce970c0fcff",
+        "3e0804dd-86d2-4b58-b791-a349bdf6a18d",
+        "f9af4f5c-5bcf-47a4-901f-f57e64b507b2",
+        "eb7f9db2-134e-4df3-8faa-d95c9e666762",
+        "efd20082-c22d-4889-b60a-a50244d30213",
+        "6396c43f-6ec0-45da-957d-ff146dbb5545"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 12,
+        "normalizedProbability": 0.06046410589814343,
+        "marketRank": 6,
+        "quotes": [
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "10/1",
+            "decimalOdds": 11
+          },
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "11/1",
+            "decimalOdds": 12
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "11/1",
+            "decimalOdds": 12
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "a441f6fd-481e-4f96-9217-741450141e45",
+            "decimalPrice": 3.5
+          },
+          {
+            "runnerId": "6608cc1c-960a-47c6-993a-f166df131999",
+            "decimalPrice": 4.5
+          },
+          {
+            "runnerId": "f11a15e6-f43f-4267-81a4-988e4609b4c3",
+            "decimalPrice": 8
+          },
+          {
+            "runnerId": "d5a747cc-3fa8-4bc8-95aa-fa9639331437",
+            "decimalPrice": 9
+          },
+          {
+            "runnerId": "7b1ef573-d2ba-4036-9a16-c78d3086733b",
+            "decimalPrice": 9
+          },
+          {
+            "runnerId": "4a265992-dad2-49d8-9c31-e99245f03a1b",
+            "decimalPrice": 12
+          },
+          {
+            "runnerId": "45d110d8-6f05-4ea6-9b54-1759f6a6717e",
+            "decimalPrice": 12
+          },
+          {
+            "runnerId": "f2d255f8-94e9-489f-ad7a-dc09a8e1d12e",
+            "decimalPrice": 13
+          },
+          {
+            "runnerId": "8ea1bfab-6eac-4f30-9f5d-7ce970c0fcff",
+            "decimalPrice": 17
+          },
+          {
+            "runnerId": "3e0804dd-86d2-4b58-b791-a349bdf6a18d",
+            "decimalPrice": 21
+          },
+          {
+            "runnerId": "f9af4f5c-5bcf-47a4-901f-f57e64b507b2",
+            "decimalPrice": 21
+          },
+          {
+            "runnerId": "eb7f9db2-134e-4df3-8faa-d95c9e666762",
+            "decimalPrice": 23
+          },
+          {
+            "runnerId": "efd20082-c22d-4889-b60a-a50244d30213",
+            "decimalPrice": 23
+          },
+          {
+            "runnerId": "6396c43f-6ec0-45da-957d-ff146dbb5545",
+            "decimalPrice": 26
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "raceId": "90ba6a25-6b48-4ec0-b625-b7eaba98e9c7",
+      "runnerId": "a4f8783f-777b-46a8-ba7d-8ae071cd78df",
+      "horseId": "8e9296aa-36b6-422a-b9be-691cc7cfc13c",
+      "horseName": "Bankatary",
+      "family": "HURDLE",
+      "raceDate": "2026-10-19",
+      "scheduledOff": "2026-10-19T13:00:00.000Z",
+      "course": "Plumpton",
+      "raceName": "Betty Chantler Novices' Hurdle (GBB Race)",
+      "rankSource": "Jump Tissue / JUMP_TISSUE_V1 / rank",
+      "modelHash": "863b966423f05773083c3c208dd11cd49680df7a7414b855d613ee5c8ad9ebe4",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-19T09:01:15.995Z",
+      "capturedFieldRunnerIds": [
+        "c0fe89c2-1917-41fa-8008-a0891114f5e9",
+        "361c0112-f3b2-4e40-a322-8c458a473be9",
+        "a4f8783f-777b-46a8-ba7d-8ae071cd78df",
+        "c087c9b5-d663-4d48-ae75-4fb205881bc9",
+        "4dd1c600-a0a5-403d-acf6-21094dc63274"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 11,
+        "normalizedProbability": 0.07856561906134403,
+        "marketRank": 3,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "10/1",
+            "decimalOdds": 11
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "10/1",
+            "decimalOdds": 11
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "10/1",
+            "decimalOdds": 11
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "c0fe89c2-1917-41fa-8008-a0891114f5e9",
+            "decimalPrice": 1.36
+          },
+          {
+            "runnerId": "361c0112-f3b2-4e40-a322-8c458a473be9",
+            "decimalPrice": 4
+          },
+          {
+            "runnerId": "a4f8783f-777b-46a8-ba7d-8ae071cd78df",
+            "decimalPrice": 11
+          },
+          {
+            "runnerId": "c087c9b5-d663-4d48-ae75-4fb205881bc9",
+            "decimalPrice": 13
+          },
+          {
+            "runnerId": "4dd1c600-a0a5-403d-acf6-21094dc63274",
+            "decimalPrice": 251
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "raceId": "b20fa26c-256a-42a3-b768-e0d2bddfb172",
+      "runnerId": "6d1c05b7-bad2-4942-a99e-5ad75367f403",
+      "horseId": "06276a37-bd4f-4ed0-b9e3-0e4bd984f5a5",
+      "horseName": "Market House",
+      "family": "HURDLE",
+      "raceDate": "2026-10-19",
+      "scheduledOff": "2026-10-19T13:30:00.000Z",
+      "course": "Plumpton",
+      "raceName": "SIS Handicap Hurdle",
+      "rankSource": "Jump Tissue / JUMP_TISSUE_V1 / rank",
+      "modelHash": "863b966423f05773083c3c208dd11cd49680df7a7414b855d613ee5c8ad9ebe4",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-19T09:01:15.995Z",
+      "capturedFieldRunnerIds": [
+        "4ab680e8-fe45-4fce-ab66-6b6345471558",
+        "6d1c05b7-bad2-4942-a99e-5ad75367f403",
+        "a9dae470-4cc2-4791-ae31-0a2e2166e69a",
+        "d02bc77f-24af-4387-b132-89411570cd14",
+        "334173d4-cf52-464d-8f97-5e81d8edd576",
+        "0b87f893-230f-407d-b6f0-75e3b0094d79",
+        "9ce1962b-66ff-4dac-ac94-edbf78fb7bd2"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 3,
+        "normalizedProbability": 0.2883858655019084,
+        "marketRank": 2,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "2/1",
+            "decimalOdds": 3
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "2/1",
+            "decimalOdds": 3
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "2/1",
+            "decimalOdds": 3
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "4ab680e8-fe45-4fce-ab66-6b6345471558",
+            "decimalPrice": 2.75
+          },
+          {
+            "runnerId": "6d1c05b7-bad2-4942-a99e-5ad75367f403",
+            "decimalPrice": 3
+          },
+          {
+            "runnerId": "a9dae470-4cc2-4791-ae31-0a2e2166e69a",
+            "decimalPrice": 5
+          },
+          {
+            "runnerId": "d02bc77f-24af-4387-b132-89411570cd14",
+            "decimalPrice": 11
+          },
+          {
+            "runnerId": "334173d4-cf52-464d-8f97-5e81d8edd576",
+            "decimalPrice": 13
+          },
+          {
+            "runnerId": "0b87f893-230f-407d-b6f0-75e3b0094d79",
+            "decimalPrice": 15
+          },
+          {
+            "runnerId": "9ce1962b-66ff-4dac-ac94-edbf78fb7bd2",
+            "decimalPrice": 41
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "raceId": "92aacf4d-bab5-4217-a178-a411937fb107",
+      "runnerId": "6f95a252-21ac-4ac9-8aab-42c903bbf680",
+      "horseId": "f7d7e562-2ee1-499f-ada3-2a2dc29f0d63",
+      "horseName": "Expert Analysis",
+      "family": "CHASE",
+      "raceDate": "2026-10-19",
+      "scheduledOff": "2026-10-19T14:00:00.000Z",
+      "course": "Plumpton",
+      "raceName": "Back British Farming Handicap Chase",
+      "rankSource": "Jump Tissue / JUMP_TISSUE_V1 / rank",
+      "modelHash": "863b966423f05773083c3c208dd11cd49680df7a7414b855d613ee5c8ad9ebe4",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-19T09:01:15.995Z",
+      "capturedFieldRunnerIds": [
+        "d25a3c8f-2397-4279-8049-9bc5c30b3221",
+        "d5e1933f-37ca-49c0-9cf2-bc29eda4d5c3",
+        "6f95a252-21ac-4ac9-8aab-42c903bbf680",
+        "5bd8253b-3fa2-46c3-9a4a-1f262846fe64",
+        "61774aba-e482-49da-9515-841c6ca7b743"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 5.5,
+        "normalizedProbability": 0.15984234594294278,
+        "marketRank": 3,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "9/2",
+            "decimalOdds": 5.5
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "9/2",
+            "decimalOdds": 5.5
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "9/2",
+            "decimalOdds": 5.5
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "d25a3c8f-2397-4279-8049-9bc5c30b3221",
+            "decimalPrice": 1.73
+          },
+          {
+            "runnerId": "d5e1933f-37ca-49c0-9cf2-bc29eda4d5c3",
+            "decimalPrice": 5
+          },
+          {
+            "runnerId": "6f95a252-21ac-4ac9-8aab-42c903bbf680",
+            "decimalPrice": 5.5
+          },
+          {
+            "runnerId": "5bd8253b-3fa2-46c3-9a4a-1f262846fe64",
+            "decimalPrice": 8
+          },
+          {
+            "runnerId": "61774aba-e482-49da-9515-841c6ca7b743",
+            "decimalPrice": 19
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "raceId": "03765ff1-6beb-45f9-bb87-a3332bdefc5e",
+      "runnerId": "87639b2f-573d-4246-9b20-66831ffef39b",
+      "horseId": "9d4100d0-0134-4122-8aae-597d9af33bff",
+      "horseName": "Nap Hand",
+      "family": "HURDLE",
+      "raceDate": "2026-10-19",
+      "scheduledOff": "2026-10-19T14:30:00.000Z",
+      "course": "Plumpton",
+      "raceName": "Bet Goodwin Handicap Hurdle",
+      "rankSource": "Jump Tissue / JUMP_TISSUE_V1 / rank",
+      "modelHash": "863b966423f05773083c3c208dd11cd49680df7a7414b855d613ee5c8ad9ebe4",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-19T09:01:15.995Z",
+      "capturedFieldRunnerIds": [
+        "87639b2f-573d-4246-9b20-66831ffef39b",
+        "a94e8683-9fb6-47ba-81fd-952a73324efb",
+        "78cc46be-54c0-466a-87d1-e808a53fd326",
+        "3c9c5d4b-b8f7-4c1c-90b2-ae0033a535f0",
+        "2c52ac10-9092-4f55-8a28-0a3a18d5d52b"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 2.88,
+        "normalizedProbability": 0.3039574593164631,
+        "marketRank": 1,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "15/8",
+            "decimalOdds": 2.88
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "15/8",
+            "decimalOdds": 2.88
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "15/8",
+            "decimalOdds": 2.88
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "87639b2f-573d-4246-9b20-66831ffef39b",
+            "decimalPrice": 2.88
+          },
+          {
+            "runnerId": "a94e8683-9fb6-47ba-81fd-952a73324efb",
+            "decimalPrice": 3.5
+          },
+          {
+            "runnerId": "78cc46be-54c0-466a-87d1-e808a53fd326",
+            "decimalPrice": 4.5
+          },
+          {
+            "runnerId": "3c9c5d4b-b8f7-4c1c-90b2-ae0033a535f0",
+            "decimalPrice": 6.5
+          },
+          {
+            "runnerId": "2c52ac10-9092-4f55-8a28-0a3a18d5d52b",
+            "decimalPrice": 7.5
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "raceId": "af300624-ea3e-4240-bf33-c6f511c785e3",
+      "runnerId": "73c02bf4-c74c-4cf5-943e-71cefc8c232c",
+      "horseId": "a7c72e7f-4cb5-4d23-be59-8e7a618e3aa8",
+      "horseName": "Palamon",
+      "family": "CHASE",
+      "raceDate": "2026-10-19",
+      "scheduledOff": "2026-10-19T15:00:00.000Z",
+      "course": "Plumpton",
+      "raceName": "Nick And Valda Embiricos Memorial Handicap Chase (GBB Race)",
+      "rankSource": "Jump Tissue / JUMP_TISSUE_V1 / rank",
+      "modelHash": "863b966423f05773083c3c208dd11cd49680df7a7414b855d613ee5c8ad9ebe4",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-19T09:01:15.995Z",
+      "capturedFieldRunnerIds": [
+        "73c02bf4-c74c-4cf5-943e-71cefc8c232c",
+        "75726263-e1e2-46cb-92b6-d65e724b7bc4",
+        "1aaf970c-1681-47b3-a9d6-935893915bfb",
+        "08773e3e-70d8-430c-8f39-57a989a57f55",
+        "8510c984-f445-497c-8a9a-1f80c5dbed25"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 2.63,
+        "normalizedProbability": 0.3315283456735551,
+        "marketRank": 1,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "13/8",
+            "decimalOdds": 2.63
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "13/8",
+            "decimalOdds": 2.63
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "7/4",
+            "decimalOdds": 2.75
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "73c02bf4-c74c-4cf5-943e-71cefc8c232c",
+            "decimalPrice": 2.63
+          },
+          {
+            "runnerId": "75726263-e1e2-46cb-92b6-d65e724b7bc4",
+            "decimalPrice": 3.75
+          },
+          {
+            "runnerId": "1aaf970c-1681-47b3-a9d6-935893915bfb",
+            "decimalPrice": 4.5
+          },
+          {
+            "runnerId": "08773e3e-70d8-430c-8f39-57a989a57f55",
+            "decimalPrice": 6
+          },
+          {
+            "runnerId": "8510c984-f445-497c-8a9a-1f80c5dbed25",
+            "decimalPrice": 9
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "raceId": "cb0e0717-0059-4711-a7fe-3930f9c2605f",
+      "runnerId": "ed1a5f2e-9a50-4947-a7a9-51032b37f736",
+      "horseId": "6fef0d0d-add6-45d6-87a7-b442774052f6",
+      "horseName": "Latin",
+      "family": "HURDLE",
+      "raceDate": "2026-10-19",
+      "scheduledOff": "2026-10-19T15:30:00.000Z",
+      "course": "Plumpton",
+      "raceName": "Trottenden Farm Handicap Hurdle",
+      "rankSource": "Jump Tissue / JUMP_TISSUE_V1 / rank",
+      "modelHash": "863b966423f05773083c3c208dd11cd49680df7a7414b855d613ee5c8ad9ebe4",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-19T09:01:15.995Z",
+      "capturedFieldRunnerIds": [
+        "ed1a5f2e-9a50-4947-a7a9-51032b37f736",
+        "4ce54ee0-baee-45cc-824c-6f2c0d01ce4c",
+        "c4fcefa6-4321-4476-a7fa-a23018076362",
+        "cb761a92-bde9-493c-825e-47854ba4d08d",
+        "a267f0ac-446d-4a02-97a9-e2bd6e9d11a3",
+        "c8eb1b09-fb49-4081-9afa-3271174c7500"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 2.25,
+        "normalizedProbability": 0.3840251668840635,
+        "marketRank": 1,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "5/4",
+            "decimalOdds": 2.25
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "5/4",
+            "decimalOdds": 2.25
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "5/4",
+            "decimalOdds": 2.25
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "ed1a5f2e-9a50-4947-a7a9-51032b37f736",
+            "decimalPrice": 2.25
+          },
+          {
+            "runnerId": "4ce54ee0-baee-45cc-824c-6f2c0d01ce4c",
+            "decimalPrice": 3.25
+          },
+          {
+            "runnerId": "c4fcefa6-4321-4476-a7fa-a23018076362",
+            "decimalPrice": 5
+          },
+          {
+            "runnerId": "cb761a92-bde9-493c-825e-47854ba4d08d",
+            "decimalPrice": 11
+          },
+          {
+            "runnerId": "a267f0ac-446d-4a02-97a9-e2bd6e9d11a3",
+            "decimalPrice": 15
+          },
+          {
+            "runnerId": "c8eb1b09-fb49-4081-9afa-3271174c7500",
+            "decimalPrice": 21
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "raceId": "59a2d9ac-926d-41e6-9c9e-39ef1ea70520",
+      "runnerId": "c69f0be6-36d6-4040-90ae-3b3ac5a931fb",
+      "horseId": "78bb8edc-5191-4e6d-9df9-87692a8cd108",
+      "horseName": "Burning Embers",
+      "family": "HURDLE",
+      "raceDate": "2026-10-19",
+      "scheduledOff": "2026-10-19T16:05:00.000Z",
+      "course": "Plumpton",
+      "raceName": "Aldaniti Mares' Handicap Hurdle",
+      "rankSource": "Jump Tissue / JUMP_TISSUE_V1 / rank",
+      "modelHash": "863b966423f05773083c3c208dd11cd49680df7a7414b855d613ee5c8ad9ebe4",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-19T09:01:15.995Z",
+      "capturedFieldRunnerIds": [
+        "51a15a60-f553-491a-b749-9920fa71be17",
+        "ffbcc8ec-1488-4a9e-a974-ec42883dda8d",
+        "c69f0be6-36d6-4040-90ae-3b3ac5a931fb",
+        "1b94c602-8621-4c5f-b2d2-8feccd3a7d14",
+        "2f395f92-bf4f-493f-8925-a43da45ca7ff"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 5.5,
+        "normalizedProbability": 0.1578660921820965,
+        "marketRank": 3,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "9/2",
+            "decimalOdds": 5.5
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "9/2",
+            "decimalOdds": 5.5
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "9/2",
+            "decimalOdds": 5.5
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "51a15a60-f553-491a-b749-9920fa71be17",
+            "decimalPrice": 2.1
+          },
+          {
+            "runnerId": "ffbcc8ec-1488-4a9e-a974-ec42883dda8d",
+            "decimalPrice": 4.5
+          },
+          {
+            "runnerId": "c69f0be6-36d6-4040-90ae-3b3ac5a931fb",
+            "decimalPrice": 5.5
+          },
+          {
+            "runnerId": "1b94c602-8621-4c5f-b2d2-8feccd3a7d14",
+            "decimalPrice": 6.5
+          },
+          {
+            "runnerId": "2f395f92-bf4f-493f-8925-a43da45ca7ff",
+            "decimalPrice": 8.5
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "raceId": "1ed13674-d7b6-4b01-9724-781552f12bb1",
+      "runnerId": "46dc1cb0-c199-47ae-81aa-64d20b8d1258",
+      "horseId": "c9f961cc-20fb-4231-b2fd-74015bf42f20",
+      "horseName": "Burford Beauty",
+      "family": "AW",
+      "raceDate": "2026-10-19",
+      "scheduledOff": "2026-10-19T16:00:00.000Z",
+      "course": "Southwell",
+      "raceName": "bettingsites.co.uk Compare Before You Bet Apprentice Handicap",
+      "rankSource": "AW Tissue / AW_TISSUE_V1 / rank",
+      "modelHash": "52376e5361e41da6b991aebfbb7f202cebb1f437b1259d55711824f55eead8a8",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-19T09:01:15.995Z",
+      "capturedFieldRunnerIds": [
+        "36a5c05b-2ad3-4c19-817a-76e8bf04b8db",
+        "46dc1cb0-c199-47ae-81aa-64d20b8d1258",
+        "cb81d93d-0f3e-4a36-83ca-3a7d10bb533c",
+        "5277113b-6482-49cc-9a90-eacd8b2e8381",
+        "885e62a2-1e59-4a7f-87f2-1604187e2b64",
+        "55e700c5-928b-4c1d-ab1d-fa78495ac6e6",
+        "93e5f56a-2fad-46e1-9e09-556ba0d00523",
+        "084c4b03-1e56-4873-bdd0-38f2acfb0eef",
+        "6d9eb4e7-42f3-4502-b160-c76c6bd6aa68",
+        "4429c8be-2ba3-4786-bbae-1dad7b431ca6"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 5,
+        "normalizedProbability": 0.16382574196864902,
+        "marketRank": 2,
+        "quotes": [
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "10/3",
+            "decimalOdds": 4.33
+          },
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "4/1",
+            "decimalOdds": 5
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "4/1",
+            "decimalOdds": 5
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "36a5c05b-2ad3-4c19-817a-76e8bf04b8db",
+            "decimalPrice": 3.75
+          },
+          {
+            "runnerId": "46dc1cb0-c199-47ae-81aa-64d20b8d1258",
+            "decimalPrice": 5
+          },
+          {
+            "runnerId": "cb81d93d-0f3e-4a36-83ca-3a7d10bb533c",
+            "decimalPrice": 5
+          },
+          {
+            "runnerId": "5277113b-6482-49cc-9a90-eacd8b2e8381",
+            "decimalPrice": 8
+          },
+          {
+            "runnerId": "885e62a2-1e59-4a7f-87f2-1604187e2b64",
+            "decimalPrice": 9
+          },
+          {
+            "runnerId": "55e700c5-928b-4c1d-ab1d-fa78495ac6e6",
+            "decimalPrice": 9.5
+          },
+          {
+            "runnerId": "93e5f56a-2fad-46e1-9e09-556ba0d00523",
+            "decimalPrice": 13
+          },
+          {
+            "runnerId": "084c4b03-1e56-4873-bdd0-38f2acfb0eef",
+            "decimalPrice": 17
+          },
+          {
+            "runnerId": "6d9eb4e7-42f3-4502-b160-c76c6bd6aa68",
+            "decimalPrice": 19
+          },
+          {
+            "runnerId": "4429c8be-2ba3-4786-bbae-1dad7b431ca6",
+            "decimalPrice": 41
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "raceId": "09e2dd0a-bc6f-4975-b9da-c4acee4327f9",
+      "runnerId": "f3813ac7-ba83-4073-acdb-bc0f791d8df5",
+      "horseId": "947a1d6a-14be-4c91-bd08-e93f63315e56",
+      "horseName": "Lancaster Tower",
+      "family": "AW",
+      "raceDate": "2026-10-19",
+      "scheduledOff": "2026-10-19T16:30:00.000Z",
+      "course": "Southwell",
+      "raceName": "bettingsites.co.uk Best Betting Offers EBF Novice Stakes (GBB Race)",
+      "rankSource": "AW Tissue / AW_TISSUE_V1 / rank",
+      "modelHash": "52376e5361e41da6b991aebfbb7f202cebb1f437b1259d55711824f55eead8a8",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-19T09:01:15.995Z",
+      "capturedFieldRunnerIds": [
+        "f3813ac7-ba83-4073-acdb-bc0f791d8df5",
+        "cd7a0f6b-5730-473e-97f0-6bc53817370f",
+        "dffbbed6-993e-4e52-8d0d-f3ef315597cb",
+        "995d85da-48f2-4e60-905b-8f059fe3348a",
+        "0f0aa551-1de0-4ffd-804f-9b1ec3173048",
+        "91f4d4fc-876f-4e90-9363-a0e6b3e00e98",
+        "15facad7-29a3-4074-9238-d630fe39368c",
+        "501aab46-1709-47dd-9d28-a153fab3ecbd",
+        "c8ff4d94-0f36-475b-931d-7edba2aa325b",
+        "00691bdc-28f9-4b02-a442-3cd488a8e122",
+        "6061fc3c-f3ea-4f16-bea6-d59a2d2a86c6",
+        "a5f6e7df-1142-422a-97d1-d400fd57cb3c",
+        "3ec7b75c-467d-4dc3-b117-10e354e8d001",
+        "4dfb2515-f051-4d5a-84e2-79f85e08926c"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 1.57,
+        "normalizedProbability": 0.5017101163283708,
+        "marketRank": 1,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "4/7",
+            "decimalOdds": 1.57
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "4/7",
+            "decimalOdds": 1.57
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "4/7",
+            "decimalOdds": 1.57
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "f3813ac7-ba83-4073-acdb-bc0f791d8df5",
+            "decimalPrice": 1.57
+          },
+          {
+            "runnerId": "cd7a0f6b-5730-473e-97f0-6bc53817370f",
+            "decimalPrice": 6
+          },
+          {
+            "runnerId": "dffbbed6-993e-4e52-8d0d-f3ef315597cb",
+            "decimalPrice": 7
+          },
+          {
+            "runnerId": "995d85da-48f2-4e60-905b-8f059fe3348a",
+            "decimalPrice": 11
+          },
+          {
+            "runnerId": "0f0aa551-1de0-4ffd-804f-9b1ec3173048",
+            "decimalPrice": 19
+          },
+          {
+            "runnerId": "91f4d4fc-876f-4e90-9363-a0e6b3e00e98",
+            "decimalPrice": 29
+          },
+          {
+            "runnerId": "15facad7-29a3-4074-9238-d630fe39368c",
+            "decimalPrice": 31
+          },
+          {
+            "runnerId": "501aab46-1709-47dd-9d28-a153fab3ecbd",
+            "decimalPrice": 34
+          },
+          {
+            "runnerId": "c8ff4d94-0f36-475b-931d-7edba2aa325b",
+            "decimalPrice": 41
+          },
+          {
+            "runnerId": "00691bdc-28f9-4b02-a442-3cd488a8e122",
+            "decimalPrice": 51
+          },
+          {
+            "runnerId": "6061fc3c-f3ea-4f16-bea6-d59a2d2a86c6",
+            "decimalPrice": 67
+          },
+          {
+            "runnerId": "a5f6e7df-1142-422a-97d1-d400fd57cb3c",
+            "decimalPrice": 101
+          },
+          {
+            "runnerId": "3ec7b75c-467d-4dc3-b117-10e354e8d001",
+            "decimalPrice": 126
+          },
+          {
+            "runnerId": "4dfb2515-f051-4d5a-84e2-79f85e08926c",
+            "decimalPrice": 151
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "raceId": "b03e189d-ecbc-429c-a0fb-6ef8b7727cd9",
+      "runnerId": "3b048eba-f6f0-4343-ad62-af85bcf9d264",
+      "horseId": "f372d099-5101-4900-b774-ad1d2739b7b0",
+      "horseName": "Massimo Blue",
+      "family": "AW",
+      "raceDate": "2026-10-19",
+      "scheduledOff": "2026-10-19T17:00:00.000Z",
+      "course": "Southwell",
+      "raceName": "bettingsites.co.uk Best Odds Guaranteed Handicap",
+      "rankSource": "AW Tissue / AW_TISSUE_V1 / rank",
+      "modelHash": "52376e5361e41da6b991aebfbb7f202cebb1f437b1259d55711824f55eead8a8",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-19T09:01:15.995Z",
+      "capturedFieldRunnerIds": [
+        "3b048eba-f6f0-4343-ad62-af85bcf9d264",
+        "4af6cb7c-5e6d-4098-bc63-2a21a4914420",
+        "debbf9e1-36be-4370-b767-8a995b8f13a6",
+        "825a2042-36a0-4c10-9d19-ad9ccf5963e3",
+        "5c2ba5d8-4b20-40ce-b4d1-9464249d786a",
+        "90753834-e487-4402-9df1-a0189354b303",
+        "9b2a5fae-93f9-4c01-b546-b91c43921210",
+        "68e61b7e-079f-4f70-86dd-d41fb4a52194",
+        "81c34d00-ef14-463e-81d2-b32823df111e",
+        "f81aa84e-d5f7-4159-953a-e05e38d7c25f"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 3.25,
+        "normalizedProbability": 0.24939804188628262,
+        "marketRank": 1,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "9/4",
+            "decimalOdds": 3.25
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "9/4",
+            "decimalOdds": 3.25
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "9/4",
+            "decimalOdds": 3.25
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "3b048eba-f6f0-4343-ad62-af85bcf9d264",
+            "decimalPrice": 3.25
+          },
+          {
+            "runnerId": "4af6cb7c-5e6d-4098-bc63-2a21a4914420",
+            "decimalPrice": 4.5
+          },
+          {
+            "runnerId": "debbf9e1-36be-4370-b767-8a995b8f13a6",
+            "decimalPrice": 5
+          },
+          {
+            "runnerId": "825a2042-36a0-4c10-9d19-ad9ccf5963e3",
+            "decimalPrice": 6
+          },
+          {
+            "runnerId": "5c2ba5d8-4b20-40ce-b4d1-9464249d786a",
+            "decimalPrice": 10
+          },
+          {
+            "runnerId": "90753834-e487-4402-9df1-a0189354b303",
+            "decimalPrice": 13
+          },
+          {
+            "runnerId": "9b2a5fae-93f9-4c01-b546-b91c43921210",
+            "decimalPrice": 17
+          },
+          {
+            "runnerId": "68e61b7e-079f-4f70-86dd-d41fb4a52194",
+            "decimalPrice": 19
+          },
+          {
+            "runnerId": "81c34d00-ef14-463e-81d2-b32823df111e",
+            "decimalPrice": 41
+          },
+          {
+            "runnerId": "f81aa84e-d5f7-4159-953a-e05e38d7c25f",
+            "decimalPrice": 41
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "raceId": "70870c73-035d-4725-953c-2909fe8ed40a",
+      "runnerId": "408c6cf3-3030-4eec-97f7-dcbac33ec7f7",
+      "horseId": "0980b13c-bc89-4247-a111-818b485153cc",
+      "horseName": "Casino Star",
+      "family": "AW",
+      "raceDate": "2026-10-19",
+      "scheduledOff": "2026-10-19T17:30:00.000Z",
+      "course": "Southwell",
+      "raceName": "bettingsites.co.uk Free Bets Offers Nursery",
+      "rankSource": "AW Tissue / AW_TISSUE_V1 / rank",
+      "modelHash": "52376e5361e41da6b991aebfbb7f202cebb1f437b1259d55711824f55eead8a8",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-19T09:01:15.995Z",
+      "capturedFieldRunnerIds": [
+        "84f21d8e-ba65-424e-bc1e-14f002f3cf6b",
+        "81e5cf06-ff39-4738-87f4-e16f4b6b975b",
+        "4ce447b5-f0c7-4be9-b435-1ed4f6505691",
+        "408c6cf3-3030-4eec-97f7-dcbac33ec7f7",
+        "bade7565-071e-46e6-81b2-50e3ebc3fa2a",
+        "b685fcbf-d44d-46a5-8481-7b0db704bd18",
+        "f3edb773-a652-4827-82c0-426a691b42c3",
+        "48cd1f31-838d-4087-9e62-9d5a96781da3",
+        "d3045fbf-f8bb-473a-aaa6-8c380c1aefe2",
+        "e4abe3b7-82e5-4857-99ca-4285f491eeab",
+        "02eaa2b2-7fee-48df-ac86-b0919f44b17f",
+        "33568082-69c0-427f-86e5-5ac4a261b88e",
+        "00c907e5-1af6-4a80-81d1-92370bee57b6",
+        "45eeeb78-f4ed-49a6-bf77-3a112e099120"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 5.5,
+        "normalizedProbability": 0.13875492733367223,
+        "marketRank": 3,
+        "quotes": [
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "4/1",
+            "decimalOdds": 5
+          },
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "9/2",
+            "decimalOdds": 5.5
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "5/1",
+            "decimalOdds": 6
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "84f21d8e-ba65-424e-bc1e-14f002f3cf6b",
+            "decimalPrice": 4.5
+          },
+          {
+            "runnerId": "81e5cf06-ff39-4738-87f4-e16f4b6b975b",
+            "decimalPrice": 5
+          },
+          {
+            "runnerId": "4ce447b5-f0c7-4be9-b435-1ed4f6505691",
+            "decimalPrice": 5.5
+          },
+          {
+            "runnerId": "408c6cf3-3030-4eec-97f7-dcbac33ec7f7",
+            "decimalPrice": 5.5
+          },
+          {
+            "runnerId": "bade7565-071e-46e6-81b2-50e3ebc3fa2a",
+            "decimalPrice": 11
+          },
+          {
+            "runnerId": "b685fcbf-d44d-46a5-8481-7b0db704bd18",
+            "decimalPrice": 13
+          },
+          {
+            "runnerId": "f3edb773-a652-4827-82c0-426a691b42c3",
+            "decimalPrice": 15
+          },
+          {
+            "runnerId": "48cd1f31-838d-4087-9e62-9d5a96781da3",
+            "decimalPrice": 15
+          },
+          {
+            "runnerId": "d3045fbf-f8bb-473a-aaa6-8c380c1aefe2",
+            "decimalPrice": 17
+          },
+          {
+            "runnerId": "e4abe3b7-82e5-4857-99ca-4285f491eeab",
+            "decimalPrice": 21
+          },
+          {
+            "runnerId": "02eaa2b2-7fee-48df-ac86-b0919f44b17f",
+            "decimalPrice": 23
+          },
+          {
+            "runnerId": "33568082-69c0-427f-86e5-5ac4a261b88e",
+            "decimalPrice": 34
+          },
+          {
+            "runnerId": "00c907e5-1af6-4a80-81d1-92370bee57b6",
+            "decimalPrice": 41
+          },
+          {
+            "runnerId": "45eeeb78-f4ed-49a6-bf77-3a112e099120",
+            "decimalPrice": 51
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "raceId": "4fecdaa0-c252-4730-96f8-a2f3d40d010c",
+      "runnerId": "e2973b5f-f426-4aba-b812-1693f413dbcb",
+      "horseId": "42365e0a-6684-4f04-8210-7c73dc8a3db3",
+      "horseName": "Wesam",
+      "family": "AW",
+      "raceDate": "2026-10-19",
+      "scheduledOff": "2026-10-19T18:00:00.000Z",
+      "course": "Southwell",
+      "raceName": "bettingsites.co.uk Find Your New Bookmaker Handicap",
+      "rankSource": "AW Tissue / AW_TISSUE_V1 / rank",
+      "modelHash": "52376e5361e41da6b991aebfbb7f202cebb1f437b1259d55711824f55eead8a8",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-19T09:01:15.995Z",
+      "capturedFieldRunnerIds": [
+        "672f1475-ad93-4f37-a41d-370ec4089675",
+        "3beedb81-3263-4df5-a9d6-070070feaf56",
+        "71de91e8-4d34-4eba-9155-9d38ee14e030",
+        "961c931e-b741-4750-abde-00e84c2f7b2f",
+        "f3ab301f-1ecc-4a26-b498-a2c2fd2ccc43",
+        "fe2ee471-aa15-4813-9ef7-3bfa5e524839",
+        "b8d2567a-ce8b-4773-9367-1333b90135b5",
+        "e2973b5f-f426-4aba-b812-1693f413dbcb",
+        "61c0d0d8-124d-4050-a460-064f64c37e3f",
+        "159d8022-81c0-460e-bb1c-3ad5c5a9d471",
+        "fe7faa5f-9b0e-4743-b128-88dd05df72eb"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 13,
+        "normalizedProbability": 0.061221303733811495,
+        "marketRank": 8,
+        "quotes": [
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "11/1",
+            "decimalOdds": 12
+          },
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "12/1",
+            "decimalOdds": 13
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "12/1",
+            "decimalOdds": 13
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "672f1475-ad93-4f37-a41d-370ec4089675",
+            "decimalPrice": 4.5
+          },
+          {
+            "runnerId": "3beedb81-3263-4df5-a9d6-070070feaf56",
+            "decimalPrice": 6
+          },
+          {
+            "runnerId": "71de91e8-4d34-4eba-9155-9d38ee14e030",
+            "decimalPrice": 6.5
+          },
+          {
+            "runnerId": "961c931e-b741-4750-abde-00e84c2f7b2f",
+            "decimalPrice": 7
+          },
+          {
+            "runnerId": "f3ab301f-1ecc-4a26-b498-a2c2fd2ccc43",
+            "decimalPrice": 8
+          },
+          {
+            "runnerId": "fe2ee471-aa15-4813-9ef7-3bfa5e524839",
+            "decimalPrice": 8.5
+          },
+          {
+            "runnerId": "b8d2567a-ce8b-4773-9367-1333b90135b5",
+            "decimalPrice": 12
+          },
+          {
+            "runnerId": "e2973b5f-f426-4aba-b812-1693f413dbcb",
+            "decimalPrice": 13
+          },
+          {
+            "runnerId": "61c0d0d8-124d-4050-a460-064f64c37e3f",
+            "decimalPrice": 13
+          },
+          {
+            "runnerId": "159d8022-81c0-460e-bb1c-3ad5c5a9d471",
+            "decimalPrice": 15
+          },
+          {
+            "runnerId": "fe7faa5f-9b0e-4743-b128-88dd05df72eb",
+            "decimalPrice": 41
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "raceId": "a2d4bc76-c0a5-4fc8-be54-210c1ce8ab00",
+      "runnerId": "b93be51b-3d02-4a3c-b815-d430aa5c1439",
+      "horseId": "6f8cc1d5-15b4-4734-964e-a9774b1bd23a",
+      "horseName": "Ballybunion",
+      "family": "AW",
+      "raceDate": "2026-10-19",
+      "scheduledOff": "2026-10-19T18:30:00.000Z",
+      "course": "Southwell",
+      "raceName": "bettingsites.co.uk New Betting Sites Handicap",
+      "rankSource": "AW Tissue / AW_TISSUE_V1 / rank",
+      "modelHash": "52376e5361e41da6b991aebfbb7f202cebb1f437b1259d55711824f55eead8a8",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-19T09:01:15.995Z",
+      "capturedFieldRunnerIds": [
+        "b93be51b-3d02-4a3c-b815-d430aa5c1439",
+        "4076602b-7260-4c91-86e6-6f2d30cdb06b",
+        "6998edd6-899a-41f8-8653-225faf6a9a8b",
+        "897ef830-4d20-4eeb-a0a4-d0c531ed655e",
+        "fc7b3b35-a996-40da-9745-6ab1d2269c9b",
+        "87b7fa4d-a422-4aa9-aa43-5bf1a690c534",
+        "06725345-74df-4133-bcf7-6eccb4e653ff",
+        "d8fff683-165f-44bc-8509-c84825af21e1",
+        "7e0c5e50-ceff-4cfa-a3ac-c92c0619161c",
+        "d847b860-9ca3-4ce8-b7d5-10709cc4ae02",
+        "7dcb956d-8543-4013-a8d9-5e482f9d72cd",
+        "b95657cf-2747-46b6-8038-d4c88d5aada6",
+        "0e91b188-a0d8-43ef-810f-9184e022e2c4",
+        "22a3350f-5e0b-403f-bd5a-8cbcad66bdde"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 3.5,
+        "normalizedProbability": 0.22383939284187762,
+        "marketRank": 1,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "5/2",
+            "decimalOdds": 3.5
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "5/2",
+            "decimalOdds": 3.5
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "5/2",
+            "decimalOdds": 3.5
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "b93be51b-3d02-4a3c-b815-d430aa5c1439",
+            "decimalPrice": 3.5
+          },
+          {
+            "runnerId": "4076602b-7260-4c91-86e6-6f2d30cdb06b",
+            "decimalPrice": 5.5
+          },
+          {
+            "runnerId": "6998edd6-899a-41f8-8653-225faf6a9a8b",
+            "decimalPrice": 7
+          },
+          {
+            "runnerId": "897ef830-4d20-4eeb-a0a4-d0c531ed655e",
+            "decimalPrice": 8.5
+          },
+          {
+            "runnerId": "fc7b3b35-a996-40da-9745-6ab1d2269c9b",
+            "decimalPrice": 9.5
+          },
+          {
+            "runnerId": "87b7fa4d-a422-4aa9-aa43-5bf1a690c534",
+            "decimalPrice": 13
+          },
+          {
+            "runnerId": "06725345-74df-4133-bcf7-6eccb4e653ff",
+            "decimalPrice": 13
+          },
+          {
+            "runnerId": "d8fff683-165f-44bc-8509-c84825af21e1",
+            "decimalPrice": 13
+          },
+          {
+            "runnerId": "7e0c5e50-ceff-4cfa-a3ac-c92c0619161c",
+            "decimalPrice": 19
+          },
+          {
+            "runnerId": "d847b860-9ca3-4ce8-b7d5-10709cc4ae02",
+            "decimalPrice": 21
+          },
+          {
+            "runnerId": "7dcb956d-8543-4013-a8d9-5e482f9d72cd",
+            "decimalPrice": 23
+          },
+          {
+            "runnerId": "b95657cf-2747-46b6-8038-d4c88d5aada6",
+            "decimalPrice": 34
+          },
+          {
+            "runnerId": "0e91b188-a0d8-43ef-810f-9184e022e2c4",
+            "decimalPrice": 51
+          },
+          {
+            "runnerId": "22a3350f-5e0b-403f-bd5a-8cbcad66bdde",
+            "decimalPrice": 51
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "raceId": "72c368f1-e039-4c7c-9b63-c2aae1903dc8",
+      "runnerId": "6a9df446-0c89-43d0-beed-fd3b03b3ee05",
+      "horseId": "cc78d698-17dc-4866-a291-9bb990778b6b",
+      "horseName": "I'm The One",
+      "family": "AW",
+      "raceDate": "2026-10-19",
+      "scheduledOff": "2026-10-19T19:00:00.000Z",
+      "course": "Southwell",
+      "raceName": "bettingsites.co.uk For Fast Withdrawals Novice Stakes (GBB/GBBPlus Race)",
+      "rankSource": "AW Tissue / AW_TISSUE_V1 / rank",
+      "modelHash": "52376e5361e41da6b991aebfbb7f202cebb1f437b1259d55711824f55eead8a8",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-19T09:01:15.995Z",
+      "capturedFieldRunnerIds": [
+        "6a9df446-0c89-43d0-beed-fd3b03b3ee05",
+        "4f8abab6-9a7e-4caa-9703-0e338e0fac57",
+        "f1905639-5a26-47f0-9481-4ecb193c725b",
+        "d72f574d-b235-4498-b332-cca9ce4dc4fd",
+        "4faebe87-20b1-4df7-9f12-b7d36e0eb45e"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 1.44,
+        "normalizedProbability": 0.5990098589215379,
+        "marketRank": 1,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "4/9",
+            "decimalOdds": 1.44
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "4/9",
+            "decimalOdds": 1.44
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "4/9",
+            "decimalOdds": 1.44
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "6a9df446-0c89-43d0-beed-fd3b03b3ee05",
+            "decimalPrice": 1.44
+          },
+          {
+            "runnerId": "4f8abab6-9a7e-4caa-9703-0e338e0fac57",
+            "decimalPrice": 4
+          },
+          {
+            "runnerId": "f1905639-5a26-47f0-9481-4ecb193c725b",
+            "decimalPrice": 5
+          },
+          {
+            "runnerId": "d72f574d-b235-4498-b332-cca9ce4dc4fd",
+            "decimalPrice": 101
+          },
+          {
+            "runnerId": "4faebe87-20b1-4df7-9f12-b7d36e0eb45e",
+            "decimalPrice": 201
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "raceId": "471d4a0b-8fb1-4c88-b9e3-0a083c620588",
+      "runnerId": "4bb50d46-e8ff-43df-b4f1-8010f4b326e3",
+      "horseId": "1edb290e-5084-4322-a510-3f8f01a61b98",
+      "horseName": "Symphony's Song",
+      "family": "AW",
+      "raceDate": "2026-10-19",
+      "scheduledOff": "2026-10-19T19:30:00.000Z",
+      "course": "Southwell",
+      "raceName": "bettingsites.co.uk Handicap",
+      "rankSource": "AW Tissue / AW_TISSUE_V1 / rank",
+      "modelHash": "52376e5361e41da6b991aebfbb7f202cebb1f437b1259d55711824f55eead8a8",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-19T09:01:15.995Z",
+      "capturedFieldRunnerIds": [
+        "03df2b62-92d0-49d4-889a-aee1155ad9a8",
+        "4eb8fb2a-358e-47cc-a195-e196e0c03f18",
+        "3827ce14-c5a2-44bc-9138-a1a320703cb7",
+        "4bb50d46-e8ff-43df-b4f1-8010f4b326e3",
+        "f68060a7-649e-41ef-8de2-284208918833",
+        "49768258-a20e-4a27-8892-83ff71206279",
+        "f623b50c-a6e0-4ab1-9fb2-502a50e690c5",
+        "8e9980cb-1ced-48e4-8989-c18f7ac881ce",
+        "fb73b1a5-112e-48e4-b0d4-5b87582f8e74"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 7.5,
+        "normalizedProbability": 0.10996032097393914,
+        "marketRank": 4,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "13/2",
+            "decimalOdds": 7.5
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "13/2",
+            "decimalOdds": 7.5
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "7/1",
+            "decimalOdds": 8
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "03df2b62-92d0-49d4-889a-aee1155ad9a8",
+            "decimalPrice": 2.38
+          },
+          {
+            "runnerId": "4eb8fb2a-358e-47cc-a195-e196e0c03f18",
+            "decimalPrice": 4
+          },
+          {
+            "runnerId": "3827ce14-c5a2-44bc-9138-a1a320703cb7",
+            "decimalPrice": 6.5
+          },
+          {
+            "runnerId": "4bb50d46-e8ff-43df-b4f1-8010f4b326e3",
+            "decimalPrice": 7.5
+          },
+          {
+            "runnerId": "f68060a7-649e-41ef-8de2-284208918833",
+            "decimalPrice": 15
+          },
+          {
+            "runnerId": "49768258-a20e-4a27-8892-83ff71206279",
+            "decimalPrice": 17
+          },
+          {
+            "runnerId": "f623b50c-a6e0-4ab1-9fb2-502a50e690c5",
+            "decimalPrice": 21
+          },
+          {
+            "runnerId": "8e9980cb-1ced-48e4-8989-c18f7ac881ce",
+            "decimalPrice": 21
+          },
+          {
+            "runnerId": "fb73b1a5-112e-48e4-b0d4-5b87582f8e74",
+            "decimalPrice": 29
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "raceId": "a4c68fcd-83ce-419a-a16c-8b53ee49a190",
+      "runnerId": "cf3fa258-93f7-4920-aca6-35580b0cfa4c",
+      "horseId": "2b541f8b-94f0-46c5-9e8d-92e0e746d095",
+      "horseName": "Stormy Winter",
+      "family": "AW",
+      "raceDate": "2026-10-19",
+      "scheduledOff": "2026-10-19T15:15:00.000Z",
+      "course": "Wolverhampton",
+      "raceName": "Download The At The Races App Nursery (Div 1)",
+      "rankSource": "AW Tissue / AW_TISSUE_V1 / rank",
+      "modelHash": "52376e5361e41da6b991aebfbb7f202cebb1f437b1259d55711824f55eead8a8",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-19T09:01:15.995Z",
+      "capturedFieldRunnerIds": [
+        "cf3fa258-93f7-4920-aca6-35580b0cfa4c",
+        "232a5cab-86bd-403c-9d9e-f0d45597a0a8",
+        "f259330f-1769-404a-92a0-60aedae351c5",
+        "34186d88-5042-4abd-b12f-dcdf9c4e5025",
+        "f3e076a4-025c-44cf-8f88-ef1909145936",
+        "8e5fd2c6-4512-41b7-a9cb-304e7dcf5fbe",
+        "1d13a9e8-e861-481f-bd44-e04de882bfc0",
+        "04171ef9-90c4-4f70-a3e3-341f6acbfcbc",
+        "e6a9e151-aae8-48c2-8372-2fde1c33bca2",
+        "8bb7e2b8-8b1b-4fdd-bd3c-1049520a62bd"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 1.83,
+        "normalizedProbability": 0.4325790994664397,
+        "marketRank": 1,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "5/6",
+            "decimalOdds": 1.83
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "5/6",
+            "decimalOdds": 1.83
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "10/11",
+            "decimalOdds": 1.91
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "cf3fa258-93f7-4920-aca6-35580b0cfa4c",
+            "decimalPrice": 1.83
+          },
+          {
+            "runnerId": "232a5cab-86bd-403c-9d9e-f0d45597a0a8",
+            "decimalPrice": 3.75
+          },
+          {
+            "runnerId": "f259330f-1769-404a-92a0-60aedae351c5",
+            "decimalPrice": 7.5
+          },
+          {
+            "runnerId": "34186d88-5042-4abd-b12f-dcdf9c4e5025",
+            "decimalPrice": 15
+          },
+          {
+            "runnerId": "f3e076a4-025c-44cf-8f88-ef1909145936",
+            "decimalPrice": 19
+          },
+          {
+            "runnerId": "8e5fd2c6-4512-41b7-a9cb-304e7dcf5fbe",
+            "decimalPrice": 21
+          },
+          {
+            "runnerId": "1d13a9e8-e861-481f-bd44-e04de882bfc0",
+            "decimalPrice": 26
+          },
+          {
+            "runnerId": "04171ef9-90c4-4f70-a3e3-341f6acbfcbc",
+            "decimalPrice": 26
+          },
+          {
+            "runnerId": "e6a9e151-aae8-48c2-8372-2fde1c33bca2",
+            "decimalPrice": 26
+          },
+          {
+            "runnerId": "8bb7e2b8-8b1b-4fdd-bd3c-1049520a62bd",
+            "decimalPrice": 29
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "raceId": "d2041ef6-2a6d-40bc-ac2c-d430de7df833",
+      "runnerId": "c02500a0-a4dd-485c-9d5b-ef73f2b7ad17",
+      "horseId": "42a63a06-3d77-4752-9586-0ebb64e8b165",
+      "horseName": "Global Success",
+      "family": "AW",
+      "raceDate": "2026-10-19",
+      "scheduledOff": "2026-10-19T15:45:00.000Z",
+      "course": "Wolverhampton",
+      "raceName": "Download The At The Races App Nursery (Div 2)",
+      "rankSource": "AW Tissue / AW_TISSUE_V1 / rank",
+      "modelHash": "52376e5361e41da6b991aebfbb7f202cebb1f437b1259d55711824f55eead8a8",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-19T09:01:15.995Z",
+      "capturedFieldRunnerIds": [
+        "cddf0b59-88f6-49a5-9204-b998e74eeee0",
+        "c02500a0-a4dd-485c-9d5b-ef73f2b7ad17",
+        "297298b0-234f-4c50-87bd-6280a75a1dd7",
+        "53f12d24-c65a-4f91-947b-938231984cdd",
+        "f51b79e0-52fb-495a-8741-3c4ba9cf5b5f",
+        "d4782803-532e-42b5-9fb0-9339532f528a",
+        "07b77ba1-479f-4679-8a6a-7c061a031a28",
+        "89e4dcfc-54d9-4c9b-a117-1609e1b646aa",
+        "0e6074dc-dc42-4014-85ad-f601fe885c7e",
+        "ae0304fa-5ea0-4e92-9aa1-ddfb11fa8f4e",
+        "e85d866c-a3dd-4102-8e62-4e9667a14b82",
+        "f47ce6b2-8a24-4a9b-9b35-b4e985b778c6"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 6,
+        "normalizedProbability": 0.13636483964184595,
+        "marketRank": 2,
+        "quotes": [
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "4/1",
+            "decimalOdds": 5
+          },
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "5/1",
+            "decimalOdds": 6
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "5/1",
+            "decimalOdds": 6
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "cddf0b59-88f6-49a5-9204-b998e74eeee0",
+            "decimalPrice": 2.63
+          },
+          {
+            "runnerId": "c02500a0-a4dd-485c-9d5b-ef73f2b7ad17",
+            "decimalPrice": 6
+          },
+          {
+            "runnerId": "297298b0-234f-4c50-87bd-6280a75a1dd7",
+            "decimalPrice": 7.5
+          },
+          {
+            "runnerId": "53f12d24-c65a-4f91-947b-938231984cdd",
+            "decimalPrice": 10
+          },
+          {
+            "runnerId": "f51b79e0-52fb-495a-8741-3c4ba9cf5b5f",
+            "decimalPrice": 11
+          },
+          {
+            "runnerId": "d4782803-532e-42b5-9fb0-9339532f528a",
+            "decimalPrice": 11
+          },
+          {
+            "runnerId": "07b77ba1-479f-4679-8a6a-7c061a031a28",
+            "decimalPrice": 15
+          },
+          {
+            "runnerId": "89e4dcfc-54d9-4c9b-a117-1609e1b646aa",
+            "decimalPrice": 19
+          },
+          {
+            "runnerId": "0e6074dc-dc42-4014-85ad-f601fe885c7e",
+            "decimalPrice": 19
+          },
+          {
+            "runnerId": "ae0304fa-5ea0-4e92-9aa1-ddfb11fa8f4e",
+            "decimalPrice": 34
+          },
+          {
+            "runnerId": "e85d866c-a3dd-4102-8e62-4e9667a14b82",
+            "decimalPrice": 34
+          },
+          {
+            "runnerId": "f47ce6b2-8a24-4a9b-9b35-b4e985b778c6",
+            "decimalPrice": 34
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "raceId": "312892ff-62c8-4a6e-b1c7-561aa4d81236",
+      "runnerId": "e3988928-aed7-419e-8853-ecef4c0b5b5a",
+      "horseId": "8c4a46ec-e5e4-46fe-8c39-cc907ba08535",
+      "horseName": "Powder Monkey",
+      "family": "AW",
+      "raceDate": "2026-10-19",
+      "scheduledOff": "2026-10-19T16:15:00.000Z",
+      "course": "Wolverhampton",
+      "raceName": "Sky Sports Racing Sky 415 Handicap",
+      "rankSource": "AW Tissue / AW_TISSUE_V1 / rank",
+      "modelHash": "52376e5361e41da6b991aebfbb7f202cebb1f437b1259d55711824f55eead8a8",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-19T09:01:15.995Z",
+      "capturedFieldRunnerIds": [
+        "e3988928-aed7-419e-8853-ecef4c0b5b5a",
+        "f5fae0df-5458-4683-bd33-d772dcb15759",
+        "71b15e01-4cbf-4081-b0ab-4ca11fb863d8",
+        "a18ca109-e3e1-4a9c-ad3b-2b558b12109e",
+        "84216511-8af0-4df6-919b-25f503519f4b",
+        "a60d662c-b2af-4392-8ec3-874f9f46b697",
+        "cdc121d8-3529-4071-abce-4357b0d347ae",
+        "99b47ba9-5e18-4ac6-9d28-9728c27e734b",
+        "820d460e-d435-45ef-aea1-6e6a124caed7",
+        "ba6da063-4cea-4e92-b578-6a03587fbbf7",
+        "f36de7fd-c5c8-4b58-98c2-72faba46434a",
+        "817f9df4-58fa-4ce8-8093-f0d7d71be0db"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 3.25,
+        "normalizedProbability": 0.23266503839426603,
+        "marketRank": 1,
+        "quotes": [
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "2/1",
+            "decimalOdds": 3
+          },
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "9/4",
+            "decimalOdds": 3.25
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "9/4",
+            "decimalOdds": 3.25
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "e3988928-aed7-419e-8853-ecef4c0b5b5a",
+            "decimalPrice": 3.25
+          },
+          {
+            "runnerId": "f5fae0df-5458-4683-bd33-d772dcb15759",
+            "decimalPrice": 4.33
+          },
+          {
+            "runnerId": "71b15e01-4cbf-4081-b0ab-4ca11fb863d8",
+            "decimalPrice": 4.5
+          },
+          {
+            "runnerId": "a18ca109-e3e1-4a9c-ad3b-2b558b12109e",
+            "decimalPrice": 4.5
+          },
+          {
+            "runnerId": "84216511-8af0-4df6-919b-25f503519f4b",
+            "decimalPrice": 12
+          },
+          {
+            "runnerId": "a60d662c-b2af-4392-8ec3-874f9f46b697",
+            "decimalPrice": 21
+          },
+          {
+            "runnerId": "cdc121d8-3529-4071-abce-4357b0d347ae",
+            "decimalPrice": 21
+          },
+          {
+            "runnerId": "99b47ba9-5e18-4ac6-9d28-9728c27e734b",
+            "decimalPrice": 26
+          },
+          {
+            "runnerId": "820d460e-d435-45ef-aea1-6e6a124caed7",
+            "decimalPrice": 26
+          },
+          {
+            "runnerId": "ba6da063-4cea-4e92-b578-6a03587fbbf7",
+            "decimalPrice": 29
+          },
+          {
+            "runnerId": "f36de7fd-c5c8-4b58-98c2-72faba46434a",
+            "decimalPrice": 29
+          },
+          {
+            "runnerId": "817f9df4-58fa-4ce8-8093-f0d7d71be0db",
+            "decimalPrice": 67
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "raceId": "fe5cc8a7-7817-4b92-a894-b44c1f3d0f76",
+      "runnerId": "b032c5a3-ad11-42a8-8115-42d1d574eb99",
+      "horseId": "f6f5028b-8c41-4c21-aced-7da3b2e6a179",
+      "horseName": "Al Zanati",
+      "family": "AW",
+      "raceDate": "2026-10-19",
+      "scheduledOff": "2026-10-19T16:45:00.000Z",
+      "course": "Wolverhampton",
+      "raceName": "Race And Rest - Wolverhampton Holiday Inn Conditions Stakes (GBB Race)",
+      "rankSource": "AW Tissue / AW_TISSUE_V1 / rank",
+      "modelHash": "52376e5361e41da6b991aebfbb7f202cebb1f437b1259d55711824f55eead8a8",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-19T09:01:15.995Z",
+      "capturedFieldRunnerIds": [
+        "48a11d43-4663-4f07-930d-48c48f0ec62f",
+        "b032c5a3-ad11-42a8-8115-42d1d574eb99",
+        "1577760f-eaf1-4ad2-bcdb-43808e23c46a",
+        "40e52612-fbe9-47d2-98af-c1681ffaa8fc",
+        "bf8aa9b6-1860-4d66-a581-d044bf17f01d",
+        "c0ac23a8-c996-4128-b20d-284c53863a95"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 3.25,
+        "normalizedProbability": 0.2745123730138716,
+        "marketRank": 2,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "9/4",
+            "decimalOdds": 3.25
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "9/4",
+            "decimalOdds": 3.25
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "9/4",
+            "decimalOdds": 3.25
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "48a11d43-4663-4f07-930d-48c48f0ec62f",
+            "decimalPrice": 2.38
+          },
+          {
+            "runnerId": "b032c5a3-ad11-42a8-8115-42d1d574eb99",
+            "decimalPrice": 3.25
+          },
+          {
+            "runnerId": "1577760f-eaf1-4ad2-bcdb-43808e23c46a",
+            "decimalPrice": 7.5
+          },
+          {
+            "runnerId": "40e52612-fbe9-47d2-98af-c1681ffaa8fc",
+            "decimalPrice": 8
+          },
+          {
+            "runnerId": "bf8aa9b6-1860-4d66-a581-d044bf17f01d",
+            "decimalPrice": 9.5
+          },
+          {
+            "runnerId": "c0ac23a8-c996-4128-b20d-284c53863a95",
+            "decimalPrice": 34
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "raceId": "11bcfb47-1d38-47a0-8019-bc805c465eba",
+      "runnerId": "eb8cd93b-e212-45fd-b6dc-1da7c7df6b27",
+      "horseId": "1d7aa544-4efb-4e2f-a292-5cad9c763ac1",
+      "horseName": "Regal Envoy",
+      "family": "AW",
+      "raceDate": "2026-10-19",
+      "scheduledOff": "2026-10-19T17:15:00.000Z",
+      "course": "Wolverhampton",
+      "raceName": "Cavani Best Dressed Handicap",
+      "rankSource": "AW Tissue / AW_TISSUE_V1 / rank",
+      "modelHash": "52376e5361e41da6b991aebfbb7f202cebb1f437b1259d55711824f55eead8a8",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-19T09:01:15.995Z",
+      "capturedFieldRunnerIds": [
+        "aca90f6a-0395-43af-9937-2bcfa05efd4c",
+        "b1c8810c-7f36-416b-9bbf-8f5f9000c3e6",
+        "14228c6b-8346-42c4-9b46-e886292503d3",
+        "3d55b605-8cf7-4e17-990a-42e310124e3e",
+        "eb8cd93b-e212-45fd-b6dc-1da7c7df6b27",
+        "e2310a03-e6b0-485f-a6de-0665995860ed",
+        "f4dd787b-b42b-4c16-bcf6-ebd0c46fd9b8",
+        "e421a6fb-2f05-48d0-b0b6-85fbcf7d825c",
+        "01a06974-79e6-478a-9b08-db5454a12d31",
+        "07c050da-0e95-4c30-96e6-1b75d544bf0a",
+        "a9d8c5a4-d41b-4909-b499-9b354a0d0c8e",
+        "8f8cd271-894c-468c-9ef4-db81e62a506f"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 9,
+        "normalizedProbability": 0.08723490500370065,
+        "marketRank": 5,
+        "quotes": [
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "15/2",
+            "decimalOdds": 8.5
+          },
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "8/1",
+            "decimalOdds": 9
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "8/1",
+            "decimalOdds": 9
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "aca90f6a-0395-43af-9937-2bcfa05efd4c",
+            "decimalPrice": 4.5
+          },
+          {
+            "runnerId": "b1c8810c-7f36-416b-9bbf-8f5f9000c3e6",
+            "decimalPrice": 6
+          },
+          {
+            "runnerId": "14228c6b-8346-42c4-9b46-e886292503d3",
+            "decimalPrice": 6.5
+          },
+          {
+            "runnerId": "3d55b605-8cf7-4e17-990a-42e310124e3e",
+            "decimalPrice": 8
+          },
+          {
+            "runnerId": "eb8cd93b-e212-45fd-b6dc-1da7c7df6b27",
+            "decimalPrice": 9
+          },
+          {
+            "runnerId": "e2310a03-e6b0-485f-a6de-0665995860ed",
+            "decimalPrice": 10
+          },
+          {
+            "runnerId": "f4dd787b-b42b-4c16-bcf6-ebd0c46fd9b8",
+            "decimalPrice": 11
+          },
+          {
+            "runnerId": "e421a6fb-2f05-48d0-b0b6-85fbcf7d825c",
+            "decimalPrice": 12
+          },
+          {
+            "runnerId": "01a06974-79e6-478a-9b08-db5454a12d31",
+            "decimalPrice": 13
+          },
+          {
+            "runnerId": "07c050da-0e95-4c30-96e6-1b75d544bf0a",
+            "decimalPrice": 15
+          },
+          {
+            "runnerId": "a9d8c5a4-d41b-4909-b499-9b354a0d0c8e",
+            "decimalPrice": 19
+          },
+          {
+            "runnerId": "8f8cd271-894c-468c-9ef4-db81e62a506f",
+            "decimalPrice": 41
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "raceId": "35784386-cad6-4f87-af97-da581cb293ce",
+      "runnerId": "49f0fee8-94ef-451b-9b2e-be90c1436eb9",
+      "horseId": "c3af520b-c77f-4104-9404-3da446cf1a52",
+      "horseName": "Dance Fantasy",
+      "family": "AW",
+      "raceDate": "2026-10-19",
+      "scheduledOff": "2026-10-19T17:45:00.000Z",
+      "course": "Wolverhampton",
+      "raceName": "Cavani Tailored Champion Handicap",
+      "rankSource": "AW Tissue / AW_TISSUE_V1 / rank",
+      "modelHash": "52376e5361e41da6b991aebfbb7f202cebb1f437b1259d55711824f55eead8a8",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-19T09:01:15.995Z",
+      "capturedFieldRunnerIds": [
+        "0cc124b2-b406-4a6b-8788-2dfaa591c70c",
+        "d9184bf8-5b2b-4a6b-8edb-9e7814b9dac0",
+        "8b9cc57f-88c8-47fa-adbd-e601332ecd01",
+        "49f0fee8-94ef-451b-9b2e-be90c1436eb9",
+        "a8114e16-ff6b-442d-8725-0d30ded813cb",
+        "805ba02d-3321-4031-bd21-006b43234b4d",
+        "c1fc6313-6d44-43d9-96cf-5f8985084516",
+        "80b8f6a0-bc1d-4ed0-8006-948e97c8236d",
+        "8ec8cbf8-4030-44ac-be8c-decbcc568c2d",
+        "f8cff869-93d5-4788-bc8c-b0a3dc6c1017",
+        "035ca60d-964f-45d2-9e87-400dedfa70a2",
+        "37d51e65-1455-43ff-8771-1788ffd7c1e0",
+        "7ea07c86-94d1-45be-92f3-cf0e3d5c6cc7"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 7,
+        "normalizedProbability": 0.10887800639637761,
+        "marketRank": 4,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "11/2",
+            "decimalOdds": 6.5
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "6/1",
+            "decimalOdds": 7
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "6/1",
+            "decimalOdds": 7
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "0cc124b2-b406-4a6b-8788-2dfaa591c70c",
+            "decimalPrice": 3.75
+          },
+          {
+            "runnerId": "d9184bf8-5b2b-4a6b-8edb-9e7814b9dac0",
+            "decimalPrice": 6
+          },
+          {
+            "runnerId": "8b9cc57f-88c8-47fa-adbd-e601332ecd01",
+            "decimalPrice": 6.5
+          },
+          {
+            "runnerId": "49f0fee8-94ef-451b-9b2e-be90c1436eb9",
+            "decimalPrice": 7
+          },
+          {
+            "runnerId": "a8114e16-ff6b-442d-8725-0d30ded813cb",
+            "decimalPrice": 8
+          },
+          {
+            "runnerId": "805ba02d-3321-4031-bd21-006b43234b4d",
+            "decimalPrice": 8.5
+          },
+          {
+            "runnerId": "c1fc6313-6d44-43d9-96cf-5f8985084516",
+            "decimalPrice": 11
+          },
+          {
+            "runnerId": "80b8f6a0-bc1d-4ed0-8006-948e97c8236d",
+            "decimalPrice": 12
+          },
+          {
+            "runnerId": "8ec8cbf8-4030-44ac-be8c-decbcc568c2d",
+            "decimalPrice": 26
+          },
+          {
+            "runnerId": "f8cff869-93d5-4788-bc8c-b0a3dc6c1017",
+            "decimalPrice": 26
+          },
+          {
+            "runnerId": "035ca60d-964f-45d2-9e87-400dedfa70a2",
+            "decimalPrice": 34
+          },
+          {
+            "runnerId": "37d51e65-1455-43ff-8771-1788ffd7c1e0",
+            "decimalPrice": 34
+          },
+          {
+            "runnerId": "7ea07c86-94d1-45be-92f3-cf0e3d5c6cc7",
+            "decimalPrice": 34
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "raceId": "16c4911f-f5c4-4903-a502-e848df891256",
+      "runnerId": "9396deba-8c99-4661-8083-f87ec6ee8b06",
+      "horseId": "2cd75d55-f93a-4a59-bb0d-a58273417bc2",
+      "horseName": "Little Miss India",
+      "family": "AW",
+      "raceDate": "2026-10-19",
+      "scheduledOff": "2026-10-19T18:15:00.000Z",
+      "course": "Wolverhampton",
+      "raceName": "attheraces.com/marketmovers Handicap",
+      "rankSource": "AW Tissue / AW_TISSUE_V1 / rank",
+      "modelHash": "52376e5361e41da6b991aebfbb7f202cebb1f437b1259d55711824f55eead8a8",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-19T09:01:15.995Z",
+      "capturedFieldRunnerIds": [
+        "c2aad6c2-87de-468a-923f-90b3c76a5e5f",
+        "99fe2088-d9f5-44c5-835b-d71fad8d92be",
+        "1da90ee4-5ee0-43b3-8b85-3d0a04c86f2d",
+        "36e85606-d0b3-430f-a56c-5e30d55aff17",
+        "24c7b941-f1c7-4189-aea6-35e062764399",
+        "464299cc-b4a5-4ba3-a9ac-3f28def8ced0",
+        "f9cad2bc-6076-4b8c-a4a7-f834e5207b3e",
+        "2f624195-c7be-4771-a16d-61bd8ce3d863",
+        "9259343e-90d5-46a2-a553-4711a12e9ba6",
+        "9396deba-8c99-4661-8083-f87ec6ee8b06",
+        "7140b467-b12e-4073-9c87-7713a2af3b4b"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 23,
+        "normalizedProbability": 0.03479765523968242,
+        "marketRank": 10,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "22/1",
+            "decimalOdds": 23
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "22/1",
+            "decimalOdds": 23
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "22/1",
+            "decimalOdds": 23
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "c2aad6c2-87de-468a-923f-90b3c76a5e5f",
+            "decimalPrice": 4
+          },
+          {
+            "runnerId": "99fe2088-d9f5-44c5-835b-d71fad8d92be",
+            "decimalPrice": 6
+          },
+          {
+            "runnerId": "1da90ee4-5ee0-43b3-8b85-3d0a04c86f2d",
+            "decimalPrice": 6
+          },
+          {
+            "runnerId": "36e85606-d0b3-430f-a56c-5e30d55aff17",
+            "decimalPrice": 6.5
+          },
+          {
+            "runnerId": "24c7b941-f1c7-4189-aea6-35e062764399",
+            "decimalPrice": 8.5
+          },
+          {
+            "runnerId": "464299cc-b4a5-4ba3-a9ac-3f28def8ced0",
+            "decimalPrice": 9.5
+          },
+          {
+            "runnerId": "f9cad2bc-6076-4b8c-a4a7-f834e5207b3e",
+            "decimalPrice": 13
+          },
+          {
+            "runnerId": "2f624195-c7be-4771-a16d-61bd8ce3d863",
+            "decimalPrice": 15
+          },
+          {
+            "runnerId": "9259343e-90d5-46a2-a553-4711a12e9ba6",
+            "decimalPrice": 17
+          },
+          {
+            "runnerId": "9396deba-8c99-4661-8083-f87ec6ee8b06",
+            "decimalPrice": 23
+          },
+          {
+            "runnerId": "7140b467-b12e-4073-9c87-7713a2af3b4b",
+            "decimalPrice": 23
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "raceId": "be796def-b8c6-42f1-ba24-dec6c2037e8a",
+      "runnerId": "bc14a78f-d162-4f32-85ca-40877127f6aa",
+      "horseId": "74863a58-498b-40e0-bb1b-b4afa4e444c3",
+      "horseName": "Little Jaybee",
+      "family": "AW",
+      "raceDate": "2026-10-19",
+      "scheduledOff": "2026-10-19T18:45:00.000Z",
+      "course": "Wolverhampton",
+      "raceName": "Follow attheraces On Instagram Handicap",
+      "rankSource": "AW Tissue / AW_TISSUE_V1 / rank",
+      "modelHash": "52376e5361e41da6b991aebfbb7f202cebb1f437b1259d55711824f55eead8a8",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-19T09:01:15.995Z",
+      "capturedFieldRunnerIds": [
+        "bc14a78f-d162-4f32-85ca-40877127f6aa",
+        "a502a7e2-ab12-439c-aa24-82754707fa30",
+        "b0e4d41b-6f58-4cb4-9cac-f3cbbf4b07c3",
+        "ee304b01-75e4-4572-bbf6-79303a4c7770",
+        "a90fb1a0-bf9c-4b52-8d07-c5721376c661",
+        "9065245c-5d9c-4562-ab86-e8248b685387",
+        "e96140cf-424c-4338-ae06-5bfadc1153f9",
+        "de3a3a5f-5a78-48d3-810a-8c0e094ad287",
+        "25f6867d-d455-4239-a810-e7584e5e06fc",
+        "9af49a14-1511-47f3-bc6f-0f1b484ae96a",
+        "dfc70f0d-678f-4fa4-8c64-b5a175cbb37d"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 4,
+        "normalizedProbability": 0.20630041848985142,
+        "marketRank": 1,
+        "quotes": [
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "11/4",
+            "decimalOdds": 3.75
+          },
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "3/1",
+            "decimalOdds": 4
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "3/1",
+            "decimalOdds": 4
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "bc14a78f-d162-4f32-85ca-40877127f6aa",
+            "decimalPrice": 4
+          },
+          {
+            "runnerId": "a502a7e2-ab12-439c-aa24-82754707fa30",
+            "decimalPrice": 4.5
+          },
+          {
+            "runnerId": "b0e4d41b-6f58-4cb4-9cac-f3cbbf4b07c3",
+            "decimalPrice": 6
+          },
+          {
+            "runnerId": "ee304b01-75e4-4572-bbf6-79303a4c7770",
+            "decimalPrice": 7
+          },
+          {
+            "runnerId": "a90fb1a0-bf9c-4b52-8d07-c5721376c661",
+            "decimalPrice": 8
+          },
+          {
+            "runnerId": "9065245c-5d9c-4562-ab86-e8248b685387",
+            "decimalPrice": 8
+          },
+          {
+            "runnerId": "e96140cf-424c-4338-ae06-5bfadc1153f9",
+            "decimalPrice": 17
+          },
+          {
+            "runnerId": "de3a3a5f-5a78-48d3-810a-8c0e094ad287",
+            "decimalPrice": 23
+          },
+          {
+            "runnerId": "25f6867d-d455-4239-a810-e7584e5e06fc",
+            "decimalPrice": 26
+          },
+          {
+            "runnerId": "9af49a14-1511-47f3-bc6f-0f1b484ae96a",
+            "decimalPrice": 41
+          },
+          {
+            "runnerId": "dfc70f0d-678f-4fa4-8c64-b5a175cbb37d",
+            "decimalPrice": 67
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "raceId": "30226553-1329-4455-a005-48fce66599a0",
+      "runnerId": "36e30a6b-1db8-4439-b906-294acdc7446d",
+      "horseId": "ddf75192-a3ec-479d-b20c-65199f147798",
+      "horseName": "Got The Booty",
+      "family": "AW",
+      "raceDate": "2026-10-19",
+      "scheduledOff": "2026-10-19T19:15:00.000Z",
+      "course": "Wolverhampton",
+      "raceName": "Book Now At wolverhampton-racecourse.co.uk Fillies' Handicap",
+      "rankSource": "AW Tissue / AW_TISSUE_V1 / rank",
+      "modelHash": "52376e5361e41da6b991aebfbb7f202cebb1f437b1259d55711824f55eead8a8",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-19T09:01:15.995Z",
+      "capturedFieldRunnerIds": [
+        "36e30a6b-1db8-4439-b906-294acdc7446d",
+        "480fe057-57a8-4b67-ba68-cdb0d7a24644",
+        "2f87a276-8990-409a-9c85-8150728d1242",
+        "71b70b19-6b14-4bbd-a23d-e58e30e1097d",
+        "b72f3fd2-c786-4d12-be00-b64e2784798a",
+        "740c7c56-b9dc-4d4b-ba00-11b5edb2980b"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 2.38,
+        "normalizedProbability": 0.35581777264156683,
+        "marketRank": 1,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "11/8",
+            "decimalOdds": 2.38
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "11/8",
+            "decimalOdds": 2.38
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "11/8",
+            "decimalOdds": 2.38
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "36e30a6b-1db8-4439-b906-294acdc7446d",
+            "decimalPrice": 2.38
+          },
+          {
+            "runnerId": "480fe057-57a8-4b67-ba68-cdb0d7a24644",
+            "decimalPrice": 4
+          },
+          {
+            "runnerId": "2f87a276-8990-409a-9c85-8150728d1242",
+            "decimalPrice": 4.5
+          },
+          {
+            "runnerId": "71b70b19-6b14-4bbd-a23d-e58e30e1097d",
+            "decimalPrice": 8
+          },
+          {
+            "runnerId": "b72f3fd2-c786-4d12-be00-b64e2784798a",
+            "decimalPrice": 8
+          },
+          {
+            "runnerId": "740c7c56-b9dc-4d4b-ba00-11b5edb2980b",
+            "decimalPrice": 26
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "raceId": "0e4dcf5e-47fc-47be-953a-6e81ee72680c",
+      "runnerId": "e2b46cbf-15df-43df-a322-c201ee6de9a9",
+      "horseId": "55991bd1-ce8a-4ba1-9b44-64131e398d3b",
+      "horseName": "Littlepacer",
+      "family": "TURF",
+      "raceDate": "2026-10-19",
+      "scheduledOff": "2026-10-19T12:40:00.000Z",
+      "course": "Gowran Park",
+      "raceName": "Golf At Gowran Park Nursery Handicap (0-60)",
+      "rankSource": "Turf Tissue / tissue_model_v2 / tissueRank",
+      "modelHash": "d10c97e7de7e663d086f32e5764526b481520c7e0b6e56b7376ebcf1a6b99b61",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-19T09:01:15.995Z",
+      "capturedFieldRunnerIds": [
+        "e2b46cbf-15df-43df-a322-c201ee6de9a9",
+        "57e891b7-9068-4318-8bc2-ebb45da19895",
+        "ff97c60e-95e3-4d67-b073-c15fc12171ca",
+        "3c626ecf-2b73-478c-b8bd-ea76c80d4a84",
+        "53923ead-4679-447a-8e92-95ab55bf87fb",
+        "1c4eaaa4-d2be-46b2-8a42-07ac9d740f3b",
+        "da87b94d-8148-408a-8adf-9c826527eb16",
+        "bcb35002-da92-4092-bfeb-ee1f7aabcf10",
+        "f51fe250-077e-420d-ac6a-c75983a41257",
+        "6c1c9a1e-c277-467c-a828-b7f2d20c8554",
+        "2541f688-45af-4d44-8d67-ea22de568f6d",
+        "233b22dd-044b-41a6-b8e0-1c1e7c3080f2"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 3.25,
+        "normalizedProbability": 0.23124892734555255,
+        "marketRank": 1,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "9/4",
+            "decimalOdds": 3.25
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "9/4",
+            "decimalOdds": 3.25
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "9/4",
+            "decimalOdds": 3.25
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "e2b46cbf-15df-43df-a322-c201ee6de9a9",
+            "decimalPrice": 3.25
+          },
+          {
+            "runnerId": "57e891b7-9068-4318-8bc2-ebb45da19895",
+            "decimalPrice": 4.5
+          },
+          {
+            "runnerId": "ff97c60e-95e3-4d67-b073-c15fc12171ca",
+            "decimalPrice": 5
+          },
+          {
+            "runnerId": "3c626ecf-2b73-478c-b8bd-ea76c80d4a84",
+            "decimalPrice": 6
+          },
+          {
+            "runnerId": "53923ead-4679-447a-8e92-95ab55bf87fb",
+            "decimalPrice": 6
+          },
+          {
+            "runnerId": "1c4eaaa4-d2be-46b2-8a42-07ac9d740f3b",
+            "decimalPrice": 12
+          },
+          {
+            "runnerId": "da87b94d-8148-408a-8adf-9c826527eb16",
+            "decimalPrice": 17
+          },
+          {
+            "runnerId": "bcb35002-da92-4092-bfeb-ee1f7aabcf10",
+            "decimalPrice": 26
+          },
+          {
+            "runnerId": "f51fe250-077e-420d-ac6a-c75983a41257",
+            "decimalPrice": 36
+          },
+          {
+            "runnerId": "6c1c9a1e-c277-467c-a828-b7f2d20c8554",
+            "decimalPrice": 41
+          },
+          {
+            "runnerId": "2541f688-45af-4d44-8d67-ea22de568f6d",
+            "decimalPrice": 51
+          },
+          {
+            "runnerId": "233b22dd-044b-41a6-b8e0-1c1e7c3080f2",
+            "decimalPrice": 67
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "raceId": "4e185cec-4101-445a-877f-bfeb63e3bcc5",
+      "runnerId": "13d4a0af-5fe9-4edb-bdde-3b30714e1668",
+      "horseId": "4f5884fb-7d66-4cdc-985e-2bbe184f9e1f",
+      "horseName": "Nazario",
+      "family": "TURF",
+      "raceDate": "2026-10-19",
+      "scheduledOff": "2026-10-19T13:10:00.000Z",
+      "course": "Gowran Park",
+      "raceName": "Dine At Gowran Park Handicap",
+      "rankSource": "Turf Tissue / tissue_model_v2 / tissueRank",
+      "modelHash": "d10c97e7de7e663d086f32e5764526b481520c7e0b6e56b7376ebcf1a6b99b61",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-19T09:01:15.995Z",
+      "capturedFieldRunnerIds": [
+        "df6d9e11-c35e-4bca-bb41-ee5ab0ce825b",
+        "6ed514a4-cfdb-40b4-83d1-a031b7f1ed73",
+        "13d4a0af-5fe9-4edb-bdde-3b30714e1668",
+        "f5ce1e19-0840-4152-9dad-8166268820fe",
+        "cac76e48-7fa1-44ac-95cc-0760809b41bc",
+        "57faf4ac-d808-4394-b832-651053b7ee83",
+        "b8721627-59f5-49a2-8732-a7822a33c07f",
+        "01990e90-58c1-44ed-99e6-9d8fffede812",
+        "9dfa9a7f-bafb-4bb3-9a49-d67f6b637be7",
+        "ed1647c6-c388-4e56-a871-0c9b002582fc",
+        "dd803a00-fe95-4f77-94d3-f32f23c1bc3a",
+        "c9680241-2682-4eef-a588-546e324965ae",
+        "140fd81d-07e1-4abe-aefc-a017ec3bc5c9",
+        "8cdb23ba-b3a1-425b-872f-64cba3545bb1"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 6.5,
+        "normalizedProbability": 0.11249678841879332,
+        "marketRank": 3,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "5/1",
+            "decimalOdds": 6
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "11/2",
+            "decimalOdds": 6.5
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "11/2",
+            "decimalOdds": 6.5
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "df6d9e11-c35e-4bca-bb41-ee5ab0ce825b",
+            "decimalPrice": 5
+          },
+          {
+            "runnerId": "6ed514a4-cfdb-40b4-83d1-a031b7f1ed73",
+            "decimalPrice": 5
+          },
+          {
+            "runnerId": "13d4a0af-5fe9-4edb-bdde-3b30714e1668",
+            "decimalPrice": 6.5
+          },
+          {
+            "runnerId": "f5ce1e19-0840-4152-9dad-8166268820fe",
+            "decimalPrice": 6.5
+          },
+          {
+            "runnerId": "cac76e48-7fa1-44ac-95cc-0760809b41bc",
+            "decimalPrice": 7.5
+          },
+          {
+            "runnerId": "57faf4ac-d808-4394-b832-651053b7ee83",
+            "decimalPrice": 8
+          },
+          {
+            "runnerId": "b8721627-59f5-49a2-8732-a7822a33c07f",
+            "decimalPrice": 10
+          },
+          {
+            "runnerId": "01990e90-58c1-44ed-99e6-9d8fffede812",
+            "decimalPrice": 12
+          },
+          {
+            "runnerId": "9dfa9a7f-bafb-4bb3-9a49-d67f6b637be7",
+            "decimalPrice": 13
+          },
+          {
+            "runnerId": "ed1647c6-c388-4e56-a871-0c9b002582fc",
+            "decimalPrice": 23
+          },
+          {
+            "runnerId": "dd803a00-fe95-4f77-94d3-f32f23c1bc3a",
+            "decimalPrice": 34
+          },
+          {
+            "runnerId": "c9680241-2682-4eef-a588-546e324965ae",
+            "decimalPrice": 41
+          },
+          {
+            "runnerId": "140fd81d-07e1-4abe-aefc-a017ec3bc5c9",
+            "decimalPrice": 41
+          },
+          {
+            "runnerId": "8cdb23ba-b3a1-425b-872f-64cba3545bb1",
+            "decimalPrice": 51
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "raceId": "c91dac02-e5ea-40ab-9696-e5af690f3159",
+      "runnerId": "0bab588d-8869-4faf-985a-ef18902505ad",
+      "horseId": "105d07f1-953c-4234-b3ad-4a9a34f1fe34",
+      "horseName": "Wo Wo Never",
+      "family": "TURF",
+      "raceDate": "2026-10-19",
+      "scheduledOff": "2026-10-19T13:40:00.000Z",
+      "course": "Gowran Park",
+      "raceName": "Irish Stallion Farms EBF Maiden",
+      "rankSource": "Turf Tissue / tissue_model_v2 / tissueRank",
+      "modelHash": "d10c97e7de7e663d086f32e5764526b481520c7e0b6e56b7376ebcf1a6b99b61",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-19T09:01:15.995Z",
+      "capturedFieldRunnerIds": [
+        "d30624f9-602f-45ae-a6aa-c997000b26f3",
+        "0bab588d-8869-4faf-985a-ef18902505ad",
+        "a647affe-a32d-4f3a-8e10-25eceb9a3d3b",
+        "f9cfdcd3-7b01-4f40-b5ef-e09404eb8b91",
+        "7cc443e9-8499-4648-8033-92fde626b2fd",
+        "3f44c61b-cbce-40e3-a8ab-048325fe22c9",
+        "8156608e-e73e-433b-a24d-bae902f7ed7c",
+        "6d925a2b-a8de-47e3-bdd2-6e6bfbbfdcf7",
+        "b77a3194-8bf7-45b2-8587-46fa5f4398e1",
+        "443fe21a-47e0-4cd8-bab7-aa2ee12c2a38",
+        "b609bba8-7dba-471c-9bbf-6d197c8f43a2",
+        "888347dc-08d1-4c41-beee-39f537b50227",
+        "699c8130-596e-4ecf-b2bc-03a0ccf363e1",
+        "0c2a7ad9-0d9f-4ec8-a8fb-6941fc2621c1"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 4.5,
+        "normalizedProbability": 0.1705612415961519,
+        "marketRank": 2,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "10/3",
+            "decimalOdds": 4.33
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "7/2",
+            "decimalOdds": 4.5
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "7/2",
+            "decimalOdds": 4.5
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "d30624f9-602f-45ae-a6aa-c997000b26f3",
+            "decimalPrice": 3
+          },
+          {
+            "runnerId": "0bab588d-8869-4faf-985a-ef18902505ad",
+            "decimalPrice": 4.5
+          },
+          {
+            "runnerId": "a647affe-a32d-4f3a-8e10-25eceb9a3d3b",
+            "decimalPrice": 5
+          },
+          {
+            "runnerId": "f9cfdcd3-7b01-4f40-b5ef-e09404eb8b91",
+            "decimalPrice": 8
+          },
+          {
+            "runnerId": "7cc443e9-8499-4648-8033-92fde626b2fd",
+            "decimalPrice": 12
+          },
+          {
+            "runnerId": "3f44c61b-cbce-40e3-a8ab-048325fe22c9",
+            "decimalPrice": 12
+          },
+          {
+            "runnerId": "8156608e-e73e-433b-a24d-bae902f7ed7c",
+            "decimalPrice": 15
+          },
+          {
+            "runnerId": "6d925a2b-a8de-47e3-bdd2-6e6bfbbfdcf7",
+            "decimalPrice": 21
+          },
+          {
+            "runnerId": "b77a3194-8bf7-45b2-8587-46fa5f4398e1",
+            "decimalPrice": 26
+          },
+          {
+            "runnerId": "443fe21a-47e0-4cd8-bab7-aa2ee12c2a38",
+            "decimalPrice": 34
+          },
+          {
+            "runnerId": "b609bba8-7dba-471c-9bbf-6d197c8f43a2",
+            "decimalPrice": 41
+          },
+          {
+            "runnerId": "888347dc-08d1-4c41-beee-39f537b50227",
+            "decimalPrice": 51
+          },
+          {
+            "runnerId": "699c8130-596e-4ecf-b2bc-03a0ccf363e1",
+            "decimalPrice": 51
+          },
+          {
+            "runnerId": "0c2a7ad9-0d9f-4ec8-a8fb-6941fc2621c1",
+            "decimalPrice": 101
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "raceId": "371b3756-6578-41e6-930b-4579ea43a1e8",
+      "runnerId": "c00a33a4-6942-4e2e-9063-ac3a566bdd66",
+      "horseId": "42ab8d2b-319d-44bd-a09c-fcb612201b95",
+      "horseName": "Churchill Bond",
+      "family": "TURF",
+      "raceDate": "2026-10-19",
+      "scheduledOff": "2026-10-19T14:10:00.000Z",
+      "course": "Gowran Park",
+      "raceName": "Irish EBF Median Sires Series Fillies Maiden (Smullen Series)",
+      "rankSource": "Turf Tissue / tissue_model_v2 / tissueRank",
+      "modelHash": "d10c97e7de7e663d086f32e5764526b481520c7e0b6e56b7376ebcf1a6b99b61",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-19T09:01:15.995Z",
+      "capturedFieldRunnerIds": [
+        "c00a33a4-6942-4e2e-9063-ac3a566bdd66",
+        "a0afe463-8ecf-4b56-b60b-134c01499940",
+        "a0b3c6d0-ed13-43ee-890c-8dfe2a3f69c6",
+        "27242ec4-499d-4ffb-b494-a923dc3250ab",
+        "e9276222-d01e-4a7e-b2af-5028ca9e9af9",
+        "0162e5be-6162-4047-9ac5-939fd7be2bcf",
+        "507c8e20-64f6-4488-8ec4-f5f334571010",
+        "354b1d76-5ebc-4dfb-af6f-5f1de3d37cae",
+        "f37a5c63-7199-4499-9ab8-d7b7caac7ae0",
+        "c73fe497-b7d2-4933-985e-65356ea3aa7f",
+        "62328d0e-70b1-4558-b36c-d9a539a949a1",
+        "490da0ad-dad1-4c06-b025-7e3265042178",
+        "098608d8-4534-4b69-976c-24735d17bb4e",
+        "0feab159-960b-4985-b981-f2823bdb83fa",
+        "cdad1633-f1d1-425c-bee7-b6d5aef22782"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 1.91,
+        "normalizedProbability": 0.3879366378662463,
+        "marketRank": 1,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "10/11",
+            "decimalOdds": 1.91
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "10/11",
+            "decimalOdds": 1.91
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "10/11",
+            "decimalOdds": 1.91
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "c00a33a4-6942-4e2e-9063-ac3a566bdd66",
+            "decimalPrice": 1.91
+          },
+          {
+            "runnerId": "a0afe463-8ecf-4b56-b60b-134c01499940",
+            "decimalPrice": 7
+          },
+          {
+            "runnerId": "a0b3c6d0-ed13-43ee-890c-8dfe2a3f69c6",
+            "decimalPrice": 7.5
+          },
+          {
+            "runnerId": "27242ec4-499d-4ffb-b494-a923dc3250ab",
+            "decimalPrice": 8.5
+          },
+          {
+            "runnerId": "e9276222-d01e-4a7e-b2af-5028ca9e9af9",
+            "decimalPrice": 10
+          },
+          {
+            "runnerId": "0162e5be-6162-4047-9ac5-939fd7be2bcf",
+            "decimalPrice": 12
+          },
+          {
+            "runnerId": "507c8e20-64f6-4488-8ec4-f5f334571010",
+            "decimalPrice": 19
+          },
+          {
+            "runnerId": "354b1d76-5ebc-4dfb-af6f-5f1de3d37cae",
+            "decimalPrice": 21
+          },
+          {
+            "runnerId": "f37a5c63-7199-4499-9ab8-d7b7caac7ae0",
+            "decimalPrice": 23
+          },
+          {
+            "runnerId": "c73fe497-b7d2-4933-985e-65356ea3aa7f",
+            "decimalPrice": 26
+          },
+          {
+            "runnerId": "62328d0e-70b1-4558-b36c-d9a539a949a1",
+            "decimalPrice": 51
+          },
+          {
+            "runnerId": "490da0ad-dad1-4c06-b025-7e3265042178",
+            "decimalPrice": 67
+          },
+          {
+            "runnerId": "098608d8-4534-4b69-976c-24735d17bb4e",
+            "decimalPrice": 81
+          },
+          {
+            "runnerId": "0feab159-960b-4985-b981-f2823bdb83fa",
+            "decimalPrice": 101
+          },
+          {
+            "runnerId": "cdad1633-f1d1-425c-bee7-b6d5aef22782",
+            "decimalPrice": 101
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "raceId": "2e144729-6bdc-4661-9769-0b55a4ca338d",
+      "runnerId": "4705b94b-0389-4be5-88e0-3093424ef8c5",
+      "horseId": "18bc4ff1-27d3-42f3-b31e-dd43455ec462",
+      "horseName": "Spanish Princess",
+      "family": "TURF",
+      "raceDate": "2026-10-19",
+      "scheduledOff": "2026-10-19T14:40:00.000Z",
+      "course": "Gowran Park",
+      "raceName": "Racing Club Membership Handicap (0-60) (Div 1)",
+      "rankSource": "Turf Tissue / tissue_model_v2 / tissueRank",
+      "modelHash": "d10c97e7de7e663d086f32e5764526b481520c7e0b6e56b7376ebcf1a6b99b61",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-19T09:01:15.995Z",
+      "capturedFieldRunnerIds": [
+        "97bee309-8032-4f2e-9bd6-58b87be7e129",
+        "00baa4a2-ca56-4508-9f3e-2f3738b8b341",
+        "6cdb2d94-c24d-41ab-9e6a-5cbf0cbc8742",
+        "2858ebd4-546b-4699-bc61-a47c58db2308",
+        "23030fc0-eab5-4efc-a3a5-41c639fadaa3",
+        "40b12ae9-c98f-4bae-b485-043fd6c70002",
+        "1221f3b7-a621-4c12-b17c-92eb3b2e74ff",
+        "827d59dc-711b-4ecd-a1e9-3780dee9d175",
+        "f4426562-2c71-492e-bf07-4a96dd612944",
+        "f3c4fe23-d0b4-457d-8c59-11e80ab39a29",
+        "632df10e-1c96-4763-96d2-d72d71ce5e8d",
+        "4705b94b-0389-4be5-88e0-3093424ef8c5",
+        "ef7e215e-1290-4966-baea-865c4341bc40",
+        "28abc4fd-77b7-4061-93bd-bbbc5bec27ed",
+        "a2742acb-cfda-4ef3-9475-126f1a3e7e5e",
+        "8910acff-ca35-4429-96c9-43d38afeca74",
+        "4d8bf3cd-e8f8-4e32-a4f1-b12b13fcbf78",
+        "01c537ca-5a73-45cd-8cd6-75d06de3ecd2",
+        "78552c66-88d2-4e30-aac2-ef6ae80d7483"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 21,
+        "normalizedProbability": 0.032514139885309316,
+        "marketRank": 12,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "20/1",
+            "decimalOdds": 21
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "20/1",
+            "decimalOdds": 21
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "20/1",
+            "decimalOdds": 21
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "97bee309-8032-4f2e-9bd6-58b87be7e129",
+            "decimalPrice": 4.5
+          },
+          {
+            "runnerId": "00baa4a2-ca56-4508-9f3e-2f3738b8b341",
+            "decimalPrice": 6
+          },
+          {
+            "runnerId": "6cdb2d94-c24d-41ab-9e6a-5cbf0cbc8742",
+            "decimalPrice": 6.5
+          },
+          {
+            "runnerId": "2858ebd4-546b-4699-bc61-a47c58db2308",
+            "decimalPrice": 8
+          },
+          {
+            "runnerId": "23030fc0-eab5-4efc-a3a5-41c639fadaa3",
+            "decimalPrice": 8
+          },
+          {
+            "runnerId": "40b12ae9-c98f-4bae-b485-043fd6c70002",
+            "decimalPrice": 13
+          },
+          {
+            "runnerId": "1221f3b7-a621-4c12-b17c-92eb3b2e74ff",
+            "decimalPrice": 13
+          },
+          {
+            "runnerId": "827d59dc-711b-4ecd-a1e9-3780dee9d175",
+            "decimalPrice": 13
+          },
+          {
+            "runnerId": "f4426562-2c71-492e-bf07-4a96dd612944",
+            "decimalPrice": 15
+          },
+          {
+            "runnerId": "f3c4fe23-d0b4-457d-8c59-11e80ab39a29",
+            "decimalPrice": 17
+          },
+          {
+            "runnerId": "632df10e-1c96-4763-96d2-d72d71ce5e8d",
+            "decimalPrice": 19
+          },
+          {
+            "runnerId": "4705b94b-0389-4be5-88e0-3093424ef8c5",
+            "decimalPrice": 21
+          },
+          {
+            "runnerId": "ef7e215e-1290-4966-baea-865c4341bc40",
+            "decimalPrice": 21
+          },
+          {
+            "runnerId": "28abc4fd-77b7-4061-93bd-bbbc5bec27ed",
+            "decimalPrice": 26
+          },
+          {
+            "runnerId": "a2742acb-cfda-4ef3-9475-126f1a3e7e5e",
+            "decimalPrice": 26
+          },
+          {
+            "runnerId": "8910acff-ca35-4429-96c9-43d38afeca74",
+            "decimalPrice": 34
+          },
+          {
+            "runnerId": "4d8bf3cd-e8f8-4e32-a4f1-b12b13fcbf78",
+            "decimalPrice": 34
+          },
+          {
+            "runnerId": "01c537ca-5a73-45cd-8cd6-75d06de3ecd2",
+            "decimalPrice": 51
+          },
+          {
+            "runnerId": "78552c66-88d2-4e30-aac2-ef6ae80d7483",
+            "decimalPrice": 81
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "raceId": "b01afac9-5c6b-4c67-982d-7322a7d91315",
+      "runnerId": "7385c27c-dd15-4302-9e84-d12ca9a39e03",
+      "horseId": "e56763d0-5e1d-4a2d-afdb-3510a4104a5a",
+      "horseName": "Princess Chloe",
+      "family": "TURF",
+      "raceDate": "2026-10-19",
+      "scheduledOff": "2026-10-19T15:10:00.000Z",
+      "course": "Gowran Park",
+      "raceName": "Racing Club Membership Handicap (0-60) (Div 2)",
+      "rankSource": "Turf Tissue / tissue_model_v2 / tissueRank",
+      "modelHash": "d10c97e7de7e663d086f32e5764526b481520c7e0b6e56b7376ebcf1a6b99b61",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-19T09:01:15.995Z",
+      "capturedFieldRunnerIds": [
+        "7385c27c-dd15-4302-9e84-d12ca9a39e03",
+        "9115bf1f-d184-440e-aea7-1e236a1f97a1",
+        "b8d89cfc-4737-4a6f-a7b1-1ed0d14d65b2",
+        "8419c1c9-4d7e-4ce2-a55e-2e7a77cebe23",
+        "47555ce6-c2cf-462a-9baf-fbf3abf86827",
+        "00c61405-5e16-4bcd-9c46-50d009a92a6b",
+        "5b961589-070b-4f87-8659-3139badd5f85",
+        "09c70c9b-1a62-4578-83a4-5439e9efbfb9",
+        "a9758b6c-aa23-47d6-9daa-d70f6fa9a14e",
+        "620b1a4f-67b3-47d8-8a3d-550d7e406054",
+        "fb695fbf-c65d-4f10-987d-17c974af62ac",
+        "9b330398-e45b-495c-86d5-bb50f67b8edb",
+        "4bf5974f-122e-4348-a124-3225e684a408",
+        "d95d7109-a9e6-4570-9c69-d0954f6bbbee",
+        "8ce9456b-5b6a-453b-8957-6b0c3d02ab56",
+        "f7436f25-5070-446a-8cde-77026eb48253",
+        "28c9a5bb-864a-4745-8083-c857d8fe91f5",
+        "60b3d5f7-bb7e-4f50-9948-22a3a9fa9a0f"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 6,
+        "normalizedProbability": 0.10472880796128496,
+        "marketRank": 1,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "9/2",
+            "decimalOdds": 5.5
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "5/1",
+            "decimalOdds": 6
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "5/1",
+            "decimalOdds": 6
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "7385c27c-dd15-4302-9e84-d12ca9a39e03",
+            "decimalPrice": 6
+          },
+          {
+            "runnerId": "9115bf1f-d184-440e-aea7-1e236a1f97a1",
+            "decimalPrice": 6.5
+          },
+          {
+            "runnerId": "b8d89cfc-4737-4a6f-a7b1-1ed0d14d65b2",
+            "decimalPrice": 7.5
+          },
+          {
+            "runnerId": "8419c1c9-4d7e-4ce2-a55e-2e7a77cebe23",
+            "decimalPrice": 7.5
+          },
+          {
+            "runnerId": "47555ce6-c2cf-462a-9baf-fbf3abf86827",
+            "decimalPrice": 8.5
+          },
+          {
+            "runnerId": "00c61405-5e16-4bcd-9c46-50d009a92a6b",
+            "decimalPrice": 8.5
+          },
+          {
+            "runnerId": "5b961589-070b-4f87-8659-3139badd5f85",
+            "decimalPrice": 9
+          },
+          {
+            "runnerId": "09c70c9b-1a62-4578-83a4-5439e9efbfb9",
+            "decimalPrice": 9
+          },
+          {
+            "runnerId": "a9758b6c-aa23-47d6-9daa-d70f6fa9a14e",
+            "decimalPrice": 11
+          },
+          {
+            "runnerId": "620b1a4f-67b3-47d8-8a3d-550d7e406054",
+            "decimalPrice": 12
+          },
+          {
+            "runnerId": "fb695fbf-c65d-4f10-987d-17c974af62ac",
+            "decimalPrice": 12
+          },
+          {
+            "runnerId": "9b330398-e45b-495c-86d5-bb50f67b8edb",
+            "decimalPrice": 13
+          },
+          {
+            "runnerId": "4bf5974f-122e-4348-a124-3225e684a408",
+            "decimalPrice": 15
+          },
+          {
+            "runnerId": "d95d7109-a9e6-4570-9c69-d0954f6bbbee",
+            "decimalPrice": 26
+          },
+          {
+            "runnerId": "8ce9456b-5b6a-453b-8957-6b0c3d02ab56",
+            "decimalPrice": 26
+          },
+          {
+            "runnerId": "f7436f25-5070-446a-8cde-77026eb48253",
+            "decimalPrice": 34
+          },
+          {
+            "runnerId": "28c9a5bb-864a-4745-8083-c857d8fe91f5",
+            "decimalPrice": 51
+          },
+          {
+            "runnerId": "60b3d5f7-bb7e-4f50-9948-22a3a9fa9a0f",
+            "decimalPrice": 51
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "raceId": "638a54d9-6287-4e91-a813-3afb1b52a834",
+      "runnerId": "e6925f2d-5590-45b6-beee-8b73994f051c",
+      "horseId": "63f41a3e-83e7-42cf-b91c-ccf5ba84143c",
+      "horseName": "Sangreal",
+      "family": "TURF",
+      "raceDate": "2026-10-19",
+      "scheduledOff": "2026-10-19T15:40:00.000Z",
+      "course": "Gowran Park",
+      "raceName": "Gowran Park Racing Club Fillies Maiden",
+      "rankSource": "Turf Tissue / tissue_model_v2 / tissueRank",
+      "modelHash": "d10c97e7de7e663d086f32e5764526b481520c7e0b6e56b7376ebcf1a6b99b61",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-19T09:01:15.995Z",
+      "capturedFieldRunnerIds": [
+        "9b2fe56a-e1e4-4163-9a71-1871a799e531",
+        "e6925f2d-5590-45b6-beee-8b73994f051c",
+        "45f27ceb-2ffd-4011-98cb-639e6a401b32",
+        "9bf2f103-21c8-41fd-91ab-23c540f35830",
+        "39e9975c-df58-4a89-bc46-0628d9f097e4",
+        "61997949-fe38-4b72-a9a1-0b755b33d72e",
+        "031b7a7d-27bb-4baa-b31e-13d273940ea8",
+        "4911a87f-37d8-4925-ab1a-06f0e05daf92",
+        "b2ab40aa-7359-4241-ad05-fe0280cc5e92"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 3.25,
+        "normalizedProbability": 0.24722840112775263,
+        "marketRank": 2,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "9/4",
+            "decimalOdds": 3.25
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "9/4",
+            "decimalOdds": 3.25
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "9/4",
+            "decimalOdds": 3.25
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "9b2fe56a-e1e4-4163-9a71-1871a799e531",
+            "decimalPrice": 2.38
+          },
+          {
+            "runnerId": "e6925f2d-5590-45b6-beee-8b73994f051c",
+            "decimalPrice": 3.25
+          },
+          {
+            "runnerId": "45f27ceb-2ffd-4011-98cb-639e6a401b32",
+            "decimalPrice": 4.5
+          },
+          {
+            "runnerId": "9bf2f103-21c8-41fd-91ab-23c540f35830",
+            "decimalPrice": 7.5
+          },
+          {
+            "runnerId": "39e9975c-df58-4a89-bc46-0628d9f097e4",
+            "decimalPrice": 9.5
+          },
+          {
+            "runnerId": "61997949-fe38-4b72-a9a1-0b755b33d72e",
+            "decimalPrice": 51
+          },
+          {
+            "runnerId": "031b7a7d-27bb-4baa-b31e-13d273940ea8",
+            "decimalPrice": 67
+          },
+          {
+            "runnerId": "4911a87f-37d8-4925-ab1a-06f0e05daf92",
+            "decimalPrice": 81
+          },
+          {
+            "runnerId": "b2ab40aa-7359-4241-ad05-fe0280cc5e92",
+            "decimalPrice": 111
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "raceId": "b8c988df-5ab5-4dc8-a607-3c3c2ba94a71",
+      "runnerId": "7dd02a35-7ef1-47c4-9cba-a080c13873b1",
+      "horseId": "cda18105-213f-4f13-b4e6-4546a4b60b06",
+      "horseName": "Shay's Dream",
+      "family": "TURF",
+      "raceDate": "2026-10-19",
+      "scheduledOff": "2026-10-19T16:10:00.000Z",
+      "course": "Gowran Park",
+      "raceName": "Racing Again November 7th Handicap",
+      "rankSource": "Turf Tissue / tissue_model_v2 / tissueRank",
+      "modelHash": "d10c97e7de7e663d086f32e5764526b481520c7e0b6e56b7376ebcf1a6b99b61",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-19T09:01:15.995Z",
+      "capturedFieldRunnerIds": [
+        "5eb4f24f-7fd4-4be7-be76-cbb528fa0e90",
+        "7dd02a35-7ef1-47c4-9cba-a080c13873b1",
+        "b476d236-fb1e-4a9b-b943-481575830434",
+        "730ff0f6-c323-4b8a-a8b3-99e3c443070e",
+        "ee01eab0-754a-4fe0-805e-110d182b5e10",
+        "cb11ad13-c101-47c1-b2d9-23d9130ae98d",
+        "dc27578b-ea3d-48d4-9e7e-ff268fcd3299",
+        "c4d6bbbc-b707-4036-90c5-a4627e1bb8ea",
+        "355bb78a-43e1-4317-8211-b0dc55d9557f",
+        "76758eb0-779e-4d97-bd32-d6b6bf9ba8c4",
+        "09c97886-1f5c-4b87-bd92-dd8032fe6d9f",
+        "1b0ea398-9ad1-46bf-8d4f-047d2e0daecc",
+        "765fe542-a7b4-4f59-bec0-159407d8ac7b",
+        "0d0b8d69-b92c-487c-bd26-aaafbf4d2933",
+        "67d29513-46b4-4f0e-ab25-6baee4c7eae6"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 4.5,
+        "normalizedProbability": 0.14243965977580986,
+        "marketRank": 2,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "10/3",
+            "decimalOdds": 4.33
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "7/2",
+            "decimalOdds": 4.5
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "7/2",
+            "decimalOdds": 4.5
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "5eb4f24f-7fd4-4be7-be76-cbb528fa0e90",
+            "decimalPrice": 3
+          },
+          {
+            "runnerId": "7dd02a35-7ef1-47c4-9cba-a080c13873b1",
+            "decimalPrice": 4.5
+          },
+          {
+            "runnerId": "b476d236-fb1e-4a9b-b943-481575830434",
+            "decimalPrice": 7
+          },
+          {
+            "runnerId": "730ff0f6-c323-4b8a-a8b3-99e3c443070e",
+            "decimalPrice": 7.5
+          },
+          {
+            "runnerId": "ee01eab0-754a-4fe0-805e-110d182b5e10",
+            "decimalPrice": 8
+          },
+          {
+            "runnerId": "cb11ad13-c101-47c1-b2d9-23d9130ae98d",
+            "decimalPrice": 8.5
+          },
+          {
+            "runnerId": "dc27578b-ea3d-48d4-9e7e-ff268fcd3299",
+            "decimalPrice": 10
+          },
+          {
+            "runnerId": "c4d6bbbc-b707-4036-90c5-a4627e1bb8ea",
+            "decimalPrice": 10
+          },
+          {
+            "runnerId": "355bb78a-43e1-4317-8211-b0dc55d9557f",
+            "decimalPrice": 13
+          },
+          {
+            "runnerId": "76758eb0-779e-4d97-bd32-d6b6bf9ba8c4",
+            "decimalPrice": 21
+          },
+          {
+            "runnerId": "09c97886-1f5c-4b87-bd92-dd8032fe6d9f",
+            "decimalPrice": 26
+          },
+          {
+            "runnerId": "1b0ea398-9ad1-46bf-8d4f-047d2e0daecc",
+            "decimalPrice": 29
+          },
+          {
+            "runnerId": "765fe542-a7b4-4f59-bec0-159407d8ac7b",
+            "decimalPrice": 34
+          },
+          {
+            "runnerId": "0d0b8d69-b92c-487c-bd26-aaafbf4d2933",
+            "decimalPrice": 34
+          },
+          {
+            "runnerId": "67d29513-46b4-4f0e-ab25-6baee4c7eae6",
+            "decimalPrice": 34
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
     }
   ]
 }
