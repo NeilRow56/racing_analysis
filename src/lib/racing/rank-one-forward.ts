@@ -9,6 +9,8 @@ import { buildTissueForwardRace, ACTIVE_TURF_TISSUE_CONFIG, TISSUE_V3_LIVE_SEMAN
 import { predictJumpTissue, JUMP_TISSUE_VERSION, type JumpTissueModel } from "./jump-tissue-model";
 import { predictAwTissue, AW_TISSUE_VERSION, type AwTissueModel } from "./aw-tissue-model";
 import type { HistoricalComment } from "../../../scripts/diagnose-independent-tissue-feasibility";
+import { AW_TISSUE_V2_ACTIVE, AW_TISSUE_V2_EPOCH } from "./aw-tissue-v2-activation";
+import { buildAwV2Race, AW_TISSUE_V2_SCORER, type AwV2Model, type AwV2Context } from "./aw-tissue-v2";
 export const RANK_ONE_VERSION = "RANK_ONE_FORWARD_V1" as const;
 export const RANK_ONE_EPOCH = "2026-10-16T15:37:02.000Z" as const;
 export const RANK_ONE_PATH = "data/research/rank-one-forward-v1.json";
@@ -18,11 +20,14 @@ export const RANK_ONE_SOURCES: Record<RankOneFamily, string> = {
   TURF: `Turf Tissue / ${ACTIVE_TURF_TISSUE_CONFIG.modelVersion} / ${TISSUE_V3_LIVE_SEMANTICS_VERSION} / tissueRank`,
   HURDLE: `Jump Tissue / ${JUMP_TISSUE_VERSION} / rank`,
   CHASE: `Jump Tissue / ${JUMP_TISSUE_VERSION} / rank`,
-  AW: `AW Tissue / ${AW_TISSUE_VERSION} / rank`,
+  AW: AW_TISSUE_V2_ACTIVE ? `AW Tissue / AW_TISSUE_V2 / ${AW_TISSUE_V2_SCORER} / rank` : `AW Tissue / ${AW_TISSUE_VERSION} / rank`,
 };
 // Fixed 21.0 / 26.0 SP diagnostic did not establish robust evidence for a live cap.
 export const RANK_ONE_CAPS: Record<RankOneFamily, 21 | 26 | null> = { TURF: null, HURDLE: null, CHASE: null, AW: null };
 export type RankOneObservation = {
+  modelProbability?: number;
+  modelInputs?: number[];
+  featureCutoffAt?: string;
   version: typeof RANK_ONE_VERSION;
   raceId: string;
   runnerId: string;
@@ -126,6 +131,8 @@ export function rankOneFamily(race: Pick<TodayRace, "raceName" | "raceType" | "r
   return isOrdinaryFlatTurfRaceForDisplay({ ...race, going: race.going ?? null }) ? "TURF" : null;
 }
 export type RankOneModels = {
+  awV2?: AwV2Model;
+  awV2Context?: AwV2Context;
   turf: FrozenTissueModel;
   jump: JumpTissueModel;
   aw: AwTissueModel;
@@ -136,11 +143,17 @@ export function currentRankOne(race: TodayRace, course: string, raceDate: string
   const family = rankOneFamily(race);
   if (!family)
     return null;
+  if (family === "AW" && models.awV2) {
+    if (!models.awV2Context) return null;
+    const book = buildAwV2Race(race, course, raceDate, models.awV2, models.awV2Context, now);
+    const leader = book?.runners.filter(r => r.rank === 1).sort((a, b) => a.runnerId.localeCompare(b.runnerId))[0];
+    return leader ? { family, runnerId: leader.runnerId, modelHash: models.awV2.checksum, rankSource: `AW Tissue / AW_TISSUE_V2 / ${AW_TISSUE_V2_SCORER} / rank`, modelInputs: leader.modelInputs!, modelProbability: leader.probability!, featureCutoffAt: book!.featureCutoffAt!, awV2: true } : null;
+  }
   const book = family === "TURF" ? buildTissueForwardRace({ race, course, raceDate, model: models.turf, commentsByHorse: models.comments, recordedAt: now, config: ACTIVE_TURF_TISSUE_CONFIG })?.runners.map(r => ({ runnerId: r.runnerId, rank: r.tissueRank }))
     : family === "AW" ? predictAwTissue(race, models.awStarts, models.aw).runners : predictJumpTissue(race, models.comments, models.jump).runners;
   // Turf uses competition ranks. Resolve an exact rank-1 tie by stable runner ID, without re-ranking.
   const leader = book?.filter(r => r.rank === 1).sort((a, b) => a.runnerId.localeCompare(b.runnerId))[0];
-  return leader ? { family, runnerId: leader.runnerId, modelHash: family === "TURF" ? models.turf.checksum : family === "AW" ? models.aw.checksum : models.jump.checksum } : null;
+  return leader ? { family, runnerId: leader.runnerId, modelHash: family === "TURF" ? models.turf.checksum : family === "AW" ? models.aw.checksum : models.jump.checksum, rankSource: family === "AW" ? `AW Tissue / ${AW_TISSUE_VERSION} / rank` : RANK_ONE_SOURCES[family] } : null;
 }
 export function isWithinRankOneCap(price: number, cap: 21 | 26 | null) { return cap === null || price <= cap; }
 export function buildRankOneObservations(input: {
@@ -157,7 +170,7 @@ export function buildRankOneObservations(input: {
       race.runners.some(r => r.finishingPosition !== null || (r.resultStatus !== null && r.resultStatus !== "non_runner")))
       return [];
     const active = race.runners.filter(r => r.resultStatus !== "non_runner");
-    if (active.length < 2 || !hasCompleteProspectiveField(rankOneFamily(race) === "TURF" ? { ...race, actualRunnerCount: null } : race))
+    if (active.length < 2 || !hasCompleteProspectiveField(rankOneFamily(race) === "TURF" || (rankOneFamily(race) === "AW" && models.awV2) ? { ...race, actualRunnerCount: null } : race))
       return [];
     const prices = active.map(r => ({ runner: r, market: summarizeBookmakerMarket(r.bookmakerQuotes) }));
     if (prices.some(p => p.market.decimalPrice === null))
@@ -173,8 +186,9 @@ export function buildRankOneObservations(input: {
     const cap = RANK_ONE_CAPS[leader.family];
     return [{ version: RANK_ONE_VERSION, raceId: race.raceId, runnerId: leader.runnerId, horseId: selected.runner.horseId, horseName: selected.runner.horseName,
         ...(leader.family === "TURF" ? { liveSemanticsVersion: TISSUE_V3_LIVE_SEMANTICS_VERSION, liveSemanticsEffectiveAt: TISSUE_V3_EPOCH } : {}),
+        ...(leader.awV2 ? { liveSemanticsVersion: AW_TISSUE_V2_SCORER, liveSemanticsEffectiveAt: AW_TISSUE_V2_EPOCH, modelInputs: [...leader.modelInputs!], modelProbability: leader.modelProbability, featureCutoffAt: leader.featureCutoffAt } : {}),
         family: leader.family, raceDate, scheduledOff: race.raceDateTime.toISOString(), course: m.courseName, raceName: race.raceName,
-        rankSource: RANK_ONE_SOURCES[leader.family], modelHash: leader.modelHash, rank: 1, firstCapturedAt: now.toISOString(), capturedFieldRunnerIds: active.map(r => r.runnerId),
+        rankSource: leader.rankSource, modelHash: leader.modelHash, rank: 1, firstCapturedAt: now.toISOString(), capturedFieldRunnerIds: active.map(r => r.runnerId),
         market: { source: "sporting_life_median_bookmaker_at_capture_v1", medianBookmakerDecimal: price, normalizedProbability: (1 / price) / total,
           marketRank: 1 + prices.filter(p => p.market.decimalPrice! < price).length, quotes: selected.market.quotes,
           fieldPrices: prices.map(p => ({ runnerId: p.runner.runnerId, decimalPrice: p.market.decimalPrice! })) }, cap, withinCap: isWithinRankOneCap(price, cap), outcome: null }];
@@ -224,15 +238,18 @@ export function rankOneMetrics(rows: RankOneObservation[]) {
     nonRunners: rows.filter(r => r.outcome?.status === "NR").length, voids: rows.filter(r => r.outcome?.status === "void").length };
 }
 export function summarizeRankOne(data: RankOneData) {
+  const awV2 = (row: RankOneObservation) => row.liveSemanticsVersion === AW_TISSUE_V2_SCORER && row.firstCapturedAt >= AW_TISSUE_V2_EPOCH;
   const v3 = (row: RankOneObservation) => row.liveSemanticsVersion === TISSUE_V3_LIVE_SEMANTICS_VERSION && row.firstCapturedAt >= TISSUE_V3_EPOCH;
   const v2 = (row: RankOneObservation) => row.liveSemanticsVersion === TURF_TISSUE_LIVE_SEMANTICS_VERSION && row.firstCapturedAt >= TURF_TISSUE_LIVE_SEMANTICS_EPOCH;
   const summarize = (family: RankOneFamily, rows: RankOneObservation[], cohort: string, epoch: string) => ({
     family, cohort, epoch, cap: RANK_ONE_CAPS[family], ...rankOneMetrics(rows), withinCap: rankOneMetrics(rows.filter(r => r.withinCap)),
   });
   const summaries = RANK_ONE_FAMILIES.map(family => summarize(family,
-    data.observations.filter(r => r.family === family && (family !== "TURF" || v3(r))),
-    family === "TURF" ? TISSUE_V3_LIVE_SEMANTICS_VERSION : "original",
-    family === "TURF" ? TISSUE_V3_EPOCH : data.epoch));
+    data.observations.filter(r => r.family === family && (family !== "TURF" || v3(r)) && (family !== "AW" || !AW_TISSUE_V2_ACTIVE || awV2(r))),
+    family === "TURF" ? TISSUE_V3_LIVE_SEMANTICS_VERSION : family === "AW" && AW_TISSUE_V2_ACTIVE ? AW_TISSUE_V2_SCORER : "original",
+    family === "TURF" ? TISSUE_V3_EPOCH : family === "AW" && AW_TISSUE_V2_ACTIVE ? AW_TISSUE_V2_EPOCH : data.epoch));
+  const oldAw = data.observations.filter(r => r.family === "AW" && !awV2(r));
+  if (AW_TISSUE_V2_ACTIVE && oldAw.length) summaries.push(summarize("AW", oldAw, "AW_TISSUE_V1 (historical)", data.epoch));
   const correctedV2 = data.observations.filter(r => r.family === "TURF" && v2(r));
   if (correctedV2.length) summaries.push(summarize("TURF", correctedV2, TURF_TISSUE_LIVE_SEMANTICS_VERSION, TURF_TISSUE_LIVE_SEMANTICS_EPOCH));
   const legacy = data.observations.filter(r => r.family === "TURF" && !v3(r) && !v2(r));

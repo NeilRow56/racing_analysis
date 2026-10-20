@@ -2658,6 +2658,112 @@
         "profitLoss": -1
       },
       "settledAt": "2026-10-19T19:45:20.522Z"
+    },
+    {
+      "raceId": "e4c4a8b4-c4b6-45c4-a137-fbca271048c9",
+      "sourceId": "944371",
+      "raceDate": "2026-10-20",
+      "scheduledOff": "2026-10-20T14:07:00.000Z",
+      "scheduledTime": "14:07",
+      "course": "Hexham",
+      "raceName": "Free Race Replays On attheraces.com Handicap Hurdle",
+      "subtype": "Hurdle",
+      "subtypeCode": "hurdle",
+      "handicapStatus": "handicap",
+      "fieldSize": 9,
+      "runnerId": "89807363-675e-48ae-bb65-5393f88dd0e5",
+      "horseId": "59438ed5-9b2f-4ce1-adbe-1584087e3b07",
+      "horseName": "Conquer The Breeze",
+      "recordedAt": "2026-10-20T02:30:00.824Z",
+      "recordedPreRace": true,
+      "components": {
+        "averageL3JumpSpeed": 122.13740293023959,
+        "averageL3JumpSpeedRank": 1,
+        "latestJumpSpeed": 132.75079941116738,
+        "previousJumpSpeed": 102.31279999999998,
+        "latestMinusPrevious": 30.437999411167397,
+        "previousClass": 3,
+        "currentClass": 4,
+        "classDropAmount": 1
+      },
+      "context": {
+        "officialRating": 108,
+        "officialRatingRank": 1,
+        "officialRatingTop3": true,
+        "officialRatingGapToBest": 0,
+        "officialRatingRelativeToFieldMean": 10.333333333333329,
+        "trainerPriorRate": 12.312312312312311,
+        "jockeyPriorRate": 14.918414918414918,
+        "daysSinceRun": 33,
+        "priorUsableJumpSpeedCount": 16,
+        "jprARank": 1,
+        "jprBRank": 1,
+        "jumpTissueRank": 1,
+        "jumpTissueProbability": 0.2967841268059701
+      },
+      "market": {
+        "medianBookmakerDecimal": 3.5,
+        "impliedProbability": 0.2857142857142857,
+        "marketRank": 1,
+        "priceCapturedAt": "2026-10-20T02:30:00.824Z",
+        "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
+        "bookmakerQuoteCount": 3
+      },
+      "outcome": null,
+      "settledAt": null
+    },
+    {
+      "raceId": "76d1eb46-7d1b-4f50-b459-a767362a4ddf",
+      "sourceId": "944373",
+      "raceDate": "2026-10-20",
+      "scheduledOff": "2026-10-20T15:17:00.000Z",
+      "scheduledTime": "15:17",
+      "course": "Hexham",
+      "raceName": "Follow AtTheRaces On X 'Chasing Excellence' Beginners' Chase (GBB Race)",
+      "subtype": "Chase",
+      "subtypeCode": "chase",
+      "handicapStatus": "non_handicap",
+      "fieldSize": 3,
+      "runnerId": "f559e218-7b35-4247-af33-f3c9927a2879",
+      "horseId": "25f6b892-2955-4f05-b117-fee5245dee27",
+      "horseName": "Royal Infantry",
+      "recordedAt": "2026-10-20T02:30:00.824Z",
+      "recordedPreRace": true,
+      "components": {
+        "averageL3JumpSpeed": 111.05930533245623,
+        "averageL3JumpSpeedRank": 1,
+        "latestJumpSpeed": 112.39217167743446,
+        "previousJumpSpeed": 110.42192294427281,
+        "latestMinusPrevious": 1.9702487331616538,
+        "previousClass": 2,
+        "currentClass": 3,
+        "classDropAmount": 1
+      },
+      "context": {
+        "officialRating": 138,
+        "officialRatingRank": 2,
+        "officialRatingTop3": true,
+        "officialRatingGapToBest": 2,
+        "officialRatingRelativeToFieldMean": -1,
+        "trainerPriorRate": 21.602231964926265,
+        "jockeyPriorRate": 26.379201014584652,
+        "daysSinceRun": 188,
+        "priorUsableJumpSpeedCount": 15,
+        "jprARank": 1,
+        "jprBRank": 1,
+        "jumpTissueRank": 1,
+        "jumpTissueProbability": 0.5189268347380755
+      },
+      "market": {
+        "medianBookmakerDecimal": 1.83,
+        "impliedProbability": 0.5464480874316939,
+        "marketRank": 1,
+        "priceCapturedAt": "2026-10-20T02:30:00.824Z",
+        "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
+        "bookmakerQuoteCount": 3
+      },
+      "outcome": null,
+      "settledAt": null
     }
   ]
 }

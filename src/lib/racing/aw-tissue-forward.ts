@@ -28,6 +28,12 @@ export const AW_TISSUE_FORWARD_PATH = "data/research/aw-tissue-forward-v1.json";
 type Outcome = { resultStatus: string | null; finishingPosition: number | null; won: boolean | null; finalSp: number | null; deadHeatDivisor: number; finalSpProfitLoss: number | null };
 export type AwTissueRunner = AwTissuePrediction & { horseId: string; horseName: string; outcome: Outcome | null };
 export type AwTissueRace = Omit<AwTissueBook, "runners"> & {
+  featureCutoffAt?: string;
+  liveSemanticsVersion?: string;
+  liveSemanticsEffectiveAt?: string;
+  surfaceMappingVersion?: string;
+  surfaceFeatureEvidence?: Record<string, import("./aw-tissue-v2-features").AwSurfaceFeatures>;
+  firstCaptureMarket?: Array<{ runnerId: string; price: number | null; normalizedProbability: number | null; rank: number | null }>;
   tissueValuePriceCapRule?: TissueValuePriceCapRuleState;
   raceId: string; sourceId: string | null; raceDate: string; course: string; raceName: string | null;
   scheduledTime: string; scheduledOffAt: string; currentOffAt: string; fieldSize: number;
@@ -46,18 +52,18 @@ export function emptyAwTissueForward(): AwTissueForwardData {
   return { version: AW_TISSUE_FORWARD_VERSION, modelVersion: AW_TISSUE_VERSION, featureSchemaVersion: AW_TISSUE_SCHEMA, implementedAt: AW_TISSUE_IMPLEMENTED_AT, races: [] };
 }
 
-export async function loadAwTissueForward(path = AW_TISSUE_FORWARD_PATH): Promise<AwTissueForwardData> {
+export async function loadAwTissueForward(path = AW_TISSUE_FORWARD_PATH, expected = emptyAwTissueForward()): Promise<AwTissueForwardData> {
   try {
     const data = JSON.parse(await readFile(path, "utf8")) as AwTissueForwardData;
-    if (data.version !== AW_TISSUE_FORWARD_VERSION || data.modelVersion !== AW_TISSUE_VERSION || data.featureSchemaVersion !== AW_TISSUE_SCHEMA || data.implementedAt !== AW_TISSUE_IMPLEMENTED_AT) throw new Error("Unsupported AW Tissue tracker");
+    if (data.version !== expected.version || data.modelVersion !== expected.modelVersion || data.featureSchemaVersion !== expected.featureSchemaVersion || data.implementedAt !== expected.implementedAt) throw new Error("Unsupported AW Tissue tracker");
     return data;
   } catch (error) {
-    if ((error as NodeJS.ErrnoException).code === "ENOENT") return emptyAwTissueForward();
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") return { ...expected, races: [] };
     throw error;
   }
 }
 
-export async function mutateAwTissueForward(mutation: (data: AwTissueForwardData) => AwTissueForwardData | Promise<AwTissueForwardData>, path = AW_TISSUE_FORWARD_PATH) {
+export async function mutateAwTissueForward(mutation: (data: AwTissueForwardData) => AwTissueForwardData | Promise<AwTissueForwardData>, path = AW_TISSUE_FORWARD_PATH, expected = emptyAwTissueForward()) {
   const lock = `${resolve(path)}.lock`;
   await mkdir(dirname(lock), { recursive: true });
   const deadline = Date.now() + 30_000;
@@ -69,7 +75,7 @@ export async function mutateAwTissueForward(mutation: (data: AwTissueForwardData
     }
   }
   try {
-    const original = await loadAwTissueForward(path);
+    const original = await loadAwTissueForward(path, expected);
     const updated = await mutation(original);
     if (JSON.stringify(updated) !== JSON.stringify(original)) {
       const temporary = `${path}.tmp-${process.pid}-${Date.now()}`;

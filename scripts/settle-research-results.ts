@@ -6,6 +6,8 @@ import { pendingForwardValueRaceIds, settleForwardValueRecords, mutateForwardVal
 import { loadTissueForward, pendingCleanPreRaceTissueRaceIds, saveTissueForward, settlePendingTissueForwardRaces, ACTIVE_TURF_TISSUE_CONFIG } from "@/lib/racing/tissue-forward";
 import { mutateJumpTissueForward, updateJumpTissueForward } from "@/lib/racing/jump-tissue-forward";
 import { mutateAwTissueForward, updateAwTissueForward } from "@/lib/racing/aw-tissue-forward";
+import { AW_TISSUE_V2_ACTIVE } from "@/lib/racing/aw-tissue-v2-activation";
+import { AW_TISSUE_V2_FORWARD_PATH, emptyAwV2Forward } from "@/lib/racing/aw-tissue-v2";
 import { mutateAwTissuePairedForward, updateAwTissuePairedForward } from "@/lib/racing/aw-tissue-paired-forward";
 import { loadHurdlePair, mutateHurdlePair, updateHurdlePairs } from "@/lib/racing/hurdle-tissue-challenger-forward";
 import { loadChasePair, mutateChasePair, updateChasePairs } from "@/lib/racing/chase-tissue-challenger-forward";
@@ -70,7 +72,7 @@ export async function main(args: string[]) {
       const next = updateAwTissueForward(latest, races, now);
       settledAwTissue = next.races.filter((race) => race.settledAt !== null).length - before;
       return next;
-    });
+    }, AW_TISSUE_V2_ACTIVE ? AW_TISSUE_V2_FORWARD_PATH : undefined, AW_TISSUE_V2_ACTIVE ? emptyAwV2Forward() : undefined);
     await mutateAwTissuePairedForward((latest) => {
       const before = latest.races.filter((race) => race.settledAt !== null).length;
       const next = updateAwTissuePairedForward(latest, races, now);
@@ -147,7 +149,7 @@ async function pendingFromMutationSources() {
   ]);
   const [jump, aw, paired, g4, weight, disagreement] = await Promise.all([
     loadJumpTissueForward(),
-    loadAwTissueForward(),
+    AW_TISSUE_V2_ACTIVE ? (await import("@/lib/racing/aw-tissue-v2")).loadAwV2Forward() : loadAwTissueForward(),
     loadAwTissuePairedForward(),
     loadJumpG4Forward(),
     loadTodaysRatingWeightForward(),

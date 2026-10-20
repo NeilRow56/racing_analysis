@@ -40,8 +40,8 @@ export type AwTissuePrediction = {
   priorAwStarts: number | null;
   rawInputs: Array<number | null>;
   modelInputs: number[] | null;
-  modelVersion: typeof AW_TISSUE_VERSION;
-  featureSchemaVersion: typeof AW_TISSUE_SCHEMA;
+  modelVersion: typeof AW_TISSUE_VERSION | "AW_TISSUE_V2";
+  featureSchemaVersion: typeof AW_TISSUE_SCHEMA | "aw_tissue_v2_turf_v3_core_surface_history_v1";
 };
 export type AwTissueBook = {
   runners: AwTissuePrediction[];

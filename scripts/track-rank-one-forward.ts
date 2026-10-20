@@ -7,6 +7,9 @@ import { loadFrozenTissueModel, ACTIVE_TURF_TISSUE_CONFIG } from "@/lib/racing/t
 import { loadTurfTissueCaptureHistory } from "@/lib/racing/turf-tissue-sync";
 import { loadJumpTissueModel } from "@/lib/racing/jump-tissue-model";
 import { loadAwTissueModel } from "@/lib/racing/aw-tissue-model";
+import { AW_TISSUE_V2_ACTIVE } from "@/lib/racing/aw-tissue-v2-activation";
+import { loadAwV2Model } from "@/lib/racing/aw-tissue-v2";
+import { loadAwV2CaptureContext } from "@/lib/racing/aw-tissue-v2-sync";
 import { loadAwTissuePriorStarts } from "@/lib/racing/aw-tissue-forward";
 import { loadJumpTissueCommentsForRaces } from "@/lib/racing/jump-tissue-sync";
 import { loadRankOne, mutateRankOne, runRankOneCycle, summarizeRankOne, rankOneFamily } from "@/lib/racing/rank-one-forward";
@@ -27,12 +30,15 @@ export async function main(args: string[]) {
           if (capture.skipped)
             console.log(capture.message);
           capture.meetings = await loadTurfTissueCaptureHistory(connection.db, capture.meetings, date, capturedAt);
+          const awCapture = AW_TISSUE_V2_ACTIVE ? await loadAwV2CaptureContext(connection, capture.meetings, date, capturedAt) : null;
+          if (awCapture) capture.meetings = awCapture.meetings;
           const races = capture.meetings.flatMap(m => m.races);
           const [turf, jump, aw, comments, awStarts] = await Promise.all([
             loadFrozenTissueModel(ACTIVE_TURF_TISSUE_CONFIG.modelPath, ACTIVE_TURF_TISSUE_CONFIG.modelVersion), loadJumpTissueModel(), loadAwTissueModel(),
             loadJumpTissueCommentsForRaces(connection.client, races), loadAwTissuePriorStarts(connection.client, races.filter(r => rankOneFamily(r) === "AW"))
           ]);
-          return { meetings: capture.meetings, models: { turf, jump, aw, comments, awStarts } };
+          const awV2 = AW_TISSUE_V2_ACTIVE ? await loadAwV2Model() : undefined;
+          return { meetings: capture.meetings, models: { turf, jump, aw, comments, awStarts, awV2, awV2Context: awCapture?.context } };
         },
         loadResults: async (ids) => new Map(groupTodaysRacingRows(await getRacecardRowsForRaceIds(connection.db, ids)).flatMap(m => m.races.map(r => [r.raceId, r] as const))),
       }));

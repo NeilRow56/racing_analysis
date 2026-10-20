@@ -1,22 +1,27 @@
 import { createDbConnection } from "@/db";
 import { loadAwTissueForward, renderAwTissueSummary, renderAwTissueToday } from "@/lib/racing/aw-tissue-forward";
 import { syncAwTissueMeetings } from "@/lib/racing/aw-tissue-sync";
+import { loadAwV2Forward } from "@/lib/racing/aw-tissue-v2";
+import { AW_TISSUE_V2_ACTIVE } from "@/lib/racing/aw-tissue-v2-activation";
 import { currentDayProspectiveCapture } from "@/lib/racing/current-day-sync";
 import { getLocalRacingDate, getSportingLifeCurrentPricesForDate, getTodaysRacingData, isAllWeatherRaceForDisplay } from "@/lib/racing/todays-racing";
 
 const command = process.argv[2] ?? "summary";
-const raceDate = process.argv[3] ?? getLocalRacingDate();
-if (command === "summary") console.log(renderAwTissueSummary(await loadAwTissueForward()));
+const legacy = process.argv[3] === "v1";
+const raceDate = legacy ? getLocalRacingDate() : process.argv[3] ?? getLocalRacingDate();
+const readForward = legacy || !AW_TISSUE_V2_ACTIVE ? loadAwTissueForward : loadAwV2Forward;
+if (command === "summary") console.log(renderAwTissueSummary(await readForward()));
 else if (command === "today") {
   const connection = createDbConnection();
   try {
-    console.log(renderAwTissueToday(await loadAwTissueForward(), raceDate, await getSportingLifeCurrentPricesForDate(connection.db, raceDate)));
+    console.log(renderAwTissueToday(await readForward(), raceDate, await getSportingLifeCurrentPricesForDate(connection.db, raceDate)));
   } finally { await connection.client.end(); }
 }
 else if (command === "sync") {
+  if (legacy) throw new Error("Archived v1 CLI is read-only; use summary v1");
   const connection = createDbConnection();
   try {
-    const before = await loadAwTissueForward();
+    const before = await readForward();
     const [today, currentPrices] = await Promise.all([
       getTodaysRacingData(connection.db, raceDate, { raceFilter: isAllWeatherRaceForDisplay }),
       getSportingLifeCurrentPricesForDate(connection.db, raceDate),

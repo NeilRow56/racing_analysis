@@ -13,7 +13,7 @@ import {
   upsertModelDisagreementObservations,
   type MarketCapturePoint,
 } from "@/lib/racing/model-disagreement-forward";
-import { loadAwTissueForward } from "@/lib/racing/aw-tissue-forward";
+import { loadActiveAwTissueForward as loadAwTissueForward } from "@/lib/racing/aw-tissue-v2";
 import { syncAwTissueMeetings } from "@/lib/racing/aw-tissue-sync";
 import { loadJumpTissueForward } from "@/lib/racing/jump-tissue-forward";
 import { syncJumpTissueMeetings } from "@/lib/racing/jump-tissue-sync";

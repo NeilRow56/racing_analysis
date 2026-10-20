@@ -51198,6 +51198,4803 @@
       ],
       "settledAt": "2026-10-19T19:45:20.522Z",
       "excludedReason": null
+    },
+    {
+      "raceId": "c499c417-971c-4aa7-8d14-b8ec64f01a4e",
+      "sourceId": "945037",
+      "raceDate": "2026-10-20",
+      "course": "Newcastle",
+      "raceName": "AWC Finals Day At Newcastle 26th March EBF Fillies' Novice Stakes (GBB/GBBPlus Race)",
+      "scheduledTime": "15:22:00",
+      "scheduledOffAt": "2026-10-20T15:22:00.000Z",
+      "currentOffAt": "2026-10-20T15:22:00.000Z",
+      "firstCapturedAt": "2026-10-20T02:30:50.064Z",
+      "runners": [
+        {
+          "runnerId": "fae146e8-6e9d-46f0-9179-ecd1bd1c995a",
+          "horseId": "a428af62-ce88-422d-9bc0-a855612dffbe",
+          "horseName": "Sea La Roma"
+        },
+        {
+          "runnerId": "eb3c0594-3f1e-4781-a728-34474a1bc1a5",
+          "horseId": "37e3febc-a635-42a8-a7e6-9340c0394d68",
+          "horseName": "Empress Jingu"
+        },
+        {
+          "runnerId": "dcc14122-5bcb-4b43-bd0a-19684ebe3060",
+          "horseId": "81c6daad-efc9-4be0-b088-e8a3ba4f4360",
+          "horseName": "Al Afaweeq"
+        }
+      ],
+      "awTissue": {
+        "modelVersion": "AW_TISSUE_V1",
+        "modelHash": "52376e5361e41da6b991aebfbb7f202cebb1f437b1259d55711824f55eead8a8",
+        "probabilities": [
+          {
+            "runnerId": "eb3c0594-3f1e-4781-a728-34474a1bc1a5",
+            "horseId": "37e3febc-a635-42a8-a7e6-9340c0394d68",
+            "horseName": "Empress Jingu",
+            "probability": 0.4638489646574961,
+            "rank": 1,
+            "firstCapturedPriceDecimal": 3.25,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "fae146e8-6e9d-46f0-9179-ecd1bd1c995a",
+            "horseId": "a428af62-ce88-422d-9bc0-a855612dffbe",
+            "horseName": "Sea La Roma",
+            "probability": 0.35134821714079995,
+            "rank": 2,
+            "firstCapturedPriceDecimal": 1.67,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "dcc14122-5bcb-4b43-bd0a-19684ebe3060",
+            "horseId": "81c6daad-efc9-4be0-b088-e8a3ba4f4360",
+            "horseName": "Al Afaweeq",
+            "probability": 0.18480281820170402,
+            "rank": 3,
+            "firstCapturedPriceDecimal": 5,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          }
+        ],
+        "rankOrder": [
+          "eb3c0594-3f1e-4781-a728-34474a1bc1a5",
+          "fae146e8-6e9d-46f0-9179-ecd1bd1c995a",
+          "dcc14122-5bcb-4b43-bd0a-19684ebe3060"
+        ],
+        "rank1RunnerId": "eb3c0594-3f1e-4781-a728-34474a1bc1a5",
+        "rank1HorseName": "Empress Jingu",
+        "rank1Probability": 0.4638489646574961,
+        "valueQualified": true,
+        "selectedPriceProfitLoss": null
+      },
+      "longshotTjZero": {
+        "modelVersion": "LONGSHOT_TJ_ZERO_V1",
+        "modelHash": "52376e5361e41da6b991aebfbb7f202cebb1f437b1259d55711824f55eead8a8",
+        "probabilities": [
+          {
+            "runnerId": "eb3c0594-3f1e-4781-a728-34474a1bc1a5",
+            "horseId": "37e3febc-a635-42a8-a7e6-9340c0394d68",
+            "horseName": "Empress Jingu",
+            "probability": 0.4638489646574961,
+            "rank": 1,
+            "firstCapturedPriceDecimal": 3.25,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "fae146e8-6e9d-46f0-9179-ecd1bd1c995a",
+            "horseId": "a428af62-ce88-422d-9bc0-a855612dffbe",
+            "horseName": "Sea La Roma",
+            "probability": 0.35134821714079995,
+            "rank": 2,
+            "firstCapturedPriceDecimal": 1.67,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "dcc14122-5bcb-4b43-bd0a-19684ebe3060",
+            "horseId": "81c6daad-efc9-4be0-b088-e8a3ba4f4360",
+            "horseName": "Al Afaweeq",
+            "probability": 0.18480281820170402,
+            "rank": 3,
+            "firstCapturedPriceDecimal": 5,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          }
+        ],
+        "rankOrder": [
+          "eb3c0594-3f1e-4781-a728-34474a1bc1a5",
+          "fae146e8-6e9d-46f0-9179-ecd1bd1c995a",
+          "dcc14122-5bcb-4b43-bd0a-19684ebe3060"
+        ],
+        "rank1RunnerId": "eb3c0594-3f1e-4781-a728-34474a1bc1a5",
+        "rank1HorseName": "Empress Jingu",
+        "rank1Probability": 0.4638489646574961,
+        "valueQualified": true,
+        "selectedPriceProfitLoss": null
+      },
+      "rank1Agreement": true,
+      "classification": "AGREE",
+      "valueBucket": "BOTH_VALUE",
+      "prices": {
+        "firstAvailable": {
+          "awTissue": {
+            "runnerId": "eb3c0594-3f1e-4781-a728-34474a1bc1a5",
+            "medianDecimalPrice": 3.25,
+            "impliedProbability": 0.3076923076923077,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-10-20T02:30:50.064Z",
+            "snapshot": {
+              "decimalPrice": 3.25,
+              "impliedProbability": 0.3076923076923077,
+              "capturedAt": "2026-10-20T02:30:50.064Z",
+              "minutesBeforeScheduledOff": 771.1656,
+              "ratingProbability": 0.4638489646574961,
+              "ratingEdgePercentagePoints": 15.615665696518837,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "9/4",
+                  "decimalOdds": 3.25
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "9/4",
+                  "decimalOdds": 3.25
+                },
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "9/4",
+                  "decimalOdds": 3.25
+                }
+              ],
+              "medianBookmakerPriceDecimal": 3.25,
+              "medianBookmakerImpliedProbability": 0.3076923076923077,
+              "bestBookmakerPriceDecimal": 3.25,
+              "bestBookmakerPriceFractional": "9/4",
+              "bestBookmakerName": null,
+              "forecastPrice": "13/8",
+              "forecastDecimalPrice": 2.625
+            }
+          },
+          "longshotTjZero": {
+            "runnerId": "eb3c0594-3f1e-4781-a728-34474a1bc1a5",
+            "medianDecimalPrice": 3.25,
+            "impliedProbability": 0.3076923076923077,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-10-20T02:30:50.064Z",
+            "snapshot": {
+              "decimalPrice": 3.25,
+              "impliedProbability": 0.3076923076923077,
+              "capturedAt": "2026-10-20T02:30:50.064Z",
+              "minutesBeforeScheduledOff": 771.1656,
+              "ratingProbability": 0.4638489646574961,
+              "ratingEdgePercentagePoints": 15.615665696518837,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "9/4",
+                  "decimalOdds": 3.25
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "9/4",
+                  "decimalOdds": 3.25
+                },
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "9/4",
+                  "decimalOdds": 3.25
+                }
+              ],
+              "medianBookmakerPriceDecimal": 3.25,
+              "medianBookmakerImpliedProbability": 0.3076923076923077,
+              "bestBookmakerPriceDecimal": 3.25,
+              "bestBookmakerPriceFractional": "9/4",
+              "bestBookmakerName": null,
+              "forecastPrice": "13/8",
+              "forecastDecimalPrice": 2.625
+            }
+          }
+        },
+        "earlyMorning": {
+          "awTissue": {
+            "runnerId": "eb3c0594-3f1e-4781-a728-34474a1bc1a5",
+            "medianDecimalPrice": 3.25,
+            "impliedProbability": 0.3076923076923077,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-10-20T02:30:50.064Z",
+            "snapshot": {
+              "decimalPrice": 3.25,
+              "impliedProbability": 0.3076923076923077,
+              "capturedAt": "2026-10-20T02:30:50.064Z",
+              "minutesBeforeScheduledOff": 771.1656,
+              "ratingProbability": 0.4638489646574961,
+              "ratingEdgePercentagePoints": 15.615665696518837,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "9/4",
+                  "decimalOdds": 3.25
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "9/4",
+                  "decimalOdds": 3.25
+                },
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "9/4",
+                  "decimalOdds": 3.25
+                }
+              ],
+              "medianBookmakerPriceDecimal": 3.25,
+              "medianBookmakerImpliedProbability": 0.3076923076923077,
+              "bestBookmakerPriceDecimal": 3.25,
+              "bestBookmakerPriceFractional": "9/4",
+              "bestBookmakerName": null,
+              "forecastPrice": "13/8",
+              "forecastDecimalPrice": 2.625
+            }
+          },
+          "longshotTjZero": {
+            "runnerId": "eb3c0594-3f1e-4781-a728-34474a1bc1a5",
+            "medianDecimalPrice": 3.25,
+            "impliedProbability": 0.3076923076923077,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-10-20T02:30:50.064Z",
+            "snapshot": {
+              "decimalPrice": 3.25,
+              "impliedProbability": 0.3076923076923077,
+              "capturedAt": "2026-10-20T02:30:50.064Z",
+              "minutesBeforeScheduledOff": 771.1656,
+              "ratingProbability": 0.4638489646574961,
+              "ratingEdgePercentagePoints": 15.615665696518837,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "9/4",
+                  "decimalOdds": 3.25
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "9/4",
+                  "decimalOdds": 3.25
+                },
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "9/4",
+                  "decimalOdds": 3.25
+                }
+              ],
+              "medianBookmakerPriceDecimal": 3.25,
+              "medianBookmakerImpliedProbability": 0.3076923076923077,
+              "bestBookmakerPriceDecimal": 3.25,
+              "bestBookmakerPriceFractional": "9/4",
+              "bestBookmakerName": null,
+              "forecastPrice": "13/8",
+              "forecastDecimalPrice": 2.625
+            }
+          }
+        },
+        "late": {
+          "awTissue": null,
+          "longshotTjZero": null
+        },
+        "finalPreRace": {
+          "awTissue": null,
+          "longshotTjZero": null
+        },
+        "sp": {
+          "awTissue": null,
+          "longshotTjZero": null
+        }
+      },
+      "winners": [],
+      "settledAt": null,
+      "excludedReason": null
+    },
+    {
+      "raceId": "736690b7-ba61-4de3-8bad-db26ebbdd7a6",
+      "sourceId": "944382",
+      "raceDate": "2026-10-20",
+      "course": "Newcastle",
+      "raceName": "Midnite A Next Generation Betting App Handicap (GBBPlus Race)",
+      "scheduledTime": "15:57:00",
+      "scheduledOffAt": "2026-10-20T15:57:00.000Z",
+      "currentOffAt": "2026-10-20T15:57:00.000Z",
+      "firstCapturedAt": "2026-10-20T02:30:50.064Z",
+      "runners": [
+        {
+          "runnerId": "8c672845-073a-493f-961b-6168ff65117e",
+          "horseId": "4d37d576-6689-47c3-909b-445c46d73d8a",
+          "horseName": "Circus Of Rome"
+        },
+        {
+          "runnerId": "64ddaae0-825b-46a8-94ba-45aab2d6e24d",
+          "horseId": "909e9fb1-fe84-4769-aa36-701ca20731d8",
+          "horseName": "Ernst Blofeld"
+        },
+        {
+          "runnerId": "cb77b517-51c7-4654-8807-627e96bbb276",
+          "horseId": "39610505-6982-4ab6-81e5-471d67fbeec8",
+          "horseName": "Oursin"
+        },
+        {
+          "runnerId": "f10f581a-44a2-4311-a75d-d81281cb6225",
+          "horseId": "b819f5c9-0baf-4f66-845f-7769afd1fb1f",
+          "horseName": "Wardlaw"
+        },
+        {
+          "runnerId": "55ecc67c-8314-4661-b643-8b2e1a0dc396",
+          "horseId": "6dbe262b-6b5f-4d71-b289-04d96ba5e5ae",
+          "horseName": "Tiernan"
+        },
+        {
+          "runnerId": "06f1ba3f-1a06-43b5-88b2-5beea9e8846d",
+          "horseId": "b11773e9-81be-4d52-b9eb-f6c60431ff6f",
+          "horseName": "Teumessias Fox"
+        },
+        {
+          "runnerId": "e0f7fa60-b07c-4466-b128-354fb77f99ad",
+          "horseId": "a8ba3ec2-8ee2-43be-a270-818300affdf2",
+          "horseName": "Dark Moon Rising"
+        },
+        {
+          "runnerId": "204c4f59-4798-4782-8979-54ceb903f602",
+          "horseId": "cfb0f929-e483-42d0-bbe2-6435ee92244c",
+          "horseName": "Folk Pageant"
+        },
+        {
+          "runnerId": "30b90a51-f9af-45d7-9efb-47cba64c7f84",
+          "horseId": "e3935c67-886e-4f9d-b10d-43232fae8309",
+          "horseName": "High Point"
+        }
+      ],
+      "awTissue": {
+        "modelVersion": "AW_TISSUE_V1",
+        "modelHash": "52376e5361e41da6b991aebfbb7f202cebb1f437b1259d55711824f55eead8a8",
+        "probabilities": [
+          {
+            "runnerId": "8c672845-073a-493f-961b-6168ff65117e",
+            "horseId": "4d37d576-6689-47c3-909b-445c46d73d8a",
+            "horseName": "Circus Of Rome",
+            "probability": 0.28749410904487394,
+            "rank": 1,
+            "firstCapturedPriceDecimal": 3.75,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "64ddaae0-825b-46a8-94ba-45aab2d6e24d",
+            "horseId": "909e9fb1-fe84-4769-aa36-701ca20731d8",
+            "horseName": "Ernst Blofeld",
+            "probability": 0.13527624447148215,
+            "rank": 2,
+            "firstCapturedPriceDecimal": 4.5,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "55ecc67c-8314-4661-b643-8b2e1a0dc396",
+            "horseId": "6dbe262b-6b5f-4d71-b289-04d96ba5e5ae",
+            "horseName": "Tiernan",
+            "probability": 0.12689933841038536,
+            "rank": 3,
+            "firstCapturedPriceDecimal": 7.5,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "cb77b517-51c7-4654-8807-627e96bbb276",
+            "horseId": "39610505-6982-4ab6-81e5-471d67fbeec8",
+            "horseName": "Oursin",
+            "probability": 0.12219067668753637,
+            "rank": 4,
+            "firstCapturedPriceDecimal": 4.5,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "06f1ba3f-1a06-43b5-88b2-5beea9e8846d",
+            "horseId": "b11773e9-81be-4d52-b9eb-f6c60431ff6f",
+            "horseName": "Teumessias Fox",
+            "probability": 0.10268814371003415,
+            "rank": 5,
+            "firstCapturedPriceDecimal": 8,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "f10f581a-44a2-4311-a75d-d81281cb6225",
+            "horseId": "b819f5c9-0baf-4f66-845f-7769afd1fb1f",
+            "horseName": "Wardlaw",
+            "probability": 0.08491995513490735,
+            "rank": 6,
+            "firstCapturedPriceDecimal": 5,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "204c4f59-4798-4782-8979-54ceb903f602",
+            "horseId": "cfb0f929-e483-42d0-bbe2-6435ee92244c",
+            "horseName": "Folk Pageant",
+            "probability": 0.05974664986165265,
+            "rank": 7,
+            "firstCapturedPriceDecimal": 26,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "e0f7fa60-b07c-4466-b128-354fb77f99ad",
+            "horseId": "a8ba3ec2-8ee2-43be-a270-818300affdf2",
+            "horseName": "Dark Moon Rising",
+            "probability": 0.048823110869156326,
+            "rank": 8,
+            "firstCapturedPriceDecimal": 21,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "30b90a51-f9af-45d7-9efb-47cba64c7f84",
+            "horseId": "e3935c67-886e-4f9d-b10d-43232fae8309",
+            "horseName": "High Point",
+            "probability": 0.03196177180997178,
+            "rank": 9,
+            "firstCapturedPriceDecimal": 41,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          }
+        ],
+        "rankOrder": [
+          "8c672845-073a-493f-961b-6168ff65117e",
+          "64ddaae0-825b-46a8-94ba-45aab2d6e24d",
+          "55ecc67c-8314-4661-b643-8b2e1a0dc396",
+          "cb77b517-51c7-4654-8807-627e96bbb276",
+          "06f1ba3f-1a06-43b5-88b2-5beea9e8846d",
+          "f10f581a-44a2-4311-a75d-d81281cb6225",
+          "204c4f59-4798-4782-8979-54ceb903f602",
+          "e0f7fa60-b07c-4466-b128-354fb77f99ad",
+          "30b90a51-f9af-45d7-9efb-47cba64c7f84"
+        ],
+        "rank1RunnerId": "8c672845-073a-493f-961b-6168ff65117e",
+        "rank1HorseName": "Circus Of Rome",
+        "rank1Probability": 0.28749410904487394,
+        "valueQualified": true,
+        "selectedPriceProfitLoss": null
+      },
+      "longshotTjZero": {
+        "modelVersion": "LONGSHOT_TJ_ZERO_V1",
+        "modelHash": "52376e5361e41da6b991aebfbb7f202cebb1f437b1259d55711824f55eead8a8",
+        "probabilities": [
+          {
+            "runnerId": "8c672845-073a-493f-961b-6168ff65117e",
+            "horseId": "4d37d576-6689-47c3-909b-445c46d73d8a",
+            "horseName": "Circus Of Rome",
+            "probability": 0.2850483475301928,
+            "rank": 1,
+            "firstCapturedPriceDecimal": 3.75,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "64ddaae0-825b-46a8-94ba-45aab2d6e24d",
+            "horseId": "909e9fb1-fe84-4769-aa36-701ca20731d8",
+            "horseName": "Ernst Blofeld",
+            "probability": 0.13412542634279728,
+            "rank": 2,
+            "firstCapturedPriceDecimal": 4.5,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "55ecc67c-8314-4661-b643-8b2e1a0dc396",
+            "horseId": "6dbe262b-6b5f-4d71-b289-04d96ba5e5ae",
+            "horseName": "Tiernan",
+            "probability": 0.12581978405306748,
+            "rank": 3,
+            "firstCapturedPriceDecimal": 7.5,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "cb77b517-51c7-4654-8807-627e96bbb276",
+            "horseId": "39610505-6982-4ab6-81e5-471d67fbeec8",
+            "horseName": "Oursin",
+            "probability": 0.12115117972014434,
+            "rank": 4,
+            "firstCapturedPriceDecimal": 4.5,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "06f1ba3f-1a06-43b5-88b2-5beea9e8846d",
+            "horseId": "b11773e9-81be-4d52-b9eb-f6c60431ff6f",
+            "horseName": "Teumessias Fox",
+            "probability": 0.10181455812341315,
+            "rank": 5,
+            "firstCapturedPriceDecimal": 8,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "f10f581a-44a2-4311-a75d-d81281cb6225",
+            "horseId": "b819f5c9-0baf-4f66-845f-7769afd1fb1f",
+            "horseName": "Wardlaw",
+            "probability": 0.08419752656484929,
+            "rank": 6,
+            "firstCapturedPriceDecimal": 5,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "204c4f59-4798-4782-8979-54ceb903f602",
+            "horseId": "cfb0f929-e483-42d0-bbe2-6435ee92244c",
+            "horseName": "Folk Pageant",
+            "probability": 0.05694420006972006,
+            "rank": 7,
+            "firstCapturedPriceDecimal": 26,
+            "longshotTrainerJockeyAdjusted": true,
+            "outcome": null
+          },
+          {
+            "runnerId": "e0f7fa60-b07c-4466-b128-354fb77f99ad",
+            "horseId": "a8ba3ec2-8ee2-43be-a270-818300affdf2",
+            "horseName": "Dark Moon Rising",
+            "probability": 0.04840776432175227,
+            "rank": 8,
+            "firstCapturedPriceDecimal": 21,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "30b90a51-f9af-45d7-9efb-47cba64c7f84",
+            "horseId": "e3935c67-886e-4f9d-b10d-43232fae8309",
+            "horseName": "High Point",
+            "probability": 0.04249121327406343,
+            "rank": 9,
+            "firstCapturedPriceDecimal": 41,
+            "longshotTrainerJockeyAdjusted": true,
+            "outcome": null
+          }
+        ],
+        "rankOrder": [
+          "8c672845-073a-493f-961b-6168ff65117e",
+          "64ddaae0-825b-46a8-94ba-45aab2d6e24d",
+          "55ecc67c-8314-4661-b643-8b2e1a0dc396",
+          "cb77b517-51c7-4654-8807-627e96bbb276",
+          "06f1ba3f-1a06-43b5-88b2-5beea9e8846d",
+          "f10f581a-44a2-4311-a75d-d81281cb6225",
+          "204c4f59-4798-4782-8979-54ceb903f602",
+          "e0f7fa60-b07c-4466-b128-354fb77f99ad",
+          "30b90a51-f9af-45d7-9efb-47cba64c7f84"
+        ],
+        "rank1RunnerId": "8c672845-073a-493f-961b-6168ff65117e",
+        "rank1HorseName": "Circus Of Rome",
+        "rank1Probability": 0.2850483475301928,
+        "valueQualified": true,
+        "selectedPriceProfitLoss": null
+      },
+      "rank1Agreement": true,
+      "classification": "AGREE",
+      "valueBucket": "BOTH_VALUE",
+      "prices": {
+        "firstAvailable": {
+          "awTissue": {
+            "runnerId": "8c672845-073a-493f-961b-6168ff65117e",
+            "medianDecimalPrice": 3.75,
+            "impliedProbability": 0.26666666666666666,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-10-20T02:30:50.064Z",
+            "snapshot": {
+              "decimalPrice": 3.75,
+              "impliedProbability": 0.26666666666666666,
+              "capturedAt": "2026-10-20T02:30:50.064Z",
+              "minutesBeforeScheduledOff": 806.1656,
+              "ratingProbability": 0.28749410904487394,
+              "ratingEdgePercentagePoints": 2.0827442378207275,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "11/4",
+                  "decimalOdds": 3.75
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "11/4",
+                  "decimalOdds": 3.75
+                },
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "11/4",
+                  "decimalOdds": 3.75
+                }
+              ],
+              "medianBookmakerPriceDecimal": 3.75,
+              "medianBookmakerImpliedProbability": 0.26666666666666666,
+              "bestBookmakerPriceDecimal": 3.75,
+              "bestBookmakerPriceFractional": "11/4",
+              "bestBookmakerName": null,
+              "forecastPrice": "5/1",
+              "forecastDecimalPrice": 6
+            }
+          },
+          "longshotTjZero": {
+            "runnerId": "8c672845-073a-493f-961b-6168ff65117e",
+            "medianDecimalPrice": 3.75,
+            "impliedProbability": 0.26666666666666666,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-10-20T02:30:50.064Z",
+            "snapshot": {
+              "decimalPrice": 3.75,
+              "impliedProbability": 0.26666666666666666,
+              "capturedAt": "2026-10-20T02:30:50.064Z",
+              "minutesBeforeScheduledOff": 806.1656,
+              "ratingProbability": 0.2850483475301928,
+              "ratingEdgePercentagePoints": 1.838168086352615,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "11/4",
+                  "decimalOdds": 3.75
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "11/4",
+                  "decimalOdds": 3.75
+                },
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "11/4",
+                  "decimalOdds": 3.75
+                }
+              ],
+              "medianBookmakerPriceDecimal": 3.75,
+              "medianBookmakerImpliedProbability": 0.26666666666666666,
+              "bestBookmakerPriceDecimal": 3.75,
+              "bestBookmakerPriceFractional": "11/4",
+              "bestBookmakerName": null,
+              "forecastPrice": "5/1",
+              "forecastDecimalPrice": 6
+            }
+          }
+        },
+        "earlyMorning": {
+          "awTissue": {
+            "runnerId": "8c672845-073a-493f-961b-6168ff65117e",
+            "medianDecimalPrice": 3.75,
+            "impliedProbability": 0.26666666666666666,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-10-20T02:30:50.064Z",
+            "snapshot": {
+              "decimalPrice": 3.75,
+              "impliedProbability": 0.26666666666666666,
+              "capturedAt": "2026-10-20T02:30:50.064Z",
+              "minutesBeforeScheduledOff": 806.1656,
+              "ratingProbability": 0.28749410904487394,
+              "ratingEdgePercentagePoints": 2.0827442378207275,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "11/4",
+                  "decimalOdds": 3.75
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "11/4",
+                  "decimalOdds": 3.75
+                },
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "11/4",
+                  "decimalOdds": 3.75
+                }
+              ],
+              "medianBookmakerPriceDecimal": 3.75,
+              "medianBookmakerImpliedProbability": 0.26666666666666666,
+              "bestBookmakerPriceDecimal": 3.75,
+              "bestBookmakerPriceFractional": "11/4",
+              "bestBookmakerName": null,
+              "forecastPrice": "5/1",
+              "forecastDecimalPrice": 6
+            }
+          },
+          "longshotTjZero": {
+            "runnerId": "8c672845-073a-493f-961b-6168ff65117e",
+            "medianDecimalPrice": 3.75,
+            "impliedProbability": 0.26666666666666666,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-10-20T02:30:50.064Z",
+            "snapshot": {
+              "decimalPrice": 3.75,
+              "impliedProbability": 0.26666666666666666,
+              "capturedAt": "2026-10-20T02:30:50.064Z",
+              "minutesBeforeScheduledOff": 806.1656,
+              "ratingProbability": 0.2850483475301928,
+              "ratingEdgePercentagePoints": 1.838168086352615,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "11/4",
+                  "decimalOdds": 3.75
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "11/4",
+                  "decimalOdds": 3.75
+                },
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "11/4",
+                  "decimalOdds": 3.75
+                }
+              ],
+              "medianBookmakerPriceDecimal": 3.75,
+              "medianBookmakerImpliedProbability": 0.26666666666666666,
+              "bestBookmakerPriceDecimal": 3.75,
+              "bestBookmakerPriceFractional": "11/4",
+              "bestBookmakerName": null,
+              "forecastPrice": "5/1",
+              "forecastDecimalPrice": 6
+            }
+          }
+        },
+        "late": {
+          "awTissue": null,
+          "longshotTjZero": null
+        },
+        "finalPreRace": {
+          "awTissue": null,
+          "longshotTjZero": null
+        },
+        "sp": {
+          "awTissue": null,
+          "longshotTjZero": null
+        }
+      },
+      "winners": [],
+      "settledAt": null,
+      "excludedReason": null
+    },
+    {
+      "raceId": "bcbcc681-f6a3-42ee-9506-c9b1d18a1feb",
+      "sourceId": "944383",
+      "raceDate": "2026-10-20",
+      "course": "Newcastle",
+      "raceName": "All-Weather Championships Is Back Handicap",
+      "scheduledTime": "16:30:00",
+      "scheduledOffAt": "2026-10-20T16:30:00.000Z",
+      "currentOffAt": "2026-10-20T16:30:00.000Z",
+      "firstCapturedAt": "2026-10-20T02:30:50.064Z",
+      "runners": [
+        {
+          "runnerId": "532cb72e-0167-4542-b829-d0c494277b2f",
+          "horseId": "31e27c6c-76a4-4bb1-b48d-97356b0984e7",
+          "horseName": "Newsreader"
+        },
+        {
+          "runnerId": "7a667064-18b3-4c01-802d-6e6eda751aa0",
+          "horseId": "4ccf76fa-ce33-4945-a4eb-26e5045f9908",
+          "horseName": "Get Up Everybody"
+        },
+        {
+          "runnerId": "0dd91e3e-fe6c-43e6-bf8e-43c217e9f7ab",
+          "horseId": "53d4f7ca-4f11-4759-b630-167f35cba57b",
+          "horseName": "Rousham"
+        },
+        {
+          "runnerId": "d6d3312a-2f88-4e5d-81d0-4d1d13bc22c6",
+          "horseId": "2568293c-8f1c-4372-8525-48acddc3fec3",
+          "horseName": "Yaajooz"
+        },
+        {
+          "runnerId": "672379bc-d119-4dfc-9926-05c5570377ef",
+          "horseId": "912cd18e-a1c7-4860-a0fb-aa4699c99d31",
+          "horseName": "Milford Grange"
+        },
+        {
+          "runnerId": "a062d3dd-df33-46ba-b504-881cda77b8c2",
+          "horseId": "5e458df6-2d7e-411d-bdeb-e9a92155e6c5",
+          "horseName": "Educating Rita"
+        },
+        {
+          "runnerId": "859a9f65-392d-4962-b733-4d438f34a466",
+          "horseId": "64be5a9e-4dde-427a-afad-bd4b8a84e600",
+          "horseName": "Jesmond Dawn"
+        },
+        {
+          "runnerId": "7ba20dab-eef6-4f3e-81ed-ba6a596c81ce",
+          "horseId": "85f3018f-d8b9-40a0-b1dc-a113d1ca66b6",
+          "horseName": "Sole Spirit"
+        },
+        {
+          "runnerId": "c9e57d85-eb5d-49dd-b416-4b67bd00d8a9",
+          "horseId": "f940617e-6dad-4bd2-8367-9dcb30f5f777",
+          "horseName": "Blufferonthebus"
+        },
+        {
+          "runnerId": "29e6a9c6-70ee-4f1f-80f5-cbb70987ab4a",
+          "horseId": "346458bd-0b8c-45a4-84a0-192d332ae34d",
+          "horseName": "Gressington"
+        },
+        {
+          "runnerId": "c7721fd7-b301-4385-93aa-a4676cc18090",
+          "horseId": "8203c44b-0006-4cc4-841c-fc7e77242421",
+          "horseName": "Maximum Velocity"
+        },
+        {
+          "runnerId": "4664859b-1201-4eaa-a138-9b4c2bdd9d67",
+          "horseId": "7f77fec2-d4ad-428f-a891-14d70b177e3a",
+          "horseName": "Bobby Joe Leg"
+        },
+        {
+          "runnerId": "73653187-0772-4eba-b4a6-b10a0f104568",
+          "horseId": "becba1db-0f3d-4eda-8366-5d27c5d66df6",
+          "horseName": "Tactical Blitz"
+        },
+        {
+          "runnerId": "fde35d83-7ad6-4f1e-bccc-13686ee92e46",
+          "horseId": "a1c3e260-927c-41e4-8d5d-d794059249bf",
+          "horseName": "Dolo's Star"
+        }
+      ],
+      "awTissue": {
+        "modelVersion": "AW_TISSUE_V1",
+        "modelHash": "52376e5361e41da6b991aebfbb7f202cebb1f437b1259d55711824f55eead8a8",
+        "probabilities": [
+          {
+            "runnerId": "532cb72e-0167-4542-b829-d0c494277b2f",
+            "horseId": "31e27c6c-76a4-4bb1-b48d-97356b0984e7",
+            "horseName": "Newsreader",
+            "probability": 0.12087882426501051,
+            "rank": 1,
+            "firstCapturedPriceDecimal": 3.75,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "859a9f65-392d-4962-b733-4d438f34a466",
+            "horseId": "64be5a9e-4dde-427a-afad-bd4b8a84e600",
+            "horseName": "Jesmond Dawn",
+            "probability": 0.09500213174326165,
+            "rank": 2,
+            "firstCapturedPriceDecimal": 12,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "d6d3312a-2f88-4e5d-81d0-4d1d13bc22c6",
+            "horseId": "2568293c-8f1c-4372-8525-48acddc3fec3",
+            "horseName": "Yaajooz",
+            "probability": 0.09437421746929138,
+            "rank": 3,
+            "firstCapturedPriceDecimal": 9.5,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "7ba20dab-eef6-4f3e-81ed-ba6a596c81ce",
+            "horseId": "85f3018f-d8b9-40a0-b1dc-a113d1ca66b6",
+            "horseName": "Sole Spirit",
+            "probability": 0.0928164201825574,
+            "rank": 4,
+            "firstCapturedPriceDecimal": 12,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "7a667064-18b3-4c01-802d-6e6eda751aa0",
+            "horseId": "4ccf76fa-ce33-4945-a4eb-26e5045f9908",
+            "horseName": "Get Up Everybody",
+            "probability": 0.07536884205027275,
+            "rank": 5,
+            "firstCapturedPriceDecimal": 4.5,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "73653187-0772-4eba-b4a6-b10a0f104568",
+            "horseId": "becba1db-0f3d-4eda-8366-5d27c5d66df6",
+            "horseName": "Tactical Blitz",
+            "probability": 0.0740396201260645,
+            "rank": 6,
+            "firstCapturedPriceDecimal": 29,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "a062d3dd-df33-46ba-b504-881cda77b8c2",
+            "horseId": "5e458df6-2d7e-411d-bdeb-e9a92155e6c5",
+            "horseName": "Educating Rita",
+            "probability": 0.07115948478686232,
+            "rank": 7,
+            "firstCapturedPriceDecimal": 11,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "29e6a9c6-70ee-4f1f-80f5-cbb70987ab4a",
+            "horseId": "346458bd-0b8c-45a4-84a0-192d332ae34d",
+            "horseName": "Gressington",
+            "probability": 0.06723378185140642,
+            "rank": 8,
+            "firstCapturedPriceDecimal": 13,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "0dd91e3e-fe6c-43e6-bf8e-43c217e9f7ab",
+            "horseId": "53d4f7ca-4f11-4759-b630-167f35cba57b",
+            "horseName": "Rousham",
+            "probability": 0.059466712409250035,
+            "rank": 9,
+            "firstCapturedPriceDecimal": 6.5,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "c9e57d85-eb5d-49dd-b416-4b67bd00d8a9",
+            "horseId": "f940617e-6dad-4bd2-8367-9dcb30f5f777",
+            "horseName": "Blufferonthebus",
+            "probability": 0.058877670291666136,
+            "rank": 10,
+            "firstCapturedPriceDecimal": 12,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "672379bc-d119-4dfc-9926-05c5570377ef",
+            "horseId": "912cd18e-a1c7-4860-a0fb-aa4699c99d31",
+            "horseName": "Milford Grange",
+            "probability": 0.05811326440218164,
+            "rank": 11,
+            "firstCapturedPriceDecimal": 10,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "c7721fd7-b301-4385-93aa-a4676cc18090",
+            "horseId": "8203c44b-0006-4cc4-841c-fc7e77242421",
+            "horseName": "Maximum Velocity",
+            "probability": 0.046036481656981,
+            "rank": 12,
+            "firstCapturedPriceDecimal": 21,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "4664859b-1201-4eaa-a138-9b4c2bdd9d67",
+            "horseId": "7f77fec2-d4ad-428f-a891-14d70b177e3a",
+            "horseName": "Bobby Joe Leg",
+            "probability": 0.04539884683110145,
+            "rank": 13,
+            "firstCapturedPriceDecimal": 23,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "fde35d83-7ad6-4f1e-bccc-13686ee92e46",
+            "horseId": "a1c3e260-927c-41e4-8d5d-d794059249bf",
+            "horseName": "Dolo's Star",
+            "probability": 0.04123370193409281,
+            "rank": 14,
+            "firstCapturedPriceDecimal": 34,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          }
+        ],
+        "rankOrder": [
+          "532cb72e-0167-4542-b829-d0c494277b2f",
+          "859a9f65-392d-4962-b733-4d438f34a466",
+          "d6d3312a-2f88-4e5d-81d0-4d1d13bc22c6",
+          "7ba20dab-eef6-4f3e-81ed-ba6a596c81ce",
+          "7a667064-18b3-4c01-802d-6e6eda751aa0",
+          "73653187-0772-4eba-b4a6-b10a0f104568",
+          "a062d3dd-df33-46ba-b504-881cda77b8c2",
+          "29e6a9c6-70ee-4f1f-80f5-cbb70987ab4a",
+          "0dd91e3e-fe6c-43e6-bf8e-43c217e9f7ab",
+          "c9e57d85-eb5d-49dd-b416-4b67bd00d8a9",
+          "672379bc-d119-4dfc-9926-05c5570377ef",
+          "c7721fd7-b301-4385-93aa-a4676cc18090",
+          "4664859b-1201-4eaa-a138-9b4c2bdd9d67",
+          "fde35d83-7ad6-4f1e-bccc-13686ee92e46"
+        ],
+        "rank1RunnerId": "532cb72e-0167-4542-b829-d0c494277b2f",
+        "rank1HorseName": "Newsreader",
+        "rank1Probability": 0.12087882426501051,
+        "valueQualified": false,
+        "selectedPriceProfitLoss": null
+      },
+      "longshotTjZero": {
+        "modelVersion": "LONGSHOT_TJ_ZERO_V1",
+        "modelHash": "52376e5361e41da6b991aebfbb7f202cebb1f437b1259d55711824f55eead8a8",
+        "probabilities": [
+          {
+            "runnerId": "532cb72e-0167-4542-b829-d0c494277b2f",
+            "horseId": "31e27c6c-76a4-4bb1-b48d-97356b0984e7",
+            "horseName": "Newsreader",
+            "probability": 0.11801656658778496,
+            "rank": 1,
+            "firstCapturedPriceDecimal": 3.75,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "859a9f65-392d-4962-b733-4d438f34a466",
+            "horseId": "64be5a9e-4dde-427a-afad-bd4b8a84e600",
+            "horseName": "Jesmond Dawn",
+            "probability": 0.0927526014174306,
+            "rank": 2,
+            "firstCapturedPriceDecimal": 12,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "d6d3312a-2f88-4e5d-81d0-4d1d13bc22c6",
+            "horseId": "2568293c-8f1c-4372-8525-48acddc3fec3",
+            "horseName": "Yaajooz",
+            "probability": 0.09213955535931401,
+            "rank": 3,
+            "firstCapturedPriceDecimal": 9.5,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "7ba20dab-eef6-4f3e-81ed-ba6a596c81ce",
+            "horseId": "85f3018f-d8b9-40a0-b1dc-a113d1ca66b6",
+            "horseName": "Sole Spirit",
+            "probability": 0.09061864474210736,
+            "rank": 4,
+            "firstCapturedPriceDecimal": 12,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "73653187-0772-4eba-b4a6-b10a0f104568",
+            "horseId": "becba1db-0f3d-4eda-8366-5d27c5d66df6",
+            "horseName": "Tactical Blitz",
+            "probability": 0.08331073287294898,
+            "rank": 5,
+            "firstCapturedPriceDecimal": 29,
+            "longshotTrainerJockeyAdjusted": true,
+            "outcome": null
+          },
+          {
+            "runnerId": "7a667064-18b3-4c01-802d-6e6eda751aa0",
+            "horseId": "4ccf76fa-ce33-4945-a4eb-26e5045f9908",
+            "horseName": "Get Up Everybody",
+            "probability": 0.07358420319318854,
+            "rank": 6,
+            "firstCapturedPriceDecimal": 4.5,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "a062d3dd-df33-46ba-b504-881cda77b8c2",
+            "horseId": "5e458df6-2d7e-411d-bdeb-e9a92155e6c5",
+            "horseName": "Educating Rita",
+            "probability": 0.06947451818599536,
+            "rank": 7,
+            "firstCapturedPriceDecimal": 11,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "29e6a9c6-70ee-4f1f-80f5-cbb70987ab4a",
+            "horseId": "346458bd-0b8c-45a4-84a0-192d332ae34d",
+            "horseName": "Gressington",
+            "probability": 0.06564177093102226,
+            "rank": 8,
+            "firstCapturedPriceDecimal": 13,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "0dd91e3e-fe6c-43e6-bf8e-43c217e9f7ab",
+            "horseId": "53d4f7ca-4f11-4759-b630-167f35cba57b",
+            "horseName": "Rousham",
+            "probability": 0.05805861586986296,
+            "rank": 9,
+            "firstCapturedPriceDecimal": 6.5,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "c9e57d85-eb5d-49dd-b416-4b67bd00d8a9",
+            "horseId": "f940617e-6dad-4bd2-8367-9dcb30f5f777",
+            "horseName": "Blufferonthebus",
+            "probability": 0.05748352152463303,
+            "rank": 10,
+            "firstCapturedPriceDecimal": 12,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "672379bc-d119-4dfc-9926-05c5570377ef",
+            "horseId": "912cd18e-a1c7-4860-a0fb-aa4699c99d31",
+            "horseName": "Milford Grange",
+            "probability": 0.05673721579982995,
+            "rank": 11,
+            "firstCapturedPriceDecimal": 10,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "4664859b-1201-4eaa-a138-9b4c2bdd9d67",
+            "horseId": "7f77fec2-d4ad-428f-a891-14d70b177e3a",
+            "horseName": "Bobby Joe Leg",
+            "probability": 0.05415537230851686,
+            "rank": 12,
+            "firstCapturedPriceDecimal": 23,
+            "longshotTrainerJockeyAdjusted": true,
+            "outcome": null
+          },
+          {
+            "runnerId": "c7721fd7-b301-4385-93aa-a4676cc18090",
+            "horseId": "8203c44b-0006-4cc4-841c-fc7e77242421",
+            "horseName": "Maximum Velocity",
+            "probability": 0.044946395995936986,
+            "rank": 13,
+            "firstCapturedPriceDecimal": 21,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "fde35d83-7ad6-4f1e-bccc-13686ee92e46",
+            "horseId": "a1c3e260-927c-41e4-8d5d-d794059249bf",
+            "horseName": "Dolo's Star",
+            "probability": 0.04308028521142809,
+            "rank": 14,
+            "firstCapturedPriceDecimal": 34,
+            "longshotTrainerJockeyAdjusted": true,
+            "outcome": null
+          }
+        ],
+        "rankOrder": [
+          "532cb72e-0167-4542-b829-d0c494277b2f",
+          "859a9f65-392d-4962-b733-4d438f34a466",
+          "d6d3312a-2f88-4e5d-81d0-4d1d13bc22c6",
+          "7ba20dab-eef6-4f3e-81ed-ba6a596c81ce",
+          "73653187-0772-4eba-b4a6-b10a0f104568",
+          "7a667064-18b3-4c01-802d-6e6eda751aa0",
+          "a062d3dd-df33-46ba-b504-881cda77b8c2",
+          "29e6a9c6-70ee-4f1f-80f5-cbb70987ab4a",
+          "0dd91e3e-fe6c-43e6-bf8e-43c217e9f7ab",
+          "c9e57d85-eb5d-49dd-b416-4b67bd00d8a9",
+          "672379bc-d119-4dfc-9926-05c5570377ef",
+          "4664859b-1201-4eaa-a138-9b4c2bdd9d67",
+          "c7721fd7-b301-4385-93aa-a4676cc18090",
+          "fde35d83-7ad6-4f1e-bccc-13686ee92e46"
+        ],
+        "rank1RunnerId": "532cb72e-0167-4542-b829-d0c494277b2f",
+        "rank1HorseName": "Newsreader",
+        "rank1Probability": 0.11801656658778496,
+        "valueQualified": false,
+        "selectedPriceProfitLoss": null
+      },
+      "rank1Agreement": true,
+      "classification": "AGREE",
+      "valueBucket": "NEITHER_VALUE",
+      "prices": {
+        "firstAvailable": {
+          "awTissue": {
+            "runnerId": "532cb72e-0167-4542-b829-d0c494277b2f",
+            "medianDecimalPrice": 3.75,
+            "impliedProbability": 0.26666666666666666,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-10-20T02:30:50.064Z",
+            "snapshot": {
+              "decimalPrice": 3.75,
+              "impliedProbability": 0.26666666666666666,
+              "capturedAt": "2026-10-20T02:30:50.064Z",
+              "minutesBeforeScheduledOff": 839.1656,
+              "ratingProbability": 0.12087882426501051,
+              "ratingEdgePercentagePoints": -14.578784240165616,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "5/2",
+                  "decimalOdds": 3.5
+                },
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "11/4",
+                  "decimalOdds": 3.75
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "11/4",
+                  "decimalOdds": 3.75
+                }
+              ],
+              "medianBookmakerPriceDecimal": 3.75,
+              "medianBookmakerImpliedProbability": 0.26666666666666666,
+              "bestBookmakerPriceDecimal": 3.75,
+              "bestBookmakerPriceFractional": "11/4",
+              "bestBookmakerName": null,
+              "forecastPrice": "7/1",
+              "forecastDecimalPrice": 8
+            }
+          },
+          "longshotTjZero": {
+            "runnerId": "532cb72e-0167-4542-b829-d0c494277b2f",
+            "medianDecimalPrice": 3.75,
+            "impliedProbability": 0.26666666666666666,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-10-20T02:30:50.064Z",
+            "snapshot": {
+              "decimalPrice": 3.75,
+              "impliedProbability": 0.26666666666666666,
+              "capturedAt": "2026-10-20T02:30:50.064Z",
+              "minutesBeforeScheduledOff": 839.1656,
+              "ratingProbability": 0.11801656658778496,
+              "ratingEdgePercentagePoints": -14.865010007888168,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "5/2",
+                  "decimalOdds": 3.5
+                },
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "11/4",
+                  "decimalOdds": 3.75
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "11/4",
+                  "decimalOdds": 3.75
+                }
+              ],
+              "medianBookmakerPriceDecimal": 3.75,
+              "medianBookmakerImpliedProbability": 0.26666666666666666,
+              "bestBookmakerPriceDecimal": 3.75,
+              "bestBookmakerPriceFractional": "11/4",
+              "bestBookmakerName": null,
+              "forecastPrice": "7/1",
+              "forecastDecimalPrice": 8
+            }
+          }
+        },
+        "earlyMorning": {
+          "awTissue": {
+            "runnerId": "532cb72e-0167-4542-b829-d0c494277b2f",
+            "medianDecimalPrice": 3.75,
+            "impliedProbability": 0.26666666666666666,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-10-20T02:30:50.064Z",
+            "snapshot": {
+              "decimalPrice": 3.75,
+              "impliedProbability": 0.26666666666666666,
+              "capturedAt": "2026-10-20T02:30:50.064Z",
+              "minutesBeforeScheduledOff": 839.1656,
+              "ratingProbability": 0.12087882426501051,
+              "ratingEdgePercentagePoints": -14.578784240165616,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "5/2",
+                  "decimalOdds": 3.5
+                },
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "11/4",
+                  "decimalOdds": 3.75
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "11/4",
+                  "decimalOdds": 3.75
+                }
+              ],
+              "medianBookmakerPriceDecimal": 3.75,
+              "medianBookmakerImpliedProbability": 0.26666666666666666,
+              "bestBookmakerPriceDecimal": 3.75,
+              "bestBookmakerPriceFractional": "11/4",
+              "bestBookmakerName": null,
+              "forecastPrice": "7/1",
+              "forecastDecimalPrice": 8
+            }
+          },
+          "longshotTjZero": {
+            "runnerId": "532cb72e-0167-4542-b829-d0c494277b2f",
+            "medianDecimalPrice": 3.75,
+            "impliedProbability": 0.26666666666666666,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-10-20T02:30:50.064Z",
+            "snapshot": {
+              "decimalPrice": 3.75,
+              "impliedProbability": 0.26666666666666666,
+              "capturedAt": "2026-10-20T02:30:50.064Z",
+              "minutesBeforeScheduledOff": 839.1656,
+              "ratingProbability": 0.11801656658778496,
+              "ratingEdgePercentagePoints": -14.865010007888168,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "5/2",
+                  "decimalOdds": 3.5
+                },
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "11/4",
+                  "decimalOdds": 3.75
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "11/4",
+                  "decimalOdds": 3.75
+                }
+              ],
+              "medianBookmakerPriceDecimal": 3.75,
+              "medianBookmakerImpliedProbability": 0.26666666666666666,
+              "bestBookmakerPriceDecimal": 3.75,
+              "bestBookmakerPriceFractional": "11/4",
+              "bestBookmakerName": null,
+              "forecastPrice": "7/1",
+              "forecastDecimalPrice": 8
+            }
+          }
+        },
+        "late": {
+          "awTissue": null,
+          "longshotTjZero": null
+        },
+        "finalPreRace": {
+          "awTissue": null,
+          "longshotTjZero": null
+        },
+        "sp": {
+          "awTissue": null,
+          "longshotTjZero": null
+        }
+      },
+      "winners": [],
+      "settledAt": null,
+      "excludedReason": null
+    },
+    {
+      "raceId": "e5125bb1-b800-4747-845f-822ebcf7d717",
+      "sourceId": "944384",
+      "raceDate": "2026-10-20",
+      "course": "Newcastle",
+      "raceName": "AWC Season 14 Has Begun Handicap (Div 1)",
+      "scheduledTime": "17:00:00",
+      "scheduledOffAt": "2026-10-20T17:00:00.000Z",
+      "currentOffAt": "2026-10-20T17:00:00.000Z",
+      "firstCapturedAt": "2026-10-20T02:30:50.064Z",
+      "runners": [
+        {
+          "runnerId": "852eb5ef-0d0c-476e-a7ee-aaa980ccc547",
+          "horseId": "0e6dfff4-649a-4c0f-a56e-44437c25b767",
+          "horseName": "Boubyan"
+        },
+        {
+          "runnerId": "f2c8c24b-7b61-4343-8110-0e7b0f1b84ca",
+          "horseId": "22a3c834-f0c6-4e0d-a498-9958df3a614e",
+          "horseName": "Dalamara"
+        },
+        {
+          "runnerId": "155cbbed-2e07-4fab-942f-85cfe767f754",
+          "horseId": "4e4d9ee4-fdba-422a-bba5-bd4c6acd7e2c",
+          "horseName": "Danehill Star"
+        },
+        {
+          "runnerId": "12be720b-90d6-414e-a25b-bbcf230ba917",
+          "horseId": "fd3b255c-0af5-4019-b2c8-6170979f6436",
+          "horseName": "Kindest Nation"
+        },
+        {
+          "runnerId": "c006e79c-5e76-4831-8a9c-cdfb9b2a20f2",
+          "horseId": "0a8cb138-7948-4f9d-84dd-b73c4b67ff99",
+          "horseName": "Sandy Craic"
+        },
+        {
+          "runnerId": "ab0f6d67-af0c-417f-9afc-7775dab09c55",
+          "horseId": "466e0caa-c4e3-4235-92f0-ab8fc55f4cb3",
+          "horseName": "Tee Aitch Aye"
+        },
+        {
+          "runnerId": "93911b84-a876-4d9e-b291-1605e59b637e",
+          "horseId": "39b9910b-9c1d-4d13-bd87-7d8564fd3fb3",
+          "horseName": "Alkumatic Jo Jo"
+        },
+        {
+          "runnerId": "728f601a-cb86-401c-88be-0ef174409708",
+          "horseId": "1e1e9958-e616-45a2-8886-e190540a1055",
+          "horseName": "Quiet Resolve"
+        },
+        {
+          "runnerId": "d03a8329-fd4c-4abc-9a31-0d60d254adf8",
+          "horseId": "35618bc9-9f84-42d9-9e46-8259524bc4d7",
+          "horseName": "Titainium"
+        },
+        {
+          "runnerId": "8da3082a-2727-473b-9d93-9f083d1c238e",
+          "horseId": "629b8e38-d607-4fe2-a00a-5d091c023042",
+          "horseName": "Napolian"
+        },
+        {
+          "runnerId": "e9f1eb60-6216-40ce-9b71-d92f40c85980",
+          "horseId": "50d00452-d1cc-404d-ba47-f0351fc66810",
+          "horseName": "Tasever"
+        },
+        {
+          "runnerId": "3c97fb48-f62b-42ff-985e-14b4346308a2",
+          "horseId": "91d8ea39-2ff5-4614-a54a-14e371f5391d",
+          "horseName": "Al Muddy"
+        }
+      ],
+      "awTissue": {
+        "modelVersion": "AW_TISSUE_V1",
+        "modelHash": "52376e5361e41da6b991aebfbb7f202cebb1f437b1259d55711824f55eead8a8",
+        "probabilities": [
+          {
+            "runnerId": "155cbbed-2e07-4fab-942f-85cfe767f754",
+            "horseId": "4e4d9ee4-fdba-422a-bba5-bd4c6acd7e2c",
+            "horseName": "Danehill Star",
+            "probability": 0.13005707236106456,
+            "rank": 1,
+            "firstCapturedPriceDecimal": 6,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "12be720b-90d6-414e-a25b-bbcf230ba917",
+            "horseId": "fd3b255c-0af5-4019-b2c8-6170979f6436",
+            "horseName": "Kindest Nation",
+            "probability": 0.11991987438281057,
+            "rank": 2,
+            "firstCapturedPriceDecimal": 6.5,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "f2c8c24b-7b61-4343-8110-0e7b0f1b84ca",
+            "horseId": "22a3c834-f0c6-4e0d-a498-9958df3a614e",
+            "horseName": "Dalamara",
+            "probability": 0.09985296808352555,
+            "rank": 3,
+            "firstCapturedPriceDecimal": 5,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "d03a8329-fd4c-4abc-9a31-0d60d254adf8",
+            "horseId": "35618bc9-9f84-42d9-9e46-8259524bc4d7",
+            "horseName": "Titainium",
+            "probability": 0.09596846530692374,
+            "rank": 4,
+            "firstCapturedPriceDecimal": 13,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "8da3082a-2727-473b-9d93-9f083d1c238e",
+            "horseId": "629b8e38-d607-4fe2-a00a-5d091c023042",
+            "horseName": "Napolian",
+            "probability": 0.09380824089565053,
+            "rank": 5,
+            "firstCapturedPriceDecimal": 15,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "93911b84-a876-4d9e-b291-1605e59b637e",
+            "horseId": "39b9910b-9c1d-4d13-bd87-7d8564fd3fb3",
+            "horseName": "Alkumatic Jo Jo",
+            "probability": 0.08734983812500949,
+            "rank": 6,
+            "firstCapturedPriceDecimal": 9,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "c006e79c-5e76-4831-8a9c-cdfb9b2a20f2",
+            "horseId": "0a8cb138-7948-4f9d-84dd-b73c4b67ff99",
+            "horseName": "Sandy Craic",
+            "probability": 0.08309144060531234,
+            "rank": 7,
+            "firstCapturedPriceDecimal": 7,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "ab0f6d67-af0c-417f-9afc-7775dab09c55",
+            "horseId": "466e0caa-c4e3-4235-92f0-ab8fc55f4cb3",
+            "horseName": "Tee Aitch Aye",
+            "probability": 0.07700013635967622,
+            "rank": 8,
+            "firstCapturedPriceDecimal": 8.5,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "e9f1eb60-6216-40ce-9b71-d92f40c85980",
+            "horseId": "50d00452-d1cc-404d-ba47-f0351fc66810",
+            "horseName": "Tasever",
+            "probability": 0.06815781657837594,
+            "rank": 9,
+            "firstCapturedPriceDecimal": 17,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "728f601a-cb86-401c-88be-0ef174409708",
+            "horseId": "1e1e9958-e616-45a2-8886-e190540a1055",
+            "horseName": "Quiet Resolve",
+            "probability": 0.05998138852103007,
+            "rank": 10,
+            "firstCapturedPriceDecimal": 11,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "852eb5ef-0d0c-476e-a7ee-aaa980ccc547",
+            "horseId": "0e6dfff4-649a-4c0f-a56e-44437c25b767",
+            "horseName": "Boubyan",
+            "probability": 0.05159254278495491,
+            "rank": 11,
+            "firstCapturedPriceDecimal": 5,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "3c97fb48-f62b-42ff-985e-14b4346308a2",
+            "horseId": "91d8ea39-2ff5-4614-a54a-14e371f5391d",
+            "horseName": "Al Muddy",
+            "probability": 0.03322021599566599,
+            "rank": 12,
+            "firstCapturedPriceDecimal": 51,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          }
+        ],
+        "rankOrder": [
+          "155cbbed-2e07-4fab-942f-85cfe767f754",
+          "12be720b-90d6-414e-a25b-bbcf230ba917",
+          "f2c8c24b-7b61-4343-8110-0e7b0f1b84ca",
+          "d03a8329-fd4c-4abc-9a31-0d60d254adf8",
+          "8da3082a-2727-473b-9d93-9f083d1c238e",
+          "93911b84-a876-4d9e-b291-1605e59b637e",
+          "c006e79c-5e76-4831-8a9c-cdfb9b2a20f2",
+          "ab0f6d67-af0c-417f-9afc-7775dab09c55",
+          "e9f1eb60-6216-40ce-9b71-d92f40c85980",
+          "728f601a-cb86-401c-88be-0ef174409708",
+          "852eb5ef-0d0c-476e-a7ee-aaa980ccc547",
+          "3c97fb48-f62b-42ff-985e-14b4346308a2"
+        ],
+        "rank1RunnerId": "155cbbed-2e07-4fab-942f-85cfe767f754",
+        "rank1HorseName": "Danehill Star",
+        "rank1Probability": 0.13005707236106456,
+        "valueQualified": false,
+        "selectedPriceProfitLoss": null
+      },
+      "longshotTjZero": {
+        "modelVersion": "LONGSHOT_TJ_ZERO_V1",
+        "modelHash": "52376e5361e41da6b991aebfbb7f202cebb1f437b1259d55711824f55eead8a8",
+        "probabilities": [
+          {
+            "runnerId": "155cbbed-2e07-4fab-942f-85cfe767f754",
+            "horseId": "4e4d9ee4-fdba-422a-bba5-bd4c6acd7e2c",
+            "horseName": "Danehill Star",
+            "probability": 0.12841666356891443,
+            "rank": 1,
+            "firstCapturedPriceDecimal": 6,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "12be720b-90d6-414e-a25b-bbcf230ba917",
+            "horseId": "fd3b255c-0af5-4019-b2c8-6170979f6436",
+            "horseName": "Kindest Nation",
+            "probability": 0.11840732598601925,
+            "rank": 2,
+            "firstCapturedPriceDecimal": 6.5,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "f2c8c24b-7b61-4343-8110-0e7b0f1b84ca",
+            "horseId": "22a3c834-f0c6-4e0d-a498-9958df3a614e",
+            "horseName": "Dalamara",
+            "probability": 0.09859352341209882,
+            "rank": 3,
+            "firstCapturedPriceDecimal": 5,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "d03a8329-fd4c-4abc-9a31-0d60d254adf8",
+            "horseId": "35618bc9-9f84-42d9-9e46-8259524bc4d7",
+            "horseName": "Titainium",
+            "probability": 0.09475801583731257,
+            "rank": 4,
+            "firstCapturedPriceDecimal": 13,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "8da3082a-2727-473b-9d93-9f083d1c238e",
+            "horseId": "629b8e38-d607-4fe2-a00a-5d091c023042",
+            "horseName": "Napolian",
+            "probability": 0.09262503831890674,
+            "rank": 5,
+            "firstCapturedPriceDecimal": 15,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "93911b84-a876-4d9e-b291-1605e59b637e",
+            "horseId": "39b9910b-9c1d-4d13-bd87-7d8564fd3fb3",
+            "horseName": "Alkumatic Jo Jo",
+            "probability": 0.08624809532969763,
+            "rank": 6,
+            "firstCapturedPriceDecimal": 9,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "c006e79c-5e76-4831-8a9c-cdfb9b2a20f2",
+            "horseId": "0a8cb138-7948-4f9d-84dd-b73c4b67ff99",
+            "horseName": "Sandy Craic",
+            "probability": 0.08204340894315891,
+            "rank": 7,
+            "firstCapturedPriceDecimal": 7,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "ab0f6d67-af0c-417f-9afc-7775dab09c55",
+            "horseId": "466e0caa-c4e3-4235-92f0-ab8fc55f4cb3",
+            "horseName": "Tee Aitch Aye",
+            "probability": 0.0760289342682551,
+            "rank": 8,
+            "firstCapturedPriceDecimal": 8.5,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "e9f1eb60-6216-40ce-9b71-d92f40c85980",
+            "horseId": "50d00452-d1cc-404d-ba47-f0351fc66810",
+            "horseName": "Tasever",
+            "probability": 0.06729814259418439,
+            "rank": 9,
+            "firstCapturedPriceDecimal": 17,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "728f601a-cb86-401c-88be-0ef174409708",
+            "horseId": "1e1e9958-e616-45a2-8886-e190540a1055",
+            "horseName": "Quiet Resolve",
+            "probability": 0.05922484375718893,
+            "rank": 10,
+            "firstCapturedPriceDecimal": 11,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "852eb5ef-0d0c-476e-a7ee-aaa980ccc547",
+            "horseId": "0e6dfff4-649a-4c0f-a56e-44437c25b767",
+            "horseName": "Boubyan",
+            "probability": 0.05094180646391221,
+            "rank": 11,
+            "firstCapturedPriceDecimal": 5,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "3c97fb48-f62b-42ff-985e-14b4346308a2",
+            "horseId": "91d8ea39-2ff5-4614-a54a-14e371f5391d",
+            "horseName": "Al Muddy",
+            "probability": 0.04541420152035094,
+            "rank": 12,
+            "firstCapturedPriceDecimal": 51,
+            "longshotTrainerJockeyAdjusted": true,
+            "outcome": null
+          }
+        ],
+        "rankOrder": [
+          "155cbbed-2e07-4fab-942f-85cfe767f754",
+          "12be720b-90d6-414e-a25b-bbcf230ba917",
+          "f2c8c24b-7b61-4343-8110-0e7b0f1b84ca",
+          "d03a8329-fd4c-4abc-9a31-0d60d254adf8",
+          "8da3082a-2727-473b-9d93-9f083d1c238e",
+          "93911b84-a876-4d9e-b291-1605e59b637e",
+          "c006e79c-5e76-4831-8a9c-cdfb9b2a20f2",
+          "ab0f6d67-af0c-417f-9afc-7775dab09c55",
+          "e9f1eb60-6216-40ce-9b71-d92f40c85980",
+          "728f601a-cb86-401c-88be-0ef174409708",
+          "852eb5ef-0d0c-476e-a7ee-aaa980ccc547",
+          "3c97fb48-f62b-42ff-985e-14b4346308a2"
+        ],
+        "rank1RunnerId": "155cbbed-2e07-4fab-942f-85cfe767f754",
+        "rank1HorseName": "Danehill Star",
+        "rank1Probability": 0.12841666356891443,
+        "valueQualified": false,
+        "selectedPriceProfitLoss": null
+      },
+      "rank1Agreement": true,
+      "classification": "AGREE",
+      "valueBucket": "NEITHER_VALUE",
+      "prices": {
+        "firstAvailable": {
+          "awTissue": {
+            "runnerId": "155cbbed-2e07-4fab-942f-85cfe767f754",
+            "medianDecimalPrice": 6,
+            "impliedProbability": 0.16666666666666666,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-10-20T02:30:50.064Z",
+            "snapshot": {
+              "decimalPrice": 6,
+              "impliedProbability": 0.16666666666666666,
+              "capturedAt": "2026-10-20T02:30:50.064Z",
+              "minutesBeforeScheduledOff": 869.1656,
+              "ratingProbability": 0.13005707236106456,
+              "ratingEdgePercentagePoints": -3.6609594305602093,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "5/1",
+                  "decimalOdds": 6
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "5/1",
+                  "decimalOdds": 6
+                },
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "5/1",
+                  "decimalOdds": 6
+                }
+              ],
+              "medianBookmakerPriceDecimal": 6,
+              "medianBookmakerImpliedProbability": 0.16666666666666666,
+              "bestBookmakerPriceDecimal": 6,
+              "bestBookmakerPriceFractional": "5/1",
+              "bestBookmakerName": null,
+              "forecastPrice": "6/1",
+              "forecastDecimalPrice": 7
+            }
+          },
+          "longshotTjZero": {
+            "runnerId": "155cbbed-2e07-4fab-942f-85cfe767f754",
+            "medianDecimalPrice": 6,
+            "impliedProbability": 0.16666666666666666,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-10-20T02:30:50.064Z",
+            "snapshot": {
+              "decimalPrice": 6,
+              "impliedProbability": 0.16666666666666666,
+              "capturedAt": "2026-10-20T02:30:50.064Z",
+              "minutesBeforeScheduledOff": 869.1656,
+              "ratingProbability": 0.12841666356891443,
+              "ratingEdgePercentagePoints": -3.8250003097752225,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "5/1",
+                  "decimalOdds": 6
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "5/1",
+                  "decimalOdds": 6
+                },
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "5/1",
+                  "decimalOdds": 6
+                }
+              ],
+              "medianBookmakerPriceDecimal": 6,
+              "medianBookmakerImpliedProbability": 0.16666666666666666,
+              "bestBookmakerPriceDecimal": 6,
+              "bestBookmakerPriceFractional": "5/1",
+              "bestBookmakerName": null,
+              "forecastPrice": "6/1",
+              "forecastDecimalPrice": 7
+            }
+          }
+        },
+        "earlyMorning": {
+          "awTissue": {
+            "runnerId": "155cbbed-2e07-4fab-942f-85cfe767f754",
+            "medianDecimalPrice": 6,
+            "impliedProbability": 0.16666666666666666,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-10-20T02:30:50.064Z",
+            "snapshot": {
+              "decimalPrice": 6,
+              "impliedProbability": 0.16666666666666666,
+              "capturedAt": "2026-10-20T02:30:50.064Z",
+              "minutesBeforeScheduledOff": 869.1656,
+              "ratingProbability": 0.13005707236106456,
+              "ratingEdgePercentagePoints": -3.6609594305602093,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "5/1",
+                  "decimalOdds": 6
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "5/1",
+                  "decimalOdds": 6
+                },
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "5/1",
+                  "decimalOdds": 6
+                }
+              ],
+              "medianBookmakerPriceDecimal": 6,
+              "medianBookmakerImpliedProbability": 0.16666666666666666,
+              "bestBookmakerPriceDecimal": 6,
+              "bestBookmakerPriceFractional": "5/1",
+              "bestBookmakerName": null,
+              "forecastPrice": "6/1",
+              "forecastDecimalPrice": 7
+            }
+          },
+          "longshotTjZero": {
+            "runnerId": "155cbbed-2e07-4fab-942f-85cfe767f754",
+            "medianDecimalPrice": 6,
+            "impliedProbability": 0.16666666666666666,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-10-20T02:30:50.064Z",
+            "snapshot": {
+              "decimalPrice": 6,
+              "impliedProbability": 0.16666666666666666,
+              "capturedAt": "2026-10-20T02:30:50.064Z",
+              "minutesBeforeScheduledOff": 869.1656,
+              "ratingProbability": 0.12841666356891443,
+              "ratingEdgePercentagePoints": -3.8250003097752225,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "5/1",
+                  "decimalOdds": 6
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "5/1",
+                  "decimalOdds": 6
+                },
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "5/1",
+                  "decimalOdds": 6
+                }
+              ],
+              "medianBookmakerPriceDecimal": 6,
+              "medianBookmakerImpliedProbability": 0.16666666666666666,
+              "bestBookmakerPriceDecimal": 6,
+              "bestBookmakerPriceFractional": "5/1",
+              "bestBookmakerName": null,
+              "forecastPrice": "6/1",
+              "forecastDecimalPrice": 7
+            }
+          }
+        },
+        "late": {
+          "awTissue": null,
+          "longshotTjZero": null
+        },
+        "finalPreRace": {
+          "awTissue": null,
+          "longshotTjZero": null
+        },
+        "sp": {
+          "awTissue": null,
+          "longshotTjZero": null
+        }
+      },
+      "winners": [],
+      "settledAt": null,
+      "excludedReason": null
+    },
+    {
+      "raceId": "f01a4928-46ee-43b6-9807-75aa36cdb506",
+      "sourceId": "944385",
+      "raceDate": "2026-10-20",
+      "course": "Newcastle",
+      "raceName": "AWC Season 14 Has Begun Handicap (Div 2)",
+      "scheduledTime": "17:30:00",
+      "scheduledOffAt": "2026-10-20T17:30:00.000Z",
+      "currentOffAt": "2026-10-20T17:30:00.000Z",
+      "firstCapturedAt": "2026-10-20T02:30:50.064Z",
+      "runners": [
+        {
+          "runnerId": "20222683-97ee-4da9-b334-42dbdb6bc560",
+          "horseId": "6da85588-8d76-4753-b037-85582d03fac7",
+          "horseName": "Second Fiddle"
+        },
+        {
+          "runnerId": "c5882188-f675-4cef-83bb-29065525f9d5",
+          "horseId": "c6ed9ab0-f712-4505-aa38-69d048bd37c6",
+          "horseName": "Chesneys Charm"
+        },
+        {
+          "runnerId": "82386f62-3581-43c7-81c9-b1e99a611c9d",
+          "horseId": "b84b0268-2e93-4d0f-ae5c-c5ccd92144ac",
+          "horseName": "Shes Got The Blues"
+        },
+        {
+          "runnerId": "258edae5-5530-4bb4-9177-f19f060128a8",
+          "horseId": "35f81fff-df1a-48df-80d8-7b2f670f3211",
+          "horseName": "Poppeye"
+        },
+        {
+          "runnerId": "e3eb9fa2-995e-47ad-a5e0-dc4bf02b71ee",
+          "horseId": "10659154-9841-43de-828b-c5acbc7a7233",
+          "horseName": "Bajan Bandit"
+        },
+        {
+          "runnerId": "8fc3b487-fb7d-4364-9d3c-9f023b3f86de",
+          "horseId": "0bf8baf8-fb67-4d41-ba1d-eeb05139933c",
+          "horseName": "Hostility"
+        },
+        {
+          "runnerId": "c4b6c460-719e-42ef-9aac-9b461d97bdd5",
+          "horseId": "90bdd4e0-aa72-4a4d-9b8e-07ca40029177",
+          "horseName": "Starliner"
+        },
+        {
+          "runnerId": "66dc75b5-c429-456f-8f8b-343ab79d1957",
+          "horseId": "1bfcbc96-f35a-4169-b2e5-8c375b654d81",
+          "horseName": "Princess Honey Bee"
+        },
+        {
+          "runnerId": "ca1f3de3-2db1-4b65-a3ff-5b4c1e703a37",
+          "horseId": "29621c38-d753-4787-953c-eac7e6011fff",
+          "horseName": "Sea Legend"
+        },
+        {
+          "runnerId": "949aca85-2818-45c1-ae78-b4c93b508e96",
+          "horseId": "775496d4-09de-4796-b352-c9da5429a12f",
+          "horseName": "Henry Halflight"
+        },
+        {
+          "runnerId": "eb8c8ec9-da19-472b-b86c-f9c6151c993f",
+          "horseId": "b6ecbdeb-e2d4-4405-a1fc-2b648995ec95",
+          "horseName": "Arkenstaar"
+        },
+        {
+          "runnerId": "8861cb60-6502-4c0e-b507-10ada83f19ad",
+          "horseId": "ad48c41e-d049-4ad6-ab4a-0e87605ca68f",
+          "horseName": "Sogniamo"
+        }
+      ],
+      "awTissue": {
+        "modelVersion": "AW_TISSUE_V1",
+        "modelHash": "52376e5361e41da6b991aebfbb7f202cebb1f437b1259d55711824f55eead8a8",
+        "probabilities": [
+          {
+            "runnerId": "c4b6c460-719e-42ef-9aac-9b461d97bdd5",
+            "horseId": "90bdd4e0-aa72-4a4d-9b8e-07ca40029177",
+            "horseName": "Starliner",
+            "probability": 0.0999014116459369,
+            "rank": 1,
+            "firstCapturedPriceDecimal": 8.5,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "c5882188-f675-4cef-83bb-29065525f9d5",
+            "horseId": "c6ed9ab0-f712-4505-aa38-69d048bd37c6",
+            "horseName": "Chesneys Charm",
+            "probability": 0.09870624925800271,
+            "rank": 2,
+            "firstCapturedPriceDecimal": 5,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "8861cb60-6502-4c0e-b507-10ada83f19ad",
+            "horseId": "ad48c41e-d049-4ad6-ab4a-0e87605ca68f",
+            "horseName": "Sogniamo",
+            "probability": 0.09658098928398404,
+            "rank": 3,
+            "firstCapturedPriceDecimal": 34,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "82386f62-3581-43c7-81c9-b1e99a611c9d",
+            "horseId": "b84b0268-2e93-4d0f-ae5c-c5ccd92144ac",
+            "horseName": "Shes Got The Blues",
+            "probability": 0.09617806111054099,
+            "rank": 4,
+            "firstCapturedPriceDecimal": 6.5,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "e3eb9fa2-995e-47ad-a5e0-dc4bf02b71ee",
+            "horseId": "10659154-9841-43de-828b-c5acbc7a7233",
+            "horseName": "Bajan Bandit",
+            "probability": 0.09540734785172274,
+            "rank": 5,
+            "firstCapturedPriceDecimal": 7,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "ca1f3de3-2db1-4b65-a3ff-5b4c1e703a37",
+            "horseId": "29621c38-d753-4787-953c-eac7e6011fff",
+            "horseName": "Sea Legend",
+            "probability": 0.09189604801019684,
+            "rank": 6,
+            "firstCapturedPriceDecimal": 13,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "8fc3b487-fb7d-4364-9d3c-9f023b3f86de",
+            "horseId": "0bf8baf8-fb67-4d41-ba1d-eeb05139933c",
+            "horseName": "Hostility",
+            "probability": 0.08436230909343422,
+            "rank": 7,
+            "firstCapturedPriceDecimal": 7.5,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "20222683-97ee-4da9-b334-42dbdb6bc560",
+            "horseId": "6da85588-8d76-4753-b037-85582d03fac7",
+            "horseName": "Second Fiddle",
+            "probability": 0.08301605174997227,
+            "rank": 8,
+            "firstCapturedPriceDecimal": 4.5,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "66dc75b5-c429-456f-8f8b-343ab79d1957",
+            "horseId": "1bfcbc96-f35a-4169-b2e5-8c375b654d81",
+            "horseName": "Princess Honey Bee",
+            "probability": 0.07594375027280321,
+            "rank": 9,
+            "firstCapturedPriceDecimal": 11,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "949aca85-2818-45c1-ae78-b4c93b508e96",
+            "horseId": "775496d4-09de-4796-b352-c9da5429a12f",
+            "horseName": "Henry Halflight",
+            "probability": 0.07127815379836494,
+            "rank": 10,
+            "firstCapturedPriceDecimal": 15,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "258edae5-5530-4bb4-9177-f19f060128a8",
+            "horseId": "35f81fff-df1a-48df-80d8-7b2f670f3211",
+            "horseName": "Poppeye",
+            "probability": 0.056900310091380774,
+            "rank": 11,
+            "firstCapturedPriceDecimal": 7,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "eb8c8ec9-da19-472b-b86c-f9c6151c993f",
+            "horseId": "b6ecbdeb-e2d4-4405-a1fc-2b648995ec95",
+            "horseName": "Arkenstaar",
+            "probability": 0.04982931783366024,
+            "rank": 12,
+            "firstCapturedPriceDecimal": 26,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          }
+        ],
+        "rankOrder": [
+          "c4b6c460-719e-42ef-9aac-9b461d97bdd5",
+          "c5882188-f675-4cef-83bb-29065525f9d5",
+          "8861cb60-6502-4c0e-b507-10ada83f19ad",
+          "82386f62-3581-43c7-81c9-b1e99a611c9d",
+          "e3eb9fa2-995e-47ad-a5e0-dc4bf02b71ee",
+          "ca1f3de3-2db1-4b65-a3ff-5b4c1e703a37",
+          "8fc3b487-fb7d-4364-9d3c-9f023b3f86de",
+          "20222683-97ee-4da9-b334-42dbdb6bc560",
+          "66dc75b5-c429-456f-8f8b-343ab79d1957",
+          "949aca85-2818-45c1-ae78-b4c93b508e96",
+          "258edae5-5530-4bb4-9177-f19f060128a8",
+          "eb8c8ec9-da19-472b-b86c-f9c6151c993f"
+        ],
+        "rank1RunnerId": "c4b6c460-719e-42ef-9aac-9b461d97bdd5",
+        "rank1HorseName": "Starliner",
+        "rank1Probability": 0.0999014116459369,
+        "valueQualified": false,
+        "selectedPriceProfitLoss": null
+      },
+      "longshotTjZero": {
+        "modelVersion": "LONGSHOT_TJ_ZERO_V1",
+        "modelHash": "52376e5361e41da6b991aebfbb7f202cebb1f437b1259d55711824f55eead8a8",
+        "probabilities": [
+          {
+            "runnerId": "c4b6c460-719e-42ef-9aac-9b461d97bdd5",
+            "horseId": "90bdd4e0-aa72-4a4d-9b8e-07ca40029177",
+            "horseName": "Starliner",
+            "probability": 0.09924101862208821,
+            "rank": 1,
+            "firstCapturedPriceDecimal": 8.5,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "c5882188-f675-4cef-83bb-29065525f9d5",
+            "horseId": "c6ed9ab0-f712-4505-aa38-69d048bd37c6",
+            "horseName": "Chesneys Charm",
+            "probability": 0.09805375679221777,
+            "rank": 2,
+            "firstCapturedPriceDecimal": 5,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "82386f62-3581-43c7-81c9-b1e99a611c9d",
+            "horseId": "b84b0268-2e93-4d0f-ae5c-c5ccd92144ac",
+            "horseName": "Shes Got The Blues",
+            "probability": 0.09554228109944565,
+            "rank": 3,
+            "firstCapturedPriceDecimal": 6.5,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "8861cb60-6502-4c0e-b507-10ada83f19ad",
+            "horseId": "ad48c41e-d049-4ad6-ab4a-0e87605ca68f",
+            "horseName": "Sogniamo",
+            "probability": 0.09531825981535721,
+            "rank": 4,
+            "firstCapturedPriceDecimal": 34,
+            "longshotTrainerJockeyAdjusted": true,
+            "outcome": null
+          },
+          {
+            "runnerId": "e3eb9fa2-995e-47ad-a5e0-dc4bf02b71ee",
+            "horseId": "10659154-9841-43de-828b-c5acbc7a7233",
+            "horseName": "Bajan Bandit",
+            "probability": 0.09477666260006198,
+            "rank": 5,
+            "firstCapturedPriceDecimal": 7,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "ca1f3de3-2db1-4b65-a3ff-5b4c1e703a37",
+            "horseId": "29621c38-d753-4787-953c-eac7e6011fff",
+            "horseName": "Sea Legend",
+            "probability": 0.09128857402133789,
+            "rank": 6,
+            "firstCapturedPriceDecimal": 13,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "8fc3b487-fb7d-4364-9d3c-9f023b3f86de",
+            "horseId": "0bf8baf8-fb67-4d41-ba1d-eeb05139933c",
+            "horseName": "Hostility",
+            "probability": 0.08380463648918192,
+            "rank": 7,
+            "firstCapturedPriceDecimal": 7.5,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "20222683-97ee-4da9-b334-42dbdb6bc560",
+            "horseId": "6da85588-8d76-4753-b037-85582d03fac7",
+            "horseName": "Second Fiddle",
+            "probability": 0.08246727850903506,
+            "rank": 8,
+            "firstCapturedPriceDecimal": 4.5,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "66dc75b5-c429-456f-8f8b-343ab79d1957",
+            "horseId": "1bfcbc96-f35a-4169-b2e5-8c375b654d81",
+            "horseName": "Princess Honey Bee",
+            "probability": 0.0754417281085638,
+            "rank": 9,
+            "firstCapturedPriceDecimal": 11,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "949aca85-2818-45c1-ae78-b4c93b508e96",
+            "horseId": "775496d4-09de-4796-b352-c9da5429a12f",
+            "horseName": "Henry Halflight",
+            "probability": 0.07080697331406827,
+            "rank": 10,
+            "firstCapturedPriceDecimal": 15,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "eb8c8ec9-da19-472b-b86c-f9c6151c993f",
+            "horseId": "b6ecbdeb-e2d4-4405-a1fc-2b648995ec95",
+            "horseName": "Arkenstaar",
+            "probability": 0.05673465704244263,
+            "rank": 11,
+            "firstCapturedPriceDecimal": 26,
+            "longshotTrainerJockeyAdjusted": true,
+            "outcome": null
+          },
+          {
+            "runnerId": "258edae5-5530-4bb4-9177-f19f060128a8",
+            "horseId": "35f81fff-df1a-48df-80d8-7b2f670f3211",
+            "horseName": "Poppeye",
+            "probability": 0.05652417358619954,
+            "rank": 12,
+            "firstCapturedPriceDecimal": 7,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          }
+        ],
+        "rankOrder": [
+          "c4b6c460-719e-42ef-9aac-9b461d97bdd5",
+          "c5882188-f675-4cef-83bb-29065525f9d5",
+          "82386f62-3581-43c7-81c9-b1e99a611c9d",
+          "8861cb60-6502-4c0e-b507-10ada83f19ad",
+          "e3eb9fa2-995e-47ad-a5e0-dc4bf02b71ee",
+          "ca1f3de3-2db1-4b65-a3ff-5b4c1e703a37",
+          "8fc3b487-fb7d-4364-9d3c-9f023b3f86de",
+          "20222683-97ee-4da9-b334-42dbdb6bc560",
+          "66dc75b5-c429-456f-8f8b-343ab79d1957",
+          "949aca85-2818-45c1-ae78-b4c93b508e96",
+          "eb8c8ec9-da19-472b-b86c-f9c6151c993f",
+          "258edae5-5530-4bb4-9177-f19f060128a8"
+        ],
+        "rank1RunnerId": "c4b6c460-719e-42ef-9aac-9b461d97bdd5",
+        "rank1HorseName": "Starliner",
+        "rank1Probability": 0.09924101862208821,
+        "valueQualified": false,
+        "selectedPriceProfitLoss": null
+      },
+      "rank1Agreement": true,
+      "classification": "AGREE",
+      "valueBucket": "NEITHER_VALUE",
+      "prices": {
+        "firstAvailable": {
+          "awTissue": {
+            "runnerId": "c4b6c460-719e-42ef-9aac-9b461d97bdd5",
+            "medianDecimalPrice": 8.5,
+            "impliedProbability": 0.11764705882352941,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-10-20T02:30:50.064Z",
+            "snapshot": {
+              "decimalPrice": 8.5,
+              "impliedProbability": 0.11764705882352941,
+              "capturedAt": "2026-10-20T02:30:50.064Z",
+              "minutesBeforeScheduledOff": 899.1656,
+              "ratingProbability": 0.0999014116459369,
+              "ratingEdgePercentagePoints": -1.7745647177592514,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "15/2",
+                  "decimalOdds": 8.5
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "15/2",
+                  "decimalOdds": 8.5
+                },
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "15/2",
+                  "decimalOdds": 8.5
+                }
+              ],
+              "medianBookmakerPriceDecimal": 8.5,
+              "medianBookmakerImpliedProbability": 0.11764705882352941,
+              "bestBookmakerPriceDecimal": 8.5,
+              "bestBookmakerPriceFractional": "15/2",
+              "bestBookmakerName": null,
+              "forecastPrice": "10/1",
+              "forecastDecimalPrice": 11
+            }
+          },
+          "longshotTjZero": {
+            "runnerId": "c4b6c460-719e-42ef-9aac-9b461d97bdd5",
+            "medianDecimalPrice": 8.5,
+            "impliedProbability": 0.11764705882352941,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-10-20T02:30:50.064Z",
+            "snapshot": {
+              "decimalPrice": 8.5,
+              "impliedProbability": 0.11764705882352941,
+              "capturedAt": "2026-10-20T02:30:50.064Z",
+              "minutesBeforeScheduledOff": 899.1656,
+              "ratingProbability": 0.09924101862208821,
+              "ratingEdgePercentagePoints": -1.8406040201441196,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "15/2",
+                  "decimalOdds": 8.5
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "15/2",
+                  "decimalOdds": 8.5
+                },
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "15/2",
+                  "decimalOdds": 8.5
+                }
+              ],
+              "medianBookmakerPriceDecimal": 8.5,
+              "medianBookmakerImpliedProbability": 0.11764705882352941,
+              "bestBookmakerPriceDecimal": 8.5,
+              "bestBookmakerPriceFractional": "15/2",
+              "bestBookmakerName": null,
+              "forecastPrice": "10/1",
+              "forecastDecimalPrice": 11
+            }
+          }
+        },
+        "earlyMorning": {
+          "awTissue": {
+            "runnerId": "c4b6c460-719e-42ef-9aac-9b461d97bdd5",
+            "medianDecimalPrice": 8.5,
+            "impliedProbability": 0.11764705882352941,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-10-20T02:30:50.064Z",
+            "snapshot": {
+              "decimalPrice": 8.5,
+              "impliedProbability": 0.11764705882352941,
+              "capturedAt": "2026-10-20T02:30:50.064Z",
+              "minutesBeforeScheduledOff": 899.1656,
+              "ratingProbability": 0.0999014116459369,
+              "ratingEdgePercentagePoints": -1.7745647177592514,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "15/2",
+                  "decimalOdds": 8.5
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "15/2",
+                  "decimalOdds": 8.5
+                },
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "15/2",
+                  "decimalOdds": 8.5
+                }
+              ],
+              "medianBookmakerPriceDecimal": 8.5,
+              "medianBookmakerImpliedProbability": 0.11764705882352941,
+              "bestBookmakerPriceDecimal": 8.5,
+              "bestBookmakerPriceFractional": "15/2",
+              "bestBookmakerName": null,
+              "forecastPrice": "10/1",
+              "forecastDecimalPrice": 11
+            }
+          },
+          "longshotTjZero": {
+            "runnerId": "c4b6c460-719e-42ef-9aac-9b461d97bdd5",
+            "medianDecimalPrice": 8.5,
+            "impliedProbability": 0.11764705882352941,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-10-20T02:30:50.064Z",
+            "snapshot": {
+              "decimalPrice": 8.5,
+              "impliedProbability": 0.11764705882352941,
+              "capturedAt": "2026-10-20T02:30:50.064Z",
+              "minutesBeforeScheduledOff": 899.1656,
+              "ratingProbability": 0.09924101862208821,
+              "ratingEdgePercentagePoints": -1.8406040201441196,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "15/2",
+                  "decimalOdds": 8.5
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "15/2",
+                  "decimalOdds": 8.5
+                },
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "15/2",
+                  "decimalOdds": 8.5
+                }
+              ],
+              "medianBookmakerPriceDecimal": 8.5,
+              "medianBookmakerImpliedProbability": 0.11764705882352941,
+              "bestBookmakerPriceDecimal": 8.5,
+              "bestBookmakerPriceFractional": "15/2",
+              "bestBookmakerName": null,
+              "forecastPrice": "10/1",
+              "forecastDecimalPrice": 11
+            }
+          }
+        },
+        "late": {
+          "awTissue": null,
+          "longshotTjZero": null
+        },
+        "finalPreRace": {
+          "awTissue": null,
+          "longshotTjZero": null
+        },
+        "sp": {
+          "awTissue": null,
+          "longshotTjZero": null
+        }
+      },
+      "winners": [],
+      "settledAt": null,
+      "excludedReason": null
+    },
+    {
+      "raceId": "a09b59e7-884a-4209-b4e7-de3d3fc33732",
+      "sourceId": "944386",
+      "raceDate": "2026-10-20",
+      "course": "Newcastle",
+      "raceName": "AW Trials Day - Lingfield 2nd Jan 2027 Nursery",
+      "scheduledTime": "18:00:00",
+      "scheduledOffAt": "2026-10-20T18:00:00.000Z",
+      "currentOffAt": "2026-10-20T18:00:00.000Z",
+      "firstCapturedAt": "2026-10-20T02:30:50.064Z",
+      "runners": [
+        {
+          "runnerId": "70d2cfa0-efa6-4a00-a668-44774d6bb73d",
+          "horseId": "492fcf0c-3226-42e5-8403-e033994cc618",
+          "horseName": "Notimetotakeoff"
+        },
+        {
+          "runnerId": "f616df8d-9747-4216-a402-52edc17bf418",
+          "horseId": "19b91394-8b4e-4b0c-bb03-30ffabb61493",
+          "horseName": "Black Fury"
+        },
+        {
+          "runnerId": "b07339bb-cc2f-4836-91c3-30941bbc7585",
+          "horseId": "d973bd5c-eb8e-43af-8e46-dc5dfac6eb2f",
+          "horseName": "Northern Viola"
+        },
+        {
+          "runnerId": "4e287569-04b0-4a9d-84eb-c309d563e826",
+          "horseId": "ac6baaa9-e6c4-417f-b92b-ccc03004ed1d",
+          "horseName": "Unbeatable Fame"
+        },
+        {
+          "runnerId": "b4d8e656-036e-4150-b42d-6e20b0afb0b0",
+          "horseId": "85c36e35-7fdd-48d4-9035-0dbf230cd816",
+          "horseName": "Texting"
+        },
+        {
+          "runnerId": "4fd5d4cd-19fb-40fe-811d-b712b1dbfb52",
+          "horseId": "68e8e567-8cfe-4d39-9112-3daaf1c0919d",
+          "horseName": "Le Grand Etoile"
+        },
+        {
+          "runnerId": "9170eeb9-113f-46f1-8329-67a7f035f77d",
+          "horseId": "74cb0362-9f9e-4fc2-9512-f59cc106092b",
+          "horseName": "Pocket Change"
+        },
+        {
+          "runnerId": "0e4fe1f9-c6bd-4c14-840d-ce7282c9758b",
+          "horseId": "31a88d41-021d-4551-a640-dbd96fb9d891",
+          "horseName": "The Kalonji Man"
+        },
+        {
+          "runnerId": "6d0a377c-c4ee-4c0f-8053-d6c13d4d3ab8",
+          "horseId": "57ce4812-f1e0-41eb-8538-62d0e4b6632e",
+          "horseName": "London Rose"
+        },
+        {
+          "runnerId": "c99ea564-a062-4889-bcd0-0556f4934f7e",
+          "horseId": "b197526a-eb5e-4515-a601-f68304465352",
+          "horseName": "Bonjour Belle"
+        }
+      ],
+      "awTissue": {
+        "modelVersion": "AW_TISSUE_V1",
+        "modelHash": "52376e5361e41da6b991aebfbb7f202cebb1f437b1259d55711824f55eead8a8",
+        "probabilities": [
+          {
+            "runnerId": "70d2cfa0-efa6-4a00-a668-44774d6bb73d",
+            "horseId": "492fcf0c-3226-42e5-8403-e033994cc618",
+            "horseName": "Notimetotakeoff",
+            "probability": 0.17198450803851822,
+            "rank": 1,
+            "firstCapturedPriceDecimal": 4.33,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "b4d8e656-036e-4150-b42d-6e20b0afb0b0",
+            "horseId": "85c36e35-7fdd-48d4-9035-0dbf230cd816",
+            "horseName": "Texting",
+            "probability": 0.14230262519902595,
+            "rank": 2,
+            "firstCapturedPriceDecimal": 9.5,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "b07339bb-cc2f-4836-91c3-30941bbc7585",
+            "horseId": "d973bd5c-eb8e-43af-8e46-dc5dfac6eb2f",
+            "horseName": "Northern Viola",
+            "probability": 0.1361146314099511,
+            "rank": 3,
+            "firstCapturedPriceDecimal": 4.5,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "4e287569-04b0-4a9d-84eb-c309d563e826",
+            "horseId": "ac6baaa9-e6c4-417f-b92b-ccc03004ed1d",
+            "horseName": "Unbeatable Fame",
+            "probability": 0.10562161738400094,
+            "rank": 4,
+            "firstCapturedPriceDecimal": 5.5,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "c99ea564-a062-4889-bcd0-0556f4934f7e",
+            "horseId": "b197526a-eb5e-4515-a601-f68304465352",
+            "horseName": "Bonjour Belle",
+            "probability": 0.10219068897595156,
+            "rank": 5,
+            "firstCapturedPriceDecimal": 23,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "4fd5d4cd-19fb-40fe-811d-b712b1dbfb52",
+            "horseId": "68e8e567-8cfe-4d39-9112-3daaf1c0919d",
+            "horseName": "Le Grand Etoile",
+            "probability": 0.09583080811647002,
+            "rank": 6,
+            "firstCapturedPriceDecimal": 10,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "f616df8d-9747-4216-a402-52edc17bf418",
+            "horseId": "19b91394-8b4e-4b0c-bb03-30ffabb61493",
+            "horseName": "Black Fury",
+            "probability": 0.07577743929450251,
+            "rank": 7,
+            "firstCapturedPriceDecimal": 4.33,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "0e4fe1f9-c6bd-4c14-840d-ce7282c9758b",
+            "horseId": "31a88d41-021d-4551-a640-dbd96fb9d891",
+            "horseName": "The Kalonji Man",
+            "probability": 0.06483574638849104,
+            "rank": 8,
+            "firstCapturedPriceDecimal": 13,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "6d0a377c-c4ee-4c0f-8053-d6c13d4d3ab8",
+            "horseId": "57ce4812-f1e0-41eb-8538-62d0e4b6632e",
+            "horseName": "London Rose",
+            "probability": 0.062169159846641314,
+            "rank": 9,
+            "firstCapturedPriceDecimal": 15,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "9170eeb9-113f-46f1-8329-67a7f035f77d",
+            "horseId": "74cb0362-9f9e-4fc2-9512-f59cc106092b",
+            "horseName": "Pocket Change",
+            "probability": 0.043172775346447256,
+            "rank": 10,
+            "firstCapturedPriceDecimal": 13,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          }
+        ],
+        "rankOrder": [
+          "70d2cfa0-efa6-4a00-a668-44774d6bb73d",
+          "b4d8e656-036e-4150-b42d-6e20b0afb0b0",
+          "b07339bb-cc2f-4836-91c3-30941bbc7585",
+          "4e287569-04b0-4a9d-84eb-c309d563e826",
+          "c99ea564-a062-4889-bcd0-0556f4934f7e",
+          "4fd5d4cd-19fb-40fe-811d-b712b1dbfb52",
+          "f616df8d-9747-4216-a402-52edc17bf418",
+          "0e4fe1f9-c6bd-4c14-840d-ce7282c9758b",
+          "6d0a377c-c4ee-4c0f-8053-d6c13d4d3ab8",
+          "9170eeb9-113f-46f1-8329-67a7f035f77d"
+        ],
+        "rank1RunnerId": "70d2cfa0-efa6-4a00-a668-44774d6bb73d",
+        "rank1HorseName": "Notimetotakeoff",
+        "rank1Probability": 0.17198450803851822,
+        "valueQualified": false,
+        "selectedPriceProfitLoss": null
+      },
+      "longshotTjZero": {
+        "modelVersion": "LONGSHOT_TJ_ZERO_V1",
+        "modelHash": "52376e5361e41da6b991aebfbb7f202cebb1f437b1259d55711824f55eead8a8",
+        "probabilities": [
+          {
+            "runnerId": "70d2cfa0-efa6-4a00-a668-44774d6bb73d",
+            "horseId": "492fcf0c-3226-42e5-8403-e033994cc618",
+            "horseName": "Notimetotakeoff",
+            "probability": 0.17037729445773744,
+            "rank": 1,
+            "firstCapturedPriceDecimal": 4.33,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "b4d8e656-036e-4150-b42d-6e20b0afb0b0",
+            "horseId": "85c36e35-7fdd-48d4-9035-0dbf230cd816",
+            "horseName": "Texting",
+            "probability": 0.14097279198085372,
+            "rank": 2,
+            "firstCapturedPriceDecimal": 9.5,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "b07339bb-cc2f-4836-91c3-30941bbc7585",
+            "horseId": "d973bd5c-eb8e-43af-8e46-dc5dfac6eb2f",
+            "horseName": "Northern Viola",
+            "probability": 0.13484262565408356,
+            "rank": 3,
+            "firstCapturedPriceDecimal": 4.5,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "c99ea564-a062-4889-bcd0-0556f4934f7e",
+            "horseId": "b197526a-eb5e-4515-a601-f68304465352",
+            "horseName": "Bonjour Belle",
+            "probability": 0.11058081279632556,
+            "rank": 4,
+            "firstCapturedPriceDecimal": 23,
+            "longshotTrainerJockeyAdjusted": true,
+            "outcome": null
+          },
+          {
+            "runnerId": "4e287569-04b0-4a9d-84eb-c309d563e826",
+            "horseId": "ac6baaa9-e6c4-417f-b92b-ccc03004ed1d",
+            "horseName": "Unbeatable Fame",
+            "probability": 0.10463457209823847,
+            "rank": 5,
+            "firstCapturedPriceDecimal": 5.5,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "4fd5d4cd-19fb-40fe-811d-b712b1dbfb52",
+            "horseId": "68e8e567-8cfe-4d39-9112-3daaf1c0919d",
+            "horseName": "Le Grand Etoile",
+            "probability": 0.09493525898812939,
+            "rank": 6,
+            "firstCapturedPriceDecimal": 10,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "f616df8d-9747-4216-a402-52edc17bf418",
+            "horseId": "19b91394-8b4e-4b0c-bb03-30ffabb61493",
+            "horseName": "Black Fury",
+            "probability": 0.07506929103777907,
+            "rank": 7,
+            "firstCapturedPriceDecimal": 4.33,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "0e4fe1f9-c6bd-4c14-840d-ce7282c9758b",
+            "horseId": "31a88d41-021d-4551-a640-dbd96fb9d891",
+            "horseName": "The Kalonji Man",
+            "probability": 0.06422984941960648,
+            "rank": 8,
+            "firstCapturedPriceDecimal": 13,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "6d0a377c-c4ee-4c0f-8053-d6c13d4d3ab8",
+            "horseId": "57ce4812-f1e0-41eb-8538-62d0e4b6632e",
+            "horseName": "London Rose",
+            "probability": 0.06158818241355255,
+            "rank": 9,
+            "firstCapturedPriceDecimal": 15,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "9170eeb9-113f-46f1-8329-67a7f035f77d",
+            "horseId": "74cb0362-9f9e-4fc2-9512-f59cc106092b",
+            "horseName": "Pocket Change",
+            "probability": 0.04276932115369365,
+            "rank": 10,
+            "firstCapturedPriceDecimal": 13,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          }
+        ],
+        "rankOrder": [
+          "70d2cfa0-efa6-4a00-a668-44774d6bb73d",
+          "b4d8e656-036e-4150-b42d-6e20b0afb0b0",
+          "b07339bb-cc2f-4836-91c3-30941bbc7585",
+          "c99ea564-a062-4889-bcd0-0556f4934f7e",
+          "4e287569-04b0-4a9d-84eb-c309d563e826",
+          "4fd5d4cd-19fb-40fe-811d-b712b1dbfb52",
+          "f616df8d-9747-4216-a402-52edc17bf418",
+          "0e4fe1f9-c6bd-4c14-840d-ce7282c9758b",
+          "6d0a377c-c4ee-4c0f-8053-d6c13d4d3ab8",
+          "9170eeb9-113f-46f1-8329-67a7f035f77d"
+        ],
+        "rank1RunnerId": "70d2cfa0-efa6-4a00-a668-44774d6bb73d",
+        "rank1HorseName": "Notimetotakeoff",
+        "rank1Probability": 0.17037729445773744,
+        "valueQualified": false,
+        "selectedPriceProfitLoss": null
+      },
+      "rank1Agreement": true,
+      "classification": "AGREE",
+      "valueBucket": "NEITHER_VALUE",
+      "prices": {
+        "firstAvailable": {
+          "awTissue": {
+            "runnerId": "70d2cfa0-efa6-4a00-a668-44774d6bb73d",
+            "medianDecimalPrice": 4.33,
+            "impliedProbability": 0.23094688221709006,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-10-20T02:30:50.064Z",
+            "snapshot": {
+              "decimalPrice": 4.33,
+              "impliedProbability": 0.23094688221709006,
+              "capturedAt": "2026-10-20T02:30:50.064Z",
+              "minutesBeforeScheduledOff": 929.1656,
+              "ratingProbability": 0.17198450803851822,
+              "ratingEdgePercentagePoints": -5.896237417857184,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "3/1",
+                  "decimalOdds": 4
+                },
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "10/3",
+                  "decimalOdds": 4.33
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "10/3",
+                  "decimalOdds": 4.33
+                }
+              ],
+              "medianBookmakerPriceDecimal": 4.33,
+              "medianBookmakerImpliedProbability": 0.23094688221709006,
+              "bestBookmakerPriceDecimal": 4.33,
+              "bestBookmakerPriceFractional": "10/3",
+              "bestBookmakerName": null,
+              "forecastPrice": "3/1",
+              "forecastDecimalPrice": 4
+            }
+          },
+          "longshotTjZero": {
+            "runnerId": "70d2cfa0-efa6-4a00-a668-44774d6bb73d",
+            "medianDecimalPrice": 4.33,
+            "impliedProbability": 0.23094688221709006,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-10-20T02:30:50.064Z",
+            "snapshot": {
+              "decimalPrice": 4.33,
+              "impliedProbability": 0.23094688221709006,
+              "capturedAt": "2026-10-20T02:30:50.064Z",
+              "minutesBeforeScheduledOff": 929.1656,
+              "ratingProbability": 0.17037729445773744,
+              "ratingEdgePercentagePoints": -6.056958775935262,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "3/1",
+                  "decimalOdds": 4
+                },
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "10/3",
+                  "decimalOdds": 4.33
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "10/3",
+                  "decimalOdds": 4.33
+                }
+              ],
+              "medianBookmakerPriceDecimal": 4.33,
+              "medianBookmakerImpliedProbability": 0.23094688221709006,
+              "bestBookmakerPriceDecimal": 4.33,
+              "bestBookmakerPriceFractional": "10/3",
+              "bestBookmakerName": null,
+              "forecastPrice": "3/1",
+              "forecastDecimalPrice": 4
+            }
+          }
+        },
+        "earlyMorning": {
+          "awTissue": {
+            "runnerId": "70d2cfa0-efa6-4a00-a668-44774d6bb73d",
+            "medianDecimalPrice": 4.33,
+            "impliedProbability": 0.23094688221709006,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-10-20T02:30:50.064Z",
+            "snapshot": {
+              "decimalPrice": 4.33,
+              "impliedProbability": 0.23094688221709006,
+              "capturedAt": "2026-10-20T02:30:50.064Z",
+              "minutesBeforeScheduledOff": 929.1656,
+              "ratingProbability": 0.17198450803851822,
+              "ratingEdgePercentagePoints": -5.896237417857184,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "3/1",
+                  "decimalOdds": 4
+                },
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "10/3",
+                  "decimalOdds": 4.33
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "10/3",
+                  "decimalOdds": 4.33
+                }
+              ],
+              "medianBookmakerPriceDecimal": 4.33,
+              "medianBookmakerImpliedProbability": 0.23094688221709006,
+              "bestBookmakerPriceDecimal": 4.33,
+              "bestBookmakerPriceFractional": "10/3",
+              "bestBookmakerName": null,
+              "forecastPrice": "3/1",
+              "forecastDecimalPrice": 4
+            }
+          },
+          "longshotTjZero": {
+            "runnerId": "70d2cfa0-efa6-4a00-a668-44774d6bb73d",
+            "medianDecimalPrice": 4.33,
+            "impliedProbability": 0.23094688221709006,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-10-20T02:30:50.064Z",
+            "snapshot": {
+              "decimalPrice": 4.33,
+              "impliedProbability": 0.23094688221709006,
+              "capturedAt": "2026-10-20T02:30:50.064Z",
+              "minutesBeforeScheduledOff": 929.1656,
+              "ratingProbability": 0.17037729445773744,
+              "ratingEdgePercentagePoints": -6.056958775935262,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "3/1",
+                  "decimalOdds": 4
+                },
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "10/3",
+                  "decimalOdds": 4.33
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "10/3",
+                  "decimalOdds": 4.33
+                }
+              ],
+              "medianBookmakerPriceDecimal": 4.33,
+              "medianBookmakerImpliedProbability": 0.23094688221709006,
+              "bestBookmakerPriceDecimal": 4.33,
+              "bestBookmakerPriceFractional": "10/3",
+              "bestBookmakerName": null,
+              "forecastPrice": "3/1",
+              "forecastDecimalPrice": 4
+            }
+          }
+        },
+        "late": {
+          "awTissue": null,
+          "longshotTjZero": null
+        },
+        "finalPreRace": {
+          "awTissue": null,
+          "longshotTjZero": null
+        },
+        "sp": {
+          "awTissue": null,
+          "longshotTjZero": null
+        }
+      },
+      "winners": [],
+      "settledAt": null,
+      "excludedReason": null
+    },
+    {
+      "raceId": "d771cda5-f9c9-462d-b92e-4fca88a5b361",
+      "sourceId": "944387",
+      "raceDate": "2026-10-20",
+      "course": "Newcastle",
+      "raceName": "Make The Move To Midnite Handicap",
+      "scheduledTime": "18:30:00",
+      "scheduledOffAt": "2026-10-20T18:30:00.000Z",
+      "currentOffAt": "2026-10-20T18:30:00.000Z",
+      "firstCapturedAt": "2026-10-20T02:30:50.064Z",
+      "runners": [
+        {
+          "runnerId": "68057a31-29a4-4362-8b38-ae9fcb17553a",
+          "horseId": "dcea73bb-3e52-4e5d-8906-4d09d078ae4b",
+          "horseName": "Ashen"
+        },
+        {
+          "runnerId": "259a0b2d-72c8-40a9-a5f3-07eb5ad1dcaf",
+          "horseId": "0791fe4a-ef24-424c-b0d0-e9fa5a6d0412",
+          "horseName": "Brazen Idol"
+        },
+        {
+          "runnerId": "40dd532f-903d-43d0-bfcb-5f79a0040a58",
+          "horseId": "ebcf0541-717a-4eb8-8f71-ece943627dad",
+          "horseName": "Opal Storm"
+        },
+        {
+          "runnerId": "8b79ab95-f227-465a-b00e-14dfe638992e",
+          "horseId": "fa562225-812d-48aa-a661-a55d02db02c8",
+          "horseName": "Valor Spirit"
+        },
+        {
+          "runnerId": "bdd30f21-dca2-461e-8826-1be3af8d7f42",
+          "horseId": "63869c25-1872-4851-a5cb-8373c6856ad6",
+          "horseName": "Herakles"
+        },
+        {
+          "runnerId": "bcbef2b7-c7e1-47e0-96c0-b6b62a45df14",
+          "horseId": "94f3a56a-a0ff-4044-8469-cf5be182def3",
+          "horseName": "All Good"
+        },
+        {
+          "runnerId": "d47e0542-1f59-4a9f-9e18-09c01c057cd7",
+          "horseId": "8a741dd5-c0ec-4195-940f-8cf0ffb2bad5",
+          "horseName": "Ventura Express"
+        },
+        {
+          "runnerId": "2a2d1185-e68d-42c9-83ba-df8b2a90e04a",
+          "horseId": "c498adde-d031-4f9b-8404-68a187abaeb9",
+          "horseName": "Justmyluck"
+        },
+        {
+          "runnerId": "01431e7f-9ce2-4dc7-8430-d7a89a0172b8",
+          "horseId": "a9b40f16-89d2-4295-82cc-7b9b8192c33e",
+          "horseName": "Lucius Aurelius"
+        },
+        {
+          "runnerId": "3e3a0fbd-98e4-4e2b-b6ed-f2a2ee1c5c3f",
+          "horseId": "04ce3fdb-4195-4809-9974-38c7abff3a61",
+          "horseName": "Simba's Pride"
+        },
+        {
+          "runnerId": "aee6d4f2-c867-4001-b264-98173decade0",
+          "horseId": "f787cea8-3157-455a-a7c8-e7291a35f029",
+          "horseName": "Staniel Cay"
+        },
+        {
+          "runnerId": "8abbcf19-c0b8-4ac8-a8ae-480d0470a1e2",
+          "horseId": "a963f527-e7b8-4f21-b816-3ad7eff4ad1a",
+          "horseName": "Golden Havana"
+        },
+        {
+          "runnerId": "2d69f293-19fc-4d27-8f79-71f31c75a83e",
+          "horseId": "586f689a-8706-42d4-939e-753bcf00b66a",
+          "horseName": "Beaumadier"
+        }
+      ],
+      "awTissue": {
+        "modelVersion": "AW_TISSUE_V1",
+        "modelHash": "52376e5361e41da6b991aebfbb7f202cebb1f437b1259d55711824f55eead8a8",
+        "probabilities": [
+          {
+            "runnerId": "bdd30f21-dca2-461e-8826-1be3af8d7f42",
+            "horseId": "63869c25-1872-4851-a5cb-8373c6856ad6",
+            "horseName": "Herakles",
+            "probability": 0.11534041214710945,
+            "rank": 1,
+            "firstCapturedPriceDecimal": 9,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "68057a31-29a4-4362-8b38-ae9fcb17553a",
+            "horseId": "dcea73bb-3e52-4e5d-8906-4d09d078ae4b",
+            "horseName": "Ashen",
+            "probability": 0.11149154128511922,
+            "rank": 2,
+            "firstCapturedPriceDecimal": 5,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "8abbcf19-c0b8-4ac8-a8ae-480d0470a1e2",
+            "horseId": "a963f527-e7b8-4f21-b816-3ad7eff4ad1a",
+            "horseName": "Golden Havana",
+            "probability": 0.09953937990876621,
+            "rank": 3,
+            "firstCapturedPriceDecimal": 17,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "8b79ab95-f227-465a-b00e-14dfe638992e",
+            "horseId": "fa562225-812d-48aa-a661-a55d02db02c8",
+            "horseName": "Valor Spirit",
+            "probability": 0.09795400683201634,
+            "rank": 4,
+            "firstCapturedPriceDecimal": 9,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "01431e7f-9ce2-4dc7-8430-d7a89a0172b8",
+            "horseId": "a9b40f16-89d2-4295-82cc-7b9b8192c33e",
+            "horseName": "Lucius Aurelius",
+            "probability": 0.08333684965287279,
+            "rank": 5,
+            "firstCapturedPriceDecimal": 11,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "bcbef2b7-c7e1-47e0-96c0-b6b62a45df14",
+            "horseId": "94f3a56a-a0ff-4044-8469-cf5be182def3",
+            "horseName": "All Good",
+            "probability": 0.08180848869055542,
+            "rank": 6,
+            "firstCapturedPriceDecimal": 11,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "259a0b2d-72c8-40a9-a5f3-07eb5ad1dcaf",
+            "horseId": "0791fe4a-ef24-424c-b0d0-e9fa5a6d0412",
+            "horseName": "Brazen Idol",
+            "probability": 0.0740876370729255,
+            "rank": 7,
+            "firstCapturedPriceDecimal": 5,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "3e3a0fbd-98e4-4e2b-b6ed-f2a2ee1c5c3f",
+            "horseId": "04ce3fdb-4195-4809-9974-38c7abff3a61",
+            "horseName": "Simba's Pride",
+            "probability": 0.06244949052399774,
+            "rank": 8,
+            "firstCapturedPriceDecimal": 12,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "d47e0542-1f59-4a9f-9e18-09c01c057cd7",
+            "horseId": "8a741dd5-c0ec-4195-940f-8cf0ffb2bad5",
+            "horseName": "Ventura Express",
+            "probability": 0.06188019967003994,
+            "rank": 9,
+            "firstCapturedPriceDecimal": 11,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "aee6d4f2-c867-4001-b264-98173decade0",
+            "horseId": "f787cea8-3157-455a-a7c8-e7291a35f029",
+            "horseName": "Staniel Cay",
+            "probability": 0.05935013349848502,
+            "rank": 10,
+            "firstCapturedPriceDecimal": 13,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "2a2d1185-e68d-42c9-83ba-df8b2a90e04a",
+            "horseId": "c498adde-d031-4f9b-8404-68a187abaeb9",
+            "horseName": "Justmyluck",
+            "probability": 0.05892022696559796,
+            "rank": 11,
+            "firstCapturedPriceDecimal": 11,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "2d69f293-19fc-4d27-8f79-71f31c75a83e",
+            "horseId": "586f689a-8706-42d4-939e-753bcf00b66a",
+            "horseName": "Beaumadier",
+            "probability": 0.052762524252210855,
+            "rank": 12,
+            "firstCapturedPriceDecimal": 21,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "40dd532f-903d-43d0-bfcb-5f79a0040a58",
+            "horseId": "ebcf0541-717a-4eb8-8f71-ece943627dad",
+            "horseName": "Opal Storm",
+            "probability": 0.041079109500303745,
+            "rank": 13,
+            "firstCapturedPriceDecimal": 6,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          }
+        ],
+        "rankOrder": [
+          "bdd30f21-dca2-461e-8826-1be3af8d7f42",
+          "68057a31-29a4-4362-8b38-ae9fcb17553a",
+          "8abbcf19-c0b8-4ac8-a8ae-480d0470a1e2",
+          "8b79ab95-f227-465a-b00e-14dfe638992e",
+          "01431e7f-9ce2-4dc7-8430-d7a89a0172b8",
+          "bcbef2b7-c7e1-47e0-96c0-b6b62a45df14",
+          "259a0b2d-72c8-40a9-a5f3-07eb5ad1dcaf",
+          "3e3a0fbd-98e4-4e2b-b6ed-f2a2ee1c5c3f",
+          "d47e0542-1f59-4a9f-9e18-09c01c057cd7",
+          "aee6d4f2-c867-4001-b264-98173decade0",
+          "2a2d1185-e68d-42c9-83ba-df8b2a90e04a",
+          "2d69f293-19fc-4d27-8f79-71f31c75a83e",
+          "40dd532f-903d-43d0-bfcb-5f79a0040a58"
+        ],
+        "rank1RunnerId": "bdd30f21-dca2-461e-8826-1be3af8d7f42",
+        "rank1HorseName": "Herakles",
+        "rank1Probability": 0.11534041214710945,
+        "valueQualified": true,
+        "selectedPriceProfitLoss": null
+      },
+      "longshotTjZero": {
+        "modelVersion": "LONGSHOT_TJ_ZERO_V1",
+        "modelHash": "52376e5361e41da6b991aebfbb7f202cebb1f437b1259d55711824f55eead8a8",
+        "probabilities": [
+          {
+            "runnerId": "bdd30f21-dca2-461e-8826-1be3af8d7f42",
+            "horseId": "63869c25-1872-4851-a5cb-8373c6856ad6",
+            "horseName": "Herakles",
+            "probability": 0.11534041214710945,
+            "rank": 1,
+            "firstCapturedPriceDecimal": 9,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "68057a31-29a4-4362-8b38-ae9fcb17553a",
+            "horseId": "dcea73bb-3e52-4e5d-8906-4d09d078ae4b",
+            "horseName": "Ashen",
+            "probability": 0.11149154128511922,
+            "rank": 2,
+            "firstCapturedPriceDecimal": 5,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "8abbcf19-c0b8-4ac8-a8ae-480d0470a1e2",
+            "horseId": "a963f527-e7b8-4f21-b816-3ad7eff4ad1a",
+            "horseName": "Golden Havana",
+            "probability": 0.09953937990876621,
+            "rank": 3,
+            "firstCapturedPriceDecimal": 17,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "8b79ab95-f227-465a-b00e-14dfe638992e",
+            "horseId": "fa562225-812d-48aa-a661-a55d02db02c8",
+            "horseName": "Valor Spirit",
+            "probability": 0.09795400683201634,
+            "rank": 4,
+            "firstCapturedPriceDecimal": 9,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "01431e7f-9ce2-4dc7-8430-d7a89a0172b8",
+            "horseId": "a9b40f16-89d2-4295-82cc-7b9b8192c33e",
+            "horseName": "Lucius Aurelius",
+            "probability": 0.08333684965287279,
+            "rank": 5,
+            "firstCapturedPriceDecimal": 11,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "bcbef2b7-c7e1-47e0-96c0-b6b62a45df14",
+            "horseId": "94f3a56a-a0ff-4044-8469-cf5be182def3",
+            "horseName": "All Good",
+            "probability": 0.08180848869055542,
+            "rank": 6,
+            "firstCapturedPriceDecimal": 11,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "259a0b2d-72c8-40a9-a5f3-07eb5ad1dcaf",
+            "horseId": "0791fe4a-ef24-424c-b0d0-e9fa5a6d0412",
+            "horseName": "Brazen Idol",
+            "probability": 0.0740876370729255,
+            "rank": 7,
+            "firstCapturedPriceDecimal": 5,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "3e3a0fbd-98e4-4e2b-b6ed-f2a2ee1c5c3f",
+            "horseId": "04ce3fdb-4195-4809-9974-38c7abff3a61",
+            "horseName": "Simba's Pride",
+            "probability": 0.06244949052399774,
+            "rank": 8,
+            "firstCapturedPriceDecimal": 12,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "d47e0542-1f59-4a9f-9e18-09c01c057cd7",
+            "horseId": "8a741dd5-c0ec-4195-940f-8cf0ffb2bad5",
+            "horseName": "Ventura Express",
+            "probability": 0.06188019967003994,
+            "rank": 9,
+            "firstCapturedPriceDecimal": 11,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "aee6d4f2-c867-4001-b264-98173decade0",
+            "horseId": "f787cea8-3157-455a-a7c8-e7291a35f029",
+            "horseName": "Staniel Cay",
+            "probability": 0.05935013349848502,
+            "rank": 10,
+            "firstCapturedPriceDecimal": 13,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "2a2d1185-e68d-42c9-83ba-df8b2a90e04a",
+            "horseId": "c498adde-d031-4f9b-8404-68a187abaeb9",
+            "horseName": "Justmyluck",
+            "probability": 0.05892022696559796,
+            "rank": 11,
+            "firstCapturedPriceDecimal": 11,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "2d69f293-19fc-4d27-8f79-71f31c75a83e",
+            "horseId": "586f689a-8706-42d4-939e-753bcf00b66a",
+            "horseName": "Beaumadier",
+            "probability": 0.052762524252210855,
+            "rank": 12,
+            "firstCapturedPriceDecimal": 21,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "40dd532f-903d-43d0-bfcb-5f79a0040a58",
+            "horseId": "ebcf0541-717a-4eb8-8f71-ece943627dad",
+            "horseName": "Opal Storm",
+            "probability": 0.041079109500303745,
+            "rank": 13,
+            "firstCapturedPriceDecimal": 6,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          }
+        ],
+        "rankOrder": [
+          "bdd30f21-dca2-461e-8826-1be3af8d7f42",
+          "68057a31-29a4-4362-8b38-ae9fcb17553a",
+          "8abbcf19-c0b8-4ac8-a8ae-480d0470a1e2",
+          "8b79ab95-f227-465a-b00e-14dfe638992e",
+          "01431e7f-9ce2-4dc7-8430-d7a89a0172b8",
+          "bcbef2b7-c7e1-47e0-96c0-b6b62a45df14",
+          "259a0b2d-72c8-40a9-a5f3-07eb5ad1dcaf",
+          "3e3a0fbd-98e4-4e2b-b6ed-f2a2ee1c5c3f",
+          "d47e0542-1f59-4a9f-9e18-09c01c057cd7",
+          "aee6d4f2-c867-4001-b264-98173decade0",
+          "2a2d1185-e68d-42c9-83ba-df8b2a90e04a",
+          "2d69f293-19fc-4d27-8f79-71f31c75a83e",
+          "40dd532f-903d-43d0-bfcb-5f79a0040a58"
+        ],
+        "rank1RunnerId": "bdd30f21-dca2-461e-8826-1be3af8d7f42",
+        "rank1HorseName": "Herakles",
+        "rank1Probability": 0.11534041214710945,
+        "valueQualified": true,
+        "selectedPriceProfitLoss": null
+      },
+      "rank1Agreement": true,
+      "classification": "AGREE",
+      "valueBucket": "BOTH_VALUE",
+      "prices": {
+        "firstAvailable": {
+          "awTissue": {
+            "runnerId": "bdd30f21-dca2-461e-8826-1be3af8d7f42",
+            "medianDecimalPrice": 9,
+            "impliedProbability": 0.1111111111111111,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-10-20T02:30:50.064Z",
+            "snapshot": {
+              "decimalPrice": 9,
+              "impliedProbability": 0.1111111111111111,
+              "capturedAt": "2026-10-20T02:30:50.064Z",
+              "minutesBeforeScheduledOff": 959.1656,
+              "ratingProbability": 0.11534041214710945,
+              "ratingEdgePercentagePoints": 0.4229301035998348,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "15/2",
+                  "decimalOdds": 8.5
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "8/1",
+                  "decimalOdds": 9
+                },
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "8/1",
+                  "decimalOdds": 9
+                }
+              ],
+              "medianBookmakerPriceDecimal": 9,
+              "medianBookmakerImpliedProbability": 0.1111111111111111,
+              "bestBookmakerPriceDecimal": 9,
+              "bestBookmakerPriceFractional": "8/1",
+              "bestBookmakerName": null,
+              "forecastPrice": "8/1",
+              "forecastDecimalPrice": 9
+            }
+          },
+          "longshotTjZero": {
+            "runnerId": "bdd30f21-dca2-461e-8826-1be3af8d7f42",
+            "medianDecimalPrice": 9,
+            "impliedProbability": 0.1111111111111111,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-10-20T02:30:50.064Z",
+            "snapshot": {
+              "decimalPrice": 9,
+              "impliedProbability": 0.1111111111111111,
+              "capturedAt": "2026-10-20T02:30:50.064Z",
+              "minutesBeforeScheduledOff": 959.1656,
+              "ratingProbability": 0.11534041214710945,
+              "ratingEdgePercentagePoints": 0.4229301035998348,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "15/2",
+                  "decimalOdds": 8.5
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "8/1",
+                  "decimalOdds": 9
+                },
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "8/1",
+                  "decimalOdds": 9
+                }
+              ],
+              "medianBookmakerPriceDecimal": 9,
+              "medianBookmakerImpliedProbability": 0.1111111111111111,
+              "bestBookmakerPriceDecimal": 9,
+              "bestBookmakerPriceFractional": "8/1",
+              "bestBookmakerName": null,
+              "forecastPrice": "8/1",
+              "forecastDecimalPrice": 9
+            }
+          }
+        },
+        "earlyMorning": {
+          "awTissue": {
+            "runnerId": "bdd30f21-dca2-461e-8826-1be3af8d7f42",
+            "medianDecimalPrice": 9,
+            "impliedProbability": 0.1111111111111111,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-10-20T02:30:50.064Z",
+            "snapshot": {
+              "decimalPrice": 9,
+              "impliedProbability": 0.1111111111111111,
+              "capturedAt": "2026-10-20T02:30:50.064Z",
+              "minutesBeforeScheduledOff": 959.1656,
+              "ratingProbability": 0.11534041214710945,
+              "ratingEdgePercentagePoints": 0.4229301035998348,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "15/2",
+                  "decimalOdds": 8.5
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "8/1",
+                  "decimalOdds": 9
+                },
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "8/1",
+                  "decimalOdds": 9
+                }
+              ],
+              "medianBookmakerPriceDecimal": 9,
+              "medianBookmakerImpliedProbability": 0.1111111111111111,
+              "bestBookmakerPriceDecimal": 9,
+              "bestBookmakerPriceFractional": "8/1",
+              "bestBookmakerName": null,
+              "forecastPrice": "8/1",
+              "forecastDecimalPrice": 9
+            }
+          },
+          "longshotTjZero": {
+            "runnerId": "bdd30f21-dca2-461e-8826-1be3af8d7f42",
+            "medianDecimalPrice": 9,
+            "impliedProbability": 0.1111111111111111,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-10-20T02:30:50.064Z",
+            "snapshot": {
+              "decimalPrice": 9,
+              "impliedProbability": 0.1111111111111111,
+              "capturedAt": "2026-10-20T02:30:50.064Z",
+              "minutesBeforeScheduledOff": 959.1656,
+              "ratingProbability": 0.11534041214710945,
+              "ratingEdgePercentagePoints": 0.4229301035998348,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "15/2",
+                  "decimalOdds": 8.5
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "8/1",
+                  "decimalOdds": 9
+                },
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "8/1",
+                  "decimalOdds": 9
+                }
+              ],
+              "medianBookmakerPriceDecimal": 9,
+              "medianBookmakerImpliedProbability": 0.1111111111111111,
+              "bestBookmakerPriceDecimal": 9,
+              "bestBookmakerPriceFractional": "8/1",
+              "bestBookmakerName": null,
+              "forecastPrice": "8/1",
+              "forecastDecimalPrice": 9
+            }
+          }
+        },
+        "late": {
+          "awTissue": null,
+          "longshotTjZero": null
+        },
+        "finalPreRace": {
+          "awTissue": null,
+          "longshotTjZero": null
+        },
+        "sp": {
+          "awTissue": null,
+          "longshotTjZero": null
+        }
+      },
+      "winners": [],
+      "settledAt": null,
+      "excludedReason": null
+    },
+    {
+      "raceId": "89ce22a1-2a74-44aa-8b94-90b582ba6561",
+      "sourceId": "944388",
+      "raceDate": "2026-10-20",
+      "course": "Newcastle",
+      "raceName": "Midnite Ain't Your Grandad's Bookie Handicap",
+      "scheduledTime": "19:00:00",
+      "scheduledOffAt": "2026-10-20T19:00:00.000Z",
+      "currentOffAt": "2026-10-20T19:00:00.000Z",
+      "firstCapturedAt": "2026-10-20T02:30:50.064Z",
+      "runners": [
+        {
+          "runnerId": "8741f66c-e7c4-49d7-972d-2dfb8df72032",
+          "horseId": "64b28e2d-d99e-4110-b148-1e3e6ae4c5be",
+          "horseName": "Pockley"
+        },
+        {
+          "runnerId": "9120b46f-36e6-4669-80dd-4d833ae4b6d5",
+          "horseId": "524b10f9-f1f0-48bd-ba80-37f1be5c510f",
+          "horseName": "Liquid Cooled"
+        },
+        {
+          "runnerId": "cb53e330-006a-486c-a36e-fac1af64bf7e",
+          "horseId": "550288c6-d0fe-4e4c-82d8-9f12ba4de512",
+          "horseName": "Doon The Glen"
+        },
+        {
+          "runnerId": "ada19bf8-01f9-41b0-bbb5-0e1ba40f10ff",
+          "horseId": "2f687846-81ff-4f38-b812-61e373eb5243",
+          "horseName": "Ellie's De Vega"
+        },
+        {
+          "runnerId": "53ae355d-d000-4b81-b208-8827c6ed94ec",
+          "horseId": "a60203fa-9bfa-466e-9553-1e5c9db275b6",
+          "horseName": "Spirited Dancer"
+        },
+        {
+          "runnerId": "679ba0cb-85cd-4b38-88fc-2109792f36b0",
+          "horseId": "6c34fca0-3d45-4acf-b65b-0f2103135215",
+          "horseName": "Wee Mary"
+        },
+        {
+          "runnerId": "e833de8c-72a0-456c-88f7-6eff508a5091",
+          "horseId": "4009af4f-48de-4770-a7e6-6fd7348e2a00",
+          "horseName": "Auntie Jo"
+        },
+        {
+          "runnerId": "e0e863b0-fdd0-49cc-a761-d0aa367bd4d2",
+          "horseId": "d7eb596c-170b-41cd-b667-19eea30ec756",
+          "horseName": "Siviez"
+        },
+        {
+          "runnerId": "6639d74a-3039-4943-bde1-99420fd97ab9",
+          "horseId": "5bb91e15-2a27-4f69-88d7-3d7592eab01b",
+          "horseName": "Aleppo Pepper"
+        },
+        {
+          "runnerId": "4cc32514-8f5a-4b6c-82cb-48d457d872f4",
+          "horseId": "945613db-7514-4132-a41c-774e25a36524",
+          "horseName": "Harry Whodeanie"
+        },
+        {
+          "runnerId": "cb317eef-05ea-4556-87c9-0e20c21cfe1f",
+          "horseId": "3608fd30-9d4f-4a82-b551-d23894c7388e",
+          "horseName": "Dinamo"
+        },
+        {
+          "runnerId": "883b54ab-ea06-4507-a424-97de470cd5eb",
+          "horseId": "1f7cc229-bc1c-43e0-835b-95af732e7cc9",
+          "horseName": "Moretons"
+        }
+      ],
+      "awTissue": {
+        "modelVersion": "AW_TISSUE_V1",
+        "modelHash": "52376e5361e41da6b991aebfbb7f202cebb1f437b1259d55711824f55eead8a8",
+        "probabilities": [
+          {
+            "runnerId": "53ae355d-d000-4b81-b208-8827c6ed94ec",
+            "horseId": "a60203fa-9bfa-466e-9553-1e5c9db275b6",
+            "horseName": "Spirited Dancer",
+            "probability": 0.12976349520197064,
+            "rank": 1,
+            "firstCapturedPriceDecimal": 7.5,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "cb53e330-006a-486c-a36e-fac1af64bf7e",
+            "horseId": "550288c6-d0fe-4e4c-82d8-9f12ba4de512",
+            "horseName": "Doon The Glen",
+            "probability": 0.11613727068471309,
+            "rank": 2,
+            "firstCapturedPriceDecimal": 5.5,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "9120b46f-36e6-4669-80dd-4d833ae4b6d5",
+            "horseId": "524b10f9-f1f0-48bd-ba80-37f1be5c510f",
+            "horseName": "Liquid Cooled",
+            "probability": 0.11391355599127134,
+            "rank": 3,
+            "firstCapturedPriceDecimal": 4.5,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "679ba0cb-85cd-4b38-88fc-2109792f36b0",
+            "horseId": "6c34fca0-3d45-4acf-b65b-0f2103135215",
+            "horseName": "Wee Mary",
+            "probability": 0.11350570345609215,
+            "rank": 4,
+            "firstCapturedPriceDecimal": 10,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "6639d74a-3039-4943-bde1-99420fd97ab9",
+            "horseId": "5bb91e15-2a27-4f69-88d7-3d7592eab01b",
+            "horseName": "Aleppo Pepper",
+            "probability": 0.09829021618596595,
+            "rank": 5,
+            "firstCapturedPriceDecimal": 13,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "e833de8c-72a0-456c-88f7-6eff508a5091",
+            "horseId": "4009af4f-48de-4770-a7e6-6fd7348e2a00",
+            "horseName": "Auntie Jo",
+            "probability": 0.07579623876323174,
+            "rank": 6,
+            "firstCapturedPriceDecimal": 11,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "ada19bf8-01f9-41b0-bbb5-0e1ba40f10ff",
+            "horseId": "2f687846-81ff-4f38-b812-61e373eb5243",
+            "horseName": "Ellie's De Vega",
+            "probability": 0.07285838293456821,
+            "rank": 7,
+            "firstCapturedPriceDecimal": 6.5,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "8741f66c-e7c4-49d7-972d-2dfb8df72032",
+            "horseId": "64b28e2d-d99e-4110-b148-1e3e6ae4c5be",
+            "horseName": "Pockley",
+            "probability": 0.07058444806912934,
+            "rank": 8,
+            "firstCapturedPriceDecimal": 4,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "e0e863b0-fdd0-49cc-a761-d0aa367bd4d2",
+            "horseId": "d7eb596c-170b-41cd-b667-19eea30ec756",
+            "horseName": "Siviez",
+            "probability": 0.0652712139860128,
+            "rank": 9,
+            "firstCapturedPriceDecimal": 12,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "cb317eef-05ea-4556-87c9-0e20c21cfe1f",
+            "horseId": "3608fd30-9d4f-4a82-b551-d23894c7388e",
+            "horseName": "Dinamo",
+            "probability": 0.0558069713564838,
+            "rank": 10,
+            "firstCapturedPriceDecimal": 34,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "883b54ab-ea06-4507-a424-97de470cd5eb",
+            "horseId": "1f7cc229-bc1c-43e0-835b-95af732e7cc9",
+            "horseName": "Moretons",
+            "probability": 0.04486615159695709,
+            "rank": 11,
+            "firstCapturedPriceDecimal": 41,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "4cc32514-8f5a-4b6c-82cb-48d457d872f4",
+            "horseId": "945613db-7514-4132-a41c-774e25a36524",
+            "horseName": "Harry Whodeanie",
+            "probability": 0.04320635177360382,
+            "rank": 12,
+            "firstCapturedPriceDecimal": 21,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          }
+        ],
+        "rankOrder": [
+          "53ae355d-d000-4b81-b208-8827c6ed94ec",
+          "cb53e330-006a-486c-a36e-fac1af64bf7e",
+          "9120b46f-36e6-4669-80dd-4d833ae4b6d5",
+          "679ba0cb-85cd-4b38-88fc-2109792f36b0",
+          "6639d74a-3039-4943-bde1-99420fd97ab9",
+          "e833de8c-72a0-456c-88f7-6eff508a5091",
+          "ada19bf8-01f9-41b0-bbb5-0e1ba40f10ff",
+          "8741f66c-e7c4-49d7-972d-2dfb8df72032",
+          "e0e863b0-fdd0-49cc-a761-d0aa367bd4d2",
+          "cb317eef-05ea-4556-87c9-0e20c21cfe1f",
+          "883b54ab-ea06-4507-a424-97de470cd5eb",
+          "4cc32514-8f5a-4b6c-82cb-48d457d872f4"
+        ],
+        "rank1RunnerId": "53ae355d-d000-4b81-b208-8827c6ed94ec",
+        "rank1HorseName": "Spirited Dancer",
+        "rank1Probability": 0.12976349520197064,
+        "valueQualified": false,
+        "selectedPriceProfitLoss": null
+      },
+      "longshotTjZero": {
+        "modelVersion": "LONGSHOT_TJ_ZERO_V1",
+        "modelHash": "52376e5361e41da6b991aebfbb7f202cebb1f437b1259d55711824f55eead8a8",
+        "probabilities": [
+          {
+            "runnerId": "53ae355d-d000-4b81-b208-8827c6ed94ec",
+            "horseId": "a60203fa-9bfa-466e-9553-1e5c9db275b6",
+            "horseName": "Spirited Dancer",
+            "probability": 0.12419736488996005,
+            "rank": 1,
+            "firstCapturedPriceDecimal": 7.5,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "cb53e330-006a-486c-a36e-fac1af64bf7e",
+            "horseId": "550288c6-d0fe-4e4c-82d8-9f12ba4de512",
+            "horseName": "Doon The Glen",
+            "probability": 0.11115562941721938,
+            "rank": 2,
+            "firstCapturedPriceDecimal": 5.5,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "9120b46f-36e6-4669-80dd-4d833ae4b6d5",
+            "horseId": "524b10f9-f1f0-48bd-ba80-37f1be5c510f",
+            "horseName": "Liquid Cooled",
+            "probability": 0.10902729968347807,
+            "rank": 3,
+            "firstCapturedPriceDecimal": 4.5,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "679ba0cb-85cd-4b38-88fc-2109792f36b0",
+            "horseId": "6c34fca0-3d45-4acf-b65b-0f2103135215",
+            "horseName": "Wee Mary",
+            "probability": 0.10863694174764947,
+            "rank": 4,
+            "firstCapturedPriceDecimal": 10,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "6639d74a-3039-4943-bde1-99420fd97ab9",
+            "horseId": "5bb91e15-2a27-4f69-88d7-3d7592eab01b",
+            "horseName": "Aleppo Pepper",
+            "probability": 0.09407411403154071,
+            "rank": 5,
+            "firstCapturedPriceDecimal": 13,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "883b54ab-ea06-4507-a424-97de470cd5eb",
+            "horseId": "1f7cc229-bc1c-43e0-835b-95af732e7cc9",
+            "horseName": "Moretons",
+            "probability": 0.08370346316954932,
+            "rank": 6,
+            "firstCapturedPriceDecimal": 41,
+            "longshotTrainerJockeyAdjusted": true,
+            "outcome": null
+          },
+          {
+            "runnerId": "e833de8c-72a0-456c-88f7-6eff508a5091",
+            "horseId": "4009af4f-48de-4770-a7e6-6fd7348e2a00",
+            "horseName": "Auntie Jo",
+            "probability": 0.07254500280153264,
+            "rank": 7,
+            "firstCapturedPriceDecimal": 11,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "ada19bf8-01f9-41b0-bbb5-0e1ba40f10ff",
+            "horseId": "2f687846-81ff-4f38-b812-61e373eb5243",
+            "horseName": "Ellie's De Vega",
+            "probability": 0.06973316460482938,
+            "rank": 8,
+            "firstCapturedPriceDecimal": 6.5,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "8741f66c-e7c4-49d7-972d-2dfb8df72032",
+            "horseId": "64b28e2d-d99e-4110-b148-1e3e6ae4c5be",
+            "horseName": "Pockley",
+            "probability": 0.06755676886441452,
+            "rank": 9,
+            "firstCapturedPriceDecimal": 4,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "e0e863b0-fdd0-49cc-a761-d0aa367bd4d2",
+            "horseId": "d7eb596c-170b-41cd-b667-19eea30ec756",
+            "horseName": "Siviez",
+            "probability": 0.0624714428939672,
+            "rank": 10,
+            "firstCapturedPriceDecimal": 12,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "cb317eef-05ea-4556-87c9-0e20c21cfe1f",
+            "horseId": "3608fd30-9d4f-4a82-b551-d23894c7388e",
+            "horseName": "Dinamo",
+            "probability": 0.05554576767111697,
+            "rank": 11,
+            "firstCapturedPriceDecimal": 34,
+            "longshotTrainerJockeyAdjusted": true,
+            "outcome": null
+          },
+          {
+            "runnerId": "4cc32514-8f5a-4b6c-82cb-48d457d872f4",
+            "horseId": "945613db-7514-4132-a41c-774e25a36524",
+            "horseName": "Harry Whodeanie",
+            "probability": 0.0413530402247423,
+            "rank": 12,
+            "firstCapturedPriceDecimal": 21,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          }
+        ],
+        "rankOrder": [
+          "53ae355d-d000-4b81-b208-8827c6ed94ec",
+          "cb53e330-006a-486c-a36e-fac1af64bf7e",
+          "9120b46f-36e6-4669-80dd-4d833ae4b6d5",
+          "679ba0cb-85cd-4b38-88fc-2109792f36b0",
+          "6639d74a-3039-4943-bde1-99420fd97ab9",
+          "883b54ab-ea06-4507-a424-97de470cd5eb",
+          "e833de8c-72a0-456c-88f7-6eff508a5091",
+          "ada19bf8-01f9-41b0-bbb5-0e1ba40f10ff",
+          "8741f66c-e7c4-49d7-972d-2dfb8df72032",
+          "e0e863b0-fdd0-49cc-a761-d0aa367bd4d2",
+          "cb317eef-05ea-4556-87c9-0e20c21cfe1f",
+          "4cc32514-8f5a-4b6c-82cb-48d457d872f4"
+        ],
+        "rank1RunnerId": "53ae355d-d000-4b81-b208-8827c6ed94ec",
+        "rank1HorseName": "Spirited Dancer",
+        "rank1Probability": 0.12419736488996005,
+        "valueQualified": false,
+        "selectedPriceProfitLoss": null
+      },
+      "rank1Agreement": true,
+      "classification": "AGREE",
+      "valueBucket": "NEITHER_VALUE",
+      "prices": {
+        "firstAvailable": {
+          "awTissue": {
+            "runnerId": "53ae355d-d000-4b81-b208-8827c6ed94ec",
+            "medianDecimalPrice": 7.5,
+            "impliedProbability": 0.13333333333333333,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-10-20T02:30:50.064Z",
+            "snapshot": {
+              "decimalPrice": 7.5,
+              "impliedProbability": 0.13333333333333333,
+              "capturedAt": "2026-10-20T02:30:50.064Z",
+              "minutesBeforeScheduledOff": 989.1656,
+              "ratingProbability": 0.12976349520197064,
+              "ratingEdgePercentagePoints": -0.35698381313626903,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "13/2",
+                  "decimalOdds": 7.5
+                },
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "13/2",
+                  "decimalOdds": 7.5
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "7/1",
+                  "decimalOdds": 8
+                }
+              ],
+              "medianBookmakerPriceDecimal": 7.5,
+              "medianBookmakerImpliedProbability": 0.13333333333333333,
+              "bestBookmakerPriceDecimal": 8,
+              "bestBookmakerPriceFractional": "7/1",
+              "bestBookmakerName": "Paddy Power",
+              "forecastPrice": "4/1",
+              "forecastDecimalPrice": 5
+            }
+          },
+          "longshotTjZero": {
+            "runnerId": "53ae355d-d000-4b81-b208-8827c6ed94ec",
+            "medianDecimalPrice": 7.5,
+            "impliedProbability": 0.13333333333333333,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-10-20T02:30:50.064Z",
+            "snapshot": {
+              "decimalPrice": 7.5,
+              "impliedProbability": 0.13333333333333333,
+              "capturedAt": "2026-10-20T02:30:50.064Z",
+              "minutesBeforeScheduledOff": 989.1656,
+              "ratingProbability": 0.12419736488996005,
+              "ratingEdgePercentagePoints": -0.9135968443373277,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "13/2",
+                  "decimalOdds": 7.5
+                },
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "13/2",
+                  "decimalOdds": 7.5
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "7/1",
+                  "decimalOdds": 8
+                }
+              ],
+              "medianBookmakerPriceDecimal": 7.5,
+              "medianBookmakerImpliedProbability": 0.13333333333333333,
+              "bestBookmakerPriceDecimal": 8,
+              "bestBookmakerPriceFractional": "7/1",
+              "bestBookmakerName": "Paddy Power",
+              "forecastPrice": "4/1",
+              "forecastDecimalPrice": 5
+            }
+          }
+        },
+        "earlyMorning": {
+          "awTissue": {
+            "runnerId": "53ae355d-d000-4b81-b208-8827c6ed94ec",
+            "medianDecimalPrice": 7.5,
+            "impliedProbability": 0.13333333333333333,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-10-20T02:30:50.064Z",
+            "snapshot": {
+              "decimalPrice": 7.5,
+              "impliedProbability": 0.13333333333333333,
+              "capturedAt": "2026-10-20T02:30:50.064Z",
+              "minutesBeforeScheduledOff": 989.1656,
+              "ratingProbability": 0.12976349520197064,
+              "ratingEdgePercentagePoints": -0.35698381313626903,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "13/2",
+                  "decimalOdds": 7.5
+                },
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "13/2",
+                  "decimalOdds": 7.5
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "7/1",
+                  "decimalOdds": 8
+                }
+              ],
+              "medianBookmakerPriceDecimal": 7.5,
+              "medianBookmakerImpliedProbability": 0.13333333333333333,
+              "bestBookmakerPriceDecimal": 8,
+              "bestBookmakerPriceFractional": "7/1",
+              "bestBookmakerName": "Paddy Power",
+              "forecastPrice": "4/1",
+              "forecastDecimalPrice": 5
+            }
+          },
+          "longshotTjZero": {
+            "runnerId": "53ae355d-d000-4b81-b208-8827c6ed94ec",
+            "medianDecimalPrice": 7.5,
+            "impliedProbability": 0.13333333333333333,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-10-20T02:30:50.064Z",
+            "snapshot": {
+              "decimalPrice": 7.5,
+              "impliedProbability": 0.13333333333333333,
+              "capturedAt": "2026-10-20T02:30:50.064Z",
+              "minutesBeforeScheduledOff": 989.1656,
+              "ratingProbability": 0.12419736488996005,
+              "ratingEdgePercentagePoints": -0.9135968443373277,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "13/2",
+                  "decimalOdds": 7.5
+                },
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "13/2",
+                  "decimalOdds": 7.5
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "7/1",
+                  "decimalOdds": 8
+                }
+              ],
+              "medianBookmakerPriceDecimal": 7.5,
+              "medianBookmakerImpliedProbability": 0.13333333333333333,
+              "bestBookmakerPriceDecimal": 8,
+              "bestBookmakerPriceFractional": "7/1",
+              "bestBookmakerName": "Paddy Power",
+              "forecastPrice": "4/1",
+              "forecastDecimalPrice": 5
+            }
+          }
+        },
+        "late": {
+          "awTissue": null,
+          "longshotTjZero": null
+        },
+        "finalPreRace": {
+          "awTissue": null,
+          "longshotTjZero": null
+        },
+        "sp": {
+          "awTissue": null,
+          "longshotTjZero": null
+        }
+      },
+      "winners": [],
+      "settledAt": null,
+      "excludedReason": null
+    },
+    {
+      "raceId": "74bfd5b0-3882-4df9-9e42-86e39e2817a5",
+      "sourceId": "944389",
+      "raceDate": "2026-10-20",
+      "course": "Newcastle",
+      "raceName": "Midnite It's Actually Pretty Good Apprentice Handicap",
+      "scheduledTime": "19:30:00",
+      "scheduledOffAt": "2026-10-20T19:30:00.000Z",
+      "currentOffAt": "2026-10-20T19:30:00.000Z",
+      "firstCapturedAt": "2026-10-20T02:30:50.064Z",
+      "runners": [
+        {
+          "runnerId": "e9479286-26ec-4758-bb2d-677c042a4291",
+          "horseId": "2b15783a-3524-45cf-acc4-633167716dbd",
+          "horseName": "Speeding Bullet"
+        },
+        {
+          "runnerId": "4fac253b-300d-4687-9cfd-374227fc977a",
+          "horseId": "421dc881-c289-4f67-b836-4ca6ccd15f75",
+          "horseName": "Wish This"
+        },
+        {
+          "runnerId": "dc725fe0-13e3-4362-aeec-ded6b85ab69a",
+          "horseId": "bc527cf7-b346-4661-852d-47872f2a7acf",
+          "horseName": "Mayo County"
+        },
+        {
+          "runnerId": "98dd8680-e9bf-4ce4-a5ac-5ecbadd733e8",
+          "horseId": "1920f980-2df3-4aab-a0bf-7ff5060b8653",
+          "horseName": "Pit Boss"
+        },
+        {
+          "runnerId": "2142c25f-e0b6-4327-9e33-fc480a702881",
+          "horseId": "332e8007-eebc-4b69-a668-1a2075edacb0",
+          "horseName": "Hectic"
+        },
+        {
+          "runnerId": "a68f8678-cca1-4517-bcf3-700efe16e382",
+          "horseId": "a87ad82d-aa85-4863-b610-561723a475c8",
+          "horseName": "Jet Warrior"
+        },
+        {
+          "runnerId": "7de0941c-ec93-4d9e-beed-3da37eef37fe",
+          "horseId": "5f3c10ce-7ad8-4114-b71e-4fb632755b64",
+          "horseName": "Woolridge"
+        },
+        {
+          "runnerId": "72437999-1186-4d0d-a579-1fc32729e4b3",
+          "horseId": "464fd715-8c47-4541-8c71-467569d2049d",
+          "horseName": "Macedonian"
+        },
+        {
+          "runnerId": "c00767de-817a-4944-8305-702868638115",
+          "horseId": "40329511-87bf-48fb-b333-205952215bcb",
+          "horseName": "Rye"
+        },
+        {
+          "runnerId": "1687c4ff-a4f2-4eb6-b457-3f3a18be5807",
+          "horseId": "4805916d-90df-4d21-ab15-4c9147365589",
+          "horseName": "Victory Sound"
+        },
+        {
+          "runnerId": "8cfbe25a-4486-4889-87be-59ed7f221610",
+          "horseId": "6a6423b6-15f2-481a-a028-4197afbfd13b",
+          "horseName": "Lord Abama"
+        },
+        {
+          "runnerId": "ddd6f66b-88d6-468b-9599-06711e78840d",
+          "horseId": "07f7346d-4749-4b8f-8a70-c3d6a54ba053",
+          "horseName": "Sedgemoor"
+        },
+        {
+          "runnerId": "769c9434-0bbb-453f-8feb-aca064dd5a68",
+          "horseId": "883a3605-e7a6-44c3-9c8f-8586f1611cd5",
+          "horseName": "Approaching Dawn"
+        }
+      ],
+      "awTissue": {
+        "modelVersion": "AW_TISSUE_V1",
+        "modelHash": "52376e5361e41da6b991aebfbb7f202cebb1f437b1259d55711824f55eead8a8",
+        "probabilities": [
+          {
+            "runnerId": "c00767de-817a-4944-8305-702868638115",
+            "horseId": "40329511-87bf-48fb-b333-205952215bcb",
+            "horseName": "Rye",
+            "probability": 0.17594876006281257,
+            "rank": 1,
+            "firstCapturedPriceDecimal": 11,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "e9479286-26ec-4758-bb2d-677c042a4291",
+            "horseId": "2b15783a-3524-45cf-acc4-633167716dbd",
+            "horseName": "Speeding Bullet",
+            "probability": 0.09309531219780559,
+            "rank": 2,
+            "firstCapturedPriceDecimal": 5.5,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "2142c25f-e0b6-4327-9e33-fc480a702881",
+            "horseId": "332e8007-eebc-4b69-a668-1a2075edacb0",
+            "horseName": "Hectic",
+            "probability": 0.08247502872515325,
+            "rank": 3,
+            "firstCapturedPriceDecimal": 8,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "1687c4ff-a4f2-4eb6-b457-3f3a18be5807",
+            "horseId": "4805916d-90df-4d21-ab15-4c9147365589",
+            "horseName": "Victory Sound",
+            "probability": 0.08184278005231502,
+            "rank": 4,
+            "firstCapturedPriceDecimal": 11,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "4fac253b-300d-4687-9cfd-374227fc977a",
+            "horseId": "421dc881-c289-4f67-b836-4ca6ccd15f75",
+            "horseName": "Wish This",
+            "probability": 0.07376080722396522,
+            "rank": 5,
+            "firstCapturedPriceDecimal": 6.5,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "dc725fe0-13e3-4362-aeec-ded6b85ab69a",
+            "horseId": "bc527cf7-b346-4661-852d-47872f2a7acf",
+            "horseName": "Mayo County",
+            "probability": 0.07306386389254298,
+            "rank": 6,
+            "firstCapturedPriceDecimal": 7,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "ddd6f66b-88d6-468b-9599-06711e78840d",
+            "horseId": "07f7346d-4749-4b8f-8a70-c3d6a54ba053",
+            "horseName": "Sedgemoor",
+            "probability": 0.0724085132620684,
+            "rank": 7,
+            "firstCapturedPriceDecimal": 34,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "8cfbe25a-4486-4889-87be-59ed7f221610",
+            "horseId": "6a6423b6-15f2-481a-a028-4197afbfd13b",
+            "horseName": "Lord Abama",
+            "probability": 0.06873331538499146,
+            "rank": 8,
+            "firstCapturedPriceDecimal": 15,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "98dd8680-e9bf-4ce4-a5ac-5ecbadd733e8",
+            "horseId": "1920f980-2df3-4aab-a0bf-7ff5060b8653",
+            "horseName": "Pit Boss",
+            "probability": 0.06531621037725577,
+            "rank": 9,
+            "firstCapturedPriceDecimal": 7.5,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "769c9434-0bbb-453f-8feb-aca064dd5a68",
+            "horseId": "883a3605-e7a6-44c3-9c8f-8586f1611cd5",
+            "horseName": "Approaching Dawn",
+            "probability": 0.0594553816928838,
+            "rank": 10,
+            "firstCapturedPriceDecimal": 34,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "72437999-1186-4d0d-a579-1fc32729e4b3",
+            "horseId": "464fd715-8c47-4541-8c71-467569d2049d",
+            "horseName": "Macedonian",
+            "probability": 0.05609555623262113,
+            "rank": 11,
+            "firstCapturedPriceDecimal": 10,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "7de0941c-ec93-4d9e-beed-3da37eef37fe",
+            "horseId": "5f3c10ce-7ad8-4114-b71e-4fb632755b64",
+            "horseName": "Woolridge",
+            "probability": 0.0489907257037583,
+            "rank": 12,
+            "firstCapturedPriceDecimal": 9,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "a68f8678-cca1-4517-bcf3-700efe16e382",
+            "horseId": "a87ad82d-aa85-4863-b610-561723a475c8",
+            "horseName": "Jet Warrior",
+            "probability": 0.048813745191826304,
+            "rank": 13,
+            "firstCapturedPriceDecimal": 8,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          }
+        ],
+        "rankOrder": [
+          "c00767de-817a-4944-8305-702868638115",
+          "e9479286-26ec-4758-bb2d-677c042a4291",
+          "2142c25f-e0b6-4327-9e33-fc480a702881",
+          "1687c4ff-a4f2-4eb6-b457-3f3a18be5807",
+          "4fac253b-300d-4687-9cfd-374227fc977a",
+          "dc725fe0-13e3-4362-aeec-ded6b85ab69a",
+          "ddd6f66b-88d6-468b-9599-06711e78840d",
+          "8cfbe25a-4486-4889-87be-59ed7f221610",
+          "98dd8680-e9bf-4ce4-a5ac-5ecbadd733e8",
+          "769c9434-0bbb-453f-8feb-aca064dd5a68",
+          "72437999-1186-4d0d-a579-1fc32729e4b3",
+          "7de0941c-ec93-4d9e-beed-3da37eef37fe",
+          "a68f8678-cca1-4517-bcf3-700efe16e382"
+        ],
+        "rank1RunnerId": "c00767de-817a-4944-8305-702868638115",
+        "rank1HorseName": "Rye",
+        "rank1Probability": 0.17594876006281257,
+        "valueQualified": true,
+        "selectedPriceProfitLoss": null
+      },
+      "longshotTjZero": {
+        "modelVersion": "LONGSHOT_TJ_ZERO_V1",
+        "modelHash": "52376e5361e41da6b991aebfbb7f202cebb1f437b1259d55711824f55eead8a8",
+        "probabilities": [
+          {
+            "runnerId": "c00767de-817a-4944-8305-702868638115",
+            "horseId": "40329511-87bf-48fb-b333-205952215bcb",
+            "horseName": "Rye",
+            "probability": 0.1777289109274533,
+            "rank": 1,
+            "firstCapturedPriceDecimal": 11,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "e9479286-26ec-4758-bb2d-677c042a4291",
+            "horseId": "2b15783a-3524-45cf-acc4-633167716dbd",
+            "horseName": "Speeding Bullet",
+            "probability": 0.09403719834945429,
+            "rank": 2,
+            "firstCapturedPriceDecimal": 5.5,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "2142c25f-e0b6-4327-9e33-fc480a702881",
+            "horseId": "332e8007-eebc-4b69-a668-1a2075edacb0",
+            "horseName": "Hectic",
+            "probability": 0.08330946480554358,
+            "rank": 3,
+            "firstCapturedPriceDecimal": 8,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "1687c4ff-a4f2-4eb6-b457-3f3a18be5807",
+            "horseId": "4805916d-90df-4d21-ab15-4c9147365589",
+            "horseName": "Victory Sound",
+            "probability": 0.0826708193952619,
+            "rank": 4,
+            "firstCapturedPriceDecimal": 11,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "4fac253b-300d-4687-9cfd-374227fc977a",
+            "horseId": "421dc881-c289-4f67-b836-4ca6ccd15f75",
+            "horseName": "Wish This",
+            "probability": 0.07450707769901412,
+            "rank": 5,
+            "firstCapturedPriceDecimal": 6.5,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "dc725fe0-13e3-4362-aeec-ded6b85ab69a",
+            "horseId": "bc527cf7-b346-4661-852d-47872f2a7acf",
+            "horseName": "Mayo County",
+            "probability": 0.07380308308588011,
+            "rank": 6,
+            "firstCapturedPriceDecimal": 7,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "ddd6f66b-88d6-468b-9599-06711e78840d",
+            "horseId": "07f7346d-4749-4b8f-8a70-c3d6a54ba053",
+            "horseName": "Sedgemoor",
+            "probability": 0.07258002671675112,
+            "rank": 7,
+            "firstCapturedPriceDecimal": 34,
+            "longshotTrainerJockeyAdjusted": true,
+            "outcome": null
+          },
+          {
+            "runnerId": "8cfbe25a-4486-4889-87be-59ed7f221610",
+            "horseId": "6a6423b6-15f2-481a-a028-4197afbfd13b",
+            "horseName": "Lord Abama",
+            "probability": 0.06942872051753422,
+            "rank": 8,
+            "firstCapturedPriceDecimal": 15,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "98dd8680-e9bf-4ce4-a5ac-5ecbadd733e8",
+            "horseId": "1920f980-2df3-4aab-a0bf-7ff5060b8653",
+            "horseName": "Pit Boss",
+            "probability": 0.06597704315798476,
+            "rank": 9,
+            "firstCapturedPriceDecimal": 7.5,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "72437999-1186-4d0d-a579-1fc32729e4b3",
+            "horseId": "464fd715-8c47-4541-8c71-467569d2049d",
+            "horseName": "Macedonian",
+            "probability": 0.056663099606580426,
+            "rank": 10,
+            "firstCapturedPriceDecimal": 10,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "769c9434-0bbb-453f-8feb-aca064dd5a68",
+            "horseId": "883a3605-e7a6-44c3-9c8f-8586f1611cd5",
+            "horseName": "Approaching Dawn",
+            "probability": 0.0505005540649721,
+            "rank": 11,
+            "firstCapturedPriceDecimal": 34,
+            "longshotTrainerJockeyAdjusted": true,
+            "outcome": null
+          },
+          {
+            "runnerId": "7de0941c-ec93-4d9e-beed-3da37eef37fe",
+            "horseId": "5f3c10ce-7ad8-4114-b71e-4fb632755b64",
+            "horseName": "Woolridge",
+            "probability": 0.04948638638752662,
+            "rank": 12,
+            "firstCapturedPriceDecimal": 9,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          },
+          {
+            "runnerId": "a68f8678-cca1-4517-bcf3-700efe16e382",
+            "horseId": "a87ad82d-aa85-4863-b610-561723a475c8",
+            "horseName": "Jet Warrior",
+            "probability": 0.04930761528604328,
+            "rank": 13,
+            "firstCapturedPriceDecimal": 8,
+            "longshotTrainerJockeyAdjusted": false,
+            "outcome": null
+          }
+        ],
+        "rankOrder": [
+          "c00767de-817a-4944-8305-702868638115",
+          "e9479286-26ec-4758-bb2d-677c042a4291",
+          "2142c25f-e0b6-4327-9e33-fc480a702881",
+          "1687c4ff-a4f2-4eb6-b457-3f3a18be5807",
+          "4fac253b-300d-4687-9cfd-374227fc977a",
+          "dc725fe0-13e3-4362-aeec-ded6b85ab69a",
+          "ddd6f66b-88d6-468b-9599-06711e78840d",
+          "8cfbe25a-4486-4889-87be-59ed7f221610",
+          "98dd8680-e9bf-4ce4-a5ac-5ecbadd733e8",
+          "72437999-1186-4d0d-a579-1fc32729e4b3",
+          "769c9434-0bbb-453f-8feb-aca064dd5a68",
+          "7de0941c-ec93-4d9e-beed-3da37eef37fe",
+          "a68f8678-cca1-4517-bcf3-700efe16e382"
+        ],
+        "rank1RunnerId": "c00767de-817a-4944-8305-702868638115",
+        "rank1HorseName": "Rye",
+        "rank1Probability": 0.1777289109274533,
+        "valueQualified": true,
+        "selectedPriceProfitLoss": null
+      },
+      "rank1Agreement": true,
+      "classification": "AGREE",
+      "valueBucket": "BOTH_VALUE",
+      "prices": {
+        "firstAvailable": {
+          "awTissue": {
+            "runnerId": "c00767de-817a-4944-8305-702868638115",
+            "medianDecimalPrice": 11,
+            "impliedProbability": 0.09090909090909091,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-10-20T02:30:50.064Z",
+            "snapshot": {
+              "decimalPrice": 11,
+              "impliedProbability": 0.09090909090909091,
+              "capturedAt": "2026-10-20T02:30:50.064Z",
+              "minutesBeforeScheduledOff": 1019.1656,
+              "ratingProbability": 0.17594876006281257,
+              "ratingEdgePercentagePoints": 8.503966915372166,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "10/1",
+                  "decimalOdds": 11
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "10/1",
+                  "decimalOdds": 11
+                },
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "10/1",
+                  "decimalOdds": 11
+                }
+              ],
+              "medianBookmakerPriceDecimal": 11,
+              "medianBookmakerImpliedProbability": 0.09090909090909091,
+              "bestBookmakerPriceDecimal": 11,
+              "bestBookmakerPriceFractional": "10/1",
+              "bestBookmakerName": null,
+              "forecastPrice": "8/1",
+              "forecastDecimalPrice": 9
+            }
+          },
+          "longshotTjZero": {
+            "runnerId": "c00767de-817a-4944-8305-702868638115",
+            "medianDecimalPrice": 11,
+            "impliedProbability": 0.09090909090909091,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-10-20T02:30:50.064Z",
+            "snapshot": {
+              "decimalPrice": 11,
+              "impliedProbability": 0.09090909090909091,
+              "capturedAt": "2026-10-20T02:30:50.064Z",
+              "minutesBeforeScheduledOff": 1019.1656,
+              "ratingProbability": 0.1777289109274533,
+              "ratingEdgePercentagePoints": 8.68198200183624,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "10/1",
+                  "decimalOdds": 11
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "10/1",
+                  "decimalOdds": 11
+                },
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "10/1",
+                  "decimalOdds": 11
+                }
+              ],
+              "medianBookmakerPriceDecimal": 11,
+              "medianBookmakerImpliedProbability": 0.09090909090909091,
+              "bestBookmakerPriceDecimal": 11,
+              "bestBookmakerPriceFractional": "10/1",
+              "bestBookmakerName": null,
+              "forecastPrice": "8/1",
+              "forecastDecimalPrice": 9
+            }
+          }
+        },
+        "earlyMorning": {
+          "awTissue": {
+            "runnerId": "c00767de-817a-4944-8305-702868638115",
+            "medianDecimalPrice": 11,
+            "impliedProbability": 0.09090909090909091,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-10-20T02:30:50.064Z",
+            "snapshot": {
+              "decimalPrice": 11,
+              "impliedProbability": 0.09090909090909091,
+              "capturedAt": "2026-10-20T02:30:50.064Z",
+              "minutesBeforeScheduledOff": 1019.1656,
+              "ratingProbability": 0.17594876006281257,
+              "ratingEdgePercentagePoints": 8.503966915372166,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "10/1",
+                  "decimalOdds": 11
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "10/1",
+                  "decimalOdds": 11
+                },
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "10/1",
+                  "decimalOdds": 11
+                }
+              ],
+              "medianBookmakerPriceDecimal": 11,
+              "medianBookmakerImpliedProbability": 0.09090909090909091,
+              "bestBookmakerPriceDecimal": 11,
+              "bestBookmakerPriceFractional": "10/1",
+              "bestBookmakerName": null,
+              "forecastPrice": "8/1",
+              "forecastDecimalPrice": 9
+            }
+          },
+          "longshotTjZero": {
+            "runnerId": "c00767de-817a-4944-8305-702868638115",
+            "medianDecimalPrice": 11,
+            "impliedProbability": 0.09090909090909091,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-10-20T02:30:50.064Z",
+            "snapshot": {
+              "decimalPrice": 11,
+              "impliedProbability": 0.09090909090909091,
+              "capturedAt": "2026-10-20T02:30:50.064Z",
+              "minutesBeforeScheduledOff": 1019.1656,
+              "ratingProbability": 0.1777289109274533,
+              "ratingEdgePercentagePoints": 8.68198200183624,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "10/1",
+                  "decimalOdds": 11
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "10/1",
+                  "decimalOdds": 11
+                },
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "10/1",
+                  "decimalOdds": 11
+                }
+              ],
+              "medianBookmakerPriceDecimal": 11,
+              "medianBookmakerImpliedProbability": 0.09090909090909091,
+              "bestBookmakerPriceDecimal": 11,
+              "bestBookmakerPriceFractional": "10/1",
+              "bestBookmakerName": null,
+              "forecastPrice": "8/1",
+              "forecastDecimalPrice": 9
+            }
+          }
+        },
+        "late": {
+          "awTissue": null,
+          "longshotTjZero": null
+        },
+        "finalPreRace": {
+          "awTissue": null,
+          "longshotTjZero": null
+        },
+        "sp": {
+          "awTissue": null,
+          "longshotTjZero": null
+        }
+      },
+      "winners": [],
+      "settledAt": null,
+      "excludedReason": null
     }
   ]
 }

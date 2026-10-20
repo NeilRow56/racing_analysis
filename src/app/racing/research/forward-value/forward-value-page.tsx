@@ -38,6 +38,8 @@ import { todayRaceHasConclusiveResult } from "@/lib/racing/today-race-status";
 import { loadTissueForward, ACTIVE_TURF_TISSUE_CONFIG } from "@/lib/racing/tissue-forward";
 import { RecentObservationsScroll } from "./recent-observations-scroll";
 import { cleanAwTissueRace, loadAwTissueForward, type AwTissueForwardData, type AwTissueRace } from "@/lib/racing/aw-tissue-forward";
+import { loadAwV2Forward } from "@/lib/racing/aw-tissue-v2";
+import { AW_TISSUE_V2_ACTIVE } from "@/lib/racing/aw-tissue-v2-activation";
 import { AwTissueValueSection, JumpTissueValueSection, TurfTissueValueSection } from "./aw-tissue-value";
 import { cleanJumpTissueRace, loadJumpTissueForward, type JumpTissueForwardData, type JumpTissueRace } from "@/lib/racing/jump-tissue-forward";
 import type { SportingLifeBookmakerQuote } from "@/lib/racing/todays-racing";
@@ -66,7 +68,7 @@ export default async function ForwardValuePage({ searchParams }: PageProps) {
   const [data, tissueData, awTissueData, jumpTissueData, awPairedData, g4Data, weightData, modelDisagreementData, reviewData, hurdlePairData, chasePairData, hurdleRecencyData, rankOneData, params] = await Promise.all([
     loadForwardValueData(),
     loadTissueForward(ACTIVE_TURF_TISSUE_CONFIG.forwardPath, ACTIVE_TURF_TISSUE_CONFIG),
-    loadAwTissueForward(),
+    AW_TISSUE_V2_ACTIVE ? loadAwV2Forward() : loadAwTissueForward(),
     loadJumpTissueForward(),
     loadAwTissuePairedForward(),
     loadJumpG4Forward(),

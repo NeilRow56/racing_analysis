@@ -20,7 +20,8 @@ import {
   type ValueFamily,
 } from "@/lib/racing/forward-value";
 import { createDbConnection } from "@/db";
-import { loadAwTissueForward, renderAwTissueValue } from "@/lib/racing/aw-tissue-forward";
+import { renderAwTissueValue } from "@/lib/racing/aw-tissue-forward";
+import { loadActiveAwTissueForward as loadAwTissueForward } from "@/lib/racing/aw-tissue-v2";
 import { loadJumpTissueForward, renderJumpTissueValue } from "@/lib/racing/jump-tissue-forward";
 import { loadTissueForward, ACTIVE_TURF_TISSUE_CONFIG } from "@/lib/racing/tissue-forward";
 import { getLocalRacingDate, getSportingLifeCurrentCardRaceStatuses, getSportingLifeCurrentPricesForDate } from "@/lib/racing/todays-racing";

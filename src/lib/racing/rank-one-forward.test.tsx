@@ -27,7 +27,7 @@ function observations(r = race(), m = models, time = now) { return buildRankOneO
 function captured(r = race()) { return appendRankOne(emptyRankOne(), observations(r)); }
 function result(r = race(), winnerId = captured(r).observations[0]!.runnerId): TodayRace { let position = 2; return { ...r, winningTime: "4m", runners: r.runners.map(runner => ({ ...runner, oddsDecimal: null, resultStatus: "finished", finishingPosition: runner.runnerId === winnerId ? 1 : position++ })) }; }
 function settle(r = race(), res = result(r)) { return settleRankOne(captured(r), new Map([[r.raceId, res]]), after); }
-test("all four rank sources match existing production Tissue predictions", () => {
+test("all four explicitly supplied model sources match their Tissue predictions", () => {
   for (const family of ["TURF", "HURDLE", "CHASE", "AW"] as const) {
     const r = race(family);
     const selected = currentRankOne(r, "Test Course", date, models, now)!;
@@ -36,7 +36,7 @@ test("all four rank sources match existing production Tissue predictions", () =>
     assert.equal(selected.runnerId, ranks.filter(r => r.rank === 1).sort((a, b) => a.runnerId.localeCompare(b.runnerId))[0]!.runnerId);
     const row = observations(r)[0]!;
     assert.equal(row.rank, 1);
-    assert.equal(row.rankSource, RANK_ONE_SOURCES[family]);
+    assert.equal(row.rankSource, family === "AW" ? "AW Tissue / AW_TISSUE_V1 / rank" : RANK_ONE_SOURCES[family]);
     assert.equal(row.modelHash, selected.modelHash);
   }
 });
@@ -158,6 +158,7 @@ test("family summaries separate settled, pending, void and returns", () => {
   const data = appendRankOne(emptyRankOne(), all.flatMap(f => observations(race(f))));
   const settled = settleRankOne(data, new Map(all.map(f => [f, result(race(f))])), after);
   for (const s of summarizeRankOne(settled)) {
+    if (s.tracked === 0) { assert.equal(s.settled, 0); continue; }
     assert.equal(s.tracked, 1);
     assert.equal(s.settled, 1);
     assert.equal(s.winners, 1);

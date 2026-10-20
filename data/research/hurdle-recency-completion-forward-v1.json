@@ -50457,6 +50457,1880 @@
         "rankImprovement": 0,
         "settledFieldSize": 5
       }
+    },
+    {
+      "version": "HURDLE_RECENCY_COMPLETION_FORWARD_V1",
+      "raceId": "e4c4a8b4-c4b6-45c4-a137-fbca271048c9",
+      "runnerId": "89807363-675e-48ae-bb65-5393f88dd0e5",
+      "horseId": "59438ed5-9b2f-4ce1-adbe-1584087e3b07",
+      "horseName": "Conquer The Breeze",
+      "raceDate": "2026-10-20",
+      "scheduledOff": "2026-10-20T14:07:00.000Z",
+      "course": "Hexham",
+      "raceName": "Free Race Replays On attheraces.com Handicap Hurdle",
+      "firstCapturedAt": "2026-10-20T02:27:44.947Z",
+      "fieldSize": 9,
+      "capturedFieldRunnerIds": [
+        "89807363-675e-48ae-bb65-5393f88dd0e5",
+        "64186aa5-1f39-44d9-847c-b2226d5807ed",
+        "d9562e6e-f9cb-4e23-961d-b555421ab3e3",
+        "15b2a64b-dcff-4acc-9d3b-0aeb6f5e6043",
+        "833591eb-7850-4d58-94ee-b394457186ef",
+        "1667f130-f687-43c3-a3f3-c4d7a8fa5efb",
+        "2a0886d3-6484-4eee-83f4-d566e6477944",
+        "1ab4ec7f-f635-4277-b1bc-191a4d849015",
+        "f44ed817-5bff-4922-9a7b-cd8cf5abd6f4"
+      ],
+      "handicapStatus": "handicap",
+      "raceClass": "4",
+      "features": {
+        "daysSinceLastRun": 33,
+        "latestRunDate": "2026-09-16",
+        "usableRecentRuns": 3,
+        "recentCompletedRuns": 3,
+        "recentRunCount": 3,
+        "latestRunCompleted": true,
+        "latestCompletionStatus": "completed",
+        "anyRecentPU": false,
+        "anyRecentF": false,
+        "anyRecentUR": false,
+        "anyRecentBD": false,
+        "anyRecentOtherNonCompletion": false,
+        "recentNonCompletionCount": 0,
+        "recentRuns": [
+          {
+            "runnerId": "2c3b3354-f34f-4ad7-9930-96f03bf61b18",
+            "raceId": "cb871b93-4d8c-4bde-acee-a246e4d56667",
+            "raceDateTime": "2026-06-21T14:13:00.000Z",
+            "finishingPosition": 1,
+            "resultStatus": "finished",
+            "completionStatus": "completed"
+          },
+          {
+            "runnerId": "8f94df6a-fbb8-4407-911d-4f27c9601705",
+            "raceId": "935ebac5-4102-49ad-b928-127d38bd389a",
+            "raceDateTime": "2026-07-12T13:41:00.000Z",
+            "finishingPosition": 1,
+            "resultStatus": "finished",
+            "completionStatus": "completed"
+          },
+          {
+            "runnerId": "72e9544e-0bc8-4e71-af23-c13e50e39f34",
+            "raceId": "15da1811-585e-4b2e-8973-50c9e5414d18",
+            "raceDateTime": "2026-09-16T16:25:00.000Z",
+            "finishingPosition": 2,
+            "resultStatus": "finished",
+            "completionStatus": "completed"
+          }
+        ]
+      },
+      "flags": {
+        "RECENT_COMPLETER": false,
+        "RECENT_NON_COMPLETER": false,
+        "LATEST_RUN_PU": false,
+        "ANY_RECENT_PU": false,
+        "NO_RECENT_COMPLETION": false
+      },
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "capturedAt": "2026-10-20T02:27:44.947Z",
+        "medianBookmakerDecimal": 3.5,
+        "normalizedProbability": 0.22199277298311731,
+        "marketRank": 1,
+        "quoteCount": 3,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "5/2",
+            "decimalOdds": 3.5
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "5/2",
+            "decimalOdds": 3.5
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "5/2",
+            "decimalOdds": 3.5
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "89807363-675e-48ae-bb65-5393f88dd0e5",
+            "decimalPrice": 3.5
+          },
+          {
+            "runnerId": "64186aa5-1f39-44d9-847c-b2226d5807ed",
+            "decimalPrice": 4.5
+          },
+          {
+            "runnerId": "d9562e6e-f9cb-4e23-961d-b555421ab3e3",
+            "decimalPrice": 7.5
+          },
+          {
+            "runnerId": "15b2a64b-dcff-4acc-9d3b-0aeb6f5e6043",
+            "decimalPrice": 8
+          },
+          {
+            "runnerId": "833591eb-7850-4d58-94ee-b394457186ef",
+            "decimalPrice": 8.5
+          },
+          {
+            "runnerId": "1667f130-f687-43c3-a3f3-c4d7a8fa5efb",
+            "decimalPrice": 8.5
+          },
+          {
+            "runnerId": "2a0886d3-6484-4eee-83f4-d566e6477944",
+            "decimalPrice": 8.5
+          },
+          {
+            "runnerId": "1ab4ec7f-f635-4277-b1bc-191a4d849015",
+            "decimalPrice": 11
+          },
+          {
+            "runnerId": "f44ed817-5bff-4922-9a7b-cd8cf5abd6f4",
+            "decimalPrice": 13
+          }
+        ]
+      },
+      "outcome": null
+    },
+    {
+      "version": "HURDLE_RECENCY_COMPLETION_FORWARD_V1",
+      "raceId": "e4c4a8b4-c4b6-45c4-a137-fbca271048c9",
+      "runnerId": "64186aa5-1f39-44d9-847c-b2226d5807ed",
+      "horseId": "2fd29539-5803-4fe3-ab73-2c7c13affa04",
+      "horseName": "Codger's Rock",
+      "raceDate": "2026-10-20",
+      "scheduledOff": "2026-10-20T14:07:00.000Z",
+      "course": "Hexham",
+      "raceName": "Free Race Replays On attheraces.com Handicap Hurdle",
+      "firstCapturedAt": "2026-10-20T02:27:44.947Z",
+      "fieldSize": 9,
+      "capturedFieldRunnerIds": [
+        "89807363-675e-48ae-bb65-5393f88dd0e5",
+        "64186aa5-1f39-44d9-847c-b2226d5807ed",
+        "d9562e6e-f9cb-4e23-961d-b555421ab3e3",
+        "15b2a64b-dcff-4acc-9d3b-0aeb6f5e6043",
+        "833591eb-7850-4d58-94ee-b394457186ef",
+        "1667f130-f687-43c3-a3f3-c4d7a8fa5efb",
+        "2a0886d3-6484-4eee-83f4-d566e6477944",
+        "1ab4ec7f-f635-4277-b1bc-191a4d849015",
+        "f44ed817-5bff-4922-9a7b-cd8cf5abd6f4"
+      ],
+      "handicapStatus": "handicap",
+      "raceClass": "4",
+      "features": {
+        "daysSinceLastRun": 2,
+        "latestRunDate": "2026-10-18",
+        "usableRecentRuns": 3,
+        "recentCompletedRuns": 3,
+        "recentRunCount": 3,
+        "latestRunCompleted": true,
+        "latestCompletionStatus": "completed",
+        "anyRecentPU": false,
+        "anyRecentF": false,
+        "anyRecentUR": false,
+        "anyRecentBD": false,
+        "anyRecentOtherNonCompletion": false,
+        "recentNonCompletionCount": 0,
+        "recentRuns": [
+          {
+            "runnerId": "beb2df01-d1bc-4e0f-b4e6-5e0f9293d163",
+            "raceId": "94122a99-7e2c-4eeb-bc5b-e73179846a97",
+            "raceDateTime": "2026-09-07T15:38:00.000Z",
+            "finishingPosition": 9,
+            "resultStatus": "finished",
+            "completionStatus": "completed"
+          },
+          {
+            "runnerId": "792c4729-cb8a-4b78-b3ed-6826ce136ac1",
+            "raceId": "2a201e3e-df41-472d-940e-15ec66b892db",
+            "raceDateTime": "2026-10-01T14:09:00.000Z",
+            "finishingPosition": 2,
+            "resultStatus": "finished",
+            "completionStatus": "completed"
+          },
+          {
+            "runnerId": "0e562381-55e1-482f-a9f4-388d24cc5011",
+            "raceId": "93f3ba15-c00f-4c4d-beb3-b32fe29ec1b5",
+            "raceDateTime": "2026-10-18T13:50:00.000Z",
+            "finishingPosition": 3,
+            "resultStatus": "finished",
+            "completionStatus": "completed"
+          }
+        ]
+      },
+      "flags": {
+        "RECENT_COMPLETER": true,
+        "RECENT_NON_COMPLETER": false,
+        "LATEST_RUN_PU": false,
+        "ANY_RECENT_PU": false,
+        "NO_RECENT_COMPLETION": false
+      },
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "capturedAt": "2026-10-20T02:27:44.947Z",
+        "medianBookmakerDecimal": 4.5,
+        "normalizedProbability": 0.17266104565353568,
+        "marketRank": 2,
+        "quoteCount": 3,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "7/2",
+            "decimalOdds": 4.5
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "7/2",
+            "decimalOdds": 4.5
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "7/2",
+            "decimalOdds": 4.5
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "89807363-675e-48ae-bb65-5393f88dd0e5",
+            "decimalPrice": 3.5
+          },
+          {
+            "runnerId": "64186aa5-1f39-44d9-847c-b2226d5807ed",
+            "decimalPrice": 4.5
+          },
+          {
+            "runnerId": "d9562e6e-f9cb-4e23-961d-b555421ab3e3",
+            "decimalPrice": 7.5
+          },
+          {
+            "runnerId": "15b2a64b-dcff-4acc-9d3b-0aeb6f5e6043",
+            "decimalPrice": 8
+          },
+          {
+            "runnerId": "833591eb-7850-4d58-94ee-b394457186ef",
+            "decimalPrice": 8.5
+          },
+          {
+            "runnerId": "1667f130-f687-43c3-a3f3-c4d7a8fa5efb",
+            "decimalPrice": 8.5
+          },
+          {
+            "runnerId": "2a0886d3-6484-4eee-83f4-d566e6477944",
+            "decimalPrice": 8.5
+          },
+          {
+            "runnerId": "1ab4ec7f-f635-4277-b1bc-191a4d849015",
+            "decimalPrice": 11
+          },
+          {
+            "runnerId": "f44ed817-5bff-4922-9a7b-cd8cf5abd6f4",
+            "decimalPrice": 13
+          }
+        ]
+      },
+      "outcome": null
+    },
+    {
+      "version": "HURDLE_RECENCY_COMPLETION_FORWARD_V1",
+      "raceId": "e4c4a8b4-c4b6-45c4-a137-fbca271048c9",
+      "runnerId": "d9562e6e-f9cb-4e23-961d-b555421ab3e3",
+      "horseId": "feffc9ae-dc65-4d71-8b4d-a623450b1226",
+      "horseName": "Well Educated",
+      "raceDate": "2026-10-20",
+      "scheduledOff": "2026-10-20T14:07:00.000Z",
+      "course": "Hexham",
+      "raceName": "Free Race Replays On attheraces.com Handicap Hurdle",
+      "firstCapturedAt": "2026-10-20T02:27:44.947Z",
+      "fieldSize": 9,
+      "capturedFieldRunnerIds": [
+        "89807363-675e-48ae-bb65-5393f88dd0e5",
+        "64186aa5-1f39-44d9-847c-b2226d5807ed",
+        "d9562e6e-f9cb-4e23-961d-b555421ab3e3",
+        "15b2a64b-dcff-4acc-9d3b-0aeb6f5e6043",
+        "833591eb-7850-4d58-94ee-b394457186ef",
+        "1667f130-f687-43c3-a3f3-c4d7a8fa5efb",
+        "2a0886d3-6484-4eee-83f4-d566e6477944",
+        "1ab4ec7f-f635-4277-b1bc-191a4d849015",
+        "f44ed817-5bff-4922-9a7b-cd8cf5abd6f4"
+      ],
+      "handicapStatus": "handicap",
+      "raceClass": "4",
+      "features": {
+        "daysSinceLastRun": 18,
+        "latestRunDate": "2026-10-02",
+        "usableRecentRuns": 3,
+        "recentCompletedRuns": 3,
+        "recentRunCount": 3,
+        "latestRunCompleted": true,
+        "latestCompletionStatus": "completed",
+        "anyRecentPU": false,
+        "anyRecentF": false,
+        "anyRecentUR": false,
+        "anyRecentBD": false,
+        "anyRecentOtherNonCompletion": false,
+        "recentNonCompletionCount": 0,
+        "recentRuns": [
+          {
+            "runnerId": "71b6b2b6-4442-4168-904d-7375b8dafb20",
+            "raceId": "c2c28509-4b73-42af-a12c-3822eed1958a",
+            "raceDateTime": "2026-06-21T14:43:00.000Z",
+            "finishingPosition": 4,
+            "resultStatus": "finished",
+            "completionStatus": "completed"
+          },
+          {
+            "runnerId": "d193fdda-7dfa-43b8-b490-24b1074adcf8",
+            "raceId": "8e7ef3eb-0563-472a-a213-c8162a34b62a",
+            "raceDateTime": "2026-07-18T14:10:00.000Z",
+            "finishingPosition": 10,
+            "resultStatus": "finished",
+            "completionStatus": "completed"
+          },
+          {
+            "runnerId": "11e86d9a-fa8c-464d-9ea2-da381acef025",
+            "raceId": "18168f7c-9d51-4ce7-bacf-56040f162e5b",
+            "raceDateTime": "2026-10-02T13:23:00.000Z",
+            "finishingPosition": 2,
+            "resultStatus": "finished",
+            "completionStatus": "completed"
+          }
+        ]
+      },
+      "flags": {
+        "RECENT_COMPLETER": true,
+        "RECENT_NON_COMPLETER": false,
+        "LATEST_RUN_PU": false,
+        "ANY_RECENT_PU": false,
+        "NO_RECENT_COMPLETION": false
+      },
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "capturedAt": "2026-10-20T02:27:44.947Z",
+        "medianBookmakerDecimal": 7.5,
+        "normalizedProbability": 0.10359662739212142,
+        "marketRank": 3,
+        "quoteCount": 3,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "6/1",
+            "decimalOdds": 7
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "13/2",
+            "decimalOdds": 7.5
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "13/2",
+            "decimalOdds": 7.5
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "89807363-675e-48ae-bb65-5393f88dd0e5",
+            "decimalPrice": 3.5
+          },
+          {
+            "runnerId": "64186aa5-1f39-44d9-847c-b2226d5807ed",
+            "decimalPrice": 4.5
+          },
+          {
+            "runnerId": "d9562e6e-f9cb-4e23-961d-b555421ab3e3",
+            "decimalPrice": 7.5
+          },
+          {
+            "runnerId": "15b2a64b-dcff-4acc-9d3b-0aeb6f5e6043",
+            "decimalPrice": 8
+          },
+          {
+            "runnerId": "833591eb-7850-4d58-94ee-b394457186ef",
+            "decimalPrice": 8.5
+          },
+          {
+            "runnerId": "1667f130-f687-43c3-a3f3-c4d7a8fa5efb",
+            "decimalPrice": 8.5
+          },
+          {
+            "runnerId": "2a0886d3-6484-4eee-83f4-d566e6477944",
+            "decimalPrice": 8.5
+          },
+          {
+            "runnerId": "1ab4ec7f-f635-4277-b1bc-191a4d849015",
+            "decimalPrice": 11
+          },
+          {
+            "runnerId": "f44ed817-5bff-4922-9a7b-cd8cf5abd6f4",
+            "decimalPrice": 13
+          }
+        ]
+      },
+      "outcome": null
+    },
+    {
+      "version": "HURDLE_RECENCY_COMPLETION_FORWARD_V1",
+      "raceId": "e4c4a8b4-c4b6-45c4-a137-fbca271048c9",
+      "runnerId": "15b2a64b-dcff-4acc-9d3b-0aeb6f5e6043",
+      "horseId": "9bebb8eb-ce38-4bac-92f8-db439cddad04",
+      "horseName": "The Jeweller's Pet",
+      "raceDate": "2026-10-20",
+      "scheduledOff": "2026-10-20T14:07:00.000Z",
+      "course": "Hexham",
+      "raceName": "Free Race Replays On attheraces.com Handicap Hurdle",
+      "firstCapturedAt": "2026-10-20T02:27:44.947Z",
+      "fieldSize": 9,
+      "capturedFieldRunnerIds": [
+        "89807363-675e-48ae-bb65-5393f88dd0e5",
+        "64186aa5-1f39-44d9-847c-b2226d5807ed",
+        "d9562e6e-f9cb-4e23-961d-b555421ab3e3",
+        "15b2a64b-dcff-4acc-9d3b-0aeb6f5e6043",
+        "833591eb-7850-4d58-94ee-b394457186ef",
+        "1667f130-f687-43c3-a3f3-c4d7a8fa5efb",
+        "2a0886d3-6484-4eee-83f4-d566e6477944",
+        "1ab4ec7f-f635-4277-b1bc-191a4d849015",
+        "f44ed817-5bff-4922-9a7b-cd8cf5abd6f4"
+      ],
+      "handicapStatus": "handicap",
+      "raceClass": "4",
+      "features": {
+        "daysSinceLastRun": 238,
+        "latestRunDate": "2026-02-23",
+        "usableRecentRuns": 3,
+        "recentCompletedRuns": 3,
+        "recentRunCount": 3,
+        "latestRunCompleted": true,
+        "latestCompletionStatus": "completed",
+        "anyRecentPU": false,
+        "anyRecentF": false,
+        "anyRecentUR": false,
+        "anyRecentBD": false,
+        "anyRecentOtherNonCompletion": false,
+        "recentNonCompletionCount": 0,
+        "recentRuns": [
+          {
+            "runnerId": "872d774c-70c5-42a3-91c8-cf5b68ad36b7",
+            "raceId": "8a803f5c-1a79-403f-a22a-5e764d723fe8",
+            "raceDateTime": "2026-01-25T13:40:00.000Z",
+            "finishingPosition": 4,
+            "resultStatus": "finished",
+            "completionStatus": "completed"
+          },
+          {
+            "runnerId": "f5a922a6-d1d8-49ae-9f00-dba99c857249",
+            "raceId": "0d3a9429-5d4a-4b6c-8c6a-138e7d8b389e",
+            "raceDateTime": "2026-02-10T13:35:00.000Z",
+            "finishingPosition": 3,
+            "resultStatus": "finished",
+            "completionStatus": "completed"
+          },
+          {
+            "runnerId": "c4a1e843-6130-4aa7-b53b-914ca0bd9e13",
+            "raceId": "29d24d71-1586-4bad-a8cc-4c4fdddaa2ca",
+            "raceDateTime": "2026-02-23T16:00:00.000Z",
+            "finishingPosition": 2,
+            "resultStatus": "finished",
+            "completionStatus": "completed"
+          }
+        ]
+      },
+      "flags": {
+        "RECENT_COMPLETER": false,
+        "RECENT_NON_COMPLETER": false,
+        "LATEST_RUN_PU": false,
+        "ANY_RECENT_PU": false,
+        "NO_RECENT_COMPLETION": false
+      },
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "capturedAt": "2026-10-20T02:27:44.947Z",
+        "medianBookmakerDecimal": 8,
+        "normalizedProbability": 0.09712183818011383,
+        "marketRank": 4,
+        "quoteCount": 3,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "13/2",
+            "decimalOdds": 7.5
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "7/1",
+            "decimalOdds": 8
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "15/2",
+            "decimalOdds": 8.5
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "89807363-675e-48ae-bb65-5393f88dd0e5",
+            "decimalPrice": 3.5
+          },
+          {
+            "runnerId": "64186aa5-1f39-44d9-847c-b2226d5807ed",
+            "decimalPrice": 4.5
+          },
+          {
+            "runnerId": "d9562e6e-f9cb-4e23-961d-b555421ab3e3",
+            "decimalPrice": 7.5
+          },
+          {
+            "runnerId": "15b2a64b-dcff-4acc-9d3b-0aeb6f5e6043",
+            "decimalPrice": 8
+          },
+          {
+            "runnerId": "833591eb-7850-4d58-94ee-b394457186ef",
+            "decimalPrice": 8.5
+          },
+          {
+            "runnerId": "1667f130-f687-43c3-a3f3-c4d7a8fa5efb",
+            "decimalPrice": 8.5
+          },
+          {
+            "runnerId": "2a0886d3-6484-4eee-83f4-d566e6477944",
+            "decimalPrice": 8.5
+          },
+          {
+            "runnerId": "1ab4ec7f-f635-4277-b1bc-191a4d849015",
+            "decimalPrice": 11
+          },
+          {
+            "runnerId": "f44ed817-5bff-4922-9a7b-cd8cf5abd6f4",
+            "decimalPrice": 13
+          }
+        ]
+      },
+      "outcome": null
+    },
+    {
+      "version": "HURDLE_RECENCY_COMPLETION_FORWARD_V1",
+      "raceId": "e4c4a8b4-c4b6-45c4-a137-fbca271048c9",
+      "runnerId": "833591eb-7850-4d58-94ee-b394457186ef",
+      "horseId": "84c1d6c5-70f0-4780-8c6f-44d9f1edd35f",
+      "horseName": "Kool Raoul",
+      "raceDate": "2026-10-20",
+      "scheduledOff": "2026-10-20T14:07:00.000Z",
+      "course": "Hexham",
+      "raceName": "Free Race Replays On attheraces.com Handicap Hurdle",
+      "firstCapturedAt": "2026-10-20T02:27:44.947Z",
+      "fieldSize": 9,
+      "capturedFieldRunnerIds": [
+        "89807363-675e-48ae-bb65-5393f88dd0e5",
+        "64186aa5-1f39-44d9-847c-b2226d5807ed",
+        "d9562e6e-f9cb-4e23-961d-b555421ab3e3",
+        "15b2a64b-dcff-4acc-9d3b-0aeb6f5e6043",
+        "833591eb-7850-4d58-94ee-b394457186ef",
+        "1667f130-f687-43c3-a3f3-c4d7a8fa5efb",
+        "2a0886d3-6484-4eee-83f4-d566e6477944",
+        "1ab4ec7f-f635-4277-b1bc-191a4d849015",
+        "f44ed817-5bff-4922-9a7b-cd8cf5abd6f4"
+      ],
+      "handicapStatus": "handicap",
+      "raceClass": "4",
+      "features": {
+        "daysSinceLastRun": 189,
+        "latestRunDate": "2026-04-13",
+        "usableRecentRuns": 3,
+        "recentCompletedRuns": 3,
+        "recentRunCount": 3,
+        "latestRunCompleted": true,
+        "latestCompletionStatus": "completed",
+        "anyRecentPU": false,
+        "anyRecentF": false,
+        "anyRecentUR": false,
+        "anyRecentBD": false,
+        "anyRecentOtherNonCompletion": false,
+        "recentNonCompletionCount": 0,
+        "recentRuns": [
+          {
+            "runnerId": "d3210ccb-2211-4f0e-9967-33b06905f94d",
+            "raceId": "13b0d930-c01e-42a9-b064-f9d5e1da9592",
+            "raceDateTime": "2026-01-29T13:43:00.000Z",
+            "finishingPosition": 7,
+            "resultStatus": "finished",
+            "completionStatus": "completed"
+          },
+          {
+            "runnerId": "678fb2fd-2d53-4264-9408-cad02bd2344e",
+            "raceId": "8cfe6327-3bd4-45c3-a6ba-52b68774da39",
+            "raceDateTime": "2026-03-20T15:55:00.000Z",
+            "finishingPosition": 8,
+            "resultStatus": "finished",
+            "completionStatus": "completed"
+          },
+          {
+            "runnerId": "a36fd88c-660d-4e6d-b2d1-9f1fc9e57cbe",
+            "raceId": "e15a0de5-3b4e-4b0a-906c-b9851312d739",
+            "raceDateTime": "2026-04-13T15:30:00.000Z",
+            "finishingPosition": 5,
+            "resultStatus": "finished",
+            "completionStatus": "completed"
+          }
+        ]
+      },
+      "flags": {
+        "RECENT_COMPLETER": false,
+        "RECENT_NON_COMPLETER": false,
+        "LATEST_RUN_PU": false,
+        "ANY_RECENT_PU": false,
+        "NO_RECENT_COMPLETION": false
+      },
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "capturedAt": "2026-10-20T02:27:44.947Z",
+        "medianBookmakerDecimal": 8.5,
+        "normalizedProbability": 0.09140878887540124,
+        "marketRank": 5,
+        "quoteCount": 3,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "15/2",
+            "decimalOdds": 8.5
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "15/2",
+            "decimalOdds": 8.5
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "15/2",
+            "decimalOdds": 8.5
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "89807363-675e-48ae-bb65-5393f88dd0e5",
+            "decimalPrice": 3.5
+          },
+          {
+            "runnerId": "64186aa5-1f39-44d9-847c-b2226d5807ed",
+            "decimalPrice": 4.5
+          },
+          {
+            "runnerId": "d9562e6e-f9cb-4e23-961d-b555421ab3e3",
+            "decimalPrice": 7.5
+          },
+          {
+            "runnerId": "15b2a64b-dcff-4acc-9d3b-0aeb6f5e6043",
+            "decimalPrice": 8
+          },
+          {
+            "runnerId": "833591eb-7850-4d58-94ee-b394457186ef",
+            "decimalPrice": 8.5
+          },
+          {
+            "runnerId": "1667f130-f687-43c3-a3f3-c4d7a8fa5efb",
+            "decimalPrice": 8.5
+          },
+          {
+            "runnerId": "2a0886d3-6484-4eee-83f4-d566e6477944",
+            "decimalPrice": 8.5
+          },
+          {
+            "runnerId": "1ab4ec7f-f635-4277-b1bc-191a4d849015",
+            "decimalPrice": 11
+          },
+          {
+            "runnerId": "f44ed817-5bff-4922-9a7b-cd8cf5abd6f4",
+            "decimalPrice": 13
+          }
+        ]
+      },
+      "outcome": null
+    },
+    {
+      "version": "HURDLE_RECENCY_COMPLETION_FORWARD_V1",
+      "raceId": "e4c4a8b4-c4b6-45c4-a137-fbca271048c9",
+      "runnerId": "1667f130-f687-43c3-a3f3-c4d7a8fa5efb",
+      "horseId": "24f9cfc1-441d-462a-a5e6-821636b6edde",
+      "horseName": "Lester Mail",
+      "raceDate": "2026-10-20",
+      "scheduledOff": "2026-10-20T14:07:00.000Z",
+      "course": "Hexham",
+      "raceName": "Free Race Replays On attheraces.com Handicap Hurdle",
+      "firstCapturedAt": "2026-10-20T02:27:44.947Z",
+      "fieldSize": 9,
+      "capturedFieldRunnerIds": [
+        "89807363-675e-48ae-bb65-5393f88dd0e5",
+        "64186aa5-1f39-44d9-847c-b2226d5807ed",
+        "d9562e6e-f9cb-4e23-961d-b555421ab3e3",
+        "15b2a64b-dcff-4acc-9d3b-0aeb6f5e6043",
+        "833591eb-7850-4d58-94ee-b394457186ef",
+        "1667f130-f687-43c3-a3f3-c4d7a8fa5efb",
+        "2a0886d3-6484-4eee-83f4-d566e6477944",
+        "1ab4ec7f-f635-4277-b1bc-191a4d849015",
+        "f44ed817-5bff-4922-9a7b-cd8cf5abd6f4"
+      ],
+      "handicapStatus": "handicap",
+      "raceClass": "4",
+      "features": {
+        "daysSinceLastRun": 166,
+        "latestRunDate": "2026-05-06",
+        "usableRecentRuns": 3,
+        "recentCompletedRuns": 3,
+        "recentRunCount": 3,
+        "latestRunCompleted": true,
+        "latestCompletionStatus": "completed",
+        "anyRecentPU": false,
+        "anyRecentF": false,
+        "anyRecentUR": false,
+        "anyRecentBD": false,
+        "anyRecentOtherNonCompletion": false,
+        "recentNonCompletionCount": 0,
+        "recentRuns": [
+          {
+            "runnerId": "29a61cfe-6605-46c7-be17-d116047f4765",
+            "raceId": "e4861922-74b6-44c5-a4c2-f690504e96fd",
+            "raceDateTime": "2026-02-15T13:50:00.000Z",
+            "finishingPosition": 5,
+            "resultStatus": "finished",
+            "completionStatus": "completed"
+          },
+          {
+            "runnerId": "877a414f-0c2c-42ed-bd6d-7fe74de0e31b",
+            "raceId": "8091b92d-1bf8-412b-89c0-719c33fffc05",
+            "raceDateTime": "2026-04-20T15:30:00.000Z",
+            "finishingPosition": 4,
+            "resultStatus": "finished",
+            "completionStatus": "completed"
+          },
+          {
+            "runnerId": "f904b089-7cdd-4b45-8c12-b94e5857433a",
+            "raceId": "563fedaf-3713-4f35-8e05-c9f3b8713029",
+            "raceDateTime": "2026-05-06T14:25:00.000Z",
+            "finishingPosition": 4,
+            "resultStatus": "finished",
+            "completionStatus": "completed"
+          }
+        ]
+      },
+      "flags": {
+        "RECENT_COMPLETER": false,
+        "RECENT_NON_COMPLETER": false,
+        "LATEST_RUN_PU": false,
+        "ANY_RECENT_PU": false,
+        "NO_RECENT_COMPLETION": false
+      },
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "capturedAt": "2026-10-20T02:27:44.947Z",
+        "medianBookmakerDecimal": 8.5,
+        "normalizedProbability": 0.09140878887540124,
+        "marketRank": 5,
+        "quoteCount": 3,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "15/2",
+            "decimalOdds": 8.5
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "15/2",
+            "decimalOdds": 8.5
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "15/2",
+            "decimalOdds": 8.5
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "89807363-675e-48ae-bb65-5393f88dd0e5",
+            "decimalPrice": 3.5
+          },
+          {
+            "runnerId": "64186aa5-1f39-44d9-847c-b2226d5807ed",
+            "decimalPrice": 4.5
+          },
+          {
+            "runnerId": "d9562e6e-f9cb-4e23-961d-b555421ab3e3",
+            "decimalPrice": 7.5
+          },
+          {
+            "runnerId": "15b2a64b-dcff-4acc-9d3b-0aeb6f5e6043",
+            "decimalPrice": 8
+          },
+          {
+            "runnerId": "833591eb-7850-4d58-94ee-b394457186ef",
+            "decimalPrice": 8.5
+          },
+          {
+            "runnerId": "1667f130-f687-43c3-a3f3-c4d7a8fa5efb",
+            "decimalPrice": 8.5
+          },
+          {
+            "runnerId": "2a0886d3-6484-4eee-83f4-d566e6477944",
+            "decimalPrice": 8.5
+          },
+          {
+            "runnerId": "1ab4ec7f-f635-4277-b1bc-191a4d849015",
+            "decimalPrice": 11
+          },
+          {
+            "runnerId": "f44ed817-5bff-4922-9a7b-cd8cf5abd6f4",
+            "decimalPrice": 13
+          }
+        ]
+      },
+      "outcome": null
+    },
+    {
+      "version": "HURDLE_RECENCY_COMPLETION_FORWARD_V1",
+      "raceId": "e4c4a8b4-c4b6-45c4-a137-fbca271048c9",
+      "runnerId": "2a0886d3-6484-4eee-83f4-d566e6477944",
+      "horseId": "455d1e96-7d96-4d4b-83e5-d92d7e9840ab",
+      "horseName": "Les's Legacy",
+      "raceDate": "2026-10-20",
+      "scheduledOff": "2026-10-20T14:07:00.000Z",
+      "course": "Hexham",
+      "raceName": "Free Race Replays On attheraces.com Handicap Hurdle",
+      "firstCapturedAt": "2026-10-20T02:27:44.947Z",
+      "fieldSize": 9,
+      "capturedFieldRunnerIds": [
+        "89807363-675e-48ae-bb65-5393f88dd0e5",
+        "64186aa5-1f39-44d9-847c-b2226d5807ed",
+        "d9562e6e-f9cb-4e23-961d-b555421ab3e3",
+        "15b2a64b-dcff-4acc-9d3b-0aeb6f5e6043",
+        "833591eb-7850-4d58-94ee-b394457186ef",
+        "1667f130-f687-43c3-a3f3-c4d7a8fa5efb",
+        "2a0886d3-6484-4eee-83f4-d566e6477944",
+        "1ab4ec7f-f635-4277-b1bc-191a4d849015",
+        "f44ed817-5bff-4922-9a7b-cd8cf5abd6f4"
+      ],
+      "handicapStatus": "handicap",
+      "raceClass": "4",
+      "features": {
+        "daysSinceLastRun": 18,
+        "latestRunDate": "2026-10-02",
+        "usableRecentRuns": 3,
+        "recentCompletedRuns": 3,
+        "recentRunCount": 3,
+        "latestRunCompleted": true,
+        "latestCompletionStatus": "completed",
+        "anyRecentPU": false,
+        "anyRecentF": false,
+        "anyRecentUR": false,
+        "anyRecentBD": false,
+        "anyRecentOtherNonCompletion": false,
+        "recentNonCompletionCount": 0,
+        "recentRuns": [
+          {
+            "runnerId": "c54639ad-5a8f-4c7f-bde1-1823b00c730f",
+            "raceId": "cd0d8b0a-d5f8-4864-ad23-307a1f1ed540",
+            "raceDateTime": "2026-06-13T12:42:00.000Z",
+            "finishingPosition": 8,
+            "resultStatus": "finished",
+            "completionStatus": "completed"
+          },
+          {
+            "runnerId": "d8e49cf7-d97c-42c6-b588-9b0c94ef21c2",
+            "raceId": "599c062c-177b-479e-a9a5-7265b0a2c610",
+            "raceDateTime": "2026-07-02T16:00:00.000Z",
+            "finishingPosition": 5,
+            "resultStatus": "finished",
+            "completionStatus": "completed"
+          },
+          {
+            "runnerId": "a1882b28-a198-486d-aa9e-407da6e08fe4",
+            "raceId": "18168f7c-9d51-4ce7-bacf-56040f162e5b",
+            "raceDateTime": "2026-10-02T13:23:00.000Z",
+            "finishingPosition": 3,
+            "resultStatus": "finished",
+            "completionStatus": "completed"
+          }
+        ]
+      },
+      "flags": {
+        "RECENT_COMPLETER": true,
+        "RECENT_NON_COMPLETER": false,
+        "LATEST_RUN_PU": false,
+        "ANY_RECENT_PU": false,
+        "NO_RECENT_COMPLETION": false
+      },
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "capturedAt": "2026-10-20T02:27:44.947Z",
+        "medianBookmakerDecimal": 8.5,
+        "normalizedProbability": 0.09140878887540124,
+        "marketRank": 5,
+        "quoteCount": 3,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "7/1",
+            "decimalOdds": 8
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "15/2",
+            "decimalOdds": 8.5
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "15/2",
+            "decimalOdds": 8.5
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "89807363-675e-48ae-bb65-5393f88dd0e5",
+            "decimalPrice": 3.5
+          },
+          {
+            "runnerId": "64186aa5-1f39-44d9-847c-b2226d5807ed",
+            "decimalPrice": 4.5
+          },
+          {
+            "runnerId": "d9562e6e-f9cb-4e23-961d-b555421ab3e3",
+            "decimalPrice": 7.5
+          },
+          {
+            "runnerId": "15b2a64b-dcff-4acc-9d3b-0aeb6f5e6043",
+            "decimalPrice": 8
+          },
+          {
+            "runnerId": "833591eb-7850-4d58-94ee-b394457186ef",
+            "decimalPrice": 8.5
+          },
+          {
+            "runnerId": "1667f130-f687-43c3-a3f3-c4d7a8fa5efb",
+            "decimalPrice": 8.5
+          },
+          {
+            "runnerId": "2a0886d3-6484-4eee-83f4-d566e6477944",
+            "decimalPrice": 8.5
+          },
+          {
+            "runnerId": "1ab4ec7f-f635-4277-b1bc-191a4d849015",
+            "decimalPrice": 11
+          },
+          {
+            "runnerId": "f44ed817-5bff-4922-9a7b-cd8cf5abd6f4",
+            "decimalPrice": 13
+          }
+        ]
+      },
+      "outcome": null
+    },
+    {
+      "version": "HURDLE_RECENCY_COMPLETION_FORWARD_V1",
+      "raceId": "e4c4a8b4-c4b6-45c4-a137-fbca271048c9",
+      "runnerId": "1ab4ec7f-f635-4277-b1bc-191a4d849015",
+      "horseId": "3883b4a9-4b3e-485a-b80d-3d6b5214eece",
+      "horseName": "Mickthesoldier",
+      "raceDate": "2026-10-20",
+      "scheduledOff": "2026-10-20T14:07:00.000Z",
+      "course": "Hexham",
+      "raceName": "Free Race Replays On attheraces.com Handicap Hurdle",
+      "firstCapturedAt": "2026-10-20T02:27:44.947Z",
+      "fieldSize": 9,
+      "capturedFieldRunnerIds": [
+        "89807363-675e-48ae-bb65-5393f88dd0e5",
+        "64186aa5-1f39-44d9-847c-b2226d5807ed",
+        "d9562e6e-f9cb-4e23-961d-b555421ab3e3",
+        "15b2a64b-dcff-4acc-9d3b-0aeb6f5e6043",
+        "833591eb-7850-4d58-94ee-b394457186ef",
+        "1667f130-f687-43c3-a3f3-c4d7a8fa5efb",
+        "2a0886d3-6484-4eee-83f4-d566e6477944",
+        "1ab4ec7f-f635-4277-b1bc-191a4d849015",
+        "f44ed817-5bff-4922-9a7b-cd8cf5abd6f4"
+      ],
+      "handicapStatus": "handicap",
+      "raceClass": "4",
+      "features": {
+        "daysSinceLastRun": 148,
+        "latestRunDate": "2026-05-25",
+        "usableRecentRuns": 3,
+        "recentCompletedRuns": 3,
+        "recentRunCount": 3,
+        "latestRunCompleted": true,
+        "latestCompletionStatus": "completed",
+        "anyRecentPU": false,
+        "anyRecentF": false,
+        "anyRecentUR": false,
+        "anyRecentBD": false,
+        "anyRecentOtherNonCompletion": false,
+        "recentNonCompletionCount": 0,
+        "recentRuns": [
+          {
+            "runnerId": "0bd750e9-0d14-4e11-aab5-5f8b04b19dd4",
+            "raceId": "41c6e6e7-5a99-46cc-a781-291bb95e8283",
+            "raceDateTime": "2026-05-02T16:15:00.000Z",
+            "finishingPosition": 7,
+            "resultStatus": "finished",
+            "completionStatus": "completed"
+          },
+          {
+            "runnerId": "98f26d68-a33f-4aa9-a414-703118c0c207",
+            "raceId": "5fe16504-84a9-4d42-9d17-a9c8dcc9e2cc",
+            "raceDateTime": "2026-05-09T14:20:00.000Z",
+            "finishingPosition": 3,
+            "resultStatus": "finished",
+            "completionStatus": "completed"
+          },
+          {
+            "runnerId": "8a4f01da-9277-47b0-8cc9-24895415b2f7",
+            "raceId": "a10d6832-bd36-42a5-bb4e-9cdc20554e6f",
+            "raceDateTime": "2026-05-25T13:48:00.000Z",
+            "finishingPosition": 4,
+            "resultStatus": "finished",
+            "completionStatus": "completed"
+          }
+        ]
+      },
+      "flags": {
+        "RECENT_COMPLETER": false,
+        "RECENT_NON_COMPLETER": false,
+        "LATEST_RUN_PU": false,
+        "ANY_RECENT_PU": false,
+        "NO_RECENT_COMPLETION": false
+      },
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "capturedAt": "2026-10-20T02:27:44.947Z",
+        "medianBookmakerDecimal": 11,
+        "normalizedProbability": 0.07063406413099188,
+        "marketRank": 8,
+        "quoteCount": 3,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "9/1",
+            "decimalOdds": 10
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "10/1",
+            "decimalOdds": 11
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "10/1",
+            "decimalOdds": 11
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "89807363-675e-48ae-bb65-5393f88dd0e5",
+            "decimalPrice": 3.5
+          },
+          {
+            "runnerId": "64186aa5-1f39-44d9-847c-b2226d5807ed",
+            "decimalPrice": 4.5
+          },
+          {
+            "runnerId": "d9562e6e-f9cb-4e23-961d-b555421ab3e3",
+            "decimalPrice": 7.5
+          },
+          {
+            "runnerId": "15b2a64b-dcff-4acc-9d3b-0aeb6f5e6043",
+            "decimalPrice": 8
+          },
+          {
+            "runnerId": "833591eb-7850-4d58-94ee-b394457186ef",
+            "decimalPrice": 8.5
+          },
+          {
+            "runnerId": "1667f130-f687-43c3-a3f3-c4d7a8fa5efb",
+            "decimalPrice": 8.5
+          },
+          {
+            "runnerId": "2a0886d3-6484-4eee-83f4-d566e6477944",
+            "decimalPrice": 8.5
+          },
+          {
+            "runnerId": "1ab4ec7f-f635-4277-b1bc-191a4d849015",
+            "decimalPrice": 11
+          },
+          {
+            "runnerId": "f44ed817-5bff-4922-9a7b-cd8cf5abd6f4",
+            "decimalPrice": 13
+          }
+        ]
+      },
+      "outcome": null
+    },
+    {
+      "version": "HURDLE_RECENCY_COMPLETION_FORWARD_V1",
+      "raceId": "e4c4a8b4-c4b6-45c4-a137-fbca271048c9",
+      "runnerId": "f44ed817-5bff-4922-9a7b-cd8cf5abd6f4",
+      "horseId": "0c9aae9e-7a73-477c-9e08-4eda735490b0",
+      "horseName": "Forest Blaze",
+      "raceDate": "2026-10-20",
+      "scheduledOff": "2026-10-20T14:07:00.000Z",
+      "course": "Hexham",
+      "raceName": "Free Race Replays On attheraces.com Handicap Hurdle",
+      "firstCapturedAt": "2026-10-20T02:27:44.947Z",
+      "fieldSize": 9,
+      "capturedFieldRunnerIds": [
+        "89807363-675e-48ae-bb65-5393f88dd0e5",
+        "64186aa5-1f39-44d9-847c-b2226d5807ed",
+        "d9562e6e-f9cb-4e23-961d-b555421ab3e3",
+        "15b2a64b-dcff-4acc-9d3b-0aeb6f5e6043",
+        "833591eb-7850-4d58-94ee-b394457186ef",
+        "1667f130-f687-43c3-a3f3-c4d7a8fa5efb",
+        "2a0886d3-6484-4eee-83f4-d566e6477944",
+        "1ab4ec7f-f635-4277-b1bc-191a4d849015",
+        "f44ed817-5bff-4922-9a7b-cd8cf5abd6f4"
+      ],
+      "handicapStatus": "handicap",
+      "raceClass": "4",
+      "features": {
+        "daysSinceLastRun": 206,
+        "latestRunDate": "2026-03-27",
+        "usableRecentRuns": 3,
+        "recentCompletedRuns": 3,
+        "recentRunCount": 3,
+        "latestRunCompleted": true,
+        "latestCompletionStatus": "completed",
+        "anyRecentPU": false,
+        "anyRecentF": false,
+        "anyRecentUR": false,
+        "anyRecentBD": false,
+        "anyRecentOtherNonCompletion": false,
+        "recentNonCompletionCount": 0,
+        "recentRuns": [
+          {
+            "runnerId": "1962220d-7c25-4f65-a7e0-817464e417fd",
+            "raceId": "6c5f89c5-8207-44d9-aa70-c4e4bc27a1e5",
+            "raceDateTime": "2026-01-22T13:55:00.000Z",
+            "finishingPosition": 2,
+            "resultStatus": "finished",
+            "completionStatus": "completed"
+          },
+          {
+            "runnerId": "dfdceea5-3fd8-4833-bf2b-f21ad2a754bd",
+            "raceId": "2199b334-c6c5-4eb0-b0d5-91c0244685ea",
+            "raceDateTime": "2026-03-06T16:20:00.000Z",
+            "finishingPosition": 5,
+            "resultStatus": "finished",
+            "completionStatus": "completed"
+          },
+          {
+            "runnerId": "c472f07d-4f53-4fe1-b44b-9115404baf92",
+            "raceId": "91e20beb-8c2e-4463-905a-ae0b93db85c8",
+            "raceDateTime": "2026-03-27T15:20:00.000Z",
+            "finishingPosition": 12,
+            "resultStatus": "finished",
+            "completionStatus": "completed"
+          }
+        ]
+      },
+      "flags": {
+        "RECENT_COMPLETER": false,
+        "RECENT_NON_COMPLETER": false,
+        "LATEST_RUN_PU": false,
+        "ANY_RECENT_PU": false,
+        "NO_RECENT_COMPLETION": false
+      },
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "capturedAt": "2026-10-20T02:27:44.947Z",
+        "medianBookmakerDecimal": 13,
+        "normalizedProbability": 0.059767285033916207,
+        "marketRank": 9,
+        "quoteCount": 3,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "12/1",
+            "decimalOdds": 13
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "12/1",
+            "decimalOdds": 13
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "12/1",
+            "decimalOdds": 13
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "89807363-675e-48ae-bb65-5393f88dd0e5",
+            "decimalPrice": 3.5
+          },
+          {
+            "runnerId": "64186aa5-1f39-44d9-847c-b2226d5807ed",
+            "decimalPrice": 4.5
+          },
+          {
+            "runnerId": "d9562e6e-f9cb-4e23-961d-b555421ab3e3",
+            "decimalPrice": 7.5
+          },
+          {
+            "runnerId": "15b2a64b-dcff-4acc-9d3b-0aeb6f5e6043",
+            "decimalPrice": 8
+          },
+          {
+            "runnerId": "833591eb-7850-4d58-94ee-b394457186ef",
+            "decimalPrice": 8.5
+          },
+          {
+            "runnerId": "1667f130-f687-43c3-a3f3-c4d7a8fa5efb",
+            "decimalPrice": 8.5
+          },
+          {
+            "runnerId": "2a0886d3-6484-4eee-83f4-d566e6477944",
+            "decimalPrice": 8.5
+          },
+          {
+            "runnerId": "1ab4ec7f-f635-4277-b1bc-191a4d849015",
+            "decimalPrice": 11
+          },
+          {
+            "runnerId": "f44ed817-5bff-4922-9a7b-cd8cf5abd6f4",
+            "decimalPrice": 13
+          }
+        ]
+      },
+      "outcome": null
+    },
+    {
+      "version": "HURDLE_RECENCY_COMPLETION_FORWARD_V1",
+      "raceId": "77638891-c406-4f47-8272-78bb693425ff",
+      "runnerId": "8da1fac6-d535-4474-84ab-36cbb6805cd8",
+      "horseId": "4d15ef92-2a30-48bc-88f2-017298845cef",
+      "horseName": "Coded Welder",
+      "raceDate": "2026-10-20",
+      "scheduledOff": "2026-10-20T14:42:00.000Z",
+      "course": "Hexham",
+      "raceName": "Free Bets On attheraces.com Handicap Hurdle",
+      "firstCapturedAt": "2026-10-20T02:27:44.947Z",
+      "fieldSize": 5,
+      "capturedFieldRunnerIds": [
+        "8da1fac6-d535-4474-84ab-36cbb6805cd8",
+        "11fb13c7-bcee-4586-80b4-63a146f08c57",
+        "65ad4de3-84c0-44da-ba16-433369150b11",
+        "45cb517d-da34-4b96-b99b-7fa6cbefc1ae",
+        "fbbf181b-5ee4-474c-8d04-d795f831c79c"
+      ],
+      "handicapStatus": "handicap",
+      "raceClass": "4",
+      "features": {
+        "daysSinceLastRun": 18,
+        "latestRunDate": "2026-10-02",
+        "usableRecentRuns": 3,
+        "recentCompletedRuns": 3,
+        "recentRunCount": 3,
+        "latestRunCompleted": true,
+        "latestCompletionStatus": "completed",
+        "anyRecentPU": false,
+        "anyRecentF": false,
+        "anyRecentUR": false,
+        "anyRecentBD": false,
+        "anyRecentOtherNonCompletion": false,
+        "recentNonCompletionCount": 0,
+        "recentRuns": [
+          {
+            "runnerId": "bcd5d4d2-239f-41f4-bb8c-3865a0da9d7b",
+            "raceId": "475b63ff-ade6-43a1-9e05-5f7034fd80e4",
+            "raceDateTime": "2026-07-29T16:35:00.000Z",
+            "finishingPosition": 8,
+            "resultStatus": "finished",
+            "completionStatus": "completed"
+          },
+          {
+            "runnerId": "ed0a6f0a-82e7-4c37-9552-97d623b24b56",
+            "raceId": "9d4d07c9-50b6-47f2-8489-8369a710836d",
+            "raceDateTime": "2026-08-13T16:46:00.000Z",
+            "finishingPosition": 5,
+            "resultStatus": "finished",
+            "completionStatus": "completed"
+          },
+          {
+            "runnerId": "60df76d8-4dde-4042-968a-bbc6f82e4ef1",
+            "raceId": "18168f7c-9d51-4ce7-bacf-56040f162e5b",
+            "raceDateTime": "2026-10-02T13:23:00.000Z",
+            "finishingPosition": 4,
+            "resultStatus": "finished",
+            "completionStatus": "completed"
+          }
+        ]
+      },
+      "flags": {
+        "RECENT_COMPLETER": true,
+        "RECENT_NON_COMPLETER": false,
+        "LATEST_RUN_PU": false,
+        "ANY_RECENT_PU": false,
+        "NO_RECENT_COMPLETION": false
+      },
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "capturedAt": "2026-10-20T02:27:44.947Z",
+        "medianBookmakerDecimal": 2.75,
+        "normalizedProbability": 0.30994549054250975,
+        "marketRank": 1,
+        "quoteCount": 3,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "7/4",
+            "decimalOdds": 2.75
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "7/4",
+            "decimalOdds": 2.75
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "7/4",
+            "decimalOdds": 2.75
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "8da1fac6-d535-4474-84ab-36cbb6805cd8",
+            "decimalPrice": 2.75
+          },
+          {
+            "runnerId": "11fb13c7-bcee-4586-80b4-63a146f08c57",
+            "decimalPrice": 3.5
+          },
+          {
+            "runnerId": "65ad4de3-84c0-44da-ba16-433369150b11",
+            "decimalPrice": 4.33
+          },
+          {
+            "runnerId": "45cb517d-da34-4b96-b99b-7fa6cbefc1ae",
+            "decimalPrice": 5.5
+          },
+          {
+            "runnerId": "fbbf181b-5ee4-474c-8d04-d795f831c79c",
+            "decimalPrice": 9
+          }
+        ]
+      },
+      "outcome": null
+    },
+    {
+      "version": "HURDLE_RECENCY_COMPLETION_FORWARD_V1",
+      "raceId": "77638891-c406-4f47-8272-78bb693425ff",
+      "runnerId": "11fb13c7-bcee-4586-80b4-63a146f08c57",
+      "horseId": "ddfdc20f-7833-40cd-aca5-994ad038cac9",
+      "horseName": "Blakey Boy",
+      "raceDate": "2026-10-20",
+      "scheduledOff": "2026-10-20T14:42:00.000Z",
+      "course": "Hexham",
+      "raceName": "Free Bets On attheraces.com Handicap Hurdle",
+      "firstCapturedAt": "2026-10-20T02:27:44.947Z",
+      "fieldSize": 5,
+      "capturedFieldRunnerIds": [
+        "8da1fac6-d535-4474-84ab-36cbb6805cd8",
+        "11fb13c7-bcee-4586-80b4-63a146f08c57",
+        "65ad4de3-84c0-44da-ba16-433369150b11",
+        "45cb517d-da34-4b96-b99b-7fa6cbefc1ae",
+        "fbbf181b-5ee4-474c-8d04-d795f831c79c"
+      ],
+      "handicapStatus": "handicap",
+      "raceClass": "4",
+      "features": {
+        "daysSinceLastRun": 185,
+        "latestRunDate": "2026-04-18",
+        "usableRecentRuns": 2,
+        "recentCompletedRuns": 2,
+        "recentRunCount": 3,
+        "latestRunCompleted": false,
+        "latestCompletionStatus": "pulled_up",
+        "anyRecentPU": true,
+        "anyRecentF": false,
+        "anyRecentUR": false,
+        "anyRecentBD": false,
+        "anyRecentOtherNonCompletion": false,
+        "recentNonCompletionCount": 1,
+        "recentRuns": [
+          {
+            "runnerId": "3bc39e50-90c9-489e-9a1a-90c702d09591",
+            "raceId": "1ceabb6a-df69-4ce7-92e5-a2b82ef5bc8b",
+            "raceDateTime": "2026-02-23T13:50:00.000Z",
+            "finishingPosition": 1,
+            "resultStatus": "finished",
+            "completionStatus": "completed"
+          },
+          {
+            "runnerId": "bb089215-328b-4f49-9b6e-8436dccb1507",
+            "raceId": "2f457f43-e648-481f-a913-5aabfd493664",
+            "raceDateTime": "2026-03-21T15:13:00.000Z",
+            "finishingPosition": 1,
+            "resultStatus": "finished",
+            "completionStatus": "completed"
+          },
+          {
+            "runnerId": "82f21cd1-7e5a-4fe7-bcfc-dbd8d9fbeeb6",
+            "raceId": "909f16d9-5fae-4af9-aaa2-1e42db430e8d",
+            "raceDateTime": "2026-04-18T12:45:00.000Z",
+            "finishingPosition": null,
+            "resultStatus": "pulled_up",
+            "completionStatus": "pulled_up"
+          }
+        ]
+      },
+      "flags": {
+        "RECENT_COMPLETER": false,
+        "RECENT_NON_COMPLETER": false,
+        "LATEST_RUN_PU": true,
+        "ANY_RECENT_PU": true,
+        "NO_RECENT_COMPLETION": false
+      },
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "capturedAt": "2026-10-20T02:27:44.947Z",
+        "medianBookmakerDecimal": 3.5,
+        "normalizedProbability": 0.2435285997119719,
+        "marketRank": 2,
+        "quoteCount": 3,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "5/2",
+            "decimalOdds": 3.5
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "5/2",
+            "decimalOdds": 3.5
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "5/2",
+            "decimalOdds": 3.5
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "8da1fac6-d535-4474-84ab-36cbb6805cd8",
+            "decimalPrice": 2.75
+          },
+          {
+            "runnerId": "11fb13c7-bcee-4586-80b4-63a146f08c57",
+            "decimalPrice": 3.5
+          },
+          {
+            "runnerId": "65ad4de3-84c0-44da-ba16-433369150b11",
+            "decimalPrice": 4.33
+          },
+          {
+            "runnerId": "45cb517d-da34-4b96-b99b-7fa6cbefc1ae",
+            "decimalPrice": 5.5
+          },
+          {
+            "runnerId": "fbbf181b-5ee4-474c-8d04-d795f831c79c",
+            "decimalPrice": 9
+          }
+        ]
+      },
+      "outcome": null
+    },
+    {
+      "version": "HURDLE_RECENCY_COMPLETION_FORWARD_V1",
+      "raceId": "77638891-c406-4f47-8272-78bb693425ff",
+      "runnerId": "65ad4de3-84c0-44da-ba16-433369150b11",
+      "horseId": "f42c996e-7770-4eb4-9606-2b0c41cf0574",
+      "horseName": "Robert d'Ores",
+      "raceDate": "2026-10-20",
+      "scheduledOff": "2026-10-20T14:42:00.000Z",
+      "course": "Hexham",
+      "raceName": "Free Bets On attheraces.com Handicap Hurdle",
+      "firstCapturedAt": "2026-10-20T02:27:44.947Z",
+      "fieldSize": 5,
+      "capturedFieldRunnerIds": [
+        "8da1fac6-d535-4474-84ab-36cbb6805cd8",
+        "11fb13c7-bcee-4586-80b4-63a146f08c57",
+        "65ad4de3-84c0-44da-ba16-433369150b11",
+        "45cb517d-da34-4b96-b99b-7fa6cbefc1ae",
+        "fbbf181b-5ee4-474c-8d04-d795f831c79c"
+      ],
+      "handicapStatus": "handicap",
+      "raceClass": "4",
+      "features": {
+        "daysSinceLastRun": 18,
+        "latestRunDate": "2026-10-02",
+        "usableRecentRuns": 3,
+        "recentCompletedRuns": 3,
+        "recentRunCount": 3,
+        "latestRunCompleted": true,
+        "latestCompletionStatus": "completed",
+        "anyRecentPU": false,
+        "anyRecentF": false,
+        "anyRecentUR": false,
+        "anyRecentBD": false,
+        "anyRecentOtherNonCompletion": false,
+        "recentNonCompletionCount": 0,
+        "recentRuns": [
+          {
+            "runnerId": "20b1fb61-29f8-4b46-a0b7-11c6a1b0007f",
+            "raceId": "13cfdf64-56ff-43fc-a3fb-115aeb0acb7d",
+            "raceDateTime": "2026-05-02T19:15:00.000Z",
+            "finishingPosition": 7,
+            "resultStatus": "finished",
+            "completionStatus": "completed"
+          },
+          {
+            "runnerId": "3e0981e8-98c0-4290-b15f-d141f2166bf2",
+            "raceId": "dc702961-2ce4-44a2-b0a2-decd619788df",
+            "raceDateTime": "2026-06-06T18:13:00.000Z",
+            "finishingPosition": 6,
+            "resultStatus": "finished",
+            "completionStatus": "completed"
+          },
+          {
+            "runnerId": "442e7b31-d1fe-4060-ae5c-f9cc92df5a4d",
+            "raceId": "0b458bf0-d72e-491d-8059-6fa506e076c5",
+            "raceDateTime": "2026-10-02T13:58:00.000Z",
+            "finishingPosition": 3,
+            "resultStatus": "finished",
+            "completionStatus": "completed"
+          }
+        ]
+      },
+      "flags": {
+        "RECENT_COMPLETER": true,
+        "RECENT_NON_COMPLETER": false,
+        "LATEST_RUN_PU": false,
+        "ANY_RECENT_PU": false,
+        "NO_RECENT_COMPLETION": false
+      },
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "capturedAt": "2026-10-20T02:27:44.947Z",
+        "medianBookmakerDecimal": 4.33,
+        "normalizedProbability": 0.1968475979196078,
+        "marketRank": 3,
+        "quoteCount": 3,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "10/3",
+            "decimalOdds": 4.33
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "10/3",
+            "decimalOdds": 4.33
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "7/2",
+            "decimalOdds": 4.5
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "8da1fac6-d535-4474-84ab-36cbb6805cd8",
+            "decimalPrice": 2.75
+          },
+          {
+            "runnerId": "11fb13c7-bcee-4586-80b4-63a146f08c57",
+            "decimalPrice": 3.5
+          },
+          {
+            "runnerId": "65ad4de3-84c0-44da-ba16-433369150b11",
+            "decimalPrice": 4.33
+          },
+          {
+            "runnerId": "45cb517d-da34-4b96-b99b-7fa6cbefc1ae",
+            "decimalPrice": 5.5
+          },
+          {
+            "runnerId": "fbbf181b-5ee4-474c-8d04-d795f831c79c",
+            "decimalPrice": 9
+          }
+        ]
+      },
+      "outcome": null
+    },
+    {
+      "version": "HURDLE_RECENCY_COMPLETION_FORWARD_V1",
+      "raceId": "77638891-c406-4f47-8272-78bb693425ff",
+      "runnerId": "45cb517d-da34-4b96-b99b-7fa6cbefc1ae",
+      "horseId": "9819d5b7-398a-40e3-9a34-9219745b9629",
+      "horseName": "Do No Wrong",
+      "raceDate": "2026-10-20",
+      "scheduledOff": "2026-10-20T14:42:00.000Z",
+      "course": "Hexham",
+      "raceName": "Free Bets On attheraces.com Handicap Hurdle",
+      "firstCapturedAt": "2026-10-20T02:27:44.947Z",
+      "fieldSize": 5,
+      "capturedFieldRunnerIds": [
+        "8da1fac6-d535-4474-84ab-36cbb6805cd8",
+        "11fb13c7-bcee-4586-80b4-63a146f08c57",
+        "65ad4de3-84c0-44da-ba16-433369150b11",
+        "45cb517d-da34-4b96-b99b-7fa6cbefc1ae",
+        "fbbf181b-5ee4-474c-8d04-d795f831c79c"
+      ],
+      "handicapStatus": "handicap",
+      "raceClass": "4",
+      "features": {
+        "daysSinceLastRun": 16,
+        "latestRunDate": "2026-10-04",
+        "usableRecentRuns": 3,
+        "recentCompletedRuns": 3,
+        "recentRunCount": 3,
+        "latestRunCompleted": true,
+        "latestCompletionStatus": "completed",
+        "anyRecentPU": false,
+        "anyRecentF": false,
+        "anyRecentUR": false,
+        "anyRecentBD": false,
+        "anyRecentOtherNonCompletion": false,
+        "recentNonCompletionCount": 0,
+        "recentRuns": [
+          {
+            "runnerId": "861c364c-466c-43f8-9197-491a8d6b4ad0",
+            "raceId": "32bcc6a3-e809-4f8d-b2e3-3f27a1c433f0",
+            "raceDateTime": "2025-10-02T13:30:00.000Z",
+            "finishingPosition": 2,
+            "resultStatus": "finished",
+            "completionStatus": "completed"
+          },
+          {
+            "runnerId": "d4cf32c4-4d83-463f-8d50-ebdcc7288cb5",
+            "raceId": "6c5c5c30-2fe9-466c-b3d5-cf6dc9c3fe2d",
+            "raceDateTime": "2025-10-30T15:08:00.000Z",
+            "finishingPosition": 1,
+            "resultStatus": "finished",
+            "completionStatus": "completed"
+          },
+          {
+            "runnerId": "a2a53341-0159-4831-99e6-6ddb91ae7fba",
+            "raceId": "50730af9-07d5-41b4-a202-27ec393b0a59",
+            "raceDateTime": "2026-10-04T12:20:00.000Z",
+            "finishingPosition": 7,
+            "resultStatus": "finished",
+            "completionStatus": "completed"
+          }
+        ]
+      },
+      "flags": {
+        "RECENT_COMPLETER": true,
+        "RECENT_NON_COMPLETER": false,
+        "LATEST_RUN_PU": false,
+        "ANY_RECENT_PU": false,
+        "NO_RECENT_COMPLETION": false
+      },
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "capturedAt": "2026-10-20T02:27:44.947Z",
+        "medianBookmakerDecimal": 5.5,
+        "normalizedProbability": 0.15497274527125487,
+        "marketRank": 4,
+        "quoteCount": 3,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "4/1",
+            "decimalOdds": 5
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "9/2",
+            "decimalOdds": 5.5
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "9/2",
+            "decimalOdds": 5.5
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "8da1fac6-d535-4474-84ab-36cbb6805cd8",
+            "decimalPrice": 2.75
+          },
+          {
+            "runnerId": "11fb13c7-bcee-4586-80b4-63a146f08c57",
+            "decimalPrice": 3.5
+          },
+          {
+            "runnerId": "65ad4de3-84c0-44da-ba16-433369150b11",
+            "decimalPrice": 4.33
+          },
+          {
+            "runnerId": "45cb517d-da34-4b96-b99b-7fa6cbefc1ae",
+            "decimalPrice": 5.5
+          },
+          {
+            "runnerId": "fbbf181b-5ee4-474c-8d04-d795f831c79c",
+            "decimalPrice": 9
+          }
+        ]
+      },
+      "outcome": null
+    },
+    {
+      "version": "HURDLE_RECENCY_COMPLETION_FORWARD_V1",
+      "raceId": "77638891-c406-4f47-8272-78bb693425ff",
+      "runnerId": "fbbf181b-5ee4-474c-8d04-d795f831c79c",
+      "horseId": "7ac8f118-fcba-4ad4-a016-c87a4bc01121",
+      "horseName": "Dalileo",
+      "raceDate": "2026-10-20",
+      "scheduledOff": "2026-10-20T14:42:00.000Z",
+      "course": "Hexham",
+      "raceName": "Free Bets On attheraces.com Handicap Hurdle",
+      "firstCapturedAt": "2026-10-20T02:27:44.947Z",
+      "fieldSize": 5,
+      "capturedFieldRunnerIds": [
+        "8da1fac6-d535-4474-84ab-36cbb6805cd8",
+        "11fb13c7-bcee-4586-80b4-63a146f08c57",
+        "65ad4de3-84c0-44da-ba16-433369150b11",
+        "45cb517d-da34-4b96-b99b-7fa6cbefc1ae",
+        "fbbf181b-5ee4-474c-8d04-d795f831c79c"
+      ],
+      "handicapStatus": "handicap",
+      "raceClass": "4",
+      "features": {
+        "daysSinceLastRun": 16,
+        "latestRunDate": "2026-10-04",
+        "usableRecentRuns": 3,
+        "recentCompletedRuns": 3,
+        "recentRunCount": 3,
+        "latestRunCompleted": true,
+        "latestCompletionStatus": "completed",
+        "anyRecentPU": false,
+        "anyRecentF": false,
+        "anyRecentUR": false,
+        "anyRecentBD": false,
+        "anyRecentOtherNonCompletion": false,
+        "recentNonCompletionCount": 0,
+        "recentRuns": [
+          {
+            "runnerId": "c15f293d-5e15-4b6d-85e8-e98c6abc2670",
+            "raceId": "2c2499e1-d095-47c7-b6d7-72b12497564e",
+            "raceDateTime": "2026-09-07T15:50:00.000Z",
+            "finishingPosition": 8,
+            "resultStatus": "finished",
+            "completionStatus": "completed"
+          },
+          {
+            "runnerId": "661134b0-a7d8-4374-b1aa-2f2899afd78a",
+            "raceId": "bab3fd5b-716f-4348-9d63-dc45257c46c6",
+            "raceDateTime": "2026-09-24T14:34:00.000Z",
+            "finishingPosition": 9,
+            "resultStatus": "finished",
+            "completionStatus": "completed"
+          },
+          {
+            "runnerId": "99300dcb-c08b-410a-9fbb-11cfee1a85c6",
+            "raceId": "50730af9-07d5-41b4-a202-27ec393b0a59",
+            "raceDateTime": "2026-10-04T12:20:00.000Z",
+            "finishingPosition": 5,
+            "resultStatus": "finished",
+            "completionStatus": "completed"
+          }
+        ]
+      },
+      "flags": {
+        "RECENT_COMPLETER": true,
+        "RECENT_NON_COMPLETER": false,
+        "LATEST_RUN_PU": false,
+        "ANY_RECENT_PU": false,
+        "NO_RECENT_COMPLETION": false
+      },
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "capturedAt": "2026-10-20T02:27:44.947Z",
+        "medianBookmakerDecimal": 9,
+        "normalizedProbability": 0.09470556655465574,
+        "marketRank": 5,
+        "quoteCount": 3,
+        "quotes": [
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "15/2",
+            "decimalOdds": 8.5
+          },
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "8/1",
+            "decimalOdds": 9
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "17/2",
+            "decimalOdds": 9.5
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "8da1fac6-d535-4474-84ab-36cbb6805cd8",
+            "decimalPrice": 2.75
+          },
+          {
+            "runnerId": "11fb13c7-bcee-4586-80b4-63a146f08c57",
+            "decimalPrice": 3.5
+          },
+          {
+            "runnerId": "65ad4de3-84c0-44da-ba16-433369150b11",
+            "decimalPrice": 4.33
+          },
+          {
+            "runnerId": "45cb517d-da34-4b96-b99b-7fa6cbefc1ae",
+            "decimalPrice": 5.5
+          },
+          {
+            "runnerId": "fbbf181b-5ee4-474c-8d04-d795f831c79c",
+            "decimalPrice": 9
+          }
+        ]
+      },
+      "outcome": null
     }
   ]
 }

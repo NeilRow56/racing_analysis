@@ -5,8 +5,13 @@ import {
   updateAwTissueForward, type AwTissueForwardData,
 } from "./aw-tissue-forward";
 import { getRacecardRowsForRaceIds, groupTodaysRacingRows, isAllWeatherRaceForDisplay, type TodayMeeting } from "./todays-racing";
+import { AW_TISSUE_V2_ACTIVE } from "./aw-tissue-v2-activation";
+import { syncAwV2Meetings } from "./aw-tissue-v2-sync";
 
 export async function syncAwTissueMeetings(connection: ReturnType<typeof createDbConnection>, meetings: TodayMeeting[], raceDate: string): Promise<AwTissueForwardData> {
+  return AW_TISSUE_V2_ACTIVE ? syncAwV2Meetings(connection, meetings, raceDate) : syncLegacyAwTissueMeetings(connection, meetings, raceDate);
+}
+export async function syncLegacyAwTissueMeetings(connection: ReturnType<typeof createDbConnection>, meetings: TodayMeeting[], raceDate: string): Promise<AwTissueForwardData> {
   const aw = meetings.flatMap((meeting) => meeting.races.filter(isAllWeatherRaceForDisplay).map((race) => ({ race, course: meeting.courseName })));
   const model = aw.length ? await loadAwTissueModel() : null;
   const starts = aw.length ? await loadAwTissuePriorStarts(connection.client, aw.map(({ race }) => race)) : new Map();

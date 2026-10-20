@@ -77,7 +77,7 @@ export function AwTissueValueSection({ data, ratings, reviews = emptyTissueValue
   const races = data.races.filter(cleanAwTissueRace).filter(isSettledTissueValueRace).sort(newestFirst).slice(0, 100);
   return <DiagnosticDetails
     headingId="aw-tissue-value-heading"
-    title="AW Tissue (diagnostic)"
+    title={data.modelVersion === "AW_TISSUE_V2" ? "AW Tissue v2 (diagnostic)" : "AW Tissue (diagnostic)"}
     summaryItems={[
       ["Comparable AW-D races", agreement.comparable], ["Same leader", agreement.sameLeader], ["Different leader", agreement.differentLeader],
       ["Both positive", agreement.bothPositive], ["AW-D positive only", agreement.awDPositiveOnly],

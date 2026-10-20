@@ -113,7 +113,10 @@
     "rank-one:sync": "bun --env-file=.env.local run scripts/track-rank-one-forward.ts sync",
     "rank-one:today": "bun run scripts/track-rank-one-forward.ts today",
     "rank-one:summary": "bun run scripts/track-rank-one-forward.ts summary",
-    "rank-one:results": "bun --env-file=.env.local run scripts/track-rank-one-forward.ts results"
+    "rank-one:results": "bun --env-file=.env.local run scripts/track-rank-one-forward.ts results",
+    "aw-tissue:v2:audit": "bun --env-file=.env.local run scripts/audit-aw-tissue-v2-prefit.ts",
+    "aw-tissue:v2:build": "bun --env-file=.env.local run scripts/fit-aw-tissue-v2.ts",
+    "aw-tissue:v1:summary": "bun run scripts/track-aw-tissue.ts summary v1"
   },
   "dependencies": {
     "drizzle-orm": "^0.45.2",
