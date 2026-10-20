@@ -1,3 +1,4 @@
+import type { FrozenValueDisplay } from "./tissue-value-view";
 import { and, asc, desc, eq, inArray, sql } from "drizzle-orm";
 import type { TprConfidenceContext } from "./tpr-confidence-context";
 import { getHistoricalFormFlagsForTargets, type HistoricalFormFlags } from "./historical-form-flags";
@@ -69,6 +70,7 @@ const DEFAULT_RACING_DISPLAY_TIME_ZONE = "Europe/London";
 export const SPORTING_LIFE_CURRENT_CARD_VERSION = "reconciled_v1" as const;
 
 export type TodayRunner = {
+  tissueValue?: FrozenValueDisplay;
   tprConfidence?: TprConfidenceContext;
   runnerId: string;
   runnerSourceId: string | null;

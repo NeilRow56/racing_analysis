@@ -64,6 +64,7 @@ export function workflowSteps(mode: WorkflowMode, date: string): WorkflowStep[] 
   if (mode === "late") {
     return [
       { label: "Refreshing racecards/prices", script: "sl:import-racecards", args: [date, "--request-delay-seconds", "2"] },
+      { label: "All-family Tissue value capture", script: "tissue-value:sync", args: [date] },
       { label: "Model disagreement late-morning sync", script: "disagreement:late", args: [date] },
     ];
   }
@@ -72,6 +73,7 @@ export function workflowSteps(mode: WorkflowMode, date: string): WorkflowStep[] 
       { label: "Importing in-progress results", script: "sl:import-day", args: [date, "--request-delay-seconds", "2"] },
       { label: "Settling existing prospective trackers", script: "research:settle", args: [date] },
       { label: "Rank 1 monitoring settlement", script: "rank-one:results", args: [date] },
+      { label: "All-family Tissue value settlement", script: "tissue-value:results", args: [date] },
       { label: "Hurdle recency research settlement", script: "hurdle-recency:results", args: [date] },
       { label: "Tissue VALUE live summary", script: "value:today", args: [date] },
       { label: "Jump G4 shadow status", script: "jump-g4:today", args: [date] },
@@ -87,6 +89,7 @@ export function workflowSteps(mode: WorkflowMode, date: string): WorkflowStep[] 
       { label: "Importing complete results", script: "sl:import-day", args: [date, "--request-delay-seconds", "2"] },
       { label: "Settling existing prospective trackers", script: "research:settle", args: [date] },
       { label: "Rank 1 monitoring settlement", script: "rank-one:results", args: [date] },
+      { label: "All-family Tissue value settlement", script: "tissue-value:results", args: [date] },
       { label: "Hurdle recency research settlement", script: "hurdle-recency:results", args: [date] },
       { label: "Completed Tissue VALUE results", script: "value:results", args: [date] },
       { label: "AW paired research results", script: "aw-pair:results", args: [date] },
@@ -110,6 +113,7 @@ export function workflowSteps(mode: WorkflowMode, date: string): WorkflowStep[] 
   const steps = [
     importStep,
     { label: "Rank 1 monitoring capture", script: "rank-one:sync", args: [date] },
+    { label: "All-family Tissue value capture", script: "tissue-value:sync", args: [date] },
     { label: "Hurdle recency research capture", script: "hurdle-recency:sync", args: [date] },
     { label: "TPR sync", script: "tpr:sync", args: [date] },
     { label: "Tissue sync", script: "tissue:sync", args: [date] },

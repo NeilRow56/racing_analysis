@@ -107,6 +107,7 @@ describe("research workflow wrapper", () => {
     assert.deepEqual(calls, [
       "sl:import-racecards 2026-10-09 --request-delay-seconds 2",
       "rank-one:sync 2026-10-09",
+      "tissue-value:sync 2026-10-09",
       "hurdle-recency:sync 2026-10-09",
       "tpr:sync 2026-10-09",
       "tissue:sync 2026-10-09",
@@ -149,6 +150,7 @@ describe("research workflow wrapper", () => {
       "sl:import-day 2026-10-09 --request-delay-seconds 2",
       "research:settle 2026-10-09",
       "rank-one:results 2026-10-09",
+      "tissue-value:results 2026-10-09",
       "hurdle-recency:results 2026-10-09",
       "value:results 2026-10-09",
       "aw-pair:results 2026-10-09",
@@ -168,6 +170,7 @@ describe("research workflow wrapper", () => {
       "sl:import-day 2026-10-09 --request-delay-seconds 2",
       "research:settle 2026-10-09",
       "rank-one:results 2026-10-09",
+      "tissue-value:results 2026-10-09",
       "hurdle-recency:results 2026-10-09",
       "value:today 2026-10-09",
       "jump-g4:today 2026-10-09",
@@ -237,6 +240,7 @@ describe("research workflow wrapper", () => {
     });
     assert.deepEqual(commandLinesFor("late"), [
       "sl:import-racecards 2026-10-09 --request-delay-seconds 2",
+      "tissue-value:sync 2026-10-09",
       "disagreement:late 2026-10-09",
     ]);
   });
@@ -301,6 +305,7 @@ describe("research workflow wrapper", () => {
     assert.deepEqual(calls, [
       "sl:import-racecards",
       "rank-one:sync",
+      "tissue-value:sync",
       "hurdle-recency:sync",
       "tpr:sync",
       "tissue:sync",

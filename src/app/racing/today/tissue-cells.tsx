@@ -55,3 +55,42 @@ export function TodayMarketOdds({ runner }: { runner: TodayRunner }) {
   );
 }
 
+
+export const FROZEN_RANK_TOOLTIPS = {
+  tissueRank: "Model rank by estimated probability of winning.",
+  valueRank: "Rank by model probability versus captured bookmaker price. Research only — not a betting recommendation.",
+  marketRank: "Rank from the captured bookmaker market.",
+} as const;
+type FrozenRankKind = keyof typeof FROZEN_RANK_TOOLTIPS;
+const rankLabels = { tissueRank: "Tissue", valueRank: "Value", marketRank: "Mkt" } as const;
+type FrozenRankRunner = { tissueValue?: Partial<NonNullable<TodayRunner["tissueValue"]>> };
+const positiveRank = (value: number | null | undefined): value is number => typeof value === "number" && Number.isInteger(value) && value > 0;
+
+/** Stored fields only. Missing ranks never fall back to current odds or other model generations. */
+export function FrozenValueRankCell({ runner, kind }: { runner: FrozenRankRunner; kind: FrozenRankKind }) {
+  const row = runner.tissueValue;
+  const marketPrice = row?.marketPrice, probability = row?.probability, ratio = row?.modelMarketRatio;
+  const hasMarket = typeof marketPrice === "number" && Number.isFinite(marketPrice) && marketPrice > 1;
+  const hasScore = typeof probability === "number" && Number.isFinite(probability) && probability > 0 && probability <= 1;
+  const available = positiveRank(row?.[kind]) && (kind === "tissueRank" ? hasScore : hasMarket);
+  const missing = kind === "tissueRank" ? "No frozen Tissue score/rank available." : !hasMarket ? "No captured bookmaker market available." : kind === "valueRank" ? "No frozen Value rank available." : "No captured market rank available.";
+  const provenance = row ? `${row.family} / ${row.modelVersion} · captured ${row.capturedAt}${hasMarket ? ` · captured price ${marketPrice!.toFixed(2)}` : ""}` : "No frozen prospective Tissue value observation.";
+  const title = `${FROZEN_RANK_TOOLTIPS[kind]} ${available ? provenance : `${missing} ${provenance}`}`;
+  const disagreement = available && kind === "valueRank" && typeof ratio === "number" && Number.isFinite(ratio) && ratio >= 1.5;
+  return <div className="tabular-nums" data-rank-kind={kind} title={title}>
+    <span className="inline-flex items-center gap-1 rounded-sm border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-xs whitespace-nowrap">
+      <span className="text-slate-600">{rankLabels[kind]}</span>
+      <span className="font-semibold">{available ? row![kind] : "—"}</span>
+      {disagreement ? <span className="text-amber-700" role="img" aria-label="Large model/market disagreement" title="Large model/market disagreement">●</span> : null}
+    </span>
+    {kind === "tissueRank" && available ? <div className="mt-0.5 text-[10px] text-slate-500">{(probability! * 100).toFixed(2)}% frozen</div> : null}
+  </div>;
+}
+
+export function FrozenRacecardRanks({ runner }: { runner: FrozenRankRunner }) {
+  return <div className="flex flex-wrap items-start gap-1" aria-label="Frozen Tissue, Value and market ranks">
+    <FrozenValueRankCell runner={runner} kind="tissueRank" />
+    <FrozenValueRankCell runner={runner} kind="valueRank" />
+    <FrozenValueRankCell runner={runner} kind="marketRank" />
+  </div>;
+}

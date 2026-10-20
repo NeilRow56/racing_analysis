@@ -1,3 +1,5 @@
+import { loadAllTissueValue } from "@/lib/racing/tissue-value-readers";
+import { TissueValueMonitoring } from "./tissue-value-monitoring";
 import { loadRankOne } from "@/lib/racing/rank-one-forward";
 import { RankOneMonitoring } from "./rank-one-monitoring";
 import { createDbConnection } from "@/db";
@@ -65,7 +67,7 @@ type PageProps = {
 
 export default async function ForwardValuePage({ searchParams }: PageProps) {
   const raceDate = getLocalRacingDate();
-  const [data, tissueData, awTissueData, jumpTissueData, awPairedData, g4Data, weightData, modelDisagreementData, reviewData, hurdlePairData, chasePairData, hurdleRecencyData, rankOneData, params] = await Promise.all([
+  const [data, tissueData, awTissueData, jumpTissueData, awPairedData, g4Data, weightData, modelDisagreementData, reviewData, hurdlePairData, chasePairData, hurdleRecencyData, rankOneData, valueCohorts, params] = await Promise.all([
     loadForwardValueData(),
     loadTissueForward(ACTIVE_TURF_TISSUE_CONFIG.forwardPath, ACTIVE_TURF_TISSUE_CONFIG),
     AW_TISSUE_V2_ACTIVE ? loadAwV2Forward() : loadAwTissueForward(),
@@ -79,6 +81,7 @@ export default async function ForwardValuePage({ searchParams }: PageProps) {
     loadChasePair(),
     loadHurdleRecency(),
     loadRankOne(),
+    loadAllTissueValue(),
     searchParams,
   ]);
   const connection = createDbConnection();
@@ -112,7 +115,7 @@ export default async function ForwardValuePage({ searchParams }: PageProps) {
   return (
     <ResearchPageLayout
       date={raceDate}
-      active={<HurdleRecencyResearchSection data={hurdleRecencyData} />}
+      active={<><HurdleRecencyResearchSection data={hurdleRecencyData} /><TissueValueMonitoring cohorts={valueCohorts} date={raceDate} /></>}
       secondary={<><RankOneMonitoring data={rankOneData} date={raceDate} /><SecondaryResearchMonitoring dashboard={dashboard} /></>}
     >
       <DailyResearchDashboard dashboard={dashboard} excludeSecondaryMonitoring>

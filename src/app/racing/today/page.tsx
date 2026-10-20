@@ -1,4 +1,6 @@
-import { AwTissueCell, JumpTissueCell, TodayMarketOdds } from "./tissue-cells";
+import { loadAllTissueValue } from "@/lib/racing/tissue-value-readers";
+import { attachFrozenValueToMeetings } from "@/lib/racing/tissue-value-view";
+import { AwTissueCell, JumpTissueCell, TodayMarketOdds, FrozenRacecardRanks } from "./tissue-cells";
 import Link from "next/link";
 import { createDbConnection } from "@/db";
 import { syncAwForwardComparisons } from "@/lib/racing/aw-forward-comparisons";
@@ -85,11 +87,12 @@ export default async function TodaysRacingPage({ searchParams }: PageProps) {
         raceDate,
       ),
     );
-    const [initialData, savedRules, initialTrackerData, trainerCohortsByRule] = await Promise.all([
+    const [initialData, savedRules, initialTrackerData, trainerCohortsByRule, valueCohorts] = await Promise.all([
       getTodaysRacingData(connection.db, raceDate),
       savedRulesPromise,
       loadTrackerData(),
       trainerCohortsPromise,
+      loadAllTissueValue(),
     ]);
     let data = initialData;
     let shadowSummary: TurfPerformanceShadowSummary | null = null;
@@ -122,7 +125,7 @@ export default async function TodaysRacingPage({ searchParams }: PageProps) {
         syncAwTissueMeetings(connection, displayData.meetings, raceDate),
         syncJumpTissueMeetings(connection, displayData.meetings, raceDate),
       ]);
-      displayData = { ...displayData, meetings: attachJumpTissueToMeetings(attachAwTissueToMeetings(displayData.meetings, awTissue), jumpTissue) };
+      displayData = { ...displayData, meetings: attachFrozenValueToMeetings(attachJumpTissueToMeetings(attachAwTissueToMeetings(displayData.meetings, awTissue), jumpTissue), valueCohorts.map(c => c.data)) };
     }
     await connection.client.end();
     connection = null;
@@ -504,6 +507,10 @@ function RunnerTable({
                 Turf TPR
               </th>
             ) : null}
+            <th className="w-48 px-1.5 py-1.5 font-medium">
+              Tissue / Value / Mkt
+              <span className="block text-[10px] font-normal text-slate-500">Frozen at capture</span>
+            </th>
             <th className="w-11 px-1.5 py-1.5 font-medium">Days</th>
             <th className="w-20 px-1.5 py-1.5 font-medium">Odds</th>
           </tr>
@@ -616,6 +623,7 @@ function RunnerRow({
           <TurfPerformanceRatingCell coverage={tprCoverage} runner={runner} />
         </td>
       ) : null}
+      <td className="px-1.5 py-2"><FrozenRacecardRanks runner={runner} /></td>
       <td className="px-1.5 py-2">
         {runner.metrics?.daysSinceLastRun ?? "-"}
       </td>
