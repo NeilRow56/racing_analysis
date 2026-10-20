@@ -27,7 +27,7 @@ import {
   TopLevelCounts,
   TurfModelDisagreementExplainer,
   TurfModelAgreementCounts,
-} from "./page";
+} from "./forward-value-page";
 import { AwTurfChallengerSection } from "./aw-turf-challenger";
 import { DailyResearchDashboard } from "./research-dashboard";
 import { emptyAwTissuePairedForward, type AwTissuePairedForwardData } from "@/lib/racing/aw-tissue-paired-forward";

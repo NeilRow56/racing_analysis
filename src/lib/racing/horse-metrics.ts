@@ -315,6 +315,7 @@ export async function getTargetRunnerMetricsForDate(
   options: {
     includeNonRunnerTargets?: boolean;
     completedPriorRunsOnly?: boolean;
+    asOfDateTime?: Date;
     targetRunnerIds?: string[];
   } = {},
 ): Promise<TargetRunnerMetrics[]> {
@@ -369,11 +370,13 @@ export async function getTargetRunnerMetricsForDate(
     return [];
   }
 
-  const latestTargetDateTime = timedTargets.reduce(
+  const latestTargetOff = timedTargets.reduce(
     (latest, target) =>
       target.raceDateTime > latest ? target.raceDateTime : latest,
     timedTargets[0].raceDateTime,
   );
+
+  const latestTargetDateTime = options.asOfDateTime && options.asOfDateTime < latestTargetOff ? options.asOfDateTime : latestTargetOff;
 
   const candidateConditions = [
     inArray(raceRunners.horseId, horseIds),
@@ -435,18 +438,22 @@ export async function getTargetRunnerMetricsForDate(
       turfSpeedRating: turfSpeedRatings.get(run.runnerId) ?? null,
     })),
     targets: timedTargets,
+    asOfDateTime: options.asOfDateTime,
   });
 }
 
 export function calculateTargetRunnerMetrics({
   candidateRuns,
   targets,
+  asOfDateTime,
 }: {
   candidateRuns: HistoricalRunInput[];
   targets: TargetRunnerMetrics["target"][];
+  asOfDateTime?: Date;
 }): TargetRunnerMetrics[] {
   const runsByHorse = new Map<string, HistoricalRunInput[]>();
   for (const run of candidateRuns) {
+    if (asOfDateTime && run.raceDateTime >= asOfDateTime) continue;
     const runs = runsByHorse.get(run.horseId) ?? [];
     runs.push(run);
     runsByHorse.set(run.horseId, runs);

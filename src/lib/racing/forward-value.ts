@@ -1,3 +1,4 @@
+import { TISSUE_V3_EPOCH, TISSUE_V3_MODEL_VERSION } from "./tissue-forward";
 import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { isVoidBetResultStatus, settleSelection } from "./backtest";
@@ -172,6 +173,8 @@ export type ForwardValueRecord = {
   tissueRunnerId: string | null;
   tissueHorseName: string | null;
   tissueProbability: number | null;
+  tissueModelVersion?: string;
+  tissueModelChecksum?: string;
   tissueAgreesWithTpr: boolean | null;
   tissueCapturedPrice?: string | null;
   tissueCapturedDecimalOdds?: number | null;
@@ -305,7 +308,7 @@ export function buildForwardValueRecord(input: {
   race: TodayRace;
   calibration: FamilyCalibration;
   recordedAt?: Date;
-  tissue?: { runnerId: string; horseName: string; probability: number } | null;
+  tissue?: { runnerId: string; horseName: string; probability: number; modelVersion?: string; modelChecksum?: string } | null;
 }): ForwardValueRecord | null {
   const recordedAt = input.recordedAt ?? new Date();
   const raceDateTime = input.race.raceDateTime;
@@ -396,7 +399,7 @@ export function buildForwardValueRecord(input: {
     : null;
   const turfCapRule = input.family === "turf" && recordedAt.toISOString() >= TISSUE_VALUE_PRICE_CAP_RULE_EPOCH
     ? capturedTissueValuePriceCapState(
-      newTissueValuePriceCapRuleState({ family: "turf", modelVersion: "tissue_model_v2", capturedAt: recordedAt.toISOString() }),
+      newTissueValuePriceCapRuleState({ family: "turf", modelVersion: tissue?.modelVersion ?? "tissue_model_v2", capturedAt: recordedAt.toISOString() }),
       {
         capturedAt: recordedAt,
         edge: tissueEdge === null ? null : tissueEdge / 100,
@@ -461,6 +464,7 @@ export function buildForwardValueRecord(input: {
     tissueRunnerId: tissue?.runnerId ?? null,
     tissueHorseName: tissue?.horseName ?? null,
     tissueProbability: tissue?.probability ?? null,
+    ...(tissue?.modelVersion ? { tissueModelVersion: tissue.modelVersion, tissueModelChecksum: tissue.modelChecksum } : {}),
     tissueAgreesWithTpr: tissue ? tissue.runnerId === leader.runner.runnerId : null,
     tissueCapturedPrice: null,
     tissueCapturedDecimalOdds: tissueDecimalOdds,
@@ -669,7 +673,7 @@ function captureTurfValuePriceCapQualification(
   if (record.family !== "turf") return record.tissueValuePriceCapRule;
   const state = record.tissueValuePriceCapRule ?? (
     record.recordedAt >= TISSUE_VALUE_PRICE_CAP_RULE_EPOCH
-      ? newTissueValuePriceCapRuleState({ family: "turf", modelVersion: "tissue_model_v2", capturedAt: record.recordedAt })
+      ? newTissueValuePriceCapRuleState({ family: "turf", modelVersion: record.tissueModelVersion ?? "tissue_model_v2", capturedAt: record.recordedAt })
       : undefined
   );
   if (!state || !snapshot || stage === "t15") return state;
@@ -691,7 +695,7 @@ export function buildForwardValueRecordsFromMeetings(input: {
   meetings: TodayMeeting[];
   calibration: FamilyCalibration;
   recordedAt?: Date;
-  tissueByRaceId?: Map<string, { runnerId: string; horseName: string; probability: number }>;
+  tissueByRaceId?: Map<string, { runnerId: string; horseName: string; probability: number; modelVersion?: string; modelChecksum?: string }>;
 }) {
   return input.meetings.flatMap((meeting) => meeting.races.flatMap((race) => {
     const record = buildForwardValueRecord({
@@ -714,6 +718,8 @@ export function attachTissueValueSnapshots(
     horseName: string;
     probability: number;
     recordedPreRace: boolean | null;
+    modelVersion?: string;
+    modelChecksum?: string;
     capturedPrice?: string | null;
     capturedDecimalOdds?: number | null;
     priceCapturedAt?: string | null;
@@ -727,6 +733,8 @@ export function attachTissueValueSnapshots(
     if (race.family !== "turf" || race.settledAt !== null) return race;
     const tissue = snapshots.get(race.raceId);
     if (!tissue || tissue.recordedPreRace !== true) return race;
+    // A new model cannot enrich a legacy observation or reattribute its prices.
+    if (tissue.modelVersion === TISSUE_V3_MODEL_VERSION && (race.recordedAt < TISSUE_V3_EPOCH || (race.tissueProbability !== null && race.tissueModelVersion !== tissue.modelVersion))) return race;
     const canAttachProbability = race.tissueProbability === null;
     const tissuePriceAt = tissue.priceCapturedAt ? new Date(tissue.priceCapturedAt) : null;
     const tissueMarket = summarizeBookmakerMarket(tissue.bookmakerQuotes);
@@ -764,11 +772,14 @@ export function attachTissueValueSnapshots(
       })
       : null;
     const tissueStage = tissueSnapshot ? priceSnapshotStage(tissueSnapshot.minutesBeforeScheduledOff) : null;
-    const capSource = race.tissueValuePriceCapRule ?? (
+    const priorCapSource = race.tissueValuePriceCapRule ?? (
       race.recordedAt >= TISSUE_VALUE_PRICE_CAP_RULE_EPOCH
-        ? newTissueValuePriceCapRuleState({ family: "turf", modelVersion: "tissue_model_v2", capturedAt: race.recordedAt })
+        ? newTissueValuePriceCapRuleState({ family: "turf", modelVersion: tissue.modelVersion ?? race.tissueModelVersion ?? "tissue_model_v2", capturedAt: race.recordedAt })
         : undefined
     );
+    const capSource = canAttachProbability && tissue.modelVersion && priorCapSource && !priorCapSource.qualification
+      ? { ...priorCapSource, modelVersion: tissue.modelVersion }
+      : priorCapSource;
     const tissueCapRule = capSource && tissueSnapshot && tissueStage !== "t15"
       ? capturedTissueValuePriceCapState(capSource, {
         capturedAt: tissuePriceAt!,
@@ -787,6 +798,7 @@ export function attachTissueValueSnapshots(
       tissueRunnerId: canAttachProbability ? tissue.runnerId : race.tissueRunnerId,
       tissueHorseName: canAttachProbability ? tissue.horseName : race.tissueHorseName,
       tissueProbability: probability,
+      ...(canAttachProbability && tissue.modelVersion ? { tissueModelVersion: tissue.modelVersion, tissueModelChecksum: tissue.modelChecksum } : {}),
       tissueAgreesWithTpr: canAttachProbability ? tissue.runnerId === race.leaderRunnerId : race.tissueAgreesWithTpr,
       tissueCapturedPrice: canAttachPrice ? canAttachMedianPrice ? null : tissue.capturedPrice ?? null : race.tissueCapturedPrice ?? null,
       tissueCapturedDecimalOdds: canAttachPrice ? attachedDecimalPrice : race.tissueCapturedDecimalOdds ?? null,
@@ -1123,3 +1135,8 @@ function decimalLabel(value: number | null) { return value === null ? "-" : valu
 function pct(value: number | null) { return value === null ? "-" : `${(value * 100).toFixed(1)}%`; }
 function pp(value: number | null) { return value === null ? "-" : `${value >= 0 ? "+" : ""}${value.toFixed(1)}pp`; }
 function yesNo(value: boolean | null) { return value === null ? "-" : value ? "yes" : "no"; }
+
+/** Select one Turf model cohort while retaining the other families unchanged. */
+export function turfValueRecordsForModel(records: ForwardValueRecord[], modelVersion: string): ForwardValueRecord[] {
+  return records.filter(record => record.family !== "turf" || record.tissueModelVersion === modelVersion);
+}

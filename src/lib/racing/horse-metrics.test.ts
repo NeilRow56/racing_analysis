@@ -858,3 +858,15 @@ describe("isRunnableResultStatus", () => {
     assert.equal(query.params.includes("non_runner"), true);
   });
 });
+
+test("Turf capture cutoff excludes known runs at/after capture but before target off", () => {
+  const targetOff = new Date("2020-10-01T15:00:00Z"), capture = new Date("2020-10-01T08:00:00Z");
+  const earlier = familyRun("turf", "2020-09-30", 100);
+  const equal = { ...familyRun("turf", "2020-10-01", 200), raceDateTime: capture };
+  const later = { ...familyRun("turf", "2020-10-01", 300), raceDateTime: new Date("2020-10-01T10:00:00Z") };
+  const targets = [target({ runnerId: "target", horseId, raceDateTime: targetOff })];
+  const fixed = calculateTargetRunnerMetrics({ targets, candidateRuns: [earlier, equal, later], asOfDateTime: capture })[0]!.metrics;
+  assert.equal(fixed.priorRuns, 1);
+  assert.equal(fixed.latestTurfSpeedRating, 100);
+  assert.equal(calculateTargetRunnerMetrics({ targets, candidateRuns: [earlier, equal, later] })[0]!.metrics.priorRuns, 3);
+});

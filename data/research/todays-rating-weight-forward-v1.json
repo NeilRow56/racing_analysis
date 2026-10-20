@@ -8384,7 +8384,16 @@
           "runnerId": "f778ba04-96a1-4168-a615-40ec1565949c",
           "horseId": "a0f0d2a4-2fb2-4063-93b7-d66b050d141f",
           "horseName": "Orchard Hatches",
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "resultStatus": "finished",
+            "finishingPosition": 5,
+            "won": false,
+            "deadHeatDivisor": 1,
+            "finalSp": 5.5,
+            "qualifyingPriceProfitLoss": null,
+            "finalSpProfitLoss": -1
+          }
         }
       ],
       "market": {
@@ -8448,8 +8457,17 @@
           ]
         }
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "status": "settled",
+        "resultStatus": "finished",
+        "finishingPosition": 1,
+        "won": true,
+        "deadHeatDivisor": 1,
+        "finalSp": 101,
+        "qualifyingPriceProfitLoss": 70,
+        "finalSpProfitLoss": 100
+      },
+      "settledAt": "2026-10-19T16:05:19.273Z"
     },
     {
       "raceDate": "2026-10-19",
@@ -8487,7 +8505,16 @@
           "runnerId": "cb2fa096-b359-4b67-ae6b-8a7f4567f8ac",
           "horseId": "5ccdf9ae-b03d-4119-8aed-c64ca812d911",
           "horseName": "Lady Roxby",
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "resultStatus": "finished",
+            "finishingPosition": 2,
+            "won": false,
+            "deadHeatDivisor": 1,
+            "finalSp": 5,
+            "qualifyingPriceProfitLoss": null,
+            "finalSpProfitLoss": -1
+          }
         }
       ],
       "market": {
@@ -8551,8 +8578,17 @@
           ]
         }
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "status": "settled",
+        "resultStatus": "finished",
+        "finishingPosition": 4,
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 7,
+        "qualifyingPriceProfitLoss": -1,
+        "finalSpProfitLoss": -1
+      },
+      "settledAt": "2026-10-19T16:05:19.273Z"
     },
     {
       "raceDate": "2026-10-19",
@@ -8590,7 +8626,16 @@
           "runnerId": "d8229c02-0d31-4624-9cec-f0e4f75fec23",
           "horseId": "fb1ed82d-72b4-4878-81d0-921f48542df8",
           "horseName": "Maxident",
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "resultStatus": "finished",
+            "finishingPosition": 2,
+            "won": false,
+            "deadHeatDivisor": 1,
+            "finalSp": 2.5,
+            "qualifyingPriceProfitLoss": null,
+            "finalSpProfitLoss": -1
+          }
         }
       ],
       "market": {
@@ -8654,8 +8699,17 @@
           ]
         }
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "status": "settled",
+        "resultStatus": "finished",
+        "finishingPosition": 3,
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 12,
+        "qualifyingPriceProfitLoss": -1,
+        "finalSpProfitLoss": -1
+      },
+      "settledAt": "2026-10-19T16:05:19.273Z"
     },
     {
       "raceDate": "2026-10-19",
@@ -8693,7 +8747,16 @@
           "runnerId": "222aec15-8720-4d4a-996d-55a97db00a91",
           "horseId": "1181927f-203e-4f9e-aa68-82c69df6238c",
           "horseName": "Walsingham",
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "resultStatus": "finished",
+            "finishingPosition": 8,
+            "won": false,
+            "deadHeatDivisor": 1,
+            "finalSp": 9.5,
+            "qualifyingPriceProfitLoss": null,
+            "finalSpProfitLoss": -1
+          }
         }
       ],
       "market": {
@@ -8757,8 +8820,17 @@
           ]
         }
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "status": "settled",
+        "resultStatus": "finished",
+        "finishingPosition": 9,
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 17,
+        "qualifyingPriceProfitLoss": -1,
+        "finalSpProfitLoss": -1
+      },
+      "settledAt": "2026-10-19T16:05:19.273Z"
     },
     {
       "raceDate": "2026-10-19",
@@ -8796,7 +8868,16 @@
           "runnerId": "7ced59d3-c864-429a-b29f-651a459fd360",
           "horseId": "00644281-4051-4edf-8687-47ff3e0d46f5",
           "horseName": "Brummell",
-          "outcome": null
+          "outcome": {
+            "status": "void",
+            "resultStatus": "non_runner",
+            "finishingPosition": null,
+            "won": null,
+            "deadHeatDivisor": 1,
+            "finalSp": null,
+            "qualifyingPriceProfitLoss": 0,
+            "finalSpProfitLoss": 0
+          }
         }
       ],
       "market": {
@@ -8860,8 +8941,17 @@
           ]
         }
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "status": "settled",
+        "resultStatus": "finished",
+        "finishingPosition": 9,
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 15,
+        "qualifyingPriceProfitLoss": -1,
+        "finalSpProfitLoss": -1
+      },
+      "settledAt": "2026-10-19T16:05:19.273Z"
     },
     {
       "raceDate": "2026-10-19",
@@ -8899,7 +8989,16 @@
           "runnerId": "0a462086-ce73-44c9-9fe8-99b9dab39727",
           "horseId": "9d03f2f2-94c3-4b52-b53e-8a6a25ec2a1b",
           "horseName": "Dreams Galore",
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "resultStatus": "finished",
+            "finishingPosition": 2,
+            "won": false,
+            "deadHeatDivisor": 1,
+            "finalSp": 5.5,
+            "qualifyingPriceProfitLoss": null,
+            "finalSpProfitLoss": -1
+          }
         }
       ],
       "market": {
@@ -8963,8 +9062,17 @@
           ]
         }
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "status": "settled",
+        "resultStatus": "finished",
+        "finishingPosition": 2,
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 5.5,
+        "qualifyingPriceProfitLoss": -1,
+        "finalSpProfitLoss": -1
+      },
+      "settledAt": "2026-10-19T16:05:19.273Z"
     },
     {
       "raceDate": "2026-10-19",
@@ -9002,7 +9110,16 @@
           "runnerId": "61458c4b-bace-4d4a-9556-ea4f46f14b2e",
           "horseId": "704d8677-05d0-4eb3-8191-dba556881aaa",
           "horseName": "Artemis Star",
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "resultStatus": "finished",
+            "finishingPosition": 9,
+            "won": false,
+            "deadHeatDivisor": 1,
+            "finalSp": 5,
+            "qualifyingPriceProfitLoss": null,
+            "finalSpProfitLoss": -1
+          }
         }
       ],
       "market": {
@@ -9066,8 +9183,17 @@
           ]
         }
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "status": "settled",
+        "resultStatus": "finished",
+        "finishingPosition": 2,
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 23,
+        "qualifyingPriceProfitLoss": -1,
+        "finalSpProfitLoss": -1
+      },
+      "settledAt": "2026-10-19T16:05:19.273Z"
     },
     {
       "raceDate": "2026-10-19",
@@ -9105,7 +9231,16 @@
           "runnerId": "90a066b7-9288-4e01-9f52-e7debfa6af09",
           "horseId": "c7d0df1c-25e3-4f66-aa64-868047a0b7fd",
           "horseName": "Electrifarhh",
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "resultStatus": "finished",
+            "finishingPosition": 1,
+            "won": true,
+            "deadHeatDivisor": 1,
+            "finalSp": 4.333,
+            "qualifyingPriceProfitLoss": null,
+            "finalSpProfitLoss": 3.333
+          }
         }
       ],
       "market": {
@@ -9169,8 +9304,17 @@
           ]
         }
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "status": "settled",
+        "resultStatus": "finished",
+        "finishingPosition": 5,
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 7.5,
+        "qualifyingPriceProfitLoss": -1,
+        "finalSpProfitLoss": -1
+      },
+      "settledAt": "2026-10-19T16:05:19.273Z"
     },
     {
       "raceDate": "2026-10-19",
@@ -9208,7 +9352,16 @@
           "runnerId": "8619038a-533a-45c4-942f-3921c444c5f2",
           "horseId": "225b8ec8-354f-4014-8a63-6e3a34924ef5",
           "horseName": "Sceptic",
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "resultStatus": "finished",
+            "finishingPosition": 3,
+            "won": false,
+            "deadHeatDivisor": 1,
+            "finalSp": 5,
+            "qualifyingPriceProfitLoss": null,
+            "finalSpProfitLoss": -1
+          }
         }
       ],
       "market": {
@@ -9272,8 +9425,17 @@
           ]
         }
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "status": "settled",
+        "resultStatus": "finished",
+        "finishingPosition": 6,
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 5.5,
+        "qualifyingPriceProfitLoss": -1,
+        "finalSpProfitLoss": -1
+      },
+      "settledAt": "2026-10-19T16:05:19.273Z"
     },
     {
       "raceDate": "2026-10-19",
@@ -9311,7 +9473,16 @@
           "runnerId": "d5a747cc-3fa8-4bc8-95aa-fa9639331437",
           "horseId": "492abce0-bb7b-42cd-8042-540931aec8d1",
           "horseName": "Blue Hero",
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "resultStatus": "finished",
+            "finishingPosition": 10,
+            "won": false,
+            "deadHeatDivisor": 1,
+            "finalSp": 9,
+            "qualifyingPriceProfitLoss": null,
+            "finalSpProfitLoss": -1
+          }
         }
       ],
       "market": {
@@ -9375,8 +9546,17 @@
           ]
         }
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "status": "settled",
+        "resultStatus": "finished",
+        "finishingPosition": 7,
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 19,
+        "qualifyingPriceProfitLoss": -1,
+        "finalSpProfitLoss": -1
+      },
+      "settledAt": "2026-10-19T19:45:20.522Z"
     },
     {
       "raceDate": "2026-10-19",
@@ -9414,7 +9594,16 @@
           "runnerId": "8ce9456b-5b6a-453b-8957-6b0c3d02ab56",
           "horseId": "729be964-f8f5-4584-be45-a83d9aef791f",
           "horseName": "Snap Decision",
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "resultStatus": "finished",
+            "finishingPosition": 14,
+            "won": false,
+            "deadHeatDivisor": 1,
+            "finalSp": 23,
+            "qualifyingPriceProfitLoss": null,
+            "finalSpProfitLoss": -1
+          }
         }
       ],
       "market": {
@@ -9478,8 +9667,17 @@
           ]
         }
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "status": "settled",
+        "resultStatus": "finished",
+        "finishingPosition": 14,
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 23,
+        "qualifyingPriceProfitLoss": -1,
+        "finalSpProfitLoss": -1
+      },
+      "settledAt": "2026-10-19T16:05:19.273Z"
     },
     {
       "raceDate": "2026-10-19",
@@ -9517,7 +9715,16 @@
           "runnerId": "7dd02a35-7ef1-47c4-9cba-a080c13873b1",
           "horseId": "cda18105-213f-4f13-b4e6-4546a4b60b06",
           "horseName": "Shay's Dream",
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "resultStatus": "finished",
+            "finishingPosition": 3,
+            "won": false,
+            "deadHeatDivisor": 1,
+            "finalSp": 4.5,
+            "qualifyingPriceProfitLoss": null,
+            "finalSpProfitLoss": -1
+          }
         }
       ],
       "market": {
@@ -9581,8 +9788,17 @@
           ]
         }
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "status": "settled",
+        "resultStatus": "finished",
+        "finishingPosition": 5,
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 17,
+        "qualifyingPriceProfitLoss": -1,
+        "finalSpProfitLoss": -1
+      },
+      "settledAt": "2026-10-19T19:45:20.522Z"
     }
   ]
 }

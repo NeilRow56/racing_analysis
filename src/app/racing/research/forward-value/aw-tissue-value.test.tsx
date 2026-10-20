@@ -6,7 +6,7 @@ import { emptyAwTissueForward, type AwTissueForwardData } from "@/lib/racing/aw-
 import type { ForwardValuePriceSnapshot, ForwardValueRecord } from "@/lib/racing/forward-value";
 import { summarizeTissuePositiveEdgeRankOnePerformance, turfTissueQualifyingPriceProfitLoss } from "@/lib/racing/forward-value-summary";
 import { emptyJumpTissueForward, type JumpTissueForwardData } from "@/lib/racing/jump-tissue-forward";
-import { AwTissueCell } from "../../today/page";
+import { AwTissueCell } from "../../today/tissue-cells";
 import type { TodayRunner } from "@/lib/racing/todays-racing";
 import { emptyTissueValueReviewData, upsertTissueValueReview } from "@/lib/racing/tissue-value-review";
 

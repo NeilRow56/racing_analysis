@@ -7,21 +7,21 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { RankOneMonitoring } from "@/app/racing/research/forward-value/rank-one-monitoring";
 import { ResearchPageLayout } from "@/app/racing/research/forward-value/research-page-layout";
 import { calculateHorseMetricsAsOf } from "./horse-metrics";
-import { loadFrozenTissueModel, TISSUE_V2_CONFIG, buildTissueForwardRace } from "./tissue-forward";
+import { loadFrozenTissueModel, ACTIVE_TURF_TISSUE_CONFIG, buildTissueForwardRace, TISSUE_V3_EPOCH, TISSUE_V3_LIVE_SEMANTICS_VERSION, TURF_TISSUE_LIVE_SEMANTICS_VERSION, TURF_TISSUE_LIVE_SEMANTICS_EPOCH } from "./tissue-forward";
 import { loadJumpTissueModel, predictJumpTissue } from "./jump-tissue-model";
 import { loadAwTissueModel, predictAwTissue } from "./aw-tissue-model";
 import { workflowSteps } from "../../../scripts/run-research-workflow";
 import { capComparison } from "../../../scripts/diagnose-rank-one-price-cap";
 import type { TodayMeeting, TodayRace, TodayRunner } from "./todays-racing";
 import { appendRankOne, buildRankOneObservations, currentRankOne, emptyRankOne, isWithinRankOneCap, loadRankOne, mutateRankOne, RANK_ONE_CAPS, RANK_ONE_EPOCH, RANK_ONE_SOURCES, runRankOneCycle, settleRankOne, summarizeRankOne, type RankOneFamily, type RankOneModels } from "./rank-one-forward";
-const date = "2026-10-17", now = new Date(`${date}T08:00:00Z`), after = new Date(`${date}T18:00:00Z`);
-const models: RankOneModels = { turf: await loadFrozenTissueModel(TISSUE_V2_CONFIG.modelPath, TISSUE_V2_CONFIG.modelVersion), jump: await loadJumpTissueModel(), aw: await loadAwTissueModel(), comments: new Map(), awStarts: new Map([["a", 0], ["b", 0], ["c", 0]]) };
+const date = "2026-10-20", now = new Date(`${date}T08:00:00Z`), after = new Date(`${date}T18:00:00Z`);
+const models: RankOneModels = { turf: await loadFrozenTissueModel(ACTIVE_TURF_TISSUE_CONFIG.modelPath, ACTIVE_TURF_TISSUE_CONFIG.modelVersion), jump: await loadJumpTissueModel(), aw: await loadAwTissueModel(), comments: new Map(), awStarts: new Map([["a", 0], ["b", 0], ["c", 0]]) };
 function runner(id: string, price: number): TodayRunner {
   return { runnerId: id, runnerSourceId: id, horseId: `horse-${id}`, horseName: `Horse ${id}`, saddleclothNumber: 1, horseAge: 5, horseSex: null, weight: null, weightCarriedLbs: 140, draw: null, jockeyName: null, trainerId: null, trainerName: null, officialRating: 80,
     odds: "1/100", oddsDecimal: "1.01", forecastOdds: "1/100", forecastDecimalOdds: 1.01, bookmakerQuotes: [{ bookmakerId: 1, bookmakerName: "Real Bookmaker", fractionalOdds: null, decimalOdds: price }], resultStatus: null, finishingPosition: null,
     metrics: calculateHorseMetricsAsOf({ runs: [], beforeDateTime: new Date(`${date}T14:00:00Z`) }) };
 }
-function race(family: RankOneFamily = "HURDLE"): TodayRace { return { raceId: family, sourceId: "sl", scheduledTime: "14:00", raceDateTime: new Date(`${date}T14:00:00Z`), courseCountry: "GB", raceName: family === "HURDLE" ? "Novices Hurdle" : family === "CHASE" ? "Handicap Chase" : "Handicap Stakes", raceClass: "4", raceType: family === "HURDLE" ? "hurdle" : family === "CHASE" ? "chase" : "flat", raceTypeCode: null, distance: "2m", distanceYards: 3520, going: family === "AW" ? "Standard" : "Good", surface: family === "AW" ? "AllWeather" : family === "TURF" ? "Turf" : null, declaredRunnerCount: 3, actualRunnerCount: 3, winningTime: null, runners: [runner("a", 2), runner("b", 4), runner("c", 8)] }; }
+function race(family: RankOneFamily = "HURDLE"): TodayRace { return { turfTissueHistoryAsOf: now.toISOString(), raceId: family, sourceId: "sl", scheduledTime: "14:00", raceDateTime: new Date(`${date}T14:00:00Z`), courseCountry: "GB", raceName: family === "HURDLE" ? "Novices Hurdle" : family === "CHASE" ? "Handicap Chase" : "Handicap Stakes", raceClass: "4", raceType: family === "HURDLE" ? "hurdle" : family === "CHASE" ? "chase" : "flat", raceTypeCode: null, distance: "2m", distanceYards: 3520, going: family === "AW" ? "Standard" : "Good", surface: family === "AW" ? "AllWeather" : family === "TURF" ? "Turf" : null, declaredRunnerCount: 3, actualRunnerCount: 3, winningTime: null, runners: [runner("a", 2), runner("b", 4), runner("c", 8)] }; }
 function meetings(races: TodayRace[]): TodayMeeting[] { return [{ courseId: "course", courseSourceId: "sl-course", courseName: "Test Course", country: "GB", order: 1, races }]; }
 function observations(r = race(), m = models, time = now) { return buildRankOneObservations({ meetings: meetings([r]), raceDate: date, capturedAt: time, models: m }); }
 function captured(r = race()) { return appendRankOne(emptyRankOne(), observations(r)); }
@@ -31,7 +31,7 @@ test("all four rank sources match existing production Tissue predictions", () =>
   for (const family of ["TURF", "HURDLE", "CHASE", "AW"] as const) {
     const r = race(family);
     const selected = currentRankOne(r, "Test Course", date, models, now)!;
-    const ranks = family === "TURF" ? buildTissueForwardRace({ race: r, course: "Test Course", raceDate: date, model: models.turf, commentsByHorse: models.comments, recordedAt: now, config: TISSUE_V2_CONFIG })!.runners.map(r => ({ runnerId: r.runnerId, rank: r.tissueRank })) : family === "AW" ? predictAwTissue(r, models.awStarts, models.aw).runners : predictJumpTissue(r, models.comments, models.jump).runners;
+    const ranks = family === "TURF" ? buildTissueForwardRace({ race: r, course: "Test Course", raceDate: date, model: models.turf, commentsByHorse: models.comments, recordedAt: now, config: ACTIVE_TURF_TISSUE_CONFIG })!.runners.map(r => ({ runnerId: r.runnerId, rank: r.tissueRank })) : family === "AW" ? predictAwTissue(r, models.awStarts, models.aw).runners : predictJumpTissue(r, models.comments, models.jump).runners;
     assert.equal(selected.family, family);
     assert.equal(selected.runnerId, ranks.filter(r => r.rank === 1).sort((a, b) => a.runnerId.localeCompare(b.runnerId))[0]!.runnerId);
     const row = observations(r)[0]!;
@@ -55,8 +55,10 @@ test("loaded racecards capture the authoritative rank one before actual starters
     r.declaredRunnerCount = null;
     assert.deepEqual(observations(r), []);
     r.declaredRunnerCount = 3;
+    r.declaredRunnerCount = 3;
     r.actualRunnerCount = 4;
-    assert.deepEqual(observations(r), []);
+    if (family === "TURF") assert.equal(observations(r).length, 1);
+    else assert.deepEqual(observations(r), []);
   }
 });
 test("first valid median, normalized full-field probability and market rank frozen", () => {
@@ -203,4 +205,33 @@ test("historical fixed-cutoff metrics retain boundaries and removed-cohort outco
   assert.equal(higher.winners, 1);
   assert.equal(higher.profitLoss, 23);
   assert.equal(higher.medianPrice, 21.01);
+});
+
+test("Turf monitor separates legacy and corrected cohorts without rewriting frozen observations", () => {
+  const fixed = observations(race("TURF"))[0]!;
+  assert.equal(fixed.liveSemanticsVersion, TISSUE_V3_LIVE_SEMANTICS_VERSION);
+  assert.equal(fixed.liveSemanticsEffectiveAt, TISSUE_V3_EPOCH);
+  const { liveSemanticsVersion: _version, liveSemanticsEffectiveAt: _epoch, ...old } = fixed;
+  void _version; void _epoch;
+  const legacy = { ...old, raceId: "legacy-turf", firstCapturedAt: "2026-10-18T08:00:00.000Z", rankSource: "Turf Tissue / tissue_model_v2 / tissueRank" };
+  const data = { ...emptyRankOne(), observations: [legacy, fixed] };
+  const before = JSON.stringify(data);
+  const turf = summarizeRankOne(data).filter(s => s.family === "TURF");
+  assert.deepEqual(turf.map(s => [s.cohort, s.tracked]), [[TISSUE_V3_LIVE_SEMANTICS_VERSION, 1], ["legacy live semantics", 1]]);
+  const html = renderToStaticMarkup(<RankOneMonitoring data={data} date={date}/>);
+  assert.match(html, /Before the Turf history fix/);
+  assert.match(html, /Turf v3 · pre-race counts/);
+  assert.equal(JSON.stringify(data), before);
+  // A race already captured before the fix cannot acquire a new selection.
+  const sameRace = { ...fixed, raceId: legacy.raceId };
+  const existing = { ...emptyRankOne(), observations: [legacy] };
+  assert.equal(appendRankOne(existing, [sameRace]), existing);
+});
+
+test("v3, repaired v2 and legacy Turf summaries never pool outcomes", () => {
+  const v3 = observations(race("TURF"))[0]!;
+  const v2 = { ...v3, raceId: "v2", liveSemanticsVersion: TURF_TISSUE_LIVE_SEMANTICS_VERSION, liveSemanticsEffectiveAt: TURF_TISSUE_LIVE_SEMANTICS_EPOCH };
+  const legacy = { ...v3, raceId: "legacy", liveSemanticsVersion: undefined, liveSemanticsEffectiveAt: undefined };
+  const data = { ...emptyRankOne(), observations: [v3, v2, legacy] };
+  assert.deepEqual(summarizeRankOne(data).filter(r => r.family === "TURF").map(r => [r.cohort, r.tracked]), [[TISSUE_V3_LIVE_SEMANTICS_VERSION, 1], [TURF_TISSUE_LIVE_SEMANTICS_VERSION, 1], ["legacy live semantics", 1]]);
 });

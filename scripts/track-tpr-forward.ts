@@ -25,7 +25,7 @@ import {
   settleForwardValueRecords,
   upsertForwardValueRecords,
 } from "@/lib/racing/forward-value";
-import { loadTissueForward, TISSUE_V2_CONFIG } from "@/lib/racing/tissue-forward";
+import { loadTissueForward, ACTIVE_TURF_TISSUE_CONFIG } from "@/lib/racing/tissue-forward";
 import {
   DEFAULT_DATA_PATH,
   loadTrackerData,
@@ -88,7 +88,7 @@ async function sync(date: string) {
     }
     const [calibration, tissue] = await Promise.all([
       loadForwardValueCalibration(),
-      loadTissueForward(TISSUE_V2_CONFIG.forwardPath, TISSUE_V2_CONFIG),
+      loadTissueForward(ACTIVE_TURF_TISSUE_CONFIG.forwardPath, ACTIVE_TURF_TISSUE_CONFIG),
     ]);
     const candidates = tprForwardRacesFromMeetings(capture.meetings, date, recordedAt);
     const todayRaces = new Map(capture.meetings.flatMap((meeting) =>
@@ -97,7 +97,7 @@ async function sync(date: string) {
     const tissueByRaceId = new Map(tissue.races.flatMap((race) => {
       if (race.recordedPreRace !== true) return [];
       const leader = [...race.runners].sort((a, b) => a.tissueRank - b.tissueRank || a.runnerId.localeCompare(b.runnerId))[0];
-      return leader ? [[race.raceId, { runnerId: leader.runnerId, horseName: leader.horseName, probability: leader.probability }] as const] : [];
+      return leader ? [[race.raceId, { runnerId: leader.runnerId, horseName: leader.horseName, probability: leader.probability, modelVersion: race.tissueModelVersion, modelChecksum: race.tissueModelChecksum }] as const] : [];
     }));
     let settledCurrent = 0;
     const updated = await mutateTrackerData((latest) => {

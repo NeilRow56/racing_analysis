@@ -26,7 +26,7 @@ test("today command reads the v2 tracker without changing a byte", async () => {
         forecastDecimalOdds: 21,
         displayRaceTime: "15:10",
       }];
-    });
+    }, TISSUE_V2_CONFIG);
 
     assert.equal(written, output);
     assert.match(output, /Tissue Today - 2026-09-25/);

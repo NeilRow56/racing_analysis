@@ -10,6 +10,7 @@ import {
 import {
   TISSUE_V1_CONFIG,
   TISSUE_V2_CONFIG,
+  TISSUE_V3_CONFIG,
   buildTissueForwardRace,
   compareTissueWithTimewise,
   loadFrozenTissueModel,
@@ -22,6 +23,7 @@ import {
   type TissueForwardData,
   type TissueVersionConfig,
 } from "@/lib/racing/tissue-forward";
+import { loadTurfTissueCaptureHistory } from "@/lib/racing/turf-tissue-sync";
 import { currentDayProspectiveCapture } from "@/lib/racing/current-day-sync";
 import type { HistoricalComment } from "./diagnose-independent-tissue-feasibility";
 import { loadTrackerData } from "./diagnose-tpr-vs-timewise-forward";
@@ -33,12 +35,12 @@ import {
 const timings = new Map<string, number>();
 
 const command = process.argv[2] ?? "summary";
-const version = process.argv[3] ?? "v2";
-const config = version === "v1" ? TISSUE_V1_CONFIG : version === "v2" ? TISSUE_V2_CONFIG : null;
-if (!config) throw new Error("Tissue version must be v1 or v2");
+const version = process.argv[3] ?? "v3";
+const config = version === "v1" ? TISSUE_V1_CONFIG : version === "v2" ? TISSUE_V2_CONFIG : version === "v3" ? TISSUE_V3_CONFIG : null;
+if (!config) throw new Error("Tissue version must be v1, v2 or v3");
 if (command === "summary") await summary(config);
 else if (command === "sync") await sync(process.argv[4] ?? getLocalRacingDate(), config);
-else throw new Error("Usage: track-independent-tissue.ts <summary|sync> <v1|v2> [YYYY-MM-DD]");
+else throw new Error("Usage: track-independent-tissue.ts <summary|sync> <v1|v2|v3> [YYYY-MM-DD]");
 
 async function sync(raceDate: string, selected: TissueVersionConfig) {
   const connection = createDbConnection();
@@ -78,13 +80,15 @@ async function sync(raceDate: string, selected: TissueVersionConfig) {
       console.log(capture.message);
       return;
     }
+    if (selected.preRaceOnly) capture.meetings = await loadTurfTissueCaptureHistory(connection.db, capture.meetings, raceDate, now);
     const model = await loadFrozenTissueModel(selected.modelPath, selected.modelVersion);
     const declared = await timed("declared_horse_lookup", async () => declaredTurfTargets(capture.meetings));
     const { commentsByHorse, rowCount: historicalCommentRows } = await timed("historical_comment_query", () =>
       loadCommentsForDeclaredHorses(connection.client, declared.horseTargets),
     );
+    const scoringAt = selected.preRaceOnly ? new Date() : now;
     const candidates = await timed("tissue_scoring", async () => declared.races.flatMap(({ course, race }) =>
-      buildTissueForwardRace({ raceDate, course, race, model, commentsByHorse, recordedAt: now, config: selected }),
+      buildTissueForwardRace({ raceDate, course, race, model, commentsByHorse, recordedAt: scoringAt, config: selected }),
     ).filter((race): race is NonNullable<typeof race> => race !== null));
     let updated = upsertTissueRaces(beforeCapture, candidates);
     updated = await timed("result_enrichment", async () => {
@@ -96,7 +100,7 @@ async function sync(raceDate: string, selected: TissueVersionConfig) {
     await timed("persistence", async () => {
       if (JSON.stringify(updated) !== JSON.stringify(beforeCapture)) await saveTissueForward(updated, selected.forwardPath);
     });
-    if (selected.forwardVersion === TISSUE_V2_CONFIG.forwardVersion) {
+    if (selected.forwardVersion === TISSUE_V2_CONFIG.forwardVersion || selected.forwardVersion === TISSUE_V3_CONFIG.forwardVersion) {
       const currentRaces = new Map(capture.meetings.flatMap((meeting) =>
         meeting.races.map((race) => [race.raceId, race] as const)
       ));
@@ -114,10 +118,12 @@ async function sync(raceDate: string, selected: TissueVersionConfig) {
           runnerId: leader.runnerId,
           horseName: leader.horseName,
           probability: leader.probability,
+          modelVersion: race.tissueModelVersion,
+          modelChecksum: race.tissueModelChecksum,
           recordedPreRace: race.recordedPreRace,
           capturedPrice: validDecimalOdds === null ? null : currentRunner?.odds ?? null,
           capturedDecimalOdds: validDecimalOdds,
-          priceCapturedAt: validDecimalOdds !== null || hasValidBookmakerQuote ? now.toISOString() : null,
+          priceCapturedAt: validDecimalOdds !== null || hasValidBookmakerQuote ? scoringAt.toISOString() : null,
           forecastPrice: currentRunner?.forecastOdds ?? currentRunner?.odds ?? null,
           forecastDecimalPrice: currentRunner?.forecastDecimalOdds ?? validDecimalOdds,
           bookmakerQuotes: currentRunner?.bookmakerQuotes ?? [],

@@ -196,7 +196,7 @@ describe("Today request orchestration", () => {
   });
 
   test("labels bookmaker median, best price, and forecast provenance", () => {
-    const source = readFileSync(new URL("./page.tsx", import.meta.url), "utf8");
+    const source = readFileSync(new URL("./tissue-cells.tsx", import.meta.url), "utf8");
     assert.match(source, /Median market:/);
     assert.match(source, /Best:/);
     assert.match(source, /Forecast:/);

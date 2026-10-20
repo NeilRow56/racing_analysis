@@ -140,6 +140,8 @@ export type TodaySavedRuleMatch = {
 };
 
 export type TodayRace = {
+  /** Turf v3 history/participant metrics were loaded strictly before this cutoff. */
+  turfTissueHistoryAsOf?: string;
   raceId: string;
   sourceId: string | null;
   scheduledTime: string | null;

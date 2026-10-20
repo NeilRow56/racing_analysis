@@ -1,10 +1,10 @@
 import { awTissueValueCategory, cleanAwTissueRace, currentPositiveAwTissueRankOneEdges, isMainAwTissueValue, type AwTissueForwardData } from "./aw-tissue-forward";
 import { settleSelection } from "./backtest";
 import { cleanJumpTissueRace, currentPositiveJumpTissueRankOneEdges, type JumpTissueForwardData } from "./jump-tissue-forward";
-import { FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION, type ForwardValuePriceSnapshot, type ForwardValueRecord } from "./forward-value";
+import { FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION, turfValueRecordsForModel, type ForwardValuePriceSnapshot, type ForwardValueRecord } from "./forward-value";
 import { summarizeJumpG4Forward, type JumpG4ForwardData } from "./jump-g4-forward";
 import { modelDisagreementResearchRows, summarizeModelDisagreementForward, type ModelDisagreementForwardData } from "./model-disagreement-forward";
-import { type TissueForwardData } from "./tissue-forward";
+import { TISSUE_V3_MODEL_VERSION, TISSUE_V3_EPOCH, type TissueForwardData } from "./tissue-forward";
 import { formatRaceTimeForDisplay, formatSportingLifeRaceTime, type SportingLifeCurrentPrice } from "./todays-racing";
 import { emptyTodaysRatingWeightForward, summarizeTodaysRatingWeight, type TodaysRatingWeightForwardData } from "./todays-rating-weight-forward";
 import { isTurfMainValueRecord, qualifyingTurfTissueRankOneEdges, summarizeTissuePositiveEdgeRankOnePerformance, TISSUE_VALUE_DISPLAY_EPOCH } from "./forward-value-summary";
@@ -132,8 +132,9 @@ export function buildResearchDashboard(input: {
     });
     rows[rows.length - 1]!.signals[0]!.context = qualificationContext;
   };
+  const turfRatings = turf.tissueModelVersion === TISSUE_V3_MODEL_VERSION ? turfValueRecordsForModel(ratings, TISSUE_V3_MODEL_VERSION) : ratings;
   const turfToday = turf.races.filter((race) => race.raceDate === date && race.recordedPreRace === true);
-  for (const { race, runner, comparison } of qualifyingTurfTissueRankOneEdges(turfToday, ratings, prices, date)) {
+  for (const { race, runner, comparison } of qualifyingTurfTissueRankOneEdges(turfToday, turfRatings, prices, date)) {
     const record = ratings.find((entry) => entry.raceId === race.raceId && entry.tissueRunnerId === runner.runnerId);
     if (date >= priceCapEpochDate && (!record || !isTurfMainValueRecord(record))) continue;
     addTissue("turf_tissue", race, runner, runner.probability, comparison.price, comparison.edge,
@@ -144,7 +145,7 @@ export function buildResearchDashboard(input: {
         latestPrice: prices.find((price) => price.raceId === race.raceId && price.runnerId === runner.runnerId) ?? null,
       } : undefined);
   }
-  for (const { race, runner, record } of settledTurfTissueValueRows(turfToday, ratings)) {
+  for (const { race, runner, record } of settledTurfTissueValueRows(turfToday, turfRatings)) {
     addTissue("turf_tissue", race, runner, runner.probability, {
       raceId: race.raceId,
       runnerId: runner.runnerId,
@@ -210,8 +211,9 @@ export function buildResearchDashboard(input: {
     });
   }
   const horses = mergeResearchSignals(rows);
-  const { display, historical, hurdleValueMonitor } = buildProspectiveMonitors(turf, jump, aw, g4, weightData, ratings, date, input.includeModelDisagreementInDailySummary ? input.modelDisagreement : undefined);
-  const longPriceShadows = buildLongPriceShadows({ date, prices, turf: turfToday, aw, ratings });
+  const { display, historical, hurdleValueMonitor } = buildProspectiveMonitors(turf, jump, aw, g4, weightData, turfRatings, date, input.includeModelDisagreementInDailySummary ? input.modelDisagreement : undefined);
+  if (turf.tissueModelVersion === TISSUE_V3_MODEL_VERSION && display[0]) display[0].cohort = `Turf v3 only · pre-race-safe declarations from ${TISSUE_V3_EPOCH}`;
+  const longPriceShadows = buildLongPriceShadows({ date, prices, turf: turfToday, aw, ratings: turfRatings });
   return { date, horses, emptyMessage: prices.length === 0 ? `No racecards imported for ${date}.` : horses.length === 0 ? "No research signals today." : null,
     monitors: display, historicalTissueMonitors: historical, hurdleValues: hurdleValueRows(jump, prices), hurdleValueMonitor, longPriceShadows };
 }

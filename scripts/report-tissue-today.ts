@@ -3,17 +3,19 @@ import { pathToFileURL } from "node:url";
 import { createDbConnection } from "@/db";
 import { getSportingLifeCurrentPricesForDate, type SportingLifeCurrentPrice } from "@/lib/racing/todays-racing";
 import {
-  TISSUE_V2_CONFIG,
+  ACTIVE_TURF_TISSUE_CONFIG,
+  type TissueVersionConfig,
   loadTissueForward,
   renderTissueTodayReport,
 } from "@/lib/racing/tissue-forward";
 
 export async function reportTissueToday(
-  path = TISSUE_V2_CONFIG.forwardPath,
+  path = ACTIVE_TURF_TISSUE_CONFIG.forwardPath,
   write: (output: string) => void = console.log,
   loadCurrentPrices: (raceDate: string) => Promise<SportingLifeCurrentPrice[]> = loadCurrentMarketPrices,
+  config: TissueVersionConfig = ACTIVE_TURF_TISSUE_CONFIG,
 ): Promise<string> {
-  const data = await loadTissueForward(path, TISSUE_V2_CONFIG);
+  const data = await loadTissueForward(path, config);
   const latestDate = data.races
     .filter((race) => race.recordedPreRace === true)
     .map((race) => race.raceDate)

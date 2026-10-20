@@ -49,7 +49,7 @@ describe("Today Speed display", () => {
     assert.match(selectorSource, /onChange=\{\(event\) => setMetric/);
     assert.doesNotMatch(selectorSource, /server|action|tracker|turfPerformanceRating/i);
     assert.equal((pageSource.match(/<SpeedDisplayValue\b/g) ?? []).length, 1);
-    assert.match(pageSource, /<TurfPerformanceRatingCell runner=\{runner\}/);
+    assert.match(pageSource, /<TurfPerformanceRatingCell coverage=\{tprCoverage\} runner=\{runner\}/);
     assert.match(pageSource, /<TodayMarketOdds runner=\{runner\}/);
   });
 });

@@ -3,7 +3,7 @@ import { resolve } from "node:path";
 import { createDbConnection } from "@/db";
 import { pendingTprForwardRaceIds, settlePendingTprForwardRaces } from "@/lib/racing/tpr-forward-workflow";
 import { pendingForwardValueRaceIds, settleForwardValueRecords, mutateForwardValueData } from "@/lib/racing/forward-value";
-import { loadTissueForward, pendingCleanPreRaceTissueRaceIds, saveTissueForward, settlePendingTissueForwardRaces, TISSUE_V2_CONFIG } from "@/lib/racing/tissue-forward";
+import { loadTissueForward, pendingCleanPreRaceTissueRaceIds, saveTissueForward, settlePendingTissueForwardRaces, ACTIVE_TURF_TISSUE_CONFIG } from "@/lib/racing/tissue-forward";
 import { mutateJumpTissueForward, updateJumpTissueForward } from "@/lib/racing/jump-tissue-forward";
 import { mutateAwTissueForward, updateAwTissueForward } from "@/lib/racing/aw-tissue-forward";
 import { mutateAwTissuePairedForward, updateAwTissuePairedForward } from "@/lib/racing/aw-tissue-paired-forward";
@@ -25,7 +25,7 @@ export async function main(args: string[]) {
   try {
     const [tpr, tissue] = await Promise.all([
       loadTrackerData(),
-      loadTissueForward(TISSUE_V2_CONFIG.forwardPath, TISSUE_V2_CONFIG),
+      loadTissueForward(ACTIVE_TURF_TISSUE_CONFIG.forwardPath, ACTIVE_TURF_TISSUE_CONFIG),
     ]);
     const raceIds = [...new Set([
       ...pendingTprForwardRaceIds(tpr),
@@ -58,7 +58,7 @@ export async function main(args: string[]) {
     });
     const tissueResult = settlePendingTissueForwardRaces(tissue, races, now);
     settledTurfTissue = tissueResult.settled;
-    if (settledTurfTissue > 0) await saveTissueForward(tissueResult.data, TISSUE_V2_CONFIG.forwardPath);
+    if (settledTurfTissue > 0) await saveTissueForward(tissueResult.data, ACTIVE_TURF_TISSUE_CONFIG.forwardPath);
     await mutateJumpTissueForward((latest) => {
       const before = latest.races.filter((race) => race.settledAt !== null).length;
       const next = updateJumpTissueForward(latest, races, now);

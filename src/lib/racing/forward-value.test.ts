@@ -1,8 +1,10 @@
+import { TISSUE_V3_MODEL_VERSION } from "./tissue-forward";
 import assert from "node:assert/strict";
 import { describe, test } from "node:test";
 import { readFile } from "node:fs/promises";
 import {
   attachTissueValueSnapshots,
+  turfValueRecordsForModel,
   buildForwardValueRecord,
   edgeBand,
   emptyForwardValueData,
@@ -667,3 +669,26 @@ function quotes(...decimalOdds: number[]) {
 function meetings(value: TodayRace): TodayMeeting[] {
   return [{ courseId: "test", courseSourceId: null, courseName: "Test", country: "GB", order: 0, races: [value] }];
 }
+
+test("new Turf value captures retain v3 identity and cannot enrich older model records", () => {
+  const card = { ...race(), raceDateTime: new Date("2026-10-20T13:00:00Z") };
+  const args = { family: "turf" as const, raceDate: "2026-10-20", course: "Test", race: card, calibration, recordedAt: new Date("2026-10-20T08:00:00Z") };
+  const tissue = { runnerId: "one", horseName: "Leader", probability: .4, modelVersion: TISSUE_V3_MODEL_VERSION, modelChecksum: "v3-checksum" };
+  const current = buildForwardValueRecord({ ...args, tissue })!;
+  assert.equal(current.tissueModelVersion, TISSUE_V3_MODEL_VERSION);
+  assert.equal(current.tissueModelChecksum, "v3-checksum");
+  assert.equal(current.tissueValuePriceCapRule?.modelVersion, TISSUE_V3_MODEL_VERSION);
+  const legacy = buildForwardValueRecord({ ...args, tissue: { ...tissue, modelVersion: "tissue_model_v2" } })!;
+  const historical = buildForwardValueRecord({ ...args, recordedAt: new Date("2026-09-27T08:00:00Z") })!;
+  const data = { ...emptyForwardValueData(), races: [legacy, historical] };
+  const bytes = JSON.stringify(data);
+  const snapshots = new Map([[card.raceId, { ...tissue, recordedPreRace: true, bookmakerQuotes: quotes(6), priceCapturedAt: "2026-10-20T09:00:00Z" }]]);
+  assert.equal(attachTissueValueSnapshots(data, snapshots), data);
+  assert.equal(JSON.stringify(data), bytes);
+  const waiting = buildForwardValueRecord(args)!;
+  const attached = attachTissueValueSnapshots({ ...emptyForwardValueData(), races: [waiting] }, snapshots).races[0]!;
+  assert.equal(attached.tissueModelVersion, TISSUE_V3_MODEL_VERSION);
+  assert.equal(attached.tissueValuePriceCapRule?.modelVersion, TISSUE_V3_MODEL_VERSION);
+  const otherFamily = { ...current, family: "aw" as const };
+  assert.deepEqual(turfValueRecordsForModel([legacy, current, otherFamily], TISSUE_V3_MODEL_VERSION), [current, otherFamily]);
+});

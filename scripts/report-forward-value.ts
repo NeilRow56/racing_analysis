@@ -1,3 +1,4 @@
+import { turfValueRecordsForModel } from "@/lib/racing/forward-value";
 import { writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
@@ -21,7 +22,7 @@ import {
 import { createDbConnection } from "@/db";
 import { loadAwTissueForward, renderAwTissueValue } from "@/lib/racing/aw-tissue-forward";
 import { loadJumpTissueForward, renderJumpTissueValue } from "@/lib/racing/jump-tissue-forward";
-import { loadTissueForward, TISSUE_V2_CONFIG } from "@/lib/racing/tissue-forward";
+import { loadTissueForward, ACTIVE_TURF_TISSUE_CONFIG } from "@/lib/racing/tissue-forward";
 import { getLocalRacingDate, getSportingLifeCurrentCardRaceStatuses, getSportingLifeCurrentPricesForDate } from "@/lib/racing/todays-racing";
 import {
   buildForwardValueReportingScope,
@@ -79,7 +80,7 @@ async function summary(options: ForwardValueSummaryOptions = { details: false })
   console.log(`Date range: ${sharedSummary.earliestObservationDate ? `${sharedSummary.earliestObservationDate} to ${sharedSummary.latestObservationDate}` : "-"}`);
   printExclusions(excluded);
   printFamilyCounts(analyticalRecords);
-  console.log(`\n${renderTissuePositiveEdgeRankOnePerformance(analyticalRecords, { jump: dailyReport.jumpTissue, aw: dailyReport.awTissue })}`);
+  console.log(`\n${renderTissuePositiveEdgeRankOnePerformance(turfValueRecordsForModel(analyticalRecords, ACTIVE_TURF_TISSUE_CONFIG.modelVersion), { jump: dailyReport.jumpTissue, aw: dailyReport.awTissue })}`);
   if (sharedSummary.sparseSampleWarning) {
     console.log("\nSample warning: fewer than 25 clean settled observations overall. Results are VERY EARLY and no profitability conclusion is supported.");
   }
@@ -196,7 +197,7 @@ async function results(date: string) {
   ]);
   console.log(renderTissueValueResultsSummary({
     date,
-    records: data.races,
+    records: turfValueRecordsForModel(data.races, ACTIVE_TURF_TISSUE_CONFIG.modelVersion),
     jump: jumpTissue,
     aw: awTissue,
   }));
@@ -206,7 +207,7 @@ async function results(date: string) {
 
 async function loadDailyPositiveTissueRankOneReport(date: string) {
   const [turfTissue, jumpTissue, awTissue, currentPrices, valueData] = await Promise.all([
-    loadTissueForward(TISSUE_V2_CONFIG.forwardPath, TISSUE_V2_CONFIG),
+    loadTissueForward(ACTIVE_TURF_TISSUE_CONFIG.forwardPath, ACTIVE_TURF_TISSUE_CONFIG),
     loadJumpTissueForward(),
     loadAwTissueForward(),
     loadCurrentPrices(date),
@@ -249,7 +250,7 @@ async function loadCleanTissueValuePerformanceReport() {
     loadAwTissueForward(),
   ]);
   const reportingScope = await loadReportingScope(data);
-  return renderTissuePositiveEdgeRankOnePerformance(reportingScope.analyticalRecords, { jump, aw });
+  return `Turf cohort: ${ACTIVE_TURF_TISSUE_CONFIG.modelVersion}\n` + renderTissuePositiveEdgeRankOnePerformance(turfValueRecordsForModel(reportingScope.analyticalRecords, ACTIVE_TURF_TISSUE_CONFIG.modelVersion), { jump, aw });
 }
 
 function printExclusions(records: ForwardValueRecord[]) {
