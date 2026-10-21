@@ -48,13 +48,15 @@ import {
   type TodayRace,
   type TodayRunner,
 } from "@/lib/racing/todays-racing";
-import { todayRaceStatusLabel } from "@/lib/racing/today-race-status";
+import { todayRaceHasConclusiveResult, todayRaceStatusLabel } from "@/lib/racing/today-race-status";
+import { RunnerResultRow, RunnerWinnerBadge } from "./runner-result-display";
 import { enrichTodayForwardTrackerResults } from "@/lib/racing/tpr-timewise-forward-settlement";
 import { loadTrackerData } from "../../../../scripts/diagnose-tpr-vs-timewise-forward";
 import { refreshTodaySelectionResultsAction } from "./actions";
 import { RefreshResultsButton } from "./refresh-results-button";
 import { SpeedDisplayValue, TodaySpeedDisplay } from "./speed-display";
 import { TurfPerformanceRatingCell } from "./tpr-display";
+import { OrSpeedCell, sameOrSpeedEdges, BEST_L3_TURF_HELP } from "./or-speed-display";
 import { syncAwTissueMeetings } from "@/lib/racing/aw-tissue-sync";
 import { attachAwTissueToMeetings } from "@/lib/racing/aw-tissue-forward";
 import { syncJumpTissueMeetings } from "@/lib/racing/jump-tissue-sync";
@@ -398,6 +400,7 @@ function RaceBlock({ race }: {
       ) : null}
 
       <RunnerTable
+        hasConclusiveResult={todayRaceHasConclusiveResult(race)}
         isAllWeatherRace={isAllWeatherRace}
         awDCoverage={awDCoverage}
         jprACoverage={jprACoverage}
@@ -435,6 +438,7 @@ function RaceMeta({ race }: { race: TodayRace }) {
 }
 
 function RunnerTable({
+  hasConclusiveResult,
   isAllWeatherRace,
   awDCoverage,
   jprACoverage,
@@ -443,6 +447,7 @@ function RunnerTable({
   isTurfRace,
   runners,
 }: {
+  hasConclusiveResult: boolean;
   isAllWeatherRace: boolean;
   awDCoverage?: AwRatingCoverage;
   jprACoverage?: RatingCoverage;
@@ -451,6 +456,8 @@ function RunnerTable({
   isTurfRace: boolean;
   runners: TodayRunner[];
 }) {
+  const speedEdges = sameOrSpeedEdges(runners, isTurfRace);
+
   return (
     <div className="mt-4 overflow-x-auto" data-testid="runner-table-scroll">
       <table className="w-full min-w-[1120px] table-fixed text-left text-xs">
@@ -465,7 +472,11 @@ function RunnerTable({
             </th>
             <th className="w-24 px-1.5 py-1.5 font-medium">Jockey</th>
             <th className="w-28 px-1.5 py-1.5 font-medium">Trainer</th>
-            <th className="w-10 px-1.5 py-1.5 font-medium">OR</th>
+            {isTurfRace ? (
+              <th className="w-36 px-1.5 py-1.5 font-semibold text-slate-800" title={BEST_L3_TURF_HELP}>
+                OR + Speed
+              </th>
+            ) : <th className="w-10 px-1.5 py-1.5 font-medium">OR</th>}
             {(isTurfRace || isJumpRace) ? (
               <th
                 className="w-20 px-1.5 py-1.5 font-medium"
@@ -474,13 +485,7 @@ function RunnerTable({
                 Going form
               </th>
             ) : null}
-            <th className="w-16 px-1.5 py-1.5 font-medium">Speed</th>
-            <th
-              className="w-[72px] px-1.5 py-1.5 font-medium"
-              title="Latest historical performance adjusted for today's weight."
-            >
-              Today&apos;s Rating
-            </th>
+            {!isTurfRace ? <th className="w-16 px-1.5 py-1.5 font-medium">Speed</th> : null}
             {isJumpRace ? (
               <th
                 className="w-28 px-1.5 py-1.5 font-medium"
@@ -518,6 +523,7 @@ function RunnerTable({
         <tbody className="divide-y divide-slate-200">
           {runners.map((runner) => (
             <RunnerRow
+              hasConclusiveResult={hasConclusiveResult}
               isAllWeatherRace={isAllWeatherRace}
               awDCoverage={awDCoverage}
               jprACoverage={jprACoverage}
@@ -525,6 +531,7 @@ function RunnerTable({
               isJumpRace={isJumpRace}
               isTurfRace={isTurfRace}
               key={runner.runnerId}
+              speedEdge={speedEdges.get(runner.runnerId)}
               runner={runner}
             />
           ))}
@@ -535,6 +542,7 @@ function RunnerTable({
 }
 
 function RunnerRow({
+  hasConclusiveResult,
   isAllWeatherRace,
   awDCoverage,
   jprACoverage,
@@ -542,7 +550,9 @@ function RunnerRow({
   isJumpRace,
   isTurfRace,
   runner,
+  speedEdge,
 }: {
+  hasConclusiveResult: boolean;
   isAllWeatherRace: boolean;
   awDCoverage?: AwRatingCoverage;
   jprACoverage?: RatingCoverage;
@@ -550,6 +560,7 @@ function RunnerRow({
   isJumpRace: boolean;
   isTurfRace: boolean;
   runner: TodayRunner;
+  speedEdge?: number;
 }) {
   const nonRunner = runner.resultStatus === "non_runner";
   const speedMetrics = speedMetricValues({
@@ -558,19 +569,9 @@ function RunnerRow({
     isTurfRace,
     metrics: runner.metrics,
   });
-  const todaysRating = todaysRatingValue({
-    isAllWeatherRace,
-    isJumpRace,
-    isTurfRace,
-    metrics: runner.metrics,
-  });
 
   return (
-    <tr
-      className={
-        nonRunner ? "bg-slate-100 text-slate-500 line-through" : "align-top"
-      }
-    >
+    <RunnerResultRow runner={runner} hasConclusiveResult={hasConclusiveResult}>
       <td className="px-1.5 py-2">{runner.saddleclothNumber ?? "-"}</td>
       <td className="px-1.5 py-2">
         <div className="flex min-w-0 flex-wrap items-center gap-1">
@@ -580,6 +581,7 @@ function RunnerRow({
           >
             {runner.horseName}
           </Link>
+          <RunnerWinnerBadge runner={runner} hasConclusiveResult={hasConclusiveResult} />
           <HistoricalFormBadges flags={runner.historicalFormFlags} officialRating={runner.officialRating} />
           {nonRunner ? (
             <span className="border border-slate-300 bg-white px-1.5 py-0.5 text-xs font-semibold text-slate-600 no-underline">
@@ -596,16 +598,17 @@ function RunnerRow({
       </td>
       <td className="break-words px-1.5 py-2 leading-4">{runner.jockeyName ?? "-"}</td>
       <td className="break-words px-1.5 py-2 leading-4">{runner.trainerName ?? "-"}</td>
-      <td className="px-1.5 py-2">{runner.officialRating ?? "-"}</td>
+      <td className="px-1.5 py-2">
+        {isTurfRace ? <OrSpeedCell runner={runner} speedEdge={speedEdge} /> : runner.officialRating ?? "-"}
+      </td>
       {(isTurfRace || isJumpRace) ? (
         <td className="px-1.5 py-2">
           <GoingFormCell runner={runner} />
         </td>
       ) : null}
-      <td className="px-1.5 py-2">
-        <SpeedDisplayValue values={speedMetrics} />
-      </td>
-      <td className="px-1.5 py-2">{formatRating(todaysRating)}</td>
+      {!isTurfRace ? (
+        <td className="px-1.5 py-2"><SpeedDisplayValue values={speedMetrics} /></td>
+      ) : null}
       {isJumpRace ? (
         <td className="px-1.5 py-2">
           <JumpRatingCell coverage={jprACoverage} runner={runner} />
@@ -628,7 +631,7 @@ function RunnerRow({
         {runner.metrics?.daysSinceLastRun ?? "-"}
       </td>
       <td className="px-1.5 py-2"><TodayMarketOdds runner={runner} /></td>
-    </tr>
+    </RunnerResultRow>
   );
 }
 
@@ -729,29 +732,6 @@ function RuleEvidence({ label, value }: { label: string; value: string | number 
   );
 }
 
-function todaysRatingValue({
-  isAllWeatherRace,
-  isJumpRace,
-  isTurfRace,
-  metrics,
-}: {
-  isAllWeatherRace: boolean;
-  isJumpRace: boolean;
-  isTurfRace: boolean;
-  metrics: TodayRunner["metrics"];
-}): number | null | undefined {
-  if (isJumpRace) {
-    return metrics?.latestJumpTodaysRating;
-  }
-  if (isAllWeatherRace) {
-    return metrics?.latestAwTodaysRating;
-  }
-  if (isTurfRace) {
-    return metrics?.latestTurfTodaysRating;
-  }
-  return metrics?.latestTodaysRating;
-}
-
 function speedMetricValues({
   isAllWeatherRace,
   isJumpRace,
@@ -801,10 +781,6 @@ function formatFreshnessTime(value: Date): string {
     hour: "2-digit",
     minute: "2-digit",
   }).format(value);
-}
-
-function formatRating(value: number | null | undefined): string {
-  return value === null || value === undefined ? "-" : Math.round(value).toString();
 }
 
 function formatPercent(value: number | null): string {

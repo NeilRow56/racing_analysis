@@ -187,7 +187,7 @@ describe("Today request orchestration", () => {
     assert.match(source, /min-w-\[1120px\].*text-xs/);
     assert.match(source, /data-testid="runner-table-scroll"/);
     assert.match(source, /overflow-x-auto/);
-    for (const heading of ["Horse", "Age", "Wgt", "Draw", "Jockey", "Trainer", "OR", "Going form", "Speed", "Today&apos;s Rating", "Turf TPR", "Days", "Odds"]) {
+    for (const heading of ["Horse", "Age", "Wgt", "Draw", "Jockey", "Trainer", "OR", "Going form", "Speed", "OR \\+ Speed", "Turf TPR", "Days", "Odds"]) {
       assert.match(source, new RegExp(heading));
     }
     assert.match(source, /px-1\.5 py-2/);

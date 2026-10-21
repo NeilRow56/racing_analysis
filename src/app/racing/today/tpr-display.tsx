@@ -14,7 +14,7 @@ export function TurfPerformanceRatingCell({ coverage, runner }: { coverage?: Rat
   const coverageTitle = coverage ? `Rated ${coverage.ratedRunnerCount}/${coverage.activeRunnerCount}; guard ${TPR_RATING_COVERAGE_GUARD_VERSION}, implemented ${TPR_RATING_COVERAGE_GUARD_IMPLEMENTED_AT}; requires at least ${MIN_RACE_RATED_RUNNERS} rated runners and ${(MIN_RACE_RATING_COVERAGE * 100).toFixed(0)}% coverage.` : undefined;
   return (
     <div className="space-y-0.5">
-      <div className="font-semibold text-slate-900">TPR {Math.round(rating.rating)}</div>
+      <div className="font-normal text-slate-600">TPR {Math.round(rating.rating)}</div>
       <div className={insufficientCoverage ? "text-xs font-medium text-amber-700" : "text-xs text-slate-600"} title={insufficientCoverage ? coverageTitle : undefined}>
         {insufficientCoverage ? "Insufficient race coverage" : formatTodayTprRankGap(rating.rank, rating.gap)}
       </div>
