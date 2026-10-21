@@ -56,7 +56,7 @@ import { refreshTodaySelectionResultsAction } from "./actions";
 import { RefreshResultsButton } from "./refresh-results-button";
 import { SpeedDisplayValue, TodaySpeedDisplay } from "./speed-display";
 import { TurfPerformanceRatingCell } from "./tpr-display";
-import { OrSpeedCell, sameOrSpeedEdges, BEST_L3_TURF_HELP } from "./or-speed-display";
+import { OrSpeedCell, sameOrSpeedEdges, sameOrAwSpeedEdges, BEST_L3_TURF_HELP, BEST_L3_AW_HELP } from "./or-speed-display";
 import { syncAwTissueMeetings } from "@/lib/racing/aw-tissue-sync";
 import { attachAwTissueToMeetings } from "@/lib/racing/aw-tissue-forward";
 import { syncJumpTissueMeetings } from "@/lib/racing/jump-tissue-sync";
@@ -456,7 +456,9 @@ function RunnerTable({
   isTurfRace: boolean;
   runners: TodayRunner[];
 }) {
-  const speedEdges = sameOrSpeedEdges(runners, isTurfRace);
+  const speedEdges = isAllWeatherRace
+    ? sameOrAwSpeedEdges(runners, isAllWeatherRace)
+    : sameOrSpeedEdges(runners, isTurfRace);
 
   return (
     <div className="mt-4 overflow-x-auto" data-testid="runner-table-scroll">
@@ -472,8 +474,8 @@ function RunnerTable({
             </th>
             <th className="w-24 px-1.5 py-1.5 font-medium">Jockey</th>
             <th className="w-28 px-1.5 py-1.5 font-medium">Trainer</th>
-            {isTurfRace ? (
-              <th className="w-36 px-1.5 py-1.5 font-semibold text-slate-800" title={BEST_L3_TURF_HELP}>
+            {(isTurfRace || isAllWeatherRace) ? (
+              <th className="w-36 px-1.5 py-1.5 font-semibold text-slate-800" title={isAllWeatherRace ? BEST_L3_AW_HELP : BEST_L3_TURF_HELP}>
                 OR + Speed
               </th>
             ) : <th className="w-10 px-1.5 py-1.5 font-medium">OR</th>}
@@ -485,7 +487,7 @@ function RunnerTable({
                 Going form
               </th>
             ) : null}
-            {!isTurfRace ? <th className="w-16 px-1.5 py-1.5 font-medium">Speed</th> : null}
+            {!isTurfRace && !isAllWeatherRace ? <th className="w-16 px-1.5 py-1.5 font-medium">Speed</th> : null}
             {isJumpRace ? (
               <th
                 className="w-28 px-1.5 py-1.5 font-medium"
@@ -599,14 +601,16 @@ function RunnerRow({
       <td className="break-words px-1.5 py-2 leading-4">{runner.jockeyName ?? "-"}</td>
       <td className="break-words px-1.5 py-2 leading-4">{runner.trainerName ?? "-"}</td>
       <td className="px-1.5 py-2">
-        {isTurfRace ? <OrSpeedCell runner={runner} speedEdge={speedEdge} /> : runner.officialRating ?? "-"}
+        {isTurfRace ? <OrSpeedCell runner={runner} speedEdge={speedEdge} />
+          : isAllWeatherRace ? <OrSpeedCell runner={runner} speedEdge={speedEdge} family="all_weather" />
+          : runner.officialRating ?? "-"}
       </td>
       {(isTurfRace || isJumpRace) ? (
         <td className="px-1.5 py-2">
           <GoingFormCell runner={runner} />
         </td>
       ) : null}
-      {!isTurfRace ? (
+      {!isTurfRace && !isAllWeatherRace ? (
         <td className="px-1.5 py-2"><SpeedDisplayValue values={speedMetrics} /></td>
       ) : null}
       {isJumpRace ? (

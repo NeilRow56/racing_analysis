@@ -2,17 +2,31 @@ import type { TodayRunner } from "@/lib/racing/todays-racing";
 
 type ComparableRunner = Pick<TodayRunner, "runnerId" | "officialRating" | "metrics">;
 
+export const BEST_L3_AW_HELP = "Best L3 is the horse's best All-Weather Speed figure from its last three eligible All-Weather runs.";
+
 export const BEST_L3_TURF_HELP = "Best L3 is the horse's best Turf Speed figure from its last three eligible Turf runs.";
 
 // Display-only comparison of the runners in one race, using existing metrics.
 // Tied leaders have no edge; missing figures cannot supply a comparison.
 export function sameOrSpeedEdges(runners: ComparableRunner[], isTurfRace: boolean): Map<string, number> {
+  return speedEdgesForMetric(runners, isTurfRace, "bestTurfSpeedLast3");
+}
+
+export function sameOrAwSpeedEdges(runners: ComparableRunner[], isAllWeatherRace: boolean): Map<string, number> {
+  return speedEdgesForMetric(runners, isAllWeatherRace, "bestAwSpeedLast3");
+}
+
+function speedEdgesForMetric(
+  runners: ComparableRunner[],
+  enabled: boolean,
+  metric: "bestTurfSpeedLast3" | "bestAwSpeedLast3",
+): Map<string, number> {
   const edges = new Map<string, number>();
-  if (!isTurfRace) return edges;
+  if (!enabled) return edges;
   const groups = new Map<number, { runnerId: string; speed: number }[]>();
   for (const runner of runners) {
     const or = runner.officialRating;
-    const speed = runner.metrics?.bestTurfSpeedLast3;
+    const speed = runner.metrics?.[metric];
     if (!finite(or) || !finite(speed)) continue;
     const group = groups.get(or) ?? [];
     group.push({ runnerId: runner.runnerId, speed });
@@ -28,15 +42,16 @@ export function sameOrSpeedEdges(runners: ComparableRunner[], isTurfRace: boolea
   return edges;
 }
 
-export function OrSpeedCell({ runner, speedEdge }: {
+export function OrSpeedCell({ runner, speedEdge, family = "turf" }: {
   runner: Pick<ComparableRunner, "officialRating" | "metrics">;
   speedEdge?: number;
+  family?: "turf" | "all_weather";
 }) {
-  const speed = runner.metrics?.bestTurfSpeedLast3;
+  const speed = family === "all_weather" ? runner.metrics?.bestAwSpeedLast3 : runner.metrics?.bestTurfSpeedLast3;
   const hasEdge = finite(runner.officialRating) && finite(speed) && finite(speedEdge) && speedEdge > 0;
   return (
     <div className="space-y-0.5">
-      <div className="whitespace-nowrap font-semibold text-slate-900" title={BEST_L3_TURF_HELP}>
+      <div className="whitespace-nowrap font-semibold text-slate-900" title={family === "all_weather" ? BEST_L3_AW_HELP : BEST_L3_TURF_HELP}>
         OR {display(runner.officialRating)} · Best L3 {display(speed)}
       </div>
       {hasEdge ? (
