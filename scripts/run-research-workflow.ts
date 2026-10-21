@@ -112,6 +112,7 @@ export function workflowSteps(mode: WorkflowMode, date: string): WorkflowStep[] 
 
   const steps = [
     importStep,
+    { label: "OR + Best L3 Speed prospective capture", script: "or-speed:capture", args: [date] },
     { label: "Rank 1 monitoring capture", script: "rank-one:sync", args: [date] },
     { label: "All-family Tissue value capture", script: "tissue-value:sync", args: [date] },
     { label: "Hurdle recency research capture", script: "hurdle-recency:sync", args: [date] },

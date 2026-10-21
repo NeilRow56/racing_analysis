@@ -544,7 +544,7 @@ export function isVoidBetResultStatus(resultStatus: string | null): boolean {
   return resultStatus !== null && VOID_BET_RESULT_STATUSES.has(resultStatus.trim().toLowerCase());
 }
 
-function settledWinValue(outcome: HistoricalPostRaceOutcome): boolean | null {
+export function settledWinValue(outcome: Pick<HistoricalPostRaceOutcome, "finishingPosition" | "resultStatus" | "won">): boolean | null {
   if (outcome.finishingPosition !== null) {
     return outcome.won ?? outcome.finishingPosition === 1;
   }

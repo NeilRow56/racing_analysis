@@ -106,6 +106,7 @@ describe("research workflow wrapper", () => {
     assert.equal(result.exitCode, 0);
     assert.deepEqual(calls, [
       "sl:import-racecards 2026-10-09 --request-delay-seconds 2",
+      "or-speed:capture 2026-10-09",
       "rank-one:sync 2026-10-09",
       "tissue-value:sync 2026-10-09",
       "hurdle-recency:sync 2026-10-09",
@@ -304,6 +305,7 @@ describe("research workflow wrapper", () => {
     assert.equal(result.failed?.exitCode, 7);
     assert.deepEqual(calls, [
       "sl:import-racecards",
+      "or-speed:capture",
       "rank-one:sync",
       "tissue-value:sync",
       "hurdle-recency:sync",

@@ -92,6 +92,8 @@
     "value:today": "bun run scripts/report-forward-value.ts today",
     "value:results": "bun run scripts/report-forward-value.ts results",
     "value:summary": "bun run scripts/report-forward-value.ts summary",
+    "or-speed:capture": "bun --env-file=.env.local run scripts/track-or-speed-forward.ts capture",
+    "or-speed:summary": "bun run scripts/track-or-speed-forward.ts summary",
     "research:settle": "bun --env-file=.env.local run scripts/settle-research-results.ts",
     "research:night": "bun run scripts/run-research-workflow.ts --mode night",
     "research:morning": "bun --env-file=.env.local run scripts/run-research-workflow.ts --mode morning",

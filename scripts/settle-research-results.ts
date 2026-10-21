@@ -1,3 +1,4 @@
+import { loadOrSpeed, mutateOrSpeed, pendingOrSpeedRaceIds, settleOrSpeed } from "@/lib/racing/or-speed-forward";
 import { pathToFileURL } from "node:url";
 import { resolve } from "node:path";
 import { createDbConnection } from "@/db";
@@ -31,11 +32,18 @@ export async function main(args: string[]) {
     ]);
     const raceIds = [...new Set([
       ...pendingTprForwardRaceIds(tpr),
+      ...pendingOrSpeedRaceIds(await loadOrSpeed()),
       ...pendingForwardValueRaceIds(await importForwardValueSnapshot()),
       ...pendingCleanPreRaceTissueRaceIds(tissue),
       ...await pendingFromMutationSources(),
     ])];
     const races = await loadRacesByIds(connection.db, raceIds);
+    let settledOrSpeed = 0;
+    await mutateOrSpeed(latest => {
+      const next = settleOrSpeed(latest, races, now);
+      settledOrSpeed = next.observations.filter(r => r.outcome).length - latest.observations.filter(r => r.outcome).length;
+      return next;
+    });
     let settledTpr = 0;
     let settledValue = 0;
     let settledTurfTissue = 0;
@@ -110,6 +118,7 @@ export async function main(args: string[]) {
     console.log([
       `RESEARCH_SETTLE date=${date}`,
       `tpr=${settledTpr}`,
+      `or_speed=${settledOrSpeed}`,
       `value=${settledValue}`,
       `turf_tissue=${settledTurfTissue}`,
       `jump_tissue=${settledJumpTissue}`,

@@ -56,7 +56,7 @@ import { refreshTodaySelectionResultsAction } from "./actions";
 import { RefreshResultsButton } from "./refresh-results-button";
 import { SpeedDisplayValue, TodaySpeedDisplay } from "./speed-display";
 import { TurfPerformanceRatingCell } from "./tpr-display";
-import { OrSpeedCell, sameOrSpeedEdges, sameOrAwSpeedEdges, BEST_L3_TURF_HELP, BEST_L3_AW_HELP } from "./or-speed-display";
+import { OrSpeedCell, sameOrSpeedEdges, sameOrAwSpeedEdges, officialRatingRanks, BEST_L3_TURF_HELP, BEST_L3_AW_HELP } from "./or-speed-display";
 import { syncAwTissueMeetings } from "@/lib/racing/aw-tissue-sync";
 import { attachAwTissueToMeetings } from "@/lib/racing/aw-tissue-forward";
 import { syncJumpTissueMeetings } from "@/lib/racing/jump-tissue-sync";
@@ -459,6 +459,7 @@ function RunnerTable({
   const speedEdges = isAllWeatherRace
     ? sameOrAwSpeedEdges(runners, isAllWeatherRace)
     : sameOrSpeedEdges(runners, isTurfRace);
+  const orRanks = isTurfRace || isAllWeatherRace ? officialRatingRanks(runners) : new Map<string, number>();
 
   return (
     <div className="mt-4 overflow-x-auto" data-testid="runner-table-scroll">
@@ -534,6 +535,7 @@ function RunnerTable({
               isTurfRace={isTurfRace}
               key={runner.runnerId}
               speedEdge={speedEdges.get(runner.runnerId)}
+              orRank={orRanks.get(runner.runnerId)}
               runner={runner}
             />
           ))}
@@ -553,6 +555,7 @@ function RunnerRow({
   isTurfRace,
   runner,
   speedEdge,
+  orRank,
 }: {
   hasConclusiveResult: boolean;
   isAllWeatherRace: boolean;
@@ -563,6 +566,7 @@ function RunnerRow({
   isTurfRace: boolean;
   runner: TodayRunner;
   speedEdge?: number;
+  orRank?: number;
 }) {
   const nonRunner = runner.resultStatus === "non_runner";
   const speedMetrics = speedMetricValues({
@@ -601,8 +605,8 @@ function RunnerRow({
       <td className="break-words px-1.5 py-2 leading-4">{runner.jockeyName ?? "-"}</td>
       <td className="break-words px-1.5 py-2 leading-4">{runner.trainerName ?? "-"}</td>
       <td className="px-1.5 py-2">
-        {isTurfRace ? <OrSpeedCell runner={runner} speedEdge={speedEdge} />
-          : isAllWeatherRace ? <OrSpeedCell runner={runner} speedEdge={speedEdge} family="all_weather" />
+        {isTurfRace ? <OrSpeedCell runner={runner} speedEdge={speedEdge} orRank={orRank} />
+          : isAllWeatherRace ? <OrSpeedCell runner={runner} speedEdge={speedEdge} orRank={orRank} family="all_weather" />
           : runner.officialRating ?? "-"}
       </td>
       {(isTurfRace || isJumpRace) ? (

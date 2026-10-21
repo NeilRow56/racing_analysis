@@ -7,7 +7,7 @@ import {
   isOrdinaryFlatTurfRaceForDisplay,
   type TodayRunner,
 } from "@/lib/racing/todays-racing";
-import { OrSpeedCell, sameOrAwSpeedEdges, sameOrSpeedEdges } from "./or-speed-display";
+import { OrSpeedCell, sameOrAwSpeedEdges, sameOrSpeedEdges, officialRatingRanks } from "./or-speed-display";
 
 function runner(id: string, or: number | null = 78, speed: number | null = 104.6) {
   return {
@@ -19,8 +19,9 @@ function runner(id: string, or: number | null = 78, speed: number | null = 104.6
 
 function render(runners: ReturnType<typeof runner>[]) {
   const edges = sameOrAwSpeedEdges(runners, true);
+  const ranks = officialRatingRanks(runners);
   return runners.map((runner) => renderToStaticMarkup(
-    <OrSpeedCell runner={runner} speedEdge={edges.get(runner.runnerId)} family="all_weather" />,
+    <OrSpeedCell runner={runner} speedEdge={edges.get(runner.runnerId)} orRank={ranks.get(runner.runnerId)} family="all_weather" />,
   ));
 }
 
@@ -36,8 +37,8 @@ describe("Today's Racing AW OR + Speed", () => {
     const [leader, lower] = render([runner("a"), runner("b", 78, 93.9)]);
     assert.match(leader, /Speed edge \+10.7/);
     assert.match(leader, /bg-emerald-50/);
-    assert.match(leader, /next-highest comparable runner in this race carrying the same Official Rating/);
-    assert.match(leader, /Prospective research observation/);
+    assert.match(leader, /next-highest Speed runner in this race with the same Official Rating/);
+    assert.match(leader, /top three by Official Rating/);
     assert.match(lower, /OR 78 · Best L3 93.9/);
     assert.doesNotMatch(lower, /Speed edge/);
   });
@@ -47,15 +48,15 @@ describe("Today's Racing AW OR + Speed", () => {
       runner("a"), runner("b", 78, 100.3), runner("c", 78, 87.2),
     ]);
     assert.match(leader, /Speed edge \+4.3/);
-    assert.match(leader, /border-slate-200/);
-    assert.doesNotMatch(leader, /bg-emerald-50|Speed edge \+17.4/);
+    assert.match(leader, /bg-emerald-50/);
+    assert.doesNotMatch(leader, /Speed edge \+17.4/);
     assert.doesNotMatch(second + third, /Speed edge/);
     assert.match(render([runner("a"), runner("b", 78, 93.9), runner("c", 78, 87.2)])[0], /Speed edge \+10.7/);
   });
 
-  test("prominence uses the unrounded gap with an inclusive >=10 boundary", () => {
-    for (const [speed, large] of [[90.01, false], [90.001, false], [90, true], [89.99, true]] as const) {
-      assert.equal(render([runner("a", 78, 100), runner("b", 78, speed)])[0].includes("bg-emerald-50"), large);
+  test("top-OR prominence is independent of the gap magnitude", () => {
+    for (const speed of [90.01, 90.001, 90, 89.99]) {
+      assert.equal(render([runner("a", 78, 100), runner("b", 78, speed)])[0].includes("bg-emerald-50"), true);
     }
   });
 
@@ -114,7 +115,7 @@ describe("Today's Racing AW OR + Speed", () => {
     assert.match(page, /isAllWeatherRace\s*\? sameOrAwSpeedEdges\(runners, isAllWeatherRace\)\s*: sameOrSpeedEdges\(runners, isTurfRace\)/);
     assert.match(page, /\(isTurfRace \|\| isAllWeatherRace\) \? \(/);
     assert.match(page, /title=\{isAllWeatherRace \? BEST_L3_AW_HELP : BEST_L3_TURF_HELP\}/);
-    assert.match(page, /isAllWeatherRace \? <OrSpeedCell runner=\{runner\} speedEdge=\{speedEdge\} family="all_weather"/);
+    assert.match(page, /isAllWeatherRace \? <OrSpeedCell runner=\{runner\} speedEdge=\{speedEdge\} orRank=\{orRank\} family="all_weather"/);
     assert.match(page, /!isTurfRace && !isAllWeatherRace \? <th[^>]*>Speed<\/th>/);
     assert.match(page, /!isTurfRace && !isAllWeatherRace \? \(\s*<td[^>]*><SpeedDisplayValue/);
     assert.match(page, /<TurfPerformanceRatingCell coverage=\{tprCoverage\} runner=\{runner\}/);
