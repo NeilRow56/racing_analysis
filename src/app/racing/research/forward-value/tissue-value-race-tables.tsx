@@ -35,7 +35,9 @@ export function TissueValueRaceTables({ races, date }: { races: DisplayValueRace
           <td className="p-2">{time(race.scheduledOff)}</td><td className="p-2">{race.course}</td>
           <th scope="row" className="p-2 font-medium">{runner.horseName}{runner.modelMarketRatio >= 1.5 ? <span className="mt-1 block text-[10px] font-normal text-amber-900">Large model/market disagreement{runner.modelMarketRatio >= 2 ? " · 2.00+" : " · 1.50–<2.00"}</span> : null}</th>
           <td className="p-2">{race.family}</td><td className="p-2">{race.modelVersion}</td>
-          <td className="p-2">{runner.tissueRank}</td><td className="p-2">{pct(runner.probability)}</td><td className="p-2">{runner.fairOdds.toFixed(2)}</td>
+          <td className="p-2">{runner.tissueRank === 1 || runner.tissueRank === 2 ? <span className={`inline-flex items-center rounded-sm border px-1.5 py-0.5 ${runner.tissueRank === 1 ? "border-slate-400 bg-slate-200 font-semibold text-slate-900" : "border-slate-300 bg-slate-50 font-medium text-slate-700"}`}>
+            Tissue {runner.tissueRank}
+          </span> : runner.tissueRank}</td><td className="p-2">{pct(runner.probability)}</td><td className="p-2">{runner.fairOdds.toFixed(2)}</td>
           <td className="p-2">{runner.marketPrice.toFixed(2)}</td><td className="p-2">{runner.marketRank}</td><td className="p-2">{pct(runner.marketProbability)}</td>
           <td className="p-2">{runner.probabilityEdge >= 0 ? "+" : ""}{(runner.probabilityEdge * 100).toFixed(2)} pp</td>
           <td className="p-2">{runner.modelMarketRatio.toFixed(2)}×</td><td className="p-2">{signed(runner.expectedReturn)}</td><td className="p-2" title={`Probability edge rank ${runner.probabilityEdgeRank}; model/market ratio rank ${runner.modelMarketRatioRank}`}>{runner.valueRank}</td>
