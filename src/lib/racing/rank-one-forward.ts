@@ -13,6 +13,9 @@ import { AW_TISSUE_V2_ACTIVE, AW_TISSUE_V2_EPOCH } from "./aw-tissue-v2-activati
 import { buildAwV2Race, AW_TISSUE_V2_SCORER, type AwV2Model, type AwV2Context } from "./aw-tissue-v2";
 export const RANK_ONE_VERSION = "RANK_ONE_FORWARD_V1" as const;
 export const RANK_ONE_EPOCH = "2026-10-16T15:37:02.000Z" as const;
+// Additive observation contract; keep the V1 file/header and all existing rows intact.
+export const RANK_ONE_CONTRACT_VERSION = "RANK_ONE_MODEL_MARKET_OPTIONAL_V2" as const;
+export const RANK_ONE_CONTRACT_EFFECTIVE_AT = "2026-10-22T18:51:26.000Z" as const;
 export const RANK_ONE_PATH = "data/research/rank-one-forward-v1.json";
 export const RANK_ONE_FAMILIES = ["TURF", "HURDLE", "CHASE", "AW"] as const;
 export type RankOneFamily = typeof RANK_ONE_FAMILIES[number];
@@ -25,6 +28,9 @@ export const RANK_ONE_SOURCES: Record<RankOneFamily, string> = {
 // Fixed 21.0 / 26.0 SP diagnostic did not establish robust evidence for a live cap.
 export const RANK_ONE_CAPS: Record<RankOneFamily, 21 | 26 | null> = { TURF: null, HURDLE: null, CHASE: null, AW: null };
 export type RankOneObservation = {
+  contractVersion?: typeof RANK_ONE_CONTRACT_VERSION;
+  contractEffectiveAt?: typeof RANK_ONE_CONTRACT_EFFECTIVE_AT;
+  // Optional only for legacy rows; every new capture freezes the authoritative probability.
   modelProbability?: number;
   modelInputs?: number[];
   featureCutoffAt?: string;
@@ -47,9 +53,9 @@ export type RankOneObservation = {
   capturedFieldRunnerIds: string[];
   market: {
     source: "sporting_life_median_bookmaker_at_capture_v1";
-    medianBookmakerDecimal: number;
-    normalizedProbability: number;
-    marketRank: number;
+    medianBookmakerDecimal: number | null;
+    normalizedProbability: number | null;
+    marketRank: number | null;
     quotes: ReturnType<typeof summarizeBookmakerMarket>["quotes"];
     fieldPrices: {
       runnerId: string;
@@ -146,16 +152,29 @@ export function currentRankOne(race: TodayRace, course: string, raceDate: string
   if (family === "AW" && models.awV2) {
     if (!models.awV2Context) return null;
     const book = buildAwV2Race(race, course, raceDate, models.awV2, models.awV2Context, now);
+    if (!completeModelField(race, book?.runners)) return null;
     const leader = book?.runners.filter(r => r.rank === 1).sort((a, b) => a.runnerId.localeCompare(b.runnerId))[0];
     return leader ? { family, runnerId: leader.runnerId, modelHash: models.awV2.checksum, rankSource: `AW Tissue / AW_TISSUE_V2 / ${AW_TISSUE_V2_SCORER} / rank`, modelInputs: leader.modelInputs!, modelProbability: leader.probability!, featureCutoffAt: book!.featureCutoffAt!, awV2: true } : null;
   }
-  const book = family === "TURF" ? buildTissueForwardRace({ race, course, raceDate, model: models.turf, commentsByHorse: models.comments, recordedAt: now, config: ACTIVE_TURF_TISSUE_CONFIG })?.runners.map(r => ({ runnerId: r.runnerId, rank: r.tissueRank }))
+  const book = family === "TURF" ? buildTissueForwardRace({ race, course, raceDate, model: models.turf, commentsByHorse: models.comments, recordedAt: now, config: ACTIVE_TURF_TISSUE_CONFIG })?.runners.map(r => ({ runnerId: r.runnerId, rank: r.tissueRank, probability: r.probability }))
     : family === "AW" ? predictAwTissue(race, models.awStarts, models.aw).runners : predictJumpTissue(race, models.comments, models.jump).runners;
+  if (!completeModelField(race, book)) return null;
   // Turf uses competition ranks. Resolve an exact rank-1 tie by stable runner ID, without re-ranking.
   const leader = book?.filter(r => r.rank === 1).sort((a, b) => a.runnerId.localeCompare(b.runnerId))[0];
-  return leader ? { family, runnerId: leader.runnerId, modelHash: family === "TURF" ? models.turf.checksum : family === "AW" ? models.aw.checksum : models.jump.checksum, rankSource: family === "AW" ? `AW Tissue / ${AW_TISSUE_VERSION} / rank` : RANK_ONE_SOURCES[family] } : null;
+  return leader ? { family, runnerId: leader.runnerId, modelProbability: leader.probability!, modelHash: family === "TURF" ? models.turf.checksum : family === "AW" ? models.aw.checksum : models.jump.checksum, rankSource: family === "AW" ? `AW Tissue / ${AW_TISSUE_VERSION} / rank` : RANK_ONE_SOURCES[family] } : null;
 }
-export function isWithinRankOneCap(price: number, cap: 21 | 26 | null) { return cap === null || price <= cap; }
+function validProbability(value: unknown): value is number {
+  return typeof value === "number" && Number.isFinite(value) && value > 0 && value <= 1;
+}
+function validPrice(value: unknown): value is number {
+  return typeof value === "number" && Number.isFinite(value) && value > 1;
+}
+function completeModelField(race: TodayRace, runners: { runnerId: string; probability: number | null }[] | undefined) {
+  const active = race.runners.filter(r => r.resultStatus !== "non_runner");
+  return runners !== undefined && runners.length === active.length &&
+    active.every(r => runners.filter(p => p.runnerId === r.runnerId && validProbability(p.probability)).length === 1);
+}
+export function isWithinRankOneCap(price: number | null, cap: 21 | 26 | null) { return cap === null || (validPrice(price) && price <= cap); }
 export function buildRankOneObservations(input: {
   meetings: TodayMeeting[];
   raceDate: string;
@@ -163,7 +182,7 @@ export function buildRankOneObservations(input: {
   models: RankOneModels;
 }): RankOneObservation[] {
   const { capturedAt: now, raceDate, models } = input;
-  if (!Number.isFinite(now.getTime()) || now.toISOString() < RANK_ONE_EPOCH || raceDate !== getLocalRacingDate(now))
+  if (!Number.isFinite(now.getTime()) || now.toISOString() < RANK_ONE_CONTRACT_EFFECTIVE_AT || raceDate !== getLocalRacingDate(now))
     return [];
   return input.meetings.flatMap(m => m.races.flatMap(race => {
     if (!race.raceDateTime || now >= race.raceDateTime || getLocalRacingDate(race.raceDateTime) !== raceDate || race.winningTime ||
@@ -173,25 +192,24 @@ export function buildRankOneObservations(input: {
     if (active.length < 2 || !hasCompleteProspectiveField(rankOneFamily(race) === "TURF" || (rankOneFamily(race) === "AW" && models.awV2) ? { ...race, actualRunnerCount: null } : race))
       return [];
     const prices = active.map(r => ({ runner: r, market: summarizeBookmakerMarket(r.bookmakerQuotes) }));
-    if (prices.some(p => p.market.decimalPrice === null))
-      return [];
+    const completeMarket = prices.every(p => validPrice(p.market.decimalPrice));
     const leader = currentRankOne(race, m.courseName, raceDate, models, now);
-    if (!leader)
+    if (!leader || !validProbability(leader.modelProbability))
       return [];
     const selected = prices.find(p => p.runner.runnerId === leader.runnerId);
     if (!selected)
       return [];
-    const price = selected.market.decimalPrice!;
-    const total = prices.reduce((s, p) => s + 1 / p.market.decimalPrice!, 0);
+    const price = selected.market.decimalPrice;
+    const total = completeMarket ? prices.reduce((s, p) => s + 1 / p.market.decimalPrice!, 0) : null;
     const cap = RANK_ONE_CAPS[leader.family];
-    return [{ version: RANK_ONE_VERSION, raceId: race.raceId, runnerId: leader.runnerId, horseId: selected.runner.horseId, horseName: selected.runner.horseName,
+    return [{ version: RANK_ONE_VERSION, contractVersion: RANK_ONE_CONTRACT_VERSION, contractEffectiveAt: RANK_ONE_CONTRACT_EFFECTIVE_AT, modelProbability: leader.modelProbability, raceId: race.raceId, runnerId: leader.runnerId, horseId: selected.runner.horseId, horseName: selected.runner.horseName,
         ...(leader.family === "TURF" ? { liveSemanticsVersion: TISSUE_V3_LIVE_SEMANTICS_VERSION, liveSemanticsEffectiveAt: TISSUE_V3_EPOCH } : {}),
-        ...(leader.awV2 ? { liveSemanticsVersion: AW_TISSUE_V2_SCORER, liveSemanticsEffectiveAt: AW_TISSUE_V2_EPOCH, modelInputs: [...leader.modelInputs!], modelProbability: leader.modelProbability, featureCutoffAt: leader.featureCutoffAt } : {}),
+        ...(leader.awV2 ? { liveSemanticsVersion: AW_TISSUE_V2_SCORER, liveSemanticsEffectiveAt: AW_TISSUE_V2_EPOCH, modelInputs: [...leader.modelInputs!], featureCutoffAt: leader.featureCutoffAt } : {}),
         family: leader.family, raceDate, scheduledOff: race.raceDateTime.toISOString(), course: m.courseName, raceName: race.raceName,
         rankSource: leader.rankSource, modelHash: leader.modelHash, rank: 1, firstCapturedAt: now.toISOString(), capturedFieldRunnerIds: active.map(r => r.runnerId),
-        market: { source: "sporting_life_median_bookmaker_at_capture_v1", medianBookmakerDecimal: price, normalizedProbability: (1 / price) / total,
-          marketRank: 1 + prices.filter(p => p.market.decimalPrice! < price).length, quotes: selected.market.quotes,
-          fieldPrices: prices.map(p => ({ runnerId: p.runner.runnerId, decimalPrice: p.market.decimalPrice! })) }, cap, withinCap: isWithinRankOneCap(price, cap), outcome: null }];
+        market: { source: "sporting_life_median_bookmaker_at_capture_v1", medianBookmakerDecimal: price, normalizedProbability: completeMarket ? (1 / price!) / total! : null,
+          marketRank: completeMarket ? 1 + prices.filter(p => p.market.decimalPrice! < price!).length : null, quotes: selected.market.quotes,
+          fieldPrices: prices.flatMap(p => validPrice(p.market.decimalPrice) ? [{ runnerId: p.runner.runnerId, decimalPrice: p.market.decimalPrice }] : []) }, cap, withinCap: isWithinRankOneCap(price, cap), outcome: null }];
   }));
 }
 export function appendRankOne(data: RankOneData, rows: RankOneObservation[]) {
@@ -222,7 +240,7 @@ export function settleRankOne(data: RankOneData, races: ReadonlyMap<string, Toda
       return row;
     const winner = runner.finishingPosition === 1;
     const divisor = winner ? winners.length : 1;
-    const settlement = settleSelection({ targetRaceId: race.raceId, targetRunnerId: row.runnerId, finishingPosition: runner.finishingPosition, resultStatus: runner.resultStatus, won: winner, placed: null, startingPrice: null, startingPriceDecimal: String(row.market.medianBookmakerDecimal), deadHeatDivisor: divisor });
+    const settlement = validPrice(row.market.medianBookmakerDecimal) ? settleSelection({ targetRaceId: race.raceId, targetRunnerId: row.runnerId, finishingPosition: runner.finishingPosition, resultStatus: runner.resultStatus, won: winner, placed: null, startingPrice: null, startingPriceDecimal: String(row.market.medianBookmakerDecimal), deadHeatDivisor: divisor }) : null;
     return { ...row, outcome: { ...base, status: "settled" as const, winner, deadHeatDivisor: divisor, grossReturn: settlement?.grossReturn ?? null, profitLoss: settlement?.profitLoss ?? null, roi: settlement?.profitLoss ?? null } };
   });
   return observations.every((r, i) => r === data.observations[i]) ? data : { ...data, observations };
@@ -230,11 +248,13 @@ export function settleRankOne(data: RankOneData, races: ReadonlyMap<string, Toda
 export function rankOneMetrics(rows: RankOneObservation[]) {
   const settled = rows.filter(r => r.outcome?.status === "settled");
   const winners = settled.filter(r => r.outcome?.winner).length;
-  const expected = settled.reduce((s, r) => s + r.market.normalizedProbability, 0);
-  const priced = settled.filter(r => r.outcome?.profitLoss !== null);
+  const marketSample = settled.filter(r => validProbability(r.market.normalizedProbability));
+  const expected = marketSample.reduce((s, r) => s + r.market.normalizedProbability!, 0);
+  const marketWinners = marketSample.filter(r => r.outcome?.winner).length;
+  const priced = settled.filter(r => validPrice(r.market.medianBookmakerDecimal) && r.outcome?.profitLoss != null);
   const profit = priced.length ? priced.reduce((s, r) => s + r.outcome!.profitLoss!, 0) : null;
   return { tracked: rows.length, settled: settled.length, winners, strikeRate: settled.length ? winners / settled.length : null, marketExpectedWinners: expected,
-    ae: expected ? winners / expected : null, pricedSettled: priced.length, profitLoss: profit, roi: priced.length && profit !== null ? profit / priced.length : null,
+    ae: expected ? marketWinners / expected : null, aeSettled: marketSample.length, pricedSettled: priced.length, profitLoss: profit, roi: priced.length && profit !== null ? profit / priced.length : null,
     nonRunners: rows.filter(r => r.outcome?.status === "NR").length, voids: rows.filter(r => r.outcome?.status === "void").length };
 }
 export function summarizeRankOne(data: RankOneData) {

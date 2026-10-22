@@ -15,7 +15,7 @@ import { loadJumpTissueModel } from "./jump-tissue-model";
 import { loadAwTissueModel } from "./aw-tissue-model";
 import { workflowSteps } from "../../../scripts/run-research-workflow";
 
-const date = "2026-10-21", now = new Date(`${date}T08:00:00Z`), off = new Date(`${date}T14:00:00Z`), after = new Date(`${date}T18:00:00Z`);
+const date = "2026-10-23", now = new Date(`${date}T08:00:00Z`), off = new Date(`${date}T14:00:00Z`), after = new Date(`${date}T18:00:00Z`);
 const model = await loadFrozenTissueModel(TISSUE_V3_CONFIG.modelPath, TISSUE_V3_CONFIG.modelVersion);
 const commentsByHorse = new Map();
 function runner(id: string, price: number): TodayRunner {

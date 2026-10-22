@@ -17,7 +17,7 @@ export function RankOneMonitoring({data,date}:{data:RankOneData;date:string}){
       <dl className="mt-2 space-y-1 text-xs tabular-nums">
         <div><dt className="inline">Tracked / settled: </dt><dd className="inline">{s.tracked} / {s.settled}</dd></div>
         <div><dt className="inline">Winners / strike: </dt><dd className="inline">{s.winners} / {pct(s.strikeRate)}</dd></div>
-        <div><dt className="inline">A/E: </dt><dd className="inline">{decimal(s.ae)}</dd></div>
+        <div><dt className="inline">A/E: </dt><dd className="inline">{decimal(s.ae)} (n={s.aeSettled})</dd></div>
         <div><dt className="inline">Qualifying-price ROI: </dt><dd className="inline">{pct(s.roi)} (n={s.pricedSettled})</dd></div>
         <div><dt className="inline">Cap: </dt><dd className="inline">{s.cap===null?"NONE":`≤${s.cap.toFixed(1)}`}</dd></div>
         {s.cap!==null?<div><dt className="inline">Within-cap tracked / settled / winners / ROI: </dt><dd className="inline">{s.withinCap.tracked} / {s.withinCap.settled} / {s.withinCap.winners} / {pct(s.withinCap.roi)}</dd></div>:null}
@@ -28,7 +28,7 @@ export function RankOneMonitoring({data,date}:{data:RankOneData;date:string}){
       <tbody>{rows.map(r=><tr key={`${r.raceId}|${r.family}|${r.runnerId}`}>
         <td className="p-2">{new Intl.DateTimeFormat("en-GB",{timeZone:"Europe/London",hour:"2-digit",minute:"2-digit"}).format(new Date(r.scheduledOff))}</td>
         <td className="p-2">{r.course}</td><td className="p-2">{r.horseName}</td><td className="p-2">{r.family}</td><td className="p-2">{r.rankSource}</td>
-        <td className="p-2">{decimal(r.market.medianBookmakerDecimal)}</td><td className="p-2">{r.market.marketRank}</td><td className="p-2">{r.cap===null?"NONE":r.withinCap?"IN CAP":"ABOVE CAP"}</td>
+        <td className="p-2">{decimal(r.market.medianBookmakerDecimal)}</td><td className="p-2">{r.market.marketRank ?? "—"}</td><td className="p-2">{r.cap===null?"NONE":r.withinCap?"IN CAP":"ABOVE CAP"}</td>
         <td className="p-2">{!r.outcome?"Pending":r.outcome.status!=="settled"?r.outcome.status:r.outcome.winner?"Won":r.outcome.finishPosition?`Finished ${r.outcome.finishPosition}`:r.outcome.resultStatus?.replaceAll("_"," ")??"Settled"}</td>
       </tr>)}{!rows.length?<tr><td className="p-3 text-slate-500" colSpan={9}>No prospective rank-1 captures today.</td></tr>:null}</tbody></table></div>
     <p className="mt-3 text-xs text-slate-500">{summary.every(s=>s.cap===null)?"No price cap currently applied.":"Any displayed cap was selected from a fixed 20/1 vs 25/1 historical robustness check; no bespoke threshold optimisation was used."}</p>

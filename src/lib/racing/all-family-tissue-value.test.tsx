@@ -21,7 +21,7 @@ import { BACKUP_TRACKERS } from "../../../scripts/backup-tracker-inventory";
 import { buildRankOneObservations, type RankOneModels } from "./rank-one-forward";
 import { loadAwTissueModel } from "./aw-tissue-model";
 
-const now = new Date("2026-10-21T08:00:00.000Z"), date = "2026-10-21", off = new Date("2026-10-21T14:00:00.000Z"), after = new Date("2026-10-21T18:00:00.000Z");
+const now = new Date("2026-10-23T08:00:00.000Z"), date = "2026-10-23", off = new Date("2026-10-23T14:00:00.000Z"), after = new Date("2026-10-23T18:00:00.000Z");
 const models = { turf: await loadFrozenTissueModel(TISSUE_V3_CONFIG.modelPath, TISSUE_V3_CONFIG.modelVersion), aw: await loadAwV2Model(), jump: await loadJumpTissueModel() };
 function runner(id: string, price: number): TodayRunner {
   return { runnerId: id, runnerSourceId: id, horseId: id, horseName: id, saddleclothNumber: 1, horseAge: 4, horseSex: null, weight: null, weightCarriedLbs: 140,
@@ -181,4 +181,10 @@ test("all-family value capture does not alter any Rank 1 capture", async () => {
   const input=inputs(),rankModels:RankOneModels={turf:models.turf,jump:models.jump,aw:await loadAwTissueModel(),awV2:models.aw,awV2Context:input.awContext,comments:input.commentsByHorse,awStarts:new Map()};
   const args={meetings:input.meetings,raceDate:date,capturedAt:now,models:rankModels}; const before=buildRankOneObservations(args);
   buildAllFamilyValueRaces(input); assert.deepEqual(buildRankOneObservations(args),before); assert.equal(before.length,4);
+  for (const family of ["TURF", "AW", "HURDLE", "CHASE"] as const) {
+    const incomplete = inputs();
+    incomplete.meetings[0].races.find(r => r.raceId === family)!.runners[0].bookmakerQuotes = [];
+    assert.equal(buildRankOneObservations({ ...args, meetings: incomplete.meetings }).length, 4);
+    assert.ok(!buildAllFamilyValueRaces(incomplete).some(r => r.family === family));
+  }
 });

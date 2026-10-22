@@ -12,7 +12,7 @@ import { loadAwV2Model } from "@/lib/racing/aw-tissue-v2";
 import { loadAwV2CaptureContext } from "@/lib/racing/aw-tissue-v2-sync";
 import { loadAwTissuePriorStarts } from "@/lib/racing/aw-tissue-forward";
 import { loadJumpTissueCommentsForRaces } from "@/lib/racing/jump-tissue-sync";
-import { loadRankOne, mutateRankOne, runRankOneCycle, summarizeRankOne, rankOneFamily } from "@/lib/racing/rank-one-forward";
+import { loadRankOne, mutateRankOne, runRankOneCycle, summarizeRankOne, rankOneFamily, RANK_ONE_CONTRACT_VERSION, RANK_ONE_CONTRACT_EFFECTIVE_AT } from "@/lib/racing/rank-one-forward";
 import { isValidDate } from "./run-research-workflow";
 export async function main(args: string[]) {
   const command = args[0] ?? "summary", date = args[1] ?? getLocalRacingDate();
@@ -47,12 +47,12 @@ export async function main(args: string[]) {
       await connection.client.end();
     }
   }
-  console.log(`TRACKER: ${data.version}\nEPOCH: ${data.epoch}\nBACKFILL: DISABLED`);
+  console.log(`TRACKER: ${data.version}\nEPOCH: ${data.epoch}\nCAPTURE CONTRACT: ${RANK_ONE_CONTRACT_VERSION}\nCONTRACT ACTIVATION: ${RANK_ONE_CONTRACT_EFFECTIVE_AT}\nBACKFILL: DISABLED`);
   if (command === "summary" || command === "results")
-    console.table(summarizeRankOne(data).map(row => ({family:row.family, cohort:row.cohort, epoch:row.epoch, cap:row.cap??"NONE", tracked:row.tracked, settled:row.settled, winners:row.winners, strike:row.strikeRate, expected:row.marketExpectedWinners, ae:row.ae, qualifyingPriceProfit:row.profitLoss, roi:row.roi, pricedSettled:row.pricedSettled})));
+    console.table(summarizeRankOne(data).map(row => ({family:row.family, cohort:row.cohort, epoch:row.epoch, cap:row.cap??"NONE", tracked:row.tracked, settled:row.settled, winners:row.winners, strike:row.strikeRate, expected:row.marketExpectedWinners, ae:row.ae, aeSettled:row.aeSettled, qualifyingPriceProfit:row.profitLoss, roi:row.roi, pricedSettled:row.pricedSettled})));
   if (command !== "summary")
     console.table(data.observations.filter(r => r.raceDate === date).map(r => ({ time: r.scheduledOff, course: r.course, horse: r.horseName, family: r.family, source: r.rankSource,
-      price: r.market.medianBookmakerDecimal, marketRank: r.market.marketRank, cap: r.cap === null ? "NONE" : r.withinCap ? "IN CAP" : "ABOVE CAP", result: r.outcome?.status ?? "pending", profit: r.outcome?.profitLoss ?? null })));
+      price: r.market.medianBookmakerDecimal ?? "—", marketRank: r.market.marketRank ?? "—", cap: r.cap === null ? "NONE" : r.withinCap ? "IN CAP" : "ABOVE CAP", result: r.outcome?.status ?? "pending", profit: r.outcome?.profitLoss ?? null })));
 }
 if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href)
   await main(process.argv.slice(2));

@@ -11075,7 +11075,16 @@
           "runnerId": "958b1193-a4ae-4bd5-b2ba-ff3522247bde",
           "horseId": "3d3feb14-c8bc-4211-8cc5-f6e8b4509c57",
           "horseName": "Gesayed",
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "resultStatus": "finished",
+            "finishingPosition": 6,
+            "won": false,
+            "deadHeatDivisor": 1,
+            "finalSp": 29,
+            "qualifyingPriceProfitLoss": null,
+            "finalSpProfitLoss": -1
+          }
         }
       ],
       "market": {
@@ -11139,8 +11148,17 @@
           ]
         }
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "status": "void",
+        "resultStatus": "non_runner",
+        "finishingPosition": null,
+        "won": null,
+        "deadHeatDivisor": 1,
+        "finalSp": null,
+        "qualifyingPriceProfitLoss": 0,
+        "finalSpProfitLoss": 0
+      },
+      "settledAt": "2026-10-22T14:55:05.870Z"
     },
     {
       "raceDate": "2026-10-22",
@@ -11178,7 +11196,16 @@
           "runnerId": "b420d1d3-09b8-46b9-bc28-c3c94f69c78f",
           "horseId": "8ad1a526-0615-491d-b79c-a4b69fa53062",
           "horseName": "Slack Bob",
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "resultStatus": "finished",
+            "finishingPosition": 12,
+            "won": false,
+            "deadHeatDivisor": 1,
+            "finalSp": 17,
+            "qualifyingPriceProfitLoss": null,
+            "finalSpProfitLoss": -1
+          }
         }
       ],
       "market": {
@@ -11242,8 +11269,17 @@
           ]
         }
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "status": "void",
+        "resultStatus": "non_runner",
+        "finishingPosition": null,
+        "won": null,
+        "deadHeatDivisor": 1,
+        "finalSp": null,
+        "qualifyingPriceProfitLoss": 0,
+        "finalSpProfitLoss": 0
+      },
+      "settledAt": "2026-10-22T14:55:05.870Z"
     },
     {
       "raceDate": "2026-10-22",
@@ -11281,7 +11317,16 @@
           "runnerId": "1ce378e0-0619-4e30-bd1d-243c266cb4bf",
           "horseId": "1d223a99-4a35-4632-b6ee-2497f63958d1",
           "horseName": "Sixtygeesbaby",
-          "outcome": null
+          "outcome": {
+            "status": "void",
+            "resultStatus": "non_runner",
+            "finishingPosition": null,
+            "won": null,
+            "deadHeatDivisor": 1,
+            "finalSp": null,
+            "qualifyingPriceProfitLoss": 0,
+            "finalSpProfitLoss": 0
+          }
         }
       ],
       "market": {
@@ -11345,8 +11390,17 @@
           ]
         }
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "status": "void",
+        "resultStatus": "non_runner",
+        "finishingPosition": null,
+        "won": null,
+        "deadHeatDivisor": 1,
+        "finalSp": null,
+        "qualifyingPriceProfitLoss": 0,
+        "finalSpProfitLoss": 0
+      },
+      "settledAt": "2026-10-22T14:55:05.870Z"
     },
     {
       "raceDate": "2026-10-22",
@@ -11384,7 +11438,16 @@
           "runnerId": "6fb87ccd-45b3-496f-a366-5c8bcd247099",
           "horseId": "69bdfbb9-aeec-494c-bcb8-c8bdc24dce40",
           "horseName": "Irish Nectar",
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "resultStatus": "finished",
+            "finishingPosition": 6,
+            "won": false,
+            "deadHeatDivisor": 1,
+            "finalSp": 1.444,
+            "qualifyingPriceProfitLoss": null,
+            "finalSpProfitLoss": -1
+          }
         }
       ],
       "market": {
@@ -11448,8 +11511,17 @@
           ]
         }
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "status": "settled",
+        "resultStatus": "finished",
+        "finishingPosition": 1,
+        "won": true,
+        "deadHeatDivisor": 1,
+        "finalSp": 6.5,
+        "qualifyingPriceProfitLoss": 7,
+        "finalSpProfitLoss": 5.5
+      },
+      "settledAt": "2026-10-22T18:50:40.390Z"
     },
     {
       "raceDate": "2026-10-22",
@@ -11487,7 +11559,16 @@
           "runnerId": "28082961-a108-408d-a9cf-9177678f0a2e",
           "horseId": "e5d0ead5-2310-4d12-81e7-19953e665e30",
           "horseName": "Amarachi",
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "resultStatus": "finished",
+            "finishingPosition": 3,
+            "won": false,
+            "deadHeatDivisor": 1,
+            "finalSp": 6.5,
+            "qualifyingPriceProfitLoss": null,
+            "finalSpProfitLoss": -1
+          }
         }
       ],
       "market": {
@@ -11551,8 +11632,17 @@
           ]
         }
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "status": "settled",
+        "resultStatus": "finished",
+        "finishingPosition": 3,
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 6.5,
+        "qualifyingPriceProfitLoss": -1,
+        "finalSpProfitLoss": -1
+      },
+      "settledAt": "2026-10-22T18:50:40.390Z"
     }
   ]
 }

@@ -10,14 +10,14 @@ import { calculateHorseMetricsAsOf, type HistoricalRunInput } from "./horse-metr
 import { score, raceSoftmax } from "../../../scripts/diagnose-independent-tissue-feasibility";
 import { buildTissueForwardRace, loadFrozenTissueModel, TISSUE_V3_CONFIG } from "./tissue-forward";
 import { captureAwTissueRaces, settleAwTissueRace, loadAwTissueForward, mutateAwTissueForward } from "./aw-tissue-forward";
-import { appendRankOne, buildRankOneObservations, emptyRankOne, rankOneMetrics, settleRankOne, summarizeRankOne, type RankOneModels } from "./rank-one-forward";
+import { appendRankOne, buildRankOneObservations, emptyRankOne, RANK_ONE_CONTRACT_EFFECTIVE_AT, rankOneMetrics, settleRankOne, summarizeRankOne, type RankOneModels } from "./rank-one-forward";
 import { loadAwTissueModel } from "./aw-tissue-model";
 import { loadJumpTissueModel } from "./jump-tissue-model";
 import { getLocalRacingDate, type TodayRace, type TodayRunner } from "./todays-racing";
 
 const model = await loadAwV2Model();
 const turf = await loadFrozenTissueModel(TISSUE_V3_CONFIG.modelPath, TISSUE_V3_CONFIG.modelVersion);
-const at = new Date(Math.max(Date.parse(AW_TISSUE_V2_EPOCH), Date.parse(model.trainedAt)) + 86400000);
+const at = new Date(Math.max(Date.parse(AW_TISSUE_V2_EPOCH), Date.parse(model.trainedAt), Date.parse(RANK_ONE_CONTRACT_EFFECTIVE_AT.slice(0, 10) + "T08:00:00Z")) + 86400000);
 const date = getLocalRacingDate(at), off = new Date(at.getTime() + 6 * 3600000);
 function runner(id: string, price = 4): TodayRunner {
   return { runnerId: id, runnerSourceId: id, horseId: id, horseName: id, saddleclothNumber: 1, horseAge: 4, horseSex: null, weight: null, weightCarriedLbs: 140, draw: 2, jockeyName: null, trainerId: null, trainerName: null, officialRating: 80, odds: null, oddsDecimal: null, finishingPosition: null, resultStatus: null,
@@ -101,6 +101,7 @@ test("AW v2 Rank 1 shares capture, no-backfill, frozen prices, settlement and RO
   const models=await legacyModels(), card=race();
   const meetings=[{courseId:"course",courseSourceId:"278",courseName:"Newcastle",country:"GB",order:1,races:[card]}];
   const rows=buildRankOneObservations({meetings,raceDate:date,capturedAt:at,models}); assert.equal(rows.length,1);
+  assert.equal(rows[0]!.modelProbability, book(card)!.runners.find(r => r.runnerId === rows[0]!.runnerId)!.probability);
   assert.equal(rows[0]!.liveSemanticsVersion,AW_TISSUE_V2_SCORER); assert.equal(rows[0]!.modelInputs!.length,95);
   assert.equal(rows[0]!.market.medianBookmakerDecimal,4); assert.equal(rows[0]!.market.marketRank,2);
   const data=appendRankOne(emptyRankOne(),rows); assert.equal(appendRankOne(data,[{...rows[0]!,runnerId:"different"}]),data);
