@@ -55,6 +55,7 @@ import { loadTrackerData } from "../../../../scripts/diagnose-tpr-vs-timewise-fo
 import { refreshTodaySelectionResultsAction } from "./actions";
 import { RefreshResultsButton } from "./refresh-results-button";
 import { SpeedDisplayValue, TodaySpeedDisplay } from "./speed-display";
+import { classifyJumpRaceSubtype, type JumpRaceSubtype } from "@/lib/racing/jump-speed-rating";
 import { TurfPerformanceRatingCell } from "./tpr-display";
 import { OrSpeedCell, sameOrSpeedEdges, sameOrAwSpeedEdges, officialRatingRanks, BEST_L3_TURF_HELP, BEST_L3_AW_HELP } from "./or-speed-display";
 import { syncAwTissueMeetings } from "@/lib/racing/aw-tissue-sync";
@@ -400,6 +401,7 @@ function RaceBlock({ race }: {
       ) : null}
 
       <RunnerTable
+        jumpSubtype={classifyJumpRaceSubtype(race)}
         hasConclusiveResult={todayRaceHasConclusiveResult(race)}
         isAllWeatherRace={isAllWeatherRace}
         awDCoverage={awDCoverage}
@@ -438,6 +440,7 @@ function RaceMeta({ race }: { race: TodayRace }) {
 }
 
 function RunnerTable({
+  jumpSubtype,
   hasConclusiveResult,
   isAllWeatherRace,
   awDCoverage,
@@ -447,6 +450,7 @@ function RunnerTable({
   isTurfRace,
   runners,
 }: {
+  jumpSubtype: JumpRaceSubtype;
   hasConclusiveResult: boolean;
   isAllWeatherRace: boolean;
   awDCoverage?: AwRatingCoverage;
@@ -527,6 +531,7 @@ function RunnerTable({
           {runners.map((runner) => (
             <RunnerRow
               hasConclusiveResult={hasConclusiveResult}
+              jumpSubtype={jumpSubtype}
               isAllWeatherRace={isAllWeatherRace}
               awDCoverage={awDCoverage}
               jprACoverage={jprACoverage}
@@ -546,6 +551,7 @@ function RunnerTable({
 }
 
 function RunnerRow({
+  jumpSubtype,
   hasConclusiveResult,
   isAllWeatherRace,
   awDCoverage,
@@ -557,6 +563,7 @@ function RunnerRow({
   speedEdge,
   orRank,
 }: {
+  jumpSubtype: JumpRaceSubtype;
   hasConclusiveResult: boolean;
   isAllWeatherRace: boolean;
   awDCoverage?: AwRatingCoverage;
@@ -615,7 +622,7 @@ function RunnerRow({
         </td>
       ) : null}
       {!isTurfRace && !isAllWeatherRace ? (
-        <td className="px-1.5 py-2"><SpeedDisplayValue values={speedMetrics} /></td>
+        <td className="px-1.5 py-2"><SpeedDisplayValue values={speedMetrics} jumpSubtype={jumpSubtype} reliability={runner.metrics?.jumpSpeedReliability} /></td>
       ) : null}
       {isJumpRace ? (
         <td className="px-1.5 py-2">

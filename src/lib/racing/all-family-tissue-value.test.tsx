@@ -20,6 +20,8 @@ import { FrozenValueRankCell } from "../../app/racing/today/tissue-cells";
 import { BACKUP_TRACKERS } from "../../../scripts/backup-tracker-inventory";
 import { buildRankOneObservations, type RankOneModels } from "./rank-one-forward";
 import { loadAwTissueModel } from "./aw-tissue-model";
+import { assessJumpSpeedReliability } from "./jump-speed-reliability";
+import { score } from "../../../scripts/diagnose-independent-tissue-feasibility";
 
 const now = new Date("2026-10-23T08:00:00.000Z"), date = "2026-10-23", off = new Date("2026-10-23T14:00:00.000Z"), after = new Date("2026-10-23T18:00:00.000Z");
 const models = { turf: await loadFrozenTissueModel(TISSUE_V3_CONFIG.modelPath, TISSUE_V3_CONFIG.modelVersion), aw: await loadAwV2Model(), jump: await loadJumpTissueModel() };
@@ -44,6 +46,30 @@ function inputs() {
   return { meetings, raceDate: date, capturedAt: now, historyCutoffAt: now.toISOString(), models, commentsByHorse: new Map(), awContext };
 }
 function captured() { return buildAllFamilyValueRaces(inputs()); }
+
+test("Jump Speed reliability metadata never changes model scores, Tissue/Value ranks or captured inputs", () => {
+  const input = inputs();
+  for (const meeting of input.meetings) for (const race of meeting.races) for (const runner of race.runners) {
+    delete runner.metrics!.jumpSpeedReliability;
+  }
+  const before = buildAllFamilyValueRaces(input);
+  const jumpRaces = input.meetings[0].races.filter(r => r.raceId === "HURDLE" || r.raceId === "CHASE");
+  const predictions = jumpRaces.map(r => predictJumpTissue(r, input.commentsByHorse, models.jump));
+  for (const level of ["HIGH", "MEDIUM", "LOW"] as const) {
+    for (const race of jumpRaces) for (const runner of race.runners) {
+      runner.metrics!.jumpSpeedReliability = { ...assessJumpSpeedReliability(), level };
+    }
+    // Full books include probabilities, feature vectors, Tissue/Value/market
+    // ranks and prices. None may change or gain presentation-only metadata.
+    assert.deepEqual(buildAllFamilyValueRaces(input), before);
+    jumpRaces.forEach((race, index) => {
+      const after = predictJumpTissue(race, input.commentsByHorse, models.jump);
+      assert.deepEqual(after, predictions[index]);
+      assert.deepEqual(after.runners.map(r => score(models.jump.model, r.rawInputs)),
+        predictions[index].runners.map(r => score(models.jump.model, r.rawInputs)));
+    });
+  }
+});
 function dataFor(book: TissueValueRace) {
   const config = VALUE_COHORTS.find(c => c.family === book.family)!;
   return { config, data: appendValueForward(emptyValueForward(config), [book], config) };

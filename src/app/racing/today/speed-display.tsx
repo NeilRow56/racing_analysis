@@ -1,6 +1,8 @@
 "use client";
 
 import { createContext, useContext, useState, type ReactNode } from "react";
+import type { JumpRaceSubtype } from "@/lib/racing/jump-speed-rating";
+import { assessJumpSpeedReliability, type JumpSpeedReliability } from "@/lib/racing/jump-speed-reliability";
 
 export type SpeedDisplayMetric = "bestLast3" | "latest" | "previous";
 
@@ -39,9 +41,34 @@ export function TodaySpeedDisplay({ children }: { children: ReactNode }) {
   );
 }
 
-export function SpeedDisplayValue({ values }: { values: SpeedDisplayValues }) {
+export function SpeedDisplayValue({ values, reliability, jumpSubtype }: {
+  values: SpeedDisplayValues;
+  reliability?: JumpSpeedReliability;
+  jumpSubtype?: JumpRaceSubtype;
+}) {
   const metric = useContext(SpeedDisplayContext);
-  return <>{formatSpeedValue(speedValueForMetric(values, metric))}</>;
+  return <>
+    {formatSpeedValue(speedValueForMetric(values, metric))}
+    <JumpSpeedReliabilityIndicator metric={metric} jumpSubtype={jumpSubtype} reliability={reliability} />
+  </>;
+}
+
+export function JumpSpeedReliabilityIndicator({ metric, jumpSubtype, reliability }: {
+  metric: SpeedDisplayMetric;
+  jumpSubtype?: JumpRaceSubtype;
+  reliability?: JumpSpeedReliability;
+}) {
+  // L3 evidence does not describe the separate Latest/Previous selections.
+  if (metric !== "bestLast3" || (jumpSubtype !== "hurdle" && jumpSubtype !== "chase")) return null;
+  const assessment = reliability ?? assessJumpSpeedReliability();
+  const label = assessment.level === "HIGH" ? "High" : assessment.level === "MEDIUM" ? "Medium" : "Low";
+  return <span
+    aria-label={`Speed confidence: ${label}`}
+    title={`Speed confidence: ${label}. ${assessment.reason} Confidence describes recent history coverage, not ability. Hurdle, Chase and NH Flat count as Jump history.`}
+    className={`mt-0.5 block w-fit rounded border px-1 text-[10px] leading-4 ${assessment.level === "LOW"
+      ? "border-amber-300 text-amber-700"
+      : assessment.level === "MEDIUM" ? "border-slate-200 text-slate-500" : "border-transparent text-slate-400"}`}
+  >{label === "Medium" ? "Med" : label}</span>;
 }
 
 export function speedValueForMetric(
