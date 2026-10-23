@@ -1,3 +1,5 @@
+import { buildProspectiveTissueSources } from "@/lib/racing/tissue-prospective-sources";
+import { TissueProspectiveSummary } from "./tissue-prospective-summary";
 import { loadAllTissueValue } from "@/lib/racing/tissue-value-readers";
 import { TissueValueMonitoring } from "./tissue-value-monitoring";
 import { loadRankOne } from "@/lib/racing/rank-one-forward";
@@ -84,6 +86,7 @@ export default async function ForwardValuePage({ searchParams }: PageProps) {
     loadAllTissueValue(),
     searchParams,
   ]);
+  const prospectiveTissue = buildProspectiveTissueSources({ turf: tissueData, aw: awTissueData, jump: jumpTissueData, cohorts: valueCohorts });
   const connection = createDbConnection();
   let currentCardStatuses;
   let canonicalResultRaceIds;
@@ -115,7 +118,7 @@ export default async function ForwardValuePage({ searchParams }: PageProps) {
   return (
     <ResearchPageLayout
       date={raceDate}
-      active={<><HurdleRecencyResearchSection data={hurdleRecencyData} /><TissueValueMonitoring cohorts={valueCohorts} date={raceDate} /></>}
+      active={<><HurdleRecencyResearchSection data={hurdleRecencyData} /><TissueProspectiveSummary {...prospectiveTissue} /><TissueValueMonitoring cohorts={valueCohorts} date={raceDate} /></>}
       secondary={<><RankOneMonitoring data={rankOneData} date={raceDate} /><SecondaryResearchMonitoring dashboard={dashboard} /></>}
     >
       <DailyResearchDashboard dashboard={dashboard} excludeSecondaryMonitoring>

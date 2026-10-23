@@ -24310,7 +24310,17 @@
       },
       "cap": null,
       "withinCap": true,
-      "outcome": null
+      "outcome": {
+        "finishPosition": 6,
+        "resultStatus": "finished",
+        "settledAt": "2026-10-23T03:22:15.721Z",
+        "status": "settled",
+        "winner": false,
+        "deadHeatDivisor": 1,
+        "grossReturn": 0,
+        "profitLoss": -1,
+        "roi": -1
+      }
     },
     {
       "version": "RANK_ONE_FORWARD_V1",
@@ -24515,7 +24525,17 @@
       },
       "cap": null,
       "withinCap": true,
-      "outcome": null
+      "outcome": {
+        "finishPosition": 1,
+        "resultStatus": "finished",
+        "settledAt": "2026-10-23T03:22:15.721Z",
+        "status": "settled",
+        "winner": true,
+        "deadHeatDivisor": 1,
+        "grossReturn": 10,
+        "profitLoss": 9,
+        "roi": 9
+      }
     },
     {
       "version": "RANK_ONE_FORWARD_V1",
@@ -25409,6 +25429,5591 @@
         "profitLoss": 3.33,
         "roi": 3.33
       }
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "contractVersion": "RANK_ONE_MODEL_MARKET_OPTIONAL_V2",
+      "contractEffectiveAt": "2026-10-22T18:51:26.000Z",
+      "modelProbability": 0.17203075036704532,
+      "raceId": "c3e11b3c-546d-4bef-bbd0-1fddbbcd724f",
+      "runnerId": "cb819e14-478e-4df3-9d0f-279223e1b252",
+      "horseId": "73679bd0-fd8f-4e27-b305-75d489c2e5cd",
+      "horseName": "Handlethekettle",
+      "family": "HURDLE",
+      "raceDate": "2026-10-23",
+      "scheduledOff": "2026-10-23T12:15:00.000Z",
+      "course": "Cheltenham",
+      "raceName": "William Hill Epic Boosts Handicap Hurdle",
+      "rankSource": "Jump Tissue / JUMP_TISSUE_V1 / rank",
+      "modelHash": "863b966423f05773083c3c208dd11cd49680df7a7414b855d613ee5c8ad9ebe4",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-23T03:32:24.757Z",
+      "capturedFieldRunnerIds": [
+        "9fff09d7-3764-4385-988d-9619f03840cd",
+        "5b481f56-dcb7-4318-bab2-46946a833fb4",
+        "8f216056-2e3c-44b1-beac-85e8e97b6042",
+        "109b1862-95e5-4f7c-a66e-30d13515e2c0",
+        "54e327e9-c0f1-417c-b26d-34c3a4104a4e",
+        "4040468e-6e5c-4b70-a87b-7bbbf44ed939",
+        "6a25359d-474d-48c5-a6eb-9920ee5cbf3f",
+        "c8b0994c-8466-4e53-a41f-1a0d0cb65376",
+        "cb819e14-478e-4df3-9d0f-279223e1b252",
+        "19bfd920-0311-4ad6-8767-d06a1feb7fa6",
+        "9a0cdb6f-950e-4c10-ae36-b8959aa8f496",
+        "8e77cc1c-3a26-4905-84e8-87268de1f7c7",
+        "55e78238-34ec-40be-8ee9-dc70857e8f1f"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 13,
+        "normalizedProbability": 0.05779927329605482,
+        "marketRank": 7,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "12/1",
+            "decimalOdds": 13
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "12/1",
+            "decimalOdds": 13
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "12/1",
+            "decimalOdds": 13
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "9fff09d7-3764-4385-988d-9619f03840cd",
+            "decimalPrice": 4.33
+          },
+          {
+            "runnerId": "5b481f56-dcb7-4318-bab2-46946a833fb4",
+            "decimalPrice": 5.5
+          },
+          {
+            "runnerId": "8f216056-2e3c-44b1-beac-85e8e97b6042",
+            "decimalPrice": 6
+          },
+          {
+            "runnerId": "109b1862-95e5-4f7c-a66e-30d13515e2c0",
+            "decimalPrice": 9
+          },
+          {
+            "runnerId": "54e327e9-c0f1-417c-b26d-34c3a4104a4e",
+            "decimalPrice": 9
+          },
+          {
+            "runnerId": "4040468e-6e5c-4b70-a87b-7bbbf44ed939",
+            "decimalPrice": 11
+          },
+          {
+            "runnerId": "6a25359d-474d-48c5-a6eb-9920ee5cbf3f",
+            "decimalPrice": 13
+          },
+          {
+            "runnerId": "c8b0994c-8466-4e53-a41f-1a0d0cb65376",
+            "decimalPrice": 13
+          },
+          {
+            "runnerId": "cb819e14-478e-4df3-9d0f-279223e1b252",
+            "decimalPrice": 13
+          },
+          {
+            "runnerId": "19bfd920-0311-4ad6-8767-d06a1feb7fa6",
+            "decimalPrice": 15
+          },
+          {
+            "runnerId": "9a0cdb6f-950e-4c10-ae36-b8959aa8f496",
+            "decimalPrice": 17
+          },
+          {
+            "runnerId": "8e77cc1c-3a26-4905-84e8-87268de1f7c7",
+            "decimalPrice": 19
+          },
+          {
+            "runnerId": "55e78238-34ec-40be-8ee9-dc70857e8f1f",
+            "decimalPrice": 34
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "contractVersion": "RANK_ONE_MODEL_MARKET_OPTIONAL_V2",
+      "contractEffectiveAt": "2026-10-22T18:51:26.000Z",
+      "modelProbability": 0.3982889855582361,
+      "raceId": "7f324580-25f4-4c0f-9982-ae21382838bd",
+      "runnerId": "f56296ce-2865-4c49-a7c5-d35558fe4ef9",
+      "horseId": "81b0ce5c-7020-4e6c-b862-4602b3b1575b",
+      "horseName": "Ice Jet",
+      "family": "CHASE",
+      "raceDate": "2026-10-23",
+      "scheduledOff": "2026-10-23T12:50:00.000Z",
+      "course": "Cheltenham",
+      "raceName": "Catesby Estates 'Chasing Excellence' Novices' Chase (GBB Race)",
+      "rankSource": "Jump Tissue / JUMP_TISSUE_V1 / rank",
+      "modelHash": "863b966423f05773083c3c208dd11cd49680df7a7414b855d613ee5c8ad9ebe4",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-23T03:32:24.757Z",
+      "capturedFieldRunnerIds": [
+        "cd4e9f14-a037-4986-86b3-a651303effbf",
+        "a1fe0e2b-f768-49c3-90a9-f928be417cae",
+        "f56296ce-2865-4c49-a7c5-d35558fe4ef9",
+        "9e5de40a-46e3-4df3-9bb0-1465988ddb2c",
+        "5785807f-36bc-4233-a7a6-cbe1bd7d10c4"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 4.5,
+        "normalizedProbability": 0.19683314384899847,
+        "marketRank": 3,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "7/2",
+            "decimalOdds": 4.5
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "7/2",
+            "decimalOdds": 4.5
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "4/1",
+            "decimalOdds": 5
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "cd4e9f14-a037-4986-86b3-a651303effbf",
+            "decimalPrice": 1.83
+          },
+          {
+            "runnerId": "a1fe0e2b-f768-49c3-90a9-f928be417cae",
+            "decimalPrice": 4.33
+          },
+          {
+            "runnerId": "f56296ce-2865-4c49-a7c5-d35558fe4ef9",
+            "decimalPrice": 4.5
+          },
+          {
+            "runnerId": "9e5de40a-46e3-4df3-9bb0-1465988ddb2c",
+            "decimalPrice": 11
+          },
+          {
+            "runnerId": "5785807f-36bc-4233-a7a6-cbe1bd7d10c4",
+            "decimalPrice": 26
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "contractVersion": "RANK_ONE_MODEL_MARKET_OPTIONAL_V2",
+      "contractEffectiveAt": "2026-10-22T18:51:26.000Z",
+      "modelProbability": 0.17853732409331236,
+      "raceId": "d3ce50b8-1b8b-45f3-90c3-6ec76579ae2b",
+      "runnerId": "04653933-63b6-4cb3-a94d-d4d39b9f3349",
+      "horseId": "dbe74cb1-7aeb-4193-96c4-0559236f0107",
+      "horseName": "Loriko",
+      "family": "HURDLE",
+      "raceDate": "2026-10-23",
+      "scheduledOff": "2026-10-23T13:25:00.000Z",
+      "course": "Cheltenham",
+      "raceName": "Foundation Developments Conditional Jockeys' Handicap Hurdle",
+      "rankSource": "Jump Tissue / JUMP_TISSUE_V1 / rank",
+      "modelHash": "863b966423f05773083c3c208dd11cd49680df7a7414b855d613ee5c8ad9ebe4",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-23T03:32:24.757Z",
+      "capturedFieldRunnerIds": [
+        "085f4370-4e47-48e7-833f-258259656bb8",
+        "12b6a7a5-f81d-4b75-9124-331400013e17",
+        "48c9bb61-a496-4f89-aa87-39289989adcd",
+        "04653933-63b6-4cb3-a94d-d4d39b9f3349",
+        "a5896f26-5178-4ebc-9db1-62a9c8e06276",
+        "c00a9a20-7400-4b0c-bf8f-de9248925ee9",
+        "63589375-d8f0-4434-a18a-74bbb2164be4",
+        "85c4b09a-caa7-426c-91c7-1d1a5fc00787",
+        "556a4ffb-249c-4c36-af53-36ad66d3e29e",
+        "05c96033-65d1-49e9-bad8-cbf2bec4c908",
+        "8b7d520f-9313-458b-bbc8-26762fb2f34f",
+        "fc8aca5e-b75a-4747-abce-0182bd762b3a",
+        "04df4229-9281-40b5-98d5-319968664a90"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 9,
+        "normalizedProbability": 0.0833983689614157,
+        "marketRank": 4,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "15/2",
+            "decimalOdds": 8.5
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "8/1",
+            "decimalOdds": 9
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "8/1",
+            "decimalOdds": 9
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "085f4370-4e47-48e7-833f-258259656bb8",
+            "decimalPrice": 4.33
+          },
+          {
+            "runnerId": "12b6a7a5-f81d-4b75-9124-331400013e17",
+            "decimalPrice": 5
+          },
+          {
+            "runnerId": "48c9bb61-a496-4f89-aa87-39289989adcd",
+            "decimalPrice": 6
+          },
+          {
+            "runnerId": "04653933-63b6-4cb3-a94d-d4d39b9f3349",
+            "decimalPrice": 9
+          },
+          {
+            "runnerId": "a5896f26-5178-4ebc-9db1-62a9c8e06276",
+            "decimalPrice": 9
+          },
+          {
+            "runnerId": "c00a9a20-7400-4b0c-bf8f-de9248925ee9",
+            "decimalPrice": 9
+          },
+          {
+            "runnerId": "63589375-d8f0-4434-a18a-74bbb2164be4",
+            "decimalPrice": 12
+          },
+          {
+            "runnerId": "85c4b09a-caa7-426c-91c7-1d1a5fc00787",
+            "decimalPrice": 15
+          },
+          {
+            "runnerId": "556a4ffb-249c-4c36-af53-36ad66d3e29e",
+            "decimalPrice": 17
+          },
+          {
+            "runnerId": "05c96033-65d1-49e9-bad8-cbf2bec4c908",
+            "decimalPrice": 17
+          },
+          {
+            "runnerId": "8b7d520f-9313-458b-bbc8-26762fb2f34f",
+            "decimalPrice": 21
+          },
+          {
+            "runnerId": "fc8aca5e-b75a-4747-abce-0182bd762b3a",
+            "decimalPrice": 21
+          },
+          {
+            "runnerId": "04df4229-9281-40b5-98d5-319968664a90",
+            "decimalPrice": 26
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "contractVersion": "RANK_ONE_MODEL_MARKET_OPTIONAL_V2",
+      "contractEffectiveAt": "2026-10-22T18:51:26.000Z",
+      "modelProbability": 0.21131862334260687,
+      "raceId": "10f2588e-56e8-4ae5-aae1-ad72eabdf8bd",
+      "runnerId": "7f406a1a-72b2-44ed-854f-9e32dc749757",
+      "horseId": "b43e2864-223a-4b7b-a926-6b703c1e70df",
+      "horseName": "Planters Punch",
+      "family": "HURDLE",
+      "raceDate": "2026-10-23",
+      "scheduledOff": "2026-10-23T14:00:00.000Z",
+      "course": "Cheltenham",
+      "raceName": "Oddschecker Novices' Hurdle (Grade 2) (Registered As The Sharp Novices' Hurdle) (GBB Race)",
+      "rankSource": "Jump Tissue / JUMP_TISSUE_V1 / rank",
+      "modelHash": "863b966423f05773083c3c208dd11cd49680df7a7414b855d613ee5c8ad9ebe4",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-23T03:32:24.757Z",
+      "capturedFieldRunnerIds": [
+        "0031a31b-1685-4eb5-9b5d-c04502b2fb61",
+        "7f406a1a-72b2-44ed-854f-9e32dc749757",
+        "8d3490a1-8b65-4914-9623-17f9385bb90d",
+        "2b64060a-b27b-49a4-a865-04136f781ebc",
+        "9d372bdc-907b-41a7-b016-d56c3fdf56e0",
+        "ea068354-06a6-4a20-95fd-12956fe5b27e",
+        "a983921b-1422-447f-bf40-e999c0612ca4",
+        "13ffbf56-f72c-4ca0-a1dd-57c9aa54df31",
+        "7f2ad6d4-2cf9-4cbd-b878-0fe5a9393bee",
+        "aefe713c-f067-4cc5-a2c5-eb61379fa8fc"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 3.75,
+        "normalizedProbability": 0.22610493508909324,
+        "marketRank": 2,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "11/4",
+            "decimalOdds": 3.75
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "11/4",
+            "decimalOdds": 3.75
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "3/1",
+            "decimalOdds": 4
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "0031a31b-1685-4eb5-9b5d-c04502b2fb61",
+            "decimalPrice": 2.75
+          },
+          {
+            "runnerId": "7f406a1a-72b2-44ed-854f-9e32dc749757",
+            "decimalPrice": 3.75
+          },
+          {
+            "runnerId": "8d3490a1-8b65-4914-9623-17f9385bb90d",
+            "decimalPrice": 8.5
+          },
+          {
+            "runnerId": "2b64060a-b27b-49a4-a865-04136f781ebc",
+            "decimalPrice": 8.5
+          },
+          {
+            "runnerId": "9d372bdc-907b-41a7-b016-d56c3fdf56e0",
+            "decimalPrice": 13
+          },
+          {
+            "runnerId": "ea068354-06a6-4a20-95fd-12956fe5b27e",
+            "decimalPrice": 17
+          },
+          {
+            "runnerId": "a983921b-1422-447f-bf40-e999c0612ca4",
+            "decimalPrice": 19
+          },
+          {
+            "runnerId": "13ffbf56-f72c-4ca0-a1dd-57c9aa54df31",
+            "decimalPrice": 23
+          },
+          {
+            "runnerId": "7f2ad6d4-2cf9-4cbd-b878-0fe5a9393bee",
+            "decimalPrice": 23
+          },
+          {
+            "runnerId": "aefe713c-f067-4cc5-a2c5-eb61379fa8fc",
+            "decimalPrice": 26
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "contractVersion": "RANK_ONE_MODEL_MARKET_OPTIONAL_V2",
+      "contractEffectiveAt": "2026-10-22T18:51:26.000Z",
+      "modelProbability": 0.18232219429923466,
+      "raceId": "5edd49fe-5bee-4a50-bd77-7402b229ae70",
+      "runnerId": "68833ef8-5e29-40c2-a219-f51eea15e5f0",
+      "horseId": "d8d808c6-f672-40dd-a320-9d36a749ce4d",
+      "horseName": "Palacio",
+      "family": "CHASE",
+      "raceDate": "2026-10-23",
+      "scheduledOff": "2026-10-23T14:35:00.000Z",
+      "course": "Cheltenham",
+      "raceName": "squareintheair.com Handicap Chase (GBB Race)",
+      "rankSource": "Jump Tissue / JUMP_TISSUE_V1 / rank",
+      "modelHash": "863b966423f05773083c3c208dd11cd49680df7a7414b855d613ee5c8ad9ebe4",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-23T03:32:24.757Z",
+      "capturedFieldRunnerIds": [
+        "6bf639b5-cf5b-44fd-91bd-f1e4f87d5b45",
+        "c2157c17-04c8-4079-b7ee-a11ea460e4ce",
+        "c3c5160c-5914-4f5c-a265-b4ec3c5a8f01",
+        "4bd046c3-d4e0-4228-b383-5fca0155e904",
+        "c4c4baa8-72f5-4967-b097-1aa935cbb938",
+        "858daeb4-3549-4d5d-994e-349463227c51",
+        "68833ef8-5e29-40c2-a219-f51eea15e5f0",
+        "013674e5-0297-4cde-b9d8-6eda947b3c66",
+        "5c6b8fce-5d74-444a-8191-8f62ec1b6cee"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 11,
+        "normalizedProbability": 0.07583671775252797,
+        "marketRank": 7,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "9/1",
+            "decimalOdds": 10
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "10/1",
+            "decimalOdds": 11
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "10/1",
+            "decimalOdds": 11
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "6bf639b5-cf5b-44fd-91bd-f1e4f87d5b45",
+            "decimalPrice": 4.5
+          },
+          {
+            "runnerId": "c2157c17-04c8-4079-b7ee-a11ea460e4ce",
+            "decimalPrice": 4.5
+          },
+          {
+            "runnerId": "c3c5160c-5914-4f5c-a265-b4ec3c5a8f01",
+            "decimalPrice": 4.5
+          },
+          {
+            "runnerId": "4bd046c3-d4e0-4228-b383-5fca0155e904",
+            "decimalPrice": 5.5
+          },
+          {
+            "runnerId": "c4c4baa8-72f5-4967-b097-1aa935cbb938",
+            "decimalPrice": 9.5
+          },
+          {
+            "runnerId": "858daeb4-3549-4d5d-994e-349463227c51",
+            "decimalPrice": 10
+          },
+          {
+            "runnerId": "68833ef8-5e29-40c2-a219-f51eea15e5f0",
+            "decimalPrice": 11
+          },
+          {
+            "runnerId": "013674e5-0297-4cde-b9d8-6eda947b3c66",
+            "decimalPrice": 29
+          },
+          {
+            "runnerId": "5c6b8fce-5d74-444a-8191-8f62ec1b6cee",
+            "decimalPrice": 51
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "contractVersion": "RANK_ONE_MODEL_MARKET_OPTIONAL_V2",
+      "contractEffectiveAt": "2026-10-22T18:51:26.000Z",
+      "modelProbability": 0.38878805691899476,
+      "raceId": "e914316d-738c-45e8-a8d7-e309445e0b51",
+      "runnerId": "c559fbc1-8ad0-4f90-80e7-32fce773a09a",
+      "horseId": "8647c430-7804-4742-8c81-1ce3a934d8d5",
+      "horseName": "Datstheholyallofit",
+      "family": "HURDLE",
+      "raceDate": "2026-10-23",
+      "scheduledOff": "2026-10-23T15:10:00.000Z",
+      "course": "Cheltenham",
+      "raceName": "McCoy Contractors Novices' Hurdle (GBB Race)",
+      "rankSource": "Jump Tissue / JUMP_TISSUE_V1 / rank",
+      "modelHash": "863b966423f05773083c3c208dd11cd49680df7a7414b855d613ee5c8ad9ebe4",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-23T03:32:24.757Z",
+      "capturedFieldRunnerIds": [
+        "e7a97d09-4c79-4e1f-bf17-2fa3e0049d28",
+        "8ad267c9-2594-4cc0-a5dc-fa2ed30a9659",
+        "3c91179b-a415-479c-9dc5-b188cd775bab",
+        "c559fbc1-8ad0-4f90-80e7-32fce773a09a",
+        "2aedad13-418a-45d0-8c4b-145e190c605d",
+        "9e438d14-c4a6-49c2-a1e8-03b25538ea9d",
+        "68c0826d-88b5-4d71-b31b-5a7fedd4d91b"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 9,
+        "normalizedProbability": 0.08715126905070104,
+        "marketRank": 4,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "8/1",
+            "decimalOdds": 9
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "8/1",
+            "decimalOdds": 9
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "9/1",
+            "decimalOdds": 10
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "e7a97d09-4c79-4e1f-bf17-2fa3e0049d28",
+            "decimalPrice": 1.73
+          },
+          {
+            "runnerId": "8ad267c9-2594-4cc0-a5dc-fa2ed30a9659",
+            "decimalPrice": 3.25
+          },
+          {
+            "runnerId": "3c91179b-a415-479c-9dc5-b188cd775bab",
+            "decimalPrice": 6
+          },
+          {
+            "runnerId": "c559fbc1-8ad0-4f90-80e7-32fce773a09a",
+            "decimalPrice": 9
+          },
+          {
+            "runnerId": "2aedad13-418a-45d0-8c4b-145e190c605d",
+            "decimalPrice": 17
+          },
+          {
+            "runnerId": "9e438d14-c4a6-49c2-a1e8-03b25538ea9d",
+            "decimalPrice": 21
+          },
+          {
+            "runnerId": "68c0826d-88b5-4d71-b31b-5a7fedd4d91b",
+            "decimalPrice": 201
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "contractVersion": "RANK_ONE_MODEL_MARKET_OPTIONAL_V2",
+      "contractEffectiveAt": "2026-10-22T18:51:26.000Z",
+      "modelProbability": 0.2284828694474351,
+      "raceId": "23550eda-8811-4c02-936d-91076b878100",
+      "runnerId": "119b1a79-6909-4383-8f24-5af47f07e492",
+      "horseId": "e62c8ccb-4fa1-4be6-892c-b155fcd871c6",
+      "horseName": "Little Ledgend",
+      "family": "CHASE",
+      "raceDate": "2026-10-23",
+      "scheduledOff": "2026-10-23T15:45:00.000Z",
+      "course": "Cheltenham",
+      "raceName": "Chapel Down Amateur Jockeys' Handicap Chase (GBB Race)",
+      "rankSource": "Jump Tissue / JUMP_TISSUE_V1 / rank",
+      "modelHash": "863b966423f05773083c3c208dd11cd49680df7a7414b855d613ee5c8ad9ebe4",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-23T03:32:24.757Z",
+      "capturedFieldRunnerIds": [
+        "119b1a79-6909-4383-8f24-5af47f07e492",
+        "4b397369-849e-4a6f-9c90-457967efe694",
+        "b99d9f85-4aa8-45f3-ad55-71aee1b5ee0b",
+        "7a182408-aef8-4ba2-abc9-b5dd1391b363",
+        "d64c4782-7207-4228-8321-310f6adbf3f8",
+        "fa3fa7c2-ab02-48ac-8d64-1cae83b4c3cb",
+        "4b958966-1fb3-41ab-a84a-b052e4d272b7",
+        "ad56c6bf-2dea-4833-99e1-8567edc4b781",
+        "bd6ff008-975e-4fc2-aa1e-bc8d504e1da4",
+        "ad4200bc-483f-4c6d-949d-7e379aa2cf6d",
+        "14dd8b19-9b6e-469b-acb5-8d589d6a0060"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 3.5,
+        "normalizedProbability": 0.21351169613262955,
+        "marketRank": 1,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "5/2",
+            "decimalOdds": 3.5
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "5/2",
+            "decimalOdds": 3.5
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "5/2",
+            "decimalOdds": 3.5
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "119b1a79-6909-4383-8f24-5af47f07e492",
+            "decimalPrice": 3.5
+          },
+          {
+            "runnerId": "4b397369-849e-4a6f-9c90-457967efe694",
+            "decimalPrice": 4.5
+          },
+          {
+            "runnerId": "b99d9f85-4aa8-45f3-ad55-71aee1b5ee0b",
+            "decimalPrice": 6.5
+          },
+          {
+            "runnerId": "7a182408-aef8-4ba2-abc9-b5dd1391b363",
+            "decimalPrice": 7.5
+          },
+          {
+            "runnerId": "d64c4782-7207-4228-8321-310f6adbf3f8",
+            "decimalPrice": 9
+          },
+          {
+            "runnerId": "fa3fa7c2-ab02-48ac-8d64-1cae83b4c3cb",
+            "decimalPrice": 10
+          },
+          {
+            "runnerId": "4b958966-1fb3-41ab-a84a-b052e4d272b7",
+            "decimalPrice": 10
+          },
+          {
+            "runnerId": "ad56c6bf-2dea-4833-99e1-8567edc4b781",
+            "decimalPrice": 12
+          },
+          {
+            "runnerId": "bd6ff008-975e-4fc2-aa1e-bc8d504e1da4",
+            "decimalPrice": 15
+          },
+          {
+            "runnerId": "ad4200bc-483f-4c6d-949d-7e379aa2cf6d",
+            "decimalPrice": 23
+          },
+          {
+            "runnerId": "14dd8b19-9b6e-469b-acb5-8d589d6a0060",
+            "decimalPrice": 26
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "contractVersion": "RANK_ONE_MODEL_MARKET_OPTIONAL_V2",
+      "contractEffectiveAt": "2026-10-22T18:51:26.000Z",
+      "modelProbability": 0.3802004013529198,
+      "raceId": "7ae8a136-dca4-4047-8e67-82c110c2dcb6",
+      "runnerId": "fcdf9b44-0f15-4675-a04c-b7f942ec2eb9",
+      "horseId": "3c8f50b1-d490-4dc5-a969-516cecfb95be",
+      "horseName": "Bulletsnap",
+      "liveSemanticsVersion": "TURF_TISSUE_V3_PRERACE",
+      "liveSemanticsEffectiveAt": "2026-10-19T20:20:55.000Z",
+      "family": "TURF",
+      "raceDate": "2026-10-23",
+      "scheduledOff": "2026-10-23T12:35:00.000Z",
+      "course": "Doncaster",
+      "raceName": "William Hill Extra Places Every Day Nursery",
+      "rankSource": "Turf Tissue / tissue_model_v3 / TURF_TISSUE_V3_PRERACE / tissueRank",
+      "modelHash": "2c1e6d071f00396d92e9e80f351b1ba273b8b3316b5a6b2e483818cd60002db4",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-23T03:32:24.757Z",
+      "capturedFieldRunnerIds": [
+        "fcdf9b44-0f15-4675-a04c-b7f942ec2eb9",
+        "e19102e8-b4b1-4cfd-9b58-29915f4ede72",
+        "ee3892e4-c678-4bcc-a3ce-97ad09be81e0",
+        "e9d23a89-8e82-433c-ae0f-03c76f858101",
+        "53e5b8ad-dcd8-47aa-9c82-0df1bee2ad2c",
+        "fff02483-c351-4b3e-9788-30c2ae15616e"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 2,
+        "normalizedProbability": 0.4285106336545072,
+        "marketRank": 1,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "1/1",
+            "decimalOdds": 2
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "1/1",
+            "decimalOdds": 2
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "1/1",
+            "decimalOdds": 2
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "fcdf9b44-0f15-4675-a04c-b7f942ec2eb9",
+            "decimalPrice": 2
+          },
+          {
+            "runnerId": "e19102e8-b4b1-4cfd-9b58-29915f4ede72",
+            "decimalPrice": 5
+          },
+          {
+            "runnerId": "ee3892e4-c678-4bcc-a3ce-97ad09be81e0",
+            "decimalPrice": 5.5
+          },
+          {
+            "runnerId": "e9d23a89-8e82-433c-ae0f-03c76f858101",
+            "decimalPrice": 7
+          },
+          {
+            "runnerId": "53e5b8ad-dcd8-47aa-9c82-0df1bee2ad2c",
+            "decimalPrice": 12
+          },
+          {
+            "runnerId": "fff02483-c351-4b3e-9788-30c2ae15616e",
+            "decimalPrice": 17
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "contractVersion": "RANK_ONE_MODEL_MARKET_OPTIONAL_V2",
+      "contractEffectiveAt": "2026-10-22T18:51:26.000Z",
+      "modelProbability": 0.1103111196662472,
+      "raceId": "eee1d52c-2083-455a-8903-8593831b7453",
+      "runnerId": "3478aa92-2ce6-4e1c-a4e8-17de637a3ce3",
+      "horseId": "0ec830e8-e6c2-45c4-a0d2-f7a9c7c47ba2",
+      "horseName": "City Captain",
+      "liveSemanticsVersion": "TURF_TISSUE_V3_PRERACE",
+      "liveSemanticsEffectiveAt": "2026-10-19T20:20:55.000Z",
+      "family": "TURF",
+      "raceDate": "2026-10-23",
+      "scheduledOff": "2026-10-23T13:10:00.000Z",
+      "course": "Doncaster",
+      "raceName": "William Hill Epic Boosts Handicap",
+      "rankSource": "Turf Tissue / tissue_model_v3 / TURF_TISSUE_V3_PRERACE / tissueRank",
+      "modelHash": "2c1e6d071f00396d92e9e80f351b1ba273b8b3316b5a6b2e483818cd60002db4",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-23T03:32:24.757Z",
+      "capturedFieldRunnerIds": [
+        "c00d2267-28e0-4800-a244-349af38ebc36",
+        "c01ab6a9-602e-47be-bb9a-cd0430d34dd2",
+        "831fcc09-4a64-4cf9-8a76-28f740d4c808",
+        "f0eeb5c1-918a-4253-825d-6a36babc2744",
+        "635e4479-0119-4ec5-b4a8-c33783757d12",
+        "5ed1e953-eadf-41ca-88ee-e74dc83ad8c5",
+        "3478aa92-2ce6-4e1c-a4e8-17de637a3ce3",
+        "179f2cbd-1e93-489f-85ac-584c787704a0",
+        "169d8322-30f1-4546-aab3-038dba0e8e1c",
+        "3607e8c6-137d-4e4a-8599-9af393f02858",
+        "64a590e5-e605-4613-b5b3-23ea0335fed7",
+        "9e4b10f1-692f-4af8-a2d7-2ea740ecf06a",
+        "57da0364-8869-4503-b88c-f3c006aa1c70",
+        "89b32bff-f4db-434f-8d03-3550da964061",
+        "6f07a98c-48c6-471e-a911-626d275af6c2",
+        "8adf4121-6d67-473d-8eef-343f325447c3"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 12,
+        "normalizedProbability": null,
+        "marketRank": null,
+        "quotes": [
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "10/1",
+            "decimalOdds": 11
+          },
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "11/1",
+            "decimalOdds": 12
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "11/1",
+            "decimalOdds": 12
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "c00d2267-28e0-4800-a244-349af38ebc36",
+            "decimalPrice": 4.33
+          },
+          {
+            "runnerId": "c01ab6a9-602e-47be-bb9a-cd0430d34dd2",
+            "decimalPrice": 5
+          },
+          {
+            "runnerId": "831fcc09-4a64-4cf9-8a76-28f740d4c808",
+            "decimalPrice": 6
+          },
+          {
+            "runnerId": "f0eeb5c1-918a-4253-825d-6a36babc2744",
+            "decimalPrice": 8.5
+          },
+          {
+            "runnerId": "635e4479-0119-4ec5-b4a8-c33783757d12",
+            "decimalPrice": 8.5
+          },
+          {
+            "runnerId": "5ed1e953-eadf-41ca-88ee-e74dc83ad8c5",
+            "decimalPrice": 11
+          },
+          {
+            "runnerId": "3478aa92-2ce6-4e1c-a4e8-17de637a3ce3",
+            "decimalPrice": 12
+          },
+          {
+            "runnerId": "179f2cbd-1e93-489f-85ac-584c787704a0",
+            "decimalPrice": 13
+          },
+          {
+            "runnerId": "169d8322-30f1-4546-aab3-038dba0e8e1c",
+            "decimalPrice": 13
+          },
+          {
+            "runnerId": "3607e8c6-137d-4e4a-8599-9af393f02858",
+            "decimalPrice": 17
+          },
+          {
+            "runnerId": "64a590e5-e605-4613-b5b3-23ea0335fed7",
+            "decimalPrice": 17
+          },
+          {
+            "runnerId": "9e4b10f1-692f-4af8-a2d7-2ea740ecf06a",
+            "decimalPrice": 26
+          },
+          {
+            "runnerId": "57da0364-8869-4503-b88c-f3c006aa1c70",
+            "decimalPrice": 29
+          },
+          {
+            "runnerId": "89b32bff-f4db-434f-8d03-3550da964061",
+            "decimalPrice": 34
+          },
+          {
+            "runnerId": "6f07a98c-48c6-471e-a911-626d275af6c2",
+            "decimalPrice": 51
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "contractVersion": "RANK_ONE_MODEL_MARKET_OPTIONAL_V2",
+      "contractEffectiveAt": "2026-10-22T18:51:26.000Z",
+      "modelProbability": 0.2049983386777872,
+      "raceId": "062e1e66-e468-49a0-b7d2-bf872413eace",
+      "runnerId": "bf73911d-6f10-4f25-8c9f-49fd6a3790f1",
+      "horseId": "8f09b1da-d961-45a0-8a42-aa9a8b05bf1d",
+      "horseName": "Ellusive Butterfly",
+      "liveSemanticsVersion": "TURF_TISSUE_V3_PRERACE",
+      "liveSemanticsEffectiveAt": "2026-10-19T20:20:55.000Z",
+      "family": "TURF",
+      "raceDate": "2026-10-23",
+      "scheduledOff": "2026-10-23T13:45:00.000Z",
+      "course": "Doncaster",
+      "raceName": "William Hill Best Odds Guaranteed Handicap",
+      "rankSource": "Turf Tissue / tissue_model_v3 / TURF_TISSUE_V3_PRERACE / tissueRank",
+      "modelHash": "2c1e6d071f00396d92e9e80f351b1ba273b8b3316b5a6b2e483818cd60002db4",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-23T03:32:24.757Z",
+      "capturedFieldRunnerIds": [
+        "7e90673a-6c0d-481e-a3d1-4833229e9983",
+        "6cd29059-d263-42b0-adaa-a33bdfd55fdc",
+        "88ddcc1e-07db-4d80-80ce-1c4bb9ac48cb",
+        "112483bd-e261-4caf-a88e-18d93a227862",
+        "17d21822-b2f5-476a-8af2-87700695cb03",
+        "a770a7cc-0f3a-48da-92f1-380b4bc7b146",
+        "91696d4d-dd2f-47f2-be63-4e57cc3a5c95",
+        "802f6ae6-2bd8-43ac-b100-6cf676244d0b",
+        "bf73911d-6f10-4f25-8c9f-49fd6a3790f1",
+        "da8a241f-5c60-4175-a7e6-c6866f319680"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 23,
+        "normalizedProbability": 0.03504997062648198,
+        "marketRank": 8,
+        "quotes": [
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "20/1",
+            "decimalOdds": 21
+          },
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "22/1",
+            "decimalOdds": 23
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "22/1",
+            "decimalOdds": 23
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "7e90673a-6c0d-481e-a3d1-4833229e9983",
+            "decimalPrice": 2.63
+          },
+          {
+            "runnerId": "6cd29059-d263-42b0-adaa-a33bdfd55fdc",
+            "decimalPrice": 5.5
+          },
+          {
+            "runnerId": "88ddcc1e-07db-4d80-80ce-1c4bb9ac48cb",
+            "decimalPrice": 6
+          },
+          {
+            "runnerId": "112483bd-e261-4caf-a88e-18d93a227862",
+            "decimalPrice": 8.5
+          },
+          {
+            "runnerId": "17d21822-b2f5-476a-8af2-87700695cb03",
+            "decimalPrice": 9
+          },
+          {
+            "runnerId": "a770a7cc-0f3a-48da-92f1-380b4bc7b146",
+            "decimalPrice": 11
+          },
+          {
+            "runnerId": "91696d4d-dd2f-47f2-be63-4e57cc3a5c95",
+            "decimalPrice": 15
+          },
+          {
+            "runnerId": "802f6ae6-2bd8-43ac-b100-6cf676244d0b",
+            "decimalPrice": 23
+          },
+          {
+            "runnerId": "bf73911d-6f10-4f25-8c9f-49fd6a3790f1",
+            "decimalPrice": 23
+          },
+          {
+            "runnerId": "da8a241f-5c60-4175-a7e6-c6866f319680",
+            "decimalPrice": 26
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "contractVersion": "RANK_ONE_MODEL_MARKET_OPTIONAL_V2",
+      "contractEffectiveAt": "2026-10-22T18:51:26.000Z",
+      "modelProbability": 0.3727628974533846,
+      "raceId": "70067934-7e10-4a96-be00-6464ab28119d",
+      "runnerId": "18591a9d-024a-42db-a436-a877531b490b",
+      "horseId": "ccfd05b2-35ab-496f-b900-a52204f3f4a4",
+      "horseName": "Desert Romance",
+      "liveSemanticsVersion": "TURF_TISSUE_V3_PRERACE",
+      "liveSemanticsEffectiveAt": "2026-10-19T20:20:55.000Z",
+      "family": "TURF",
+      "raceDate": "2026-10-23",
+      "scheduledOff": "2026-10-23T14:20:00.000Z",
+      "course": "Doncaster",
+      "raceName": "''What Are The Odds'' By Alan Newman EBF Maiden Fillies' Stakes (GBB Race)",
+      "rankSource": "Turf Tissue / tissue_model_v3 / TURF_TISSUE_V3_PRERACE / tissueRank",
+      "modelHash": "2c1e6d071f00396d92e9e80f351b1ba273b8b3316b5a6b2e483818cd60002db4",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-23T03:32:24.757Z",
+      "capturedFieldRunnerIds": [
+        "18591a9d-024a-42db-a436-a877531b490b",
+        "554bf373-7c6f-40ef-a286-b0fa274ed11f",
+        "4dd99fc1-1ff5-4c5b-aa25-e39036cd15a8",
+        "45794175-fbb3-4d5d-95e8-0e37aa991a15",
+        "c1db6458-b86f-46dc-8144-12fad8d14552",
+        "7b1d683f-c0eb-4899-ae69-bc16b0d4583c",
+        "e37f2013-20fb-43ee-bb5c-c52628663b96",
+        "ab3dec66-ca04-458c-a244-2e288be578cc"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 1.91,
+        "normalizedProbability": 0.394531134620741,
+        "marketRank": 1,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "10/11",
+            "decimalOdds": 1.91
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "10/11",
+            "decimalOdds": 1.91
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "1/1",
+            "decimalOdds": 2
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "18591a9d-024a-42db-a436-a877531b490b",
+            "decimalPrice": 1.91
+          },
+          {
+            "runnerId": "554bf373-7c6f-40ef-a286-b0fa274ed11f",
+            "decimalPrice": 5
+          },
+          {
+            "runnerId": "4dd99fc1-1ff5-4c5b-aa25-e39036cd15a8",
+            "decimalPrice": 5
+          },
+          {
+            "runnerId": "45794175-fbb3-4d5d-95e8-0e37aa991a15",
+            "decimalPrice": 5.5
+          },
+          {
+            "runnerId": "c1db6458-b86f-46dc-8144-12fad8d14552",
+            "decimalPrice": 7.5
+          },
+          {
+            "runnerId": "7b1d683f-c0eb-4899-ae69-bc16b0d4583c",
+            "decimalPrice": 17
+          },
+          {
+            "runnerId": "e37f2013-20fb-43ee-bb5c-c52628663b96",
+            "decimalPrice": 51
+          },
+          {
+            "runnerId": "ab3dec66-ca04-458c-a244-2e288be578cc",
+            "decimalPrice": 101
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "contractVersion": "RANK_ONE_MODEL_MARKET_OPTIONAL_V2",
+      "contractEffectiveAt": "2026-10-22T18:51:26.000Z",
+      "modelProbability": 0.23001629117757474,
+      "raceId": "6920cca1-1ca4-4c33-ab1e-cb77588aaf04",
+      "runnerId": "c1f70680-0553-48ce-954d-be2e61f35241",
+      "horseId": "9a35ae37-54ac-4718-b4f4-5e4a2244dd23",
+      "horseName": "Zajal",
+      "liveSemanticsVersion": "TURF_TISSUE_V3_PRERACE",
+      "liveSemanticsEffectiveAt": "2026-10-19T20:20:55.000Z",
+      "family": "TURF",
+      "raceDate": "2026-10-23",
+      "scheduledOff": "2026-10-23T14:55:00.000Z",
+      "course": "Doncaster",
+      "raceName": "British Stallion Studs EBF Novice Stakes (GBB Race)",
+      "rankSource": "Turf Tissue / tissue_model_v3 / TURF_TISSUE_V3_PRERACE / tissueRank",
+      "modelHash": "2c1e6d071f00396d92e9e80f351b1ba273b8b3316b5a6b2e483818cd60002db4",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-23T03:32:24.757Z",
+      "capturedFieldRunnerIds": [
+        "7b17da7d-9958-439e-9a34-d43ff55ca0a8",
+        "c625abbf-85df-4d51-9d0c-09aa22600ad1",
+        "c1f70680-0553-48ce-954d-be2e61f35241",
+        "fa1fd90b-82c0-4c08-8425-da6b7873852d",
+        "6db9208a-221b-4073-956f-1e7780ece924",
+        "a07b7404-479e-41f9-9dfc-04b70aa4c325",
+        "a914735e-f73a-4b20-8b5a-b29b9973dfcb",
+        "db7e41ac-f072-4228-9788-ef6dfbe75346",
+        "5431b67a-6ace-4dd2-8ed6-085321002d52",
+        "1c6078e6-5b7f-4816-b805-af5e6e0fc0d7"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 6,
+        "normalizedProbability": 0.12394604271452403,
+        "marketRank": 3,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "5/1",
+            "decimalOdds": 6
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "5/1",
+            "decimalOdds": 6
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "11/2",
+            "decimalOdds": 6.5
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "7b17da7d-9958-439e-9a34-d43ff55ca0a8",
+            "decimalPrice": 2.2
+          },
+          {
+            "runnerId": "c625abbf-85df-4d51-9d0c-09aa22600ad1",
+            "decimalPrice": 3
+          },
+          {
+            "runnerId": "c1f70680-0553-48ce-954d-be2e61f35241",
+            "decimalPrice": 6
+          },
+          {
+            "runnerId": "fa1fd90b-82c0-4c08-8425-da6b7873852d",
+            "decimalPrice": 9
+          },
+          {
+            "runnerId": "6db9208a-221b-4073-956f-1e7780ece924",
+            "decimalPrice": 12
+          },
+          {
+            "runnerId": "a07b7404-479e-41f9-9dfc-04b70aa4c325",
+            "decimalPrice": 12
+          },
+          {
+            "runnerId": "a914735e-f73a-4b20-8b5a-b29b9973dfcb",
+            "decimalPrice": 23
+          },
+          {
+            "runnerId": "db7e41ac-f072-4228-9788-ef6dfbe75346",
+            "decimalPrice": 29
+          },
+          {
+            "runnerId": "5431b67a-6ace-4dd2-8ed6-085321002d52",
+            "decimalPrice": 34
+          },
+          {
+            "runnerId": "1c6078e6-5b7f-4816-b805-af5e6e0fc0d7",
+            "decimalPrice": 201
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "contractVersion": "RANK_ONE_MODEL_MARKET_OPTIONAL_V2",
+      "contractEffectiveAt": "2026-10-22T18:51:26.000Z",
+      "modelProbability": 0.19206578004109753,
+      "raceId": "d50ecd33-76e0-4c7a-92a4-f1c4d9ab5be1",
+      "runnerId": "62c98b49-aca9-46af-a007-5046f9759837",
+      "horseId": "c17fac91-6044-4952-a166-cc5dcea64aec",
+      "horseName": "Art Lover",
+      "liveSemanticsVersion": "TURF_TISSUE_V3_PRERACE",
+      "liveSemanticsEffectiveAt": "2026-10-19T20:20:55.000Z",
+      "family": "TURF",
+      "raceDate": "2026-10-23",
+      "scheduledOff": "2026-10-23T15:30:00.000Z",
+      "course": "Doncaster",
+      "raceName": "William Hill Price Boosts Every Day Handicap (Div 1)",
+      "rankSource": "Turf Tissue / tissue_model_v3 / TURF_TISSUE_V3_PRERACE / tissueRank",
+      "modelHash": "2c1e6d071f00396d92e9e80f351b1ba273b8b3316b5a6b2e483818cd60002db4",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-23T03:32:24.757Z",
+      "capturedFieldRunnerIds": [
+        "37eaf798-db81-4c77-ac14-abf7288f5642",
+        "929ceb2c-b8fd-4b05-ac5e-badba705521f",
+        "62c98b49-aca9-46af-a007-5046f9759837",
+        "9c9843f2-53ab-4b08-92bb-13b5df25d13a",
+        "eb5490c9-e35d-4dc1-9c0b-2e05be3ece3c",
+        "cc9ebd27-0b2f-4baa-870f-69dad81f1d85",
+        "6a794050-4ec4-4157-9421-e3960d7b26d8",
+        "dafe363b-31ca-406d-96c3-c3a866b1363b",
+        "521d36e0-036e-4e10-ad1f-ba3978c914d7",
+        "02647fb8-9b54-4d0f-92fd-ed59a5239ebf",
+        "8e81c95f-dcc9-42bb-a194-96512a34e394",
+        "e975e3ab-71b3-4ced-a56e-34e36d5a0e42",
+        "6923fd0a-2e71-4c1d-b351-1ceceb648dae"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 7,
+        "normalizedProbability": 0.10195103704169964,
+        "marketRank": 3,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "6/1",
+            "decimalOdds": 7
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "6/1",
+            "decimalOdds": 7
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "6/1",
+            "decimalOdds": 7
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "37eaf798-db81-4c77-ac14-abf7288f5642",
+            "decimalPrice": 2.75
+          },
+          {
+            "runnerId": "929ceb2c-b8fd-4b05-ac5e-badba705521f",
+            "decimalPrice": 6.5
+          },
+          {
+            "runnerId": "62c98b49-aca9-46af-a007-5046f9759837",
+            "decimalPrice": 7
+          },
+          {
+            "runnerId": "9c9843f2-53ab-4b08-92bb-13b5df25d13a",
+            "decimalPrice": 7.5
+          },
+          {
+            "runnerId": "eb5490c9-e35d-4dc1-9c0b-2e05be3ece3c",
+            "decimalPrice": 8.5
+          },
+          {
+            "runnerId": "cc9ebd27-0b2f-4baa-870f-69dad81f1d85",
+            "decimalPrice": 9
+          },
+          {
+            "runnerId": "6a794050-4ec4-4157-9421-e3960d7b26d8",
+            "decimalPrice": 12
+          },
+          {
+            "runnerId": "dafe363b-31ca-406d-96c3-c3a866b1363b",
+            "decimalPrice": 13
+          },
+          {
+            "runnerId": "521d36e0-036e-4e10-ad1f-ba3978c914d7",
+            "decimalPrice": 13
+          },
+          {
+            "runnerId": "02647fb8-9b54-4d0f-92fd-ed59a5239ebf",
+            "decimalPrice": 17
+          },
+          {
+            "runnerId": "8e81c95f-dcc9-42bb-a194-96512a34e394",
+            "decimalPrice": 26
+          },
+          {
+            "runnerId": "e975e3ab-71b3-4ced-a56e-34e36d5a0e42",
+            "decimalPrice": 34
+          },
+          {
+            "runnerId": "6923fd0a-2e71-4c1d-b351-1ceceb648dae",
+            "decimalPrice": 67
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "contractVersion": "RANK_ONE_MODEL_MARKET_OPTIONAL_V2",
+      "contractEffectiveAt": "2026-10-22T18:51:26.000Z",
+      "modelProbability": 0.1769074273233697,
+      "raceId": "84d8f4ed-58bd-41e1-b649-b88999a3cde9",
+      "runnerId": "1c87b8a4-a884-405b-9ea5-b0d66c0d1ad1",
+      "horseId": "b9b850c2-9ab2-4655-aabe-ba01697f03a1",
+      "horseName": "Angel Gabriel",
+      "liveSemanticsVersion": "TURF_TISSUE_V3_PRERACE",
+      "liveSemanticsEffectiveAt": "2026-10-19T20:20:55.000Z",
+      "family": "TURF",
+      "raceDate": "2026-10-23",
+      "scheduledOff": "2026-10-23T16:05:00.000Z",
+      "course": "Doncaster",
+      "raceName": "William Hill Price Boosts Every Day Handicap (Div 2)",
+      "rankSource": "Turf Tissue / tissue_model_v3 / TURF_TISSUE_V3_PRERACE / tissueRank",
+      "modelHash": "2c1e6d071f00396d92e9e80f351b1ba273b8b3316b5a6b2e483818cd60002db4",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-23T03:32:24.757Z",
+      "capturedFieldRunnerIds": [
+        "1c87b8a4-a884-405b-9ea5-b0d66c0d1ad1",
+        "6768dc17-4745-4f56-98c4-1033c4a47f5e",
+        "9c693d82-3901-4313-a5b2-4239360f4a16",
+        "9fbdafd7-768f-4d89-a82f-77bff7bfccd2",
+        "e5553e05-95e5-4d07-97c7-eb449607a25d",
+        "7d24aa11-80d8-4c00-bb0c-90730e49c5f6",
+        "9943f7f5-9c12-4616-ad76-88d8eec57165",
+        "be5595eb-0afc-4e14-8009-9242f5bf260b",
+        "f708c9c4-1e15-441b-b908-f10cb38b4d44",
+        "12aefa02-30fc-402d-979f-e5694d60c742",
+        "fdde861a-a437-452a-b412-52a57a4943a1",
+        "d0cac99e-ca18-4842-a6d9-6fea62ecd324",
+        "9dda7cdb-72fb-4ccc-9858-765de42de02e"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 3.5,
+        "normalizedProbability": 0.20263552410780414,
+        "marketRank": 1,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "5/2",
+            "decimalOdds": 3.5
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "5/2",
+            "decimalOdds": 3.5
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "5/2",
+            "decimalOdds": 3.5
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "1c87b8a4-a884-405b-9ea5-b0d66c0d1ad1",
+            "decimalPrice": 3.5
+          },
+          {
+            "runnerId": "6768dc17-4745-4f56-98c4-1033c4a47f5e",
+            "decimalPrice": 4.5
+          },
+          {
+            "runnerId": "9c693d82-3901-4313-a5b2-4239360f4a16",
+            "decimalPrice": 4.5
+          },
+          {
+            "runnerId": "9fbdafd7-768f-4d89-a82f-77bff7bfccd2",
+            "decimalPrice": 8.5
+          },
+          {
+            "runnerId": "e5553e05-95e5-4d07-97c7-eb449607a25d",
+            "decimalPrice": 8.5
+          },
+          {
+            "runnerId": "7d24aa11-80d8-4c00-bb0c-90730e49c5f6",
+            "decimalPrice": 9
+          },
+          {
+            "runnerId": "9943f7f5-9c12-4616-ad76-88d8eec57165",
+            "decimalPrice": 10
+          },
+          {
+            "runnerId": "be5595eb-0afc-4e14-8009-9242f5bf260b",
+            "decimalPrice": 12
+          },
+          {
+            "runnerId": "f708c9c4-1e15-441b-b908-f10cb38b4d44",
+            "decimalPrice": 26
+          },
+          {
+            "runnerId": "12aefa02-30fc-402d-979f-e5694d60c742",
+            "decimalPrice": 26
+          },
+          {
+            "runnerId": "fdde861a-a437-452a-b412-52a57a4943a1",
+            "decimalPrice": 41
+          },
+          {
+            "runnerId": "d0cac99e-ca18-4842-a6d9-6fea62ecd324",
+            "decimalPrice": 41
+          },
+          {
+            "runnerId": "9dda7cdb-72fb-4ccc-9858-765de42de02e",
+            "decimalPrice": 41
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "contractVersion": "RANK_ONE_MODEL_MARKET_OPTIONAL_V2",
+      "contractEffectiveAt": "2026-10-22T18:51:26.000Z",
+      "modelProbability": 0.08206418174813213,
+      "raceId": "19785d32-2abb-40aa-958d-e5e7040d7c13",
+      "runnerId": "171ea232-5c11-4b02-81c9-2b63f2d513aa",
+      "horseId": "46d1bf5e-18a5-449c-a13b-b9dd87e6f996",
+      "horseName": "Mayaada",
+      "liveSemanticsVersion": "TURF_TISSUE_V3_PRERACE",
+      "liveSemanticsEffectiveAt": "2026-10-19T20:20:55.000Z",
+      "family": "TURF",
+      "raceDate": "2026-10-23",
+      "scheduledOff": "2026-10-23T16:35:00.000Z",
+      "course": "Doncaster",
+      "raceName": "William Hill Keep Your Raceday Positive Handicap",
+      "rankSource": "Turf Tissue / tissue_model_v3 / TURF_TISSUE_V3_PRERACE / tissueRank",
+      "modelHash": "2c1e6d071f00396d92e9e80f351b1ba273b8b3316b5a6b2e483818cd60002db4",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-23T03:32:24.757Z",
+      "capturedFieldRunnerIds": [
+        "171ea232-5c11-4b02-81c9-2b63f2d513aa",
+        "f6924879-2ded-4cbd-9dbb-951eac79e20e",
+        "d53e332b-00d9-4963-b592-9d9f59b1e8b4",
+        "ff6a015d-751d-4f3c-8010-6fa65dc98ab5",
+        "c11a2e0c-7542-41e7-af60-1c4e298841bb",
+        "37a5a2ab-f062-425b-aa46-9858731d38a3",
+        "3555c9d1-0a3b-495a-968a-00970a3e9bc8",
+        "1f7ccb5d-8fb4-4694-b8e5-b324bb26e012",
+        "8956da94-fcad-440c-802d-852ad07100e8",
+        "3d66bcaf-0904-412d-b042-ca70e228a87f",
+        "79de8612-a726-4f6b-addc-b14f9431796b",
+        "ae485448-a49d-406c-ac1c-070f60f3bd6a",
+        "c4d6c23d-08f5-4636-9d72-80ccc59f5cbc",
+        "aad0e64e-d41f-4bbf-a15e-eae17b120a8e",
+        "a28aea11-2047-45c6-b89b-1bce14f10374",
+        "35db29d1-73b4-4926-909a-29935f204cd7",
+        "8f17fb2e-d691-4acc-a978-1cb59886ab0e",
+        "ed882e93-2717-4695-a9c9-2c6a24b7c582",
+        "df22baae-0905-485d-925e-e40e782a7a78",
+        "4e44cd75-8b40-4e8e-814b-8ea5d829ebda"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 5,
+        "normalizedProbability": 0.13253095579428603,
+        "marketRank": 1,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "4/1",
+            "decimalOdds": 5
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "4/1",
+            "decimalOdds": 5
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "4/1",
+            "decimalOdds": 5
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "171ea232-5c11-4b02-81c9-2b63f2d513aa",
+            "decimalPrice": 5
+          },
+          {
+            "runnerId": "f6924879-2ded-4cbd-9dbb-951eac79e20e",
+            "decimalPrice": 7
+          },
+          {
+            "runnerId": "d53e332b-00d9-4963-b592-9d9f59b1e8b4",
+            "decimalPrice": 7.5
+          },
+          {
+            "runnerId": "ff6a015d-751d-4f3c-8010-6fa65dc98ab5",
+            "decimalPrice": 7.5
+          },
+          {
+            "runnerId": "c11a2e0c-7542-41e7-af60-1c4e298841bb",
+            "decimalPrice": 9
+          },
+          {
+            "runnerId": "37a5a2ab-f062-425b-aa46-9858731d38a3",
+            "decimalPrice": 10
+          },
+          {
+            "runnerId": "3555c9d1-0a3b-495a-968a-00970a3e9bc8",
+            "decimalPrice": 12
+          },
+          {
+            "runnerId": "1f7ccb5d-8fb4-4694-b8e5-b324bb26e012",
+            "decimalPrice": 12
+          },
+          {
+            "runnerId": "8956da94-fcad-440c-802d-852ad07100e8",
+            "decimalPrice": 13
+          },
+          {
+            "runnerId": "3d66bcaf-0904-412d-b042-ca70e228a87f",
+            "decimalPrice": 13
+          },
+          {
+            "runnerId": "79de8612-a726-4f6b-addc-b14f9431796b",
+            "decimalPrice": 15
+          },
+          {
+            "runnerId": "ae485448-a49d-406c-ac1c-070f60f3bd6a",
+            "decimalPrice": 17
+          },
+          {
+            "runnerId": "c4d6c23d-08f5-4636-9d72-80ccc59f5cbc",
+            "decimalPrice": 21
+          },
+          {
+            "runnerId": "aad0e64e-d41f-4bbf-a15e-eae17b120a8e",
+            "decimalPrice": 21
+          },
+          {
+            "runnerId": "a28aea11-2047-45c6-b89b-1bce14f10374",
+            "decimalPrice": 29
+          },
+          {
+            "runnerId": "35db29d1-73b4-4926-909a-29935f204cd7",
+            "decimalPrice": 34
+          },
+          {
+            "runnerId": "8f17fb2e-d691-4acc-a978-1cb59886ab0e",
+            "decimalPrice": 34
+          },
+          {
+            "runnerId": "ed882e93-2717-4695-a9c9-2c6a24b7c582",
+            "decimalPrice": 41
+          },
+          {
+            "runnerId": "df22baae-0905-485d-925e-e40e782a7a78",
+            "decimalPrice": 51
+          },
+          {
+            "runnerId": "4e44cd75-8b40-4e8e-814b-8ea5d829ebda",
+            "decimalPrice": 101
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "contractVersion": "RANK_ONE_MODEL_MARKET_OPTIONAL_V2",
+      "contractEffectiveAt": "2026-10-22T18:51:26.000Z",
+      "modelProbability": 0.1918158509937343,
+      "raceId": "57ebdb3d-f153-4fa0-ba67-97205c2546c8",
+      "runnerId": "da4f66b8-e0d2-459d-a4c1-c561cec0a203",
+      "horseId": "44e798a7-ad0a-4dc1-91cf-0771cd65a8d4",
+      "horseName": "Yehudi",
+      "liveSemanticsVersion": "AW_TISSUE_V2_TURF_V3_CORE_PRERACE",
+      "liveSemanticsEffectiveAt": "2026-10-20T03:54:38.000Z",
+      "modelInputs": [
+        62,
+        68.22777050351146,
+        68.22777050351146,
+        66.81216816263063,
+        104.22777050351146,
+        105.39656582174977,
+        104.81216816263063,
+        99.22777050351146,
+        99.22777050351146,
+        97.81216816263063,
+        8.397600685518423,
+        7.0630481633881725,
+        16.822687224669604,
+        8.197814032221203,
+        140,
+        2.995732273553991,
+        4,
+        137,
+        6,
+        8.645454545454545,
+        11,
+        4,
+        0.36363636363636365,
+        1,
+        1.791759469228055,
+        -3.0431531921574817,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        3,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "featureCutoffAt": "2026-10-23T03:31:38.237Z",
+      "family": "AW",
+      "raceDate": "2026-10-23",
+      "scheduledOff": "2026-10-23T15:25:00.000Z",
+      "course": "Wolverhampton",
+      "raceName": "AW Trials Day - Lingfield 2nd January 2027 Handicap (Div 1)",
+      "rankSource": "AW Tissue / AW_TISSUE_V2 / AW_TISSUE_V2_TURF_V3_CORE_PRERACE / rank",
+      "modelHash": "ba7d2ea42a87d4ce432288d57a02cee8528217fafa04efa37723446924bdab82",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-23T03:32:24.757Z",
+      "capturedFieldRunnerIds": [
+        "593bb68a-9ac6-40b5-9acf-02c930395556",
+        "00013674-09f6-44bc-8ba7-cdd8027d381a",
+        "18cfa85a-f394-424e-bd4b-aecbbd36572e",
+        "da4f66b8-e0d2-459d-a4c1-c561cec0a203",
+        "de957ce3-733f-4bf9-b333-995f7d921a4d",
+        "0df02e13-69a7-44eb-a670-f9fa8b30d21d",
+        "6f8f1991-09da-4ca0-b670-817d2f2a6ba6",
+        "d53794bd-caf4-4027-b09b-29319a4532e1",
+        "a7d6b9ce-0b38-4318-a8a1-d1b1b05ce859",
+        "103ebff4-3ae2-438f-ad80-6b980fad4e62",
+        "f9660431-e35f-46cc-8731-e73083e09ad5"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 9.5,
+        "normalizedProbability": 0.07842376331866865,
+        "marketRank": 4,
+        "quotes": [
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "15/2",
+            "decimalOdds": 8.5
+          },
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "17/2",
+            "decimalOdds": 9.5
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "9/1",
+            "decimalOdds": 10
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "593bb68a-9ac6-40b5-9acf-02c930395556",
+            "decimalPrice": 1.73
+          },
+          {
+            "runnerId": "00013674-09f6-44bc-8ba7-cdd8027d381a",
+            "decimalPrice": 6
+          },
+          {
+            "runnerId": "18cfa85a-f394-424e-bd4b-aecbbd36572e",
+            "decimalPrice": 6.5
+          },
+          {
+            "runnerId": "da4f66b8-e0d2-459d-a4c1-c561cec0a203",
+            "decimalPrice": 9.5
+          },
+          {
+            "runnerId": "de957ce3-733f-4bf9-b333-995f7d921a4d",
+            "decimalPrice": 15
+          },
+          {
+            "runnerId": "0df02e13-69a7-44eb-a670-f9fa8b30d21d",
+            "decimalPrice": 17
+          },
+          {
+            "runnerId": "6f8f1991-09da-4ca0-b670-817d2f2a6ba6",
+            "decimalPrice": 17
+          },
+          {
+            "runnerId": "d53794bd-caf4-4027-b09b-29319a4532e1",
+            "decimalPrice": 21
+          },
+          {
+            "runnerId": "a7d6b9ce-0b38-4318-a8a1-d1b1b05ce859",
+            "decimalPrice": 21
+          },
+          {
+            "runnerId": "103ebff4-3ae2-438f-ad80-6b980fad4e62",
+            "decimalPrice": 29
+          },
+          {
+            "runnerId": "f9660431-e35f-46cc-8731-e73083e09ad5",
+            "decimalPrice": 41
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "contractVersion": "RANK_ONE_MODEL_MARKET_OPTIONAL_V2",
+      "contractEffectiveAt": "2026-10-22T18:51:26.000Z",
+      "modelProbability": 0.24062299195095127,
+      "raceId": "fdec6875-f65f-4665-b192-53b305ff520c",
+      "runnerId": "2383f299-3fec-4818-93e9-c069be782378",
+      "horseId": "9d364deb-9513-4205-ae94-132da3ccfd3b",
+      "horseName": "Under The Sun",
+      "liveSemanticsVersion": "AW_TISSUE_V2_TURF_V3_CORE_PRERACE",
+      "liveSemanticsEffectiveAt": "2026-10-20T03:54:38.000Z",
+      "modelInputs": [
+        61,
+        75.27103983688828,
+        75.27103983688828,
+        70.84004205560775,
+        94.27103983688828,
+        102.40904427432723,
+        98.34004205560775,
+        106.27103983688828,
+        106.27103983688828,
+        101.84004205560775,
+        18.118081180811807,
+        7.905072849498666,
+        10.547355473554736,
+        8.087332926473351,
+        169,
+        2.995732273553991,
+        5,
+        137,
+        6,
+        8.645454545454545,
+        11,
+        3,
+        0.2727272727272727,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        3,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "featureCutoffAt": "2026-10-23T03:31:38.237Z",
+      "family": "AW",
+      "raceDate": "2026-10-23",
+      "scheduledOff": "2026-10-23T16:00:00.000Z",
+      "course": "Wolverhampton",
+      "raceName": "AW Trials Day - Lingfield 2nd January 2027 Handicap (Div 2)",
+      "rankSource": "AW Tissue / AW_TISSUE_V2 / AW_TISSUE_V2_TURF_V3_CORE_PRERACE / rank",
+      "modelHash": "ba7d2ea42a87d4ce432288d57a02cee8528217fafa04efa37723446924bdab82",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-23T03:32:24.757Z",
+      "capturedFieldRunnerIds": [
+        "bef08d2e-89fd-4815-bb02-0ae17120d978",
+        "4c174745-2fc2-4996-8905-335ab977634f",
+        "2383f299-3fec-4818-93e9-c069be782378",
+        "a5ec66f9-89bb-48d5-809e-ddc8df2e2051",
+        "4f5323f9-110d-4cd8-9419-be21dfe79afa",
+        "f6c3dfde-82bc-4f90-bf63-b409085ffb08",
+        "2ddbf257-bc16-4c78-af5c-64f379f7f331",
+        "4f778f6f-38fa-43c5-b8e0-413ded5885db",
+        "d8603aba-d3bc-49cf-bbd4-04bbe114157a",
+        "8088e432-e5e2-4a23-b5ba-a9b3cc31356b",
+        "cf4b6cad-abb4-4cc6-a4be-52ea31182049"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 6,
+        "normalizedProbability": 0.12422395887897048,
+        "marketRank": 3,
+        "quotes": [
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "9/2",
+            "decimalOdds": 5.5
+          },
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "5/1",
+            "decimalOdds": 6
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "5/1",
+            "decimalOdds": 6
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "bef08d2e-89fd-4815-bb02-0ae17120d978",
+            "decimalPrice": 4.33
+          },
+          {
+            "runnerId": "4c174745-2fc2-4996-8905-335ab977634f",
+            "decimalPrice": 5.5
+          },
+          {
+            "runnerId": "2383f299-3fec-4818-93e9-c069be782378",
+            "decimalPrice": 6
+          },
+          {
+            "runnerId": "a5ec66f9-89bb-48d5-809e-ddc8df2e2051",
+            "decimalPrice": 6.5
+          },
+          {
+            "runnerId": "4f5323f9-110d-4cd8-9419-be21dfe79afa",
+            "decimalPrice": 8
+          },
+          {
+            "runnerId": "f6c3dfde-82bc-4f90-bf63-b409085ffb08",
+            "decimalPrice": 9.5
+          },
+          {
+            "runnerId": "2ddbf257-bc16-4c78-af5c-64f379f7f331",
+            "decimalPrice": 10
+          },
+          {
+            "runnerId": "4f778f6f-38fa-43c5-b8e0-413ded5885db",
+            "decimalPrice": 10
+          },
+          {
+            "runnerId": "d8603aba-d3bc-49cf-bbd4-04bbe114157a",
+            "decimalPrice": 15
+          },
+          {
+            "runnerId": "8088e432-e5e2-4a23-b5ba-a9b3cc31356b",
+            "decimalPrice": 17
+          },
+          {
+            "runnerId": "cf4b6cad-abb4-4cc6-a4be-52ea31182049",
+            "decimalPrice": 19
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "contractVersion": "RANK_ONE_MODEL_MARKET_OPTIONAL_V2",
+      "contractEffectiveAt": "2026-10-22T18:51:26.000Z",
+      "modelProbability": 0.23270087258597405,
+      "raceId": "3968b457-a931-410a-81eb-ae8bd399ccd6",
+      "runnerId": "a298c07a-e398-4895-bbc7-ccbae208e976",
+      "horseId": "6ff2a2d5-f5dc-499b-8bb1-4143a94eeced",
+      "horseName": "Jahami",
+      "liveSemanticsVersion": "AW_TISSUE_V2_TURF_V3_CORE_PRERACE",
+      "liveSemanticsEffectiveAt": "2026-10-20T03:54:38.000Z",
+      "modelInputs": [
+        71,
+        58.015869146161705,
+        58.015869146161705,
+        48.786058752655485,
+        98.0158691461617,
+        98.0158691461617,
+        88.78605875265549,
+        98.0158691461617,
+        98.0158691461617,
+        88.78605875265549,
+        18.99070385126162,
+        7.317876198626496,
+        9.288389513108614,
+        7.197435354096591,
+        17,
+        1.0986122886681098,
+        2,
+        128,
+        4,
+        8.645454545454545,
+        11,
+        6,
+        0.5454545454545454,
+        0,
+        1.0986122886681098,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "featureCutoffAt": "2026-10-23T03:31:38.237Z",
+      "family": "AW",
+      "raceDate": "2026-10-23",
+      "scheduledOff": "2026-10-23T16:30:00.000Z",
+      "course": "Wolverhampton",
+      "raceName": "All Weather Championship Is Back EBF Restricted Maiden Fillies' Stakes (GBB/GBBPlus Race)",
+      "rankSource": "AW Tissue / AW_TISSUE_V2 / AW_TISSUE_V2_TURF_V3_CORE_PRERACE / rank",
+      "modelHash": "ba7d2ea42a87d4ce432288d57a02cee8528217fafa04efa37723446924bdab82",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-23T03:32:24.757Z",
+      "capturedFieldRunnerIds": [
+        "a298c07a-e398-4895-bbc7-ccbae208e976",
+        "be4d1cf2-a4e0-4bb9-87d4-ceb9317640fc",
+        "c28aa341-3ae9-44f8-96dd-d2405c9fefe4",
+        "0ba996a0-27f9-4df5-bbf2-73a5beba2ec8",
+        "927b5d50-29be-4042-a12f-381a0b92e016",
+        "770bb15c-0a66-4fe3-ac46-7a588cc38576",
+        "653df97e-2845-45d2-8475-566c01bc45a4",
+        "0d79e5c2-928b-4328-bb26-ffc8fb9ff382",
+        "c323a900-8404-4bda-8e40-fb2c3e66265c",
+        "9a0f5be6-8c7a-4b39-aee1-ce94d894ecf4",
+        "10743ce1-6e33-46f7-9d50-239c71081b56"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 1.67,
+        "normalizedProbability": 0.4339898170346403,
+        "marketRank": 1,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "4/6",
+            "decimalOdds": 1.67
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "4/6",
+            "decimalOdds": 1.67
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "4/6",
+            "decimalOdds": 1.67
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "a298c07a-e398-4895-bbc7-ccbae208e976",
+            "decimalPrice": 1.67
+          },
+          {
+            "runnerId": "be4d1cf2-a4e0-4bb9-87d4-ceb9317640fc",
+            "decimalPrice": 3.25
+          },
+          {
+            "runnerId": "c28aa341-3ae9-44f8-96dd-d2405c9fefe4",
+            "decimalPrice": 7.5
+          },
+          {
+            "runnerId": "0ba996a0-27f9-4df5-bbf2-73a5beba2ec8",
+            "decimalPrice": 10
+          },
+          {
+            "runnerId": "927b5d50-29be-4042-a12f-381a0b92e016",
+            "decimalPrice": 12
+          },
+          {
+            "runnerId": "770bb15c-0a66-4fe3-ac46-7a588cc38576",
+            "decimalPrice": 15
+          },
+          {
+            "runnerId": "653df97e-2845-45d2-8475-566c01bc45a4",
+            "decimalPrice": 34
+          },
+          {
+            "runnerId": "0d79e5c2-928b-4328-bb26-ffc8fb9ff382",
+            "decimalPrice": 41
+          },
+          {
+            "runnerId": "c323a900-8404-4bda-8e40-fb2c3e66265c",
+            "decimalPrice": 51
+          },
+          {
+            "runnerId": "9a0f5be6-8c7a-4b39-aee1-ce94d894ecf4",
+            "decimalPrice": 101
+          },
+          {
+            "runnerId": "10743ce1-6e33-46f7-9d50-239c71081b56",
+            "decimalPrice": 151
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "contractVersion": "RANK_ONE_MODEL_MARKET_OPTIONAL_V2",
+      "contractEffectiveAt": "2026-10-22T18:51:26.000Z",
+      "modelProbability": 0.212766526417583,
+      "raceId": "534a9835-5126-4062-85c8-fa6eaa812f50",
+      "runnerId": "b890cff9-016f-41a7-9c71-f8c5b77f4bd3",
+      "horseId": "6f125fdf-8cb4-4603-8933-13be0b779cd0",
+      "horseName": "Stoney Wood",
+      "liveSemanticsVersion": "AW_TISSUE_V2_TURF_V3_CORE_PRERACE",
+      "liveSemanticsEffectiveAt": "2026-10-20T03:54:38.000Z",
+      "modelInputs": [
+        65,
+        54.93263532200707,
+        54.93263532200707,
+        53.37175474765777,
+        89.93263532200707,
+        93.81087417330846,
+        91.87175474765777,
+        87.93263532200707,
+        87.93263532200707,
+        86.37175474765777,
+        13.506261180679784,
+        7.020190708311925,
+        16.822687224669604,
+        8.197814032221203,
+        36,
+        1.9459101490553132,
+        2,
+        135,
+        6,
+        6.090909090909091,
+        13,
+        8,
+        0.6153846153846154,
+        0,
+        1.0986122886681098,
+        1.308732569319929,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        3,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "featureCutoffAt": "2026-10-23T03:31:38.237Z",
+      "family": "AW",
+      "raceDate": "2026-10-23",
+      "scheduledOff": "2026-10-23T17:00:00.000Z",
+      "course": "Wolverhampton",
+      "raceName": "AWC Finals Day At Newcastle 26th March Nursery",
+      "rankSource": "AW Tissue / AW_TISSUE_V2 / AW_TISSUE_V2_TURF_V3_CORE_PRERACE / rank",
+      "modelHash": "ba7d2ea42a87d4ce432288d57a02cee8528217fafa04efa37723446924bdab82",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-23T03:32:24.757Z",
+      "capturedFieldRunnerIds": [
+        "b890cff9-016f-41a7-9c71-f8c5b77f4bd3",
+        "00252602-6753-4517-9c81-1548adaa61e1",
+        "8ff3a3c7-0c59-49bd-bd3b-638d1f9d76f0",
+        "45c73915-d456-4a1b-a670-cb31af997711",
+        "645db524-9f94-49ec-940e-8dade5d1b042",
+        "7f4d4699-9f45-407c-aef5-bc48e4cecb56",
+        "d254d687-f569-42c7-9b15-f0f0035bc3ae",
+        "b7ec6518-e681-4a64-a8d2-e287f6746b5c",
+        "ef8e7a7c-1ce3-46fa-9d2b-548829d3aa49",
+        "30d2b10d-dfc1-4bc7-aaee-74a3ee98db2a",
+        "2e94f8ed-94d3-442b-a8b1-c0ef10adfa9f",
+        "b6b94f76-adf0-441c-b574-337c6a8ed1e0",
+        "3bf2343f-b740-4d6b-95a3-9f9680beef9a"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 2.25,
+        "normalizedProbability": 0.32119684701987683,
+        "marketRank": 1,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "5/4",
+            "decimalOdds": 2.25
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "5/4",
+            "decimalOdds": 2.25
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "5/4",
+            "decimalOdds": 2.25
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "b890cff9-016f-41a7-9c71-f8c5b77f4bd3",
+            "decimalPrice": 2.25
+          },
+          {
+            "runnerId": "00252602-6753-4517-9c81-1548adaa61e1",
+            "decimalPrice": 6.5
+          },
+          {
+            "runnerId": "8ff3a3c7-0c59-49bd-bd3b-638d1f9d76f0",
+            "decimalPrice": 7
+          },
+          {
+            "runnerId": "45c73915-d456-4a1b-a670-cb31af997711",
+            "decimalPrice": 8.5
+          },
+          {
+            "runnerId": "645db524-9f94-49ec-940e-8dade5d1b042",
+            "decimalPrice": 12
+          },
+          {
+            "runnerId": "7f4d4699-9f45-407c-aef5-bc48e4cecb56",
+            "decimalPrice": 12
+          },
+          {
+            "runnerId": "d254d687-f569-42c7-9b15-f0f0035bc3ae",
+            "decimalPrice": 13
+          },
+          {
+            "runnerId": "b7ec6518-e681-4a64-a8d2-e287f6746b5c",
+            "decimalPrice": 15
+          },
+          {
+            "runnerId": "ef8e7a7c-1ce3-46fa-9d2b-548829d3aa49",
+            "decimalPrice": 17
+          },
+          {
+            "runnerId": "30d2b10d-dfc1-4bc7-aaee-74a3ee98db2a",
+            "decimalPrice": 17
+          },
+          {
+            "runnerId": "2e94f8ed-94d3-442b-a8b1-c0ef10adfa9f",
+            "decimalPrice": 19
+          },
+          {
+            "runnerId": "b6b94f76-adf0-441c-b574-337c6a8ed1e0",
+            "decimalPrice": 29
+          },
+          {
+            "runnerId": "3bf2343f-b740-4d6b-95a3-9f9680beef9a",
+            "decimalPrice": 101
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "contractVersion": "RANK_ONE_MODEL_MARKET_OPTIONAL_V2",
+      "contractEffectiveAt": "2026-10-22T18:51:26.000Z",
+      "modelProbability": 0.3597439553055185,
+      "raceId": "1baf5f94-2f8b-4c3f-ba33-10639ec033f3",
+      "runnerId": "a068ede0-4e44-477b-ab37-9fb94c6e0766",
+      "horseId": "091e9799-c534-4a46-a27f-15db11b4b37e",
+      "horseName": "Methgal",
+      "liveSemanticsVersion": "AW_TISSUE_V2_TURF_V3_CORE_PRERACE",
+      "liveSemanticsEffectiveAt": "2026-10-20T03:54:38.000Z",
+      "modelInputs": [
+        70,
+        77.52667620605077,
+        77.52667620605077,
+        73.99588730351738,
+        102.52667620605077,
+        102.52667620605077,
+        101.49588730351738,
+        110.52667620605077,
+        110.52667620605077,
+        106.99588730351738,
+        11.680143755615454,
+        7.01571242048723,
+        16.822687224669604,
+        8.197814032221203,
+        11,
+        3.258096538021482,
+        4,
+        135,
+        5,
+        6.090909090909091,
+        8,
+        8,
+        1,
+        1,
+        0.6931471805599453,
+        1.3244730822245074,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        3,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        3,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "featureCutoffAt": "2026-10-23T03:31:38.237Z",
+      "family": "AW",
+      "raceDate": "2026-10-23",
+      "scheduledOff": "2026-10-23T17:30:00.000Z",
+      "course": "Wolverhampton",
+      "raceName": "Make The Move To Midnite Handicap",
+      "rankSource": "AW Tissue / AW_TISSUE_V2 / AW_TISSUE_V2_TURF_V3_CORE_PRERACE / rank",
+      "modelHash": "ba7d2ea42a87d4ce432288d57a02cee8528217fafa04efa37723446924bdab82",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-23T03:32:24.757Z",
+      "capturedFieldRunnerIds": [
+        "a068ede0-4e44-477b-ab37-9fb94c6e0766",
+        "9ac06a2d-4674-49d5-bbb6-a17f1ef2fe21",
+        "cbadb489-9337-4b48-895d-057c7ddf03cd",
+        "9366867a-115e-4048-b183-d26eed8badbd",
+        "da03901a-0da8-4057-b296-3a1844ad5055",
+        "50059aaa-f14f-474e-bfd9-c616e0a2ab6f",
+        "bc37aa6e-783c-4be9-8898-fa9ecd572aba",
+        "87b33a52-f26c-4520-b330-76b771871406"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 3,
+        "normalizedProbability": 0.2644553927303123,
+        "marketRank": 1,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "2/1",
+            "decimalOdds": 3
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "2/1",
+            "decimalOdds": 3
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "2/1",
+            "decimalOdds": 3
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "a068ede0-4e44-477b-ab37-9fb94c6e0766",
+            "decimalPrice": 3
+          },
+          {
+            "runnerId": "9ac06a2d-4674-49d5-bbb6-a17f1ef2fe21",
+            "decimalPrice": 4.33
+          },
+          {
+            "runnerId": "cbadb489-9337-4b48-895d-057c7ddf03cd",
+            "decimalPrice": 4.5
+          },
+          {
+            "runnerId": "9366867a-115e-4048-b183-d26eed8badbd",
+            "decimalPrice": 7
+          },
+          {
+            "runnerId": "da03901a-0da8-4057-b296-3a1844ad5055",
+            "decimalPrice": 7
+          },
+          {
+            "runnerId": "50059aaa-f14f-474e-bfd9-c616e0a2ab6f",
+            "decimalPrice": 10
+          },
+          {
+            "runnerId": "bc37aa6e-783c-4be9-8898-fa9ecd572aba",
+            "decimalPrice": 17
+          },
+          {
+            "runnerId": "87b33a52-f26c-4520-b330-76b771871406",
+            "decimalPrice": 34
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "contractVersion": "RANK_ONE_MODEL_MARKET_OPTIONAL_V2",
+      "contractEffectiveAt": "2026-10-22T18:51:26.000Z",
+      "modelProbability": 0.17209877648725366,
+      "raceId": "e19b7388-0cf6-4724-a2c9-06dc17ac0dec",
+      "runnerId": "831b5a76-0fbb-4d6a-b8cc-9407722e1db6",
+      "horseId": "00df8541-6d1e-47a0-b765-4491c078cd27",
+      "horseName": "Just Typical",
+      "liveSemanticsVersion": "AW_TISSUE_V2_TURF_V3_CORE_PRERACE",
+      "liveSemanticsEffectiveAt": "2026-10-20T03:54:38.000Z",
+      "modelInputs": [
+        59,
+        78.13994822039005,
+        78.13994822039005,
+        69.33698109700859,
+        112.13994822039005,
+        112.13994822039005,
+        104.83698109700859,
+        112.13994822039005,
+        112.13994822039005,
+        103.33698109700859,
+        10.749774164408311,
+        7.703007682479236,
+        16.822687224669604,
+        8.197814032221203,
+        21,
+        3.713572066704308,
+        5,
+        134,
+        6,
+        9.472727272727273,
+        13,
+        2,
+        0.15384615384615385,
+        1,
+        1.791759469228055,
+        2.2111533560756538,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        3,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        1,
+        0,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        2
+      ],
+      "featureCutoffAt": "2026-10-23T03:31:38.237Z",
+      "family": "AW",
+      "raceDate": "2026-10-23",
+      "scheduledOff": "2026-10-23T18:00:00.000Z",
+      "course": "Wolverhampton",
+      "raceName": "Midnite Aint Your Grandads Bookie Selling Handicap",
+      "rankSource": "AW Tissue / AW_TISSUE_V2 / AW_TISSUE_V2_TURF_V3_CORE_PRERACE / rank",
+      "modelHash": "ba7d2ea42a87d4ce432288d57a02cee8528217fafa04efa37723446924bdab82",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-23T03:32:24.757Z",
+      "capturedFieldRunnerIds": [
+        "831b5a76-0fbb-4d6a-b8cc-9407722e1db6",
+        "6918fbd2-af25-4453-a52c-e69d0223667f",
+        "b3392f41-7481-4bb2-8f30-003980d9fbe5",
+        "e7dbfecb-e8cf-4986-821a-44038acc2ab0",
+        "764c4215-48a0-4306-b38d-08dd85d550b1",
+        "66fe1613-fed5-426c-aa85-6bec15fe9e10",
+        "8944db84-fd5b-4814-af10-0fbe609adb96",
+        "aa7abcc6-dd34-40ff-9e60-dc26e3f33b7b",
+        "a8f34227-38ac-4df3-8497-8ee79abde8e4",
+        "cc4916ff-2882-43f9-8bed-d5961f6fd250",
+        "9d888f4f-ebe6-4a1d-b153-749e7e155054",
+        "dd8ed456-133e-45d4-8b5b-4d9f1dc0ec5d",
+        "910e9a41-7376-4426-a475-769072e4b66d"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 3.5,
+        "normalizedProbability": null,
+        "marketRank": null,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "5/2",
+            "decimalOdds": 3.5
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "5/2",
+            "decimalOdds": 3.5
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "5/2",
+            "decimalOdds": 3.5
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "831b5a76-0fbb-4d6a-b8cc-9407722e1db6",
+            "decimalPrice": 3.5
+          },
+          {
+            "runnerId": "6918fbd2-af25-4453-a52c-e69d0223667f",
+            "decimalPrice": 4.5
+          },
+          {
+            "runnerId": "b3392f41-7481-4bb2-8f30-003980d9fbe5",
+            "decimalPrice": 5
+          },
+          {
+            "runnerId": "e7dbfecb-e8cf-4986-821a-44038acc2ab0",
+            "decimalPrice": 8
+          },
+          {
+            "runnerId": "764c4215-48a0-4306-b38d-08dd85d550b1",
+            "decimalPrice": 9
+          },
+          {
+            "runnerId": "66fe1613-fed5-426c-aa85-6bec15fe9e10",
+            "decimalPrice": 9
+          },
+          {
+            "runnerId": "8944db84-fd5b-4814-af10-0fbe609adb96",
+            "decimalPrice": 10
+          },
+          {
+            "runnerId": "aa7abcc6-dd34-40ff-9e60-dc26e3f33b7b",
+            "decimalPrice": 11
+          },
+          {
+            "runnerId": "a8f34227-38ac-4df3-8497-8ee79abde8e4",
+            "decimalPrice": 26
+          },
+          {
+            "runnerId": "cc4916ff-2882-43f9-8bed-d5961f6fd250",
+            "decimalPrice": 34
+          },
+          {
+            "runnerId": "9d888f4f-ebe6-4a1d-b153-749e7e155054",
+            "decimalPrice": 41
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "contractVersion": "RANK_ONE_MODEL_MARKET_OPTIONAL_V2",
+      "contractEffectiveAt": "2026-10-22T18:51:26.000Z",
+      "modelProbability": 0.15816664901149888,
+      "raceId": "7c28027b-612d-472c-9ea6-1401d41f743c",
+      "runnerId": "13d9b76b-3a16-42d8-bd08-a766a9aac676",
+      "horseId": "e3e66d58-3f07-4d6b-b7fe-7a8d91b6c990",
+      "horseName": "Vincenzo Peruggia",
+      "liveSemanticsVersion": "AW_TISSUE_V2_TURF_V3_CORE_PRERACE",
+      "liveSemanticsEffectiveAt": "2026-10-20T03:54:38.000Z",
+      "modelInputs": [
+        84,
+        75.75502955511763,
+        75.75502955511763,
+        75.75502955511763,
+        108.75502955511763,
+        108.75502955511763,
+        108.75502955511763,
+        108.75502955511763,
+        108.75502955511763,
+        108.75502955511763,
+        11.734164070612668,
+        7.969011781106478,
+        10.149439601494397,
+        7.382124365737512,
+        18,
+        2.4849066497880004,
+        3,
+        135,
+        4,
+        9.472727272727273,
+        13,
+        13,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        3,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "featureCutoffAt": "2026-10-23T03:31:38.237Z",
+      "family": "AW",
+      "raceDate": "2026-10-23",
+      "scheduledOff": "2026-10-23T18:30:00.000Z",
+      "course": "Wolverhampton",
+      "raceName": "Midnite A Next Generation Betting App Handicap",
+      "rankSource": "AW Tissue / AW_TISSUE_V2 / AW_TISSUE_V2_TURF_V3_CORE_PRERACE / rank",
+      "modelHash": "ba7d2ea42a87d4ce432288d57a02cee8528217fafa04efa37723446924bdab82",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-23T03:32:24.757Z",
+      "capturedFieldRunnerIds": [
+        "2f6ac6db-0db1-43d1-b19d-b7078320c07e",
+        "0e4d59cc-51ae-40e1-affb-86743770c3a1",
+        "5a858bbf-3d64-4eed-96be-2b11cd187f59",
+        "1f46c17e-8ae8-4ada-ae6e-e241ea4ea906",
+        "13d9b76b-3a16-42d8-bd08-a766a9aac676",
+        "6c22c6ff-a39a-48a1-9dd5-8f1741c6a6f1",
+        "22db15a6-4240-4bb1-8be1-fd1fcfd9069f",
+        "fa378fbc-30bd-4dc2-b5c5-738c22ec719b",
+        "14ed76ee-4e40-47d8-8e15-13b62eaf2f21",
+        "b8496b2b-5826-4e59-9604-faa3e9fed62d",
+        "182c145c-0ef1-4b10-9645-955e32298890",
+        "973a6575-acae-4639-88a6-12b166010966",
+        "222f8293-82bc-41b2-acb7-1f7b5bc7e322"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 8,
+        "normalizedProbability": null,
+        "marketRank": null,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "7/1",
+            "decimalOdds": 8
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "7/1",
+            "decimalOdds": 8
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "7/1",
+            "decimalOdds": 8
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "2f6ac6db-0db1-43d1-b19d-b7078320c07e",
+            "decimalPrice": 2.75
+          },
+          {
+            "runnerId": "0e4d59cc-51ae-40e1-affb-86743770c3a1",
+            "decimalPrice": 6
+          },
+          {
+            "runnerId": "5a858bbf-3d64-4eed-96be-2b11cd187f59",
+            "decimalPrice": 6.5
+          },
+          {
+            "runnerId": "1f46c17e-8ae8-4ada-ae6e-e241ea4ea906",
+            "decimalPrice": 7.5
+          },
+          {
+            "runnerId": "13d9b76b-3a16-42d8-bd08-a766a9aac676",
+            "decimalPrice": 8
+          },
+          {
+            "runnerId": "6c22c6ff-a39a-48a1-9dd5-8f1741c6a6f1",
+            "decimalPrice": 10
+          },
+          {
+            "runnerId": "22db15a6-4240-4bb1-8be1-fd1fcfd9069f",
+            "decimalPrice": 10
+          },
+          {
+            "runnerId": "fa378fbc-30bd-4dc2-b5c5-738c22ec719b",
+            "decimalPrice": 13
+          },
+          {
+            "runnerId": "14ed76ee-4e40-47d8-8e15-13b62eaf2f21",
+            "decimalPrice": 17
+          },
+          {
+            "runnerId": "b8496b2b-5826-4e59-9604-faa3e9fed62d",
+            "decimalPrice": 21
+          },
+          {
+            "runnerId": "182c145c-0ef1-4b10-9645-955e32298890",
+            "decimalPrice": 26
+          },
+          {
+            "runnerId": "973a6575-acae-4639-88a6-12b166010966",
+            "decimalPrice": 29
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "contractVersion": "RANK_ONE_MODEL_MARKET_OPTIONAL_V2",
+      "contractEffectiveAt": "2026-10-22T18:51:26.000Z",
+      "modelProbability": 0.2202497281432093,
+      "raceId": "91674f32-cf64-4d40-965c-36c75164a924",
+      "runnerId": "a7e8b338-588a-4d74-885d-9c99cbcf2641",
+      "horseId": "67a17976-0b26-4799-abdb-9d90dcbdbbfd",
+      "horseName": "So Sassy",
+      "liveSemanticsVersion": "AW_TISSUE_V2_TURF_V3_CORE_PRERACE",
+      "liveSemanticsEffectiveAt": "2026-10-20T03:54:38.000Z",
+      "modelInputs": [
+        75,
+        71.59945781091155,
+        71.59945781091155,
+        71.59945781091155,
+        99.59945781091155,
+        99.59945781091155,
+        99.59945781091155,
+        99.59945781091155,
+        99.59945781091155,
+        99.59945781091155,
+        16.226071103008206,
+        7.001245622069476,
+        11.932367149758454,
+        7.635786861395585,
+        11,
+        2.995732273553991,
+        4,
+        140,
+        5,
+        7.163636363636364,
+        11,
+        5,
+        0.45454545454545453,
+        1,
+        1.791759469228055,
+        0.3533843825766022,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        3,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "featureCutoffAt": "2026-10-23T03:31:38.237Z",
+      "family": "AW",
+      "raceDate": "2026-10-23",
+      "scheduledOff": "2026-10-23T19:00:00.000Z",
+      "course": "Wolverhampton",
+      "raceName": "AWC Season 14 Has Begun Fillies' Handicap",
+      "rankSource": "AW Tissue / AW_TISSUE_V2 / AW_TISSUE_V2_TURF_V3_CORE_PRERACE / rank",
+      "modelHash": "ba7d2ea42a87d4ce432288d57a02cee8528217fafa04efa37723446924bdab82",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-23T03:32:24.757Z",
+      "capturedFieldRunnerIds": [
+        "a7e8b338-588a-4d74-885d-9c99cbcf2641",
+        "12a5ff32-5d3c-4522-bc87-8e3538423e8b",
+        "041b6f17-098e-431c-a593-b1d5d06abe30",
+        "afacf3d7-893b-4d96-84b7-06afbd6ed837",
+        "6f37d1fe-9797-4c9d-b678-7f374f5c1770",
+        "543b58ae-1d0f-4e95-ae44-af9c587f8fff",
+        "88cf65bc-02fc-4bda-b6e8-085f1de0c760",
+        "2e27982b-3b6a-458e-940b-7a9766afca84",
+        "49af6c54-74a6-41e3-8018-1c6a3cfc0a89",
+        "de68dc33-ca57-4f2b-9422-2a3e207a57e6",
+        "d797b3e7-b5fa-45fd-a6e0-d84fd4542bd0"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 3.5,
+        "normalizedProbability": 0.21283084281655779,
+        "marketRank": 1,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "5/2",
+            "decimalOdds": 3.5
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "5/2",
+            "decimalOdds": 3.5
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "5/2",
+            "decimalOdds": 3.5
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "a7e8b338-588a-4d74-885d-9c99cbcf2641",
+            "decimalPrice": 3.5
+          },
+          {
+            "runnerId": "12a5ff32-5d3c-4522-bc87-8e3538423e8b",
+            "decimalPrice": 4
+          },
+          {
+            "runnerId": "041b6f17-098e-431c-a593-b1d5d06abe30",
+            "decimalPrice": 5
+          },
+          {
+            "runnerId": "afacf3d7-893b-4d96-84b7-06afbd6ed837",
+            "decimalPrice": 7
+          },
+          {
+            "runnerId": "6f37d1fe-9797-4c9d-b678-7f374f5c1770",
+            "decimalPrice": 10
+          },
+          {
+            "runnerId": "543b58ae-1d0f-4e95-ae44-af9c587f8fff",
+            "decimalPrice": 12
+          },
+          {
+            "runnerId": "88cf65bc-02fc-4bda-b6e8-085f1de0c760",
+            "decimalPrice": 13
+          },
+          {
+            "runnerId": "2e27982b-3b6a-458e-940b-7a9766afca84",
+            "decimalPrice": 13
+          },
+          {
+            "runnerId": "49af6c54-74a6-41e3-8018-1c6a3cfc0a89",
+            "decimalPrice": 17
+          },
+          {
+            "runnerId": "de68dc33-ca57-4f2b-9422-2a3e207a57e6",
+            "decimalPrice": 26
+          },
+          {
+            "runnerId": "d797b3e7-b5fa-45fd-a6e0-d84fd4542bd0",
+            "decimalPrice": 34
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "contractVersion": "RANK_ONE_MODEL_MARKET_OPTIONAL_V2",
+      "contractEffectiveAt": "2026-10-22T18:51:26.000Z",
+      "modelProbability": 0.35876931365164355,
+      "raceId": "1f6ab034-10fc-4ec3-af4b-5420c8a3712f",
+      "runnerId": "8720359c-06d2-470f-b97e-c207520862ce",
+      "horseId": "f6370fbd-633e-458e-bd01-a163db30611e",
+      "horseName": "Caraway",
+      "liveSemanticsVersion": "AW_TISSUE_V2_TURF_V3_CORE_PRERACE",
+      "liveSemanticsEffectiveAt": "2026-10-20T03:54:38.000Z",
+      "modelInputs": [
+        66,
+        84.56921825903402,
+        84.56921825903402,
+        84.56921825903402,
+        121.56921825903402,
+        121.56921825903402,
+        121.56921825903402,
+        121.56921825903402,
+        121.56921825903402,
+        121.56921825903402,
+        20.503756076005303,
+        7.724888439323074,
+        8.75912408759124,
+        7.318539548567902,
+        18,
+        2.4849066497880004,
+        3,
+        131,
+        5,
+        12.231818181818182,
+        5,
+        2,
+        0.4,
+        1,
+        1.6094379124341003,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        3,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        1,
+        0,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "featureCutoffAt": "2026-10-23T03:31:38.237Z",
+      "family": "AW",
+      "raceDate": "2026-10-23",
+      "scheduledOff": "2026-10-23T19:30:00.000Z",
+      "course": "Wolverhampton",
+      "raceName": "Midnite: Built For 2026 Not 2006 Handicap",
+      "rankSource": "AW Tissue / AW_TISSUE_V2 / AW_TISSUE_V2_TURF_V3_CORE_PRERACE / rank",
+      "modelHash": "ba7d2ea42a87d4ce432288d57a02cee8528217fafa04efa37723446924bdab82",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-23T03:32:24.757Z",
+      "capturedFieldRunnerIds": [
+        "8eb9a19f-e8cd-4f07-a020-b7ebdc0a7dbc",
+        "8720359c-06d2-470f-b97e-c207520862ce",
+        "25b7bb0a-14df-4b09-96bc-a4187764986c",
+        "bda8c2e7-fd04-4547-a4fa-c42ac07b08e1",
+        "38fb29d7-ed6f-439d-bd08-7963cdca4a20"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 3.75,
+        "normalizedProbability": 0.22062834629760583,
+        "marketRank": 2,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "11/4",
+            "decimalOdds": 3.75
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "11/4",
+            "decimalOdds": 3.75
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "11/4",
+            "decimalOdds": 3.75
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "8eb9a19f-e8cd-4f07-a020-b7ebdc0a7dbc",
+            "decimalPrice": 2
+          },
+          {
+            "runnerId": "8720359c-06d2-470f-b97e-c207520862ce",
+            "decimalPrice": 3.75
+          },
+          {
+            "runnerId": "25b7bb0a-14df-4b09-96bc-a4187764986c",
+            "decimalPrice": 4.5
+          },
+          {
+            "runnerId": "bda8c2e7-fd04-4547-a4fa-c42ac07b08e1",
+            "decimalPrice": 7
+          },
+          {
+            "runnerId": "38fb29d7-ed6f-439d-bd08-7963cdca4a20",
+            "decimalPrice": 13
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "contractVersion": "RANK_ONE_MODEL_MARKET_OPTIONAL_V2",
+      "contractEffectiveAt": "2026-10-22T18:51:26.000Z",
+      "modelProbability": 0.23535987271579817,
+      "raceId": "449726a8-a126-4af3-9de9-647959601857",
+      "runnerId": "57e13438-7890-4849-b370-fe90f30eacc2",
+      "horseId": "58c9592a-e1db-430a-ac80-49f46d67ffe2",
+      "horseName": "Purely",
+      "liveSemanticsVersion": "AW_TISSUE_V2_TURF_V3_CORE_PRERACE",
+      "liveSemanticsEffectiveAt": "2026-10-20T03:54:38.000Z",
+      "modelInputs": [
+        68,
+        66.82621866295264,
+        66.82621866295264,
+        66.82621866295264,
+        105.82621866295264,
+        105.82621866295264,
+        105.82621866295264,
+        94.82621866295264,
+        94.82621866295264,
+        94.82621866295264,
+        22.456709956709954,
+        7.522400231387125,
+        0,
+        0,
+        4,
+        2.0794415416798357,
+        3,
+        140,
+        0,
+        7,
+        14,
+        0,
+        0,
+        0,
+        1.0986122886681098,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0,
+        0,
+        3,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "featureCutoffAt": "2026-10-23T03:31:38.237Z",
+      "family": "AW",
+      "raceDate": "2026-10-23",
+      "scheduledOff": "2026-10-23T16:10:00.000Z",
+      "course": "Dundalk",
+      "raceName": "Book Online At DundalkStadium.com Fillies Optional Claiming Race",
+      "rankSource": "AW Tissue / AW_TISSUE_V2 / AW_TISSUE_V2_TURF_V3_CORE_PRERACE / rank",
+      "modelHash": "ba7d2ea42a87d4ce432288d57a02cee8528217fafa04efa37723446924bdab82",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-23T03:32:24.757Z",
+      "capturedFieldRunnerIds": [
+        "6c1a6ef4-ac38-427c-b5cc-8d9967b95580",
+        "d39c06fe-be52-444c-8c5e-b7764108d105",
+        "ab3d9402-cec1-40ae-999a-7df782606b15",
+        "57e13438-7890-4849-b370-fe90f30eacc2",
+        "995b747d-5152-443c-a496-be8955759219",
+        "9b289718-7259-4a8e-9d94-14b2e5d6ec6f",
+        "69506ea3-d21b-4e18-9a48-3de50d856115",
+        "1f2d8947-d66d-48b9-bf30-a711d5f7c42b",
+        "1a607829-034b-42f7-a5d2-25d3fcefc33d",
+        "7d12cb38-3c3a-46ac-b5c4-0d9cb44d3090",
+        "8cd884ee-23d1-43e4-a557-c1acde6ce4fa",
+        "bb2e4ff4-c545-4eef-bbbc-9b2268df8e18",
+        "964de693-5afc-4ccc-9c55-b8ac7c9a6631",
+        "ab714e79-fdef-4fbe-922c-84ef28a54308"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 6,
+        "normalizedProbability": null,
+        "marketRank": null,
+        "quotes": [
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "9/2",
+            "decimalOdds": 5.5
+          },
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "5/1",
+            "decimalOdds": 6
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "5/1",
+            "decimalOdds": 6
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "6c1a6ef4-ac38-427c-b5cc-8d9967b95580",
+            "decimalPrice": 2.25
+          },
+          {
+            "runnerId": "d39c06fe-be52-444c-8c5e-b7764108d105",
+            "decimalPrice": 4
+          },
+          {
+            "runnerId": "ab3d9402-cec1-40ae-999a-7df782606b15",
+            "decimalPrice": 4
+          },
+          {
+            "runnerId": "57e13438-7890-4849-b370-fe90f30eacc2",
+            "decimalPrice": 6
+          },
+          {
+            "runnerId": "995b747d-5152-443c-a496-be8955759219",
+            "decimalPrice": 8
+          },
+          {
+            "runnerId": "9b289718-7259-4a8e-9d94-14b2e5d6ec6f",
+            "decimalPrice": 23
+          },
+          {
+            "runnerId": "69506ea3-d21b-4e18-9a48-3de50d856115",
+            "decimalPrice": 23
+          },
+          {
+            "runnerId": "1f2d8947-d66d-48b9-bf30-a711d5f7c42b",
+            "decimalPrice": 26
+          },
+          {
+            "runnerId": "1a607829-034b-42f7-a5d2-25d3fcefc33d",
+            "decimalPrice": 51
+          },
+          {
+            "runnerId": "7d12cb38-3c3a-46ac-b5c4-0d9cb44d3090",
+            "decimalPrice": 151
+          },
+          {
+            "runnerId": "8cd884ee-23d1-43e4-a557-c1acde6ce4fa",
+            "decimalPrice": 151
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "contractVersion": "RANK_ONE_MODEL_MARKET_OPTIONAL_V2",
+      "contractEffectiveAt": "2026-10-22T18:51:26.000Z",
+      "modelProbability": 0.28043894997189256,
+      "raceId": "5dd6bc59-f118-4a32-a5ec-c97a38b67fa2",
+      "runnerId": "6588f13f-7f93-476b-b2ad-6bdee4e4fc02",
+      "horseId": "3e92d9bb-0488-4415-96cf-4e484d23646b",
+      "horseName": "River Trieux",
+      "liveSemanticsVersion": "AW_TISSUE_V2_TURF_V3_CORE_PRERACE",
+      "liveSemanticsEffectiveAt": "2026-10-20T03:54:38.000Z",
+      "modelInputs": [
+        78,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        24.371859296482413,
+        5.988961416889864,
+        15.58018252933507,
+        7.336285660021297,
+        32,
+        1.3862943611198906,
+        3,
+        135,
+        0,
+        7,
+        11,
+        2,
+        0.18181818181818182,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        3,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "featureCutoffAt": "2026-10-23T03:31:38.237Z",
+      "family": "AW",
+      "raceDate": "2026-10-23",
+      "scheduledOff": "2026-10-23T16:15:00.000Z",
+      "course": "Dundalk",
+      "raceName": "Book Online At DundalkStadium.com Fillies Optional Claiming Race",
+      "rankSource": "AW Tissue / AW_TISSUE_V2 / AW_TISSUE_V2_TURF_V3_CORE_PRERACE / rank",
+      "modelHash": "ba7d2ea42a87d4ce432288d57a02cee8528217fafa04efa37723446924bdab82",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-23T03:32:24.757Z",
+      "capturedFieldRunnerIds": [
+        "89d72ddc-752e-48e5-bf84-88a305e199c3",
+        "f48da662-e7a1-49bb-95b3-8d2cf7587b98",
+        "bcb1e686-4894-4196-99df-6675dc0337bb",
+        "3575bd94-5575-44d1-b6b3-6a717ab45541",
+        "6588f13f-7f93-476b-b2ad-6bdee4e4fc02",
+        "3967449f-eaca-44e3-8272-a4d22751eb35",
+        "d9fa0cbf-e2f5-42e2-bce6-09987435f571",
+        "bdc09d15-f179-4c52-a6de-6c30d6489cd0",
+        "a3d78759-00b0-4958-bdde-4997e7d17a7f",
+        "8e90cab1-4084-44c2-bd4c-98405d53a149",
+        "5318beb8-b3d5-4933-b8d3-3fe09811dbcb"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": null,
+        "normalizedProbability": null,
+        "marketRank": null,
+        "quotes": [],
+        "fieldPrices": []
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "contractVersion": "RANK_ONE_MODEL_MARKET_OPTIONAL_V2",
+      "contractEffectiveAt": "2026-10-22T18:51:26.000Z",
+      "modelProbability": 0.12315936488905087,
+      "raceId": "4f8ebed4-85e5-4234-9d56-c977418e7ec8",
+      "runnerId": "b59e0319-0fa1-48ed-95b8-c37350fa25aa",
+      "horseId": "21bab0c9-f581-4fe3-a0ed-224f5cfb5f38",
+      "horseName": "Saga Lucia",
+      "liveSemanticsVersion": "AW_TISSUE_V2_TURF_V3_CORE_PRERACE",
+      "liveSemanticsEffectiveAt": "2026-10-20T03:54:38.000Z",
+      "modelInputs": [
+        70,
+        40.32713902414787,
+        0,
+        0,
+        85.32713902414787,
+        0,
+        0,
+        70.32713902414787,
+        0,
+        0,
+        12.072072072072073,
+        6.320768294250582,
+        9.495548961424333,
+        5.823045895483019,
+        26,
+        1.791759469228055,
+        3,
+        138,
+        0,
+        7,
+        17,
+        5,
+        0.29411764705882354,
+        1,
+        0.6931471805599453,
+        0,
+        0,
+        0,
+        1,
+        1,
+        0,
+        1,
+        1,
+        0,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        3,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      "featureCutoffAt": "2026-10-23T03:31:38.237Z",
+      "family": "AW",
+      "raceDate": "2026-10-23",
+      "scheduledOff": "2026-10-23T16:45:00.000Z",
+      "course": "Dundalk",
+      "raceName": "Halloween Mid-Term Racing Next Week Apprentice Handicap",
+      "rankSource": "AW Tissue / AW_TISSUE_V2 / AW_TISSUE_V2_TURF_V3_CORE_PRERACE / rank",
+      "modelHash": "ba7d2ea42a87d4ce432288d57a02cee8528217fafa04efa37723446924bdab82",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-23T03:32:24.757Z",
+      "capturedFieldRunnerIds": [
+        "0bbd6d37-346c-4fac-b798-563a20136521",
+        "1f9a14b3-58f0-44a5-b970-9c8e640f5914",
+        "c1b6175e-a756-4ed5-9c82-a8a843df4051",
+        "b59e0319-0fa1-48ed-95b8-c37350fa25aa",
+        "14854182-e266-41b8-8b7e-a2a0b84792ca",
+        "043099f3-3b45-49e2-8d47-25e011feffff",
+        "6acf8720-8272-409c-8a72-cea2a372e965",
+        "6d0efdb6-876d-4865-a2ad-924af61b208d",
+        "c887e3cb-ed07-4493-9462-d48da578ec84",
+        "eb1313c4-9612-419c-8fe2-39f4e071dcc5",
+        "c3512590-cc61-4aa8-93b4-2f610c198c34",
+        "c35ed8db-062c-4af8-a5fe-5dfb3a15011c",
+        "0f53f106-5ccc-4426-b924-d9721ac4870b",
+        "e16da399-148d-433f-8261-79b53662861f",
+        "3907ec5d-b2f0-4679-a133-d92fa1234192",
+        "17e17247-7ac2-40c1-a1d9-b2cb94e7362a",
+        "e2384c73-d8db-4d8b-8612-4e68e271ce14"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": null,
+        "normalizedProbability": null,
+        "marketRank": null,
+        "quotes": [],
+        "fieldPrices": []
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "contractVersion": "RANK_ONE_MODEL_MARKET_OPTIONAL_V2",
+      "contractEffectiveAt": "2026-10-22T18:51:26.000Z",
+      "modelProbability": 0.16766587658603332,
+      "raceId": "c51d221b-46ce-40bc-bbaa-634852391190",
+      "runnerId": "d8e35029-7e19-4d95-a322-80135d60abaf",
+      "horseId": "bfda851a-d0b3-4648-b14e-f8d41feff68c",
+      "horseName": "Blue Anthem",
+      "liveSemanticsVersion": "AW_TISSUE_V2_TURF_V3_CORE_PRERACE",
+      "liveSemanticsEffectiveAt": "2026-10-20T03:54:38.000Z",
+      "modelInputs": [
+        58,
+        66.9240033222591,
+        66.9240033222591,
+        66.9240033222591,
+        96.9240033222591,
+        96.9240033222591,
+        96.9240033222591,
+        94.9240033222591,
+        94.9240033222591,
+        94.9240033222591,
+        8.622994652406417,
+        7.311218384419629,
+        15.528781793842034,
+        7.3098814858247865,
+        21,
+        3.1354942159291497,
+        4,
+        140,
+        0,
+        6,
+        17,
+        13,
+        0.7647058823529411,
+        1,
+        1.3862943611198906,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        3,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "featureCutoffAt": "2026-10-23T03:31:38.237Z",
+      "family": "AW",
+      "raceDate": "2026-10-23",
+      "scheduledOff": "2026-10-23T17:15:00.000Z",
+      "course": "Dundalk",
+      "raceName": "Braham Electrical Handicap (0-60)",
+      "rankSource": "AW Tissue / AW_TISSUE_V2 / AW_TISSUE_V2_TURF_V3_CORE_PRERACE / rank",
+      "modelHash": "ba7d2ea42a87d4ce432288d57a02cee8528217fafa04efa37723446924bdab82",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-23T03:32:24.757Z",
+      "capturedFieldRunnerIds": [
+        "2f8b2e63-0cad-4acb-ad9c-a8fc7666ffdd",
+        "54a87be5-3893-445f-b3f2-3d6282b2cb4a",
+        "f54670d4-ff89-4fb3-84aa-414d2eadaf89",
+        "d8e35029-7e19-4d95-a322-80135d60abaf",
+        "06b08c4c-fd84-4f43-9383-a2b45d518016",
+        "2ec850f7-d940-45d2-b6a5-705d13e5c2a0",
+        "5cfe1f7a-d747-405e-9611-d9ed0d4486ad",
+        "a039cc39-3a6a-40fe-87c0-f36c5e59fc45",
+        "ba96f266-a70b-4d1b-88be-ffe4f92cc58d",
+        "128e7cd2-9b47-4ea9-9bd0-8f88e8f2b109",
+        "48329663-597f-42a2-a933-4aff9c2f78ed",
+        "fc80bd68-a291-4ebe-9a8e-602929e9011a",
+        "4d64b987-8eb7-45df-9497-db38f5d27e58",
+        "09f39323-0b1e-429a-8130-46ca3172a4a0",
+        "967023be-0eb5-42be-92a3-96b027927de1",
+        "83020c42-75d7-41b4-a8ac-d80684622fcb",
+        "176e5b81-888d-4948-b7e4-2fd898362ddf"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": null,
+        "normalizedProbability": null,
+        "marketRank": null,
+        "quotes": [],
+        "fieldPrices": []
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "contractVersion": "RANK_ONE_MODEL_MARKET_OPTIONAL_V2",
+      "contractEffectiveAt": "2026-10-22T18:51:26.000Z",
+      "modelProbability": 0.2967883086722903,
+      "raceId": "f562a7fb-94b4-4fd8-b93f-44f6716b5774",
+      "runnerId": "0807953e-e447-48f9-9c39-81728c112b12",
+      "horseId": "26ee2ce2-7adc-47dc-beab-384861b9989d",
+      "horseName": "Lake Lugano",
+      "liveSemanticsVersion": "AW_TISSUE_V2_TURF_V3_CORE_PRERACE",
+      "liveSemanticsEffectiveAt": "2026-10-20T03:54:38.000Z",
+      "modelInputs": [
+        78,
+        66.76810673443458,
+        66.76810673443458,
+        66.76810673443458,
+        101.76810673443458,
+        101.76810673443458,
+        101.76810673443458,
+        98.76810673443458,
+        98.76810673443458,
+        98.76810673443458,
+        22.456709956709954,
+        7.522400231387125,
+        2.4896265560165975,
+        5.488937726156687,
+        7,
+        1.6094379124341003,
+        2,
+        136,
+        0,
+        5,
+        10,
+        3,
+        0.3,
+        1,
+        0.6931471805599453,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        3,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        2,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "featureCutoffAt": "2026-10-23T03:31:38.237Z",
+      "family": "AW",
+      "raceDate": "2026-10-23",
+      "scheduledOff": "2026-10-23T17:45:00.000Z",
+      "course": "Dundalk",
+      "raceName": "Fastfix Quay Celtic 60th Anniversary Nursery Handicap",
+      "rankSource": "AW Tissue / AW_TISSUE_V2 / AW_TISSUE_V2_TURF_V3_CORE_PRERACE / rank",
+      "modelHash": "ba7d2ea42a87d4ce432288d57a02cee8528217fafa04efa37723446924bdab82",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-23T03:32:24.757Z",
+      "capturedFieldRunnerIds": [
+        "fab9c7e2-3ecf-468f-b125-b7fb2ae97210",
+        "bcdd498e-f82c-45f9-8679-2dd07c6c27e0",
+        "0807953e-e447-48f9-9c39-81728c112b12",
+        "fdf9000c-a39d-4f57-9d1b-70360c8173e8",
+        "bad96e29-c27a-41a4-9029-8f9c7086d6b0",
+        "5cded23e-7915-49ac-8ff2-177a2ba40cbd",
+        "4b896b91-964e-46fa-8064-9f66d853cf2f",
+        "d9edb261-2a6c-4531-a31a-b47e6f585025",
+        "fd11dd46-fbe0-4cee-b4e3-d78edad49f61",
+        "854dc351-9c90-42f9-9b62-b400e834c975"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": null,
+        "normalizedProbability": null,
+        "marketRank": null,
+        "quotes": [],
+        "fieldPrices": []
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "contractVersion": "RANK_ONE_MODEL_MARKET_OPTIONAL_V2",
+      "contractEffectiveAt": "2026-10-22T18:51:26.000Z",
+      "modelProbability": 0.1610851907723566,
+      "raceId": "bac1e15f-d683-4035-b8be-fd2f77543a2b",
+      "runnerId": "5589e70a-ca5d-402b-b0a8-e502ec4983c2",
+      "horseId": "e562511d-a0d6-44d7-823f-602f7c9d6921",
+      "horseName": "Institute",
+      "liveSemanticsVersion": "AW_TISSUE_V2_TURF_V3_CORE_PRERACE",
+      "liveSemanticsEffectiveAt": "2026-10-20T03:54:38.000Z",
+      "modelInputs": [
+        76,
+        63.28244466800804,
+        63.28244466800804,
+        63.28244466800804,
+        102.28244466800804,
+        102.28244466800804,
+        102.28244466800804,
+        94.28244466800804,
+        94.28244466800804,
+        94.28244466800804,
+        22.456709956709954,
+        7.522400231387125,
+        8.776896942242356,
+        7.4770384723196965,
+        19,
+        2.1972245773362196,
+        3,
+        137,
+        1,
+        5,
+        13,
+        1,
+        0.07692307692307693,
+        0,
+        1.0986122886681098,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        3,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "featureCutoffAt": "2026-10-23T03:31:38.237Z",
+      "family": "AW",
+      "raceDate": "2026-10-23",
+      "scheduledOff": "2026-10-23T18:15:00.000Z",
+      "course": "Dundalk",
+      "raceName": "BAR 1 Betting Mercury Stakes (Group 3)",
+      "rankSource": "AW Tissue / AW_TISSUE_V2 / AW_TISSUE_V2_TURF_V3_CORE_PRERACE / rank",
+      "modelHash": "ba7d2ea42a87d4ce432288d57a02cee8528217fafa04efa37723446924bdab82",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-23T03:32:24.757Z",
+      "capturedFieldRunnerIds": [
+        "68e4731d-7f31-4b5a-a8be-14ae5a9e4be9",
+        "438e9258-d753-407a-a387-4c971bcf11bb",
+        "2580bcf3-bbdb-42a4-bfe7-d28722ccd179",
+        "66e76502-6582-4632-93d0-96669fc1120d",
+        "0a8f0b85-6946-4940-b935-d6067b83b3b2",
+        "d3f7099f-9b74-4eef-bbf1-ae8722f68b3f",
+        "3dfacb8f-cef7-481c-87fb-44d5066a075e",
+        "26ca2c28-b89f-4008-a00b-02672a77c3cb",
+        "5589e70a-ca5d-402b-b0a8-e502ec4983c2",
+        "7f4600ea-21fc-4a44-bcfe-d0a7f99de398",
+        "c8155549-34ea-4d2f-b8b8-f9f9200523cb",
+        "8b6b3557-ae32-46fa-bd16-16493368e6d3",
+        "da72d15e-2530-44a8-b6fc-e8c49b536a57"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": null,
+        "normalizedProbability": null,
+        "marketRank": null,
+        "quotes": [],
+        "fieldPrices": []
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "contractVersion": "RANK_ONE_MODEL_MARKET_OPTIONAL_V2",
+      "contractEffectiveAt": "2026-10-22T18:51:26.000Z",
+      "modelProbability": 0.1397408051477641,
+      "raceId": "7a388117-5816-416e-bcba-908308a4e23c",
+      "runnerId": "11508d67-2253-4e10-983b-3a64adab6d37",
+      "horseId": "ce9c8c98-86c5-433f-af80-79e864d1efa4",
+      "horseName": "The Captains Day",
+      "liveSemanticsVersion": "AW_TISSUE_V2_TURF_V3_CORE_PRERACE",
+      "liveSemanticsEffectiveAt": "2026-10-20T03:54:38.000Z",
+      "modelInputs": [
+        82,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        12.072072072072073,
+        6.320768294250582,
+        15.528781793842034,
+        7.3098814858247865,
+        38,
+        1.3862943611198906,
+        2,
+        132,
+        0,
+        8,
+        17,
+        17,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        3,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "featureCutoffAt": "2026-10-23T03:31:38.237Z",
+      "family": "AW",
+      "raceDate": "2026-10-23",
+      "scheduledOff": "2026-10-23T18:45:00.000Z",
+      "course": "Dundalk",
+      "raceName": "Irish EBF Median Sires Series Maiden (Smullen Series)",
+      "rankSource": "AW Tissue / AW_TISSUE_V2 / AW_TISSUE_V2_TURF_V3_CORE_PRERACE / rank",
+      "modelHash": "ba7d2ea42a87d4ce432288d57a02cee8528217fafa04efa37723446924bdab82",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-23T03:32:24.757Z",
+      "capturedFieldRunnerIds": [
+        "77435e1c-e292-4bb0-92b9-9afe7610539d",
+        "11508d67-2253-4e10-983b-3a64adab6d37",
+        "759e522a-cc7f-47af-9b79-544a0c76ef77",
+        "e1b92b8f-9a4a-4b16-a4ca-09f7fa6485e5",
+        "155ab756-e613-45a6-9ee3-bab50fe4856d",
+        "bac86f63-c1a1-4f68-b119-fe8421ae086e",
+        "f57b35dd-5d42-4a63-adf3-6d04c0995d72",
+        "8cbfb086-fbe8-4df0-b4a4-a41eb35de2f4",
+        "0e10b4d2-686c-457c-97f5-6d1295aef502",
+        "b5826b94-8f36-4608-9fe0-8a6a97ac7876",
+        "6f9138f6-a5ab-4b6f-b6fb-da8b45acaed4",
+        "faecbd50-0240-4aef-91bd-f9985f0ee168",
+        "ed141172-5d1a-4b7f-a125-4e34ded4976f",
+        "202f9e19-c79e-4a18-aeed-76ca0ea74533",
+        "add31f69-7380-483f-a6cb-c8df668a8858",
+        "5eedbdd2-453f-45d0-9d4e-5da252bf73ec",
+        "74a17692-d9e1-41b1-ad63-c0505a3ef190"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": null,
+        "normalizedProbability": null,
+        "marketRank": null,
+        "quotes": [],
+        "fieldPrices": []
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "contractVersion": "RANK_ONE_MODEL_MARKET_OPTIONAL_V2",
+      "contractEffectiveAt": "2026-10-22T18:51:26.000Z",
+      "modelProbability": 0.23976077401769622,
+      "raceId": "7effcb75-f00e-4634-a171-e62d8ec54f24",
+      "runnerId": "4f14c900-1c00-4c4c-a0ab-22de7d4ab06a",
+      "horseId": "f0a90c4a-96dd-4dcc-a93a-de18af68cdd8",
+      "horseName": "Trustmore",
+      "liveSemanticsVersion": "AW_TISSUE_V2_TURF_V3_CORE_PRERACE",
+      "liveSemanticsEffectiveAt": "2026-10-20T03:54:38.000Z",
+      "modelInputs": [
+        72,
+        77.4394288134344,
+        77.4394288134344,
+        77.4394288134344,
+        111.4394288134344,
+        111.4394288134344,
+        111.4394288134344,
+        111.4394288134344,
+        111.4394288134344,
+        111.4394288134344,
+        14.018691588785046,
+        5.7745515455444085,
+        15.528781793842034,
+        7.3098814858247865,
+        35,
+        1.791759469228055,
+        3,
+        134,
+        0,
+        10.681818181818182,
+        17,
+        17,
+        1,
+        0,
+        0.6931471805599453,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        3,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "featureCutoffAt": "2026-10-23T03:31:38.237Z",
+      "family": "AW",
+      "raceDate": "2026-10-23",
+      "scheduledOff": "2026-10-23T19:15:00.000Z",
+      "course": "Dundalk",
+      "raceName": "Des Byrne Memorial Maiden",
+      "rankSource": "AW Tissue / AW_TISSUE_V2 / AW_TISSUE_V2_TURF_V3_CORE_PRERACE / rank",
+      "modelHash": "ba7d2ea42a87d4ce432288d57a02cee8528217fafa04efa37723446924bdab82",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-23T03:32:24.757Z",
+      "capturedFieldRunnerIds": [
+        "fa38b223-b1a5-42e4-9ef4-40f7b23c695b",
+        "480b9679-8427-4ebf-9cd2-d19a09da4b1d",
+        "288b7fa9-9e85-457a-b091-d740012fbbe0",
+        "379563b6-c19a-42bf-b300-905002a63c7a",
+        "9a269956-70b7-4d5d-b9cb-c53df98644ce",
+        "180ed935-66b1-43fc-a24f-080fe6808c14",
+        "5b212d18-bfa0-448e-a84f-be7f4a4c01ab",
+        "b752ca37-7bc8-4101-9611-fd144297520b",
+        "a744f016-cb44-4284-bf9e-88e9c2c5abc1",
+        "199576f5-71ed-4daa-b838-f563ccf15a28",
+        "0b9933d8-e6ba-483a-b149-15ed1e27cc60",
+        "4f14c900-1c00-4c4c-a0ab-22de7d4ab06a",
+        "27df1202-332b-4bd7-863a-db61d776628f",
+        "c169c521-1af3-4ac0-a844-2832b753df94",
+        "f5fed3ec-d799-4274-aec6-8f32b6b2620b",
+        "9b3004ee-2af9-4247-b691-eece44f66ded",
+        "a2d90fa6-18cc-40d9-9fcc-0f22c8713cd2"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": null,
+        "normalizedProbability": null,
+        "marketRank": null,
+        "quotes": [],
+        "fieldPrices": []
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "contractVersion": "RANK_ONE_MODEL_MARKET_OPTIONAL_V2",
+      "contractEffectiveAt": "2026-10-22T18:51:26.000Z",
+      "modelProbability": 0.2684250287350112,
+      "raceId": "22e1da2b-fd64-4aae-bc2c-5698b9bf03c0",
+      "runnerId": "29e6f2dd-f88b-4d4e-9cf2-a25946789abc",
+      "horseId": "8a55feb2-630b-45fb-ac9a-da3388ca4fd1",
+      "horseName": "Ronnie's Rascal",
+      "family": "HURDLE",
+      "raceDate": "2026-10-23",
+      "scheduledOff": "2026-10-23T11:50:00.000Z",
+      "course": "Sligo",
+      "raceName": "Sligo Fillies Maiden Hurdle",
+      "rankSource": "Jump Tissue / JUMP_TISSUE_V1 / rank",
+      "modelHash": "863b966423f05773083c3c208dd11cd49680df7a7414b855d613ee5c8ad9ebe4",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-23T03:32:24.757Z",
+      "capturedFieldRunnerIds": [
+        "29e6f2dd-f88b-4d4e-9cf2-a25946789abc",
+        "b9c77192-19ea-497b-9470-ef9369116bac",
+        "00580311-a920-4073-8cb6-77c7b4772c01",
+        "df346a3f-e9d9-4349-ab22-2a006d3ef125",
+        "5853b971-d880-4b25-9a52-d8be933ed02e",
+        "c40fe20b-4ab4-4f86-a97a-ccdee7b421e3",
+        "1f8859f8-b1af-4f5d-b8c7-da543139e849",
+        "4d351818-2fd9-47fa-a43b-676fb614798f",
+        "46815eb9-564c-4c7a-a581-29df21e1c002",
+        "c30131f8-5714-40ad-b741-a8ac455fa7fc",
+        "9bd290bb-1967-4b9e-919c-b102a372558e",
+        "65e0bf09-6c0f-4750-bb68-a3045f1069fd",
+        "c5106191-d140-4fbc-bd2d-7541d8197797",
+        "bfe05ef2-68a4-4d09-b52e-049d826a3488",
+        "43cb956b-5cc7-4d9e-bd6f-11c4e862eabe",
+        "d1081e88-9553-4c1c-be21-8085ab34cde4",
+        "40736734-5fce-4e85-bd68-27141cee0957"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 3,
+        "normalizedProbability": 0.22256653470551982,
+        "marketRank": 1,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "2/1",
+            "decimalOdds": 3
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "2/1",
+            "decimalOdds": 3
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "2/1",
+            "decimalOdds": 3
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "29e6f2dd-f88b-4d4e-9cf2-a25946789abc",
+            "decimalPrice": 3
+          },
+          {
+            "runnerId": "b9c77192-19ea-497b-9470-ef9369116bac",
+            "decimalPrice": 4
+          },
+          {
+            "runnerId": "00580311-a920-4073-8cb6-77c7b4772c01",
+            "decimalPrice": 4.5
+          },
+          {
+            "runnerId": "df346a3f-e9d9-4349-ab22-2a006d3ef125",
+            "decimalPrice": 8
+          },
+          {
+            "runnerId": "5853b971-d880-4b25-9a52-d8be933ed02e",
+            "decimalPrice": 9
+          },
+          {
+            "runnerId": "c40fe20b-4ab4-4f86-a97a-ccdee7b421e3",
+            "decimalPrice": 11
+          },
+          {
+            "runnerId": "1f8859f8-b1af-4f5d-b8c7-da543139e849",
+            "decimalPrice": 11
+          },
+          {
+            "runnerId": "4d351818-2fd9-47fa-a43b-676fb614798f",
+            "decimalPrice": 17
+          },
+          {
+            "runnerId": "46815eb9-564c-4c7a-a581-29df21e1c002",
+            "decimalPrice": 26
+          },
+          {
+            "runnerId": "c30131f8-5714-40ad-b741-a8ac455fa7fc",
+            "decimalPrice": 34
+          },
+          {
+            "runnerId": "9bd290bb-1967-4b9e-919c-b102a372558e",
+            "decimalPrice": 34
+          },
+          {
+            "runnerId": "65e0bf09-6c0f-4750-bb68-a3045f1069fd",
+            "decimalPrice": 34
+          },
+          {
+            "runnerId": "c5106191-d140-4fbc-bd2d-7541d8197797",
+            "decimalPrice": 51
+          },
+          {
+            "runnerId": "bfe05ef2-68a4-4d09-b52e-049d826a3488",
+            "decimalPrice": 51
+          },
+          {
+            "runnerId": "43cb956b-5cc7-4d9e-bd6f-11c4e862eabe",
+            "decimalPrice": 51
+          },
+          {
+            "runnerId": "d1081e88-9553-4c1c-be21-8085ab34cde4",
+            "decimalPrice": 67
+          },
+          {
+            "runnerId": "40736734-5fce-4e85-bd68-27141cee0957",
+            "decimalPrice": 67
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "contractVersion": "RANK_ONE_MODEL_MARKET_OPTIONAL_V2",
+      "contractEffectiveAt": "2026-10-22T18:51:26.000Z",
+      "modelProbability": 0.2767342043451152,
+      "raceId": "35102c1a-90fe-4164-922f-1a23a28e44b5",
+      "runnerId": "211641ab-7580-47db-91b7-8913b8a584ca",
+      "horseId": "fa1e2871-f28d-4315-9009-0ef35cf9cb2f",
+      "horseName": "Combs",
+      "family": "HURDLE",
+      "raceDate": "2026-10-23",
+      "scheduledOff": "2026-10-23T12:25:00.000Z",
+      "course": "Sligo",
+      "raceName": "Abbey Haven Care Centre & Nursing Home Hurdle",
+      "rankSource": "Jump Tissue / JUMP_TISSUE_V1 / rank",
+      "modelHash": "863b966423f05773083c3c208dd11cd49680df7a7414b855d613ee5c8ad9ebe4",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-23T03:32:24.757Z",
+      "capturedFieldRunnerIds": [
+        "5189e47d-2560-4421-a313-a5d52cc62cb9",
+        "9c66c068-d8c7-4a1e-ae75-b495dfbca250",
+        "65e8041a-df2c-4180-bf3f-990ff5dddee6",
+        "211641ab-7580-47db-91b7-8913b8a584ca",
+        "a0ae5988-f1ea-44d6-9eab-2ffab2337101"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 4.33,
+        "normalizedProbability": 0.19819299859968034,
+        "marketRank": 4,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "10/3",
+            "decimalOdds": 4.33
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "10/3",
+            "decimalOdds": 4.33
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "7/2",
+            "decimalOdds": 4.5
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "5189e47d-2560-4421-a313-a5d52cc62cb9",
+            "decimalPrice": 3.25
+          },
+          {
+            "runnerId": "9c66c068-d8c7-4a1e-ae75-b495dfbca250",
+            "decimalPrice": 3.5
+          },
+          {
+            "runnerId": "65e8041a-df2c-4180-bf3f-990ff5dddee6",
+            "decimalPrice": 4
+          },
+          {
+            "runnerId": "211641ab-7580-47db-91b7-8913b8a584ca",
+            "decimalPrice": 4.33
+          },
+          {
+            "runnerId": "a0ae5988-f1ea-44d6-9eab-2ffab2337101",
+            "decimalPrice": 11
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "contractVersion": "RANK_ONE_MODEL_MARKET_OPTIONAL_V2",
+      "contractEffectiveAt": "2026-10-22T18:51:26.000Z",
+      "modelProbability": 0.13417757007040246,
+      "raceId": "68fc5367-d055-4110-83b1-d69ce027166a",
+      "runnerId": "d74a37a8-902f-43bb-9858-877ad26ac0a8",
+      "horseId": "68cff47f-35c0-4c72-94f9-acd462679866",
+      "horseName": "Jurality",
+      "family": "HURDLE",
+      "raceDate": "2026-10-23",
+      "scheduledOff": "2026-10-23T13:00:00.000Z",
+      "course": "Sligo",
+      "raceName": "Callan Tansey Handicap Hurdle (0-100) (Div 1)",
+      "rankSource": "Jump Tissue / JUMP_TISSUE_V1 / rank",
+      "modelHash": "863b966423f05773083c3c208dd11cd49680df7a7414b855d613ee5c8ad9ebe4",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-23T03:32:24.757Z",
+      "capturedFieldRunnerIds": [
+        "4a26b155-942d-40f5-90a6-07f3042149e8",
+        "4cdff148-a7b3-4ce5-8e4b-1bfe4238c076",
+        "d74a37a8-902f-43bb-9858-877ad26ac0a8",
+        "29d47415-1113-476c-8cd9-e3ec8bac36b6",
+        "f58d92d6-1120-4871-96a5-2946300e9f43",
+        "572555f9-eaec-49d8-94c4-8cd62c80b895",
+        "46acd8a4-bc2b-400d-954a-696fb0628bd3",
+        "41703eb4-ff76-4aef-b239-24662b7dd057",
+        "ac6f824b-bfd7-433a-ad9f-bf9acfc4f9cd",
+        "4e7d2ed6-2ad7-4066-8c52-67d378d93a42",
+        "e02f12c5-4527-45ba-8f66-aeb331d9fb90",
+        "176b1da5-f163-4bb5-8dd6-08691ae77b4b",
+        "7fd7a913-26ff-4da8-921f-d4efbd81691f",
+        "c0ac88ac-6d12-47fa-88bc-e965c42d655e"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 8,
+        "normalizedProbability": 0.090983029185154,
+        "marketRank": 3,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "13/2",
+            "decimalOdds": 7.5
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "7/1",
+            "decimalOdds": 8
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "7/1",
+            "decimalOdds": 8
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "4a26b155-942d-40f5-90a6-07f3042149e8",
+            "decimalPrice": 5.5
+          },
+          {
+            "runnerId": "4cdff148-a7b3-4ce5-8e4b-1bfe4238c076",
+            "decimalPrice": 5.5
+          },
+          {
+            "runnerId": "d74a37a8-902f-43bb-9858-877ad26ac0a8",
+            "decimalPrice": 8
+          },
+          {
+            "runnerId": "29d47415-1113-476c-8cd9-e3ec8bac36b6",
+            "decimalPrice": 8
+          },
+          {
+            "runnerId": "f58d92d6-1120-4871-96a5-2946300e9f43",
+            "decimalPrice": 8
+          },
+          {
+            "runnerId": "572555f9-eaec-49d8-94c4-8cd62c80b895",
+            "decimalPrice": 10
+          },
+          {
+            "runnerId": "46acd8a4-bc2b-400d-954a-696fb0628bd3",
+            "decimalPrice": 10
+          },
+          {
+            "runnerId": "41703eb4-ff76-4aef-b239-24662b7dd057",
+            "decimalPrice": 10
+          },
+          {
+            "runnerId": "ac6f824b-bfd7-433a-ad9f-bf9acfc4f9cd",
+            "decimalPrice": 11
+          },
+          {
+            "runnerId": "4e7d2ed6-2ad7-4066-8c52-67d378d93a42",
+            "decimalPrice": 15
+          },
+          {
+            "runnerId": "e02f12c5-4527-45ba-8f66-aeb331d9fb90",
+            "decimalPrice": 15
+          },
+          {
+            "runnerId": "176b1da5-f163-4bb5-8dd6-08691ae77b4b",
+            "decimalPrice": 15
+          },
+          {
+            "runnerId": "7fd7a913-26ff-4da8-921f-d4efbd81691f",
+            "decimalPrice": 34
+          },
+          {
+            "runnerId": "c0ac88ac-6d12-47fa-88bc-e965c42d655e",
+            "decimalPrice": 67
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "contractVersion": "RANK_ONE_MODEL_MARKET_OPTIONAL_V2",
+      "contractEffectiveAt": "2026-10-22T18:51:26.000Z",
+      "modelProbability": 0.146245996462374,
+      "raceId": "d9123de3-fbb4-4647-9de5-10f77bae9264",
+      "runnerId": "da281480-40f9-4bbb-8f57-2438e75f9d71",
+      "horseId": "0933f616-cc77-4ab0-b023-15c18d3c7cdf",
+      "horseName": "The Flying Rambler",
+      "family": "HURDLE",
+      "raceDate": "2026-10-23",
+      "scheduledOff": "2026-10-23T13:35:00.000Z",
+      "course": "Sligo",
+      "raceName": "Callan Tansey Handicap Hurdle (0-100) (Div 2)",
+      "rankSource": "Jump Tissue / JUMP_TISSUE_V1 / rank",
+      "modelHash": "863b966423f05773083c3c208dd11cd49680df7a7414b855d613ee5c8ad9ebe4",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-23T03:32:24.757Z",
+      "capturedFieldRunnerIds": [
+        "cba2214a-d872-4b86-bb51-2cc09df112c6",
+        "da281480-40f9-4bbb-8f57-2438e75f9d71",
+        "be063473-d0e3-4c7c-ba1a-147bfd7e4edf",
+        "99715901-ad39-403b-80a7-89c1b0e84090",
+        "b955548d-f558-4c0e-9fd9-8b3788b080d9",
+        "6571d609-e79e-45d7-b11b-f5c41c77296f",
+        "31839ca7-3337-4ee5-b36c-fcd05b0d91e7",
+        "9743977c-e6eb-485d-b5c6-adb0d635f0eb",
+        "d689b229-4030-4665-a199-32bbeac324ec",
+        "1dffc095-ee5e-4640-b548-042f75d126bc",
+        "04994315-606f-46a1-bc9e-244f03e29d90",
+        "c36e0b45-1af1-45cb-9e7b-597ccad23773",
+        "534fc8a0-66fc-485a-bcd5-709016b20e7e"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 5,
+        "normalizedProbability": 0.1466102956415523,
+        "marketRank": 2,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "4/1",
+            "decimalOdds": 5
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "4/1",
+            "decimalOdds": 5
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "4/1",
+            "decimalOdds": 5
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "cba2214a-d872-4b86-bb51-2cc09df112c6",
+            "decimalPrice": 4.5
+          },
+          {
+            "runnerId": "da281480-40f9-4bbb-8f57-2438e75f9d71",
+            "decimalPrice": 5
+          },
+          {
+            "runnerId": "be063473-d0e3-4c7c-ba1a-147bfd7e4edf",
+            "decimalPrice": 5.5
+          },
+          {
+            "runnerId": "99715901-ad39-403b-80a7-89c1b0e84090",
+            "decimalPrice": 5.5
+          },
+          {
+            "runnerId": "b955548d-f558-4c0e-9fd9-8b3788b080d9",
+            "decimalPrice": 7
+          },
+          {
+            "runnerId": "6571d609-e79e-45d7-b11b-f5c41c77296f",
+            "decimalPrice": 13
+          },
+          {
+            "runnerId": "31839ca7-3337-4ee5-b36c-fcd05b0d91e7",
+            "decimalPrice": 13
+          },
+          {
+            "runnerId": "9743977c-e6eb-485d-b5c6-adb0d635f0eb",
+            "decimalPrice": 15
+          },
+          {
+            "runnerId": "d689b229-4030-4665-a199-32bbeac324ec",
+            "decimalPrice": 17
+          },
+          {
+            "runnerId": "1dffc095-ee5e-4640-b548-042f75d126bc",
+            "decimalPrice": 17
+          },
+          {
+            "runnerId": "04994315-606f-46a1-bc9e-244f03e29d90",
+            "decimalPrice": 26
+          },
+          {
+            "runnerId": "c36e0b45-1af1-45cb-9e7b-597ccad23773",
+            "decimalPrice": 34
+          },
+          {
+            "runnerId": "534fc8a0-66fc-485a-bcd5-709016b20e7e",
+            "decimalPrice": 34
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "contractVersion": "RANK_ONE_MODEL_MARKET_OPTIONAL_V2",
+      "contractEffectiveAt": "2026-10-22T18:51:26.000Z",
+      "modelProbability": 0.218000303883932,
+      "raceId": "85bddb0b-99ef-4ba4-96a2-7548aae3d979",
+      "runnerId": "277c0a5b-ca51-473f-9676-02cc36ada961",
+      "horseId": "19968aaf-05a8-4c29-89fb-925045e0b06e",
+      "horseName": "Gunnery Sergeant",
+      "family": "HURDLE",
+      "raceDate": "2026-10-23",
+      "scheduledOff": "2026-10-23T14:10:00.000Z",
+      "course": "Sligo",
+      "raceName": "John Thomas McNamara Series (Q.R.) Maiden Hurdle",
+      "rankSource": "Jump Tissue / JUMP_TISSUE_V1 / rank",
+      "modelHash": "863b966423f05773083c3c208dd11cd49680df7a7414b855d613ee5c8ad9ebe4",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-23T03:32:24.757Z",
+      "capturedFieldRunnerIds": [
+        "88580a1a-ab7f-4868-bfe7-3a5f6030a9f3",
+        "41236636-e006-4bb1-99f6-d05eba914e13",
+        "277c0a5b-ca51-473f-9676-02cc36ada961",
+        "6ae2e53a-0e34-4ee0-830d-50ced18c825a",
+        "b5203f74-34a2-476e-98d5-48e726e8d64d",
+        "90a96ee9-d2a6-4314-90b6-19f3b62921b6",
+        "86c4fb4f-b25d-4562-85f0-65286ac1e439",
+        "6de42cac-cdb1-4223-9a13-4de279925e46",
+        "f8b9526f-bda3-4af8-a98a-74c3675fbc67",
+        "2947bae7-fa83-4772-a8fe-4ee97c2aef07",
+        "b2565ed0-6ae0-45a2-bdc6-15c23e0e5db8",
+        "5990be05-7991-4043-a976-f5543831918e"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 4,
+        "normalizedProbability": 0.1828647371186707,
+        "marketRank": 3,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "3/1",
+            "decimalOdds": 4
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "3/1",
+            "decimalOdds": 4
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "10/3",
+            "decimalOdds": 4.33
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "88580a1a-ab7f-4868-bfe7-3a5f6030a9f3",
+            "decimalPrice": 2.1
+          },
+          {
+            "runnerId": "41236636-e006-4bb1-99f6-d05eba914e13",
+            "decimalPrice": 2.88
+          },
+          {
+            "runnerId": "277c0a5b-ca51-473f-9676-02cc36ada961",
+            "decimalPrice": 4
+          },
+          {
+            "runnerId": "6ae2e53a-0e34-4ee0-830d-50ced18c825a",
+            "decimalPrice": 13
+          },
+          {
+            "runnerId": "b5203f74-34a2-476e-98d5-48e726e8d64d",
+            "decimalPrice": 13
+          },
+          {
+            "runnerId": "90a96ee9-d2a6-4314-90b6-19f3b62921b6",
+            "decimalPrice": 15
+          },
+          {
+            "runnerId": "86c4fb4f-b25d-4562-85f0-65286ac1e439",
+            "decimalPrice": 26
+          },
+          {
+            "runnerId": "6de42cac-cdb1-4223-9a13-4de279925e46",
+            "decimalPrice": 101
+          },
+          {
+            "runnerId": "f8b9526f-bda3-4af8-a98a-74c3675fbc67",
+            "decimalPrice": 151
+          },
+          {
+            "runnerId": "2947bae7-fa83-4772-a8fe-4ee97c2aef07",
+            "decimalPrice": 151
+          },
+          {
+            "runnerId": "b2565ed0-6ae0-45a2-bdc6-15c23e0e5db8",
+            "decimalPrice": 151
+          },
+          {
+            "runnerId": "5990be05-7991-4043-a976-f5543831918e",
+            "decimalPrice": 201
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "contractVersion": "RANK_ONE_MODEL_MARKET_OPTIONAL_V2",
+      "contractEffectiveAt": "2026-10-22T18:51:26.000Z",
+      "modelProbability": 0.11874341340140333,
+      "raceId": "58e87613-1c7a-460e-807c-7b962690bde3",
+      "runnerId": "1c3cdf58-c51e-412f-b899-0388132fc01f",
+      "horseId": "65d2c6fc-bc9c-485a-ba61-2c8fbbec8152",
+      "horseName": "Demanding Gerry",
+      "family": "HURDLE",
+      "raceDate": "2026-10-23",
+      "scheduledOff": "2026-10-23T14:45:00.000Z",
+      "course": "Sligo",
+      "raceName": "End Of An Era Handicap Hurdle (0-100)",
+      "rankSource": "Jump Tissue / JUMP_TISSUE_V1 / rank",
+      "modelHash": "863b966423f05773083c3c208dd11cd49680df7a7414b855d613ee5c8ad9ebe4",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-23T03:32:24.757Z",
+      "capturedFieldRunnerIds": [
+        "fcdfd95b-5304-4452-913a-3465661ef0fc",
+        "e9fdc521-89ec-4e09-9e43-aa199be7a668",
+        "b42e2777-30fd-4af9-98ce-0693878efda0",
+        "8095c385-c7ed-49ae-bca6-1d392d6d26ee",
+        "1c3cdf58-c51e-412f-b899-0388132fc01f",
+        "227ee699-688e-4b37-8361-173ceb87cfcf",
+        "12be3605-3cf5-46d1-b858-c5556d07ee48",
+        "e903fe28-d4df-421c-b28b-c44927ad01af",
+        "d4f189dc-3d7c-42ea-a9e0-a7f6e5eb65ec",
+        "347ddd29-8b6e-4013-8736-730dbd0d2e6a",
+        "4ccbbcd6-31d7-4cd0-8010-448e6fec1d19",
+        "486f3299-42ca-439e-a8cb-ebbac72d18c0",
+        "ed229fda-5929-41f0-94db-4c10259d2051",
+        "f7b2a233-fe1d-413c-9f8b-57da8b0b30a8",
+        "5440fe34-31c7-4bdf-99f5-5e5f52b13f44",
+        "13f03a66-1863-44c9-83a3-787e4b0a81e7"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 6.5,
+        "normalizedProbability": 0.103133392477356,
+        "marketRank": 5,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "5/1",
+            "decimalOdds": 6
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "11/2",
+            "decimalOdds": 6.5
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "11/2",
+            "decimalOdds": 6.5
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "fcdfd95b-5304-4452-913a-3465661ef0fc",
+            "decimalPrice": 4.5
+          },
+          {
+            "runnerId": "e9fdc521-89ec-4e09-9e43-aa199be7a668",
+            "decimalPrice": 5
+          },
+          {
+            "runnerId": "b42e2777-30fd-4af9-98ce-0693878efda0",
+            "decimalPrice": 5
+          },
+          {
+            "runnerId": "8095c385-c7ed-49ae-bca6-1d392d6d26ee",
+            "decimalPrice": 5.5
+          },
+          {
+            "runnerId": "1c3cdf58-c51e-412f-b899-0388132fc01f",
+            "decimalPrice": 6.5
+          },
+          {
+            "runnerId": "227ee699-688e-4b37-8361-173ceb87cfcf",
+            "decimalPrice": 7.5
+          },
+          {
+            "runnerId": "12be3605-3cf5-46d1-b858-c5556d07ee48",
+            "decimalPrice": 13
+          },
+          {
+            "runnerId": "e903fe28-d4df-421c-b28b-c44927ad01af",
+            "decimalPrice": 19
+          },
+          {
+            "runnerId": "d4f189dc-3d7c-42ea-a9e0-a7f6e5eb65ec",
+            "decimalPrice": 19
+          },
+          {
+            "runnerId": "347ddd29-8b6e-4013-8736-730dbd0d2e6a",
+            "decimalPrice": 21
+          },
+          {
+            "runnerId": "4ccbbcd6-31d7-4cd0-8010-448e6fec1d19",
+            "decimalPrice": 26
+          },
+          {
+            "runnerId": "486f3299-42ca-439e-a8cb-ebbac72d18c0",
+            "decimalPrice": 34
+          },
+          {
+            "runnerId": "ed229fda-5929-41f0-94db-4c10259d2051",
+            "decimalPrice": 34
+          },
+          {
+            "runnerId": "f7b2a233-fe1d-413c-9f8b-57da8b0b30a8",
+            "decimalPrice": 34
+          },
+          {
+            "runnerId": "5440fe34-31c7-4bdf-99f5-5e5f52b13f44",
+            "decimalPrice": 41
+          },
+          {
+            "runnerId": "13f03a66-1863-44c9-83a3-787e4b0a81e7",
+            "decimalPrice": 51
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "contractVersion": "RANK_ONE_MODEL_MARKET_OPTIONAL_V2",
+      "contractEffectiveAt": "2026-10-22T18:51:26.000Z",
+      "modelProbability": 0.2885151443165177,
+      "raceId": "7d4bc750-c052-458d-8a01-fb95dddbee06",
+      "runnerId": "0f1e45cf-c876-4924-bdad-796389d9bd68",
+      "horseId": "542d3781-9b75-43df-936d-2a10b3265aff",
+      "horseName": "Its Time For A Run",
+      "family": "HURDLE",
+      "raceDate": "2026-10-23",
+      "scheduledOff": "2026-10-23T15:20:00.000Z",
+      "course": "Sligo",
+      "raceName": "Irish Stallion Farms EBF Maiden Hurdle",
+      "rankSource": "Jump Tissue / JUMP_TISSUE_V1 / rank",
+      "modelHash": "863b966423f05773083c3c208dd11cd49680df7a7414b855d613ee5c8ad9ebe4",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-23T03:32:24.757Z",
+      "capturedFieldRunnerIds": [
+        "0f1e45cf-c876-4924-bdad-796389d9bd68",
+        "8938ab22-b5fd-4fe9-8b29-086282fa5994",
+        "555ec0db-4b10-40da-a9e5-9aaff5a76dc0",
+        "4d313f0e-b086-40ee-9865-da63b061ceca",
+        "b004a693-5a45-4cd3-bfc2-d2c2d142260d",
+        "2610b9cf-29d2-410c-be0d-09fb7b7abcdb",
+        "1cbdeee9-c48b-4a5c-ae30-5010479291e7",
+        "b8aaf246-6ff0-46b8-90f6-e18d199a22eb"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 2.2,
+        "normalizedProbability": 0.3635658937526361,
+        "marketRank": 1,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "6/5",
+            "decimalOdds": 2.2
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "6/5",
+            "decimalOdds": 2.2
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "6/5",
+            "decimalOdds": 2.2
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "0f1e45cf-c876-4924-bdad-796389d9bd68",
+            "decimalPrice": 2.2
+          },
+          {
+            "runnerId": "8938ab22-b5fd-4fe9-8b29-086282fa5994",
+            "decimalPrice": 3
+          },
+          {
+            "runnerId": "555ec0db-4b10-40da-a9e5-9aaff5a76dc0",
+            "decimalPrice": 5.5
+          },
+          {
+            "runnerId": "4d313f0e-b086-40ee-9865-da63b061ceca",
+            "decimalPrice": 8
+          },
+          {
+            "runnerId": "b004a693-5a45-4cd3-bfc2-d2c2d142260d",
+            "decimalPrice": 9
+          },
+          {
+            "runnerId": "2610b9cf-29d2-410c-be0d-09fb7b7abcdb",
+            "decimalPrice": 51
+          },
+          {
+            "runnerId": "1cbdeee9-c48b-4a5c-ae30-5010479291e7",
+            "decimalPrice": 67
+          },
+          {
+            "runnerId": "b8aaf246-6ff0-46b8-90f6-e18d199a22eb",
+            "decimalPrice": 101
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
+    },
+    {
+      "version": "RANK_ONE_FORWARD_V1",
+      "contractVersion": "RANK_ONE_MODEL_MARKET_OPTIONAL_V2",
+      "contractEffectiveAt": "2026-10-22T18:51:26.000Z",
+      "modelProbability": 0.1500298715312111,
+      "raceId": "244bfdc4-58b7-4107-8557-6916ecceaa58",
+      "runnerId": "0b4b4239-68d9-46f2-b5a7-120c1fec67c8",
+      "horseId": "afaec03a-b686-4d02-af5e-aac474764b33",
+      "horseName": "Mickey Cohen",
+      "family": "HURDLE",
+      "raceDate": "2026-10-23",
+      "scheduledOff": "2026-10-23T15:55:00.000Z",
+      "course": "Sligo",
+      "raceName": "Solar Generation Handicap Hurdle",
+      "rankSource": "Jump Tissue / JUMP_TISSUE_V1 / rank",
+      "modelHash": "863b966423f05773083c3c208dd11cd49680df7a7414b855d613ee5c8ad9ebe4",
+      "rank": 1,
+      "firstCapturedAt": "2026-10-23T03:32:24.757Z",
+      "capturedFieldRunnerIds": [
+        "0b4b4239-68d9-46f2-b5a7-120c1fec67c8",
+        "e7986d20-8fd2-46d8-bee0-605923f9c152",
+        "75b80c6f-248a-4d9a-84d3-4d60e3587d1e",
+        "c6c68664-eb73-4b70-97f4-3fc4fad7f4da",
+        "1cc83764-49fb-4c6f-9713-5b5132e0bcc3",
+        "4d6a0fd6-8a41-4bfe-89b8-28f708cb8c1b",
+        "744e4c17-a6e4-4800-8f08-0c39a97c0723",
+        "01a380d1-6aae-40d4-801f-63ebd55a39a7",
+        "58a80e66-452d-4d79-bed7-681279017152",
+        "645117a7-7db3-48e4-94a2-7233874981ee",
+        "26ef8fd1-9faf-4021-86af-44697db36e28",
+        "ec87d311-0def-4129-a9d7-e8c58d246f46"
+      ],
+      "market": {
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "medianBookmakerDecimal": 4.5,
+        "normalizedProbability": 0.16451085614065333,
+        "marketRank": 1,
+        "quotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "7/2",
+            "decimalOdds": 4.5
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "7/2",
+            "decimalOdds": 4.5
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "7/2",
+            "decimalOdds": 4.5
+          }
+        ],
+        "fieldPrices": [
+          {
+            "runnerId": "0b4b4239-68d9-46f2-b5a7-120c1fec67c8",
+            "decimalPrice": 4.5
+          },
+          {
+            "runnerId": "e7986d20-8fd2-46d8-bee0-605923f9c152",
+            "decimalPrice": 5.5
+          },
+          {
+            "runnerId": "75b80c6f-248a-4d9a-84d3-4d60e3587d1e",
+            "decimalPrice": 5.5
+          },
+          {
+            "runnerId": "c6c68664-eb73-4b70-97f4-3fc4fad7f4da",
+            "decimalPrice": 7
+          },
+          {
+            "runnerId": "1cc83764-49fb-4c6f-9713-5b5132e0bcc3",
+            "decimalPrice": 7.5
+          },
+          {
+            "runnerId": "4d6a0fd6-8a41-4bfe-89b8-28f708cb8c1b",
+            "decimalPrice": 8
+          },
+          {
+            "runnerId": "744e4c17-a6e4-4800-8f08-0c39a97c0723",
+            "decimalPrice": 8.5
+          },
+          {
+            "runnerId": "01a380d1-6aae-40d4-801f-63ebd55a39a7",
+            "decimalPrice": 13
+          },
+          {
+            "runnerId": "58a80e66-452d-4d79-bed7-681279017152",
+            "decimalPrice": 13
+          },
+          {
+            "runnerId": "645117a7-7db3-48e4-94a2-7233874981ee",
+            "decimalPrice": 26
+          },
+          {
+            "runnerId": "26ef8fd1-9faf-4021-86af-44697db36e28",
+            "decimalPrice": 34
+          },
+          {
+            "runnerId": "ec87d311-0def-4129-a9d7-e8c58d246f46",
+            "decimalPrice": 41
+          }
+        ]
+      },
+      "cap": null,
+      "withinCap": true,
+      "outcome": null
     }
   ]
 }
