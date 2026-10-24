@@ -63,6 +63,8 @@ import { attachAwTissueToMeetings } from "@/lib/racing/aw-tissue-forward";
 import { syncJumpTissueMeetings } from "@/lib/racing/jump-tissue-sync";
 import { attachJumpTissueToMeetings } from "@/lib/racing/jump-tissue-forward";
 import { SavedRuleResearchNote } from "../research/saved-rule-research-note";
+import { buildNonRedTissueDailyList, formatNonRedTissueDailyList } from "@/lib/racing/non-red-tissue-daily-list";
+import { NonRedTissueDailyList } from "./non-red-tissue-daily-list";
 
 export const dynamic = "force-dynamic";
 
@@ -144,6 +146,8 @@ export default async function TodaysRacingPage({ searchParams }: PageProps) {
       ]);
     }
 
+    const dailyList = buildNonRedTissueDailyList(displayData.status === "ok" ? displayData.meetings : []);
+
     return (
       <main className="min-h-full bg-stone-50 px-4 py-8 text-slate-950 sm:px-6 lg:px-8">
         <section className="mx-auto w-full max-w-7xl">
@@ -180,6 +184,12 @@ export default async function TodaysRacingPage({ searchParams }: PageProps) {
               <RefreshResultsButton />
             </form>
           </div>
+
+          <NonRedTissueDailyList
+            date={new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "Europe/London" }).format(new Date(`${raceDate}T12:00:00Z`))}
+            rows={dailyList}
+            clipboardText={formatNonRedTissueDailyList(dailyList)}
+          />
 
           {displayData.status === "empty" ? (
             <p className="mt-8 text-sm leading-6 text-slate-700">
