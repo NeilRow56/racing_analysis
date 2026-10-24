@@ -1,3 +1,4 @@
+import { descendingRanks } from "./descending-ranks";
 import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { isVoidBetResultStatus, settleSelection } from "./backtest";
@@ -493,21 +494,6 @@ function raceRanks(runners: TodayRunner[], family: ModelDisagreementFamily) {
     or: descendingRanks(runners, (runner) => runner.officialRating),
     todaysRating: descendingRanks(runners, (runner) => runner.metrics ? canonicalFamilyFormMetrics(runner.metrics, family === "JUMP" ? "jump" : "aw").todaysRating.latest : null),
   };
-}
-
-function descendingRanks(runners: TodayRunner[], valueFor: (runner: TodayRunner) => number | null | undefined) {
-  const sorted = runners.map((runner) => ({ runner, value: valueFor(runner) }))
-    .filter((entry): entry is { runner: TodayRunner; value: number } => finite(entry.value))
-    .sort((a, b) => b.value - a.value || a.runner.runnerId.localeCompare(b.runner.runnerId));
-  const ranks = new Map<string, number>();
-  let previous: number | null = null;
-  let rank = 0;
-  sorted.forEach((entry, index) => {
-    if (entry.value !== previous) rank = index + 1;
-    ranks.set(entry.runner.runnerId, rank);
-    previous = entry.value;
-  });
-  return ranks;
 }
 
 function g4Like(runner: TodayRunner) {

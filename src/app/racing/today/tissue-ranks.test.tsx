@@ -102,3 +102,29 @@ test("rank plumbing stays request-batched without database or file access in row
   const rankCode = cells.slice(cells.indexOf("export const FROZEN_RANK_TOOLTIPS"));
   assert.ok(!/await |readFile|createDbConnection|loadAll|calculateValue|sort\(/.test(rankCode));
 });
+
+test("only watched Tissue top-2 badges gain pale red tint and the research tooltip", () => {
+  for (const family of ["TURF", "AW", "HURDLE", "CHASE"] as const) for (const tissueRank of [1, 2]) {
+    for (const bestL3SpeedRank of [2, 3]) {
+      const row = frozen({ family, tissueRank, bestL3SpeedRank });
+      const html = renderToStaticMarkup(<FrozenValueRankCell runner={{ tissueValue: row }} kind="tissueRank" />);
+      assert.ok(html.includes("border-red-200 bg-red-50"));
+      assert.ok(html.includes("Research watch: Tissue top-2 runner with Best L3 Speed rank 2–3."));
+      assert.ok(html.includes("no exclusion rule is applied.")); assert.match(text(html), new RegExp(`Tissue ${tissueRank}`));
+      assert.ok(!html.includes("0.518"));
+      for (const kind of ["valueRank", "marketRank"] as const) {
+        const normal = renderToStaticMarkup(<FrozenValueRankCell runner={{ tissueValue: { ...row, bestL3SpeedRank: null } }} kind={kind} />);
+        assert.equal(renderToStaticMarkup(<FrozenValueRankCell runner={{ tissueValue: row }} kind={kind} />), normal);
+      }
+    }
+  }
+});
+test("normal Tissue badge markup stays identical for other or unavailable Speed ranks", () => {
+  for (const tissueRank of [1, 2, 3]) for (const bestL3SpeedRank of [1, 4, null, undefined]) {
+    assert.equal(render(frozen({ tissueRank, bestL3SpeedRank })), render(frozen({ tissueRank })));
+    assert.ok(!render(frozen({ tissueRank, bestL3SpeedRank })).includes("bg-red-50"));
+  }
+  assert.ok(!render(frozen({ tissueRank: 3, bestL3SpeedRank: 2 })).includes("bg-red-50"));
+  const noScore = frozen({ bestL3SpeedRank: 2 }); delete (noScore as Partial<FrozenValueDisplay>).probability;
+  assert.ok(!render(noScore).includes("bg-red-50"));
+});

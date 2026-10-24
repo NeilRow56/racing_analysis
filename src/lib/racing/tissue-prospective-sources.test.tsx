@@ -140,3 +140,38 @@ test("new stored settlements appear on the next projection without any UI settle
   assert.equal(before.settled, 0);
   assert.equal(after.settled, 1);
 });
+
+test("shadow Speed ranks come from each book's frozen full field without changing baseline membership or results", async () => {
+  const { VALUE_COHORTS } = await import("./tissue-value-config");
+  const input = fixture();
+  input.jump.races = (["Hurdle", "Chase"] as const).map((subtype): JumpTissueRace => ({ ...input.aw.races[0], raceId: subtype, subtype, modelVersion: "JUMP_TISSUE_V1",
+    featureSchemaVersion: "jump_tissue_stage1_numeric_prior_comments_v1", nhFlat: false, jprALeader: null, jprBLeader: null,
+    runners: input.aw.races[0].runners.map(r => ({ ...r, runnerId: `${subtype}-${r.runnerId}`, modelVersion: "JUMP_TISSUE_V1",
+      featureSchemaVersion: "jump_tissue_stage1_numeric_prior_comments_v1", rawInputs: [], priorJumpStarts: 3, historyBucket: "three_plus",
+      zeroPriorJumpStarts: false, onePriorJumpStart: false, twoPriorJumpStarts: false, threePlusPriorJumpStarts: true,
+      commentProvenance: { representationVersion: "jump_tissue_stage1_numeric_prior_comments_v1", sourceObservationCutoff: at, priorCommentCount: 0,
+        activeCommentFeatures: [], chronologySafe: true, targetRacePostResultCommentExcluded: true } })) }));
+  const withSpeed = (names: readonly string[], i: number) => {
+    const values = names.map(() => 0), name = names.includes("best_l3_jump_speed") ? "best_l3_jump_speed" : "best_l3_turf_speed";
+    values[names.indexOf(name)] = i === 0 ? 100 : 90;
+    return values;
+  };
+  input.turf.races[0].runners.forEach((r, i) => { r.modelInputs = withSpeed(VALUE_COHORTS[0].featureNames, i); });
+  input.aw.races[0].runners.forEach((r, i) => { r.modelInputs = withSpeed(VALUE_COHORTS[1].featureNames, i); });
+  input.jump.races.forEach(race => race.runners.forEach((r, i) => { r.modelInputs = withSpeed(VALUE_COHORTS[2].featureNames, i); }));
+  const value = input.cohorts[0].data.races[0]; value.featureNames = [...VALUE_COHORTS[0].featureNames];
+  value.runners.forEach((r, i) => { r.modelInputs = withSpeed(value.featureNames, 1 - i); });
+  const before = JSON.stringify(input), output = buildProspectiveTissueSources(input);
+  for (const family of ["TURF", "AW", "HURDLE", "CHASE"]) {
+    const rows = output.observations.filter(r => r.family === family);
+    assert.deepEqual(rows.map(r => [r.tissueRank, r.bestL3SpeedRank]), [[1, 1], [2, 2]]);
+  }
+  // The separate Value capture keeps its own field's Speed and Tissue order.
+  assert.deepEqual(output.priceObservations.map(r => [r.tissueRank, r.bestL3SpeedRank]), [[1, 2], [2, 1]]);
+  assert.equal(output.observations.length, 8); assert.equal(JSON.stringify(input), before);
+  const baseline = summarizeProspectiveTissue(output.observations);
+  input.turf.races[0].runners[0].modelInputs = undefined;
+  const incomplete = buildProspectiveTissueSources(input);
+  assert.ok(incomplete.observations.filter(r => r.family === "TURF").every(r => r.bestL3SpeedRank === null));
+  assert.deepEqual(summarizeProspectiveTissue(incomplete.observations), baseline);
+});

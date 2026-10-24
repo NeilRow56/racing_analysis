@@ -3542,8 +3542,15 @@
         "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
         "bookmakerQuoteCount": 3
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "finishingPosition": 1,
+        "resultStatus": "finished",
+        "won": true,
+        "deadHeatDivisor": 1,
+        "finalSp": 2,
+        "profitLoss": 1
+      },
+      "settledAt": "2026-10-23T15:19:13.914Z"
     },
     {
       "raceId": "5edd49fe-5bee-4a50-bd77-7402b229ae70",
@@ -3595,8 +3602,15 @@
         "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
         "bookmakerQuoteCount": 3
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "finishingPosition": 1,
+        "resultStatus": "finished",
+        "won": true,
+        "deadHeatDivisor": 1,
+        "finalSp": 4,
+        "profitLoss": 3
+      },
+      "settledAt": "2026-10-23T15:19:13.914Z"
     },
     {
       "raceId": "e914316d-738c-45e8-a8d7-e309445e0b51",
@@ -3648,8 +3662,15 @@
         "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
         "bookmakerQuoteCount": 3
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "finishingPosition": 1,
+        "resultStatus": "finished",
+        "won": true,
+        "deadHeatDivisor": 1,
+        "finalSp": 12,
+        "profitLoss": 11
+      },
+      "settledAt": "2026-10-23T15:19:13.914Z"
     },
     {
       "raceId": "23550eda-8811-4c02-936d-91076b878100",
@@ -3698,6 +3719,172 @@
         "impliedProbability": 0.038461538461538464,
         "marketRank": 11,
         "priceCapturedAt": "2026-10-23T03:34:50.796Z",
+        "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
+        "bookmakerQuoteCount": 3
+      },
+      "outcome": {
+        "finishingPosition": 6,
+        "resultStatus": "finished",
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 26,
+        "profitLoss": -1
+      },
+      "settledAt": "2026-10-24T02:48:03.592Z"
+    },
+    {
+      "raceId": "faed40d4-ac2d-4dbd-a366-c15ec00bd794",
+      "sourceId": "945153",
+      "raceDate": "2026-10-24",
+      "scheduledOff": "2026-10-24T12:10:00.000Z",
+      "scheduledTime": "12:10",
+      "course": "Cheltenham",
+      "raceName": "William Hill Epic Boosts Novices' Limited Handicap Chase (GBB Race)",
+      "subtype": "Chase",
+      "subtypeCode": "chase",
+      "handicapStatus": "handicap",
+      "fieldSize": 11,
+      "runnerId": "d4936411-3beb-454c-8a8a-3c65a0df9450",
+      "horseId": "b374a06f-240f-4447-a537-313b75406e9b",
+      "horseName": "Kahavari",
+      "recordedAt": "2026-10-24T04:51:01.413Z",
+      "recordedPreRace": true,
+      "components": {
+        "averageL3JumpSpeed": 117.20084980093465,
+        "averageL3JumpSpeedRank": 1,
+        "latestJumpSpeed": 125.94706409966028,
+        "previousJumpSpeed": 114.48818324254306,
+        "latestMinusPrevious": 11.458880857117222,
+        "previousClass": 2,
+        "currentClass": 3,
+        "classDropAmount": 1
+      },
+      "context": {
+        "officialRating": 118,
+        "officialRatingRank": 11,
+        "officialRatingTop3": false,
+        "officialRatingGapToBest": 16,
+        "officialRatingRelativeToFieldMean": -6.818181818181813,
+        "trainerPriorRate": 13.818181818181818,
+        "jockeyPriorRate": 15.857605177993527,
+        "daysSinceRun": 181,
+        "priorUsableJumpSpeedCount": 9,
+        "jprARank": 2,
+        "jprBRank": 6,
+        "jumpTissueRank": 6,
+        "jumpTissueProbability": 0.08747006906648278
+      },
+      "market": {
+        "medianBookmakerDecimal": 34,
+        "impliedProbability": 0.029411764705882353,
+        "marketRank": 11,
+        "priceCapturedAt": "2026-10-24T04:51:01.413Z",
+        "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
+        "bookmakerQuoteCount": 3
+      },
+      "outcome": null,
+      "settledAt": null
+    },
+    {
+      "raceId": "59dfae6d-747d-444f-a8fb-d46b41bf2b78",
+      "sourceId": "945157",
+      "raceDate": "2026-10-24",
+      "scheduledOff": "2026-10-24T14:30:00.000Z",
+      "scheduledTime": "14:30",
+      "course": "Cheltenham",
+      "raceName": "Masterson Holdings Hurdle (GBB Race)",
+      "subtype": "Hurdle",
+      "subtypeCode": "hurdle",
+      "handicapStatus": "unknown",
+      "fieldSize": 7,
+      "runnerId": "18eb9b0d-1a2f-4f06-a3ce-16675e78beda",
+      "horseId": "12480b91-25b5-42f7-a915-fb9b526e688a",
+      "horseName": "La Luna Artista",
+      "recordedAt": "2026-10-24T04:51:01.413Z",
+      "recordedPreRace": true,
+      "components": {
+        "averageL3JumpSpeed": 108.1291981047487,
+        "averageL3JumpSpeedRank": 3,
+        "latestJumpSpeed": 133.29075395170588,
+        "previousJumpSpeed": 102.50160000000001,
+        "latestMinusPrevious": 30.78915395170587,
+        "previousClass": 1,
+        "currentClass": 2,
+        "classDropAmount": 1
+      },
+      "context": {
+        "officialRating": 125,
+        "officialRatingRank": 5,
+        "officialRatingTop3": false,
+        "officialRatingGapToBest": 22,
+        "officialRatingRelativeToFieldMean": -6.833333333333343,
+        "trainerPriorRate": 16.878980891719745,
+        "jockeyPriorRate": 12.762520193861066,
+        "daysSinceRun": 182,
+        "priorUsableJumpSpeedCount": 4,
+        "jprARank": 2,
+        "jprBRank": 5,
+        "jumpTissueRank": 3,
+        "jumpTissueProbability": 0.17394143833956566
+      },
+      "market": {
+        "medianBookmakerDecimal": 7,
+        "impliedProbability": 0.14285714285714285,
+        "marketRank": 5,
+        "priceCapturedAt": "2026-10-24T04:51:01.413Z",
+        "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
+        "bookmakerQuoteCount": 3
+      },
+      "outcome": null,
+      "settledAt": null
+    },
+    {
+      "raceId": "f5adbf19-73e0-4df5-8bec-a1ab895388ed",
+      "sourceId": "945158",
+      "raceDate": "2026-10-24",
+      "scheduledOff": "2026-10-24T15:05:00.000Z",
+      "scheduledTime": "15:05",
+      "course": "Cheltenham",
+      "raceName": "William Hill Price Boosts 'Chasing Excellence' Novices' Chase (GBB Race)",
+      "subtype": "Chase",
+      "subtypeCode": "chase",
+      "handicapStatus": "non_handicap",
+      "fieldSize": 6,
+      "runnerId": "106908fd-ae4a-4ef7-a40f-af9f1a4e6cf1",
+      "horseId": "90516f01-8b27-434b-b08b-25cfe8a4274c",
+      "horseName": "Catchintsavo",
+      "recordedAt": "2026-10-24T04:51:01.413Z",
+      "recordedPreRace": true,
+      "components": {
+        "averageL3JumpSpeed": 99.20195637325514,
+        "averageL3JumpSpeedRank": 3,
+        "latestJumpSpeed": 108.53198196691112,
+        "previousJumpSpeed": 86.98550930026563,
+        "latestMinusPrevious": 21.546472666645485,
+        "previousClass": 1,
+        "currentClass": 2,
+        "classDropAmount": 1
+      },
+      "context": {
+        "officialRating": 142,
+        "officialRatingRank": 2,
+        "officialRatingTop3": true,
+        "officialRatingGapToBest": 2,
+        "officialRatingRelativeToFieldMean": 8.333333333333343,
+        "trainerPriorRate": 19.047619047619047,
+        "jockeyPriorRate": 17.62734584450402,
+        "daysSinceRun": 196,
+        "priorUsableJumpSpeedCount": 7,
+        "jprARank": 2,
+        "jprBRank": 2,
+        "jumpTissueRank": 3,
+        "jumpTissueProbability": 0.19295996826450323
+      },
+      "market": {
+        "medianBookmakerDecimal": 3.25,
+        "impliedProbability": 0.3076923076923077,
+        "marketRank": 3,
+        "priceCapturedAt": "2026-10-24T04:51:01.413Z",
         "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
         "bookmakerQuoteCount": 3
       },

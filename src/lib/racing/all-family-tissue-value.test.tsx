@@ -214,3 +214,32 @@ test("all-family value capture does not alter any Rank 1 capture", async () => {
     assert.ok(!buildAllFamilyValueRaces(incomplete).some(r => r.family === family));
   }
 });
+
+test("Speed watch reaches both Value monitoring and daily badges from the same immutable family capture", () => {
+  const input = inputs();
+  for (const meeting of input.meetings) for (const race of meeting.races) race.runners.forEach((r, i) => {
+    r.metrics!.bestTurfSpeedLast3 = 100 - i * 10;
+    r.metrics!.bestAwSpeedLast3 = 100 - i * 10;
+    r.metrics!.bestJumpSpeedLast3 = 100 - i * 10;
+  });
+  const books = buildAllFamilyValueRaces(input);
+  for (const book of books) {
+    const { data, config } = dataFor(book), before = JSON.stringify(data);
+    const index = frozenValueIndex([data]);
+    const lowerSpeed = index.get(`${book.raceId}|${book.runners[1].runnerId}`)!;
+    const topSpeed = index.get(`${book.raceId}|${book.runners[0].runnerId}`)!;
+    assert.equal(lowerSpeed.bestL3SpeedRank, 2); assert.equal(topSpeed.bestL3SpeedRank, 1);
+    assert.ok(renderToStaticMarkup(<FrozenValueRankCell runner={{ tissueValue: lowerSpeed }} kind="tissueRank" />).includes("border-red-200 bg-red-50"));
+    assert.ok(!renderToStaticMarkup(<FrozenValueRankCell runner={{ tissueValue: topSpeed }} kind="tissueRank" />).includes("bg-red-50"));
+    const html = renderToStaticMarkup(<TissueValueMonitoring cohorts={[{ config, data }]} date={date} />);
+    assert.equal((html.match(/border-red-200 bg-red-50/g) ?? []).length, 1);
+    assert.ok(html.includes("Research watch: Tissue top-2 runner with Best L3 Speed rank 2–3."));
+    assert.equal(JSON.stringify(data), before);
+    // Current Speed/reliability changes cannot rewrite the frozen badge classification.
+    const attached = attachFrozenValueToMeetings(input.meetings, [data]);
+    const current = attached[0].races.find(r => r.raceId === book.raceId)!.runners[1];
+    current.metrics!.bestTurfSpeedLast3 = 999; current.metrics!.bestAwSpeedLast3 = 999; current.metrics!.bestJumpSpeedLast3 = 999;
+    current.metrics!.jumpSpeedReliability = { ...assessJumpSpeedReliability(), level: "HIGH" };
+    assert.equal(current.tissueValue!.bestL3SpeedRank, 2);
+  }
+});

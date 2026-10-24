@@ -6,6 +6,7 @@ export type ProspectiveTissueObservation = {
   tissueRank: number;
   probability: number;
   capturedPrice: number | null;
+  bestL3SpeedRank?: number | null;
   outcome: ValueOutcome | null;
 };
 

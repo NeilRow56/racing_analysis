@@ -1,5 +1,6 @@
 import { buildProspectiveTissueSources } from "@/lib/racing/tissue-prospective-sources";
 import { TissueProspectiveSummary } from "./tissue-prospective-summary";
+import { TissueSpeedRankWatch } from "./tissue-speed-rank-watch";
 import { loadAllTissueValue } from "@/lib/racing/tissue-value-readers";
 import { TissueValueMonitoring } from "./tissue-value-monitoring";
 import { loadRankOne } from "@/lib/racing/rank-one-forward";
@@ -118,7 +119,7 @@ export default async function ForwardValuePage({ searchParams }: PageProps) {
   return (
     <ResearchPageLayout
       date={raceDate}
-      active={<><HurdleRecencyResearchSection data={hurdleRecencyData} /><TissueProspectiveSummary {...prospectiveTissue} /><TissueValueMonitoring cohorts={valueCohorts} date={raceDate} /></>}
+      active={<><HurdleRecencyResearchSection data={hurdleRecencyData} /><TissueProspectiveSummary {...prospectiveTissue} /><TissueSpeedRankWatch {...prospectiveTissue} /><TissueValueMonitoring cohorts={valueCohorts} date={raceDate} /></>}
       secondary={<><RankOneMonitoring data={rankOneData} date={raceDate} /><SecondaryResearchMonitoring dashboard={dashboard} /></>}
     >
       <DailyResearchDashboard dashboard={dashboard} excludeSecondaryMonitoring>
