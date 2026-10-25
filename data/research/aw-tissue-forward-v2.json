@@ -87754,7 +87754,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 3,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 3,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "c580603f-36d1-4d6f-b6ed-64569061c1da",
@@ -87893,7 +87900,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 4,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 2.375,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "d9ce52c8-a171-4455-8533-315f69cab38d",
@@ -88032,7 +88046,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 2,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 5.5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "a0537e32-46db-480a-a00d-1a2e2211b0b1",
@@ -88171,7 +88192,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 1,
+            "resultStatus": "finished",
+            "won": true,
+            "finalSp": 7,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": 6
+          }
         }
       ],
       "surfaceFeatureEvidence": {
@@ -88274,8 +88302,10 @@
         "guardVersion": "aw_d_rating_coverage_guard_v1",
         "guardImplementedAt": "2026-09-30T00:00:00.000Z"
       },
-      "winners": [],
-      "settledAt": null,
+      "winners": [
+        "a0537e32-46db-480a-a00d-1a2e2211b0b1"
+      ],
+      "settledAt": "2026-10-24T16:37:40.637Z",
       "excludedReason": null,
       "marketPriceBasisVersion": "median_bookmaker_v1",
       "priceSnapshotScheduleVersion": "early_t180_t60_v1",
@@ -88322,11 +88352,11 @@
         "t60": null
       },
       "selectedPriceProfitLoss": {
-        "early": null,
+        "early": -1,
         "t180": null,
         "t60": null,
-        "bestEarly": null,
-        "finalSp": null
+        "bestEarly": -1,
+        "finalSp": -1
       }
     },
     {
@@ -88489,7 +88519,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 2,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 4,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "c68feba1-e114-4cd0-827c-e7b346623d43",
@@ -88628,7 +88665,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 8,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 8.5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "b9b33114-1d0a-4ac6-a8d3-c1a9baf27eef",
@@ -88767,7 +88811,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 1,
+            "resultStatus": "finished",
+            "won": true,
+            "finalSp": 6,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": 5
+          }
         },
         {
           "runnerId": "596e7be9-cb82-44d5-901e-7fe3db1968ea",
@@ -88906,7 +88957,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 3,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 8.5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "a3a63981-d2e2-44a5-a120-5f5d36b78415",
@@ -89045,7 +89103,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 10,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 6,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "d69ff6b2-d023-4958-af07-ad9d22b8d4cd",
@@ -89184,7 +89249,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 11,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 9.5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "18951052-4fd0-4719-b414-bc913b51a6c7",
@@ -89323,7 +89395,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 4,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 12,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "aa722cc5-0aa7-4a75-a57c-ecbf9fc7f2eb",
@@ -89462,7 +89541,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 5,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 7,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "e5753247-9a12-42d6-b01c-b7905665b106",
@@ -89601,7 +89687,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 9,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 41,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "786608e9-5560-47bc-af3e-d46a81263581",
@@ -89740,7 +89833,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 6,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 51,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "ce9e5937-602c-4895-88cb-efa058fe8ff4",
@@ -89879,7 +89979,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 7,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 29,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "ced4d974-6e2a-4203-89a4-059e9a2b5cf1",
@@ -90018,7 +90125,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 12,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 29,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "68cd6d06-3fc3-4fd2-be8a-e118ef4cc7ba",
@@ -90157,7 +90271,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": null,
+            "resultStatus": "non_runner",
+            "won": null,
+            "finalSp": null,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": null
+          }
         }
       ],
       "surfaceFeatureEvidence": {
@@ -90459,8 +90580,10 @@
         "guardVersion": "aw_d_rating_coverage_guard_v1",
         "guardImplementedAt": "2026-09-30T00:00:00.000Z"
       },
-      "winners": [],
-      "settledAt": null,
+      "winners": [
+        "b9b33114-1d0a-4ac6-a8d3-c1a9baf27eef"
+      ],
+      "settledAt": "2026-10-24T16:37:40.637Z",
       "excludedReason": null,
       "marketPriceBasisVersion": "median_bookmaker_v1",
       "priceSnapshotScheduleVersion": "early_t180_t60_v1",
@@ -90507,11 +90630,11 @@
         "t60": null
       },
       "selectedPriceProfitLoss": {
-        "early": null,
+        "early": -1,
         "t180": null,
         "t60": null,
-        "bestEarly": null,
-        "finalSp": null
+        "bestEarly": -1,
+        "finalSp": -1
       }
     },
     {
@@ -90674,7 +90797,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": null,
+            "resultStatus": "other",
+            "won": false,
+            "finalSp": 5.5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "528f7154-38a5-41d5-887e-59f3b2475e30",
@@ -90813,7 +90943,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 2,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 6,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "0b3518b6-3553-4311-9ff9-e0f267dbe0ba",
@@ -90952,7 +91089,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": null,
+            "resultStatus": "other",
+            "won": false,
+            "finalSp": 5.5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "276dd8e1-bbc7-4bfa-9d2a-2189bcb5b503",
@@ -91091,7 +91235,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": null,
+            "resultStatus": "other",
+            "won": false,
+            "finalSp": 9,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "98ec5f88-31f6-476f-a4f6-448337fb37d9",
@@ -91230,7 +91381,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": null,
+            "resultStatus": "other",
+            "won": false,
+            "finalSp": 7,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "87dde06a-2d6c-4e68-817c-584db9bb184a",
@@ -91369,7 +91527,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": null,
+            "resultStatus": "other",
+            "won": false,
+            "finalSp": 9,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "aefa9459-2452-4479-b61d-9230485fccd4",
@@ -91508,7 +91673,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": null,
+            "resultStatus": "other",
+            "won": false,
+            "finalSp": 15,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "5b7a1e8b-f5aa-4405-b544-d8ca39935423",
@@ -91647,7 +91819,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 1,
+            "resultStatus": "finished",
+            "won": true,
+            "finalSp": 17,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": 16
+          }
         },
         {
           "runnerId": "189ec006-9619-452b-9c27-e5dd00fce378",
@@ -91786,7 +91965,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 4,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 15,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "17689a91-fd3b-4f6c-8892-a0fc2bf6160b",
@@ -91925,7 +92111,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": null,
+            "resultStatus": "other",
+            "won": false,
+            "finalSp": 10,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "fe010d30-468c-42d6-a754-e7526ad5ca0a",
@@ -92064,7 +92257,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": null,
+            "resultStatus": "other",
+            "won": false,
+            "finalSp": 23,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "1c09bede-ba87-40dd-89da-7fa9fc78fe8f",
@@ -92203,7 +92403,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": null,
+            "resultStatus": "other",
+            "won": false,
+            "finalSp": 81,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "d663cad3-3253-40d0-b856-bd293a7fe215",
@@ -92342,7 +92549,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 3,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 34,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "b341d541-9c1b-4c77-8593-d2cafa8fa7c9",
@@ -92481,7 +92695,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": null,
+            "resultStatus": "other",
+            "won": false,
+            "finalSp": 34,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         }
       ],
       "surfaceFeatureEvidence": {
@@ -92803,8 +93024,10 @@
         "guardVersion": "aw_d_rating_coverage_guard_v1",
         "guardImplementedAt": "2026-09-30T00:00:00.000Z"
       },
-      "winners": [],
-      "settledAt": null,
+      "winners": [
+        "5b7a1e8b-f5aa-4405-b544-d8ca39935423"
+      ],
+      "settledAt": "2026-10-24T16:37:40.637Z",
       "excludedReason": null,
       "marketPriceBasisVersion": "median_bookmaker_v1",
       "priceSnapshotScheduleVersion": "early_t180_t60_v1",
@@ -92851,11 +93074,11 @@
         "t60": null
       },
       "selectedPriceProfitLoss": {
-        "early": null,
+        "early": -1,
         "t180": null,
         "t60": null,
-        "bestEarly": null,
-        "finalSp": null
+        "bestEarly": -1,
+        "finalSp": -1
       }
     },
     {
@@ -93018,7 +93241,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 2,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 1.909,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "4d95b61f-91b5-4be6-9f22-fc556561bfba",
@@ -93157,7 +93387,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 3,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 3.5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "9d25dcb1-c00b-42cc-a915-66aab6c86c3e",
@@ -93296,7 +93533,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 1,
+            "resultStatus": "finished",
+            "won": true,
+            "finalSp": 9.5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": 8.5
+          }
         },
         {
           "runnerId": "d6f43f2a-c85c-4936-94ae-ae1377911b87",
@@ -93435,7 +93679,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 8,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 11,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "2b125457-c7ab-4554-8c46-7e6b903cc158",
@@ -93574,7 +93825,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 4,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 17,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "a8c453e3-4107-497b-aa17-99f84442967f",
@@ -93713,7 +93971,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 9,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 17,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "d83f031e-3b21-4c56-bd50-54196a09d3b4",
@@ -93852,7 +94117,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 5,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 19,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "5b51de62-523f-4aad-b0e2-879c090967b4",
@@ -93991,7 +94263,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 6,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 34,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "1e52ed15-7ee0-4bd9-a130-143bb44f2ae5",
@@ -94130,7 +94409,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 10,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 67,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "67a6adf2-385b-4ba6-8074-034053fa7045",
@@ -94269,7 +94555,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 7,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 151,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         }
       ],
       "surfaceFeatureEvidence": {
@@ -94472,8 +94765,10 @@
         "guardVersion": "aw_d_rating_coverage_guard_v1",
         "guardImplementedAt": "2026-09-30T00:00:00.000Z"
       },
-      "winners": [],
-      "settledAt": null,
+      "winners": [
+        "9d25dcb1-c00b-42cc-a915-66aab6c86c3e"
+      ],
+      "settledAt": "2026-10-25T03:31:12.336Z",
       "excludedReason": null,
       "marketPriceBasisVersion": "median_bookmaker_v1",
       "priceSnapshotScheduleVersion": "early_t180_t60_v1",
@@ -94520,11 +94815,11 @@
         "t60": null
       },
       "selectedPriceProfitLoss": {
-        "early": null,
+        "early": -1,
         "t180": null,
         "t60": null,
-        "bestEarly": null,
-        "finalSp": null
+        "bestEarly": -1,
+        "finalSp": -1
       }
     },
     {
@@ -94687,7 +94982,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 1,
+            "resultStatus": "finished",
+            "won": true,
+            "finalSp": 1.909,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": 0.909
+          }
         },
         {
           "runnerId": "c70ceff2-7962-4788-be60-b689b9652e48",
@@ -94826,7 +95128,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 4,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 4.333,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "c5822ce5-fa6f-4cd3-be29-3878c09bc7d9",
@@ -94965,7 +95274,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 6,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 11,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "b9488292-bb8f-46a1-984b-0280537a8398",
@@ -95104,7 +95420,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 3,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 6,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "dbfe054d-c79b-4697-8ac2-cf657001a9a2",
@@ -95243,7 +95566,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 5,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 23,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "3e748e87-c6b6-4ef2-a301-06b256174515",
@@ -95382,7 +95712,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 8,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 51,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "f4117f72-6369-4076-987f-66a5554265c2",
@@ -95521,7 +95858,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 2,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 23,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "902182a5-2df7-4daa-95ef-60cf0a5f8521",
@@ -95660,7 +96004,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 10,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 12,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "21206a7b-72d4-4781-8338-c628b0464d71",
@@ -95799,7 +96150,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 9,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 301,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "accf8379-835a-4e98-ae7e-25ced958b21e",
@@ -95938,7 +96296,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 7,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 29,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         }
       ],
       "surfaceFeatureEvidence": {
@@ -96145,8 +96510,10 @@
         "guardVersion": "aw_d_rating_coverage_guard_v1",
         "guardImplementedAt": "2026-09-30T00:00:00.000Z"
       },
-      "winners": [],
-      "settledAt": null,
+      "winners": [
+        "3f496f71-da27-4132-8ad4-27c332d5ef2f"
+      ],
+      "settledAt": "2026-10-25T03:31:12.336Z",
       "excludedReason": null,
       "marketPriceBasisVersion": "median_bookmaker_v1",
       "priceSnapshotScheduleVersion": "early_t180_t60_v1",
@@ -96190,14 +96557,51 @@
           "forecastDecimalPrice": 2.375
         },
         "t180": null,
-        "t60": null
+        "t60": {
+          "price": null,
+          "decimalPrice": 1.91,
+          "impliedProbability": 0.5235602094240838,
+          "capturedAt": "2026-10-24T16:37:40.637Z",
+          "minutesBeforeScheduledOff": 52.322716666666665,
+          "ratingProbability": 0.2505454153894957,
+          "ratingEdgePercentagePoints": -27.301479403458806,
+          "marketPriceBasisVersion": "median_bookmaker_v1",
+          "bookmakerQuoteCount": 3,
+          "bookmakerQuotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "10/11",
+              "decimalOdds": 1.91
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "10/11",
+              "decimalOdds": 1.91
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "10/11",
+              "decimalOdds": 1.91
+            }
+          ],
+          "medianBookmakerPriceDecimal": 1.91,
+          "medianBookmakerImpliedProbability": 0.5235602094240838,
+          "bestBookmakerPriceDecimal": 1.91,
+          "bestBookmakerPriceFractional": "10/11",
+          "bestBookmakerName": null,
+          "forecastPrice": "11/8",
+          "forecastDecimalPrice": 2.375
+        }
       },
       "selectedPriceProfitLoss": {
-        "early": null,
+        "early": 1.25,
         "t180": null,
-        "t60": null,
-        "bestEarly": null,
-        "finalSp": null
+        "t60": 0.9099999999999999,
+        "bestEarly": 1.25,
+        "finalSp": 0.909
       }
     },
     {
@@ -96360,7 +96764,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": null,
+            "resultStatus": "non_runner",
+            "won": null,
+            "finalSp": null,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": null
+          }
         },
         {
           "runnerId": "ec5bc23b-bd44-4b0c-ad92-9de1baa18d50",
@@ -96499,7 +96910,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 5,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 4.5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "ff66ea46-835b-4da5-b508-5b62db4d3fb2",
@@ -96638,7 +97056,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 2,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 7.5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "e8bb03b8-af96-43d9-8601-5440851bb9a8",
@@ -96777,7 +97202,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 1,
+            "resultStatus": "finished",
+            "won": true,
+            "finalSp": 5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": 4
+          }
         },
         {
           "runnerId": "4c193c8c-f2ea-4daa-a325-21bedd03265c",
@@ -96916,7 +97348,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 7,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 7,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "f20ace4f-cbf4-4d88-b3e6-15a2d8fe1b2c",
@@ -97055,7 +97494,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 8,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 13,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "4fc07937-30e3-438f-9159-de2c5c097bbf",
@@ -97194,7 +97640,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 12,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "5405ecc3-9fd2-439c-bddd-1f6444219e87",
@@ -97333,7 +97786,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 11,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 17,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "4a8e6f23-3cc8-44c1-a028-5e725fc7d1e2",
@@ -97472,7 +97932,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 3,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 13,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "0354b106-5061-432a-8dd8-1524645c6de8",
@@ -97611,7 +98078,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 6,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 34,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "480f3af8-5731-4d9f-80f7-c53bbf51f400",
@@ -97750,7 +98224,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 4,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 13,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "1b1f0f88-5805-4e5b-b6e5-848231cc9162",
@@ -97889,7 +98370,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 9,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 41,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "20798bf8-b3de-41d5-8cfc-2a2a03f13b4e",
@@ -98028,7 +98516,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 13,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 51,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "5c262bc0-2b3a-46e0-81ba-670c0b1260f3",
@@ -98167,7 +98662,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 10,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 34,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         }
       ],
       "surfaceFeatureEvidence": {
@@ -98496,8 +98998,10 @@
         "guardVersion": "aw_d_rating_coverage_guard_v1",
         "guardImplementedAt": "2026-09-30T00:00:00.000Z"
       },
-      "winners": [],
-      "settledAt": null,
+      "winners": [
+        "e8bb03b8-af96-43d9-8601-5440851bb9a8"
+      ],
+      "settledAt": "2026-10-25T03:31:12.336Z",
       "excludedReason": null,
       "marketPriceBasisVersion": "median_bookmaker_v1",
       "priceSnapshotScheduleVersion": "early_t180_t60_v1",
@@ -98541,14 +99045,51 @@
           "forecastDecimalPrice": 6
         },
         "t180": null,
-        "t60": null
+        "t60": {
+          "price": null,
+          "decimalPrice": 5,
+          "impliedProbability": 0.2,
+          "capturedAt": "2026-10-24T16:37:40.637Z",
+          "minutesBeforeScheduledOff": 82.32271666666666,
+          "ratingProbability": 0.19544086358682874,
+          "ratingEdgePercentagePoints": -0.45591364131712664,
+          "marketPriceBasisVersion": "median_bookmaker_v1",
+          "bookmakerQuoteCount": 3,
+          "bookmakerQuotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "4/1",
+              "decimalOdds": 5
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "4/1",
+              "decimalOdds": 5
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "4/1",
+              "decimalOdds": 5
+            }
+          ],
+          "medianBookmakerPriceDecimal": 5,
+          "medianBookmakerImpliedProbability": 0.2,
+          "bestBookmakerPriceDecimal": 5,
+          "bestBookmakerPriceFractional": "4/1",
+          "bestBookmakerName": null,
+          "forecastPrice": "5/1",
+          "forecastDecimalPrice": 6
+        }
       },
       "selectedPriceProfitLoss": {
-        "early": null,
+        "early": -1,
         "t180": null,
-        "t60": null,
-        "bestEarly": null,
-        "finalSp": null
+        "t60": -1,
+        "bestEarly": -1,
+        "finalSp": -1
       }
     },
     {
@@ -98711,7 +99252,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 1,
+            "resultStatus": "finished",
+            "won": true,
+            "finalSp": 5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": 4
+          }
         },
         {
           "runnerId": "feaf3029-5ebc-4261-ae90-2bf30ff166ec",
@@ -98850,7 +99398,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 10,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 7.5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "d364207a-38d3-4dcb-a540-d41d02aacd7d",
@@ -98989,7 +99544,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 3,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 12,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "b8f00dbf-c8af-4ed7-a180-b6ee8e840878",
@@ -99128,7 +99690,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 12,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 12,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "c240d38d-7fb6-488b-9d8f-8d5b3d49c581",
@@ -99267,7 +99836,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 2,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 8,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "e7a7b27a-9438-417e-a6bf-16efa40ccfc8",
@@ -99406,7 +99982,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 4,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 7.5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "ceb52dba-a511-4913-bb3a-6343536def6a",
@@ -99545,7 +100128,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 7,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 7.5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "e703bb9e-2d92-4b03-9bcb-28407d2527a5",
@@ -99684,7 +100274,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 8,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 21,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "8c9bf292-e17d-4702-94f0-a0a696763756",
@@ -99823,7 +100420,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 9,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 19,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "2559f311-6e25-4440-83c3-64dca75480d5",
@@ -99962,7 +100566,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 13,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 8,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "13c99e7b-bf65-4bd8-bb57-6ac551f2c110",
@@ -100101,7 +100712,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 5,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 26,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "3ab6ff4a-38cb-4d3c-a9ac-762e855b960b",
@@ -100240,7 +100858,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 6,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 19,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "a4ed8c89-0914-4f16-ba2a-5a04066b7044",
@@ -100379,7 +101004,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 11,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 34,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "129cb42f-ac95-44d4-bca9-ad23abce7133",
@@ -100518,7 +101150,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 14,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 26,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         }
       ],
       "surfaceFeatureEvidence": {
@@ -100860,8 +101499,10 @@
         "guardVersion": "aw_d_rating_coverage_guard_v1",
         "guardImplementedAt": "2026-09-30T00:00:00.000Z"
       },
-      "winners": [],
-      "settledAt": null,
+      "winners": [
+        "3d9855df-f963-4d11-86a3-cd79fb85ab2f"
+      ],
+      "settledAt": "2026-10-25T03:31:12.336Z",
       "excludedReason": null,
       "marketPriceBasisVersion": "median_bookmaker_v1",
       "priceSnapshotScheduleVersion": "early_t180_t60_v1",
@@ -100908,11 +101549,11 @@
         "t60": null
       },
       "selectedPriceProfitLoss": {
-        "early": null,
+        "early": 4.5,
         "t180": null,
         "t60": null,
-        "bestEarly": null,
-        "finalSp": null
+        "bestEarly": 4.5,
+        "finalSp": 4
       }
     },
     {
@@ -101075,7 +101716,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 3,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 4,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "650f8b63-87ae-436d-9e88-ed7ab9d6a28d",
@@ -101214,7 +101862,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 2,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 2.1,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "2d065805-6b8d-4483-b2f7-728eca277204",
@@ -101353,7 +102008,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 1,
+            "resultStatus": "finished",
+            "won": true,
+            "finalSp": 5.5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": 4.5
+          }
         },
         {
           "runnerId": "4f1d3a6c-cc9f-47ee-896c-77e17c3bf978",
@@ -101492,7 +102154,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 6,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 15,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "87f0f716-bc76-41cd-915a-ac31e12c22b9",
@@ -101631,7 +102300,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 4,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 12,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "2ab684be-b9e7-4cbb-9889-6ddb978c45ee",
@@ -101770,7 +102446,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 7,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 13,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "ab74acbb-1d71-46c8-9cbe-dec094526dc2",
@@ -101909,7 +102592,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 5,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 34,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "0a90f1a4-15e1-4af6-870d-bb0967d138a2",
@@ -102048,7 +102738,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": null,
+            "resultStatus": "non_runner",
+            "won": null,
+            "finalSp": null,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": null
+          }
         }
       ],
       "surfaceFeatureEvidence": {
@@ -102216,8 +102913,10 @@
         "guardVersion": "aw_d_rating_coverage_guard_v1",
         "guardImplementedAt": "2026-09-30T00:00:00.000Z"
       },
-      "winners": [],
-      "settledAt": null,
+      "winners": [
+        "2d065805-6b8d-4483-b2f7-728eca277204"
+      ],
+      "settledAt": "2026-10-25T03:31:12.336Z",
       "excludedReason": null,
       "marketPriceBasisVersion": "median_bookmaker_v1",
       "priceSnapshotScheduleVersion": "early_t180_t60_v1",
@@ -102264,11 +102963,11 @@
         "t60": null
       },
       "selectedPriceProfitLoss": {
-        "early": null,
+        "early": -1,
         "t180": null,
         "t60": null,
-        "bestEarly": null,
-        "finalSp": null
+        "bestEarly": -1,
+        "finalSp": -1
       }
     },
     {
@@ -102431,7 +103130,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 6,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 6,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "3efca1d1-7dff-48b9-9b07-464498dba0cf",
@@ -102570,7 +103276,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 4,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 8.5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "ed2d93a3-66ad-4db6-8af1-23131e276bdb",
@@ -102709,7 +103422,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 3,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "9efe738f-c67d-494b-ad58-f9680bb14e8a",
@@ -102848,7 +103568,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 1,
+            "resultStatus": "finished",
+            "won": true,
+            "finalSp": 5.5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": 4.5
+          }
         },
         {
           "runnerId": "9e73e524-0111-4580-a2b6-450c65faf9e4",
@@ -102987,7 +103714,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 2,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 2.625,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "824f7a90-d336-4190-9316-d917b96e2fe6",
@@ -103126,7 +103860,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": null,
+            "resultStatus": "non_runner",
+            "won": null,
+            "finalSp": null,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": null
+          }
         },
         {
           "runnerId": "97c5adb5-94a6-41e0-97a7-1d1193504e49",
@@ -103265,7 +104006,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 9,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 29,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "4d040181-f7e0-4bc9-847b-b189c4c7ee4d",
@@ -103404,7 +104152,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 5,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 19,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "62442763-b6dd-4404-9211-1e0eee4f42eb",
@@ -103543,7 +104298,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 11,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 23,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "ffc883d4-c771-480c-ab3e-4bbc548eec68",
@@ -103682,7 +104444,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": null,
+            "resultStatus": "non_runner",
+            "won": null,
+            "finalSp": null,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": null
+          }
         },
         {
           "runnerId": "0c56f402-1242-4937-a106-02b3c5f16923",
@@ -103821,7 +104590,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 7,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 34,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "26f70a7c-171e-4390-8590-85993a90c261",
@@ -103960,7 +104736,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 8,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 19,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "6c78b1ab-7484-4ee2-9fe0-45bd2014587c",
@@ -104099,7 +104882,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 10,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 34,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "c2793e59-cd26-48e3-9aa3-f00525a467e9",
@@ -104238,7 +105028,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": null,
+            "resultStatus": "non_runner",
+            "won": null,
+            "finalSp": null,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": null
+          }
         }
       ],
       "surfaceFeatureEvidence": {
@@ -104574,8 +105371,10 @@
         "guardVersion": "aw_d_rating_coverage_guard_v1",
         "guardImplementedAt": "2026-09-30T00:00:00.000Z"
       },
-      "winners": [],
-      "settledAt": null,
+      "winners": [
+        "9efe738f-c67d-494b-ad58-f9680bb14e8a"
+      ],
+      "settledAt": "2026-10-25T03:31:12.336Z",
       "excludedReason": null,
       "marketPriceBasisVersion": "median_bookmaker_v1",
       "priceSnapshotScheduleVersion": "early_t180_t60_v1",
@@ -104618,15 +105417,52 @@
           "forecastPrice": "9/2",
           "forecastDecimalPrice": 5.5
         },
-        "t180": null,
+        "t180": {
+          "price": null,
+          "decimalPrice": 5,
+          "impliedProbability": 0.2,
+          "capturedAt": "2026-10-24T16:37:40.637Z",
+          "minutesBeforeScheduledOff": 172.32271666666668,
+          "ratingProbability": 0.15203133966064725,
+          "ratingEdgePercentagePoints": -4.796866033935276,
+          "marketPriceBasisVersion": "median_bookmaker_v1",
+          "bookmakerQuoteCount": 3,
+          "bookmakerQuotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "4/1",
+              "decimalOdds": 5
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "4/1",
+              "decimalOdds": 5
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "4/1",
+              "decimalOdds": 5
+            }
+          ],
+          "medianBookmakerPriceDecimal": 5,
+          "medianBookmakerImpliedProbability": 0.2,
+          "bestBookmakerPriceDecimal": 5,
+          "bestBookmakerPriceFractional": "4/1",
+          "bestBookmakerName": null,
+          "forecastPrice": "9/2",
+          "forecastDecimalPrice": 5.5
+        },
         "t60": null
       },
       "selectedPriceProfitLoss": {
-        "early": null,
-        "t180": null,
+        "early": -1,
+        "t180": -1,
         "t60": null,
-        "bestEarly": null,
-        "finalSp": null
+        "bestEarly": -1,
+        "finalSp": -1
       }
     }
   ]

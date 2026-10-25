@@ -12285,7 +12285,16 @@
           "runnerId": "efcb457a-c1dd-4a23-ac5a-101a8914a865",
           "horseId": "442f9105-fb20-48cd-b184-00b301c98d57",
           "horseName": "King Of Light",
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "resultStatus": "finished",
+            "finishingPosition": 3,
+            "won": false,
+            "deadHeatDivisor": 1,
+            "finalSp": 5.5,
+            "qualifyingPriceProfitLoss": null,
+            "finalSpProfitLoss": -1
+          }
         }
       ],
       "market": {
@@ -12349,8 +12358,17 @@
           ]
         }
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "status": "settled",
+        "resultStatus": "finished",
+        "finishingPosition": 5,
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 7.5,
+        "qualifyingPriceProfitLoss": -1,
+        "finalSpProfitLoss": -1
+      },
+      "settledAt": "2026-10-24T16:37:40.637Z"
     },
     {
       "raceDate": "2026-10-24",
@@ -12388,7 +12406,16 @@
           "runnerId": "765d355d-e19b-4ea5-bdda-d5ee88bd7fc7",
           "horseId": "2becede4-6303-4a4c-b89b-5c67573b388b",
           "horseName": "National Honour",
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "resultStatus": "finished",
+            "finishingPosition": 2,
+            "won": false,
+            "deadHeatDivisor": 1,
+            "finalSp": 1.364,
+            "qualifyingPriceProfitLoss": null,
+            "finalSpProfitLoss": -1
+          }
         }
       ],
       "market": {
@@ -12452,8 +12479,17 @@
           ]
         }
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "status": "settled",
+        "resultStatus": "finished",
+        "finishingPosition": 3,
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 9,
+        "qualifyingPriceProfitLoss": -1,
+        "finalSpProfitLoss": -1
+      },
+      "settledAt": "2026-10-24T16:37:40.637Z"
     },
     {
       "raceDate": "2026-10-24",
@@ -12491,7 +12527,16 @@
           "runnerId": "08cff647-2eac-45bc-bb3d-198d786d119e",
           "horseId": "712df26d-3a83-4b95-a016-507efdd45bc9",
           "horseName": "Spy Kingdom",
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "resultStatus": "finished",
+            "finishingPosition": 13,
+            "won": false,
+            "deadHeatDivisor": 1,
+            "finalSp": 67,
+            "qualifyingPriceProfitLoss": null,
+            "finalSpProfitLoss": -1
+          }
         }
       ],
       "market": {
@@ -12555,8 +12600,17 @@
           ]
         }
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "status": "settled",
+        "resultStatus": "finished",
+        "finishingPosition": 3,
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 23,
+        "qualifyingPriceProfitLoss": -1,
+        "finalSpProfitLoss": -1
+      },
+      "settledAt": "2026-10-24T16:37:40.637Z"
     }
   ]
 }

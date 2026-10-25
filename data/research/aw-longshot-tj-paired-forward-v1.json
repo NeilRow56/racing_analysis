@@ -84111,7 +84111,14 @@
             "rank": 1,
             "firstCapturedPriceDecimal": 2.63,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 4,
+              "won": false,
+              "finalSp": 2.375,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "b5fa0507-7922-479e-8777-fc12a4d0f70c",
@@ -84121,7 +84128,14 @@
             "rank": 2,
             "firstCapturedPriceDecimal": 2.38,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 3,
+              "won": false,
+              "finalSp": 3,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "d9ce52c8-a171-4455-8533-315f69cab38d",
@@ -84131,7 +84145,14 @@
             "rank": 3,
             "firstCapturedPriceDecimal": 4.5,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 2,
+              "won": false,
+              "finalSp": 5.5,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "a0537e32-46db-480a-a00d-1a2e2211b0b1",
@@ -84141,7 +84162,14 @@
             "rank": 4,
             "firstCapturedPriceDecimal": 9,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 1,
+              "won": true,
+              "finalSp": 7,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": 6
+            }
           }
         ],
         "rankOrder": [
@@ -84154,7 +84182,7 @@
         "rank1HorseName": "Bill The Bull",
         "rank1Probability": 0.304771270963918,
         "valueQualified": false,
-        "selectedPriceProfitLoss": null
+        "selectedPriceProfitLoss": -1
       },
       "longshotTjZero": {
         "modelVersion": "LONGSHOT_TJ_ZERO_V1",
@@ -84168,7 +84196,14 @@
             "rank": 1,
             "firstCapturedPriceDecimal": 2.63,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 4,
+              "won": false,
+              "finalSp": 2.375,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "b5fa0507-7922-479e-8777-fc12a4d0f70c",
@@ -84178,7 +84213,14 @@
             "rank": 2,
             "firstCapturedPriceDecimal": 2.38,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 3,
+              "won": false,
+              "finalSp": 3,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "d9ce52c8-a171-4455-8533-315f69cab38d",
@@ -84188,7 +84230,14 @@
             "rank": 3,
             "firstCapturedPriceDecimal": 4.5,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 2,
+              "won": false,
+              "finalSp": 5.5,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "a0537e32-46db-480a-a00d-1a2e2211b0b1",
@@ -84198,7 +84247,14 @@
             "rank": 4,
             "firstCapturedPriceDecimal": 9,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 1,
+              "won": true,
+              "finalSp": 7,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": 6
+            }
           }
         ],
         "rankOrder": [
@@ -84211,7 +84267,7 @@
         "rank1HorseName": "Bill The Bull",
         "rank1Probability": 0.304771270963918,
         "valueQualified": false,
-        "selectedPriceProfitLoss": null
+        "selectedPriceProfitLoss": -1
       },
       "rank1Agreement": true,
       "classification": "AGREE",
@@ -84406,12 +84462,14 @@
           "longshotTjZero": null
         },
         "sp": {
-          "awTissue": null,
-          "longshotTjZero": null
+          "awTissue": 2.375,
+          "longshotTjZero": 2.375
         }
       },
-      "winners": [],
-      "settledAt": null,
+      "winners": [
+        "a0537e32-46db-480a-a00d-1a2e2211b0b1"
+      ],
+      "settledAt": "2026-10-24T16:37:40.637Z",
       "excludedReason": null
     },
     {
@@ -84503,7 +84561,14 @@
             "rank": 1,
             "firstCapturedPriceDecimal": 7.5,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 10,
+              "won": false,
+              "finalSp": 6,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "596e7be9-cb82-44d5-901e-7fe3db1968ea",
@@ -84513,7 +84578,14 @@
             "rank": 2,
             "firstCapturedPriceDecimal": 6.5,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 3,
+              "won": false,
+              "finalSp": 8.5,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "18951052-4fd0-4719-b414-bc913b51a6c7",
@@ -84523,7 +84595,14 @@
             "rank": 3,
             "firstCapturedPriceDecimal": 11,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 4,
+              "won": false,
+              "finalSp": 12,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "68cd6d06-3fc3-4fd2-be8a-e118ef4cc7ba",
@@ -84533,7 +84612,14 @@
             "rank": 4,
             "firstCapturedPriceDecimal": 34,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "non_runner",
+              "finishingPosition": null,
+              "won": null,
+              "finalSp": null,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": null
+            }
           },
           {
             "runnerId": "c68feba1-e114-4cd0-827c-e7b346623d43",
@@ -84543,7 +84629,14 @@
             "rank": 5,
             "firstCapturedPriceDecimal": 6,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 8,
+              "won": false,
+              "finalSp": 8.5,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "d69ff6b2-d023-4958-af07-ad9d22b8d4cd",
@@ -84553,7 +84646,14 @@
             "rank": 6,
             "firstCapturedPriceDecimal": 8,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 11,
+              "won": false,
+              "finalSp": 9.5,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "6437a6b7-8dcf-41b6-9932-bb81ef6b754f",
@@ -84563,7 +84663,14 @@
             "rank": 7,
             "firstCapturedPriceDecimal": 5,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 2,
+              "won": false,
+              "finalSp": 4,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "b9b33114-1d0a-4ac6-a8d3-c1a9baf27eef",
@@ -84573,7 +84680,14 @@
             "rank": 8,
             "firstCapturedPriceDecimal": 6,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 1,
+              "won": true,
+              "finalSp": 6,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": 5
+            }
           },
           {
             "runnerId": "e5753247-9a12-42d6-b01c-b7905665b106",
@@ -84583,7 +84697,14 @@
             "rank": 9,
             "firstCapturedPriceDecimal": 17,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 9,
+              "won": false,
+              "finalSp": 41,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "786608e9-5560-47bc-af3e-d46a81263581",
@@ -84593,7 +84714,14 @@
             "rank": 10,
             "firstCapturedPriceDecimal": 21,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 6,
+              "won": false,
+              "finalSp": 51,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "ced4d974-6e2a-4203-89a4-059e9a2b5cf1",
@@ -84603,7 +84731,14 @@
             "rank": 11,
             "firstCapturedPriceDecimal": 26,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 12,
+              "won": false,
+              "finalSp": 29,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "aa722cc5-0aa7-4a75-a57c-ecbf9fc7f2eb",
@@ -84613,7 +84748,14 @@
             "rank": 12,
             "firstCapturedPriceDecimal": 11,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 5,
+              "won": false,
+              "finalSp": 7,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "ce9e5937-602c-4895-88cb-efa058fe8ff4",
@@ -84623,7 +84765,14 @@
             "rank": 13,
             "firstCapturedPriceDecimal": 21,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 7,
+              "won": false,
+              "finalSp": 29,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           }
         ],
         "rankOrder": [
@@ -84645,7 +84794,7 @@
         "rank1HorseName": "Night Storm",
         "rank1Probability": 0.1311577264464426,
         "valueQualified": false,
-        "selectedPriceProfitLoss": null
+        "selectedPriceProfitLoss": -1
       },
       "longshotTjZero": {
         "modelVersion": "LONGSHOT_TJ_ZERO_V1",
@@ -84659,7 +84808,14 @@
             "rank": 1,
             "firstCapturedPriceDecimal": 7.5,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 10,
+              "won": false,
+              "finalSp": 6,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "596e7be9-cb82-44d5-901e-7fe3db1968ea",
@@ -84669,7 +84825,14 @@
             "rank": 2,
             "firstCapturedPriceDecimal": 6.5,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 3,
+              "won": false,
+              "finalSp": 8.5,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "18951052-4fd0-4719-b414-bc913b51a6c7",
@@ -84679,7 +84842,14 @@
             "rank": 3,
             "firstCapturedPriceDecimal": 11,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 4,
+              "won": false,
+              "finalSp": 12,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "c68feba1-e114-4cd0-827c-e7b346623d43",
@@ -84689,7 +84859,14 @@
             "rank": 4,
             "firstCapturedPriceDecimal": 6,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 8,
+              "won": false,
+              "finalSp": 8.5,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "d69ff6b2-d023-4958-af07-ad9d22b8d4cd",
@@ -84699,7 +84876,14 @@
             "rank": 5,
             "firstCapturedPriceDecimal": 8,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 11,
+              "won": false,
+              "finalSp": 9.5,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "6437a6b7-8dcf-41b6-9932-bb81ef6b754f",
@@ -84709,7 +84893,14 @@
             "rank": 6,
             "firstCapturedPriceDecimal": 5,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 2,
+              "won": false,
+              "finalSp": 4,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "68cd6d06-3fc3-4fd2-be8a-e118ef4cc7ba",
@@ -84719,7 +84910,14 @@
             "rank": 7,
             "firstCapturedPriceDecimal": 34,
             "longshotTrainerJockeyAdjusted": true,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "non_runner",
+              "finishingPosition": null,
+              "won": null,
+              "finalSp": null,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": null
+            }
           },
           {
             "runnerId": "ced4d974-6e2a-4203-89a4-059e9a2b5cf1",
@@ -84729,7 +84927,14 @@
             "rank": 8,
             "firstCapturedPriceDecimal": 26,
             "longshotTrainerJockeyAdjusted": true,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 12,
+              "won": false,
+              "finalSp": 29,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "b9b33114-1d0a-4ac6-a8d3-c1a9baf27eef",
@@ -84739,7 +84944,14 @@
             "rank": 9,
             "firstCapturedPriceDecimal": 6,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 1,
+              "won": true,
+              "finalSp": 6,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": 5
+            }
           },
           {
             "runnerId": "e5753247-9a12-42d6-b01c-b7905665b106",
@@ -84749,7 +84961,14 @@
             "rank": 10,
             "firstCapturedPriceDecimal": 17,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 9,
+              "won": false,
+              "finalSp": 41,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "786608e9-5560-47bc-af3e-d46a81263581",
@@ -84759,7 +84978,14 @@
             "rank": 11,
             "firstCapturedPriceDecimal": 21,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 6,
+              "won": false,
+              "finalSp": 51,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "aa722cc5-0aa7-4a75-a57c-ecbf9fc7f2eb",
@@ -84769,7 +84995,14 @@
             "rank": 12,
             "firstCapturedPriceDecimal": 11,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 5,
+              "won": false,
+              "finalSp": 7,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "ce9e5937-602c-4895-88cb-efa058fe8ff4",
@@ -84779,7 +85012,14 @@
             "rank": 13,
             "firstCapturedPriceDecimal": 21,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 7,
+              "won": false,
+              "finalSp": 29,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           }
         ],
         "rankOrder": [
@@ -84801,7 +85041,7 @@
         "rank1HorseName": "Night Storm",
         "rank1Probability": 0.13161151075479136,
         "valueQualified": false,
-        "selectedPriceProfitLoss": null
+        "selectedPriceProfitLoss": -1
       },
       "rank1Agreement": true,
       "classification": "AGREE",
@@ -84996,12 +85236,14 @@
           "longshotTjZero": null
         },
         "sp": {
-          "awTissue": null,
-          "longshotTjZero": null
+          "awTissue": 6,
+          "longshotTjZero": 6
         }
       },
-      "winners": [],
-      "settledAt": null,
+      "winners": [
+        "b9b33114-1d0a-4ac6-a8d3-c1a9baf27eef"
+      ],
+      "settledAt": "2026-10-24T16:37:40.637Z",
       "excludedReason": null
     },
     {
@@ -85098,7 +85340,14 @@
             "rank": 1,
             "firstCapturedPriceDecimal": 13,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 1,
+              "won": true,
+              "finalSp": 17,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": 16
+            }
           },
           {
             "runnerId": "276dd8e1-bbc7-4bfa-9d2a-2189bcb5b503",
@@ -85108,7 +85357,14 @@
             "rank": 2,
             "firstCapturedPriceDecimal": 7.5,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "other",
+              "finishingPosition": null,
+              "won": false,
+              "finalSp": 9,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "fe010d30-468c-42d6-a754-e7526ad5ca0a",
@@ -85118,7 +85374,14 @@
             "rank": 3,
             "firstCapturedPriceDecimal": 21,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "other",
+              "finishingPosition": null,
+              "won": false,
+              "finalSp": 23,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "17689a91-fd3b-4f6c-8892-a0fc2bf6160b",
@@ -85128,7 +85391,14 @@
             "rank": 4,
             "firstCapturedPriceDecimal": 17,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "other",
+              "finishingPosition": null,
+              "won": false,
+              "finalSp": 10,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "0b3518b6-3553-4311-9ff9-e0f267dbe0ba",
@@ -85138,7 +85408,14 @@
             "rank": 5,
             "firstCapturedPriceDecimal": 5.5,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "other",
+              "finishingPosition": null,
+              "won": false,
+              "finalSp": 5.5,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "528f7154-38a5-41d5-887e-59f3b2475e30",
@@ -85148,7 +85425,14 @@
             "rank": 6,
             "firstCapturedPriceDecimal": 5.5,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 2,
+              "won": false,
+              "finalSp": 6,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "98ec5f88-31f6-476f-a4f6-448337fb37d9",
@@ -85158,7 +85442,14 @@
             "rank": 7,
             "firstCapturedPriceDecimal": 9,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "other",
+              "finishingPosition": null,
+              "won": false,
+              "finalSp": 7,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "aefa9459-2452-4479-b61d-9230485fccd4",
@@ -85168,7 +85459,14 @@
             "rank": 8,
             "firstCapturedPriceDecimal": 13,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "other",
+              "finishingPosition": null,
+              "won": false,
+              "finalSp": 15,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "329e5481-0dde-4b02-8c33-c68ddde91197",
@@ -85178,7 +85476,14 @@
             "rank": 9,
             "firstCapturedPriceDecimal": 4,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "other",
+              "finishingPosition": null,
+              "won": false,
+              "finalSp": 5.5,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "b341d541-9c1b-4c77-8593-d2cafa8fa7c9",
@@ -85188,7 +85493,14 @@
             "rank": 10,
             "firstCapturedPriceDecimal": 26,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "other",
+              "finishingPosition": null,
+              "won": false,
+              "finalSp": 34,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "189ec006-9619-452b-9c27-e5dd00fce378",
@@ -85198,7 +85510,14 @@
             "rank": 11,
             "firstCapturedPriceDecimal": 17,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 4,
+              "won": false,
+              "finalSp": 15,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "1c09bede-ba87-40dd-89da-7fa9fc78fe8f",
@@ -85208,7 +85527,14 @@
             "rank": 12,
             "firstCapturedPriceDecimal": 23,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "other",
+              "finishingPosition": null,
+              "won": false,
+              "finalSp": 81,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "87dde06a-2d6c-4e68-817c-584db9bb184a",
@@ -85218,7 +85544,14 @@
             "rank": 13,
             "firstCapturedPriceDecimal": 12,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "other",
+              "finishingPosition": null,
+              "won": false,
+              "finalSp": 9,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "d663cad3-3253-40d0-b856-bd293a7fe215",
@@ -85228,7 +85561,14 @@
             "rank": 14,
             "firstCapturedPriceDecimal": 23,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 3,
+              "won": false,
+              "finalSp": 34,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           }
         ],
         "rankOrder": [
@@ -85251,7 +85591,7 @@
         "rank1HorseName": "Clipsham Noble",
         "rank1Probability": 0.14630689814234166,
         "valueQualified": true,
-        "selectedPriceProfitLoss": null
+        "selectedPriceProfitLoss": 12
       },
       "longshotTjZero": {
         "modelVersion": "LONGSHOT_TJ_ZERO_V1",
@@ -85265,7 +85605,14 @@
             "rank": 1,
             "firstCapturedPriceDecimal": 13,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 1,
+              "won": true,
+              "finalSp": 17,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": 16
+            }
           },
           {
             "runnerId": "276dd8e1-bbc7-4bfa-9d2a-2189bcb5b503",
@@ -85275,7 +85622,14 @@
             "rank": 2,
             "firstCapturedPriceDecimal": 7.5,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "other",
+              "finishingPosition": null,
+              "won": false,
+              "finalSp": 9,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "fe010d30-468c-42d6-a754-e7526ad5ca0a",
@@ -85285,7 +85639,14 @@
             "rank": 3,
             "firstCapturedPriceDecimal": 21,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "other",
+              "finishingPosition": null,
+              "won": false,
+              "finalSp": 23,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "17689a91-fd3b-4f6c-8892-a0fc2bf6160b",
@@ -85295,7 +85656,14 @@
             "rank": 4,
             "firstCapturedPriceDecimal": 17,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "other",
+              "finishingPosition": null,
+              "won": false,
+              "finalSp": 10,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "0b3518b6-3553-4311-9ff9-e0f267dbe0ba",
@@ -85305,7 +85673,14 @@
             "rank": 5,
             "firstCapturedPriceDecimal": 5.5,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "other",
+              "finishingPosition": null,
+              "won": false,
+              "finalSp": 5.5,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "528f7154-38a5-41d5-887e-59f3b2475e30",
@@ -85315,7 +85690,14 @@
             "rank": 6,
             "firstCapturedPriceDecimal": 5.5,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 2,
+              "won": false,
+              "finalSp": 6,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "98ec5f88-31f6-476f-a4f6-448337fb37d9",
@@ -85325,7 +85707,14 @@
             "rank": 7,
             "firstCapturedPriceDecimal": 9,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "other",
+              "finishingPosition": null,
+              "won": false,
+              "finalSp": 7,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "aefa9459-2452-4479-b61d-9230485fccd4",
@@ -85335,7 +85724,14 @@
             "rank": 8,
             "firstCapturedPriceDecimal": 13,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "other",
+              "finishingPosition": null,
+              "won": false,
+              "finalSp": 15,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "329e5481-0dde-4b02-8c33-c68ddde91197",
@@ -85345,7 +85741,14 @@
             "rank": 9,
             "firstCapturedPriceDecimal": 4,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "other",
+              "finishingPosition": null,
+              "won": false,
+              "finalSp": 5.5,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "b341d541-9c1b-4c77-8593-d2cafa8fa7c9",
@@ -85355,7 +85758,14 @@
             "rank": 10,
             "firstCapturedPriceDecimal": 26,
             "longshotTrainerJockeyAdjusted": true,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "other",
+              "finishingPosition": null,
+              "won": false,
+              "finalSp": 34,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "1c09bede-ba87-40dd-89da-7fa9fc78fe8f",
@@ -85365,7 +85775,14 @@
             "rank": 11,
             "firstCapturedPriceDecimal": 23,
             "longshotTrainerJockeyAdjusted": true,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "other",
+              "finishingPosition": null,
+              "won": false,
+              "finalSp": 81,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "189ec006-9619-452b-9c27-e5dd00fce378",
@@ -85375,7 +85792,14 @@
             "rank": 12,
             "firstCapturedPriceDecimal": 17,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 4,
+              "won": false,
+              "finalSp": 15,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "d663cad3-3253-40d0-b856-bd293a7fe215",
@@ -85385,7 +85809,14 @@
             "rank": 13,
             "firstCapturedPriceDecimal": 23,
             "longshotTrainerJockeyAdjusted": true,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 3,
+              "won": false,
+              "finalSp": 34,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "87dde06a-2d6c-4e68-817c-584db9bb184a",
@@ -85395,7 +85826,14 @@
             "rank": 14,
             "firstCapturedPriceDecimal": 12,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "other",
+              "finishingPosition": null,
+              "won": false,
+              "finalSp": 9,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           }
         ],
         "rankOrder": [
@@ -85418,7 +85856,7 @@
         "rank1HorseName": "Clipsham Noble",
         "rank1Probability": 0.14512574677687295,
         "valueQualified": true,
-        "selectedPriceProfitLoss": null
+        "selectedPriceProfitLoss": 12
       },
       "rank1Agreement": true,
       "classification": "AGREE",
@@ -85613,12 +86051,14 @@
           "longshotTjZero": null
         },
         "sp": {
-          "awTissue": null,
-          "longshotTjZero": null
+          "awTissue": 17,
+          "longshotTjZero": 17
         }
       },
-      "winners": [],
-      "settledAt": null,
+      "winners": [
+        "5b7a1e8b-f5aa-4405-b544-d8ca39935423"
+      ],
+      "settledAt": "2026-10-24T16:37:40.637Z",
       "excludedReason": null
     },
     {
@@ -85695,7 +86135,14 @@
             "rank": 1,
             "firstCapturedPriceDecimal": 12,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 5,
+              "won": false,
+              "finalSp": 19,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "4d95b61f-91b5-4be6-9f22-fc556561bfba",
@@ -85705,7 +86152,14 @@
             "rank": 2,
             "firstCapturedPriceDecimal": 4.33,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 3,
+              "won": false,
+              "finalSp": 3.5,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "d372a2c5-fbf2-466b-aa5d-950f397ce006",
@@ -85715,7 +86169,14 @@
             "rank": 3,
             "firstCapturedPriceDecimal": 2.75,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 2,
+              "won": false,
+              "finalSp": 1.909,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "2b125457-c7ab-4554-8c46-7e6b903cc158",
@@ -85725,7 +86186,14 @@
             "rank": 4,
             "firstCapturedPriceDecimal": 9.5,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 4,
+              "won": false,
+              "finalSp": 17,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "1e52ed15-7ee0-4bd9-a130-143bb44f2ae5",
@@ -85735,7 +86203,14 @@
             "rank": 5,
             "firstCapturedPriceDecimal": 26,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 10,
+              "won": false,
+              "finalSp": 67,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "d6f43f2a-c85c-4936-94ae-ae1377911b87",
@@ -85745,7 +86220,14 @@
             "rank": 6,
             "firstCapturedPriceDecimal": 9,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 8,
+              "won": false,
+              "finalSp": 11,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "9d25dcb1-c00b-42cc-a915-66aab6c86c3e",
@@ -85755,7 +86237,14 @@
             "rank": 7,
             "firstCapturedPriceDecimal": 4.5,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 1,
+              "won": true,
+              "finalSp": 9.5,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": 8.5
+            }
           },
           {
             "runnerId": "5b51de62-523f-4aad-b0e2-879c090967b4",
@@ -85765,7 +86254,14 @@
             "rank": 8,
             "firstCapturedPriceDecimal": 17,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 6,
+              "won": false,
+              "finalSp": 34,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "a8c453e3-4107-497b-aa17-99f84442967f",
@@ -85775,7 +86271,14 @@
             "rank": 9,
             "firstCapturedPriceDecimal": 11,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 9,
+              "won": false,
+              "finalSp": 17,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "67a6adf2-385b-4ba6-8074-034053fa7045",
@@ -85785,7 +86288,14 @@
             "rank": 10,
             "firstCapturedPriceDecimal": 101,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 7,
+              "won": false,
+              "finalSp": 151,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           }
         ],
         "rankOrder": [
@@ -85804,7 +86314,7 @@
         "rank1HorseName": "Quite Simple",
         "rank1Probability": 0.2077452012172182,
         "valueQualified": true,
-        "selectedPriceProfitLoss": null
+        "selectedPriceProfitLoss": -1
       },
       "longshotTjZero": {
         "modelVersion": "LONGSHOT_TJ_ZERO_V1",
@@ -85818,7 +86328,14 @@
             "rank": 1,
             "firstCapturedPriceDecimal": 12,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 5,
+              "won": false,
+              "finalSp": 19,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "4d95b61f-91b5-4be6-9f22-fc556561bfba",
@@ -85828,7 +86345,14 @@
             "rank": 2,
             "firstCapturedPriceDecimal": 4.33,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 3,
+              "won": false,
+              "finalSp": 3.5,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "d372a2c5-fbf2-466b-aa5d-950f397ce006",
@@ -85838,7 +86362,14 @@
             "rank": 3,
             "firstCapturedPriceDecimal": 2.75,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 2,
+              "won": false,
+              "finalSp": 1.909,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "2b125457-c7ab-4554-8c46-7e6b903cc158",
@@ -85848,7 +86379,14 @@
             "rank": 4,
             "firstCapturedPriceDecimal": 9.5,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 4,
+              "won": false,
+              "finalSp": 17,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "d6f43f2a-c85c-4936-94ae-ae1377911b87",
@@ -85858,7 +86396,14 @@
             "rank": 5,
             "firstCapturedPriceDecimal": 9,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 8,
+              "won": false,
+              "finalSp": 11,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "9d25dcb1-c00b-42cc-a915-66aab6c86c3e",
@@ -85868,7 +86413,14 @@
             "rank": 6,
             "firstCapturedPriceDecimal": 4.5,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 1,
+              "won": true,
+              "finalSp": 9.5,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": 8.5
+            }
           },
           {
             "runnerId": "5b51de62-523f-4aad-b0e2-879c090967b4",
@@ -85878,7 +86430,14 @@
             "rank": 7,
             "firstCapturedPriceDecimal": 17,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 6,
+              "won": false,
+              "finalSp": 34,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "a8c453e3-4107-497b-aa17-99f84442967f",
@@ -85888,7 +86447,14 @@
             "rank": 8,
             "firstCapturedPriceDecimal": 11,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 9,
+              "won": false,
+              "finalSp": 17,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "1e52ed15-7ee0-4bd9-a130-143bb44f2ae5",
@@ -85898,7 +86464,14 @@
             "rank": 9,
             "firstCapturedPriceDecimal": 26,
             "longshotTrainerJockeyAdjusted": true,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 10,
+              "won": false,
+              "finalSp": 67,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "67a6adf2-385b-4ba6-8074-034053fa7045",
@@ -85908,7 +86481,14 @@
             "rank": 10,
             "firstCapturedPriceDecimal": 101,
             "longshotTrainerJockeyAdjusted": true,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 7,
+              "won": false,
+              "finalSp": 151,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           }
         ],
         "rankOrder": [
@@ -85927,7 +86507,7 @@
         "rank1HorseName": "Quite Simple",
         "rank1Probability": 0.2149360153629794,
         "valueQualified": true,
-        "selectedPriceProfitLoss": null
+        "selectedPriceProfitLoss": -1
       },
       "rank1Agreement": true,
       "classification": "AGREE",
@@ -86114,20 +86694,108 @@
           }
         },
         "late": {
-          "awTissue": null,
-          "longshotTjZero": null
+          "awTissue": {
+            "runnerId": "d83f031e-3b21-4c56-bd50-54196a09d3b4",
+            "medianDecimalPrice": 13,
+            "impliedProbability": 0.07692307692307693,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-10-24T16:37:40.637Z",
+            "snapshot": {
+              "decimalPrice": 13,
+              "impliedProbability": 0.07692307692307693,
+              "capturedAt": "2026-10-24T16:37:40.637Z",
+              "minutesBeforeScheduledOff": 22.32271666666667,
+              "ratingProbability": 0.2077452012172182,
+              "ratingEdgePercentagePoints": 13.082212429414128,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "11/1",
+                  "decimalOdds": 12
+                },
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "12/1",
+                  "decimalOdds": 13
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "12/1",
+                  "decimalOdds": 13
+                }
+              ],
+              "medianBookmakerPriceDecimal": 13,
+              "medianBookmakerImpliedProbability": 0.07692307692307693,
+              "bestBookmakerPriceDecimal": 13,
+              "bestBookmakerPriceFractional": "12/1",
+              "bestBookmakerName": null,
+              "forecastPrice": "8/1",
+              "forecastDecimalPrice": 9
+            }
+          },
+          "longshotTjZero": {
+            "runnerId": "d83f031e-3b21-4c56-bd50-54196a09d3b4",
+            "medianDecimalPrice": 13,
+            "impliedProbability": 0.07692307692307693,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-10-24T16:37:40.637Z",
+            "snapshot": {
+              "decimalPrice": 13,
+              "impliedProbability": 0.07692307692307693,
+              "capturedAt": "2026-10-24T16:37:40.637Z",
+              "minutesBeforeScheduledOff": 22.32271666666667,
+              "ratingProbability": 0.2149360153629794,
+              "ratingEdgePercentagePoints": 13.801293843990248,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "11/1",
+                  "decimalOdds": 12
+                },
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "12/1",
+                  "decimalOdds": 13
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "12/1",
+                  "decimalOdds": 13
+                }
+              ],
+              "medianBookmakerPriceDecimal": 13,
+              "medianBookmakerImpliedProbability": 0.07692307692307693,
+              "bestBookmakerPriceDecimal": 13,
+              "bestBookmakerPriceFractional": "12/1",
+              "bestBookmakerName": null,
+              "forecastPrice": "8/1",
+              "forecastDecimalPrice": 9
+            }
+          }
         },
         "finalPreRace": {
           "awTissue": null,
           "longshotTjZero": null
         },
         "sp": {
-          "awTissue": null,
-          "longshotTjZero": null
+          "awTissue": 19,
+          "longshotTjZero": 19
         }
       },
-      "winners": [],
-      "settledAt": null,
+      "winners": [
+        "9d25dcb1-c00b-42cc-a915-66aab6c86c3e"
+      ],
+      "settledAt": "2026-10-25T03:31:12.336Z",
       "excludedReason": null
     },
     {
@@ -86204,7 +86872,14 @@
             "rank": 1,
             "firstCapturedPriceDecimal": 2.25,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 1,
+              "won": true,
+              "finalSp": 1.909,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": 0.909
+            }
           },
           {
             "runnerId": "b9488292-bb8f-46a1-984b-0280537a8398",
@@ -86214,7 +86889,14 @@
             "rank": 2,
             "firstCapturedPriceDecimal": 8.5,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 3,
+              "won": false,
+              "finalSp": 6,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "c70ceff2-7962-4788-be60-b689b9652e48",
@@ -86224,7 +86906,14 @@
             "rank": 3,
             "firstCapturedPriceDecimal": 4.33,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 4,
+              "won": false,
+              "finalSp": 4.333,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "3e748e87-c6b6-4ef2-a301-06b256174515",
@@ -86234,7 +86923,14 @@
             "rank": 4,
             "firstCapturedPriceDecimal": 13,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 8,
+              "won": false,
+              "finalSp": 51,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "c5822ce5-fa6f-4cd3-be29-3878c09bc7d9",
@@ -86244,7 +86940,14 @@
             "rank": 5,
             "firstCapturedPriceDecimal": 6.5,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 6,
+              "won": false,
+              "finalSp": 11,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "accf8379-835a-4e98-ae7e-25ced958b21e",
@@ -86254,7 +86957,14 @@
             "rank": 6,
             "firstCapturedPriceDecimal": 51,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 7,
+              "won": false,
+              "finalSp": 29,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "dbfe054d-c79b-4697-8ac2-cf657001a9a2",
@@ -86264,7 +86974,14 @@
             "rank": 7,
             "firstCapturedPriceDecimal": 11,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 5,
+              "won": false,
+              "finalSp": 23,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "f4117f72-6369-4076-987f-66a5554265c2",
@@ -86274,7 +86991,14 @@
             "rank": 8,
             "firstCapturedPriceDecimal": 13,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 2,
+              "won": false,
+              "finalSp": 23,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "21206a7b-72d4-4781-8338-c628b0464d71",
@@ -86284,7 +87008,14 @@
             "rank": 9,
             "firstCapturedPriceDecimal": 41,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 9,
+              "won": false,
+              "finalSp": 301,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "902182a5-2df7-4daa-95ef-60cf0a5f8521",
@@ -86294,7 +87025,14 @@
             "rank": 10,
             "firstCapturedPriceDecimal": 17,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 10,
+              "won": false,
+              "finalSp": 12,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           }
         ],
         "rankOrder": [
@@ -86313,7 +87051,7 @@
         "rank1HorseName": "Geometry",
         "rank1Probability": 0.246901632606145,
         "valueQualified": false,
-        "selectedPriceProfitLoss": null
+        "selectedPriceProfitLoss": 0.9099999999999999
       },
       "longshotTjZero": {
         "modelVersion": "LONGSHOT_TJ_ZERO_V1",
@@ -86327,7 +87065,14 @@
             "rank": 1,
             "firstCapturedPriceDecimal": 2.25,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 1,
+              "won": true,
+              "finalSp": 1.909,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": 0.909
+            }
           },
           {
             "runnerId": "b9488292-bb8f-46a1-984b-0280537a8398",
@@ -86337,7 +87082,14 @@
             "rank": 2,
             "firstCapturedPriceDecimal": 8.5,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 3,
+              "won": false,
+              "finalSp": 6,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "c70ceff2-7962-4788-be60-b689b9652e48",
@@ -86347,7 +87099,14 @@
             "rank": 3,
             "firstCapturedPriceDecimal": 4.33,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 4,
+              "won": false,
+              "finalSp": 4.333,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "3e748e87-c6b6-4ef2-a301-06b256174515",
@@ -86357,7 +87116,14 @@
             "rank": 4,
             "firstCapturedPriceDecimal": 13,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 8,
+              "won": false,
+              "finalSp": 51,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "c5822ce5-fa6f-4cd3-be29-3878c09bc7d9",
@@ -86367,7 +87133,14 @@
             "rank": 5,
             "firstCapturedPriceDecimal": 6.5,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 6,
+              "won": false,
+              "finalSp": 11,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "accf8379-835a-4e98-ae7e-25ced958b21e",
@@ -86377,7 +87150,14 @@
             "rank": 6,
             "firstCapturedPriceDecimal": 51,
             "longshotTrainerJockeyAdjusted": true,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 7,
+              "won": false,
+              "finalSp": 29,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "dbfe054d-c79b-4697-8ac2-cf657001a9a2",
@@ -86387,7 +87167,14 @@
             "rank": 7,
             "firstCapturedPriceDecimal": 11,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 5,
+              "won": false,
+              "finalSp": 23,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "f4117f72-6369-4076-987f-66a5554265c2",
@@ -86397,7 +87184,14 @@
             "rank": 8,
             "firstCapturedPriceDecimal": 13,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 2,
+              "won": false,
+              "finalSp": 23,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "902182a5-2df7-4daa-95ef-60cf0a5f8521",
@@ -86407,7 +87201,14 @@
             "rank": 9,
             "firstCapturedPriceDecimal": 17,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 10,
+              "won": false,
+              "finalSp": 12,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "21206a7b-72d4-4781-8338-c628b0464d71",
@@ -86417,7 +87218,14 @@
             "rank": 10,
             "firstCapturedPriceDecimal": 41,
             "longshotTrainerJockeyAdjusted": true,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 9,
+              "won": false,
+              "finalSp": 301,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           }
         ],
         "rankOrder": [
@@ -86436,7 +87244,7 @@
         "rank1HorseName": "Geometry",
         "rank1Probability": 0.25280812030027355,
         "valueQualified": false,
-        "selectedPriceProfitLoss": null
+        "selectedPriceProfitLoss": 0.9099999999999999
       },
       "rank1Agreement": true,
       "classification": "AGREE",
@@ -86627,16 +87435,104 @@
           "longshotTjZero": null
         },
         "finalPreRace": {
-          "awTissue": null,
-          "longshotTjZero": null
+          "awTissue": {
+            "runnerId": "3f496f71-da27-4132-8ad4-27c332d5ef2f",
+            "medianDecimalPrice": 1.91,
+            "impliedProbability": 0.5235602094240838,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-10-24T16:37:40.637Z",
+            "snapshot": {
+              "decimalPrice": 1.91,
+              "impliedProbability": 0.5235602094240838,
+              "capturedAt": "2026-10-24T16:37:40.637Z",
+              "minutesBeforeScheduledOff": 52.322716666666665,
+              "ratingProbability": 0.246901632606145,
+              "ratingEdgePercentagePoints": -27.665857681793877,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "10/11",
+                  "decimalOdds": 1.91
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "10/11",
+                  "decimalOdds": 1.91
+                },
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "10/11",
+                  "decimalOdds": 1.91
+                }
+              ],
+              "medianBookmakerPriceDecimal": 1.91,
+              "medianBookmakerImpliedProbability": 0.5235602094240838,
+              "bestBookmakerPriceDecimal": 1.91,
+              "bestBookmakerPriceFractional": "10/11",
+              "bestBookmakerName": null,
+              "forecastPrice": "11/8",
+              "forecastDecimalPrice": 2.375
+            }
+          },
+          "longshotTjZero": {
+            "runnerId": "3f496f71-da27-4132-8ad4-27c332d5ef2f",
+            "medianDecimalPrice": 1.91,
+            "impliedProbability": 0.5235602094240838,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-10-24T16:37:40.637Z",
+            "snapshot": {
+              "decimalPrice": 1.91,
+              "impliedProbability": 0.5235602094240838,
+              "capturedAt": "2026-10-24T16:37:40.637Z",
+              "minutesBeforeScheduledOff": 52.322716666666665,
+              "ratingProbability": 0.25280812030027355,
+              "ratingEdgePercentagePoints": -27.075208912381022,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "10/11",
+                  "decimalOdds": 1.91
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "10/11",
+                  "decimalOdds": 1.91
+                },
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "10/11",
+                  "decimalOdds": 1.91
+                }
+              ],
+              "medianBookmakerPriceDecimal": 1.91,
+              "medianBookmakerImpliedProbability": 0.5235602094240838,
+              "bestBookmakerPriceDecimal": 1.91,
+              "bestBookmakerPriceFractional": "10/11",
+              "bestBookmakerName": null,
+              "forecastPrice": "11/8",
+              "forecastDecimalPrice": 2.375
+            }
+          }
         },
         "sp": {
-          "awTissue": null,
-          "longshotTjZero": null
+          "awTissue": 1.909,
+          "longshotTjZero": 1.909
         }
       },
-      "winners": [],
-      "settledAt": null,
+      "winners": [
+        "3f496f71-da27-4132-8ad4-27c332d5ef2f"
+      ],
+      "settledAt": "2026-10-25T03:31:12.336Z",
       "excludedReason": null
     },
     {
@@ -86733,7 +87629,14 @@
             "rank": 1,
             "firstCapturedPriceDecimal": 23,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 4,
+              "won": false,
+              "finalSp": 13,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "ec5bc23b-bd44-4b0c-ad92-9de1baa18d50",
@@ -86743,7 +87646,14 @@
             "rank": 2,
             "firstCapturedPriceDecimal": 5.5,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 5,
+              "won": false,
+              "finalSp": 4.5,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "ff66ea46-835b-4da5-b508-5b62db4d3fb2",
@@ -86753,7 +87663,14 @@
             "rank": 3,
             "firstCapturedPriceDecimal": 5.5,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 2,
+              "won": false,
+              "finalSp": 7.5,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "4fc07937-30e3-438f-9159-de2c5c097bbf",
@@ -86763,7 +87680,14 @@
             "rank": 4,
             "firstCapturedPriceDecimal": 13,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 12,
+              "won": false,
+              "finalSp": 5,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "e8bb03b8-af96-43d9-8601-5440851bb9a8",
@@ -86773,7 +87697,14 @@
             "rank": 5,
             "firstCapturedPriceDecimal": 6,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 1,
+              "won": true,
+              "finalSp": 5,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": 4
+            }
           },
           {
             "runnerId": "104b4e59-398b-400c-a9e9-63ddfd8c7b4e",
@@ -86783,7 +87714,14 @@
             "rank": 6,
             "firstCapturedPriceDecimal": 5,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "non_runner",
+              "finishingPosition": null,
+              "won": null,
+              "finalSp": null,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": null
+            }
           },
           {
             "runnerId": "4c193c8c-f2ea-4daa-a325-21bedd03265c",
@@ -86793,7 +87731,14 @@
             "rank": 7,
             "firstCapturedPriceDecimal": 7,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 7,
+              "won": false,
+              "finalSp": 7,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "0354b106-5061-432a-8dd8-1524645c6de8",
@@ -86803,7 +87748,14 @@
             "rank": 8,
             "firstCapturedPriceDecimal": 21,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 6,
+              "won": false,
+              "finalSp": 34,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "1b1f0f88-5805-4e5b-b6e5-848231cc9162",
@@ -86813,7 +87765,14 @@
             "rank": 9,
             "firstCapturedPriceDecimal": 26,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 9,
+              "won": false,
+              "finalSp": 41,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "f20ace4f-cbf4-4d88-b3e6-15a2d8fe1b2c",
@@ -86823,7 +87782,14 @@
             "rank": 10,
             "firstCapturedPriceDecimal": 13,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 8,
+              "won": false,
+              "finalSp": 13,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "5405ecc3-9fd2-439c-bddd-1f6444219e87",
@@ -86833,7 +87799,14 @@
             "rank": 11,
             "firstCapturedPriceDecimal": 13,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 11,
+              "won": false,
+              "finalSp": 17,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "20798bf8-b3de-41d5-8cfc-2a2a03f13b4e",
@@ -86843,7 +87816,14 @@
             "rank": 12,
             "firstCapturedPriceDecimal": 26,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 13,
+              "won": false,
+              "finalSp": 51,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "4a8e6f23-3cc8-44c1-a028-5e725fc7d1e2",
@@ -86853,7 +87833,14 @@
             "rank": 13,
             "firstCapturedPriceDecimal": 19,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 3,
+              "won": false,
+              "finalSp": 13,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "5c262bc0-2b3a-46e0-81ba-670c0b1260f3",
@@ -86863,7 +87850,14 @@
             "rank": 14,
             "firstCapturedPriceDecimal": 41,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 10,
+              "won": false,
+              "finalSp": 34,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           }
         ],
         "rankOrder": [
@@ -86886,7 +87880,7 @@
         "rank1HorseName": "Blue Samuna",
         "rank1Probability": 0.1659537331556584,
         "valueQualified": true,
-        "selectedPriceProfitLoss": null
+        "selectedPriceProfitLoss": -1
       },
       "longshotTjZero": {
         "modelVersion": "LONGSHOT_TJ_ZERO_V1",
@@ -86900,7 +87894,14 @@
             "rank": 1,
             "firstCapturedPriceDecimal": 5.5,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 5,
+              "won": false,
+              "finalSp": 4.5,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "ff66ea46-835b-4da5-b508-5b62db4d3fb2",
@@ -86910,7 +87911,14 @@
             "rank": 2,
             "firstCapturedPriceDecimal": 5.5,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 2,
+              "won": false,
+              "finalSp": 7.5,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "4fc07937-30e3-438f-9159-de2c5c097bbf",
@@ -86920,7 +87928,14 @@
             "rank": 3,
             "firstCapturedPriceDecimal": 13,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 12,
+              "won": false,
+              "finalSp": 5,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "480f3af8-5731-4d9f-80f7-c53bbf51f400",
@@ -86930,7 +87945,14 @@
             "rank": 4,
             "firstCapturedPriceDecimal": 23,
             "longshotTrainerJockeyAdjusted": true,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 4,
+              "won": false,
+              "finalSp": 13,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "e8bb03b8-af96-43d9-8601-5440851bb9a8",
@@ -86940,7 +87962,14 @@
             "rank": 5,
             "firstCapturedPriceDecimal": 6,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 1,
+              "won": true,
+              "finalSp": 5,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": 4
+            }
           },
           {
             "runnerId": "1b1f0f88-5805-4e5b-b6e5-848231cc9162",
@@ -86950,7 +87979,14 @@
             "rank": 6,
             "firstCapturedPriceDecimal": 26,
             "longshotTrainerJockeyAdjusted": true,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 9,
+              "won": false,
+              "finalSp": 41,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "104b4e59-398b-400c-a9e9-63ddfd8c7b4e",
@@ -86960,7 +87996,14 @@
             "rank": 7,
             "firstCapturedPriceDecimal": 5,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "non_runner",
+              "finishingPosition": null,
+              "won": null,
+              "finalSp": null,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": null
+            }
           },
           {
             "runnerId": "4c193c8c-f2ea-4daa-a325-21bedd03265c",
@@ -86970,7 +88013,14 @@
             "rank": 8,
             "firstCapturedPriceDecimal": 7,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 7,
+              "won": false,
+              "finalSp": 7,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "0354b106-5061-432a-8dd8-1524645c6de8",
@@ -86980,7 +88030,14 @@
             "rank": 9,
             "firstCapturedPriceDecimal": 21,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 6,
+              "won": false,
+              "finalSp": 34,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "f20ace4f-cbf4-4d88-b3e6-15a2d8fe1b2c",
@@ -86990,7 +88047,14 @@
             "rank": 10,
             "firstCapturedPriceDecimal": 13,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 8,
+              "won": false,
+              "finalSp": 13,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "5405ecc3-9fd2-439c-bddd-1f6444219e87",
@@ -87000,7 +88064,14 @@
             "rank": 11,
             "firstCapturedPriceDecimal": 13,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 11,
+              "won": false,
+              "finalSp": 17,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "20798bf8-b3de-41d5-8cfc-2a2a03f13b4e",
@@ -87010,7 +88081,14 @@
             "rank": 12,
             "firstCapturedPriceDecimal": 26,
             "longshotTrainerJockeyAdjusted": true,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 13,
+              "won": false,
+              "finalSp": 51,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "4a8e6f23-3cc8-44c1-a028-5e725fc7d1e2",
@@ -87020,7 +88098,14 @@
             "rank": 13,
             "firstCapturedPriceDecimal": 19,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 3,
+              "won": false,
+              "finalSp": 13,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "5c262bc0-2b3a-46e0-81ba-670c0b1260f3",
@@ -87030,7 +88115,14 @@
             "rank": 14,
             "firstCapturedPriceDecimal": 41,
             "longshotTrainerJockeyAdjusted": true,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 10,
+              "won": false,
+              "finalSp": 34,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           }
         ],
         "rankOrder": [
@@ -87053,7 +88145,7 @@
         "rank1HorseName": "Kev",
         "rank1Probability": 0.12573260015380353,
         "valueQualified": false,
-        "selectedPriceProfitLoss": null
+        "selectedPriceProfitLoss": -1
       },
       "rank1Agreement": false,
       "classification": "DISAGREE",
@@ -87244,16 +88336,104 @@
           "longshotTjZero": null
         },
         "finalPreRace": {
-          "awTissue": null,
-          "longshotTjZero": null
+          "awTissue": {
+            "runnerId": "480f3af8-5731-4d9f-80f7-c53bbf51f400",
+            "medianDecimalPrice": 17,
+            "impliedProbability": 0.058823529411764705,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-10-24T16:37:40.637Z",
+            "snapshot": {
+              "decimalPrice": 17,
+              "impliedProbability": 0.058823529411764705,
+              "capturedAt": "2026-10-24T16:37:40.637Z",
+              "minutesBeforeScheduledOff": 82.32271666666666,
+              "ratingProbability": 0.1659537331556584,
+              "ratingEdgePercentagePoints": 10.71302037438937,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "16/1",
+                  "decimalOdds": 17
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "16/1",
+                  "decimalOdds": 17
+                },
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "16/1",
+                  "decimalOdds": 17
+                }
+              ],
+              "medianBookmakerPriceDecimal": 17,
+              "medianBookmakerImpliedProbability": 0.058823529411764705,
+              "bestBookmakerPriceDecimal": 17,
+              "bestBookmakerPriceFractional": "16/1",
+              "bestBookmakerName": null,
+              "forecastPrice": "33/1",
+              "forecastDecimalPrice": 34
+            }
+          },
+          "longshotTjZero": {
+            "runnerId": "ec5bc23b-bd44-4b0c-ad92-9de1baa18d50",
+            "medianDecimalPrice": 5,
+            "impliedProbability": 0.2,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-10-24T16:37:40.637Z",
+            "snapshot": {
+              "decimalPrice": 5,
+              "impliedProbability": 0.2,
+              "capturedAt": "2026-10-24T16:37:40.637Z",
+              "minutesBeforeScheduledOff": 82.32271666666666,
+              "ratingProbability": 0.12573260015380353,
+              "ratingEdgePercentagePoints": -7.4267399846196485,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "4/1",
+                  "decimalOdds": 5
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "4/1",
+                  "decimalOdds": 5
+                },
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "4/1",
+                  "decimalOdds": 5
+                }
+              ],
+              "medianBookmakerPriceDecimal": 5,
+              "medianBookmakerImpliedProbability": 0.2,
+              "bestBookmakerPriceDecimal": 5,
+              "bestBookmakerPriceFractional": "4/1",
+              "bestBookmakerName": null,
+              "forecastPrice": "5/1",
+              "forecastDecimalPrice": 6
+            }
+          }
         },
         "sp": {
-          "awTissue": null,
-          "longshotTjZero": null
+          "awTissue": 13,
+          "longshotTjZero": 4.5
         }
       },
-      "winners": [],
-      "settledAt": null,
+      "winners": [
+        "e8bb03b8-af96-43d9-8601-5440851bb9a8"
+      ],
+      "settledAt": "2026-10-25T03:31:12.336Z",
       "excludedReason": null
     },
     {
@@ -87350,7 +88530,14 @@
             "rank": 1,
             "firstCapturedPriceDecimal": 8.5,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 12,
+              "won": false,
+              "finalSp": 12,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "3d9855df-f963-4d11-86a3-cd79fb85ab2f",
@@ -87360,7 +88547,14 @@
             "rank": 2,
             "firstCapturedPriceDecimal": 5.5,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 1,
+              "won": true,
+              "finalSp": 5,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": 4
+            }
           },
           {
             "runnerId": "feaf3029-5ebc-4261-ae90-2bf30ff166ec",
@@ -87370,7 +88564,14 @@
             "rank": 3,
             "firstCapturedPriceDecimal": 6.5,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 10,
+              "won": false,
+              "finalSp": 7.5,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "e703bb9e-2d92-4b03-9bcb-28407d2527a5",
@@ -87380,7 +88581,14 @@
             "rank": 4,
             "firstCapturedPriceDecimal": 11,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 8,
+              "won": false,
+              "finalSp": 21,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "ceb52dba-a511-4913-bb3a-6343536def6a",
@@ -87390,7 +88598,14 @@
             "rank": 5,
             "firstCapturedPriceDecimal": 11,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 7,
+              "won": false,
+              "finalSp": 7.5,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "c240d38d-7fb6-488b-9d8f-8d5b3d49c581",
@@ -87400,7 +88615,14 @@
             "rank": 6,
             "firstCapturedPriceDecimal": 9,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 2,
+              "won": false,
+              "finalSp": 8,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "3ab6ff4a-38cb-4d3c-a9ac-762e855b960b",
@@ -87410,7 +88632,14 @@
             "rank": 7,
             "firstCapturedPriceDecimal": 19,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 6,
+              "won": false,
+              "finalSp": 19,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "2559f311-6e25-4440-83c3-64dca75480d5",
@@ -87420,7 +88649,14 @@
             "rank": 8,
             "firstCapturedPriceDecimal": 13,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 13,
+              "won": false,
+              "finalSp": 8,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "8c9bf292-e17d-4702-94f0-a0a696763756",
@@ -87430,7 +88666,14 @@
             "rank": 9,
             "firstCapturedPriceDecimal": 12,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 9,
+              "won": false,
+              "finalSp": 19,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "129cb42f-ac95-44d4-bca9-ad23abce7133",
@@ -87440,7 +88683,14 @@
             "rank": 10,
             "firstCapturedPriceDecimal": 21,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 14,
+              "won": false,
+              "finalSp": 26,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "d364207a-38d3-4dcb-a540-d41d02aacd7d",
@@ -87450,7 +88700,14 @@
             "rank": 11,
             "firstCapturedPriceDecimal": 7.5,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 3,
+              "won": false,
+              "finalSp": 12,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "e7a7b27a-9438-417e-a6bf-16efa40ccfc8",
@@ -87460,7 +88717,14 @@
             "rank": 12,
             "firstCapturedPriceDecimal": 9,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 4,
+              "won": false,
+              "finalSp": 7.5,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "13c99e7b-bf65-4bd8-bb57-6ac551f2c110",
@@ -87470,7 +88734,14 @@
             "rank": 13,
             "firstCapturedPriceDecimal": 17,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 5,
+              "won": false,
+              "finalSp": 26,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "a4ed8c89-0914-4f16-ba2a-5a04066b7044",
@@ -87480,7 +88751,14 @@
             "rank": 14,
             "firstCapturedPriceDecimal": 21,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 11,
+              "won": false,
+              "finalSp": 34,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           }
         ],
         "rankOrder": [
@@ -87503,7 +88781,7 @@
         "rank1HorseName": "Gladiadora",
         "rank1Probability": 0.12124619442907132,
         "valueQualified": true,
-        "selectedPriceProfitLoss": null
+        "selectedPriceProfitLoss": -1
       },
       "longshotTjZero": {
         "modelVersion": "LONGSHOT_TJ_ZERO_V1",
@@ -87517,7 +88795,14 @@
             "rank": 1,
             "firstCapturedPriceDecimal": 8.5,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 12,
+              "won": false,
+              "finalSp": 12,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "3d9855df-f963-4d11-86a3-cd79fb85ab2f",
@@ -87527,7 +88812,14 @@
             "rank": 2,
             "firstCapturedPriceDecimal": 5.5,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 1,
+              "won": true,
+              "finalSp": 5,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": 4
+            }
           },
           {
             "runnerId": "feaf3029-5ebc-4261-ae90-2bf30ff166ec",
@@ -87537,7 +88829,14 @@
             "rank": 3,
             "firstCapturedPriceDecimal": 6.5,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 10,
+              "won": false,
+              "finalSp": 7.5,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "e703bb9e-2d92-4b03-9bcb-28407d2527a5",
@@ -87547,7 +88846,14 @@
             "rank": 4,
             "firstCapturedPriceDecimal": 11,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 8,
+              "won": false,
+              "finalSp": 21,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "ceb52dba-a511-4913-bb3a-6343536def6a",
@@ -87557,7 +88863,14 @@
             "rank": 5,
             "firstCapturedPriceDecimal": 11,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 7,
+              "won": false,
+              "finalSp": 7.5,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "c240d38d-7fb6-488b-9d8f-8d5b3d49c581",
@@ -87567,7 +88880,14 @@
             "rank": 6,
             "firstCapturedPriceDecimal": 9,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 2,
+              "won": false,
+              "finalSp": 8,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "3ab6ff4a-38cb-4d3c-a9ac-762e855b960b",
@@ -87577,7 +88897,14 @@
             "rank": 7,
             "firstCapturedPriceDecimal": 19,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 6,
+              "won": false,
+              "finalSp": 19,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "2559f311-6e25-4440-83c3-64dca75480d5",
@@ -87587,7 +88914,14 @@
             "rank": 8,
             "firstCapturedPriceDecimal": 13,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 13,
+              "won": false,
+              "finalSp": 8,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "8c9bf292-e17d-4702-94f0-a0a696763756",
@@ -87597,7 +88931,14 @@
             "rank": 9,
             "firstCapturedPriceDecimal": 12,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 9,
+              "won": false,
+              "finalSp": 19,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "129cb42f-ac95-44d4-bca9-ad23abce7133",
@@ -87607,7 +88948,14 @@
             "rank": 10,
             "firstCapturedPriceDecimal": 21,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 14,
+              "won": false,
+              "finalSp": 26,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "d364207a-38d3-4dcb-a540-d41d02aacd7d",
@@ -87617,7 +88965,14 @@
             "rank": 11,
             "firstCapturedPriceDecimal": 7.5,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 3,
+              "won": false,
+              "finalSp": 12,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "e7a7b27a-9438-417e-a6bf-16efa40ccfc8",
@@ -87627,7 +88982,14 @@
             "rank": 12,
             "firstCapturedPriceDecimal": 9,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 4,
+              "won": false,
+              "finalSp": 7.5,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "13c99e7b-bf65-4bd8-bb57-6ac551f2c110",
@@ -87637,7 +88999,14 @@
             "rank": 13,
             "firstCapturedPriceDecimal": 17,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 5,
+              "won": false,
+              "finalSp": 26,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "a4ed8c89-0914-4f16-ba2a-5a04066b7044",
@@ -87647,7 +89016,14 @@
             "rank": 14,
             "firstCapturedPriceDecimal": 21,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 11,
+              "won": false,
+              "finalSp": 34,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           }
         ],
         "rankOrder": [
@@ -87670,7 +89046,7 @@
         "rank1HorseName": "Gladiadora",
         "rank1Probability": 0.12124619442907132,
         "valueQualified": true,
-        "selectedPriceProfitLoss": null
+        "selectedPriceProfitLoss": -1
       },
       "rank1Agreement": true,
       "classification": "AGREE",
@@ -87857,20 +89233,108 @@
           }
         },
         "late": {
-          "awTissue": null,
-          "longshotTjZero": null
+          "awTissue": {
+            "runnerId": "b8f00dbf-c8af-4ed7-a180-b6ee8e840878",
+            "medianDecimalPrice": 8.5,
+            "impliedProbability": 0.11764705882352941,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-10-24T16:37:40.637Z",
+            "snapshot": {
+              "decimalPrice": 8.5,
+              "impliedProbability": 0.11764705882352941,
+              "capturedAt": "2026-10-24T16:37:40.637Z",
+              "minutesBeforeScheduledOff": 112.32271666666666,
+              "ratingProbability": 0.12124619442907132,
+              "ratingEdgePercentagePoints": 0.35991356055419116,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "15/2",
+                  "decimalOdds": 8.5
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "15/2",
+                  "decimalOdds": 8.5
+                },
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "15/2",
+                  "decimalOdds": 8.5
+                }
+              ],
+              "medianBookmakerPriceDecimal": 8.5,
+              "medianBookmakerImpliedProbability": 0.11764705882352941,
+              "bestBookmakerPriceDecimal": 8.5,
+              "bestBookmakerPriceFractional": "15/2",
+              "bestBookmakerName": null,
+              "forecastPrice": "14/1",
+              "forecastDecimalPrice": 15
+            }
+          },
+          "longshotTjZero": {
+            "runnerId": "b8f00dbf-c8af-4ed7-a180-b6ee8e840878",
+            "medianDecimalPrice": 8.5,
+            "impliedProbability": 0.11764705882352941,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-10-24T16:37:40.637Z",
+            "snapshot": {
+              "decimalPrice": 8.5,
+              "impliedProbability": 0.11764705882352941,
+              "capturedAt": "2026-10-24T16:37:40.637Z",
+              "minutesBeforeScheduledOff": 112.32271666666666,
+              "ratingProbability": 0.12124619442907132,
+              "ratingEdgePercentagePoints": 0.35991356055419116,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "15/2",
+                  "decimalOdds": 8.5
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "15/2",
+                  "decimalOdds": 8.5
+                },
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "15/2",
+                  "decimalOdds": 8.5
+                }
+              ],
+              "medianBookmakerPriceDecimal": 8.5,
+              "medianBookmakerImpliedProbability": 0.11764705882352941,
+              "bestBookmakerPriceDecimal": 8.5,
+              "bestBookmakerPriceFractional": "15/2",
+              "bestBookmakerName": null,
+              "forecastPrice": "14/1",
+              "forecastDecimalPrice": 15
+            }
+          }
         },
         "finalPreRace": {
           "awTissue": null,
           "longshotTjZero": null
         },
         "sp": {
-          "awTissue": null,
-          "longshotTjZero": null
+          "awTissue": 12,
+          "longshotTjZero": 12
         }
       },
-      "winners": [],
-      "settledAt": null,
+      "winners": [
+        "3d9855df-f963-4d11-86a3-cd79fb85ab2f"
+      ],
+      "settledAt": "2026-10-25T03:31:12.336Z",
       "excludedReason": null
     },
     {
@@ -87937,7 +89401,14 @@
             "rank": 1,
             "firstCapturedPriceDecimal": 2.75,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 2,
+              "won": false,
+              "finalSp": 2.1,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "4f2e41f0-7b17-4797-85c3-726c837753b1",
@@ -87947,7 +89418,14 @@
             "rank": 2,
             "firstCapturedPriceDecimal": 2.75,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 3,
+              "won": false,
+              "finalSp": 4,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "2ab684be-b9e7-4cbb-9889-6ddb978c45ee",
@@ -87957,7 +89435,14 @@
             "rank": 3,
             "firstCapturedPriceDecimal": 10,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 7,
+              "won": false,
+              "finalSp": 13,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "ab74acbb-1d71-46c8-9cbe-dec094526dc2",
@@ -87967,7 +89452,14 @@
             "rank": 4,
             "firstCapturedPriceDecimal": 21,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 5,
+              "won": false,
+              "finalSp": 34,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "2d065805-6b8d-4483-b2f7-728eca277204",
@@ -87977,7 +89469,14 @@
             "rank": 5,
             "firstCapturedPriceDecimal": 7.5,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 1,
+              "won": true,
+              "finalSp": 5.5,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": 4.5
+            }
           },
           {
             "runnerId": "0a90f1a4-15e1-4af6-870d-bb0967d138a2",
@@ -87987,7 +89486,14 @@
             "rank": 6,
             "firstCapturedPriceDecimal": 34,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "non_runner",
+              "finishingPosition": null,
+              "won": null,
+              "finalSp": null,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": null
+            }
           },
           {
             "runnerId": "4f1d3a6c-cc9f-47ee-896c-77e17c3bf978",
@@ -87997,7 +89503,14 @@
             "rank": 7,
             "firstCapturedPriceDecimal": 8.5,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 6,
+              "won": false,
+              "finalSp": 15,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "87f0f716-bc76-41cd-915a-ac31e12c22b9",
@@ -88007,7 +89520,14 @@
             "rank": 8,
             "firstCapturedPriceDecimal": 9,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 4,
+              "won": false,
+              "finalSp": 12,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           }
         ],
         "rankOrder": [
@@ -88024,7 +89544,7 @@
         "rank1HorseName": "Flick Of An Eye",
         "rank1Probability": 0.45876669962367894,
         "valueQualified": true,
-        "selectedPriceProfitLoss": null
+        "selectedPriceProfitLoss": -1
       },
       "longshotTjZero": {
         "modelVersion": "LONGSHOT_TJ_ZERO_V1",
@@ -88038,7 +89558,14 @@
             "rank": 1,
             "firstCapturedPriceDecimal": 2.75,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 2,
+              "won": false,
+              "finalSp": 2.1,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "4f2e41f0-7b17-4797-85c3-726c837753b1",
@@ -88048,7 +89575,14 @@
             "rank": 2,
             "firstCapturedPriceDecimal": 2.75,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 3,
+              "won": false,
+              "finalSp": 4,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "2ab684be-b9e7-4cbb-9889-6ddb978c45ee",
@@ -88058,7 +89592,14 @@
             "rank": 3,
             "firstCapturedPriceDecimal": 10,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 7,
+              "won": false,
+              "finalSp": 13,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "ab74acbb-1d71-46c8-9cbe-dec094526dc2",
@@ -88068,7 +89609,14 @@
             "rank": 4,
             "firstCapturedPriceDecimal": 21,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 5,
+              "won": false,
+              "finalSp": 34,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "2d065805-6b8d-4483-b2f7-728eca277204",
@@ -88078,7 +89626,14 @@
             "rank": 5,
             "firstCapturedPriceDecimal": 7.5,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 1,
+              "won": true,
+              "finalSp": 5.5,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": 4.5
+            }
           },
           {
             "runnerId": "4f1d3a6c-cc9f-47ee-896c-77e17c3bf978",
@@ -88088,7 +89643,14 @@
             "rank": 6,
             "firstCapturedPriceDecimal": 8.5,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 6,
+              "won": false,
+              "finalSp": 15,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "87f0f716-bc76-41cd-915a-ac31e12c22b9",
@@ -88098,7 +89660,14 @@
             "rank": 7,
             "firstCapturedPriceDecimal": 9,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 4,
+              "won": false,
+              "finalSp": 12,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "0a90f1a4-15e1-4af6-870d-bb0967d138a2",
@@ -88108,7 +89677,14 @@
             "rank": 8,
             "firstCapturedPriceDecimal": 34,
             "longshotTrainerJockeyAdjusted": true,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "non_runner",
+              "finishingPosition": null,
+              "won": null,
+              "finalSp": null,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": null
+            }
           }
         ],
         "rankOrder": [
@@ -88125,7 +89701,7 @@
         "rank1HorseName": "Flick Of An Eye",
         "rank1Probability": 0.463629174526333,
         "valueQualified": true,
-        "selectedPriceProfitLoss": null
+        "selectedPriceProfitLoss": -1
       },
       "rank1Agreement": true,
       "classification": "AGREE",
@@ -88312,20 +89888,108 @@
           }
         },
         "late": {
-          "awTissue": null,
-          "longshotTjZero": null
+          "awTissue": {
+            "runnerId": "650f8b63-87ae-436d-9e88-ed7ab9d6a28d",
+            "medianDecimalPrice": 2.63,
+            "impliedProbability": 0.3802281368821293,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-10-24T16:37:40.637Z",
+            "snapshot": {
+              "decimalPrice": 2.63,
+              "impliedProbability": 0.3802281368821293,
+              "capturedAt": "2026-10-24T16:37:40.637Z",
+              "minutesBeforeScheduledOff": 142.32271666666668,
+              "ratingProbability": 0.45876669962367894,
+              "ratingEdgePercentagePoints": 7.853856274154963,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "13/8",
+                  "decimalOdds": 2.63
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "13/8",
+                  "decimalOdds": 2.63
+                },
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "13/8",
+                  "decimalOdds": 2.63
+                }
+              ],
+              "medianBookmakerPriceDecimal": 2.63,
+              "medianBookmakerImpliedProbability": 0.3802281368821293,
+              "bestBookmakerPriceDecimal": 2.63,
+              "bestBookmakerPriceFractional": "13/8",
+              "bestBookmakerName": null,
+              "forecastPrice": "5/2",
+              "forecastDecimalPrice": 3.5
+            }
+          },
+          "longshotTjZero": {
+            "runnerId": "650f8b63-87ae-436d-9e88-ed7ab9d6a28d",
+            "medianDecimalPrice": 2.63,
+            "impliedProbability": 0.3802281368821293,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-10-24T16:37:40.637Z",
+            "snapshot": {
+              "decimalPrice": 2.63,
+              "impliedProbability": 0.3802281368821293,
+              "capturedAt": "2026-10-24T16:37:40.637Z",
+              "minutesBeforeScheduledOff": 142.32271666666668,
+              "ratingProbability": 0.463629174526333,
+              "ratingEdgePercentagePoints": 8.34010376442037,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "13/8",
+                  "decimalOdds": 2.63
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "13/8",
+                  "decimalOdds": 2.63
+                },
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "13/8",
+                  "decimalOdds": 2.63
+                }
+              ],
+              "medianBookmakerPriceDecimal": 2.63,
+              "medianBookmakerImpliedProbability": 0.3802281368821293,
+              "bestBookmakerPriceDecimal": 2.63,
+              "bestBookmakerPriceFractional": "13/8",
+              "bestBookmakerName": null,
+              "forecastPrice": "5/2",
+              "forecastDecimalPrice": 3.5
+            }
+          }
         },
         "finalPreRace": {
           "awTissue": null,
           "longshotTjZero": null
         },
         "sp": {
-          "awTissue": null,
-          "longshotTjZero": null
+          "awTissue": 2.1,
+          "longshotTjZero": 2.1
         }
       },
-      "winners": [],
-      "settledAt": null,
+      "winners": [
+        "2d065805-6b8d-4483-b2f7-728eca277204"
+      ],
+      "settledAt": "2026-10-25T03:31:12.336Z",
       "excludedReason": null
     },
     {
@@ -88422,7 +90086,14 @@
             "rank": 1,
             "firstCapturedPriceDecimal": 5,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 6,
+              "won": false,
+              "finalSp": 6,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "ed2d93a3-66ad-4db6-8af1-23131e276bdb",
@@ -88432,7 +90103,14 @@
             "rank": 2,
             "firstCapturedPriceDecimal": 7,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 3,
+              "won": false,
+              "finalSp": 5,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "9efe738f-c67d-494b-ad58-f9680bb14e8a",
@@ -88442,7 +90120,14 @@
             "rank": 3,
             "firstCapturedPriceDecimal": 8,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 1,
+              "won": true,
+              "finalSp": 5.5,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": 4.5
+            }
           },
           {
             "runnerId": "4d040181-f7e0-4bc9-847b-b189c4c7ee4d",
@@ -88452,7 +90137,14 @@
             "rank": 4,
             "firstCapturedPriceDecimal": 10,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 5,
+              "won": false,
+              "finalSp": 19,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "97c5adb5-94a6-41e0-97a7-1d1193504e49",
@@ -88462,7 +90154,14 @@
             "rank": 5,
             "firstCapturedPriceDecimal": 9,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 9,
+              "won": false,
+              "finalSp": 29,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "3efca1d1-7dff-48b9-9b07-464498dba0cf",
@@ -88472,7 +90171,14 @@
             "rank": 6,
             "firstCapturedPriceDecimal": 5,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 4,
+              "won": false,
+              "finalSp": 8.5,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "6c78b1ab-7484-4ee2-9fe0-45bd2014587c",
@@ -88482,7 +90188,14 @@
             "rank": 7,
             "firstCapturedPriceDecimal": 21,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 10,
+              "won": false,
+              "finalSp": 34,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "824f7a90-d336-4190-9316-d917b96e2fe6",
@@ -88492,7 +90205,14 @@
             "rank": 8,
             "firstCapturedPriceDecimal": 9,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "non_runner",
+              "finishingPosition": null,
+              "won": null,
+              "finalSp": null,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": null
+            }
           },
           {
             "runnerId": "ffc883d4-c771-480c-ab3e-4bbc548eec68",
@@ -88502,7 +90222,14 @@
             "rank": 9,
             "firstCapturedPriceDecimal": 15,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "non_runner",
+              "finishingPosition": null,
+              "won": null,
+              "finalSp": null,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": null
+            }
           },
           {
             "runnerId": "0c56f402-1242-4937-a106-02b3c5f16923",
@@ -88512,7 +90239,14 @@
             "rank": 10,
             "firstCapturedPriceDecimal": 17,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 7,
+              "won": false,
+              "finalSp": 34,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "9e73e524-0111-4580-a2b6-450c65faf9e4",
@@ -88522,7 +90256,14 @@
             "rank": 11,
             "firstCapturedPriceDecimal": 8,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 2,
+              "won": false,
+              "finalSp": 2.625,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "62442763-b6dd-4404-9211-1e0eee4f42eb",
@@ -88532,7 +90273,14 @@
             "rank": 12,
             "firstCapturedPriceDecimal": 15,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 11,
+              "won": false,
+              "finalSp": 23,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "26f70a7c-171e-4390-8590-85993a90c261",
@@ -88542,7 +90290,14 @@
             "rank": 13,
             "firstCapturedPriceDecimal": 17,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 8,
+              "won": false,
+              "finalSp": 19,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "c2793e59-cd26-48e3-9aa3-f00525a467e9",
@@ -88552,7 +90307,14 @@
             "rank": 14,
             "firstCapturedPriceDecimal": 34,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "non_runner",
+              "finishingPosition": null,
+              "won": null,
+              "finalSp": null,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": null
+            }
           }
         ],
         "rankOrder": [
@@ -88575,7 +90337,7 @@
         "rank1HorseName": "Age Of Time",
         "rank1Probability": 0.10573124399920761,
         "valueQualified": false,
-        "selectedPriceProfitLoss": null
+        "selectedPriceProfitLoss": -1
       },
       "longshotTjZero": {
         "modelVersion": "LONGSHOT_TJ_ZERO_V1",
@@ -88589,7 +90351,14 @@
             "rank": 1,
             "firstCapturedPriceDecimal": 5,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 6,
+              "won": false,
+              "finalSp": 6,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "ed2d93a3-66ad-4db6-8af1-23131e276bdb",
@@ -88599,7 +90368,14 @@
             "rank": 2,
             "firstCapturedPriceDecimal": 7,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 3,
+              "won": false,
+              "finalSp": 5,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "9efe738f-c67d-494b-ad58-f9680bb14e8a",
@@ -88609,7 +90385,14 @@
             "rank": 3,
             "firstCapturedPriceDecimal": 8,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 1,
+              "won": true,
+              "finalSp": 5.5,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": 4.5
+            }
           },
           {
             "runnerId": "4d040181-f7e0-4bc9-847b-b189c4c7ee4d",
@@ -88619,7 +90402,14 @@
             "rank": 4,
             "firstCapturedPriceDecimal": 10,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 5,
+              "won": false,
+              "finalSp": 19,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "97c5adb5-94a6-41e0-97a7-1d1193504e49",
@@ -88629,7 +90419,14 @@
             "rank": 5,
             "firstCapturedPriceDecimal": 9,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 9,
+              "won": false,
+              "finalSp": 29,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "3efca1d1-7dff-48b9-9b07-464498dba0cf",
@@ -88639,7 +90436,14 @@
             "rank": 6,
             "firstCapturedPriceDecimal": 5,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 4,
+              "won": false,
+              "finalSp": 8.5,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "6c78b1ab-7484-4ee2-9fe0-45bd2014587c",
@@ -88649,7 +90453,14 @@
             "rank": 7,
             "firstCapturedPriceDecimal": 21,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 10,
+              "won": false,
+              "finalSp": 34,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "824f7a90-d336-4190-9316-d917b96e2fe6",
@@ -88659,7 +90470,14 @@
             "rank": 8,
             "firstCapturedPriceDecimal": 9,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "non_runner",
+              "finishingPosition": null,
+              "won": null,
+              "finalSp": null,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": null
+            }
           },
           {
             "runnerId": "ffc883d4-c771-480c-ab3e-4bbc548eec68",
@@ -88669,7 +90487,14 @@
             "rank": 9,
             "firstCapturedPriceDecimal": 15,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "non_runner",
+              "finishingPosition": null,
+              "won": null,
+              "finalSp": null,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": null
+            }
           },
           {
             "runnerId": "0c56f402-1242-4937-a106-02b3c5f16923",
@@ -88679,7 +90504,14 @@
             "rank": 10,
             "firstCapturedPriceDecimal": 17,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 7,
+              "won": false,
+              "finalSp": 34,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "9e73e524-0111-4580-a2b6-450c65faf9e4",
@@ -88689,7 +90521,14 @@
             "rank": 11,
             "firstCapturedPriceDecimal": 8,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 2,
+              "won": false,
+              "finalSp": 2.625,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "62442763-b6dd-4404-9211-1e0eee4f42eb",
@@ -88699,7 +90538,14 @@
             "rank": 12,
             "firstCapturedPriceDecimal": 15,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 11,
+              "won": false,
+              "finalSp": 23,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "c2793e59-cd26-48e3-9aa3-f00525a467e9",
@@ -88709,7 +90555,14 @@
             "rank": 13,
             "firstCapturedPriceDecimal": 34,
             "longshotTrainerJockeyAdjusted": true,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "non_runner",
+              "finishingPosition": null,
+              "won": null,
+              "finalSp": null,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": null
+            }
           },
           {
             "runnerId": "26f70a7c-171e-4390-8590-85993a90c261",
@@ -88719,7 +90572,14 @@
             "rank": 14,
             "firstCapturedPriceDecimal": 17,
             "longshotTrainerJockeyAdjusted": false,
-            "outcome": null
+            "outcome": {
+              "resultStatus": "finished",
+              "finishingPosition": 8,
+              "won": false,
+              "finalSp": 19,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           }
         ],
         "rankOrder": [
@@ -88742,7 +90602,7 @@
         "rank1HorseName": "Age Of Time",
         "rank1Probability": 0.10495239876907683,
         "valueQualified": false,
-        "selectedPriceProfitLoss": null
+        "selectedPriceProfitLoss": -1
       },
       "rank1Agreement": true,
       "classification": "AGREE",
@@ -88929,20 +90789,108 @@
           }
         },
         "late": {
-          "awTissue": null,
-          "longshotTjZero": null
+          "awTissue": {
+            "runnerId": "a0b88522-ec03-4d54-b2f3-fda176fce74b",
+            "medianDecimalPrice": 4.5,
+            "impliedProbability": 0.2222222222222222,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-10-24T16:37:40.637Z",
+            "snapshot": {
+              "decimalPrice": 4.5,
+              "impliedProbability": 0.2222222222222222,
+              "capturedAt": "2026-10-24T16:37:40.637Z",
+              "minutesBeforeScheduledOff": 172.32271666666668,
+              "ratingProbability": 0.10573124399920761,
+              "ratingEdgePercentagePoints": -11.64909782230146,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "7/2",
+                  "decimalOdds": 4.5
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "7/2",
+                  "decimalOdds": 4.5
+                },
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "7/2",
+                  "decimalOdds": 4.5
+                }
+              ],
+              "medianBookmakerPriceDecimal": 4.5,
+              "medianBookmakerImpliedProbability": 0.2222222222222222,
+              "bestBookmakerPriceDecimal": 4.5,
+              "bestBookmakerPriceFractional": "7/2",
+              "bestBookmakerName": null,
+              "forecastPrice": "10/1",
+              "forecastDecimalPrice": 11
+            }
+          },
+          "longshotTjZero": {
+            "runnerId": "a0b88522-ec03-4d54-b2f3-fda176fce74b",
+            "medianDecimalPrice": 4.5,
+            "impliedProbability": 0.2222222222222222,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-10-24T16:37:40.637Z",
+            "snapshot": {
+              "decimalPrice": 4.5,
+              "impliedProbability": 0.2222222222222222,
+              "capturedAt": "2026-10-24T16:37:40.637Z",
+              "minutesBeforeScheduledOff": 172.32271666666668,
+              "ratingProbability": 0.10495239876907683,
+              "ratingEdgePercentagePoints": -11.726982345314537,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "7/2",
+                  "decimalOdds": 4.5
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "7/2",
+                  "decimalOdds": 4.5
+                },
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "7/2",
+                  "decimalOdds": 4.5
+                }
+              ],
+              "medianBookmakerPriceDecimal": 4.5,
+              "medianBookmakerImpliedProbability": 0.2222222222222222,
+              "bestBookmakerPriceDecimal": 4.5,
+              "bestBookmakerPriceFractional": "7/2",
+              "bestBookmakerName": null,
+              "forecastPrice": "10/1",
+              "forecastDecimalPrice": 11
+            }
+          }
         },
         "finalPreRace": {
           "awTissue": null,
           "longshotTjZero": null
         },
         "sp": {
-          "awTissue": null,
-          "longshotTjZero": null
+          "awTissue": 6,
+          "longshotTjZero": 6
         }
       },
-      "winners": [],
-      "settledAt": null,
+      "winners": [
+        "9efe738f-c67d-494b-ad58-f9680bb14e8a"
+      ],
+      "settledAt": "2026-10-25T03:31:12.336Z",
       "excludedReason": null
     }
   ]
