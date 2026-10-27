@@ -1,3 +1,4 @@
+import { captureProspectiveGoing, type ProspectiveGoing } from "./prospective-going";
 import { readFile, writeFile, mkdir, rename } from "node:fs/promises";
 import { dirname } from "node:path";
 import { createHash } from "node:crypto";
@@ -99,7 +100,7 @@ export type TissueForwardRunner = {
   marketRank: number | null;
 };
 
-export type TissueForwardRace = {
+export type TissueForwardRace = ProspectiveGoing & {
   raceDate: string;
   course: string;
   raceTime: string;
@@ -178,6 +179,7 @@ export function buildTissueForwardRace(input: {
       liveSemanticsVersion: TURF_TISSUE_LIVE_SEMANTICS_VERSION,
       liveSemanticsEffectiveAt: TURF_TISSUE_LIVE_SEMANTICS_EPOCH,
     } : {}),
+    ...captureProspectiveGoing(input.race.going, recordedAt),
     recordedAt: recordedAt.toISOString(),
     recordedPreRace: recordedAt < input.race.raceDateTime,
     runners: scored.map((entry, index) => ({

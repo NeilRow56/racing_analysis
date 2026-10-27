@@ -1,4 +1,6 @@
+import { prospectiveGoingFields, type ProspectiveGoing } from "./prospective-going";
 import { frozenBestL3SpeedRanks } from "./tissue-speed-rank-watch";
+import { getTissueInputReliability, type TissueInputReliability } from "./tissue-input-reliability";
 import { TURF_VALUE_CONFIG, AW_VALUE_CONFIG, HURDLE_VALUE_CONFIG } from "./tissue-value-config";
 import type { TissueForwardData } from "./tissue-forward";
 import { TISSUE_V3_EPOCH, TISSUE_V3_MODEL_VERSION, TISSUE_V3_LIVE_SEMANTICS_VERSION } from "./tissue-forward";
@@ -46,17 +48,19 @@ export function buildProspectiveTissueSources(input: {
         if (results.has(key)) throw new Error("Duplicate prospective Tissue result evidence");
         results.set(key, runner.outcome);
         priceObservations.push({ family: race.family, tissueRank: runner.tissueRank, probability: runner.probability,
-          capturedPrice: runner.marketPrice, bestL3SpeedRank: speedRanks.get(runner.runnerId) ?? null, outcome: runner.outcome });
+          raceId: race.raceId, capturedAt: race.capturedAt,
+          inputReliability: getTissueInputReliability({ family: race.family, featureNames: race.featureNames, modelInputs: runner.modelInputs }),
+          ...prospectiveGoingFields(race), capturedPrice: runner.marketPrice, bestL3SpeedRank: speedRanks.get(runner.runnerId) ?? null, outcome: runner.outcome });
       }
     }
   }
   const seen = new Set<string>();
-  const add = (family: ProspectiveTissueObservation["family"], raceId: string, runnerId: string, tissueRank: number | null, probability: number | null, outcome: ValueOutcome | null, bestL3SpeedRank: number | null) => {
+  const add = (family: ProspectiveTissueObservation["family"], raceId: string, runnerId: string, tissueRank: number | null, probability: number | null, outcome: ValueOutcome | null, bestL3SpeedRank: number | null, going: ProspectiveGoing, capturedAt: string, inputReliability: TissueInputReliability) => {
     if (tissueRank !== 1 && tissueRank !== 2) return;
     const key = `${family}|${raceId}|${runnerId}`;
     if (seen.has(key)) throw new Error("Duplicate primary prospective Tissue observation");
     seen.add(key);
-    observations.push({ family, tissueRank, probability: probability!, capturedPrice: null, outcome, bestL3SpeedRank });
+    observations.push({ ...prospectiveGoingFields(going), family, raceId, capturedAt, inputReliability, tissueRank, probability: probability!, capturedPrice: null, outcome, bestL3SpeedRank });
   };
   const validBook = (rows: Array<{ runnerId: string; probability: number | null }>) => rows.length >= 2 &&
     new Set(rows.map(r => r.runnerId)).size === rows.length && rows.every(r => r.probability !== null && Number.isFinite(r.probability) && r.probability > 0 && r.probability <= 1) &&
@@ -81,7 +85,8 @@ export function buildProspectiveTissueSources(input: {
         }
         if (!outcome) unresolvedResults.push(`${race.raceId}|${runner.runnerId}`);
       }
-      add("TURF", race.raceId, runner.runnerId, runner.tissueRank, runner.probability, outcome, speedRanks.get(runner.runnerId) ?? null);
+      add("TURF", race.raceId, runner.runnerId, runner.tissueRank, runner.probability, outcome, speedRanks.get(runner.runnerId) ?? null, race, race.recordedAt,
+        getTissueInputReliability({ family: "TURF", featureNames: TURF_VALUE_CONFIG.featureNames, modelInputs: runner.modelInputs }));
     }
   }
   for (const [data, isAw] of [[input.aw, true], [input.jump, false]] as const) for (const race of data.races) {
@@ -96,7 +101,8 @@ export function buildProspectiveTissueSources(input: {
       const result = runner.outcome;
       const outcome = race.settledAt && result ? modelOutcome({ finishPosition: result.finishingPosition, resultStatus: result.resultStatus,
         winner: result.won, deadHeatDivisor: result.deadHeatDivisor }, race.settledAt) : null;
-      add(family, race.raceId, runner.runnerId, runner.rank, runner.probability, outcome, speedRanks.get(runner.runnerId) ?? null);
+      add(family, race.raceId, runner.runnerId, runner.rank, runner.probability, outcome, speedRanks.get(runner.runnerId) ?? null, race, race.recordedAt,
+        getTissueInputReliability({ family, featureNames: isAw ? AW_VALUE_CONFIG.featureNames : HURDLE_VALUE_CONFIG.featureNames, modelInputs: runner.modelInputs }));
     }
   }
   return { observations, priceObservations, quarantined, unresolvedResults };

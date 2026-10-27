@@ -1,3 +1,4 @@
+import { captureProspectiveGoing, type ProspectiveGoing } from "./prospective-going";
 import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { isVoidBetResultStatus, settleSelection } from "./backtest";
@@ -27,7 +28,7 @@ export const RANK_ONE_SOURCES: Record<RankOneFamily, string> = {
 };
 // Fixed 21.0 / 26.0 SP diagnostic did not establish robust evidence for a live cap.
 export const RANK_ONE_CAPS: Record<RankOneFamily, 21 | 26 | null> = { TURF: null, HURDLE: null, CHASE: null, AW: null };
-export type RankOneObservation = {
+export type RankOneObservation = ProspectiveGoing & {
   contractVersion?: typeof RANK_ONE_CONTRACT_VERSION;
   contractEffectiveAt?: typeof RANK_ONE_CONTRACT_EFFECTIVE_AT;
   // Optional only for legacy rows; every new capture freezes the authoritative probability.
@@ -205,6 +206,7 @@ export function buildRankOneObservations(input: {
     return [{ version: RANK_ONE_VERSION, contractVersion: RANK_ONE_CONTRACT_VERSION, contractEffectiveAt: RANK_ONE_CONTRACT_EFFECTIVE_AT, modelProbability: leader.modelProbability, raceId: race.raceId, runnerId: leader.runnerId, horseId: selected.runner.horseId, horseName: selected.runner.horseName,
         ...(leader.family === "TURF" ? { liveSemanticsVersion: TISSUE_V3_LIVE_SEMANTICS_VERSION, liveSemanticsEffectiveAt: TISSUE_V3_EPOCH } : {}),
         ...(leader.awV2 ? { liveSemanticsVersion: AW_TISSUE_V2_SCORER, liveSemanticsEffectiveAt: AW_TISSUE_V2_EPOCH, modelInputs: [...leader.modelInputs!], featureCutoffAt: leader.featureCutoffAt } : {}),
+        ...captureProspectiveGoing(race.going, now, leader.family === "AW"),
         family: leader.family, raceDate, scheduledOff: race.raceDateTime.toISOString(), course: m.courseName, raceName: race.raceName,
         rankSource: leader.rankSource, modelHash: leader.modelHash, rank: 1, firstCapturedAt: now.toISOString(), capturedFieldRunnerIds: active.map(r => r.runnerId),
         market: { source: "sporting_life_median_bookmaker_at_capture_v1", medianBookmakerDecimal: price, normalizedProbability: completeMarket ? (1 / price!) / total! : null,

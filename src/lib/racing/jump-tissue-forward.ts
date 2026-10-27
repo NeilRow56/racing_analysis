@@ -1,3 +1,4 @@
+import { captureProspectiveGoing, type ProspectiveGoing } from "./prospective-going";
 import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { isVoidBetResultStatus, settleSelection } from "./backtest";
@@ -37,7 +38,7 @@ export type JumpTissueRunner = JumpTissuePrediction & {
   outcome: Outcome | null;
 };
 
-export type JumpTissueRace = Omit<JumpTissueBook, "runners"> & {
+export type JumpTissueRace = Omit<JumpTissueBook, "runners"> & ProspectiveGoing & {
   hurdleValueRule?: HurdleValueRuleState;
   raceId: string;
   sourceId: string | null;
@@ -155,6 +156,7 @@ export function buildJumpTissueRace(input: {
     subtype: subtype.subtype,
     nhFlat: subtype.nhFlat,
     fieldSize: book.activeRunnerCount,
+    ...captureProspectiveGoing(input.race.going, recordedAt),
     recordedAt: recordedAt.toISOString(),
     recordedPreRace: true,
     modelVersion: JUMP_TISSUE_VERSION,

@@ -128,3 +128,27 @@ test("normal Tissue badge markup stays identical for other or unavailable Speed 
   const noScore = frozen({ bestL3SpeedRank: 2 }); delete (noScore as Partial<FrozenValueDisplay>).probability;
   assert.ok(!render(noScore).includes("bg-red-50"));
 });
+
+test("amber Data caution is Top-2 only and independent of the unchanged pale-red Speed badge", () => {
+  const caution = { level: "CAUTION", reasons: ["Missing Turf performance inputs."] } as const;
+  for (const watch of [false, true]) for (const sparse of [false, true]) {
+    const row = frozen({ bestL3SpeedRank: watch ? 2 : 1, inputReliability: sparse ? { ...caution, reasons: [...caution.reasons] } : { level: "GOOD", reasons: [] } });
+    const before = JSON.stringify(row), html = render(row);
+    assert.equal(html.includes('aria-label="Tissue input data caution"'), sparse);
+    assert.equal(html.includes("border-red-200 bg-red-50"), watch);
+    assert.equal(html.includes("border-amber-300"), sparse);
+    assert.match(text(html), /Tissue 1/); assert.match(text(html), /Value 1/);assert.ok(html.includes("10.40% frozen"));
+    const value = renderToStaticMarkup(<FrozenValueRankCell runner={{ tissueValue: row }} kind="valueRank" />);
+    const control = renderToStaticMarkup(<FrozenValueRankCell runner={{ tissueValue: { ...row, inputReliability: undefined } }} kind="valueRank" />);
+    assert.equal(value, control);assert.equal(JSON.stringify(row), before);
+    if (sparse) {assert.ok(html.includes("this Tissue estimate uses materially sparse or incomplete pre-race inputs."));assert.ok(html.includes("Missing Turf performance inputs."));}
+  }
+  for (const rank of [1, 2, 3]) {
+    const html = render(frozen({ tissueRank: rank, inputReliability: { ...caution, reasons: [...caution.reasons] } }));
+    assert.equal(html.includes('aria-label="Tissue input data caution"'), rank <= 2);
+  }
+  for (const reliability of [undefined, { level: "GOOD", reasons: [] }, { level: "UNKNOWN", reasons: ["Unavailable"] }] as const) {
+    const html = render(frozen({ inputReliability: reliability ? { ...reliability, reasons: [...reliability.reasons] } : undefined }));
+    assert.ok(!html.includes('aria-label="Tissue input data caution"'));assert.ok(!html.includes("Unavailable"));
+  }
+});

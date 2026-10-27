@@ -1,5 +1,6 @@
 import { summarizeTodayMarketPrice, type TodayRunner } from "@/lib/racing/todays-racing";
 import { isTissueTop2SpeedRankWatch, TISSUE_SPEED_RANK_WATCH_TOOLTIP } from "@/lib/racing/tissue-speed-rank-watch";
+import { TISSUE_INPUT_RELIABILITY_TOOLTIP } from "@/lib/racing/tissue-input-reliability";
 
 export function AwTissueCell({ runner }: { runner: TodayRunner }) {
   const prediction = runner.awTissue;
@@ -79,12 +80,15 @@ export function FrozenValueRankCell({ runner, kind }: { runner: FrozenRankRunner
   const title = `${FROZEN_RANK_TOOLTIPS[kind]} ${available ? provenance : `${missing} ${provenance}`}`;
   const disagreement = available && kind === "valueRank" && typeof ratio === "number" && Number.isFinite(ratio) && ratio >= 1.5;
   const watch = available && kind === "tissueRank" && isTissueTop2SpeedRankWatch({ tissueRank: row?.tissueRank, bestL3SpeedRank: row?.bestL3SpeedRank });
+  const caution = available && kind === "tissueRank" && (row?.tissueRank === 1 || row?.tissueRank === 2) && row.inputReliability?.level === "CAUTION";
   return <div className="tabular-nums" data-rank-kind={kind} title={title}>
     <span title={watch ? TISSUE_SPEED_RANK_WATCH_TOOLTIP : undefined} className={`inline-flex items-center gap-1 rounded-sm border ${watch ? "border-red-200 bg-red-50" : "border-slate-200 bg-slate-50"} px-1.5 py-0.5 text-xs whitespace-nowrap`}>
       <span className="text-slate-600">{rankLabels[kind]}</span>
       <span className="font-semibold">{available ? row![kind] : "—"}</span>
       {disagreement ? <span className="text-amber-700" role="img" aria-label="Large model/market disagreement" title="Large model/market disagreement">●</span> : null}
     </span>
+    {caution ? <span className="ml-1 inline-flex rounded-sm border border-amber-300 px-1 py-0.5 text-[10px] text-amber-800" aria-label="Tissue input data caution"
+      title={`${TISSUE_INPUT_RELIABILITY_TOOLTIP}${row.inputReliability!.reasons.length ? ` ${row.inputReliability!.reasons.join(" ")}` : ""}`}>Data</span> : null}
     {kind === "tissueRank" && available ? <div className="mt-0.5 text-[10px] text-slate-500">{(probability! * 100).toFixed(2)}% frozen</div> : null}
   </div>;
 }

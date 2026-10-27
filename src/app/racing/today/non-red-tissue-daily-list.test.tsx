@@ -93,3 +93,12 @@ test("Today summary consumes final attached racecard data and the shared watch h
   assert.match(helper, /!isTissueTop2SpeedRankWatch\(tissueValue\)/);
   assert.doesNotMatch(helper, /valueRank|bestL3SpeedRank\s*===/);
 });
+
+test("input reliability never changes the existing non-red daily shortlist", () => {
+  const card = meeting("Test", "14:00", [runner(1, 1), runner(2, 4)]);
+  const before = buildNonRedTissueDailyList([card]);
+  for (const level of ["GOOD", "CAUTION", "UNKNOWN"] as const) {
+    for (const runner of card.races[0].runners) runner.tissueValue!.inputReliability = { level, reasons: [] };
+    assert.deepEqual(buildNonRedTissueDailyList([card]), before);
+  }
+});

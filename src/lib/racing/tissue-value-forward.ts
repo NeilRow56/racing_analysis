@@ -1,3 +1,4 @@
+import { captureProspectiveGoing } from "./prospective-going";
 import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { z } from "zod";
@@ -28,6 +29,7 @@ const runnerSchema = z.object({
   valueRank: rank, probabilityEdgeRank: rank, modelMarketRatioRank: rank, outcome: outcomeSchema.nullable(),
 }).strict();
 const raceSchema = z.object({
+  goingRaw: z.string().nullable().optional(), goingCanonical: z.string().nullable().optional(),
   version: z.string().min(1), family: z.enum(TISSUE_VALUE_FAMILIES), raceId: z.string().min(1), sourceId: z.string().nullable(),
   raceDate: z.iso.date(), course: z.string().min(1), raceName: z.string().nullable(), scheduledOff: timestamp, capturedAt: timestamp,
   modelVersion: z.string().min(1), modelChecksum: z.string().regex(/^[a-f0-9]{64}$/), scorerVersion: z.string().min(1),
@@ -188,7 +190,7 @@ export function buildValueRace(input: {
   runners.forEach((r, i) => { r.valueRank = values[i]; r.probabilityEdgeRank = edges[i]; r.modelMarketRatioRank = ratios[i]; });
   const parsed = raceSchema.safeParse({ version: config.version, family: config.family, raceId: race.raceId, sourceId: race.sourceId,
     raceDate: input.raceDate, course: input.course, raceName: race.raceName, scheduledOff: race.raceDateTime.toISOString(), capturedAt: now.toISOString(),
-    ...book, runners, marketSource: VALUE_MARKET_SOURCE, marketBookSum: total, declaredRunnerCount: race.declaredRunnerCount });
+    ...book, ...captureProspectiveGoing(race.going, now, config.family === "AW"), runners, marketSource: VALUE_MARKET_SOURCE, marketBookSum: total, declaredRunnerCount: race.declaredRunnerCount });
   return parsed.success && validValueCapture(parsed.data, config) ? parsed.data : null;
 }
 

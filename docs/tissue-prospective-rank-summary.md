@@ -52,3 +52,82 @@ No new command is required. Refresh/revisit the dynamic Research page after exis
 ## Verified snapshot
 
 Primary pooled captured/settled/winners: Rank 1 142/100/21; Rank 2 142/97/18; Top 2 284/197/39. Model expected: 24.255295, 15.609443, 39.864738. Secondary price n/P&L: Rank 1 93/−£5.69; Rank 2 90/−£3.59; Top 2 183/−£9.28. These are observations from the files during implementation, not hardcoded UI totals.
+
+## Exact going research metadata
+
+Exact going research metadata has an additive capture contract effective from
+**2026-10-25T16:34:47.000Z** (`EXACT_GOING_CAPTURE_EPOCH` in
+`src/lib/racing/prospective-going.ts`). This is the earliest eligible capture
+timestamp for the new code, not a claim that an actual capture job ran at that
+instant. The first new observation created by the updated normal workflow starts
+coverage for that race. Existing observations, including ones whose timestamps
+are later than this boundary but were created by older code, are never enriched.
+Missing source going remains missing; the epoch does not guarantee coverage.
+
+The authoritative available pre-race field is `TodayRace.going`. The Sporting
+Life racecard importer reads `props.pageProps.race.race_summary.going` into
+`races.going` (`upsert_racecard_race` in `scraper/sporting_life/importing.py`).
+`getRacecardRowsWhere` selects `races.going`, and Today's meeting construction
+copies `row.going` to `TodayRace.going`. The source is available at capture time
+when supplied; it can be null. Importer/test examples include `Good` and `Soft`.
+No missing value is inferred from the binary model features, another capture,
+a result payload, another race, the course or an external service.
+
+The mutable database column can be revised by later racecard/result imports.
+New captures freeze the value in the pre-race object supplied to the existing
+capture operation. They do not consult later database going. Existing guards
+still reject post-off/result-bearing captures. This records what the application
+knew when it captured the race, without claiming a separate upstream publication
+timestamp or guaranteeing that source data are complete.
+
+Two optional nullable fields are added to the existing JSON snapshots:
+
+- `goingRaw`: original source string, including punctuation, spacing and mixed
+  descriptions. Null means no source text (or AW).
+- `goingCanonical`: lexical normalisation of that same string: uppercase,
+  runs of punctuation/whitespace replaced with `_`, boundary underscores removed.
+  Empty/whitespace-only text yields null, never `GOOD`. Unrecognised nonempty
+  wording retains all its words rather than being forced into a known severity.
+
+There is no existing reusable exact-going canonicaliser in the capture path.
+The historical going-form parser extracts multiple terms, while private research
+scripts use broad/lossy groupings. The new shared `canonicalGoing` helper therefore
+performs lexical normalisation only; it does not define a severity taxonomy.
+Examples: `Good to Soft` → `GOOD_TO_SOFT`; `Yielding to Soft` →
+`YIELDING_TO_SOFT`; `Soft to Heavy` → `SOFT_TO_HEAVY`; `Soft, heavy in places` →
+`SOFT_HEAVY_IN_PLACES`; `Good to Soft, Soft in places` →
+`GOOD_TO_SOFT_SOFT_IN_PLACES`. Future diagnostics must document any grouping of
+mixed descriptions; these are not silently reduced to `SOFT` or `HEAVY`.
+
+Turf and Jump primary ledgers store this race-wide context once on each frozen
+race book (including Hurdle and Chase). The separate Value ledgers store it once
+on their own race snapshot because their capture time and model cohort can
+differ. `buildProspectiveTissueSources` exposes the owning book's fields on
+each runner observation, so reports can group directly by `goingCanonical` and
+inspect `goingRaw`. The primary cohort never borrows Value going. The separate
+runner-level Rank 1 Monitoring ledger stores the same fields for parity.
+
+AW Value and Rank 1 records use null going; primary AW going remains absent and
+projects as null. Existing primary AW `surfaceMappingVersion` and
+`surfaceFeatureEvidence` remain separate and unchanged. `Standard`, Tapeta and
+Polytrack are not treated as turf ground.
+
+The fields are optional without deserialisation defaults: old JSON files still
+load, old entries retain their exact structure, and legacy projected observations
+show null. Existing JSON/header/model/feature versions are retained because this
+is backward-compatible optional context. No persisted historical observations
+were backfilled or rewritten. Duplicate capture keeps the original snapshot;
+refresh, settlement and `research:after` retain frozen going. The Value file's
+existing immutable-capture guard also rejects changing or adding going on an
+already stored entry.
+
+`research:morning` requires no changes: it imports racecards, calls
+`rank-one:sync` and `tissue-value:sync`, and runs the existing `tissue:sync` and
+`jump-tissue:sync` capture paths. Each uses the shared metadata capture helper.
+Refreshing a race already captured without going does not fill it in later.
+
+Going is **research metadata only**. The existing `going_soft`/`going_firm`
+features, all feature vectors, coefficients, scoring, probabilities, native
+Tissue ranks, Value/market calculations, membership, prices, settlement and UI
+remain unchanged. Future Soft/Heavy diagnostics are supported for new records
+with non-null metadata, with their own sample and coverage checks.

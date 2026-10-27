@@ -2,6 +2,7 @@ import type { TissueValueData, TissueValueRace, TissueValueRunner } from "./tiss
 import type { TissueValueFamily, TissueValueFamilyFilter } from "./tissue-value-metrics";
 import type { TodayMeeting } from "./todays-racing";
 import { frozenBestL3SpeedRanks } from "./tissue-speed-rank-watch";
+import { getTissueInputReliability, type TissueInputReliability } from "./tissue-input-reliability";
 
 export type DisplayValueRunner = Omit<TissueValueRunner, "modelInputs" | "quotes"> & { bestL3SpeedRank?: number | null };
 export type DisplayValueRace = Omit<TissueValueRace, "runners" | "featureNames"> & { runners: DisplayValueRunner[] };
@@ -14,6 +15,7 @@ export function filterValueRaces<T extends { family: TissueValueFamily }>(races:
 export type FrozenValueDisplay = Pick<TissueValueRunner, "probability" | "tissueRank" | "valueRank" | "marketRank" | "marketPrice" | "marketProbability" | "modelMarketRatio"> & {
   family: TissueValueFamily; modelVersion: string; valueTrackerVersion: string; capturedAt: string;
   bestL3SpeedRank?: number | null;
+  inputReliability?: TissueInputReliability;
 };
 /** Projection only: both screens consume these persisted ranks; no UI value-rank calculation. */
 export function frozenValueIndex(datasets: TissueValueData[]): ReadonlyMap<string, FrozenValueDisplay> {
@@ -25,7 +27,8 @@ export function frozenValueIndex(datasets: TissueValueData[]): ReadonlyMap<strin
       if (index.has(key)) throw new Error("Ambiguous frozen value observation");
       index.set(key, { probability: row.probability, tissueRank: row.tissueRank, valueRank: row.valueRank, marketRank: row.marketRank, marketPrice: row.marketPrice,
         marketProbability: row.marketProbability, modelMarketRatio: row.modelMarketRatio, family: race.family, modelVersion: race.modelVersion, valueTrackerVersion: race.version, capturedAt: race.capturedAt,
-        bestL3SpeedRank: speedRanks.get(row.runnerId) ?? null });
+        bestL3SpeedRank: speedRanks.get(row.runnerId) ?? null,
+        inputReliability: getTissueInputReliability({ family: race.family, featureNames: race.featureNames, modelInputs: row.modelInputs }) });
     }
   }
   return index;

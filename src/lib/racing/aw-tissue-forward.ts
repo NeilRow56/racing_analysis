@@ -1,3 +1,4 @@
+import type { ProspectiveGoing } from "./prospective-going";
 import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { calculateAwDRatingCoverage, calculateAwRaceRatings } from "./aw-performance-rating";
@@ -27,7 +28,7 @@ export const AW_TISSUE_FORWARD_VERSION = "aw_tissue_forward_v1";
 export const AW_TISSUE_FORWARD_PATH = "data/research/aw-tissue-forward-v1.json";
 type Outcome = { resultStatus: string | null; finishingPosition: number | null; won: boolean | null; finalSp: number | null; deadHeatDivisor: number; finalSpProfitLoss: number | null };
 export type AwTissueRunner = AwTissuePrediction & { horseId: string; horseName: string; outcome: Outcome | null };
-export type AwTissueRace = Omit<AwTissueBook, "runners"> & {
+export type AwTissueRace = Omit<AwTissueBook, "runners"> & ProspectiveGoing & {
   featureCutoffAt?: string;
   liveSemanticsVersion?: string;
   liveSemanticsEffectiveAt?: string;

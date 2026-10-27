@@ -175,3 +175,21 @@ test("shadow Speed ranks come from each book's frozen full field without changin
   assert.ok(incomplete.observations.filter(r => r.family === "TURF").every(r => r.bestL3SpeedRank === null));
   assert.deepEqual(summarizeProspectiveTissue(incomplete.observations), baseline);
 });
+
+test("reliability projects each capture's own frozen vector and clock, never outcomes or another cohort's inputs", async () => {
+  const { VALUE_COHORTS } = await import("./tissue-value-config");
+  const { frozenValueIndex } = await import("./tissue-value-view");
+  const input = fixture(), names = VALUE_COHORTS[0].featureNames;
+  const good = names.map(() => 0);good[names.indexOf("log_prior_runs")] = Math.log1p(4);
+  input.turf.races[0].runners.forEach(r => { r.modelInputs = [...good]; });
+  const value = input.cohorts[0].data.races[0];value.featureNames = [...names];
+  value.runners.forEach(r => { r.modelInputs = [...good];r.modelInputs[names.indexOf("best_l3_turf_speed_missing")] = 1; });
+  const before = JSON.stringify(input), result = buildProspectiveTissueSources(input);
+  assert.ok(result.observations.filter(r => r.family === "TURF").every(r => r.inputReliability?.level === "GOOD" && r.capturedAt === at && r.raceId === "turf"));
+  assert.ok(result.priceObservations.every(r => r.inputReliability?.level === "CAUTION"));
+  assert.ok(result.observations.filter(r => r.family === "AW").every(r => r.inputReliability?.level === "UNKNOWN"));
+  assert.equal(JSON.stringify(input), before);
+  for (const projected of frozenValueIndex([input.cohorts[0].data]).values()) assert.equal(projected.inputReliability?.level, "CAUTION");
+  input.turf.races[0].runners[0].modelInputs = undefined;
+  assert.equal(buildProspectiveTissueSources(input).observations.find(r => r.family === "TURF")?.inputReliability?.level, "UNKNOWN");
+});

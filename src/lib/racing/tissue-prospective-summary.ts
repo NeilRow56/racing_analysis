@@ -1,12 +1,17 @@
+import type { ProspectiveGoing } from "./prospective-going";
+import type { TissueInputReliability } from "./tissue-input-reliability";
 import { TISSUE_VALUE_FAMILIES, type TissueValueFamily, type ValueOutcome } from "./tissue-value-metrics";
 
 export const TISSUE_PROSPECTIVE_START = "2026-10-20";
-export type ProspectiveTissueObservation = {
+export type ProspectiveTissueObservation = ProspectiveGoing & {
   family: TissueValueFamily;
   tissueRank: number;
   probability: number;
   capturedPrice: number | null;
   bestL3SpeedRank?: number | null;
+  inputReliability?: TissueInputReliability;
+  raceId?: string;
+  capturedAt?: string;
   outcome: ValueOutcome | null;
 };
 
