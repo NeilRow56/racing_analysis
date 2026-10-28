@@ -1,3 +1,5 @@
+import { attachChaseSpeedState, loadChaseSpeedSnapshots } from "@/lib/racing/chase-speed-reliability-capture";
+import { ChaseSpeedReliabilityShadow } from "./chase-speed-reliability-shadow";
 import { buildProspectiveTissueSources } from "@/lib/racing/tissue-prospective-sources";
 import { TissueProspectiveSummary } from "./tissue-prospective-summary";
 import { TissueSpeedRankWatch } from "./tissue-speed-rank-watch";
@@ -89,6 +91,9 @@ export default async function ForwardValuePage({ searchParams }: PageProps) {
     searchParams,
   ]);
   const prospectiveTissue = buildProspectiveTissueSources({ turf: tissueData, aw: awTissueData, jump: jumpTissueData, cohorts: valueCohorts });
+  const chaseSpeedSnapshots = await loadChaseSpeedSnapshots();
+  const chaseSpeed = { observations: attachChaseSpeedState(prospectiveTissue.observations, chaseSpeedSnapshots, "primary"),
+    priceObservations: attachChaseSpeedState(prospectiveTissue.priceObservations, chaseSpeedSnapshots, "price") };
   const connection = createDbConnection();
   let currentCardStatuses;
   let canonicalResultRaceIds;
@@ -120,7 +125,7 @@ export default async function ForwardValuePage({ searchParams }: PageProps) {
   return (
     <ResearchPageLayout
       date={raceDate}
-      active={<><HurdleRecencyResearchSection data={hurdleRecencyData} /><TissueProspectiveSummary {...prospectiveTissue} /><TissueInputReliabilityWatch {...prospectiveTissue} /><TissueSpeedRankWatch {...prospectiveTissue} /><TissueValueMonitoring cohorts={valueCohorts} date={raceDate} /></>}
+      active={<><HurdleRecencyResearchSection data={hurdleRecencyData} /><TissueProspectiveSummary {...prospectiveTissue} /><TissueInputReliabilityWatch {...prospectiveTissue} /><TissueSpeedRankWatch {...prospectiveTissue} /><ChaseSpeedReliabilityShadow {...chaseSpeed} /><TissueValueMonitoring cohorts={valueCohorts} date={raceDate} /></>}
       secondary={<><RankOneMonitoring data={rankOneData} date={raceDate} /><SecondaryResearchMonitoring dashboard={dashboard} /></>}
     >
       <DailyResearchDashboard dashboard={dashboard} excludeSecondaryMonitoring>

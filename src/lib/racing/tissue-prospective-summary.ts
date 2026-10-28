@@ -10,6 +10,7 @@ export type ProspectiveTissueObservation = ProspectiveGoing & {
   capturedPrice: number | null;
   bestL3SpeedRank?: number | null;
   inputReliability?: TissueInputReliability;
+  runnerId?: string;
   raceId?: string;
   capturedAt?: string;
   outcome: ValueOutcome | null;

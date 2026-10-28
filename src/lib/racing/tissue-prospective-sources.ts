@@ -48,7 +48,7 @@ export function buildProspectiveTissueSources(input: {
         if (results.has(key)) throw new Error("Duplicate prospective Tissue result evidence");
         results.set(key, runner.outcome);
         priceObservations.push({ family: race.family, tissueRank: runner.tissueRank, probability: runner.probability,
-          raceId: race.raceId, capturedAt: race.capturedAt,
+          runnerId: runner.runnerId, raceId: race.raceId, capturedAt: race.capturedAt,
           inputReliability: getTissueInputReliability({ family: race.family, featureNames: race.featureNames, modelInputs: runner.modelInputs }),
           ...prospectiveGoingFields(race), capturedPrice: runner.marketPrice, bestL3SpeedRank: speedRanks.get(runner.runnerId) ?? null, outcome: runner.outcome });
       }
@@ -60,7 +60,7 @@ export function buildProspectiveTissueSources(input: {
     const key = `${family}|${raceId}|${runnerId}`;
     if (seen.has(key)) throw new Error("Duplicate primary prospective Tissue observation");
     seen.add(key);
-    observations.push({ ...prospectiveGoingFields(going), family, raceId, capturedAt, inputReliability, tissueRank, probability: probability!, capturedPrice: null, outcome, bestL3SpeedRank });
+    observations.push({ ...prospectiveGoingFields(going), family, raceId, runnerId, capturedAt, inputReliability, tissueRank, probability: probability!, capturedPrice: null, outcome, bestL3SpeedRank });
   };
   const validBook = (rows: Array<{ runnerId: string; probability: number | null }>) => rows.length >= 2 &&
     new Set(rows.map(r => r.runnerId)).size === rows.length && rows.every(r => r.probability !== null && Number.isFinite(r.probability) && r.probability > 0 && r.probability <= 1) &&

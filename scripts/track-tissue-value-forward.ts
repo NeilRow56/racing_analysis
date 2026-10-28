@@ -1,3 +1,4 @@
+import { freezeChaseSpeedState } from "@/lib/racing/chase-speed-reliability-capture";
 import { pathToFileURL } from "node:url";
 import { resolve } from "node:path";
 import { createDbConnection } from "@/db";
@@ -23,6 +24,7 @@ export async function main(args: string[]) {
   if (captureAllowed || (command !== "summary" && pending.length)) {
     const connection = createDbConnection();
     try {
+      let captureMeetings: import("@/lib/racing/todays-racing").TodayMeeting[] = [];
       let additions: ReturnType<typeof buildAllFamilyValueRaces> = [];
       if (captureAllowed) {
         const known = new Set(snapshots.flatMap(c => c.data.races.map(r => r.raceId)));
@@ -30,13 +32,20 @@ export async function main(args: string[]) {
         const capture = currentDayProspectiveCapture(today);
         if (capture.skipped) console.log(capture.message);
         const inputs = await loadValueCaptureInputs(connection, capture.meetings, date, startedAt);
+        captureMeetings = inputs.meetings;
         additions = buildAllFamilyValueRaces({ ...inputs, raceDate: date, capturedAt: new Date(), historyCutoffAt: startedAt.toISOString() });
       }
       const ids = [...new Set([...pending, ...additions.map(r => r.raceId)])];
       const results = ids.length ? new Map(groupTodaysRacingRows(await getRacecardRowsForRaceIds(connection.db, ids)).flatMap(m => m.races.map(r => [r.raceId, r] as const))) : new Map();
       // One batched result read shared by every family. Each file has its own lock/atomic append.
-      for (const snapshot of snapshots) snapshot.data = await mutateValueForward(snapshot.config, latest =>
-        settleValueForward(appendValueForward(latest, additions.filter(r => r.family === snapshot.config.family), snapshot.config), results, new Date()));
+      for (const snapshot of snapshots) snapshot.data = await mutateValueForward(snapshot.config, async latest => {
+        const appended = appendValueForward(latest, additions.filter(r => r.family === snapshot.config.family), snapshot.config);
+        for (const book of appended.races.filter(b => b.family === "CHASE" && !latest.races.some(old => old.raceId === b.raceId))) {
+          await freezeChaseSpeedState({ cohort: "price", raceId: book.raceId, capturedAt: book.capturedAt, featureNames: book.featureNames, runners: book.runners,
+            race: captureMeetings.flatMap(m => m.races).find(r => r.raceId === book.raceId)! });
+        }
+        return settleValueForward(appended, results, new Date());
+      });
     } finally { await connection.client.end(); }
   }
   for (const { config, data } of snapshots) {

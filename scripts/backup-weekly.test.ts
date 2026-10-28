@@ -86,11 +86,16 @@ test("dry run validates without writes or dump", async () => {
 });
 test("complete archive, extracted checksums, offsite copy, and no overwrite", async () => {
   const root = await fixture();
+  const shadowDirectory = join(root, "data/research/chase-speed-reliability-shadow-v1");
+  await mkdir(shadowDirectory);
+  await writeFile(join(shadowDirectory, "frozen.json"), '{"cohort":"primary","runners":[]}\n');
+  await writeFile(join(shadowDirectory, "incomplete.tmp"), "incomplete");
   const offsite = join(root, "offsite");
   await mkdir(offsite);
   const options = { root, env: { ...env, RACING_BACKUP_OFFSITE_DIR: offsite }, now, run: runner };
   const result = (await createWeeklyBackup(options))!;
-  assert.equal(result.manifest.totalTrackerCount, 24);
+  assert.equal(result.manifest.totalTrackerCount, 25);
+  assert.ok(result.manifest.trackers.some(t => t.filename === "chase-speed-reliability-shadow-v1/frozen.json"));
   assert.equal((await stat(result.archivePath)).mode & 0o777, 0o600);
   assert.equal(result.offsiteStatus, "COPIED");
   assert.equal(await sha256(join(offsite, result.manifest.archiveFilename)), result.archiveHash);

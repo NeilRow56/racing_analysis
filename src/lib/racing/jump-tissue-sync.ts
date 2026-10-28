@@ -1,3 +1,4 @@
+import { freezeChaseSpeedState } from "./chase-speed-reliability-capture";
 import type { createDbConnection } from "@/db";
 import { loadJumpTissueModel } from "./jump-tissue-model";
 import {
@@ -27,6 +28,10 @@ export async function syncJumpTissueMeetings(connection: ReturnType<typeof creat
       const captured = buildJumpTissueRace({ raceDate, course, race, commentsByHorse, model, recordedAt: now });
       return captured ? [captured] : [];
     });
+    for (const book of additions.filter(b => b.subtype === "Chase")) {
+      await freezeChaseSpeedState({ cohort: "primary", raceId: book.raceId, capturedAt: book.recordedAt,
+        race: jumps.find(j => j.race.raceId === book.raceId)!.race, featureNames: model!.model.names, runners: book.runners });
+    }
     updated = captureJumpTissueRaces(updated, additions);
     return updateJumpTissueForward(updated, new Map(jumps.map(({ race }) => [race.raceId, race])), now);
   });

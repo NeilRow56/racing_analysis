@@ -1,10 +1,11 @@
 import { spawn } from "node:child_process";
 import { createHash } from "node:crypto";
 import { createReadStream, constants } from "node:fs";
-import { access, chmod, copyFile, link, mkdir, mkdtemp, readFile, rm, stat, writeFile } from "node:fs/promises";
+import { access, chmod, copyFile, link, mkdir, mkdtemp, readFile, readdir, rm, stat, writeFile } from "node:fs/promises";
 import { homedir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { CHASE_SPEED_SNAPSHOT_DIRECTORY } from "../src/lib/racing/chase-speed-reliability-capture";
 import { BACKUP_TRACKERS } from "./backup-tracker-inventory";
 
 const PROJECT_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -135,7 +136,12 @@ export async function createWeeklyBackup(options: { dryRun?: boolean; root?: str
   await run("tar", ["--version"]);
   const commit = await run("git", ["rev-parse", "HEAD"]);
   const branch = await run("git", ["rev-parse", "--abbrev-ref", "HEAD"]);
-  const trackers = await Promise.all(BACKUP_TRACKERS.map(([filename, source]) => inspectTracker(root, filename, source)));
+  const shadowDirectory = join(root, CHASE_SPEED_SNAPSHOT_DIRECTORY);
+  let shadowFiles: string[] = [];
+  try { shadowFiles = (await readdir(shadowDirectory)).filter(f => f.endsWith(".json")).sort(); }
+  catch (error) { if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error; }
+  const shadowTrackers = shadowFiles.map(f => [`chase-speed-reliability-shadow-v1/${f}`, "src/lib/racing/chase-speed-reliability-capture.ts"] as const);
+  const trackers = await Promise.all([...BACKUP_TRACKERS, ...shadowTrackers].map(([filename, source]) => inspectTracker(root, filename, source)));
   console.log(`Database: ${config.database}\nLocal destination: ${destination.local}\nOffsite destination: ${destination.offsite ?? "NOT CONFIGURED"}\nTrackers (${trackers.length}):\n${trackers.map((t) => t.filename).join("\n")}`);
   if (destination.offsite) {
     try { await access(destination.offsite, constants.W_OK | constants.X_OK); if (!(await stat(destination.offsite)).isDirectory()) throw new Error(); }
@@ -163,6 +169,7 @@ export async function createWeeklyBackup(options: { dryRun?: boolean; root?: str
     console.log("PostgreSQL dump verification: PASS. Copying required trackers...");
     for (const tracker of trackers) {
       const target = join(directory, "research", tracker.filename);
+      await mkdir(dirname(target), { recursive: true });
       await copyFile(join(root, "data/research", tracker.filename), target, constants.COPYFILE_EXCL);
       if (await sha256(target) !== tracker.sha256) throw new Error(`Tracker changed during backup: ${tracker.filename}; retry while writers are idle.`);
     }
