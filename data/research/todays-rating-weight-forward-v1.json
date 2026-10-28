@@ -14187,7 +14187,16 @@
           "runnerId": "00fa112e-8b53-4f1d-87a5-ff05f8dc48c6",
           "horseId": "69893a74-b2b6-4dbc-b0ad-5b4a80a9f4e8",
           "horseName": "Level Up",
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "resultStatus": "finished",
+            "finishingPosition": 8,
+            "won": false,
+            "deadHeatDivisor": 1,
+            "finalSp": 26,
+            "qualifyingPriceProfitLoss": null,
+            "finalSpProfitLoss": -1
+          }
         }
       ],
       "market": {
@@ -14251,8 +14260,17 @@
           ]
         }
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "status": "settled",
+        "resultStatus": "finished",
+        "finishingPosition": 7,
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 51,
+        "qualifyingPriceProfitLoss": -1,
+        "finalSpProfitLoss": -1
+      },
+      "settledAt": "2026-10-28T16:06:48.658Z"
     },
     {
       "raceDate": "2026-10-28",
@@ -14290,7 +14308,16 @@
           "runnerId": "854d5b75-546c-4ab0-929d-b5a13d8af0fc",
           "horseId": "4cd11122-5053-4ec3-9ca0-dee05f1433a3",
           "horseName": "Silent Force",
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "resultStatus": "finished",
+            "finishingPosition": 3,
+            "won": false,
+            "deadHeatDivisor": 1,
+            "finalSp": 4,
+            "qualifyingPriceProfitLoss": null,
+            "finalSpProfitLoss": -1
+          }
         }
       ],
       "market": {
@@ -14354,8 +14381,17 @@
           ]
         }
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "status": "settled",
+        "resultStatus": "finished",
+        "finishingPosition": 3,
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 4,
+        "qualifyingPriceProfitLoss": -1,
+        "finalSpProfitLoss": -1
+      },
+      "settledAt": "2026-10-28T16:06:48.658Z"
     },
     {
       "raceDate": "2026-10-28",
@@ -14393,7 +14429,16 @@
           "runnerId": "84685626-ada9-4941-a6a2-14f5d4f3bded",
           "horseId": "ece06070-768b-4662-9809-539250df8756",
           "horseName": "Oolong Poobong",
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "resultStatus": "finished",
+            "finishingPosition": 1,
+            "won": true,
+            "deadHeatDivisor": 1,
+            "finalSp": 8,
+            "qualifyingPriceProfitLoss": null,
+            "finalSpProfitLoss": 7
+          }
         }
       ],
       "market": {
@@ -14457,8 +14502,17 @@
           ]
         }
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "status": "settled",
+        "resultStatus": "finished",
+        "finishingPosition": 6,
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 29,
+        "qualifyingPriceProfitLoss": -1,
+        "finalSpProfitLoss": -1
+      },
+      "settledAt": "2026-10-28T16:06:48.658Z"
     },
     {
       "raceDate": "2026-10-28",
@@ -14496,7 +14550,16 @@
           "runnerId": "b8f3cc39-aec4-4f79-b87e-d281c8c8ccc7",
           "horseId": "fb1ed82d-72b4-4878-81d0-921f48542df8",
           "horseName": "Maxident",
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "resultStatus": "finished",
+            "finishingPosition": 3,
+            "won": false,
+            "deadHeatDivisor": 1,
+            "finalSp": 3.25,
+            "qualifyingPriceProfitLoss": null,
+            "finalSpProfitLoss": -1
+          }
         }
       ],
       "market": {
@@ -14560,8 +14623,17 @@
           ]
         }
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "status": "settled",
+        "resultStatus": "finished",
+        "finishingPosition": 2,
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 13,
+        "qualifyingPriceProfitLoss": -1,
+        "finalSpProfitLoss": -1
+      },
+      "settledAt": "2026-10-28T16:06:48.658Z"
     }
   ]
 }

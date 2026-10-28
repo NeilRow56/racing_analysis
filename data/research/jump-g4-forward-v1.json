@@ -4668,8 +4668,15 @@
         "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
         "bookmakerQuoteCount": 3
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "finishingPosition": 6,
+        "resultStatus": "finished",
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 9,
+        "profitLoss": -1
+      },
+      "settledAt": "2026-10-28T16:06:48.658Z"
     },
     {
       "raceId": "a7a6ceb5-56aa-4dce-8db7-b62d05621264",
@@ -4721,8 +4728,15 @@
         "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
         "bookmakerQuoteCount": 3
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "finishingPosition": null,
+        "resultStatus": "fell",
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 12,
+        "profitLoss": -1
+      },
+      "settledAt": "2026-10-28T16:06:48.658Z"
     },
     {
       "raceId": "e06b199f-53c2-4e13-9981-5c3d8001c21f",
@@ -4774,8 +4788,15 @@
         "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
         "bookmakerQuoteCount": 3
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "finishingPosition": 1,
+        "resultStatus": "finished",
+        "won": true,
+        "deadHeatDivisor": 1,
+        "finalSp": 1.25,
+        "profitLoss": 0.25
+      },
+      "settledAt": "2026-10-28T16:06:48.658Z"
     },
     {
       "raceId": "f1fb0fd5-fc09-492f-9d3f-e64e1316ebc9",
@@ -4827,8 +4848,15 @@
         "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
         "bookmakerQuoteCount": 3
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "finishingPosition": 3,
+        "resultStatus": "finished",
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 13,
+        "profitLoss": -1
+      },
+      "settledAt": "2026-10-28T16:06:48.658Z"
     },
     {
       "raceId": "88785c83-239b-492a-b3a5-53c022ef9ebb",
@@ -4880,8 +4908,15 @@
         "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
         "bookmakerQuoteCount": 3
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "finishingPosition": null,
+        "resultStatus": "non_runner",
+        "won": null,
+        "deadHeatDivisor": 1,
+        "finalSp": null,
+        "profitLoss": null
+      },
+      "settledAt": "2026-10-28T16:06:48.658Z"
     }
   ]
 }

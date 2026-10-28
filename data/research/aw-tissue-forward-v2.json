@@ -158983,8 +158983,82 @@
           "forecastPrice": "10/1",
           "forecastDecimalPrice": 11
         },
-        "t180": null,
-        "t60": null
+        "t180": {
+          "price": null,
+          "decimalPrice": 6.5,
+          "impliedProbability": 0.15384615384615385,
+          "capturedAt": "2026-10-28T13:49:25.360Z",
+          "minutesBeforeScheduledOff": 175.57733333333334,
+          "ratingProbability": 0.17004199153972216,
+          "ratingEdgePercentagePoints": 1.6195837693568305,
+          "marketPriceBasisVersion": "median_bookmaker_v1",
+          "bookmakerQuoteCount": 3,
+          "bookmakerQuotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "11/2",
+              "decimalOdds": 6.5
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "11/2",
+              "decimalOdds": 6.5
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "6/1",
+              "decimalOdds": 7
+            }
+          ],
+          "medianBookmakerPriceDecimal": 6.5,
+          "medianBookmakerImpliedProbability": 0.15384615384615385,
+          "bestBookmakerPriceDecimal": 7,
+          "bestBookmakerPriceFractional": "6/1",
+          "bestBookmakerName": "Paddy Power",
+          "forecastPrice": "10/1",
+          "forecastDecimalPrice": 11
+        },
+        "t60": {
+          "price": null,
+          "decimalPrice": 6.5,
+          "impliedProbability": 0.15384615384615385,
+          "capturedAt": "2026-10-28T16:06:48.658Z",
+          "minutesBeforeScheduledOff": 38.189033333333334,
+          "ratingProbability": 0.17004199153972216,
+          "ratingEdgePercentagePoints": 1.6195837693568305,
+          "marketPriceBasisVersion": "median_bookmaker_v1",
+          "bookmakerQuoteCount": 3,
+          "bookmakerQuotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "11/2",
+              "decimalOdds": 6.5
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "11/2",
+              "decimalOdds": 6.5
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "6/1",
+              "decimalOdds": 7
+            }
+          ],
+          "medianBookmakerPriceDecimal": 6.5,
+          "medianBookmakerImpliedProbability": 0.15384615384615385,
+          "bestBookmakerPriceDecimal": 7,
+          "bestBookmakerPriceFractional": "6/1",
+          "bestBookmakerName": "Paddy Power",
+          "forecastPrice": "10/1",
+          "forecastDecimalPrice": 11
+        }
       },
       "selectedPriceProfitLoss": {
         "early": null,
@@ -160375,8 +160449,82 @@
           "forecastPrice": "9/4",
           "forecastDecimalPrice": 3.25
         },
-        "t180": null,
-        "t60": null
+        "t180": {
+          "price": null,
+          "decimalPrice": 2.63,
+          "impliedProbability": 0.3802281368821293,
+          "capturedAt": "2026-10-28T13:49:25.360Z",
+          "minutesBeforeScheduledOff": 205.57733333333334,
+          "ratingProbability": 0.2966952787942902,
+          "ratingEdgePercentagePoints": -8.35328580878391,
+          "marketPriceBasisVersion": "median_bookmaker_v1",
+          "bookmakerQuoteCount": 3,
+          "bookmakerQuotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "13/8",
+              "decimalOdds": 2.63
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "13/8",
+              "decimalOdds": 2.63
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "13/8",
+              "decimalOdds": 2.63
+            }
+          ],
+          "medianBookmakerPriceDecimal": 2.63,
+          "medianBookmakerImpliedProbability": 0.3802281368821293,
+          "bestBookmakerPriceDecimal": 2.63,
+          "bestBookmakerPriceFractional": "13/8",
+          "bestBookmakerName": null,
+          "forecastPrice": "9/4",
+          "forecastDecimalPrice": 3.25
+        },
+        "t60": {
+          "price": null,
+          "decimalPrice": 2.63,
+          "impliedProbability": 0.3802281368821293,
+          "capturedAt": "2026-10-28T16:06:48.658Z",
+          "minutesBeforeScheduledOff": 68.18903333333333,
+          "ratingProbability": 0.2966952787942902,
+          "ratingEdgePercentagePoints": -8.35328580878391,
+          "marketPriceBasisVersion": "median_bookmaker_v1",
+          "bookmakerQuoteCount": 3,
+          "bookmakerQuotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "13/8",
+              "decimalOdds": 2.63
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "13/8",
+              "decimalOdds": 2.63
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "13/8",
+              "decimalOdds": 2.63
+            }
+          ],
+          "medianBookmakerPriceDecimal": 2.63,
+          "medianBookmakerImpliedProbability": 0.3802281368821293,
+          "bestBookmakerPriceDecimal": 2.63,
+          "bestBookmakerPriceFractional": "13/8",
+          "bestBookmakerName": null,
+          "forecastPrice": "9/4",
+          "forecastDecimalPrice": 3.25
+        }
       },
       "selectedPriceProfitLoss": {
         "early": null,
@@ -162045,8 +162193,82 @@
           "forecastPrice": "9/4",
           "forecastDecimalPrice": 3.25
         },
-        "t180": null,
-        "t60": null
+        "t180": {
+          "price": null,
+          "decimalPrice": 2.38,
+          "impliedProbability": 0.42016806722689076,
+          "capturedAt": "2026-10-28T14:27:20.728Z",
+          "minutesBeforeScheduledOff": 197.65453333333335,
+          "ratingProbability": 0.2375032144968859,
+          "ratingEdgePercentagePoints": -18.266485273000484,
+          "marketPriceBasisVersion": "median_bookmaker_v1",
+          "bookmakerQuoteCount": 3,
+          "bookmakerQuotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "11/8",
+              "decimalOdds": 2.38
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "11/8",
+              "decimalOdds": 2.38
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "11/8",
+              "decimalOdds": 2.38
+            }
+          ],
+          "medianBookmakerPriceDecimal": 2.38,
+          "medianBookmakerImpliedProbability": 0.42016806722689076,
+          "bestBookmakerPriceDecimal": 2.38,
+          "bestBookmakerPriceFractional": "11/8",
+          "bestBookmakerName": null,
+          "forecastPrice": "9/4",
+          "forecastDecimalPrice": 3.25
+        },
+        "t60": {
+          "price": null,
+          "decimalPrice": 2.38,
+          "impliedProbability": 0.42016806722689076,
+          "capturedAt": "2026-10-28T16:15:40.827Z",
+          "minutesBeforeScheduledOff": 89.31955,
+          "ratingProbability": 0.2375032144968859,
+          "ratingEdgePercentagePoints": -18.266485273000484,
+          "marketPriceBasisVersion": "median_bookmaker_v1",
+          "bookmakerQuoteCount": 3,
+          "bookmakerQuotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "11/8",
+              "decimalOdds": 2.38
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "11/8",
+              "decimalOdds": 2.38
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "11/8",
+              "decimalOdds": 2.38
+            }
+          ],
+          "medianBookmakerPriceDecimal": 2.38,
+          "medianBookmakerImpliedProbability": 0.42016806722689076,
+          "bestBookmakerPriceDecimal": 2.38,
+          "bestBookmakerPriceFractional": "11/8",
+          "bestBookmakerName": null,
+          "forecastPrice": "9/4",
+          "forecastDecimalPrice": 3.25
+        }
       },
       "selectedPriceProfitLoss": {
         "early": null,
@@ -164953,7 +165175,44 @@
           "forecastPrice": "11/4",
           "forecastDecimalPrice": 3.75
         },
-        "t180": null,
+        "t180": {
+          "price": null,
+          "decimalPrice": 2,
+          "impliedProbability": 0.5,
+          "capturedAt": "2026-10-28T16:06:48.658Z",
+          "minutesBeforeScheduledOff": 158.18903333333333,
+          "ratingProbability": 0.2281499713754551,
+          "ratingEdgePercentagePoints": -27.18500286245449,
+          "marketPriceBasisVersion": "median_bookmaker_v1",
+          "bookmakerQuoteCount": 3,
+          "bookmakerQuotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "1/1",
+              "decimalOdds": 2
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "1/1",
+              "decimalOdds": 2
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "1/1",
+              "decimalOdds": 2
+            }
+          ],
+          "medianBookmakerPriceDecimal": 2,
+          "medianBookmakerImpliedProbability": 0.5,
+          "bestBookmakerPriceDecimal": 2,
+          "bestBookmakerPriceFractional": "1/1",
+          "bestBookmakerName": null,
+          "forecastPrice": "11/4",
+          "forecastDecimalPrice": 3.75
+        },
         "t60": null
       },
       "selectedPriceProfitLoss": {
@@ -166314,7 +166573,44 @@
           "forecastPrice": "3/1",
           "forecastDecimalPrice": 4
         },
-        "t180": null,
+        "t180": {
+          "price": null,
+          "decimalPrice": 2.63,
+          "impliedProbability": 0.3802281368821293,
+          "capturedAt": "2026-10-28T16:06:48.658Z",
+          "minutesBeforeScheduledOff": 188.18903333333333,
+          "ratingProbability": 0.18423567414556405,
+          "ratingEdgePercentagePoints": -19.599246273656526,
+          "marketPriceBasisVersion": "median_bookmaker_v1",
+          "bookmakerQuoteCount": 3,
+          "bookmakerQuotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "13/8",
+              "decimalOdds": 2.63
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "13/8",
+              "decimalOdds": 2.63
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "7/4",
+              "decimalOdds": 2.75
+            }
+          ],
+          "medianBookmakerPriceDecimal": 2.63,
+          "medianBookmakerImpliedProbability": 0.3802281368821293,
+          "bestBookmakerPriceDecimal": 2.75,
+          "bestBookmakerPriceFractional": "7/4",
+          "bestBookmakerName": "Paddy Power",
+          "forecastPrice": "3/1",
+          "forecastDecimalPrice": 4
+        },
         "t60": null
       },
       "selectedPriceProfitLoss": {
@@ -168003,7 +168299,44 @@
           "forecastPrice": "10/1",
           "forecastDecimalPrice": 11
         },
-        "t180": null,
+        "t180": {
+          "price": null,
+          "decimalPrice": 6.5,
+          "impliedProbability": 0.15384615384615385,
+          "capturedAt": "2026-10-28T16:15:40.827Z",
+          "minutesBeforeScheduledOff": 209.31955,
+          "ratingProbability": 0.1690876419903066,
+          "ratingEdgePercentagePoints": 1.5241488144152742,
+          "marketPriceBasisVersion": "median_bookmaker_v1",
+          "bookmakerQuoteCount": 3,
+          "bookmakerQuotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "11/2",
+              "decimalOdds": 6.5
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "11/2",
+              "decimalOdds": 6.5
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "11/2",
+              "decimalOdds": 6.5
+            }
+          ],
+          "medianBookmakerPriceDecimal": 6.5,
+          "medianBookmakerImpliedProbability": 0.15384615384615385,
+          "bestBookmakerPriceDecimal": 6.5,
+          "bestBookmakerPriceFractional": "11/2",
+          "bestBookmakerName": null,
+          "forecastPrice": "10/1",
+          "forecastDecimalPrice": 11
+        },
         "t60": null
       },
       "selectedPriceProfitLoss": {
@@ -170532,7 +170865,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 1,
+            "resultStatus": "finished",
+            "won": true,
+            "finalSp": 2.375,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": 1.375
+          }
         },
         {
           "runnerId": "1c488745-b759-4ed3-bda6-7754ea83e297",
@@ -170671,7 +171011,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 11,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 10,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "7bb1ca71-0ae7-4603-be7b-7308d03ee953",
@@ -170810,7 +171157,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 6,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 5.5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "d5f79a0b-670f-4888-b9fa-517f01cd2278",
@@ -170949,7 +171303,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 2,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 6,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "247942b8-ec74-4b98-bf44-32514c13a59b",
@@ -171088,7 +171449,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 7,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 7.5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "d6e9cd12-36ba-495d-89a5-f19abf87f2be",
@@ -171227,7 +171595,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 8,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 15,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "0b6538c1-d793-40aa-87de-b03a15a84697",
@@ -171366,7 +171741,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": null,
+            "resultStatus": "non_runner",
+            "won": null,
+            "finalSp": null,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": null
+          }
         },
         {
           "runnerId": "977c529f-0213-4443-b81c-ec43e6fcc2a0",
@@ -171505,7 +171887,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 4,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 13,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "ec02b1e1-1133-4a27-9f6a-5e9ee3909f62",
@@ -171644,7 +172033,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 5,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 41,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "4376d886-634b-4c82-afd0-789159c2d8b9",
@@ -171783,7 +172179,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 9,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 29,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "5dd38de5-d71b-4d5c-936e-b128456742b7",
@@ -171922,7 +172325,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 3,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 51,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "63ab1e3a-1faf-4487-9d54-664fb8f29b0b",
@@ -172061,7 +172471,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 10,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 51,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         }
       ],
       "surfaceFeatureEvidence": {
@@ -172324,8 +172741,10 @@
         "guardVersion": "aw_d_rating_coverage_guard_v1",
         "guardImplementedAt": "2026-09-30T00:00:00.000Z"
       },
-      "winners": [],
-      "settledAt": null,
+      "winners": [
+        "66329e48-dd73-4f80-8c3b-5fe32ecdbc4b"
+      ],
+      "settledAt": "2026-10-28T16:06:48.658Z",
       "excludedReason": null,
       "marketPriceBasisVersion": "median_bookmaker_v1",
       "priceSnapshotScheduleVersion": "early_t180_t60_v1",
@@ -172372,11 +172791,11 @@
         "t60": null
       },
       "selectedPriceProfitLoss": {
-        "early": null,
+        "early": 1.1,
         "t180": null,
         "t60": null,
-        "bestEarly": null,
-        "finalSp": null
+        "bestEarly": 1.1,
+        "finalSp": 1.375
       }
     },
     {
@@ -172539,7 +172958,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 8,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 4.5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "c6e1a33f-64d2-4e1a-a371-3edf3534f059",
@@ -172678,7 +173104,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 7,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 3.25,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "3fa613aa-a80c-4323-8cc1-f091be213d62",
@@ -172817,7 +173250,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 10,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 6.5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "ba4edb5c-26bd-46ed-a2e2-d06ca2d1de5c",
@@ -172956,7 +173396,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 1,
+            "resultStatus": "finished",
+            "won": true,
+            "finalSp": 6,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": 5
+          }
         },
         {
           "runnerId": "80dfac41-ded5-4b4f-ba6e-4e69baae216c",
@@ -173095,7 +173542,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 5,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 12,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "9e35094d-28cf-4b56-a808-03f562ba8c21",
@@ -173234,7 +173688,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 9,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 13,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "fa8e741d-774c-4624-899a-2f209f791456",
@@ -173373,7 +173834,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 3,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 12,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "33cda0a6-c81c-4ba9-b0a3-26f34d34aac1",
@@ -173512,7 +173980,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": null,
+            "resultStatus": "non_runner",
+            "won": null,
+            "finalSp": null,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": null
+          }
         },
         {
           "runnerId": "2faa388f-298f-4851-9241-6dbd3fc0d72e",
@@ -173651,7 +174126,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 11,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 34,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "61a06dd1-0387-4c0a-b934-c3a7e876c4a3",
@@ -173790,7 +174272,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 4,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 15,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "d1d3a8ae-c0ab-4447-9738-f33b0698dceb",
@@ -173929,7 +174418,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 6,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 26,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "894cda85-7e64-4b37-8a53-ebd8088938d3",
@@ -174068,7 +174564,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 2,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 26,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "2816696a-80b4-4d7b-a5ca-7209a6c8b486",
@@ -174207,7 +174710,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 12,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 51,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         }
       ],
       "surfaceFeatureEvidence": {
@@ -174500,8 +175010,10 @@
         "guardVersion": "aw_d_rating_coverage_guard_v1",
         "guardImplementedAt": "2026-09-30T00:00:00.000Z"
       },
-      "winners": [],
-      "settledAt": null,
+      "winners": [
+        "ba4edb5c-26bd-46ed-a2e2-d06ca2d1de5c"
+      ],
+      "settledAt": "2026-10-28T16:06:48.658Z",
       "excludedReason": null,
       "marketPriceBasisVersion": "median_bookmaker_v1",
       "priceSnapshotScheduleVersion": "early_t180_t60_v1",
@@ -174545,14 +175057,51 @@
           "forecastDecimalPrice": 9
         },
         "t180": null,
-        "t60": null
+        "t60": {
+          "price": null,
+          "decimalPrice": 8,
+          "impliedProbability": 0.125,
+          "capturedAt": "2026-10-28T13:49:25.360Z",
+          "minutesBeforeScheduledOff": 40.577333333333335,
+          "ratingProbability": 0.1630973862576277,
+          "ratingEdgePercentagePoints": 3.809738625762771,
+          "marketPriceBasisVersion": "median_bookmaker_v1",
+          "bookmakerQuoteCount": 3,
+          "bookmakerQuotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "7/1",
+              "decimalOdds": 8
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "7/1",
+              "decimalOdds": 8
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "7/1",
+              "decimalOdds": 8
+            }
+          ],
+          "medianBookmakerPriceDecimal": 8,
+          "medianBookmakerImpliedProbability": 0.125,
+          "bestBookmakerPriceDecimal": 8,
+          "bestBookmakerPriceFractional": "7/1",
+          "bestBookmakerName": null,
+          "forecastPrice": "8/1",
+          "forecastDecimalPrice": 9
+        }
       },
       "selectedPriceProfitLoss": {
-        "early": null,
+        "early": 7,
         "t180": null,
-        "t60": null,
-        "bestEarly": null,
-        "finalSp": null
+        "t60": 7,
+        "bestEarly": 7,
+        "finalSp": 5
       }
     },
     {
@@ -174715,7 +175264,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 2,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 2.625,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "a67e5599-8ac8-4b3b-b604-fa68af7628b2",
@@ -174854,7 +175410,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 8,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 2.75,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "1100b57b-cf7e-46ab-b104-56d5e1c29740",
@@ -174993,7 +175556,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 5,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 5.5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "cc4195be-9119-4386-938c-fbbc201dcc00",
@@ -175132,7 +175702,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 7,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 17,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "eee36ec0-c113-4244-a916-83b1d7f22dbe",
@@ -175271,7 +175848,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 1,
+            "resultStatus": "finished",
+            "won": true,
+            "finalSp": 13,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": 12
+          }
         },
         {
           "runnerId": "538870b0-b502-4c90-a5a7-005e0892688e",
@@ -175410,7 +175994,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 4,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 21,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "644c58fa-0e2b-4412-9a3f-aca0806292a2",
@@ -175549,7 +176140,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 3,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 34,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "65ee447b-874e-4720-a779-17fe3829b546",
@@ -175688,7 +176286,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 6,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 26,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "7843e680-d7ea-483c-aead-7710d7a74eee",
@@ -175827,7 +176432,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": null,
+            "resultStatus": "non_runner",
+            "won": null,
+            "finalSp": null,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": null
+          }
         },
         {
           "runnerId": "43217387-6257-4dc3-82c4-e095f1c738b1",
@@ -175966,7 +176578,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 9,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 17,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "df76e25a-9dee-4e90-9e62-5cd38e8051aa",
@@ -176105,7 +176724,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": null,
+            "resultStatus": "non_runner",
+            "won": null,
+            "finalSp": null,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": null
+          }
         },
         {
           "runnerId": "f23275e4-897e-4ce2-8c99-60a94414dc72",
@@ -176244,7 +176870,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 10,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 151,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "4e527f06-05bc-48b5-975d-0f292add431f",
@@ -176383,7 +177016,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 14,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 81,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "c00b63ec-d33c-4e16-a2fa-39f4189dfa18",
@@ -176522,7 +177162,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": null,
+            "resultStatus": "non_runner",
+            "won": null,
+            "finalSp": null,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": null
+          }
         },
         {
           "runnerId": "7503daec-441c-4da1-929a-2714f430db05",
@@ -176661,7 +177308,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 11,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 301,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "39231efd-f751-40b3-984b-48d02d55edba",
@@ -176800,7 +177454,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 12,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 151,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "02a2ade3-9cec-4bb7-8b4b-e8d44f280f49",
@@ -176939,7 +177600,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 13,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 201,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         }
       ],
       "surfaceFeatureEvidence": {
@@ -177261,8 +177929,10 @@
         "guardVersion": "aw_d_rating_coverage_guard_v1",
         "guardImplementedAt": "2026-09-30T00:00:00.000Z"
       },
-      "winners": [],
-      "settledAt": null,
+      "winners": [
+        "eee36ec0-c113-4244-a916-83b1d7f22dbe"
+      ],
+      "settledAt": "2026-10-28T16:06:48.658Z",
       "excludedReason": null,
       "marketPriceBasisVersion": "median_bookmaker_v1",
       "priceSnapshotScheduleVersion": "early_t180_t60_v1",
@@ -177306,14 +177976,51 @@
           "forecastDecimalPrice": 2.625
         },
         "t180": null,
-        "t60": null
+        "t60": {
+          "price": null,
+          "decimalPrice": 2,
+          "impliedProbability": 0.5,
+          "capturedAt": "2026-10-28T13:49:25.360Z",
+          "minutesBeforeScheduledOff": 70.57733333333333,
+          "ratingProbability": 0.18806494979972388,
+          "ratingEdgePercentagePoints": -31.19350502002761,
+          "marketPriceBasisVersion": "median_bookmaker_v1",
+          "bookmakerQuoteCount": 3,
+          "bookmakerQuotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "1/1",
+              "decimalOdds": 2
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "1/1",
+              "decimalOdds": 2
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "1/1",
+              "decimalOdds": 2
+            }
+          ],
+          "medianBookmakerPriceDecimal": 2,
+          "medianBookmakerImpliedProbability": 0.5,
+          "bestBookmakerPriceDecimal": 2,
+          "bestBookmakerPriceFractional": "1/1",
+          "bestBookmakerName": null,
+          "forecastPrice": "13/8",
+          "forecastDecimalPrice": 2.625
+        }
       },
       "selectedPriceProfitLoss": {
-        "early": null,
+        "early": -1,
         "t180": null,
-        "t60": null,
-        "bestEarly": null,
-        "finalSp": null
+        "t60": -1,
+        "bestEarly": -1,
+        "finalSp": -1
       }
     },
     {
@@ -177476,7 +178183,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 9,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 2.25,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "bfe7a6d1-22bf-4f7c-8130-97ccda5dfc24",
@@ -177615,7 +178329,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 1,
+            "resultStatus": "finished",
+            "won": true,
+            "finalSp": 3.5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": 2.5
+          }
         },
         {
           "runnerId": "373284d6-dc5b-4e4d-addb-7474111bb326",
@@ -177754,7 +178475,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 2,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 11,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "a94215b1-b9c1-40aa-ba07-3debcfe8f6ff",
@@ -177893,7 +178621,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 5,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 17,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "dc3449fe-118c-4b7a-93bc-80d0c0ca4595",
@@ -178032,7 +178767,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 7,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 6,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "93e2acfc-70fe-4c0d-9a5e-0107fefce179",
@@ -178171,7 +178913,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 3,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 8,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "a7f612a9-5000-4e3a-88a2-8f0ba967d206",
@@ -178310,7 +179059,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 4,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 41,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "74b0cd23-f885-4ac4-afd2-216a0121d026",
@@ -178449,7 +179205,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 11,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 101,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "0bfd693e-8565-48f1-9541-41defe3f8c01",
@@ -178588,7 +179351,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 8,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 101,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "c946f0be-9633-41c4-9e23-5f32a58338c0",
@@ -178727,7 +179497,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 10,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 201,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "80d6ab80-1be4-4624-a1c8-6347458690b8",
@@ -178866,7 +179643,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 6,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 126,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         }
       ],
       "surfaceFeatureEvidence": {
@@ -179080,8 +179864,10 @@
         "guardVersion": "aw_d_rating_coverage_guard_v1",
         "guardImplementedAt": "2026-09-30T00:00:00.000Z"
       },
-      "winners": [],
-      "settledAt": null,
+      "winners": [
+        "bfe7a6d1-22bf-4f7c-8130-97ccda5dfc24"
+      ],
+      "settledAt": "2026-10-28T16:06:48.658Z",
       "excludedReason": null,
       "marketPriceBasisVersion": "median_bookmaker_v1",
       "priceSnapshotScheduleVersion": "early_t180_t60_v1",
@@ -179125,14 +179911,51 @@
           "forecastDecimalPrice": 6
         },
         "t180": null,
-        "t60": null
+        "t60": {
+          "price": null,
+          "decimalPrice": 4,
+          "impliedProbability": 0.25,
+          "capturedAt": "2026-10-28T14:27:20.728Z",
+          "minutesBeforeScheduledOff": 62.65453333333333,
+          "ratingProbability": 0.15003872760113782,
+          "ratingEdgePercentagePoints": -9.996127239886219,
+          "marketPriceBasisVersion": "median_bookmaker_v1",
+          "bookmakerQuoteCount": 3,
+          "bookmakerQuotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "3/1",
+              "decimalOdds": 4
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "3/1",
+              "decimalOdds": 4
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "3/1",
+              "decimalOdds": 4
+            }
+          ],
+          "medianBookmakerPriceDecimal": 4,
+          "medianBookmakerImpliedProbability": 0.25,
+          "bestBookmakerPriceDecimal": 4,
+          "bestBookmakerPriceFractional": "3/1",
+          "bestBookmakerName": null,
+          "forecastPrice": "5/1",
+          "forecastDecimalPrice": 6
+        }
       },
       "selectedPriceProfitLoss": {
-        "early": null,
+        "early": -1,
         "t180": null,
-        "t60": null,
-        "bestEarly": null,
-        "finalSp": null
+        "t60": -1,
+        "bestEarly": -1,
+        "finalSp": -1
       }
     },
     {
@@ -179295,7 +180118,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 2,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 3.75,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "7df22506-c018-402d-9523-3eb1d3f0a0dd",
@@ -179434,7 +180264,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": null,
+            "resultStatus": "other",
+            "won": false,
+            "finalSp": 4.5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "34a446e6-c64e-462f-95dc-541f1fa25ce2",
@@ -179573,7 +180410,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 1,
+            "resultStatus": "finished",
+            "won": true,
+            "finalSp": 7,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": 6
+          }
         },
         {
           "runnerId": "8a4ebcb0-b13c-4eb3-ab9f-9245844f1d0a",
@@ -179712,7 +180556,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": null,
+            "resultStatus": "other",
+            "won": false,
+            "finalSp": 13,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "0311265c-6201-42dc-863a-3ac58065d51e",
@@ -179851,7 +180702,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": null,
+            "resultStatus": "other",
+            "won": false,
+            "finalSp": 15,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "5bd7a8c0-effa-4f9b-8245-bf1e95dd1fb7",
@@ -179990,7 +180848,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": null,
+            "resultStatus": "other",
+            "won": false,
+            "finalSp": 7,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "da696a7d-e778-4c2e-a16d-65e365b96c0a",
@@ -180129,7 +180994,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": null,
+            "resultStatus": "other",
+            "won": false,
+            "finalSp": 12,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "1db98497-dab1-4060-9e8b-7d7c8c184a72",
@@ -180268,7 +181140,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": null,
+            "resultStatus": "other",
+            "won": false,
+            "finalSp": 13,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "af919e50-0e9b-46a3-b605-0451057ba4af",
@@ -180407,7 +181286,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": null,
+            "resultStatus": "other",
+            "won": false,
+            "finalSp": 29,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "3cf027d6-3efe-4efd-90eb-ca6a33c03c40",
@@ -180546,7 +181432,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 3,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 19,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "9e944597-442c-4594-a808-2bd9eae84086",
@@ -180685,7 +181578,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": null,
+            "resultStatus": "other",
+            "won": false,
+            "finalSp": 34,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "93772ff3-8e0c-4694-8247-d96c515e1b02",
@@ -180824,7 +181724,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": null,
+            "resultStatus": "other",
+            "won": false,
+            "finalSp": 34,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "b0ac6c4e-3a2e-4f3a-90f9-36cec624dc52",
@@ -180963,7 +181870,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": null,
+            "resultStatus": "other",
+            "won": false,
+            "finalSp": 51,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "d36e1359-4b77-4fdd-a471-09b24ac1235b",
@@ -181102,7 +182016,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 4,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 26,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "1a9598f7-d892-4529-8d72-c740608e1163",
@@ -181241,7 +182162,14 @@
           ],
           "modelVersion": "AW_TISSUE_V2",
           "featureSchemaVersion": "aw_tissue_v2_turf_v3_core_surface_history_v1",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": null,
+            "resultStatus": "non_runner",
+            "won": null,
+            "finalSp": null,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": null
+          }
         }
       ],
       "surfaceFeatureEvidence": {
@@ -181564,8 +182492,10 @@
         "guardVersion": "aw_d_rating_coverage_guard_v1",
         "guardImplementedAt": "2026-09-30T00:00:00.000Z"
       },
-      "winners": [],
-      "settledAt": null,
+      "winners": [
+        "34a446e6-c64e-462f-95dc-541f1fa25ce2"
+      ],
+      "settledAt": "2026-10-28T16:06:48.658Z",
       "excludedReason": null,
       "marketPriceBasisVersion": "median_bookmaker_v1",
       "priceSnapshotScheduleVersion": "early_t180_t60_v1",
@@ -181612,11 +182542,11 @@
         "t60": null
       },
       "selectedPriceProfitLoss": {
-        "early": null,
+        "early": -1,
         "t180": null,
         "t60": null,
-        "bestEarly": null,
-        "finalSp": null
+        "bestEarly": -1,
+        "finalSp": -1
       }
     },
     {
@@ -183940,7 +184870,44 @@
           "forecastPrice": "4/1",
           "forecastDecimalPrice": 5
         },
-        "t180": null,
+        "t180": {
+          "price": null,
+          "decimalPrice": 4.33,
+          "impliedProbability": 0.23094688221709006,
+          "capturedAt": "2026-10-28T13:49:25.360Z",
+          "minutesBeforeScheduledOff": 160.57733333333334,
+          "ratingProbability": 0.16659606292842385,
+          "ratingEdgePercentagePoints": -6.43508192886662,
+          "marketPriceBasisVersion": "median_bookmaker_v1",
+          "bookmakerQuoteCount": 3,
+          "bookmakerQuotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "10/3",
+              "decimalOdds": 4.33
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "10/3",
+              "decimalOdds": 4.33
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "10/3",
+              "decimalOdds": 4.33
+            }
+          ],
+          "medianBookmakerPriceDecimal": 4.33,
+          "medianBookmakerImpliedProbability": 0.23094688221709006,
+          "bestBookmakerPriceDecimal": 4.33,
+          "bestBookmakerPriceFractional": "10/3",
+          "bestBookmakerName": null,
+          "forecastPrice": "4/1",
+          "forecastDecimalPrice": 5
+        },
         "t60": null
       },
       "selectedPriceProfitLoss": {
@@ -186389,8 +187356,82 @@
           "forecastPrice": "6/4",
           "forecastDecimalPrice": 2.5
         },
-        "t180": null,
-        "t60": null
+        "t180": {
+          "price": null,
+          "decimalPrice": 1.73,
+          "impliedProbability": 0.5780346820809249,
+          "capturedAt": "2026-10-28T13:49:25.360Z",
+          "minutesBeforeScheduledOff": 190.57733333333334,
+          "ratingProbability": 0.24560216146750077,
+          "ratingEdgePercentagePoints": -33.24325206134241,
+          "marketPriceBasisVersion": "median_bookmaker_v1",
+          "bookmakerQuoteCount": 3,
+          "bookmakerQuotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "8/11",
+              "decimalOdds": 1.73
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "8/11",
+              "decimalOdds": 1.73
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "8/11",
+              "decimalOdds": 1.73
+            }
+          ],
+          "medianBookmakerPriceDecimal": 1.73,
+          "medianBookmakerImpliedProbability": 0.5780346820809249,
+          "bestBookmakerPriceDecimal": 1.73,
+          "bestBookmakerPriceFractional": "8/11",
+          "bestBookmakerName": null,
+          "forecastPrice": "6/4",
+          "forecastDecimalPrice": 2.5
+        },
+        "t60": {
+          "price": null,
+          "decimalPrice": 1.73,
+          "impliedProbability": 0.5780346820809249,
+          "capturedAt": "2026-10-28T16:06:48.658Z",
+          "minutesBeforeScheduledOff": 53.189033333333334,
+          "ratingProbability": 0.24560216146750077,
+          "ratingEdgePercentagePoints": -33.24325206134241,
+          "marketPriceBasisVersion": "median_bookmaker_v1",
+          "bookmakerQuoteCount": 3,
+          "bookmakerQuotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "8/11",
+              "decimalOdds": 1.73
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "8/11",
+              "decimalOdds": 1.73
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "8/11",
+              "decimalOdds": 1.73
+            }
+          ],
+          "medianBookmakerPriceDecimal": 1.73,
+          "medianBookmakerImpliedProbability": 0.5780346820809249,
+          "bestBookmakerPriceDecimal": 1.73,
+          "bestBookmakerPriceFractional": "8/11",
+          "bestBookmakerName": null,
+          "forecastPrice": "6/4",
+          "forecastDecimalPrice": 2.5
+        }
       },
       "selectedPriceProfitLoss": {
         "early": null,
@@ -189198,8 +190239,82 @@
           "forecastPrice": "3/1",
           "forecastDecimalPrice": 4
         },
-        "t180": null,
-        "t60": null
+        "t180": {
+          "price": null,
+          "decimalPrice": 3.75,
+          "impliedProbability": 0.26666666666666666,
+          "capturedAt": "2026-10-28T14:27:20.728Z",
+          "minutesBeforeScheduledOff": 182.65453333333335,
+          "ratingProbability": 0.15457257821685583,
+          "ratingEdgePercentagePoints": -11.209408844981084,
+          "marketPriceBasisVersion": "median_bookmaker_v1",
+          "bookmakerQuoteCount": 3,
+          "bookmakerQuotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "11/4",
+              "decimalOdds": 3.75
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "11/4",
+              "decimalOdds": 3.75
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "11/4",
+              "decimalOdds": 3.75
+            }
+          ],
+          "medianBookmakerPriceDecimal": 3.75,
+          "medianBookmakerImpliedProbability": 0.26666666666666666,
+          "bestBookmakerPriceDecimal": 3.75,
+          "bestBookmakerPriceFractional": "11/4",
+          "bestBookmakerName": null,
+          "forecastPrice": "3/1",
+          "forecastDecimalPrice": 4
+        },
+        "t60": {
+          "price": null,
+          "decimalPrice": 3.75,
+          "impliedProbability": 0.26666666666666666,
+          "capturedAt": "2026-10-28T16:06:48.658Z",
+          "minutesBeforeScheduledOff": 83.18903333333333,
+          "ratingProbability": 0.15457257821685583,
+          "ratingEdgePercentagePoints": -11.209408844981084,
+          "marketPriceBasisVersion": "median_bookmaker_v1",
+          "bookmakerQuoteCount": 3,
+          "bookmakerQuotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "11/4",
+              "decimalOdds": 3.75
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "11/4",
+              "decimalOdds": 3.75
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "11/4",
+              "decimalOdds": 3.75
+            }
+          ],
+          "medianBookmakerPriceDecimal": 3.75,
+          "medianBookmakerImpliedProbability": 0.26666666666666666,
+          "bestBookmakerPriceDecimal": 3.75,
+          "bestBookmakerPriceFractional": "11/4",
+          "bestBookmakerName": null,
+          "forecastPrice": "3/1",
+          "forecastDecimalPrice": 4
+        }
       },
       "selectedPriceProfitLoss": {
         "early": null,

@@ -118574,7 +118574,17 @@
           "valueRank": 11,
           "probabilityEdgeRank": 12,
           "modelMarketRatioRank": 11,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": 1,
+            "resultStatus": "finished",
+            "winner": true,
+            "deadHeatDivisor": 1,
+            "grossReturn": 2.1,
+            "profitLoss": 1.1,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "1c488745-b759-4ed3-bda6-7754ea83e297",
@@ -118710,7 +118720,17 @@
           "valueRank": 12,
           "probabilityEdgeRank": 11,
           "modelMarketRatioRank": 12,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": 11,
+            "resultStatus": "finished",
+            "winner": false,
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "7bb1ca71-0ae7-4603-be7b-7308d03ee953",
@@ -118846,7 +118866,17 @@
           "valueRank": 7,
           "probabilityEdgeRank": 7,
           "modelMarketRatioRank": 7,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": 6,
+            "resultStatus": "finished",
+            "winner": false,
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "d5f79a0b-670f-4888-b9fa-517f01cd2278",
@@ -118982,7 +119012,17 @@
           "valueRank": 8,
           "probabilityEdgeRank": 8,
           "modelMarketRatioRank": 8,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": 2,
+            "resultStatus": "finished",
+            "winner": false,
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "247942b8-ec74-4b98-bf44-32514c13a59b",
@@ -119118,7 +119158,17 @@
           "valueRank": 10,
           "probabilityEdgeRank": 10,
           "modelMarketRatioRank": 10,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": 7,
+            "resultStatus": "finished",
+            "winner": false,
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "d6e9cd12-36ba-495d-89a5-f19abf87f2be",
@@ -119254,7 +119304,17 @@
           "valueRank": 5,
           "probabilityEdgeRank": 5,
           "modelMarketRatioRank": 5,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": 8,
+            "resultStatus": "finished",
+            "winner": false,
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "0b6538c1-d793-40aa-87de-b03a15a84697",
@@ -119390,7 +119450,17 @@
           "valueRank": 4,
           "probabilityEdgeRank": 1,
           "modelMarketRatioRank": 4,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "NR",
+            "finishPosition": null,
+            "resultStatus": "non_runner",
+            "winner": null,
+            "deadHeatDivisor": 1,
+            "grossReturn": null,
+            "profitLoss": null,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "977c529f-0213-4443-b81c-ec43e6fcc2a0",
@@ -119526,7 +119596,17 @@
           "valueRank": 6,
           "probabilityEdgeRank": 6,
           "modelMarketRatioRank": 6,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": 4,
+            "resultStatus": "finished",
+            "winner": false,
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "ec02b1e1-1133-4a27-9f6a-5e9ee3909f62",
@@ -119662,7 +119742,17 @@
           "valueRank": 9,
           "probabilityEdgeRank": 9,
           "modelMarketRatioRank": 9,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": 5,
+            "resultStatus": "finished",
+            "winner": false,
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "4376d886-634b-4c82-afd0-789159c2d8b9",
@@ -119798,7 +119888,17 @@
           "valueRank": 3,
           "probabilityEdgeRank": 3,
           "modelMarketRatioRank": 3,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": 9,
+            "resultStatus": "finished",
+            "winner": false,
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "5dd38de5-d71b-4d5c-936e-b128456742b7",
@@ -119934,7 +120034,17 @@
           "valueRank": 2,
           "probabilityEdgeRank": 2,
           "modelMarketRatioRank": 2,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": 3,
+            "resultStatus": "finished",
+            "winner": false,
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "63ab1e3a-1faf-4487-9d54-664fb8f29b0b",
@@ -120070,7 +120180,17 @@
           "valueRank": 1,
           "probabilityEdgeRank": 4,
           "modelMarketRatioRank": 1,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": 10,
+            "resultStatus": "finished",
+            "winner": false,
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         }
       ]
     },
@@ -120326,7 +120446,17 @@
           "valueRank": 13,
           "probabilityEdgeRank": 13,
           "modelMarketRatioRank": 13,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": 8,
+            "resultStatus": "finished",
+            "winner": false,
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "c6e1a33f-64d2-4e1a-a371-3edf3534f059",
@@ -120462,7 +120592,17 @@
           "valueRank": 7,
           "probabilityEdgeRank": 7,
           "modelMarketRatioRank": 7,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": 7,
+            "resultStatus": "finished",
+            "winner": false,
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "3fa613aa-a80c-4323-8cc1-f091be213d62",
@@ -120598,7 +120738,17 @@
           "valueRank": 12,
           "probabilityEdgeRank": 12,
           "modelMarketRatioRank": 12,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": 10,
+            "resultStatus": "finished",
+            "winner": false,
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "ba4edb5c-26bd-46ed-a2e2-d06ca2d1de5c",
@@ -120734,7 +120884,17 @@
           "valueRank": 4,
           "probabilityEdgeRank": 1,
           "modelMarketRatioRank": 4,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": 1,
+            "resultStatus": "finished",
+            "winner": true,
+            "deadHeatDivisor": 1,
+            "grossReturn": 8,
+            "profitLoss": 7,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "80dfac41-ded5-4b4f-ba6e-4e69baae216c",
@@ -120870,7 +121030,17 @@
           "valueRank": 5,
           "probabilityEdgeRank": 3,
           "modelMarketRatioRank": 5,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": 5,
+            "resultStatus": "finished",
+            "winner": false,
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "9e35094d-28cf-4b56-a808-03f562ba8c21",
@@ -121006,7 +121176,17 @@
           "valueRank": 8,
           "probabilityEdgeRank": 9,
           "modelMarketRatioRank": 8,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": 9,
+            "resultStatus": "finished",
+            "winner": false,
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "fa8e741d-774c-4624-899a-2f209f791456",
@@ -121142,7 +121322,17 @@
           "valueRank": 11,
           "probabilityEdgeRank": 11,
           "modelMarketRatioRank": 11,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": 3,
+            "resultStatus": "finished",
+            "winner": false,
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "33cda0a6-c81c-4ba9-b0a3-26f34d34aac1",
@@ -121278,7 +121468,17 @@
           "valueRank": 10,
           "probabilityEdgeRank": 10,
           "modelMarketRatioRank": 10,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "NR",
+            "finishPosition": null,
+            "resultStatus": "non_runner",
+            "winner": null,
+            "deadHeatDivisor": 1,
+            "grossReturn": null,
+            "profitLoss": null,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "2faa388f-298f-4851-9241-6dbd3fc0d72e",
@@ -121414,7 +121614,17 @@
           "valueRank": 9,
           "probabilityEdgeRank": 8,
           "modelMarketRatioRank": 9,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": 11,
+            "resultStatus": "finished",
+            "winner": false,
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "61a06dd1-0387-4c0a-b934-c3a7e876c4a3",
@@ -121550,7 +121760,17 @@
           "valueRank": 2,
           "probabilityEdgeRank": 2,
           "modelMarketRatioRank": 2,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": 4,
+            "resultStatus": "finished",
+            "winner": false,
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "d1d3a8ae-c0ab-4447-9738-f33b0698dceb",
@@ -121686,7 +121906,17 @@
           "valueRank": 3,
           "probabilityEdgeRank": 4,
           "modelMarketRatioRank": 3,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": 6,
+            "resultStatus": "finished",
+            "winner": false,
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "894cda85-7e64-4b37-8a53-ebd8088938d3",
@@ -121822,7 +122052,17 @@
           "valueRank": 6,
           "probabilityEdgeRank": 6,
           "modelMarketRatioRank": 6,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": 2,
+            "resultStatus": "finished",
+            "winner": false,
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "2816696a-80b4-4d7b-a5ca-7209a6c8b486",
@@ -121958,7 +122198,17 @@
           "valueRank": 1,
           "probabilityEdgeRank": 5,
           "modelMarketRatioRank": 1,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": 12,
+            "resultStatus": "finished",
+            "winner": false,
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         }
       ]
     },
@@ -122214,7 +122464,17 @@
           "valueRank": 16,
           "probabilityEdgeRank": 17,
           "modelMarketRatioRank": 16,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": 2,
+            "resultStatus": "finished",
+            "winner": false,
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "a67e5599-8ac8-4b3b-b604-fa68af7628b2",
@@ -122350,7 +122610,17 @@
           "valueRank": 17,
           "probabilityEdgeRank": 16,
           "modelMarketRatioRank": 17,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": 8,
+            "resultStatus": "finished",
+            "winner": false,
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "1100b57b-cf7e-46ab-b104-56d5e1c29740",
@@ -122486,7 +122756,17 @@
           "valueRank": 15,
           "probabilityEdgeRank": 15,
           "modelMarketRatioRank": 15,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": 5,
+            "resultStatus": "finished",
+            "winner": false,
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "cc4195be-9119-4386-938c-fbbc201dcc00",
@@ -122622,7 +122902,17 @@
           "valueRank": 14,
           "probabilityEdgeRank": 14,
           "modelMarketRatioRank": 14,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": 7,
+            "resultStatus": "finished",
+            "winner": false,
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "eee36ec0-c113-4244-a916-83b1d7f22dbe",
@@ -122758,7 +123048,17 @@
           "valueRank": 11,
           "probabilityEdgeRank": 11,
           "modelMarketRatioRank": 11,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": 1,
+            "resultStatus": "finished",
+            "winner": true,
+            "deadHeatDivisor": 1,
+            "grossReturn": 13,
+            "profitLoss": 12,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "538870b0-b502-4c90-a5a7-005e0892688e",
@@ -122894,7 +123194,17 @@
           "valueRank": 9,
           "probabilityEdgeRank": 4,
           "modelMarketRatioRank": 9,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": 4,
+            "resultStatus": "finished",
+            "winner": false,
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "644c58fa-0e2b-4412-9a3f-aca0806292a2",
@@ -123030,7 +123340,17 @@
           "valueRank": 10,
           "probabilityEdgeRank": 10,
           "modelMarketRatioRank": 10,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": 3,
+            "resultStatus": "finished",
+            "winner": false,
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "65ee447b-874e-4720-a779-17fe3829b546",
@@ -123166,7 +123486,17 @@
           "valueRank": 7,
           "probabilityEdgeRank": 2,
           "modelMarketRatioRank": 7,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": 6,
+            "resultStatus": "finished",
+            "winner": false,
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "7843e680-d7ea-483c-aead-7710d7a74eee",
@@ -123302,7 +123632,17 @@
           "valueRank": 13,
           "probabilityEdgeRank": 13,
           "modelMarketRatioRank": 13,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "NR",
+            "finishPosition": null,
+            "resultStatus": "non_runner",
+            "winner": null,
+            "deadHeatDivisor": 1,
+            "grossReturn": null,
+            "profitLoss": null,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "43217387-6257-4dc3-82c4-e095f1c738b1",
@@ -123438,7 +123778,17 @@
           "valueRank": 8,
           "probabilityEdgeRank": 7,
           "modelMarketRatioRank": 8,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": 9,
+            "resultStatus": "finished",
+            "winner": false,
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "df76e25a-9dee-4e90-9e62-5cd38e8051aa",
@@ -123574,7 +123924,17 @@
           "valueRank": 12,
           "probabilityEdgeRank": 12,
           "modelMarketRatioRank": 12,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "NR",
+            "finishPosition": null,
+            "resultStatus": "non_runner",
+            "winner": null,
+            "deadHeatDivisor": 1,
+            "grossReturn": null,
+            "profitLoss": null,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "f23275e4-897e-4ce2-8c99-60a94414dc72",
@@ -123710,7 +124070,17 @@
           "valueRank": 5,
           "probabilityEdgeRank": 1,
           "modelMarketRatioRank": 5,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": 10,
+            "resultStatus": "finished",
+            "winner": false,
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "4e527f06-05bc-48b5-975d-0f292add431f",
@@ -123846,7 +124216,17 @@
           "valueRank": 4,
           "probabilityEdgeRank": 3,
           "modelMarketRatioRank": 4,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": 14,
+            "resultStatus": "finished",
+            "winner": false,
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "c00b63ec-d33c-4e16-a2fa-39f4189dfa18",
@@ -123982,7 +124362,17 @@
           "valueRank": 6,
           "probabilityEdgeRank": 8,
           "modelMarketRatioRank": 6,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "NR",
+            "finishPosition": null,
+            "resultStatus": "non_runner",
+            "winner": null,
+            "deadHeatDivisor": 1,
+            "grossReturn": null,
+            "profitLoss": null,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "7503daec-441c-4da1-929a-2714f430db05",
@@ -124118,7 +124508,17 @@
           "valueRank": 1,
           "probabilityEdgeRank": 5,
           "modelMarketRatioRank": 1,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": 11,
+            "resultStatus": "finished",
+            "winner": false,
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "39231efd-f751-40b3-984b-48d02d55edba",
@@ -124254,7 +124654,17 @@
           "valueRank": 3,
           "probabilityEdgeRank": 6,
           "modelMarketRatioRank": 3,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": 12,
+            "resultStatus": "finished",
+            "winner": false,
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "02a2ade3-9cec-4bb7-8b4b-e8d44f280f49",
@@ -124390,7 +124800,17 @@
           "valueRank": 2,
           "probabilityEdgeRank": 9,
           "modelMarketRatioRank": 2,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": 13,
+            "resultStatus": "finished",
+            "winner": false,
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         }
       ]
     },
@@ -124646,7 +125066,17 @@
           "valueRank": 11,
           "probabilityEdgeRank": 11,
           "modelMarketRatioRank": 11,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": 9,
+            "resultStatus": "finished",
+            "winner": false,
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "bfe7a6d1-22bf-4f7c-8130-97ccda5dfc24",
@@ -124782,7 +125212,17 @@
           "valueRank": 9,
           "probabilityEdgeRank": 9,
           "modelMarketRatioRank": 9,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": 1,
+            "resultStatus": "finished",
+            "winner": true,
+            "deadHeatDivisor": 1,
+            "grossReturn": 3.75,
+            "profitLoss": 2.75,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "373284d6-dc5b-4e4d-addb-7474111bb326",
@@ -124918,7 +125358,17 @@
           "valueRank": 8,
           "probabilityEdgeRank": 8,
           "modelMarketRatioRank": 8,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": 2,
+            "resultStatus": "finished",
+            "winner": false,
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "a94215b1-b9c1-40aa-ba07-3debcfe8f6ff",
@@ -125054,7 +125504,17 @@
           "valueRank": 10,
           "probabilityEdgeRank": 10,
           "modelMarketRatioRank": 10,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": 5,
+            "resultStatus": "finished",
+            "winner": false,
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "dc3449fe-118c-4b7a-93bc-80d0c0ca4595",
@@ -125190,7 +125650,17 @@
           "valueRank": 7,
           "probabilityEdgeRank": 6,
           "modelMarketRatioRank": 7,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": 7,
+            "resultStatus": "finished",
+            "winner": false,
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "93e2acfc-70fe-4c0d-9a5e-0107fefce179",
@@ -125326,7 +125796,17 @@
           "valueRank": 6,
           "probabilityEdgeRank": 7,
           "modelMarketRatioRank": 6,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": 3,
+            "resultStatus": "finished",
+            "winner": false,
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "a7f612a9-5000-4e3a-88a2-8f0ba967d206",
@@ -125462,7 +125942,17 @@
           "valueRank": 5,
           "probabilityEdgeRank": 3,
           "modelMarketRatioRank": 5,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": 4,
+            "resultStatus": "finished",
+            "winner": false,
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "74b0cd23-f885-4ac4-afd2-216a0121d026",
@@ -125598,7 +126088,17 @@
           "valueRank": 4,
           "probabilityEdgeRank": 4,
           "modelMarketRatioRank": 4,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": 11,
+            "resultStatus": "finished",
+            "winner": false,
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "0bfd693e-8565-48f1-9541-41defe3f8c01",
@@ -125734,7 +126234,17 @@
           "valueRank": 3,
           "probabilityEdgeRank": 5,
           "modelMarketRatioRank": 3,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": 8,
+            "resultStatus": "finished",
+            "winner": false,
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "c946f0be-9633-41c4-9e23-5f32a58338c0",
@@ -125870,7 +126380,17 @@
           "valueRank": 2,
           "probabilityEdgeRank": 2,
           "modelMarketRatioRank": 2,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": 10,
+            "resultStatus": "finished",
+            "winner": false,
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "80d6ab80-1be4-4624-a1c8-6347458690b8",
@@ -126006,7 +126526,17 @@
           "valueRank": 1,
           "probabilityEdgeRank": 1,
           "modelMarketRatioRank": 1,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": 6,
+            "resultStatus": "finished",
+            "winner": false,
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         }
       ]
     },
@@ -126262,7 +126792,17 @@
           "valueRank": 13,
           "probabilityEdgeRank": 15,
           "modelMarketRatioRank": 13,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": 2,
+            "resultStatus": "finished",
+            "winner": false,
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "7df22506-c018-402d-9523-3eb1d3f0a0dd",
@@ -126398,7 +126938,17 @@
           "valueRank": 12,
           "probabilityEdgeRank": 14,
           "modelMarketRatioRank": 12,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": null,
+            "resultStatus": "other",
+            "winner": false,
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "34a446e6-c64e-462f-95dc-541f1fa25ce2",
@@ -126534,7 +127084,17 @@
           "valueRank": 9,
           "probabilityEdgeRank": 10,
           "modelMarketRatioRank": 9,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": 1,
+            "resultStatus": "finished",
+            "winner": true,
+            "deadHeatDivisor": 1,
+            "grossReturn": 7,
+            "profitLoss": 6,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "8a4ebcb0-b13c-4eb3-ab9f-9245844f1d0a",
@@ -126670,7 +127230,17 @@
           "valueRank": 11,
           "probabilityEdgeRank": 12,
           "modelMarketRatioRank": 11,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": null,
+            "resultStatus": "other",
+            "winner": false,
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "0311265c-6201-42dc-863a-3ac58065d51e",
@@ -126806,7 +127376,17 @@
           "valueRank": 15,
           "probabilityEdgeRank": 13,
           "modelMarketRatioRank": 15,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": null,
+            "resultStatus": "other",
+            "winner": false,
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "5bd7a8c0-effa-4f9b-8245-bf1e95dd1fb7",
@@ -126942,7 +127522,17 @@
           "valueRank": 6,
           "probabilityEdgeRank": 3,
           "modelMarketRatioRank": 6,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": null,
+            "resultStatus": "other",
+            "winner": false,
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "da696a7d-e778-4c2e-a16d-65e365b96c0a",
@@ -127078,7 +127668,17 @@
           "valueRank": 10,
           "probabilityEdgeRank": 11,
           "modelMarketRatioRank": 10,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": null,
+            "resultStatus": "other",
+            "winner": false,
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "1db98497-dab1-4060-9e8b-7d7c8c184a72",
@@ -127214,7 +127814,17 @@
           "valueRank": 3,
           "probabilityEdgeRank": 2,
           "modelMarketRatioRank": 3,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": null,
+            "resultStatus": "other",
+            "winner": false,
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "af919e50-0e9b-46a3-b605-0451057ba4af",
@@ -127350,7 +127960,17 @@
           "valueRank": 7,
           "probabilityEdgeRank": 6,
           "modelMarketRatioRank": 7,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": null,
+            "resultStatus": "other",
+            "winner": false,
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "3cf027d6-3efe-4efd-90eb-ca6a33c03c40",
@@ -127486,7 +128106,17 @@
           "valueRank": 5,
           "probabilityEdgeRank": 5,
           "modelMarketRatioRank": 5,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": 3,
+            "resultStatus": "finished",
+            "winner": false,
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "9e944597-442c-4594-a808-2bd9eae84086",
@@ -127622,7 +128252,17 @@
           "valueRank": 1,
           "probabilityEdgeRank": 1,
           "modelMarketRatioRank": 1,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": null,
+            "resultStatus": "other",
+            "winner": false,
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "93772ff3-8e0c-4694-8247-d96c515e1b02",
@@ -127758,7 +128398,17 @@
           "valueRank": 2,
           "probabilityEdgeRank": 4,
           "modelMarketRatioRank": 2,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": null,
+            "resultStatus": "other",
+            "winner": false,
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "b0ac6c4e-3a2e-4f3a-90f9-36cec624dc52",
@@ -127894,7 +128544,17 @@
           "valueRank": 4,
           "probabilityEdgeRank": 7,
           "modelMarketRatioRank": 4,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": null,
+            "resultStatus": "other",
+            "winner": false,
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "d36e1359-4b77-4fdd-a471-09b24ac1235b",
@@ -128030,7 +128690,17 @@
           "valueRank": 8,
           "probabilityEdgeRank": 8,
           "modelMarketRatioRank": 8,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "settled",
+            "finishPosition": 4,
+            "resultStatus": "finished",
+            "winner": false,
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         },
         {
           "runnerId": "1a9598f7-d892-4529-8d72-c740608e1163",
@@ -128166,7 +128836,17 @@
           "valueRank": 14,
           "probabilityEdgeRank": 9,
           "modelMarketRatioRank": 14,
-          "outcome": null
+          "outcome": {
+            "settlementVersion": "canonical_settlement_v2",
+            "status": "NR",
+            "finishPosition": null,
+            "resultStatus": "non_runner",
+            "winner": null,
+            "deadHeatDivisor": 1,
+            "grossReturn": null,
+            "profitLoss": null,
+            "settledAt": "2026-10-28T16:06:57.449Z"
+          }
         }
       ]
     },

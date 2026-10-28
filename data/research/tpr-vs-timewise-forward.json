@@ -208641,19 +208641,24 @@
       "raceDate": "2026-10-28",
       "course": "Nottingham",
       "raceTime": "12:46",
-      "winner": null,
-      "winnerSp": null,
-      "winners": [],
+      "winner": "The Resdev Roman",
+      "winnerSp": 12,
+      "winners": [
+        {
+          "horseName": "The Resdev Roman",
+          "decimalOdds": 12
+        }
+      ],
       "tprRank1": "Dowman",
       "tprRank2": "Bear Lee",
-      "tprRank1NonRunner": false,
+      "tprRank1NonRunner": true,
       "tprRank2NonRunner": false,
       "timewiseRank1": null,
       "timewiseRank2": null,
       "timewiseRank1NonRunner": false,
       "timewiseRank2NonRunner": false,
       "w50Rank1": "Dowman",
-      "w50Rank1NonRunner": false,
+      "w50Rank1NonRunner": true,
       "activeRunnerCount": 9,
       "ratedRunnerCount": 9,
       "ratingCoverage": 1,
@@ -208940,14 +208945,14 @@
       "awBestL3SpeedRank1": null,
       "awBestL3PerformanceRank1": null,
       "orRank1": "Bear Lee",
-      "winnerOrRank": null,
+      "winnerOrRank": 2,
       "recordedAt": "2026-10-28T06:17:40.813Z",
       "recordedPreRace": true,
       "timewiseRecordedAt": "2026-10-28T06:17:40.813Z",
       "timewiseRecordedPreRace": true,
       "timewiseUpdatedAt": null,
       "winnerWasTprRank1": null,
-      "winnerWasTprTop2": null,
+      "winnerWasTprTop2": false,
       "winnerWasTimewiseRank1": null,
       "winnerWasTimewiseTop2": null,
       "rank1Agree": null,
@@ -208955,10 +208960,10 @@
       "winnerWasTimewiseOnlyTop2": null,
       "bothTop2CapturedWinner": null,
       "neitherTop2CapturedWinner": null,
-      "tpr1AgreesWithOr1": false,
-      "w50AgreesWithOr1": false,
+      "tpr1AgreesWithOr1": null,
+      "w50AgreesWithOr1": null,
       "timewise1AgreesWithOr1": null,
-      "winnerIsOr1": null
+      "winnerIsOr1": false
     },
     {
       "family": "turf",
@@ -208968,9 +208973,14 @@
       "raceDate": "2026-10-28",
       "course": "Nottingham",
       "raceTime": "13:16",
-      "winner": null,
-      "winnerSp": null,
-      "winners": [],
+      "winner": "Vince L'Amour",
+      "winnerSp": 10,
+      "winners": [
+        {
+          "horseName": "Vince L'Amour",
+          "decimalOdds": 10
+        }
+      ],
       "tprRank1": "Duran",
       "tprRank2": "Level Up",
       "tprRank1NonRunner": false,
@@ -209297,14 +209307,14 @@
       "awBestL3SpeedRank1": null,
       "awBestL3PerformanceRank1": null,
       "orRank1": "Duran",
-      "winnerOrRank": null,
+      "winnerOrRank": 3,
       "recordedAt": "2026-10-28T06:17:40.813Z",
       "recordedPreRace": true,
       "timewiseRecordedAt": "2026-10-28T06:17:40.813Z",
       "timewiseRecordedPreRace": true,
       "timewiseUpdatedAt": null,
-      "winnerWasTprRank1": null,
-      "winnerWasTprTop2": null,
+      "winnerWasTprRank1": false,
+      "winnerWasTprTop2": false,
       "winnerWasTimewiseRank1": null,
       "winnerWasTimewiseTop2": null,
       "rank1Agree": null,
@@ -209315,7 +209325,7 @@
       "tpr1AgreesWithOr1": true,
       "w50AgreesWithOr1": false,
       "timewise1AgreesWithOr1": null,
-      "winnerIsOr1": null
+      "winnerIsOr1": false
     },
     {
       "family": "turf",
@@ -209325,13 +209335,18 @@
       "raceDate": "2026-10-28",
       "course": "Nottingham",
       "raceTime": "13:46",
-      "winner": null,
-      "winnerSp": null,
-      "winners": [],
+      "winner": "Leo Phelps",
+      "winnerSp": 6,
+      "winners": [
+        {
+          "horseName": "Leo Phelps",
+          "decimalOdds": 6
+        }
+      ],
       "tprRank1": "Silent Force",
       "tprRank2": "Space Bob",
       "tprRank1NonRunner": false,
-      "tprRank2NonRunner": false,
+      "tprRank2NonRunner": true,
       "timewiseRank1": null,
       "timewiseRank2": null,
       "timewiseRank1NonRunner": false,
@@ -209570,8 +209585,8 @@
       "timewiseRecordedAt": "2026-10-28T06:17:40.813Z",
       "timewiseRecordedPreRace": true,
       "timewiseUpdatedAt": null,
-      "winnerWasTprRank1": null,
-      "winnerWasTprTop2": null,
+      "winnerWasTprRank1": false,
+      "winnerWasTprTop2": false,
       "winnerWasTimewiseRank1": null,
       "winnerWasTimewiseTop2": null,
       "rank1Agree": null,
@@ -209582,7 +209597,7 @@
       "tpr1AgreesWithOr1": true,
       "w50AgreesWithOr1": true,
       "timewise1AgreesWithOr1": null,
-      "winnerIsOr1": null
+      "winnerIsOr1": false
     },
     {
       "family": "turf",
@@ -209592,9 +209607,14 @@
       "raceDate": "2026-10-28",
       "course": "Nottingham",
       "raceTime": "14:16",
-      "winner": null,
-      "winnerSp": null,
-      "winners": [],
+      "winner": "Oolong Poobong",
+      "winnerSp": 8,
+      "winners": [
+        {
+          "horseName": "Oolong Poobong",
+          "decimalOdds": 8
+        }
+      ],
       "tprRank1": "Oolong Poobong",
       "tprRank2": "Wise Prince",
       "tprRank1NonRunner": false,
@@ -209861,14 +209881,14 @@
       "awBestL3SpeedRank1": null,
       "awBestL3PerformanceRank1": null,
       "orRank1": "Room Service",
-      "winnerOrRank": null,
+      "winnerOrRank": 6,
       "recordedAt": "2026-10-28T06:17:40.813Z",
       "recordedPreRace": true,
       "timewiseRecordedAt": "2026-10-28T06:17:40.813Z",
       "timewiseRecordedPreRace": true,
       "timewiseUpdatedAt": null,
-      "winnerWasTprRank1": null,
-      "winnerWasTprTop2": null,
+      "winnerWasTprRank1": true,
+      "winnerWasTprTop2": true,
       "winnerWasTimewiseRank1": null,
       "winnerWasTimewiseTop2": null,
       "rank1Agree": null,
@@ -209879,7 +209899,7 @@
       "tpr1AgreesWithOr1": false,
       "w50AgreesWithOr1": false,
       "timewise1AgreesWithOr1": null,
-      "winnerIsOr1": null
+      "winnerIsOr1": false
     },
     {
       "family": "turf",
@@ -209889,9 +209909,14 @@
       "raceDate": "2026-10-28",
       "course": "Nottingham",
       "raceTime": "14:46",
-      "winner": null,
-      "winnerSp": null,
-      "winners": [],
+      "winner": "Star Rose",
+      "winnerSp": 1.909,
+      "winners": [
+        {
+          "horseName": "Star Rose",
+          "decimalOdds": 1.909
+        }
+      ],
       "tprRank1": "Star Rose",
       "tprRank2": "Comrade Alexi",
       "tprRank1NonRunner": false,
@@ -210224,8 +210249,8 @@
       "timewiseRecordedAt": "2026-10-28T06:17:40.813Z",
       "timewiseRecordedPreRace": true,
       "timewiseUpdatedAt": null,
-      "winnerWasTprRank1": null,
-      "winnerWasTprTop2": null,
+      "winnerWasTprRank1": true,
+      "winnerWasTprTop2": true,
       "winnerWasTimewiseRank1": null,
       "winnerWasTimewiseTop2": null,
       "rank1Agree": null,
@@ -210246,9 +210271,14 @@
       "raceDate": "2026-10-28",
       "course": "Nottingham",
       "raceTime": "15:16",
-      "winner": null,
-      "winnerSp": null,
-      "winners": [],
+      "winner": "Gaspacho",
+      "winnerSp": 3.5,
+      "winners": [
+        {
+          "horseName": "Gaspacho",
+          "decimalOdds": 3.5
+        }
+      ],
       "tprRank1": "Maxident",
       "tprRank2": "Ashnak",
       "tprRank1NonRunner": false,
@@ -210665,14 +210695,14 @@
       "awBestL3SpeedRank1": null,
       "awBestL3PerformanceRank1": null,
       "orRank1": "Maxident",
-      "winnerOrRank": null,
+      "winnerOrRank": 3,
       "recordedAt": "2026-10-28T06:17:40.813Z",
       "recordedPreRace": true,
       "timewiseRecordedAt": "2026-10-28T06:17:40.813Z",
       "timewiseRecordedPreRace": true,
       "timewiseUpdatedAt": null,
-      "winnerWasTprRank1": null,
-      "winnerWasTprTop2": null,
+      "winnerWasTprRank1": false,
+      "winnerWasTprTop2": false,
       "winnerWasTimewiseRank1": null,
       "winnerWasTimewiseTop2": null,
       "rank1Agree": null,
@@ -210683,7 +210713,7 @@
       "tpr1AgreesWithOr1": true,
       "w50AgreesWithOr1": true,
       "timewise1AgreesWithOr1": null,
-      "winnerIsOr1": null
+      "winnerIsOr1": false
     },
     {
       "family": "turf",
@@ -210693,9 +210723,14 @@
       "raceDate": "2026-10-28",
       "course": "Nottingham",
       "raceTime": "15:46",
-      "winner": null,
-      "winnerSp": null,
-      "winners": [],
+      "winner": "Electrical",
+      "winnerSp": 10,
+      "winners": [
+        {
+          "horseName": "Electrical",
+          "decimalOdds": 10
+        }
+      ],
       "tprRank1": "Mighty Quiet",
       "tprRank2": "Alazwar",
       "tprRank1NonRunner": false,
@@ -211172,14 +211207,14 @@
       "awBestL3SpeedRank1": null,
       "awBestL3PerformanceRank1": null,
       "orRank1": "Mighty Quiet",
-      "winnerOrRank": null,
+      "winnerOrRank": 4,
       "recordedAt": "2026-10-28T06:17:40.813Z",
       "recordedPreRace": true,
       "timewiseRecordedAt": "2026-10-28T06:17:40.813Z",
       "timewiseRecordedPreRace": true,
       "timewiseUpdatedAt": null,
-      "winnerWasTprRank1": null,
-      "winnerWasTprTop2": null,
+      "winnerWasTprRank1": false,
+      "winnerWasTprTop2": false,
       "winnerWasTimewiseRank1": null,
       "winnerWasTimewiseTop2": null,
       "rank1Agree": null,
@@ -211190,7 +211225,7 @@
       "tpr1AgreesWithOr1": true,
       "w50AgreesWithOr1": false,
       "timewise1AgreesWithOr1": null,
-      "winnerIsOr1": null
+      "winnerIsOr1": false
     }
   ]
 }

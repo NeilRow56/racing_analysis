@@ -735970,7 +735970,14 @@
           },
           "horseId": "bb93273a-63d9-46e0-9528-29839105156d",
           "horseName": "Jimmyjeroo",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 4,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 3.75,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "ff6b7071-096f-41ba-92ce-2d8f171f3733",
@@ -736162,7 +736169,14 @@
           },
           "horseId": "0da2923f-2597-4510-be52-a075419970f6",
           "horseName": "Anytrixwilldo",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 1,
+            "resultStatus": "finished",
+            "won": true,
+            "finalSp": 6,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": 5
+          }
         },
         {
           "runnerId": "a316650f-69c6-4172-99e8-291d8257a75c",
@@ -736354,7 +736368,14 @@
           },
           "horseId": "25ce5dc0-09e3-4c52-b311-ea4679a0f13f",
           "horseName": "Jack's A Legend",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": null,
+            "resultStatus": "pulled_up",
+            "won": false,
+            "finalSp": 3.5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "bb7b62d3-4313-4fc4-8c7e-a574a4c85d18",
@@ -736544,7 +736565,14 @@
           },
           "horseId": "496402af-e624-4f2c-a417-717281138df8",
           "horseName": "Majestic Moment",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 2,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "b0a360fa-a7d0-4f7c-8e37-1d7bb99cdfae",
@@ -736735,7 +736763,14 @@
           },
           "horseId": "ef8c3a0a-4619-4b6f-bffb-c6f4c86d9c3e",
           "horseName": "Boys Of Wexford",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 5,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 6.5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "93950a1a-21e5-4bad-b8cc-f1f3c1310526",
@@ -736928,7 +736963,14 @@
           },
           "horseId": "f872d578-a8b9-4935-8af7-ba86c07f832e",
           "horseName": "Felton Bellevue",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 3,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 17,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         }
       ],
       "activeRunnerCount": 6,
@@ -736964,8 +737006,10 @@
       ],
       "jprALeader": "77569bf2-faa4-4bc0-b528-c4d3fa349d2b",
       "jprBLeader": "77569bf2-faa4-4bc0-b528-c4d3fa349d2b",
-      "winners": [],
-      "settledAt": null,
+      "winners": [
+        "ff6b7071-096f-41ba-92ce-2d8f171f3733"
+      ],
+      "settledAt": "2026-10-28T16:06:48.658Z",
       "excludedReason": null,
       "marketPriceBasisVersion": "median_bookmaker_v1",
       "priceSnapshotScheduleVersion": "early_t180_t60_v1",
@@ -737008,15 +737052,52 @@
           "forecastPrice": "9/4",
           "forecastDecimalPrice": 3.25
         },
-        "t180": null,
+        "t180": {
+          "price": null,
+          "decimalPrice": 2.88,
+          "impliedProbability": 0.3472222222222222,
+          "capturedAt": "2026-10-28T09:47:42.778Z",
+          "minutesBeforeScheduledOff": 198.28703333333334,
+          "ratingProbability": 0.309382995975477,
+          "ratingEdgePercentagePoints": -3.7839226246745183,
+          "marketPriceBasisVersion": "median_bookmaker_v1",
+          "bookmakerQuoteCount": 3,
+          "bookmakerQuotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "15/8",
+              "decimalOdds": 2.88
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "15/8",
+              "decimalOdds": 2.88
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "15/8",
+              "decimalOdds": 2.88
+            }
+          ],
+          "medianBookmakerPriceDecimal": 2.88,
+          "medianBookmakerImpliedProbability": 0.3472222222222222,
+          "bestBookmakerPriceDecimal": 2.88,
+          "bestBookmakerPriceFractional": "15/8",
+          "bestBookmakerName": null,
+          "forecastPrice": "9/4",
+          "forecastDecimalPrice": 3.25
+        },
         "t60": null
       },
       "selectedPriceProfitLoss": {
-        "early": null,
-        "t180": null,
+        "early": -1,
+        "t180": -1,
         "t60": null,
-        "bestEarly": null,
-        "finalSp": null
+        "bestEarly": -1,
+        "finalSp": -1
       }
     },
     {
@@ -737210,7 +737291,14 @@
           },
           "horseId": "47627124-afe3-4d4c-8913-07f03fba4383",
           "horseName": "Current Edition",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 2,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 1.8,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "be09319e-6992-43b5-863c-1794642c422d",
@@ -737401,7 +737489,14 @@
           },
           "horseId": "3685cd10-ebca-46d5-8688-492cc6ff45fc",
           "horseName": "Scotto",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 3,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 3.5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "3f330cb0-500b-4692-bf1f-2ce6b0ef907f",
@@ -737593,7 +737688,14 @@
           },
           "horseId": "2412c927-7a85-4075-9ac2-101b44e3a5e9",
           "horseName": "Premiere Ligne",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 4,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "eaffd827-48fb-450c-8395-6ae6138121f2",
@@ -737786,7 +737888,14 @@
           },
           "horseId": "079390b2-1676-4ffa-bb5f-7ce00ad4842c",
           "horseName": "What's Your Game",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 1,
+            "resultStatus": "finished",
+            "won": true,
+            "finalSp": 23,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": 22
+          }
         },
         {
           "runnerId": "495b199b-149c-4e37-88cf-25684fdebbcc",
@@ -737977,7 +738086,14 @@
           },
           "horseId": "9b6bc8dc-0e2e-437b-8302-60cf8e8e3de1",
           "horseName": "Seamy Appletart",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 5,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 51,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "166386a9-00e7-4e3c-9591-891e94f7b36e",
@@ -738167,7 +738283,14 @@
           },
           "horseId": "5634bbe5-f4df-46a3-9a6c-d0cc1207d93f",
           "horseName": "Celine Man",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": null,
+            "resultStatus": "pulled_up",
+            "won": false,
+            "finalSp": 251,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         }
       ],
       "activeRunnerCount": 6,
@@ -738213,8 +738336,10 @@
       ],
       "jprALeader": "be09319e-6992-43b5-863c-1794642c422d",
       "jprBLeader": "77260c85-334d-4c3d-99b2-43e19f842529",
-      "winners": [],
-      "settledAt": null,
+      "winners": [
+        "eaffd827-48fb-450c-8395-6ae6138121f2"
+      ],
+      "settledAt": "2026-10-28T16:06:48.658Z",
       "excludedReason": null,
       "marketPriceBasisVersion": "median_bookmaker_v1",
       "priceSnapshotScheduleVersion": "early_t180_t60_v1",
@@ -738261,11 +738386,11 @@
         "t60": null
       },
       "selectedPriceProfitLoss": {
-        "early": null,
+        "early": -1,
         "t180": null,
         "t60": null,
-        "bestEarly": null,
-        "finalSp": null
+        "bestEarly": -1,
+        "finalSp": -1
       }
     },
     {
@@ -738460,7 +738585,14 @@
           },
           "horseId": "61f4af02-b61a-4db2-82f9-6c5a54e1f9b3",
           "horseName": "That's Nice",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 1,
+            "resultStatus": "finished",
+            "won": true,
+            "finalSp": 4.333,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": 3.333
+          }
         },
         {
           "runnerId": "7c7f6f26-6bd0-49cc-9258-b7a9cb49a06e",
@@ -738654,7 +738786,14 @@
           },
           "horseId": "cc8710b8-84b4-40d8-8d48-8ca5bdadcca6",
           "horseName": "Porter In The Park",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 2,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 4,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "39c2babd-e75a-48b4-b1f8-98db47bcf096",
@@ -738847,7 +738986,14 @@
           },
           "horseId": "40040bb3-e417-496f-8323-f1763cfe7efc",
           "horseName": "Bella Civena",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 5,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 5.5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "16093f24-e7ae-4cbe-ab2c-d5239fc7de2f",
@@ -739039,7 +739185,14 @@
           },
           "horseId": "5d80a318-275a-4b21-8914-798e0786384b",
           "horseName": "Betty's Tiara",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 3,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 4,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "0599d149-e916-47cf-8b08-5f013fcb9fba",
@@ -739233,7 +739386,14 @@
           },
           "horseId": "be020d15-739f-49dd-85cf-6184d93794ab",
           "horseName": "Back In The Bay",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 4,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 8,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "b4bba822-0a0a-4021-9e6f-534926971895",
@@ -739426,7 +739586,14 @@
           },
           "horseId": "93a781df-de17-47f3-98bd-8b3b27459633",
           "horseName": "Queens Venture",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 6,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 13,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         }
       ],
       "activeRunnerCount": 6,
@@ -739482,7 +739649,7 @@
             "forecastDecimalPrice": 4
           }
         },
-        "qualifyingPriceProfitLoss": null
+        "qualifyingPriceProfitLoss": 3
       },
       "raceId": "29127358-941d-4a30-81cc-bbffbd072412",
       "sourceId": "945760",
@@ -739514,8 +739681,10 @@
       ],
       "jprALeader": "0599d149-e916-47cf-8b08-5f013fcb9fba",
       "jprBLeader": "0599d149-e916-47cf-8b08-5f013fcb9fba",
-      "winners": [],
-      "settledAt": null,
+      "winners": [
+        "108006f6-0c2c-44ab-bd48-6b8c96a95793"
+      ],
+      "settledAt": "2026-10-28T16:06:48.658Z",
       "excludedReason": null,
       "marketPriceBasisVersion": "median_bookmaker_v1",
       "priceSnapshotScheduleVersion": "early_t180_t60_v1",
@@ -739562,11 +739731,11 @@
         "t60": null
       },
       "selectedPriceProfitLoss": {
-        "early": null,
+        "early": 3,
         "t180": null,
         "t60": null,
-        "bestEarly": null,
-        "finalSp": null
+        "bestEarly": 3,
+        "finalSp": 3.333
       }
     },
     {
@@ -739760,7 +739929,14 @@
           },
           "horseId": "ef0dd224-0f5a-4654-8db2-786dd2770bcf",
           "horseName": "Gallivanted",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 2,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 3.5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "b8f02eb8-9a03-4974-9dd8-b4139763d647",
@@ -739955,7 +740131,14 @@
           },
           "horseId": "151275ec-9745-4d81-9e42-de292fce52b6",
           "horseName": "Zafaan",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": null,
+            "resultStatus": "pulled_up",
+            "won": false,
+            "finalSp": 10,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "8b0652ca-6ae3-475b-8aa6-4651d8ca9b00",
@@ -740148,7 +740331,14 @@
           },
           "horseId": "909b2f76-c2f9-44cc-b107-9a0e1e65959a",
           "horseName": "Seraphic",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 1,
+            "resultStatus": "finished",
+            "won": true,
+            "finalSp": 3.25,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": 2.25
+          }
         },
         {
           "runnerId": "410ba454-f71d-4e13-9a3f-1434fb93b26c",
@@ -740340,7 +740530,14 @@
           },
           "horseId": "c0c92ec5-a5ae-45a1-9eaa-2b537b9cfeb9",
           "horseName": "Caelan",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 3,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 7,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "0d80dac6-8229-479f-b160-8b7a858ab9cb",
@@ -740532,7 +740729,14 @@
           },
           "horseId": "12c44e7b-2a0c-4b9c-becd-d8124faea3a2",
           "horseName": "Final Surprise",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 4,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 9,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "4b38066f-8b46-44ae-b4fa-96d7df4865c5",
@@ -740725,7 +740929,14 @@
           },
           "horseId": "5755f42e-8d67-48aa-8b7e-c7dd401bf1ac",
           "horseName": "Al Mootamarid",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 5,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 8.5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "c5e848fd-4753-4cee-8188-985f94021170",
@@ -740917,7 +741128,14 @@
           },
           "horseId": "f217e0bd-e119-4883-b134-3c2801262566",
           "horseName": "Blackwater Lilly",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 6,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 17,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "2f7f01ac-e8ff-487c-8843-ffeffd3ce120",
@@ -741109,7 +741327,14 @@
           },
           "horseId": "86f93297-c8c5-47be-9f20-bd33c88b0a25",
           "horseName": "Takeit Easy",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 7,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 26,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         }
       ],
       "activeRunnerCount": 8,
@@ -741165,7 +741390,7 @@
             "forecastDecimalPrice": 3.75
           }
         },
-        "qualifyingPriceProfitLoss": null
+        "qualifyingPriceProfitLoss": -1
       },
       "raceId": "f53e677e-efd0-43b2-ac01-10e47ec5eb52",
       "sourceId": "945761",
@@ -741197,8 +741422,10 @@
       ],
       "jprALeader": "8b0652ca-6ae3-475b-8aa6-4651d8ca9b00",
       "jprBLeader": "0d80dac6-8229-479f-b160-8b7a858ab9cb",
-      "winners": [],
-      "settledAt": null,
+      "winners": [
+        "8b0652ca-6ae3-475b-8aa6-4651d8ca9b00"
+      ],
+      "settledAt": "2026-10-28T16:06:48.658Z",
       "excludedReason": null,
       "marketPriceBasisVersion": "median_bookmaker_v1",
       "priceSnapshotScheduleVersion": "early_t180_t60_v1",
@@ -741242,14 +741469,51 @@
           "forecastDecimalPrice": 3.75
         },
         "t180": null,
-        "t60": null
+        "t60": {
+          "price": null,
+          "decimalPrice": 3.75,
+          "impliedProbability": 0.26666666666666666,
+          "capturedAt": "2026-10-28T13:49:06.556Z",
+          "minutesBeforeScheduledOff": 46.89073333333333,
+          "ratingProbability": 0.2925953743193348,
+          "ratingEdgePercentagePoints": 2.592870765266814,
+          "marketPriceBasisVersion": "median_bookmaker_v1",
+          "bookmakerQuoteCount": 3,
+          "bookmakerQuotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "11/4",
+              "decimalOdds": 3.75
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "11/4",
+              "decimalOdds": 3.75
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "11/4",
+              "decimalOdds": 3.75
+            }
+          ],
+          "medianBookmakerPriceDecimal": 3.75,
+          "medianBookmakerImpliedProbability": 0.26666666666666666,
+          "bestBookmakerPriceDecimal": 3.75,
+          "bestBookmakerPriceFractional": "11/4",
+          "bestBookmakerName": null,
+          "forecastPrice": "11/4",
+          "forecastDecimalPrice": 3.75
+        }
       },
       "selectedPriceProfitLoss": {
-        "early": null,
+        "early": -1,
         "t180": null,
-        "t60": null,
-        "bestEarly": null,
-        "finalSp": null
+        "t60": -1,
+        "bestEarly": -1,
+        "finalSp": -1
       }
     },
     {
@@ -741446,7 +741710,14 @@
           },
           "horseId": "95a3f498-d58a-4fbf-9808-1cc8ec162f62",
           "horseName": "Zaraquelle",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 4,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 3.75,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "6b097d54-b146-4f7b-8fc7-05910e19cdbd",
@@ -741637,7 +741908,14 @@
           },
           "horseId": "8af20e38-d968-4e09-bc7a-8e3e13b31de2",
           "horseName": "Knighton",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 5,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 3.75,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "c4fd5101-ece5-4d78-9797-d621c1f9b25d",
@@ -741827,7 +742105,14 @@
           },
           "horseId": "dfd5b3e7-b403-4797-9409-5819e2f5eacd",
           "horseName": "Tazman Dan",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 3,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 5.5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "2fa5bd72-d5b3-47e7-9657-26ca1dbe1135",
@@ -742019,7 +742304,14 @@
           },
           "horseId": "ffbd681e-77e9-462b-bce8-71c251c1636c",
           "horseName": "Calibos",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 8,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 9,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "57d60f55-2926-4795-9fc1-77d8480b83db",
@@ -742212,7 +742504,14 @@
           },
           "horseId": "b91e5968-7cd7-4488-aabe-94aa8c683966",
           "horseName": "Dunstall Star",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 6,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 9,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "731d9193-07b3-4af2-ac73-2188cef5cc36",
@@ -742403,7 +742702,14 @@
           },
           "horseId": "9c6a1bef-966c-4473-bae0-0b4864f247bf",
           "horseName": "Thepassingcyclone",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 7,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 13,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "f1b4a75e-6639-4585-a0c7-0f1027ed5ede",
@@ -742595,7 +742901,14 @@
           },
           "horseId": "28a05cf4-3872-4151-b9bb-384c602161e2",
           "horseName": "Northern Rose",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": null,
+            "resultStatus": "pulled_up",
+            "won": false,
+            "finalSp": 19,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "29b3e407-0645-4646-a766-0f2ea05ab82e",
@@ -742788,7 +743101,14 @@
           },
           "horseId": "ffe124df-cb97-42c1-bb06-b9769c4cd1c9",
           "horseName": "No Mean Feat",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 1,
+            "resultStatus": "finished",
+            "won": true,
+            "finalSp": 13,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": 12
+          }
         },
         {
           "runnerId": "da69379b-91ab-423b-acb5-86e9933636be",
@@ -742979,7 +743299,14 @@
           },
           "horseId": "1dacf1d2-f77a-4073-8d84-8605a4421d51",
           "horseName": "Papa Oscar",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 2,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 41,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         }
       ],
       "activeRunnerCount": 9,
@@ -743035,7 +743362,7 @@
             "forecastDecimalPrice": 5
           }
         },
-        "qualifyingPriceProfitLoss": null
+        "qualifyingPriceProfitLoss": -1
       },
       "raceId": "6ffbf193-3b35-407a-8b8f-d9e7ed79cb22",
       "sourceId": "945762",
@@ -743067,8 +743394,10 @@
       ],
       "jprALeader": "aee309e3-45f2-4b2a-8fc1-1c2a40d7f348",
       "jprBLeader": "6b097d54-b146-4f7b-8fc7-05910e19cdbd",
-      "winners": [],
-      "settledAt": null,
+      "winners": [
+        "29b3e407-0645-4646-a766-0f2ea05ab82e"
+      ],
+      "settledAt": "2026-10-28T16:06:48.658Z",
       "excludedReason": null,
       "marketPriceBasisVersion": "median_bookmaker_v1",
       "priceSnapshotScheduleVersion": "early_t180_t60_v1",
@@ -743112,14 +743441,51 @@
           "forecastDecimalPrice": 5
         },
         "t180": null,
-        "t60": null
+        "t60": {
+          "price": null,
+          "decimalPrice": 5.5,
+          "impliedProbability": 0.18181818181818182,
+          "capturedAt": "2026-10-28T13:49:06.556Z",
+          "minutesBeforeScheduledOff": 76.89073333333333,
+          "ratingProbability": 0.2399297777435222,
+          "ratingEdgePercentagePoints": 5.811159592534038,
+          "marketPriceBasisVersion": "median_bookmaker_v1",
+          "bookmakerQuoteCount": 3,
+          "bookmakerQuotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "9/2",
+              "decimalOdds": 5.5
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "9/2",
+              "decimalOdds": 5.5
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "9/2",
+              "decimalOdds": 5.5
+            }
+          ],
+          "medianBookmakerPriceDecimal": 5.5,
+          "medianBookmakerImpliedProbability": 0.18181818181818182,
+          "bestBookmakerPriceDecimal": 5.5,
+          "bestBookmakerPriceFractional": "9/2",
+          "bestBookmakerName": null,
+          "forecastPrice": "4/1",
+          "forecastDecimalPrice": 5
+        }
       },
       "selectedPriceProfitLoss": {
-        "early": null,
+        "early": -1,
         "t180": null,
-        "t60": null,
-        "bestEarly": null,
-        "finalSp": null
+        "t60": -1,
+        "bestEarly": -1,
+        "finalSp": -1
       }
     },
     {
@@ -743315,7 +743681,14 @@
           },
           "horseId": "e843c545-a029-4073-bbbd-c521bfa5ee90",
           "horseName": "Clap Of Thunder",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 4,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 4.5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "2d1cf85d-e193-46f6-bc8a-29048b5371e7",
@@ -743509,7 +743882,14 @@
           },
           "horseId": "e8593995-efb9-421f-887a-2a3e31163e96",
           "horseName": "It's Top",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": null,
+            "resultStatus": "pulled_up",
+            "won": false,
+            "finalSp": 3.75,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "92d2b3dc-bc07-49e6-8c04-6a0f2188975b",
@@ -743702,7 +744082,14 @@
           },
           "horseId": "e598034d-39c1-49da-873d-f1999a1b74c1",
           "horseName": "Scavengers Reign",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 2,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 4,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "5db39151-8411-4563-8c05-38947023c79c",
@@ -743893,7 +744280,14 @@
           },
           "horseId": "19daeda4-b8bc-4f66-a43b-73b1df44ec69",
           "horseName": "Nazare",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 1,
+            "resultStatus": "finished",
+            "won": true,
+            "finalSp": 8,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": 7
+          }
         },
         {
           "runnerId": "c8c1f368-55ee-4c21-99db-a691960ea7b8",
@@ -744084,7 +744478,14 @@
           },
           "horseId": "922f441d-7b6f-4881-ab4d-a7acbbd897bf",
           "horseName": "Legal Weapon",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": null,
+            "resultStatus": "fell",
+            "won": false,
+            "finalSp": 12,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "b6bba265-8f17-4161-bbe5-aa7e5aa1fc89",
@@ -744276,7 +744677,14 @@
           },
           "horseId": "286f5266-92cf-40b7-8716-51b1a8aef187",
           "horseName": "Fighting Falcon",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": null,
+            "resultStatus": "pulled_up",
+            "won": false,
+            "finalSp": 7.5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "7f59544f-b060-4c60-9dee-cd7e60dc4936",
@@ -744468,7 +744876,14 @@
           },
           "horseId": "450fa9b1-725c-4d8f-a66f-7fd80993f9a1",
           "horseName": "Krak",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 5,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 23,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "7c8559bc-cfb2-4c3e-8955-21ebb313c47e",
@@ -744661,7 +745076,14 @@
           },
           "horseId": "8146cd05-b0ce-423c-ab3d-f20e5a1f27e9",
           "horseName": "Cuban Court",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 3,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 23,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "d18fad79-9191-49e3-adeb-04b001352ca5",
@@ -744849,7 +745271,14 @@
           },
           "horseId": "04978eb3-fd69-401d-ae78-5da4d91c5316",
           "horseName": "Sopran Thor",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": null,
+            "resultStatus": "pulled_up",
+            "won": false,
+            "finalSp": 201,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         }
       ],
       "activeRunnerCount": 9,
@@ -744885,8 +745314,10 @@
       ],
       "jprALeader": "7f59544f-b060-4c60-9dee-cd7e60dc4936",
       "jprBLeader": "7f59544f-b060-4c60-9dee-cd7e60dc4936",
-      "winners": [],
-      "settledAt": null,
+      "winners": [
+        "5db39151-8411-4563-8c05-38947023c79c"
+      ],
+      "settledAt": "2026-10-28T16:06:48.658Z",
       "excludedReason": null,
       "marketPriceBasisVersion": "median_bookmaker_v1",
       "priceSnapshotScheduleVersion": "early_t180_t60_v1",
@@ -744930,14 +745361,51 @@
           "forecastDecimalPrice": 3.75
         },
         "t180": null,
-        "t60": null
+        "t60": {
+          "price": null,
+          "decimalPrice": 5.5,
+          "impliedProbability": 0.18181818181818182,
+          "capturedAt": "2026-10-28T14:27:01.689Z",
+          "minutesBeforeScheduledOff": 68.97185,
+          "ratingProbability": 0.22305193331591397,
+          "ratingEdgePercentagePoints": 4.1233751497732145,
+          "marketPriceBasisVersion": "median_bookmaker_v1",
+          "bookmakerQuoteCount": 3,
+          "bookmakerQuotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "4/1",
+              "decimalOdds": 5
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "9/2",
+              "decimalOdds": 5.5
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "9/2",
+              "decimalOdds": 5.5
+            }
+          ],
+          "medianBookmakerPriceDecimal": 5.5,
+          "medianBookmakerImpliedProbability": 0.18181818181818182,
+          "bestBookmakerPriceDecimal": 5.5,
+          "bestBookmakerPriceFractional": "9/2",
+          "bestBookmakerName": null,
+          "forecastPrice": "11/4",
+          "forecastDecimalPrice": 3.75
+        }
       },
       "selectedPriceProfitLoss": {
-        "early": null,
+        "early": 4.5,
         "t180": null,
-        "t60": null,
-        "bestEarly": null,
-        "finalSp": null
+        "t60": 4.5,
+        "bestEarly": 4.5,
+        "finalSp": 7
       }
     },
     {
@@ -746934,7 +747402,14 @@
           },
           "horseId": "723a6aab-71eb-453e-a771-d9d12043c1bf",
           "horseName": "Vango Can Go",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 1,
+            "resultStatus": "finished",
+            "won": true,
+            "finalSp": 1.25,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": 0.25
+          }
         },
         {
           "runnerId": "43eb0b11-4225-41bb-8ae8-0970ede05539",
@@ -747127,7 +747602,14 @@
           },
           "horseId": "38196e57-7af2-4fac-b470-4df186985bb3",
           "horseName": "Crystal Orchard",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 2,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 6.5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "900970f4-d802-4286-83a5-717f279d7e0d",
@@ -747317,7 +747799,14 @@
           },
           "horseId": "d5ef364a-3713-4eec-93ad-7caccd9f785c",
           "horseName": "Sirgreg",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 4,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 15,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "57328c99-e0eb-464c-b729-d6b95e4d1bf3",
@@ -747505,7 +747994,14 @@
           },
           "horseId": "f17bd147-212a-47df-a57c-7611e2470a94",
           "horseName": "Jpr Two",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 3,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 15,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         }
       ],
       "activeRunnerCount": 4,
@@ -747551,8 +748047,10 @@
       ],
       "jprALeader": "8e1fa52c-a89e-4c11-b41e-89bf27e9e50c",
       "jprBLeader": null,
-      "winners": [],
-      "settledAt": null,
+      "winners": [
+        "8e1fa52c-a89e-4c11-b41e-89bf27e9e50c"
+      ],
+      "settledAt": "2026-10-28T16:06:48.658Z",
       "excludedReason": null,
       "marketPriceBasisVersion": "median_bookmaker_v1",
       "priceSnapshotScheduleVersion": "early_t180_t60_v1",
@@ -747599,11 +748097,11 @@
         "t60": null
       },
       "selectedPriceProfitLoss": {
-        "early": null,
+        "early": 0.33000000000000007,
         "t180": null,
         "t60": null,
-        "bestEarly": null,
-        "finalSp": null
+        "bestEarly": 0.33000000000000007,
+        "finalSp": 0.25
       }
     },
     {
@@ -747797,7 +748295,14 @@
           },
           "horseId": "a0b212f0-0179-491a-8afd-1f0aa064a664",
           "horseName": "Real Quartz",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 1,
+            "resultStatus": "finished",
+            "won": true,
+            "finalSp": 3,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": 2
+          }
         },
         {
           "runnerId": "e0466e6d-fcfc-4acf-88e8-e0daffd0d0a7",
@@ -747990,7 +748495,14 @@
           },
           "horseId": "9d6a9cc3-8aed-48b2-a0ea-3e65416b0b1c",
           "horseName": "Lallygag",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 6,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 17,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "6b84147b-1f91-41d8-898a-d472dcf29afa",
@@ -748182,7 +748694,14 @@
           },
           "horseId": "c7d00836-9134-40d9-8fec-ec4269371b60",
           "horseName": "Vol Royale",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 2,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 4.333,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "d8a0d7e8-b807-4d63-9a45-43855e2abb13",
@@ -748373,7 +748892,14 @@
           },
           "horseId": "90cffce6-e5ca-4c2a-871e-358a241fb786",
           "horseName": "Calvino",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 3,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 3.5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "00fab71b-ed02-4bca-8e1a-eb3a3193a4ef",
@@ -748565,7 +749091,14 @@
           },
           "horseId": "1c7b1b42-e260-4dac-b935-bc89c288f2dd",
           "horseName": "Moorland Rambler",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 4,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 15,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "6906d580-4ab5-4e11-be34-db7ab4feeac2",
@@ -748759,7 +749292,14 @@
           },
           "horseId": "f38e0eaf-3359-41b4-93eb-d92196cda176",
           "horseName": "Heart Over Head",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 7,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 13,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "b6aa46c0-08db-41a8-bb19-f5b80cf6230f",
@@ -748950,7 +749490,14 @@
           },
           "horseId": "3d0c2cd2-9dd8-42a4-9298-cf8ec5128def",
           "horseName": "Permis De Tuer",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 5,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 15,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         }
       ],
       "activeRunnerCount": 7,
@@ -748996,8 +749543,10 @@
       ],
       "jprALeader": "e0466e6d-fcfc-4acf-88e8-e0daffd0d0a7",
       "jprBLeader": "e0466e6d-fcfc-4acf-88e8-e0daffd0d0a7",
-      "winners": [],
-      "settledAt": null,
+      "winners": [
+        "6504aaab-f8b5-44f9-b3cc-f881560e7804"
+      ],
+      "settledAt": "2026-10-28T14:27:01.689Z",
       "excludedReason": null,
       "marketPriceBasisVersion": "median_bookmaker_v1",
       "priceSnapshotScheduleVersion": "early_t180_t60_v1",
@@ -749044,11 +749593,11 @@
         "t60": null
       },
       "selectedPriceProfitLoss": {
-        "early": null,
+        "early": 1,
         "t180": null,
         "t60": null,
-        "bestEarly": null,
-        "finalSp": null
+        "bestEarly": 1,
+        "finalSp": 2
       }
     },
     {
@@ -749241,7 +749790,14 @@
           },
           "horseId": "f163a739-b076-417e-8f1b-4f4270010519",
           "horseName": "Star Of Affinity",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 1,
+            "resultStatus": "finished",
+            "won": true,
+            "finalSp": 3.5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": 2.5
+          }
         },
         {
           "runnerId": "edac13c2-d89c-4d08-a203-bfd740a3ba6f",
@@ -749433,7 +749989,14 @@
           },
           "horseId": "d5c3d752-874b-47a5-8f4d-fe0b977f9382",
           "horseName": "Pepe Le Moko",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 4,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 4.5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "d369020b-67d7-4ba8-bc80-cfe276053a82",
@@ -749625,7 +750188,14 @@
           },
           "horseId": "a97c4108-5cd1-49d6-b7ab-48a3a93717ca",
           "horseName": "It's A Breeze",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 2,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 6,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "1e6872d3-218b-479a-8eee-a560d246f2f8",
@@ -749816,7 +750386,14 @@
           },
           "horseId": "6f88402c-5805-4c07-b6b0-6e177fc93c8f",
           "horseName": "Dwight K Schrute",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 5,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 3.75,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "3810bd9d-fec4-492b-9376-a935312eb6f9",
@@ -750011,7 +750588,14 @@
           },
           "horseId": "fa59165a-6eea-4a17-9267-614c7a3a0be1",
           "horseName": "Alright Dai",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 6,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 7.5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "24d08030-443e-4a98-be30-50845795e587",
@@ -750201,7 +750785,14 @@
           },
           "horseId": "2bcde5fe-f236-4955-9815-7d926e4cdfd4",
           "horseName": "Enjoy D'allen",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 3,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 13,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         }
       ],
       "activeRunnerCount": 6,
@@ -750237,8 +750828,10 @@
       ],
       "jprALeader": "a2823960-c508-423c-b2e7-ec2369ad851e",
       "jprBLeader": "a2823960-c508-423c-b2e7-ec2369ad851e",
-      "winners": [],
-      "settledAt": null,
+      "winners": [
+        "a2823960-c508-423c-b2e7-ec2369ad851e"
+      ],
+      "settledAt": "2026-10-28T16:06:48.658Z",
       "excludedReason": null,
       "marketPriceBasisVersion": "median_bookmaker_v1",
       "priceSnapshotScheduleVersion": "early_t180_t60_v1",
@@ -750282,14 +750875,51 @@
           "forecastDecimalPrice": 6
         },
         "t180": null,
-        "t60": null
+        "t60": {
+          "price": null,
+          "decimalPrice": 4.33,
+          "impliedProbability": 0.23094688221709006,
+          "capturedAt": "2026-10-28T13:49:06.556Z",
+          "minutesBeforeScheduledOff": 31.890733333333333,
+          "ratingProbability": 0.23073339911523538,
+          "ratingEdgePercentagePoints": -0.02134831018546779,
+          "marketPriceBasisVersion": "median_bookmaker_v1",
+          "bookmakerQuoteCount": 3,
+          "bookmakerQuotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "3/1",
+              "decimalOdds": 4
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "10/3",
+              "decimalOdds": 4.33
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "10/3",
+              "decimalOdds": 4.33
+            }
+          ],
+          "medianBookmakerPriceDecimal": 4.33,
+          "medianBookmakerImpliedProbability": 0.23094688221709006,
+          "bestBookmakerPriceDecimal": 4.33,
+          "bestBookmakerPriceFractional": "10/3",
+          "bestBookmakerName": null,
+          "forecastPrice": "5/1",
+          "forecastDecimalPrice": 6
+        }
       },
       "selectedPriceProfitLoss": {
-        "early": null,
+        "early": -1,
         "t180": null,
-        "t60": null,
-        "bestEarly": null,
-        "finalSp": null
+        "t60": -1,
+        "bestEarly": -1,
+        "finalSp": -1
       }
     },
     {
@@ -750483,7 +751113,14 @@
           },
           "horseId": "7f8ec1d6-3686-46eb-9b3f-2b7817f4facb",
           "horseName": "All Well And Good",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 3,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 7,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "c06b773e-e8cb-42d7-ba8c-811ec157f0ce",
@@ -750677,7 +751314,14 @@
           },
           "horseId": "c48dc8b1-3d35-4cb0-b8f9-2d6416c7ede6",
           "horseName": "Western Cross",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 4,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 4.333,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "95aa1048-e189-40c4-8127-72b57ae77e78",
@@ -750870,7 +751514,14 @@
           },
           "horseId": "19f6c0a4-338e-4ccf-852a-177eb104bc18",
           "horseName": "Paddockwood",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 1,
+            "resultStatus": "finished",
+            "won": true,
+            "finalSp": 9,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": 8
+          }
         },
         {
           "runnerId": "8bafcd71-2975-4367-a902-c4448b291d4f",
@@ -751062,7 +751713,14 @@
           },
           "horseId": "67b1c264-46a3-4a4a-81e6-9b5b6df942f9",
           "horseName": "Marhaba Prince",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 8,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 4.5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "8b104c4e-0b20-4adc-a725-5f1cec83dbd4",
@@ -751256,7 +751914,14 @@
           },
           "horseId": "10199268-16ff-4180-8cbc-2294cede35a4",
           "horseName": "In Limbo",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 7,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 11,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "41530770-e19f-41f8-8afb-f89cc203c091",
@@ -751448,7 +752113,14 @@
           },
           "horseId": "1252db38-c800-4818-b473-07451451236a",
           "horseName": "Eton Mes",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 2,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 10,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "618766db-a550-4bd4-a57f-32d3af01c183",
@@ -751640,7 +752312,14 @@
           },
           "horseId": "bf469425-426f-4d36-b6ae-abc14ac9c725",
           "horseName": "General Briar",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": null,
+            "resultStatus": "non_runner",
+            "won": null,
+            "finalSp": null,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": null
+          }
         },
         {
           "runnerId": "7774601c-da45-41c9-b0c1-c6f2c6f08819",
@@ -751831,7 +752510,14 @@
           },
           "horseId": "f3bb4448-4b70-44e9-8886-b959088b38da",
           "horseName": "Rock On Cowboy",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 6,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 17,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "6c8acd59-6e01-41af-b651-810bcae828bd",
@@ -752025,7 +752711,14 @@
           },
           "horseId": "fa19396a-dd29-4d70-95a8-8946b04fe573",
           "horseName": "Sioux Falls",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 5,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 5.5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         }
       ],
       "activeRunnerCount": 9,
@@ -752081,7 +752774,7 @@
             "forecastDecimalPrice": 3
           }
         },
-        "qualifyingPriceProfitLoss": null
+        "qualifyingPriceProfitLoss": -1
       },
       "raceId": "88785c83-239b-492a-b3a5-53c022ef9ebb",
       "sourceId": "945754",
@@ -752113,8 +752806,10 @@
       ],
       "jprALeader": "d5e1bafa-a87d-49cd-9dfe-765b284610c1",
       "jprBLeader": "d5e1bafa-a87d-49cd-9dfe-765b284610c1",
-      "winners": [],
-      "settledAt": null,
+      "winners": [
+        "95aa1048-e189-40c4-8127-72b57ae77e78"
+      ],
+      "settledAt": "2026-10-28T16:06:48.658Z",
       "excludedReason": null,
       "marketPriceBasisVersion": "median_bookmaker_v1",
       "priceSnapshotScheduleVersion": "early_t180_t60_v1",
@@ -752158,14 +752853,51 @@
           "forecastDecimalPrice": 3
         },
         "t180": null,
-        "t60": null
+        "t60": {
+          "price": null,
+          "decimalPrice": 4.5,
+          "impliedProbability": 0.2222222222222222,
+          "capturedAt": "2026-10-28T13:49:06.556Z",
+          "minutesBeforeScheduledOff": 61.89073333333333,
+          "ratingProbability": 0.27504765284688104,
+          "ratingEdgePercentagePoints": 5.282543062465884,
+          "marketPriceBasisVersion": "median_bookmaker_v1",
+          "bookmakerQuoteCount": 3,
+          "bookmakerQuotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "7/2",
+              "decimalOdds": 4.5
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "7/2",
+              "decimalOdds": 4.5
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "4/1",
+              "decimalOdds": 5
+            }
+          ],
+          "medianBookmakerPriceDecimal": 4.5,
+          "medianBookmakerImpliedProbability": 0.2222222222222222,
+          "bestBookmakerPriceDecimal": 5,
+          "bestBookmakerPriceFractional": "4/1",
+          "bestBookmakerName": "Paddy Power",
+          "forecastPrice": "2/1",
+          "forecastDecimalPrice": 3
+        }
       },
       "selectedPriceProfitLoss": {
-        "early": null,
+        "early": -1,
         "t180": null,
-        "t60": null,
-        "bestEarly": null,
-        "finalSp": null
+        "t60": -1,
+        "bestEarly": -1,
+        "finalSp": -1
       }
     },
     {
@@ -752358,7 +753090,14 @@
           },
           "horseId": "34172ee3-3949-4a03-a2c4-a36624334833",
           "horseName": "Opening Bid",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 3,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 4,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "4c89f122-318e-4e21-8765-f019c6bd1a8d",
@@ -752551,7 +753290,14 @@
           },
           "horseId": "6d4fe8a2-13bb-44de-920f-14c48f70ac06",
           "horseName": "The Four Sixes",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 1,
+            "resultStatus": "finished",
+            "won": true,
+            "finalSp": 4,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": 3
+          }
         },
         {
           "runnerId": "86eea466-57e8-490c-b4c2-40d20b6dbc2e",
@@ -752743,7 +753489,14 @@
           },
           "horseId": "7bf607f1-5ed2-4ba1-bea4-0a650528460a",
           "horseName": "Centara",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 4,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 3.25,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "13b0c292-2f25-4f0e-a2cd-002999fec16f",
@@ -752935,7 +753688,14 @@
           },
           "horseId": "091c8ec6-a902-4426-b535-1445d89775eb",
           "horseName": "Klic Boum",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 2,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 4.5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "1b2dac78-947b-4f10-9a59-9bb13ffba3d8",
@@ -753126,7 +753886,14 @@
           },
           "horseId": "1ef45e3e-f42e-4255-af53-1eb378d6d955",
           "horseName": "Sinchi Roca",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": null,
+            "resultStatus": "non_runner",
+            "won": null,
+            "finalSp": null,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": null
+          }
         },
         {
           "runnerId": "73a9f0a3-5f97-4ff5-a687-ae08e73cd865",
@@ -753317,7 +754084,14 @@
           },
           "horseId": "86b02202-db49-409d-94fa-a0369ac6e1c3",
           "horseName": "Mo Ghille Mar",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 5,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 12,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         }
       ],
       "activeRunnerCount": 6,
@@ -753353,8 +754127,10 @@
       ],
       "jprALeader": "4c89f122-318e-4e21-8765-f019c6bd1a8d",
       "jprBLeader": "1b2dac78-947b-4f10-9a59-9bb13ffba3d8",
-      "winners": [],
-      "settledAt": null,
+      "winners": [
+        "4c89f122-318e-4e21-8765-f019c6bd1a8d"
+      ],
+      "settledAt": "2026-10-28T16:06:48.658Z",
       "excludedReason": null,
       "marketPriceBasisVersion": "median_bookmaker_v1",
       "priceSnapshotScheduleVersion": "early_t180_t60_v1",
@@ -753398,14 +754174,51 @@
           "forecastDecimalPrice": 5.5
         },
         "t180": null,
-        "t60": null
+        "t60": {
+          "price": null,
+          "decimalPrice": 4.5,
+          "impliedProbability": 0.2222222222222222,
+          "capturedAt": "2026-10-28T14:27:01.689Z",
+          "minutesBeforeScheduledOff": 53.97185,
+          "ratingProbability": 0.3472229856189068,
+          "ratingEdgePercentagePoints": 12.500076339668459,
+          "marketPriceBasisVersion": "median_bookmaker_v1",
+          "bookmakerQuoteCount": 3,
+          "bookmakerQuotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "7/2",
+              "decimalOdds": 4.5
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "7/2",
+              "decimalOdds": 4.5
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "7/2",
+              "decimalOdds": 4.5
+            }
+          ],
+          "medianBookmakerPriceDecimal": 4.5,
+          "medianBookmakerImpliedProbability": 0.2222222222222222,
+          "bestBookmakerPriceDecimal": 4.5,
+          "bestBookmakerPriceFractional": "7/2",
+          "bestBookmakerName": null,
+          "forecastPrice": "9/2",
+          "forecastDecimalPrice": 5.5
+        }
       },
       "selectedPriceProfitLoss": {
-        "early": null,
+        "early": -1,
         "t180": null,
-        "t60": null,
-        "bestEarly": null,
-        "finalSp": null
+        "t60": -1,
+        "bestEarly": -1,
+        "finalSp": -1
       }
     },
     {
@@ -753600,7 +754413,14 @@
           },
           "horseId": "d642d9c2-5bfb-49df-a94b-31f087ae5bbd",
           "horseName": "Fairye Forth",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": null,
+            "resultStatus": "non_runner",
+            "won": null,
+            "finalSp": null,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": null
+          }
         },
         {
           "runnerId": "6344fb36-b0df-450c-8dd6-f6b07a426b81",
@@ -753793,7 +754613,14 @@
           },
           "horseId": "ce960d10-c667-4537-bc55-28863404107d",
           "horseName": "Badbury Rings",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 2,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 2.875,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "1ca61dba-6c30-43d5-9212-6f5bab6c899e",
@@ -753985,7 +754812,14 @@
           },
           "horseId": "df5dd9bc-2e86-4497-b69a-4e4e4068a017",
           "horseName": "Mask Of Zorro",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 1,
+            "resultStatus": "finished",
+            "won": true,
+            "finalSp": 3.5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": 2.5
+          }
         },
         {
           "runnerId": "35ea113b-9dc7-4ba1-8fc2-7180f9e31870",
@@ -754177,7 +755011,14 @@
           },
           "horseId": "9b8ade61-b2f1-4fcd-884d-65abc2d325bb",
           "horseName": "Woodythewoodpecker",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": null,
+            "resultStatus": "pulled_up",
+            "won": false,
+            "finalSp": 6,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "a0f61615-8434-4624-b79d-2fde4db4dc12",
@@ -754369,7 +755210,14 @@
           },
           "horseId": "f4e7b055-d633-402d-b98d-7c2c1927a0f5",
           "horseName": "Not A Light",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 3,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 5.5,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         },
         {
           "runnerId": "000f465e-401a-4367-a8c1-00db45eede7f",
@@ -754563,7 +755411,14 @@
           },
           "horseId": "97fb4d41-49cb-4640-8c9c-c45718c441ec",
           "horseName": "Kick Up A Storm",
-          "outcome": null
+          "outcome": {
+            "finishingPosition": 4,
+            "resultStatus": "finished",
+            "won": false,
+            "finalSp": 8,
+            "deadHeatDivisor": 1,
+            "finalSpProfitLoss": -1
+          }
         }
       ],
       "activeRunnerCount": 6,
@@ -754599,8 +755454,10 @@
       ],
       "jprALeader": "000f465e-401a-4367-a8c1-00db45eede7f",
       "jprBLeader": "000f465e-401a-4367-a8c1-00db45eede7f",
-      "winners": [],
-      "settledAt": null,
+      "winners": [
+        "1ca61dba-6c30-43d5-9212-6f5bab6c899e"
+      ],
+      "settledAt": "2026-10-28T16:06:48.658Z",
       "excludedReason": null,
       "marketPriceBasisVersion": "median_bookmaker_v1",
       "priceSnapshotScheduleVersion": "early_t180_t60_v1",
@@ -754644,7 +755501,44 @@
           "forecastDecimalPrice": 2.5
         },
         "t180": null,
-        "t60": null
+        "t60": {
+          "price": null,
+          "decimalPrice": 2.63,
+          "impliedProbability": 0.3802281368821293,
+          "capturedAt": "2026-10-28T14:27:01.689Z",
+          "minutesBeforeScheduledOff": 83.97185,
+          "ratingProbability": 0.3399139957158073,
+          "ratingEdgePercentagePoints": -4.031414116632198,
+          "marketPriceBasisVersion": "median_bookmaker_v1",
+          "bookmakerQuoteCount": 3,
+          "bookmakerQuotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "13/8",
+              "decimalOdds": 2.63
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "13/8",
+              "decimalOdds": 2.63
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "13/8",
+              "decimalOdds": 2.63
+            }
+          ],
+          "medianBookmakerPriceDecimal": 2.63,
+          "medianBookmakerImpliedProbability": 0.3802281368821293,
+          "bestBookmakerPriceDecimal": 2.63,
+          "bestBookmakerPriceFractional": "13/8",
+          "bestBookmakerName": null,
+          "forecastPrice": "6/4",
+          "forecastDecimalPrice": 2.5
+        }
       },
       "selectedPriceProfitLoss": {
         "early": null,
@@ -756434,7 +757328,44 @@
           "forecastPrice": "12/1",
           "forecastDecimalPrice": 13
         },
-        "t180": null,
+        "t180": {
+          "price": null,
+          "decimalPrice": 41,
+          "impliedProbability": 0.024390243902439025,
+          "capturedAt": "2026-10-28T13:49:06.556Z",
+          "minutesBeforeScheduledOff": 151.89073333333334,
+          "ratingProbability": 0.23502099162546927,
+          "ratingEdgePercentagePoints": 21.063074772303025,
+          "marketPriceBasisVersion": "median_bookmaker_v1",
+          "bookmakerQuoteCount": 3,
+          "bookmakerQuotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "40/1",
+              "decimalOdds": 41
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "40/1",
+              "decimalOdds": 41
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "40/1",
+              "decimalOdds": 41
+            }
+          ],
+          "medianBookmakerPriceDecimal": 41,
+          "medianBookmakerImpliedProbability": 0.024390243902439025,
+          "bestBookmakerPriceDecimal": 41,
+          "bestBookmakerPriceFractional": "40/1",
+          "bestBookmakerName": null,
+          "forecastPrice": "12/1",
+          "forecastDecimalPrice": 13
+        },
         "t60": null
       },
       "selectedPriceProfitLoss": {
