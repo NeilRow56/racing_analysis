@@ -14634,6 +14634,611 @@
         "finalSpProfitLoss": -1
       },
       "settledAt": "2026-10-28T16:06:48.658Z"
+    },
+    {
+      "raceDate": "2026-10-29",
+      "raceId": "a297aa51-e3b5-4ef6-a3b3-ed1de7eee6a6",
+      "sourceId": "945954",
+      "scheduledOff": "2026-10-29T14:12:00.000Z",
+      "scheduledTime": "14:12:00",
+      "course": "Bath",
+      "horseId": "6939006c-c03b-4db8-8798-1047ddec2864",
+      "horseName": "Thiscouldbefun",
+      "runnerId": "91b86389-2675-4fe8-bd23-a147b59798d8",
+      "recordedAt": "2026-10-29T05:58:18.760Z",
+      "recordedPreRace": true,
+      "ratingVersion": "todays_rating_v1",
+      "todaysRating": 119.54567418181807,
+      "latestSpeed": 112.54567418181807,
+      "bestL3Speed": 112.54567418181807,
+      "avgL3Speed": 88.78776634343433,
+      "tpr": 109.20094721450756,
+      "todayWeight": 133,
+      "priorRun": {
+        "runnerId": "a419ddc2-a5f3-477a-b932-4f4dee71f079",
+        "raceDateTime": "2026-09-29T13:02:00.000Z",
+        "weightCarriedLbs": 140,
+        "speed": 112.54567418181807
+      },
+      "signedWeightChange": -7,
+      "weightBand": "4-7 lb lighter",
+      "todaysRatingRank": 1,
+      "latestSpeedRank": 1,
+      "bestL3Rank": 1,
+      "tprRank": 2,
+      "latestSpeedLeaders": [
+        {
+          "runnerId": "91b86389-2675-4fe8-bd23-a147b59798d8",
+          "horseId": "6939006c-c03b-4db8-8798-1047ddec2864",
+          "horseName": "Thiscouldbefun",
+          "outcome": {
+            "status": "settled",
+            "resultStatus": "finished",
+            "finishingPosition": 14,
+            "won": false,
+            "deadHeatDivisor": 1,
+            "finalSp": 12,
+            "qualifyingPriceProfitLoss": null,
+            "finalSpProfitLoss": -1
+          }
+        }
+      ],
+      "market": {
+        "qualifying": {
+          "capturedAt": "2026-10-29T05:58:18.760Z",
+          "priceCapturedAt": "2026-10-29T05:58:18.760Z",
+          "source": "sporting_life_stored_bookmaker_median_at_capture_v1",
+          "marketPriceBasisVersion": "median_bookmaker_v1",
+          "medianDecimal": 11,
+          "impliedProbability": 0.09090909090909091,
+          "bookmakerQuoteCount": 3,
+          "bookmakerQuotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "10/1",
+              "decimalOdds": 11
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "10/1",
+              "decimalOdds": 11
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "10/1",
+              "decimalOdds": 11
+            }
+          ]
+        },
+        "later": [],
+        "finalStoredPreRace": {
+          "capturedAt": "2026-10-29T05:58:18.760Z",
+          "priceCapturedAt": "2026-10-29T05:58:18.760Z",
+          "source": "sporting_life_stored_bookmaker_median_at_capture_v1",
+          "marketPriceBasisVersion": "median_bookmaker_v1",
+          "medianDecimal": 11,
+          "impliedProbability": 0.09090909090909091,
+          "bookmakerQuoteCount": 3,
+          "bookmakerQuotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "10/1",
+              "decimalOdds": 11
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "10/1",
+              "decimalOdds": 11
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "10/1",
+              "decimalOdds": 11
+            }
+          ]
+        }
+      },
+      "outcome": {
+        "status": "settled",
+        "resultStatus": "finished",
+        "finishingPosition": 14,
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 12,
+        "qualifyingPriceProfitLoss": -1,
+        "finalSpProfitLoss": -1
+      },
+      "settledAt": "2026-10-29T16:08:11.234Z"
+    },
+    {
+      "raceDate": "2026-10-29",
+      "raceId": "9dfee7d3-ba8d-4f3a-9452-b26f62333162",
+      "sourceId": "945955",
+      "scheduledOff": "2026-10-29T14:42:00.000Z",
+      "scheduledTime": "14:42:00",
+      "course": "Bath",
+      "horseId": "dac6095b-f0dc-46b1-b8f0-2ea19b68d04d",
+      "horseName": "Newtown Duke",
+      "runnerId": "77a8cac2-94ff-4375-aec1-21566b156b35",
+      "recordedAt": "2026-10-29T05:58:18.760Z",
+      "recordedPreRace": true,
+      "ratingVersion": "todays_rating_v1",
+      "todaysRating": 113.0510218034079,
+      "latestSpeed": 101.0510218034079,
+      "bestL3Speed": 102.56334900783115,
+      "avgL3Speed": 93.84729286837312,
+      "tpr": 99.59083002576827,
+      "todayWeight": 126,
+      "priorRun": {
+        "runnerId": "e497f123-32bf-456e-a8e7-0bf957525a33",
+        "raceDateTime": "2026-10-12T13:54:00.000Z",
+        "weightCarriedLbs": 138,
+        "speed": 101.0510218034079
+      },
+      "signedWeightChange": -12,
+      "weightBand": "8+ lb lighter",
+      "todaysRatingRank": 1,
+      "latestSpeedRank": 4,
+      "bestL3Rank": 4,
+      "tprRank": 6,
+      "latestSpeedLeaders": [
+        {
+          "runnerId": "6914952f-c451-4106-86e6-da3757c99144",
+          "horseId": "358c967f-05ae-425f-bc98-a529bd187565",
+          "horseName": "Belfrina",
+          "outcome": {
+            "status": "settled",
+            "resultStatus": "finished",
+            "finishingPosition": 9,
+            "won": false,
+            "deadHeatDivisor": 1,
+            "finalSp": 26,
+            "qualifyingPriceProfitLoss": null,
+            "finalSpProfitLoss": -1
+          }
+        }
+      ],
+      "market": {
+        "qualifying": {
+          "capturedAt": "2026-10-29T05:58:18.760Z",
+          "priceCapturedAt": "2026-10-29T05:58:18.760Z",
+          "source": "sporting_life_stored_bookmaker_median_at_capture_v1",
+          "marketPriceBasisVersion": "median_bookmaker_v1",
+          "medianDecimal": 11,
+          "impliedProbability": 0.09090909090909091,
+          "bookmakerQuoteCount": 3,
+          "bookmakerQuotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "9/1",
+              "decimalOdds": 10
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "10/1",
+              "decimalOdds": 11
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "10/1",
+              "decimalOdds": 11
+            }
+          ]
+        },
+        "later": [],
+        "finalStoredPreRace": {
+          "capturedAt": "2026-10-29T05:58:18.760Z",
+          "priceCapturedAt": "2026-10-29T05:58:18.760Z",
+          "source": "sporting_life_stored_bookmaker_median_at_capture_v1",
+          "marketPriceBasisVersion": "median_bookmaker_v1",
+          "medianDecimal": 11,
+          "impliedProbability": 0.09090909090909091,
+          "bookmakerQuoteCount": 3,
+          "bookmakerQuotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "9/1",
+              "decimalOdds": 10
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "10/1",
+              "decimalOdds": 11
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "10/1",
+              "decimalOdds": 11
+            }
+          ]
+        }
+      },
+      "outcome": {
+        "status": "settled",
+        "resultStatus": "finished",
+        "finishingPosition": 1,
+        "won": true,
+        "deadHeatDivisor": 1,
+        "finalSp": 7,
+        "qualifyingPriceProfitLoss": 10,
+        "finalSpProfitLoss": 6
+      },
+      "settledAt": "2026-10-29T16:08:11.234Z"
+    },
+    {
+      "raceDate": "2026-10-29",
+      "raceId": "186aa750-c87e-4b6e-83c6-b61c6967457f",
+      "sourceId": "945956",
+      "scheduledOff": "2026-10-29T15:12:00.000Z",
+      "scheduledTime": "15:12:00",
+      "course": "Bath",
+      "horseId": "ceb1bede-31be-4019-b100-b7312a8b5e86",
+      "horseName": "Thunderous Love",
+      "runnerId": "1b227a93-a171-447b-a185-422849024647",
+      "recordedAt": "2026-10-29T05:58:18.760Z",
+      "recordedPreRace": true,
+      "ratingVersion": "todays_rating_v1",
+      "todaysRating": 110.72796046256302,
+      "latestSpeed": 100.72796046256302,
+      "bestL3Speed": 101.07360488931488,
+      "avgL3Speed": 100.29155038595216,
+      "tpr": 96.05495701190317,
+      "todayWeight": 124,
+      "priorRun": {
+        "runnerId": "e3e721f5-6b67-4020-9e99-370cbd2752c8",
+        "raceDateTime": "2026-10-20T15:38:00.000Z",
+        "weightCarriedLbs": 134,
+        "speed": 100.72796046256302
+      },
+      "signedWeightChange": -10,
+      "weightBand": "8+ lb lighter",
+      "todaysRatingRank": 1,
+      "latestSpeedRank": 4,
+      "bestL3Rank": 10,
+      "tprRank": 9,
+      "latestSpeedLeaders": [
+        {
+          "runnerId": "d5c8532a-da09-417f-8925-bcd094b067ff",
+          "horseId": "8aaaa39c-cc8e-4f3d-bf10-4fc1418911a0",
+          "horseName": "Over Spiced",
+          "outcome": {
+            "status": "settled",
+            "resultStatus": "finished",
+            "finishingPosition": 6,
+            "won": false,
+            "deadHeatDivisor": 1,
+            "finalSp": 10,
+            "qualifyingPriceProfitLoss": null,
+            "finalSpProfitLoss": -1
+          }
+        }
+      ],
+      "market": {
+        "qualifying": {
+          "capturedAt": "2026-10-29T05:58:18.760Z",
+          "priceCapturedAt": "2026-10-29T05:58:18.760Z",
+          "source": "sporting_life_stored_bookmaker_median_at_capture_v1",
+          "marketPriceBasisVersion": "median_bookmaker_v1",
+          "medianDecimal": 9,
+          "impliedProbability": 0.1111111111111111,
+          "bookmakerQuoteCount": 3,
+          "bookmakerQuotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "8/1",
+              "decimalOdds": 9
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "8/1",
+              "decimalOdds": 9
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "8/1",
+              "decimalOdds": 9
+            }
+          ]
+        },
+        "later": [],
+        "finalStoredPreRace": {
+          "capturedAt": "2026-10-29T05:58:18.760Z",
+          "priceCapturedAt": "2026-10-29T05:58:18.760Z",
+          "source": "sporting_life_stored_bookmaker_median_at_capture_v1",
+          "marketPriceBasisVersion": "median_bookmaker_v1",
+          "medianDecimal": 9,
+          "impliedProbability": 0.1111111111111111,
+          "bookmakerQuoteCount": 3,
+          "bookmakerQuotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "8/1",
+              "decimalOdds": 9
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "8/1",
+              "decimalOdds": 9
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "8/1",
+              "decimalOdds": 9
+            }
+          ]
+        }
+      },
+      "outcome": {
+        "status": "settled",
+        "resultStatus": "finished",
+        "finishingPosition": 7,
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 4.5,
+        "qualifyingPriceProfitLoss": -1,
+        "finalSpProfitLoss": -1
+      },
+      "settledAt": "2026-10-29T16:08:11.234Z"
+    },
+    {
+      "raceDate": "2026-10-29",
+      "raceId": "07298494-b613-4905-92d3-6ee8cb663ff1",
+      "sourceId": "946640",
+      "scheduledOff": "2026-10-29T13:35:00.000Z",
+      "scheduledTime": "13:35:00",
+      "course": "Punchestown",
+      "horseId": "de527873-2690-4640-9c9b-8ef4f3fb734e",
+      "horseName": "The Rock Factor",
+      "runnerId": "73f7b5f2-18e5-4439-a40b-3c9f594e7041",
+      "recordedAt": "2026-10-29T05:58:18.760Z",
+      "recordedPreRace": true,
+      "ratingVersion": "todays_rating_v1",
+      "todaysRating": 114.25538971428571,
+      "latestSpeed": 93.25538971428571,
+      "bestL3Speed": 107.3563638458474,
+      "avgL3Speed": 100.0824052017144,
+      "tpr": 89.82839995505269,
+      "todayWeight": 119,
+      "priorRun": {
+        "runnerId": "0e69cb85-73f0-4328-8c8f-217635d9d7ba",
+        "raceDateTime": "2026-06-12T16:58:00.000Z",
+        "weightCarriedLbs": 140,
+        "speed": 93.25538971428571
+      },
+      "signedWeightChange": -21,
+      "weightBand": "8+ lb lighter",
+      "todaysRatingRank": 1,
+      "latestSpeedRank": 5,
+      "bestL3Rank": 5,
+      "tprRank": 11,
+      "latestSpeedLeaders": [
+        {
+          "runnerId": "73597713-cc4a-4152-a08d-18cd26bc7da7",
+          "horseId": "d5d0ef76-ce5c-453d-aee0-a7f168bfb22b",
+          "horseName": "Excuzio Joe",
+          "outcome": {
+            "status": "settled",
+            "resultStatus": "finished",
+            "finishingPosition": 14,
+            "won": false,
+            "deadHeatDivisor": 1,
+            "finalSp": 17,
+            "qualifyingPriceProfitLoss": null,
+            "finalSpProfitLoss": -1
+          }
+        }
+      ],
+      "market": {
+        "qualifying": {
+          "capturedAt": "2026-10-29T05:58:18.760Z",
+          "priceCapturedAt": "2026-10-29T05:58:18.760Z",
+          "source": "sporting_life_stored_bookmaker_median_at_capture_v1",
+          "marketPriceBasisVersion": "median_bookmaker_v1",
+          "medianDecimal": 21,
+          "impliedProbability": 0.047619047619047616,
+          "bookmakerQuoteCount": 3,
+          "bookmakerQuotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "20/1",
+              "decimalOdds": 21
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "20/1",
+              "decimalOdds": 21
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "20/1",
+              "decimalOdds": 21
+            }
+          ]
+        },
+        "later": [],
+        "finalStoredPreRace": {
+          "capturedAt": "2026-10-29T05:58:18.760Z",
+          "priceCapturedAt": "2026-10-29T05:58:18.760Z",
+          "source": "sporting_life_stored_bookmaker_median_at_capture_v1",
+          "marketPriceBasisVersion": "median_bookmaker_v1",
+          "medianDecimal": 21,
+          "impliedProbability": 0.047619047619047616,
+          "bookmakerQuoteCount": 3,
+          "bookmakerQuotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "20/1",
+              "decimalOdds": 21
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "20/1",
+              "decimalOdds": 21
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "20/1",
+              "decimalOdds": 21
+            }
+          ]
+        }
+      },
+      "outcome": {
+        "status": "void",
+        "resultStatus": "non_runner",
+        "finishingPosition": null,
+        "won": null,
+        "deadHeatDivisor": 1,
+        "finalSp": null,
+        "qualifyingPriceProfitLoss": 0,
+        "finalSpProfitLoss": 0
+      },
+      "settledAt": "2026-10-29T16:08:11.234Z"
+    },
+    {
+      "raceDate": "2026-10-29",
+      "raceId": "675a41a2-e929-40f0-b33b-1d2ad8c7c2fd",
+      "sourceId": "946641",
+      "scheduledOff": "2026-10-29T14:05:00.000Z",
+      "scheduledTime": "14:05:00",
+      "course": "Punchestown",
+      "horseId": "12e4afec-1068-4e97-b599-d1db1c354731",
+      "horseName": "Oklahoma",
+      "runnerId": "cb82d2f7-9b61-4d99-b2b7-32b17ef9ecd4",
+      "recordedAt": "2026-10-29T05:58:18.760Z",
+      "recordedPreRace": true,
+      "ratingVersion": "todays_rating_v1",
+      "todaysRating": 95.79830814576633,
+      "latestSpeed": 90.79830814576633,
+      "bestL3Speed": 92.66483993435168,
+      "avgL3Speed": 87.76274642868496,
+      "tpr": 97.85485989451232,
+      "todayWeight": 133,
+      "priorRun": {
+        "runnerId": "dbee2e59-dda8-4523-84d5-6483222d34f7",
+        "raceDateTime": "2026-09-22T14:07:00.000Z",
+        "weightCarriedLbs": 138,
+        "speed": 90.79830814576633
+      },
+      "signedWeightChange": -5,
+      "weightBand": "4-7 lb lighter",
+      "todaysRatingRank": 1,
+      "latestSpeedRank": 1,
+      "bestL3Rank": 2,
+      "tprRank": 2,
+      "latestSpeedLeaders": [
+        {
+          "runnerId": "cb82d2f7-9b61-4d99-b2b7-32b17ef9ecd4",
+          "horseId": "12e4afec-1068-4e97-b599-d1db1c354731",
+          "horseName": "Oklahoma",
+          "outcome": {
+            "status": "settled",
+            "resultStatus": "finished",
+            "finishingPosition": 5,
+            "won": false,
+            "deadHeatDivisor": 1,
+            "finalSp": 3.25,
+            "qualifyingPriceProfitLoss": null,
+            "finalSpProfitLoss": -1
+          }
+        }
+      ],
+      "market": {
+        "qualifying": {
+          "capturedAt": "2026-10-29T05:58:18.760Z",
+          "priceCapturedAt": "2026-10-29T05:58:18.760Z",
+          "source": "sporting_life_stored_bookmaker_median_at_capture_v1",
+          "marketPriceBasisVersion": "median_bookmaker_v1",
+          "medianDecimal": 3.75,
+          "impliedProbability": 0.26666666666666666,
+          "bookmakerQuoteCount": 3,
+          "bookmakerQuotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "5/2",
+              "decimalOdds": 3.5
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "11/4",
+              "decimalOdds": 3.75
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "11/4",
+              "decimalOdds": 3.75
+            }
+          ]
+        },
+        "later": [],
+        "finalStoredPreRace": {
+          "capturedAt": "2026-10-29T05:58:18.760Z",
+          "priceCapturedAt": "2026-10-29T05:58:18.760Z",
+          "source": "sporting_life_stored_bookmaker_median_at_capture_v1",
+          "marketPriceBasisVersion": "median_bookmaker_v1",
+          "medianDecimal": 3.75,
+          "impliedProbability": 0.26666666666666666,
+          "bookmakerQuoteCount": 3,
+          "bookmakerQuotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "5/2",
+              "decimalOdds": 3.5
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "11/4",
+              "decimalOdds": 3.75
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "11/4",
+              "decimalOdds": 3.75
+            }
+          ]
+        }
+      },
+      "outcome": {
+        "status": "settled",
+        "resultStatus": "finished",
+        "finishingPosition": 5,
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 3.25,
+        "qualifyingPriceProfitLoss": -1,
+        "finalSpProfitLoss": -1
+      },
+      "settledAt": "2026-10-29T16:08:11.234Z"
     }
   ]
 }
