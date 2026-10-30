@@ -111,6 +111,6 @@ test("Today table wires the existing race result gate into both row and badge", 
   assert.match(page, /<RunnerRow\s+hasConclusiveResult=\{hasConclusiveResult\}/);
   assert.match(page, /<RunnerResultRow runner=\{runner\} hasConclusiveResult=\{hasConclusiveResult\}>/);
   assert.match(page, /<RunnerWinnerBadge runner=\{runner\} hasConclusiveResult=\{hasConclusiveResult\} \/>/);
-  assert.match(page, /<FrozenRacecardRanks runner=\{runner\} \/>/);
+  assert.match(page, /<FrozenRacecardRanks runner=\{runner\} shadowRank=\{shadowRank\} \/>/);
   assert.match(page, /nonRunner \? \([\s\S]*?NR/);
 });

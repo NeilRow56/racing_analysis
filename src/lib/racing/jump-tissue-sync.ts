@@ -1,4 +1,7 @@
 import { freezeChaseSpeedState } from "./chase-speed-reliability-capture";
+import { buildChaseShadow, captureChaseShadow, mutateChaseShadow, settleChaseShadow } from "./chase-shadow-forward";
+import { loadChaseShadowModel } from "./chase-shadow-model";
+import { loadChaseContexts } from "./chase-shadow-context";
 import type { createDbConnection } from "@/db";
 import { loadJumpTissueModel } from "./jump-tissue-model";
 import {
@@ -28,10 +31,16 @@ export async function syncJumpTissueMeetings(connection: ReturnType<typeof creat
       const captured = buildJumpTissueRace({ raceDate, course, race, commentsByHorse, model, recordedAt: now });
       return captured ? [captured] : [];
     });
+    const shadowModel = additions.some(book => book.subtype === "Chase") ? await loadChaseShadowModel() : null;
     for (const book of additions.filter(b => b.subtype === "Chase")) {
+      const race = jumps.find(j => j.race.raceId === book.raceId)!.race;
+      const contexts = await loadChaseContexts(connection.client, race, now);
+      const shadow = buildChaseShadow(book, race, contexts, shadowModel!);
+      if (shadow) await mutateChaseShadow(data => captureChaseShadow(data, [shadow]));
       await freezeChaseSpeedState({ cohort: "primary", raceId: book.raceId, capturedAt: book.recordedAt,
         race: jumps.find(j => j.race.raceId === book.raceId)!.race, featureNames: model!.model.names, runners: book.runners });
     }
+    await mutateChaseShadow(data => settleChaseShadow(data, new Map(results.map(race => [race.raceId, race])), now));
     updated = captureJumpTissueRaces(updated, additions);
     return updateJumpTissueForward(updated, new Map(jumps.map(({ race }) => [race.raceId, race])), now);
   });

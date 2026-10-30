@@ -16,6 +16,7 @@ export function ResearchPageLayout({ date, active, secondary, children }: {
           <p className="mt-2 text-sm text-slate-500">Current prospective research first; previous Tissue and model experiments are retained below for reference.</p>
         </div>
         <nav aria-label="Racing Research" className="flex flex-wrap gap-2 text-sm font-semibold">
+          <Link className="border border-slate-300 bg-white px-3 py-2 text-slate-700 hover:border-emerald-400 hover:text-emerald-800" href="/racing/research/winter-2026">Winter 2026/27</Link>
           <time className="self-center px-2 text-xs font-normal tabular-nums text-slate-500" dateTime={date}>{date}</time>
           <a className="px-3 py-2 text-slate-700 hover:text-emerald-800" href="/racing/research/forward-value">Refresh</a>
           <Link className="border border-slate-300 bg-white px-3 py-2 text-slate-700 hover:border-emerald-400 hover:text-emerald-800" href="/racing/research">Research Filters</Link>

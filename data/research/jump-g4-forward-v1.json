@@ -4968,8 +4968,15 @@
         "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
         "bookmakerQuoteCount": 3
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "finishingPosition": 1,
+        "resultStatus": "finished",
+        "won": true,
+        "deadHeatDivisor": 1,
+        "finalSp": 4,
+        "profitLoss": 3
+      },
+      "settledAt": "2026-10-30T05:04:49.443Z"
     },
     {
       "raceId": "5717a9f0-d670-4a54-94a3-f4f39f2b3b66",
@@ -5021,8 +5028,15 @@
         "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
         "bookmakerQuoteCount": 3
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "finishingPosition": 6,
+        "resultStatus": "finished",
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 7,
+        "profitLoss": -1
+      },
+      "settledAt": "2026-10-30T05:04:49.443Z"
     },
     {
       "raceId": "4df96eff-d7fa-4ae5-abcd-8c16ba89c0f7",
@@ -5143,6 +5157,112 @@
         "profitLoss": 5
       },
       "settledAt": "2026-10-29T16:08:11.234Z"
+    },
+    {
+      "raceId": "cc46c6f8-286e-4463-b124-7402bc08b833",
+      "sourceId": "946109",
+      "raceDate": "2026-10-30",
+      "scheduledOff": "2026-10-30T16:10:00.000Z",
+      "scheduledTime": "16:10",
+      "course": "Wetherby",
+      "raceName": "Racing Value At bet365 Handicap Hurdle",
+      "subtype": "Hurdle",
+      "subtypeCode": "hurdle",
+      "handicapStatus": "handicap",
+      "fieldSize": 15,
+      "runnerId": "e23f7f9c-510b-459e-b6cb-0dafdeb48b6d",
+      "horseId": "5d7884bd-879c-4ab8-b370-93ac3756fd3e",
+      "horseName": "Robber's Bridge",
+      "recordedAt": "2026-10-30T05:10:45.259Z",
+      "recordedPreRace": true,
+      "components": {
+        "averageL3JumpSpeed": 125.05485924936546,
+        "averageL3JumpSpeedRank": 2,
+        "latestJumpSpeed": 135.78997075855847,
+        "previousJumpSpeed": 114.31974774017246,
+        "latestMinusPrevious": 21.470223018386008,
+        "previousClass": 4,
+        "currentClass": 5,
+        "classDropAmount": 1
+      },
+      "context": {
+        "officialRating": 105,
+        "officialRatingRank": 1,
+        "officialRatingTop3": true,
+        "officialRatingGapToBest": 0,
+        "officialRatingRelativeToFieldMean": 10.200000000000003,
+        "trainerPriorRate": 14.14141414141414,
+        "jockeyPriorRate": 6.976744186046512,
+        "daysSinceRun": 221,
+        "priorUsableJumpSpeedCount": 12,
+        "jprARank": 2,
+        "jprBRank": 2,
+        "jumpTissueRank": 12,
+        "jumpTissueProbability": 0.04234541868929577
+      },
+      "market": {
+        "medianBookmakerDecimal": 8.5,
+        "impliedProbability": 0.11764705882352941,
+        "marketRank": 6,
+        "priceCapturedAt": "2026-10-30T05:10:45.259Z",
+        "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
+        "bookmakerQuoteCount": 3
+      },
+      "outcome": null,
+      "settledAt": null
+    },
+    {
+      "raceId": "cc46c6f8-286e-4463-b124-7402bc08b833",
+      "sourceId": "946109",
+      "raceDate": "2026-10-30",
+      "scheduledOff": "2026-10-30T16:10:00.000Z",
+      "scheduledTime": "16:10",
+      "course": "Wetherby",
+      "raceName": "Racing Value At bet365 Handicap Hurdle",
+      "subtype": "Hurdle",
+      "subtypeCode": "hurdle",
+      "handicapStatus": "handicap",
+      "fieldSize": 15,
+      "runnerId": "a784d762-f0e2-4070-b411-b4e558886097",
+      "horseId": "6370fca0-f8a7-4007-af0f-f920f3d43bbf",
+      "horseName": "Dramatic License",
+      "recordedAt": "2026-10-30T05:10:45.259Z",
+      "recordedPreRace": true,
+      "components": {
+        "averageL3JumpSpeed": 122.57564931847529,
+        "averageL3JumpSpeedRank": 3,
+        "latestJumpSpeed": 122.57564931847529,
+        "previousJumpSpeed": 101.5061188208617,
+        "latestMinusPrevious": 21.069530497613584,
+        "previousClass": 3,
+        "currentClass": 5,
+        "classDropAmount": 2
+      },
+      "context": {
+        "officialRating": 100,
+        "officialRatingRank": 6,
+        "officialRatingTop3": false,
+        "officialRatingGapToBest": 5,
+        "officialRatingRelativeToFieldMean": 5.200000000000003,
+        "trainerPriorRate": 8.203125,
+        "jockeyPriorRate": 8.192090395480225,
+        "daysSinceRun": 175,
+        "priorUsableJumpSpeedCount": 4,
+        "jprARank": 9,
+        "jprBRank": 3,
+        "jumpTissueRank": 13,
+        "jumpTissueProbability": 0.03628555617721208
+      },
+      "market": {
+        "medianBookmakerDecimal": 67,
+        "impliedProbability": 0.014925373134328358,
+        "marketRank": 13,
+        "priceCapturedAt": "2026-10-30T05:10:45.259Z",
+        "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
+        "bookmakerQuoteCount": 3
+      },
+      "outcome": null,
+      "settledAt": null
     }
   ]
 }

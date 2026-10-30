@@ -102,3 +102,14 @@ test("input reliability never changes the existing non-red daily shortlist", () 
     assert.deepEqual(buildNonRedTissueDailyList([card]), before);
   }
 });
+
+test("longer-price identification adds or removes no daily list runners", () => {
+  for (const family of ["TURF", "AW", "HURDLE", "CHASE"]) for (const bestL3SpeedRank of [1, 2, 3, 4]) {
+    const input = meeting("Test", "14:00", [runner(1, bestL3SpeedRank, 99, family), runner(2, bestL3SpeedRank, 1, family)]);
+    const before = buildNonRedTissueDailyList([input]);
+    for (const price of [5.5, 6, 7, 11, 23]) {
+      for (const row of input.races[0].runners) row.tissueValue!.marketPrice = price;
+      assert.deepEqual(buildNonRedTissueDailyList([input]), before);
+    }
+  }
+});

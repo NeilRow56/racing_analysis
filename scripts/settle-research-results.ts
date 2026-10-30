@@ -1,4 +1,5 @@
 import { loadOrSpeed, mutateOrSpeed, pendingOrSpeedRaceIds, settleOrSpeed } from "@/lib/racing/or-speed-forward";
+import { loadChaseShadow, mutateChaseShadow, settleChaseShadow } from "@/lib/racing/chase-shadow-forward";
 import { pathToFileURL } from "node:url";
 import { resolve } from "node:path";
 import { createDbConnection } from "@/db";
@@ -75,6 +76,7 @@ export async function main(args: string[]) {
       settledJumpTissue = next.races.filter((race) => race.settledAt !== null).length - before;
       return next;
     });
+    await mutateChaseShadow(latest => settleChaseShadow(latest, races, now));
     await mutateAwTissueForward((latest) => {
       const before = latest.races.filter((race) => race.settledAt !== null).length;
       const next = updateAwTissueForward(latest, races, now);
@@ -165,6 +167,7 @@ async function pendingFromMutationSources() {
     loadModelDisagreementForward(),
   ]);
   return [
+    ...(await loadChaseShadow()).races.filter(race => race.current.settledAt === null).map(race => race.raceId),
     ...(await loadHurdlePair()).races.filter((race) => race.settledAt === null).map((race) => race.raceId),
     ...(await loadChasePair()).races.filter((race) => race.settledAt === null).map((race) => race.raceId),
     ...jump.races.filter((race) => race.settledAt === null).map((race) => race.raceId),

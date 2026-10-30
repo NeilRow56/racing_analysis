@@ -1,6 +1,7 @@
 import { summarizeTodayMarketPrice, type TodayRunner } from "@/lib/racing/todays-racing";
 import { isTissueTop2SpeedRankWatch, TISSUE_SPEED_RANK_WATCH_TOOLTIP } from "@/lib/racing/tissue-speed-rank-watch";
 import { TISSUE_INPUT_RELIABILITY_TOOLTIP } from "@/lib/racing/tissue-input-reliability";
+import { isLongerPriceTissueTop2, LONGER_PRICE_TISSUE_WATCH_TOOLTIP } from "@/lib/racing/longer-price-tissue-watch";
 
 export function AwTissueCell({ runner }: { runner: TodayRunner }) {
   const prediction = runner.awTissue;
@@ -80,23 +81,29 @@ export function FrozenValueRankCell({ runner, kind }: { runner: FrozenRankRunner
   const title = `${FROZEN_RANK_TOOLTIPS[kind]} ${available ? provenance : `${missing} ${provenance}`}`;
   const disagreement = available && kind === "valueRank" && typeof ratio === "number" && Number.isFinite(ratio) && ratio >= 1.5;
   const watch = available && kind === "tissueRank" && isTissueTop2SpeedRankWatch({ tissueRank: row?.tissueRank, bestL3SpeedRank: row?.bestL3SpeedRank });
+  const longerPrice = available && kind === "tissueRank" && isLongerPriceTissueTop2({ tissueRank: row?.tissueRank, capturedPrice: row?.marketPrice });
   const caution = available && kind === "tissueRank" && (row?.tissueRank === 1 || row?.tissueRank === 2) && row.inputReliability?.level === "CAUTION";
   return <div className="tabular-nums" data-rank-kind={kind} title={title}>
-    <span title={watch ? TISSUE_SPEED_RANK_WATCH_TOOLTIP : undefined} className={`inline-flex items-center gap-1 rounded-sm border ${watch ? "border-red-200 bg-red-50" : "border-slate-200 bg-slate-50"} px-1.5 py-0.5 text-xs whitespace-nowrap`}>
+    <span title={watch ? TISSUE_SPEED_RANK_WATCH_TOOLTIP : longerPrice ? LONGER_PRICE_TISSUE_WATCH_TOOLTIP : undefined} className={`inline-flex items-center gap-1 rounded-sm border ${watch ? "border-red-200 bg-red-50" : longerPrice ? "border-blue-200 bg-blue-50" : "border-slate-200 bg-slate-50"} px-1.5 py-0.5 text-xs whitespace-nowrap`}>
       <span className="text-slate-600">{rankLabels[kind]}</span>
       <span className="font-semibold">{available ? row![kind] : "—"}</span>
       {disagreement ? <span className="text-amber-700" role="img" aria-label="Large model/market disagreement" title="Large model/market disagreement">●</span> : null}
     </span>
+    {watch && longerPrice ? <span className="ml-1 inline-flex rounded-sm border border-blue-300 bg-blue-50 px-1 py-0.5 text-[10px] text-slate-900" aria-label="Longer-price Tissue watch" title={LONGER_PRICE_TISSUE_WATCH_TOOLTIP}>Price</span> : null}
     {caution ? <span className="ml-1 inline-flex rounded-sm border border-amber-300 px-1 py-0.5 text-[10px] text-amber-800" aria-label="Tissue input data caution"
       title={`${TISSUE_INPUT_RELIABILITY_TOOLTIP}${row.inputReliability!.reasons.length ? ` ${row.inputReliability!.reasons.join(" ")}` : ""}`}>Data</span> : null}
     {kind === "tissueRank" && available ? <div className="mt-0.5 text-[10px] text-slate-500">{(probability! * 100).toFixed(2)}% frozen</div> : null}
   </div>;
 }
 
-export function FrozenRacecardRanks({ runner }: { runner: FrozenRankRunner }) {
+export function FrozenRacecardRanks({ runner, shadowRank }: { runner: FrozenRankRunner; shadowRank?: 1 | 2 }) {
   return <div className="flex flex-wrap items-start gap-1" aria-label="Frozen Tissue, Value and market ranks">
     <FrozenValueRankCell runner={runner} kind="tissueRank" />
     <FrozenValueRankCell runner={runner} kind="valueRank" />
     <FrozenValueRankCell runner={runner} kind="marketRank" />
+    {shadowRank === 1 || shadowRank === 2 ? <span
+      className="inline-flex items-center rounded-sm border border-violet-300 px-1.5 py-0.5 text-xs whitespace-nowrap text-violet-800"
+      title={`CHASE_SHADOW_V1 research rank ${shadowRank}. Shadow model only; not used for the current Tissue ranking.`}
+    >Shadow {shadowRank}</span> : null}
   </div>;
 }

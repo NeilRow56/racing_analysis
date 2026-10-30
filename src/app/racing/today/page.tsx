@@ -1,3 +1,5 @@
+import { loadChaseShadow, type ChaseShadowRace } from "@/lib/racing/chase-shadow-forward";
+import { chaseShadowBadgeRanks } from "./chase-shadow-badges";
 import { loadAllTissueValue } from "@/lib/racing/tissue-value-readers";
 import { attachFrozenValueToMeetings } from "@/lib/racing/tissue-value-view";
 import { AwTissueCell, JumpTissueCell, TodayMarketOdds, FrozenRacecardRanks } from "./tissue-cells";
@@ -146,6 +148,13 @@ export default async function TodaysRacingPage({ searchParams }: PageProps) {
       ]);
     }
 
+    // Read after the existing sync so newly captured prospective books can display immediately.
+    // Display failure must not hide the racecard or substitute recalculated ranks.
+    const chaseShadow = await loadChaseShadow().catch((error: unknown) => {
+      console.error("Unable to read prospective Chase Shadow badges", error);
+      return { races: [] };
+    });
+    const chaseShadowByRace = new Map(chaseShadow.races.map(book => [book.raceId, book]));
     const dailyList = buildNonRedTissueDailyList(displayData.status === "ok" ? displayData.meetings : []);
 
     return (
@@ -199,6 +208,7 @@ export default async function TodaysRacingPage({ searchParams }: PageProps) {
             <TodaysRacing
               meetings={displayData.meetings}
               shadowSummary={shadowSummary}
+              chaseShadowByRace={chaseShadowByRace}
             />
           )}
           <details className="mt-8 border-t border-slate-200 py-4">
@@ -260,8 +270,10 @@ function FrozenRuleMatchSummary({ summary }: { summary: TodayFrozenRuleMatchSumm
 function TodaysRacing({
   meetings,
   shadowSummary,
+  chaseShadowByRace,
 }: {
   meetings: TodayMeeting[];
+  chaseShadowByRace: ReadonlyMap<string, ChaseShadowRace>;
   shadowSummary: TurfPerformanceShadowSummary | null;
 }) {
   return (
@@ -306,6 +318,7 @@ function TodaysRacing({
             <MeetingSection
               key={meeting.courseId}
               meeting={meeting}
+              chaseShadowByRace={chaseShadowByRace}
             />
           ))}
         </div>
@@ -314,7 +327,8 @@ function TodaysRacing({
   );
 }
 
-function MeetingSection({ meeting }: {
+function MeetingSection({ meeting, chaseShadowByRace }: {
+  chaseShadowByRace: ReadonlyMap<string, ChaseShadowRace>;
   meeting: TodayMeeting;
 }) {
   return (
@@ -335,6 +349,7 @@ function MeetingSection({ meeting }: {
           <RaceBlock
             key={race.raceId}
             race={race}
+            chaseShadow={chaseShadowByRace.get(race.raceId)}
           />
         ))}
       </div>
@@ -342,7 +357,8 @@ function MeetingSection({ meeting }: {
   );
 }
 
-function RaceBlock({ race }: {
+function RaceBlock({ race, chaseShadow }: {
+  chaseShadow?: ChaseShadowRace;
   race: TodayRace;
 }) {
   const isJumpRace = isJumpRaceForDisplay(race);
@@ -419,6 +435,7 @@ function RaceBlock({ race }: {
         tprCoverage={tprCoverage}
         isJumpRace={isJumpRace}
         isTurfRace={isTurfRace}
+        shadowRanks={chaseShadowBadgeRanks(race, chaseShadow)}
         runners={race.runners}
       />
       {/* TODO: The retired manual-comparator slot may host another prospective test later. */}
@@ -450,6 +467,7 @@ function RaceMeta({ race }: { race: TodayRace }) {
 }
 
 function RunnerTable({
+  shadowRanks,
   jumpSubtype,
   hasConclusiveResult,
   isAllWeatherRace,
@@ -469,6 +487,7 @@ function RunnerTable({
   isJumpRace: boolean;
   isTurfRace: boolean;
   runners: TodayRunner[];
+  shadowRanks: ReadonlyMap<string, 1 | 2>;
 }) {
   const speedEdges = isAllWeatherRace
     ? sameOrAwSpeedEdges(runners, isAllWeatherRace)
@@ -552,6 +571,7 @@ function RunnerTable({
               speedEdge={speedEdges.get(runner.runnerId)}
               orRank={orRanks.get(runner.runnerId)}
               runner={runner}
+              shadowRank={shadowRanks.get(runner.runnerId)}
             />
           ))}
         </tbody>
@@ -561,6 +581,7 @@ function RunnerTable({
 }
 
 function RunnerRow({
+  shadowRank,
   jumpSubtype,
   hasConclusiveResult,
   isAllWeatherRace,
@@ -582,6 +603,7 @@ function RunnerRow({
   isJumpRace: boolean;
   isTurfRace: boolean;
   runner: TodayRunner;
+  shadowRank?: 1 | 2;
   speedEdge?: number;
   orRank?: number;
 }) {
@@ -651,7 +673,7 @@ function RunnerRow({
           <TurfPerformanceRatingCell coverage={tprCoverage} runner={runner} />
         </td>
       ) : null}
-      <td className="px-1.5 py-2"><FrozenRacecardRanks runner={runner} /></td>
+      <td className="px-1.5 py-2"><FrozenRacecardRanks runner={runner} shadowRank={shadowRank} /></td>
       <td className="px-1.5 py-2">
         {runner.metrics?.daysSinceLastRun ?? "-"}
       </td>
