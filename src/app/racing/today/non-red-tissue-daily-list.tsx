@@ -21,10 +21,11 @@ export function NonRedTissueDailyList({ date, rows, clipboardText }: {
   }
 
   return (
-    <section aria-label="Non-red Tissue 1 & 2" className="mt-4 border border-slate-200 bg-white p-3 text-sm">
+    <section aria-label="Tissue Watch List" className="mt-4 border border-slate-200 bg-white p-3 text-sm">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="font-semibold">Non-red Tissue 1 &amp; 2 — {date}</h2>
+          <h2 className="font-semibold">Tissue Watch List — {date}</h2>
+          <p className="mt-1 text-xs text-slate-500">Research watch list · T1 3.00–&lt;6.00 · T2 6.00–&lt;11.00 · excludes pale-red Speed watch</p>
           <p className="mt-1 text-xs text-slate-500">
             {rows.length} {rows.length === 1 ? "selection" : "selections"} · {raceCount} {raceCount === 1 ? "race" : "races"}
           </p>
@@ -36,12 +37,12 @@ export function NonRedTissueDailyList({ date, rows, clipboardText }: {
       </div>
       <p role="status" className="text-xs text-slate-600">{copyStatus}</p>
       {rows.length === 0 ? (
-        <p className="mt-3 text-slate-600">No non-red Tissue 1/2 selections today.</p>
+        <p className="mt-3 text-slate-600">No Tissue Watch List selections for today.</p>
       ) : (
         <details className="mt-3" open={copyStatus.startsWith("Copy failed")}>
           <summary className="cursor-pointer text-slate-600">Show daily list</summary>
           <div className="mt-2 select-text space-y-1">
-            {rows.map(row => <p key={`${row.raceId}|${row.runnerId}`}>{row.course} {row.time} {row.horseName}</p>)}
+            {rows.map(row => <p key={`${row.raceId}|${row.runnerId}`}>{row.course} {row.time} {row.horseName} — T{row.tissueRank}</p>)}
           </div>
         </details>
       )}

@@ -23,6 +23,7 @@ import {
   valueExclusionReason,
   valueSampleStatus,
   type FamilyCalibration,
+  type ForwardValueData,
   type ForwardValueRecord,
 } from "./forward-value";
 import type { TodayMeeting, TodayRace, TodayRunner } from "./todays-racing";
@@ -138,6 +139,27 @@ describe("forward value capture", () => {
     const record = buildForwardValueRecord({ family: "turf", raceDate: "2026-09-27", course: "Test", race: race(), calibration, recordedAt: new Date("2026-09-27T12:00:00Z") })!;
     const once = upsertForwardValueRecords(emptyForwardValueData(), [record]);
     assert.equal(upsertForwardValueRecords(once, [record]), once);
+  });
+
+  test("repeated morning imports and captures preserve one observation and later stages", () => {
+    const early = newScheduleEarly();
+    const source = raceWithLeaderPrice("5");
+    const quote = { bookmakerId: 4, bookmakerName: "Betfair Sportsbook", fractionalOdds: "5/2", decimalOdds: 3.5 };
+    source.runners[0]!.bookmakerQuotes = [quote, { ...quote }];
+    const at = new Date(new Date(early.raceDateTime).getTime() - 180 * 60_000);
+    const capture = (data: ForwardValueData) => enrichForwardValuePriceSnapshots(data, {
+      family: "turf", meetings: meetings(source), capturedAt: at,
+    });
+    const once = capture(upsertForwardValueRecords(emptyForwardValueData(), [early, early]));
+    const twice = capture(upsertForwardValueRecords(once, [{ ...early, recordedAt: at.toISOString() }]));
+    assert.deepEqual(twice, once);
+    assert.equal(twice.races.length, 1);
+    assert.equal(twice.races[0]!.t180PriceSnapshot?.bookmakerQuotes?.length, 2);
+    const later = enrichAtMinutes(twice.races[0]!, 60, "6");
+    assert.deepEqual(later.earlyPriceSnapshot, early.earlyPriceSnapshot);
+    assert.deepEqual(later.t180PriceSnapshot, once.races[0]!.t180PriceSnapshot);
+    assert.equal(later.t60PriceSnapshot?.decimalPrice, 6);
+    assert.deepEqual(enrichAtMinutes(later, 60, "6"), later);
   });
 
   test("an earlier frozen price cannot be overwritten", () => {

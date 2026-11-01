@@ -21,14 +21,14 @@ for (const [tissueRank, capturedPrice, expected] of [
   const row: Partial<FrozenValueDisplay> = frozen({ tissueRank: tissueRank ?? undefined });
   if (capturedPrice == null) delete row.marketPrice;
   else row.marketPrice = capturedPrice;
-  assert.equal(render(row).includes("border-blue-200 bg-blue-50"), expected);
+  assert.equal(render(row).includes('aria-label="Longer-price Tissue watch"'), expected);
 });
 
 test("all four families use frozen price and Tissue rank independently of Value rank", () => {
   for (const family of ["TURF", "AW", "HURDLE", "CHASE"] as const) for (const tissueRank of [1, 2]) {
     for (const valueRank of [1, 3, 9]) {
       const row = frozen({ family, tissueRank, valueRank }), before = JSON.stringify(row), html = render(row);
-      assert.ok(html.includes("border-blue-200 bg-blue-50"));
+      assert.ok(html.includes("border-blue-300 bg-blue-50"));
       assert.ok(html.includes(LONGER_PRICE_TISSUE_WATCH_TOOLTIP));
       assert.equal(JSON.stringify(row), before);
       for (const kind of ["valueRank", "marketRank"] as const) {

@@ -1,3 +1,4 @@
+import { BookmakerQuoteLines } from "./bookmaker-quote-lines";
 import { attachChaseSpeedState, loadChaseSpeedSnapshots } from "@/lib/racing/chase-speed-reliability-capture";
 import { ChaseSpeedReliabilityShadow } from "./chase-speed-reliability-shadow";
 import { buildProspectiveTissueSources } from "@/lib/racing/tissue-prospective-sources";
@@ -806,9 +807,7 @@ function SnapshotCell({ snapshot }: { snapshot: ReturnType<typeof forwardValuePr
         <div className="mt-1 text-left text-[11px] leading-4 text-slate-600">
           <p>Best {price(snapshot.bestBookmakerPriceFractional ?? null, snapshot.bestBookmakerPriceDecimal ?? null)}{snapshot.bestBookmakerName ? ` ${snapshot.bestBookmakerName}` : ""}</p>
           <p>Forecast {price(snapshot.forecastPrice ?? null, snapshot.forecastDecimalPrice ?? null)}</p>
-          {(snapshot.bookmakerQuotes ?? []).map((quote) => (
-            <p key={`${quote.bookmakerId}:${quote.bookmakerName}:${quote.decimalOdds}`}>{quote.bookmakerName ?? quote.bookmakerId ?? "Unknown"}: {price(quote.fractionalOdds, quote.decimalOdds)}</p>
-          ))}
+          <BookmakerQuoteLines quotes={snapshot.bookmakerQuotes ?? []} />
         </div>
       </details>
     </td>
@@ -1106,9 +1105,7 @@ function MarketPriceCell({ model, record, tissueComparison }: {
           <p>Median bookmaker v1 ({quotes.length} quotes)</p>
           <p>Best {price(bestFractional, bestDecimal)}{bestName ? ` ${bestName}` : ""}</p>
           <p>Forecast {forecast}</p>
-          {quotes.map((quote) => (
-            <p key={`${quote.bookmakerId}:${quote.bookmakerName}:${quote.decimalOdds}`}>{quote.bookmakerName ?? quote.bookmakerId ?? "Unknown"}: {price(quote.fractionalOdds, quote.decimalOdds)}</p>
-          ))}
+          <BookmakerQuoteLines quotes={quotes} />
         </div>
       </details>
     </td>

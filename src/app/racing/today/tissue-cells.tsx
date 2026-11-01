@@ -83,13 +83,17 @@ export function FrozenValueRankCell({ runner, kind }: { runner: FrozenRankRunner
   const watch = available && kind === "tissueRank" && isTissueTop2SpeedRankWatch({ tissueRank: row?.tissueRank, bestL3SpeedRank: row?.bestL3SpeedRank });
   const longerPrice = available && kind === "tissueRank" && isLongerPriceTissueTop2({ tissueRank: row?.tissueRank, capturedPrice: row?.marketPrice });
   const caution = available && kind === "tissueRank" && (row?.tissueRank === 1 || row?.tissueRank === 2) && row.inputReliability?.level === "CAUTION";
+  const prominent = available && kind === "tissueRank" && !watch && (row?.tissueRank === 1 || row?.tissueRank === 2);
+  const badgeStyle = watch ? "border-red-200 bg-red-50"
+    : prominent ? row?.tissueRank === 1 ? "border-slate-900 bg-slate-900 text-white" : "border-blue-800 bg-blue-800 text-white"
+    : "border-slate-200 bg-slate-50";
   return <div className="tabular-nums" data-rank-kind={kind} title={title}>
-    <span title={watch ? TISSUE_SPEED_RANK_WATCH_TOOLTIP : longerPrice ? LONGER_PRICE_TISSUE_WATCH_TOOLTIP : undefined} className={`inline-flex items-center gap-1 rounded-sm border ${watch ? "border-red-200 bg-red-50" : longerPrice ? "border-blue-200 bg-blue-50" : "border-slate-200 bg-slate-50"} px-1.5 py-0.5 text-xs whitespace-nowrap`}>
-      <span className="text-slate-600">{rankLabels[kind]}</span>
+    <span title={watch ? TISSUE_SPEED_RANK_WATCH_TOOLTIP : longerPrice ? LONGER_PRICE_TISSUE_WATCH_TOOLTIP : undefined} className={`inline-flex items-center gap-1 rounded-sm border ${badgeStyle} px-1.5 py-0.5 text-xs whitespace-nowrap`}>
+      <span className={prominent ? "text-white" : "text-slate-600"}>{rankLabels[kind]}</span>
       <span className="font-semibold">{available ? row![kind] : "—"}</span>
       {disagreement ? <span className="text-amber-700" role="img" aria-label="Large model/market disagreement" title="Large model/market disagreement">●</span> : null}
     </span>
-    {watch && longerPrice ? <span className="ml-1 inline-flex rounded-sm border border-blue-300 bg-blue-50 px-1 py-0.5 text-[10px] text-slate-900" aria-label="Longer-price Tissue watch" title={LONGER_PRICE_TISSUE_WATCH_TOOLTIP}>Price</span> : null}
+    {longerPrice ? <span className="ml-1 inline-flex rounded-sm border border-blue-300 bg-blue-50 px-1 py-0.5 text-[10px] text-slate-900" aria-label="Longer-price Tissue watch" title={LONGER_PRICE_TISSUE_WATCH_TOOLTIP}>Price</span> : null}
     {caution ? <span className="ml-1 inline-flex rounded-sm border border-amber-300 px-1 py-0.5 text-[10px] text-amber-800" aria-label="Tissue input data caution"
       title={`${TISSUE_INPUT_RELIABILITY_TOOLTIP}${row.inputReliability!.reasons.length ? ` ${row.inputReliability!.reasons.join(" ")}` : ""}`}>Data</span> : null}
     {kind === "tissueRank" && available ? <div className="mt-0.5 text-[10px] text-slate-500">{(probability! * 100).toFixed(2)}% frozen</div> : null}

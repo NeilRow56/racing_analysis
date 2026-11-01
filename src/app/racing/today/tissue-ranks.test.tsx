@@ -12,6 +12,50 @@ function frozen(overrides: Partial<FrozenValueDisplay> = {}): FrozenValueDisplay
 const text = (html: string) => html.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
 const render = (row?: Partial<FrozenValueDisplay>) => renderToStaticMarkup(<FrozenRacecardRanks runner={{ tissueValue: row }} />);
 
+test("normal Tissue 1 and 2 have distinct compact filled badges; Tissue 3+ stays restrained", () => {
+  for (const tissueRank of [1, 2, 3, 4]) {
+    const row = frozen({ tissueRank, marketPrice: 5 });
+    const before = structuredClone(row);
+    const html = renderToStaticMarkup(<FrozenValueRankCell runner={{ tissueValue: row }} kind="tissueRank" />);
+    const style = tissueRank === 1 ? "border-slate-900 bg-slate-900 text-white"
+      : tissueRank === 2 ? "border-blue-800 bg-blue-800 text-white" : "border-slate-200 bg-slate-50";
+    assert.ok(html.includes(style));
+    assert.ok(html.includes('px-1.5 py-0.5 text-xs whitespace-nowrap'));
+    assert.ok(html.includes(tissueRank <= 2 ? '<span class="text-white">Tissue</span>' : '<span class="text-slate-600">Tissue</span>'));
+    assert.match(text(html), new RegExp(`Tissue ${tissueRank}`));
+    assert.deepEqual(row, before);
+    for (const kind of ["valueRank", "marketRank"] as const) {
+      const other = renderToStaticMarkup(<FrozenValueRankCell runner={{ tissueValue: row }} kind={kind} />);
+      assert.ok(other.includes("border-slate-200 bg-slate-50"));
+      assert.ok(!other.includes("text-white"));
+    }
+  }
+  assert.ok(!render({ tissueRank: 1 }).includes("text-white"));
+});
+
+test("pale-red watch takes priority over both filled Tissue styles", () => {
+  for (const tissueRank of [1, 2]) for (const bestL3SpeedRank of [2, 3]) {
+    const html = render(frozen({ tissueRank, bestL3SpeedRank }));
+    assert.ok(html.includes("border-red-200 bg-red-50"));
+    assert.ok(!html.includes("bg-slate-900"));
+    assert.ok(!html.includes("bg-blue-800"));
+    assert.ok(!html.includes("text-white"));
+  }
+});
+
+test("filled Tissue ranks coexist with unchanged separate Price, Data and violet Shadow badges", () => {
+  for (const tissueRank of [1, 2]) {
+    const row = frozen({ tissueRank, family: "CHASE", inputReliability: { level: "CAUTION", reasons: ["Sparse inputs."] } });
+    const html = renderToStaticMarkup(<FrozenRacecardRanks runner={{ tissueValue: row }} shadowRank={1} />);
+    assert.ok(html.includes(tissueRank === 1 ? "bg-slate-900 text-white" : "bg-blue-800 text-white"));
+    assert.match(html, /<span[^>]*class="ml-1 inline-flex rounded-sm border border-blue-300 bg-blue-50 px-1 py-0.5 text-\[10px\] text-slate-900"[^>]*>Price<\/span>/);
+    assert.match(html, /<span[^>]*border-amber-300[^>]*aria-label="Tissue input data caution"[^>]*>Data<\/span>/);
+    assert.match(html, /<span class="inline-flex items-center rounded-sm border border-violet-300 px-1.5 py-0.5 text-xs whitespace-nowrap text-violet-800"[^>]*>Shadow 1<\/span>/);
+    assert.match(text(html), new RegExp(`Tissue ${tissueRank}.*Price.*Data.*Shadow 1`));
+    assert.ok(!html.includes("bg-violet"));
+  }
+});
+
 test("Turf v3 displays its saved Tissue, Value and distinct captured market ranks", () => {
   const html = render(frozen()), shown = text(html);
   assert.match(shown, /Tissue 1/); assert.match(shown, /Value 1/); assert.match(shown, /Mkt 12/);

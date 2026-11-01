@@ -66,7 +66,7 @@ test("Turf, AW and Hurdle never show Shadow badges even if a ledger ID matches",
 test("red watch, blue longer-price and amber caution coexist with Shadow", () => {
   const cases: Array<[Partial<FrozenValueDisplay>, string, number]> = [
     [{ bestL3SpeedRank: 2 }, "border-red-200 bg-red-50", 0],
-    [{ marketPrice: 7 }, "border-blue-200 bg-blue-50", 0],
+    [{ marketPrice: 7 }, "border-blue-300 bg-blue-50", 0],
     [{ tissueRank: 2, inputReliability: { level: "CAUTION", reasons: ["Sparse inputs"] } }, 'aria-label="Tissue input data caution"', 1],
   ];
   for (const [overrides, marker, index] of cases) {

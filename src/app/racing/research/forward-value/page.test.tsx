@@ -363,6 +363,36 @@ describe("Forward Value dashboard", () => {
     assert.match(recent, /Forecast 10\/1 \(11\.00\)/);
   });
 
+  test("snapshot and recent observation rendering preserve duplicate quote evidence and research outputs", () => {
+    const current = newScheduleRecord("repeated-quotes", 5, 4, 3, 2);
+    const quote = { bookmakerId: 4, bookmakerName: "Betfair Sportsbook", fractionalOdds: "5/2", decimalOdds: 3.5 };
+    current.marketPriceBasisVersion = FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION;
+    current.bookmakerQuotes = [quote, { ...quote }];
+    current.t180PriceSnapshot = { ...current.t180PriceSnapshot!,
+      marketPriceBasisVersion: FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION,
+      bookmakerQuoteCount: 2, bookmakerQuotes: current.bookmakerQuotes };
+    const value = { ...fixtureData(), races: [current] };
+    const before = structuredClone(value);
+    const summary = summarizeForwardValue(value);
+    const diagnostics = summarizeForwardValuePriceDiagnostics(value.races);
+    const errors: unknown[][] = [];
+    const originalError = console.error;
+    console.error = (...args: unknown[]) => { errors.push(args); };
+    try {
+      const snapshots = renderToStaticMarkup(<PriceSnapshotDiagnostics observations={value.races} summary={summary} />);
+      const recent = renderToStaticMarkup(<RecentObservations filters={{ family: "all", state: "all", edge: "all" }} observations={value.races} />);
+      for (const html of [snapshots, recent]) {
+        assert.equal((html.match(/Betfair Sportsbook: 5\/2 \(3.50\)/g) ?? []).length, 2);
+      }
+    } finally {
+      console.error = originalError;
+    }
+    assert.deepEqual(errors, []);
+    assert.deepEqual(value, before);
+    assert.deepEqual(summarizeForwardValue(value), summary);
+    assert.deepEqual(summarizeForwardValuePriceDiagnostics(value.races), diagnostics);
+  });
+
   test("filters clean settled, clean unsettled, and excluded observations", () => {
     assert.deepEqual(ids("settled"), ["turf-new", "turf-old"]);
     assert.deepEqual(ids("unsettled"), ["jump-pending"]);
