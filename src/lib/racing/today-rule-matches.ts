@@ -436,7 +436,7 @@ function nonBlank(value: string | null | undefined): boolean {
   return typeof value === "string" && value.trim().length > 0;
 }
 
-function resultStatusLabel(value: string): string {
+export function resultStatusLabel(value: string): string {
   const labels: Record<string, string> = {
     fell: "F",
     pulled_up: "PU",

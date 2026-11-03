@@ -162789,8 +162789,94 @@
           }
         },
         "late": {
-          "awTissue": null,
-          "longshotTjZero": null
+          "awTissue": {
+            "runnerId": "4df33501-e596-41b5-b56a-7ecd88ffdf59",
+            "medianDecimalPrice": 1.83,
+            "impliedProbability": 0.5464480874316939,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-11-03T16:15:49.405Z",
+            "snapshot": {
+              "decimalPrice": 1.83,
+              "impliedProbability": 0.5464480874316939,
+              "capturedAt": "2026-11-03T16:15:49.405Z",
+              "minutesBeforeScheduledOff": 14.176583333333333,
+              "ratingProbability": 0.1823803944758247,
+              "ratingEdgePercentagePoints": -36.406769295586926,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "5/6",
+                  "decimalOdds": 1.83
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "5/6",
+                  "decimalOdds": 1.83
+                },
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "5/6",
+                  "decimalOdds": 1.83
+                }
+              ],
+              "medianBookmakerPriceDecimal": 1.83,
+              "medianBookmakerImpliedProbability": 0.5464480874316939,
+              "bestBookmakerPriceDecimal": 1.83,
+              "bestBookmakerPriceFractional": "5/6",
+              "bestBookmakerName": null,
+              "forecastPrice": "9/4",
+              "forecastDecimalPrice": 3.25
+            }
+          },
+          "longshotTjZero": {
+            "runnerId": "4df33501-e596-41b5-b56a-7ecd88ffdf59",
+            "medianDecimalPrice": 1.83,
+            "impliedProbability": 0.5464480874316939,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-11-03T16:15:49.405Z",
+            "snapshot": {
+              "decimalPrice": 1.83,
+              "impliedProbability": 0.5464480874316939,
+              "capturedAt": "2026-11-03T16:15:49.405Z",
+              "minutesBeforeScheduledOff": 14.176583333333333,
+              "ratingProbability": 0.1740253512871772,
+              "ratingEdgePercentagePoints": -37.24227361445167,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "5/6",
+                  "decimalOdds": 1.83
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "5/6",
+                  "decimalOdds": 1.83
+                },
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "5/6",
+                  "decimalOdds": 1.83
+                }
+              ],
+              "medianBookmakerPriceDecimal": 1.83,
+              "medianBookmakerImpliedProbability": 0.5464480874316939,
+              "bestBookmakerPriceDecimal": 1.83,
+              "bestBookmakerPriceFractional": "5/6",
+              "bestBookmakerName": null,
+              "forecastPrice": "9/4",
+              "forecastDecimalPrice": 3.25
+            }
+          }
         },
         "finalPreRace": {
           "awTissue": null,
@@ -163356,8 +163442,94 @@
           "longshotTjZero": null
         },
         "finalPreRace": {
-          "awTissue": null,
-          "longshotTjZero": null
+          "awTissue": {
+            "runnerId": "a709f292-3fa0-4c66-a550-d325100efff8",
+            "medianDecimalPrice": 1.8,
+            "impliedProbability": 0.5555555555555556,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-11-03T16:15:49.405Z",
+            "snapshot": {
+              "decimalPrice": 1.8,
+              "impliedProbability": 0.5555555555555556,
+              "capturedAt": "2026-11-03T16:15:49.405Z",
+              "minutesBeforeScheduledOff": 44.17658333333333,
+              "ratingProbability": 0.19771240915253804,
+              "ratingEdgePercentagePoints": -35.78431464030175,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "4/5",
+                  "decimalOdds": 1.8
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "4/5",
+                  "decimalOdds": 1.8
+                },
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "4/5",
+                  "decimalOdds": 1.8
+                }
+              ],
+              "medianBookmakerPriceDecimal": 1.8,
+              "medianBookmakerImpliedProbability": 0.5555555555555556,
+              "bestBookmakerPriceDecimal": 1.8,
+              "bestBookmakerPriceFractional": "4/5",
+              "bestBookmakerName": null,
+              "forecastPrice": "6/4",
+              "forecastDecimalPrice": 2.5
+            }
+          },
+          "longshotTjZero": {
+            "runnerId": "a709f292-3fa0-4c66-a550-d325100efff8",
+            "medianDecimalPrice": 1.8,
+            "impliedProbability": 0.5555555555555556,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-11-03T16:15:49.405Z",
+            "snapshot": {
+              "decimalPrice": 1.8,
+              "impliedProbability": 0.5555555555555556,
+              "capturedAt": "2026-11-03T16:15:49.405Z",
+              "minutesBeforeScheduledOff": 44.17658333333333,
+              "ratingProbability": 0.1930123316450753,
+              "ratingEdgePercentagePoints": -36.25432239104803,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "4/5",
+                  "decimalOdds": 1.8
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "4/5",
+                  "decimalOdds": 1.8
+                },
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "4/5",
+                  "decimalOdds": 1.8
+                }
+              ],
+              "medianBookmakerPriceDecimal": 1.8,
+              "medianBookmakerImpliedProbability": 0.5555555555555556,
+              "bestBookmakerPriceDecimal": 1.8,
+              "bestBookmakerPriceFractional": "4/5",
+              "bestBookmakerName": null,
+              "forecastPrice": "6/4",
+              "forecastDecimalPrice": 2.5
+            }
+          }
         },
         "sp": {
           "awTissue": null,
@@ -163919,8 +164091,94 @@
           "longshotTjZero": null
         },
         "finalPreRace": {
-          "awTissue": null,
-          "longshotTjZero": null
+          "awTissue": {
+            "runnerId": "25ae402a-695b-427c-a987-15fa3e7d6f51",
+            "medianDecimalPrice": 3,
+            "impliedProbability": 0.3333333333333333,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-11-03T16:15:49.405Z",
+            "snapshot": {
+              "decimalPrice": 3,
+              "impliedProbability": 0.3333333333333333,
+              "capturedAt": "2026-11-03T16:15:49.405Z",
+              "minutesBeforeScheduledOff": 74.17658333333334,
+              "ratingProbability": 0.1751367301493021,
+              "ratingEdgePercentagePoints": -15.819660318403123,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "2/1",
+                  "decimalOdds": 3
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "2/1",
+                  "decimalOdds": 3
+                },
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "2/1",
+                  "decimalOdds": 3
+                }
+              ],
+              "medianBookmakerPriceDecimal": 3,
+              "medianBookmakerImpliedProbability": 0.3333333333333333,
+              "bestBookmakerPriceDecimal": 3,
+              "bestBookmakerPriceFractional": "2/1",
+              "bestBookmakerName": null,
+              "forecastPrice": "4/1",
+              "forecastDecimalPrice": 5
+            }
+          },
+          "longshotTjZero": {
+            "runnerId": "25ae402a-695b-427c-a987-15fa3e7d6f51",
+            "medianDecimalPrice": 3,
+            "impliedProbability": 0.3333333333333333,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-11-03T16:15:49.405Z",
+            "snapshot": {
+              "decimalPrice": 3,
+              "impliedProbability": 0.3333333333333333,
+              "capturedAt": "2026-11-03T16:15:49.405Z",
+              "minutesBeforeScheduledOff": 74.17658333333334,
+              "ratingProbability": 0.168366492878468,
+              "ratingEdgePercentagePoints": -16.496684045486532,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "2/1",
+                  "decimalOdds": 3
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "2/1",
+                  "decimalOdds": 3
+                },
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "2/1",
+                  "decimalOdds": 3
+                }
+              ],
+              "medianBookmakerPriceDecimal": 3,
+              "medianBookmakerImpliedProbability": 0.3333333333333333,
+              "bestBookmakerPriceDecimal": 3,
+              "bestBookmakerPriceFractional": "2/1",
+              "bestBookmakerName": null,
+              "forecastPrice": "4/1",
+              "forecastDecimalPrice": 5
+            }
+          }
         },
         "sp": {
           "awTissue": null,
@@ -164397,8 +164655,94 @@
           }
         },
         "late": {
-          "awTissue": null,
-          "longshotTjZero": null
+          "awTissue": {
+            "runnerId": "322f274a-1ae0-40df-a984-126365b7ac0c",
+            "medianDecimalPrice": 1.67,
+            "impliedProbability": 0.5988023952095809,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-11-03T16:15:49.405Z",
+            "snapshot": {
+              "decimalPrice": 1.67,
+              "impliedProbability": 0.5988023952095809,
+              "capturedAt": "2026-11-03T16:15:49.405Z",
+              "minutesBeforeScheduledOff": 104.17658333333334,
+              "ratingProbability": 0.2871742559288722,
+              "ratingEdgePercentagePoints": -31.16281392807087,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "4/6",
+                  "decimalOdds": 1.67
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "4/6",
+                  "decimalOdds": 1.67
+                },
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "4/6",
+                  "decimalOdds": 1.67
+                }
+              ],
+              "medianBookmakerPriceDecimal": 1.67,
+              "medianBookmakerImpliedProbability": 0.5988023952095809,
+              "bestBookmakerPriceDecimal": 1.67,
+              "bestBookmakerPriceFractional": "4/6",
+              "bestBookmakerName": null,
+              "forecastPrice": "7/4",
+              "forecastDecimalPrice": 2.75
+            }
+          },
+          "longshotTjZero": {
+            "runnerId": "322f274a-1ae0-40df-a984-126365b7ac0c",
+            "medianDecimalPrice": 1.67,
+            "impliedProbability": 0.5988023952095809,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-11-03T16:15:49.405Z",
+            "snapshot": {
+              "decimalPrice": 1.67,
+              "impliedProbability": 0.5988023952095809,
+              "capturedAt": "2026-11-03T16:15:49.405Z",
+              "minutesBeforeScheduledOff": 104.17658333333334,
+              "ratingProbability": 0.2926694363014099,
+              "ratingEdgePercentagePoints": -30.6132958908171,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "4/6",
+                  "decimalOdds": 1.67
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "4/6",
+                  "decimalOdds": 1.67
+                },
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "4/6",
+                  "decimalOdds": 1.67
+                }
+              ],
+              "medianBookmakerPriceDecimal": 1.67,
+              "medianBookmakerImpliedProbability": 0.5988023952095809,
+              "bestBookmakerPriceDecimal": 1.67,
+              "bestBookmakerPriceFractional": "4/6",
+              "bestBookmakerName": null,
+              "forecastPrice": "7/4",
+              "forecastDecimalPrice": 2.75
+            }
+          }
         },
         "finalPreRace": {
           "awTissue": null,
@@ -165334,8 +165678,94 @@
           }
         },
         "late": {
-          "awTissue": null,
-          "longshotTjZero": null
+          "awTissue": {
+            "runnerId": "bfcf5619-3295-4eb1-b86e-3b7e2860cb87",
+            "medianDecimalPrice": 3.25,
+            "impliedProbability": 0.3076923076923077,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-11-03T16:15:49.405Z",
+            "snapshot": {
+              "decimalPrice": 3.25,
+              "impliedProbability": 0.3076923076923077,
+              "capturedAt": "2026-11-03T16:15:49.405Z",
+              "minutesBeforeScheduledOff": 164.17658333333333,
+              "ratingProbability": 0.25267349306817216,
+              "ratingEdgePercentagePoints": -5.501881462413555,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "9/4",
+                  "decimalOdds": 3.25
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "9/4",
+                  "decimalOdds": 3.25
+                },
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "9/4",
+                  "decimalOdds": 3.25
+                }
+              ],
+              "medianBookmakerPriceDecimal": 3.25,
+              "medianBookmakerImpliedProbability": 0.3076923076923077,
+              "bestBookmakerPriceDecimal": 3.25,
+              "bestBookmakerPriceFractional": "9/4",
+              "bestBookmakerName": null,
+              "forecastPrice": "6/1",
+              "forecastDecimalPrice": 7
+            }
+          },
+          "longshotTjZero": {
+            "runnerId": "bfcf5619-3295-4eb1-b86e-3b7e2860cb87",
+            "medianDecimalPrice": 3.25,
+            "impliedProbability": 0.3076923076923077,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-11-03T16:15:49.405Z",
+            "snapshot": {
+              "decimalPrice": 3.25,
+              "impliedProbability": 0.3076923076923077,
+              "capturedAt": "2026-11-03T16:15:49.405Z",
+              "minutesBeforeScheduledOff": 164.17658333333333,
+              "ratingProbability": 0.25267349306817216,
+              "ratingEdgePercentagePoints": -5.501881462413555,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "9/4",
+                  "decimalOdds": 3.25
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "9/4",
+                  "decimalOdds": 3.25
+                },
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "9/4",
+                  "decimalOdds": 3.25
+                }
+              ],
+              "medianBookmakerPriceDecimal": 3.25,
+              "medianBookmakerImpliedProbability": 0.3076923076923077,
+              "bestBookmakerPriceDecimal": 3.25,
+              "bestBookmakerPriceFractional": "9/4",
+              "bestBookmakerName": null,
+              "forecastPrice": "6/1",
+              "forecastDecimalPrice": 7
+            }
+          }
         },
         "finalPreRace": {
           "awTissue": null,
@@ -165924,8 +166354,94 @@
           }
         },
         "late": {
-          "awTissue": null,
-          "longshotTjZero": null
+          "awTissue": {
+            "runnerId": "44f8345b-bccc-418d-b39c-d8e02508592b",
+            "medianDecimalPrice": 4.33,
+            "impliedProbability": 0.23094688221709006,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-11-03T16:15:49.405Z",
+            "snapshot": {
+              "decimalPrice": 4.33,
+              "impliedProbability": 0.23094688221709006,
+              "capturedAt": "2026-11-03T16:15:49.405Z",
+              "minutesBeforeScheduledOff": 194.17658333333333,
+              "ratingProbability": 0.12206053967787585,
+              "ratingEdgePercentagePoints": -10.88863425392142,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "10/3",
+                  "decimalOdds": 4.33
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "10/3",
+                  "decimalOdds": 4.33
+                },
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "10/3",
+                  "decimalOdds": 4.33
+                }
+              ],
+              "medianBookmakerPriceDecimal": 4.33,
+              "medianBookmakerImpliedProbability": 0.23094688221709006,
+              "bestBookmakerPriceDecimal": 4.33,
+              "bestBookmakerPriceFractional": "10/3",
+              "bestBookmakerName": null,
+              "forecastPrice": "6/1",
+              "forecastDecimalPrice": 7
+            }
+          },
+          "longshotTjZero": {
+            "runnerId": "44f8345b-bccc-418d-b39c-d8e02508592b",
+            "medianDecimalPrice": 4.33,
+            "impliedProbability": 0.23094688221709006,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-11-03T16:15:49.405Z",
+            "snapshot": {
+              "decimalPrice": 4.33,
+              "impliedProbability": 0.23094688221709006,
+              "capturedAt": "2026-11-03T16:15:49.405Z",
+              "minutesBeforeScheduledOff": 194.17658333333333,
+              "ratingProbability": 0.11811174250217518,
+              "ratingEdgePercentagePoints": -11.283513971491487,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "10/3",
+                  "decimalOdds": 4.33
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "10/3",
+                  "decimalOdds": 4.33
+                },
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "10/3",
+                  "decimalOdds": 4.33
+                }
+              ],
+              "medianBookmakerPriceDecimal": 4.33,
+              "medianBookmakerImpliedProbability": 0.23094688221709006,
+              "bestBookmakerPriceDecimal": 4.33,
+              "bestBookmakerPriceFractional": "10/3",
+              "bestBookmakerName": null,
+              "forecastPrice": "6/1",
+              "forecastDecimalPrice": 7
+            }
+          }
         },
         "finalPreRace": {
           "awTissue": null,
@@ -166460,8 +166976,94 @@
           }
         },
         "late": {
-          "awTissue": null,
-          "longshotTjZero": null
+          "awTissue": {
+            "runnerId": "fa90219d-bd64-4aa2-b3d7-2b17f0d541bf",
+            "medianDecimalPrice": 3,
+            "impliedProbability": 0.3333333333333333,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-11-03T16:15:49.405Z",
+            "snapshot": {
+              "decimalPrice": 3,
+              "impliedProbability": 0.3333333333333333,
+              "capturedAt": "2026-11-03T16:15:49.405Z",
+              "minutesBeforeScheduledOff": 224.17658333333333,
+              "ratingProbability": 0.1391155292869699,
+              "ratingEdgePercentagePoints": -19.42178040463634,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "2/1",
+                  "decimalOdds": 3
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "2/1",
+                  "decimalOdds": 3
+                },
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "2/1",
+                  "decimalOdds": 3
+                }
+              ],
+              "medianBookmakerPriceDecimal": 3,
+              "medianBookmakerImpliedProbability": 0.3333333333333333,
+              "bestBookmakerPriceDecimal": 3,
+              "bestBookmakerPriceFractional": "2/1",
+              "bestBookmakerName": null,
+              "forecastPrice": "7/2",
+              "forecastDecimalPrice": 4.5
+            }
+          },
+          "longshotTjZero": {
+            "runnerId": "fa90219d-bd64-4aa2-b3d7-2b17f0d541bf",
+            "medianDecimalPrice": 3,
+            "impliedProbability": 0.3333333333333333,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-11-03T16:15:49.405Z",
+            "snapshot": {
+              "decimalPrice": 3,
+              "impliedProbability": 0.3333333333333333,
+              "capturedAt": "2026-11-03T16:15:49.405Z",
+              "minutesBeforeScheduledOff": 224.17658333333333,
+              "ratingProbability": 0.13824779768685355,
+              "ratingEdgePercentagePoints": -19.508553564647976,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "2/1",
+                  "decimalOdds": 3
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "2/1",
+                  "decimalOdds": 3
+                },
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "2/1",
+                  "decimalOdds": 3
+                }
+              ],
+              "medianBookmakerPriceDecimal": 3,
+              "medianBookmakerImpliedProbability": 0.3333333333333333,
+              "bestBookmakerPriceDecimal": 3,
+              "bestBookmakerPriceFractional": "2/1",
+              "bestBookmakerName": null,
+              "forecastPrice": "7/2",
+              "forecastDecimalPrice": 4.5
+            }
+          }
         },
         "finalPreRace": {
           "awTissue": null,
@@ -166996,8 +167598,94 @@
           }
         },
         "late": {
-          "awTissue": null,
-          "longshotTjZero": null
+          "awTissue": {
+            "runnerId": "509984cb-5deb-48ea-bd27-e95f0d0c4baa",
+            "medianDecimalPrice": 3.25,
+            "impliedProbability": 0.3076923076923077,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-11-03T16:15:49.405Z",
+            "snapshot": {
+              "decimalPrice": 3.25,
+              "impliedProbability": 0.3076923076923077,
+              "capturedAt": "2026-11-03T16:15:49.405Z",
+              "minutesBeforeScheduledOff": 254.17658333333333,
+              "ratingProbability": 0.22933909626518895,
+              "ratingEdgePercentagePoints": -7.8353211427118765,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "2/1",
+                  "decimalOdds": 3
+                },
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "9/4",
+                  "decimalOdds": 3.25
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "9/4",
+                  "decimalOdds": 3.25
+                }
+              ],
+              "medianBookmakerPriceDecimal": 3.25,
+              "medianBookmakerImpliedProbability": 0.3076923076923077,
+              "bestBookmakerPriceDecimal": 3.25,
+              "bestBookmakerPriceFractional": "9/4",
+              "bestBookmakerName": null,
+              "forecastPrice": "11/4",
+              "forecastDecimalPrice": 3.75
+            }
+          },
+          "longshotTjZero": {
+            "runnerId": "509984cb-5deb-48ea-bd27-e95f0d0c4baa",
+            "medianDecimalPrice": 3.25,
+            "impliedProbability": 0.3076923076923077,
+            "bookmakerQuoteCount": 3,
+            "capturedAt": "2026-11-03T16:15:49.405Z",
+            "snapshot": {
+              "decimalPrice": 3.25,
+              "impliedProbability": 0.3076923076923077,
+              "capturedAt": "2026-11-03T16:15:49.405Z",
+              "minutesBeforeScheduledOff": 254.17658333333333,
+              "ratingProbability": 0.22516183511116317,
+              "ratingEdgePercentagePoints": -8.253047258114455,
+              "marketPriceBasisVersion": "median_bookmaker_v1",
+              "bookmakerQuoteCount": 3,
+              "bookmakerQuotes": [
+                {
+                  "bookmakerId": 17,
+                  "bookmakerName": "Sky Bet v2",
+                  "fractionalOdds": "2/1",
+                  "decimalOdds": 3
+                },
+                {
+                  "bookmakerId": 4,
+                  "bookmakerName": "Betfair Sportsbook",
+                  "fractionalOdds": "9/4",
+                  "decimalOdds": 3.25
+                },
+                {
+                  "bookmakerId": 6,
+                  "bookmakerName": "Paddy Power",
+                  "fractionalOdds": "9/4",
+                  "decimalOdds": 3.25
+                }
+              ],
+              "medianBookmakerPriceDecimal": 3.25,
+              "medianBookmakerImpliedProbability": 0.3076923076923077,
+              "bestBookmakerPriceDecimal": 3.25,
+              "bestBookmakerPriceFractional": "9/4",
+              "bestBookmakerName": null,
+              "forecastPrice": "11/4",
+              "forecastDecimalPrice": 3.75
+            }
+          }
         },
         "finalPreRace": {
           "awTissue": null,

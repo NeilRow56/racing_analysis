@@ -12,6 +12,8 @@ export function NonRedTissueDailyList({ date, rows, clipboardText }: {
 }) {
   const [copyStatus, setCopyStatus] = useState("");
   const raceCount = new Set(rows.map(row => row.raceId)).size;
+  const hasSettledResult = rows.some(row => row.result?.settled);
+  const winnerCount = rows.filter(row => row.result?.winner).length;
 
   async function copyList() {
     try {
@@ -31,6 +33,7 @@ export function NonRedTissueDailyList({ date, rows, clipboardText }: {
           <p className="mt-1 text-xs text-slate-500">Agreement sample remains small; this is not a proven betting signal.</p>
           <p className="mt-1 text-xs text-slate-500">
             {rows.length} {rows.length === 1 ? "selection" : "selections"} · {raceCount} {raceCount === 1 ? "race" : "races"}
+            {hasSettledResult ? ` · ${winnerCount} ${winnerCount === 1 ? "winner" : "winners"}` : null}
           </p>
         </div>
         <button type="button" onClick={copyList} disabled={rows.length === 0}
@@ -50,6 +53,12 @@ export function NonRedTissueDailyList({ date, rows, clipboardText }: {
               {row.agreement ? <> — <TissueValueAgreementBadge /></> : null}
               {row.speedWatch ? <span className="ml-1 inline-flex rounded-sm border border-red-200 bg-red-50 px-1 py-0.5 text-[10px] text-slate-900"
                 aria-label="Pale-red Speed watch" title={TISSUE_SPEED_RANK_WATCH_TOOLTIP}>Speed watch</span> : null}
+              {row.result ? <> — <span aria-label={`Result: ${row.result.label}`}
+                className={row.result.winner
+                  ? "inline-flex rounded-sm border border-emerald-800 bg-emerald-700 px-1 py-0.5 text-[10px] font-bold text-white"
+                  : "inline-flex rounded-sm border border-slate-300 bg-white px-1 py-0.5 text-[10px] font-medium text-slate-600"}>
+                {row.result.label}
+              </span></> : null}
             </p>)}
           </div>
         </details>

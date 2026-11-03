@@ -4,6 +4,7 @@ import { test } from "node:test";
 import { renderToStaticMarkup } from "react-dom/server";
 import { buildNonRedTissueDailyList, formatNonRedTissueDailyList, isTissueDailyWatchCandidate } from "@/lib/racing/non-red-tissue-daily-list";
 import type { TodayMeeting, TodayRunner } from "@/lib/racing/todays-racing";
+import { resultStatusLabel } from "@/lib/racing/today-rule-matches";
 import { NonRedTissueDailyList } from "./non-red-tissue-daily-list";
 
 function runner(tissueRank: number, bestL3SpeedRank?: number | null, valueRank = 99, family = "TURF"): TodayRunner {
@@ -160,4 +161,94 @@ test("out-of-range non-red runners show the empty state without the old broad fa
   const html = renderToStaticMarkup(<NonRedTissueDailyList date="1 November 2026" rows={rows} clipboardText={formatNonRedTissueDailyList(rows)} />);
   assert.match(html, /No Tissue Watch List selections for today\./);
   assert.doesNotMatch(html, /Horse 1|Horse 2/);
+});
+
+function resultCard(position: number | null, status: string | null = "finished") {
+  const selection = { ...runner(1), finishingPosition: position, resultStatus: status, oddsDecimal: "4.5" };
+  const winner = { ...runner(3), runnerId: "unqualified-winner", finishingPosition: 1, resultStatus: "finished", oddsDecimal: "2" };
+  const card = meeting("Worcester", "12:10", [selection, winner]);
+  card.races[0].winningTime = "4m 10s";
+  return card;
+}
+
+function renderList(card: TodayMeeting) {
+  const rows = buildNonRedTissueDailyList([card]);
+  const text = formatNonRedTissueDailyList(rows);
+  const html = renderToStaticMarkup(<NonRedTissueDailyList date="3 November 2026" rows={rows} clipboardText={text} />);
+  return { rows, text, html };
+}
+
+for (const [position, status, label] of [
+  [1, "finished", "WIN"], [2, "finished", "2nd"], [3, "finished", "3rd"], [4, "finished", "4th"],
+  [11, "finished", "11th"], [12, "finished", "12th"], [13, "finished", "13th"], [21, "finished", "21st"],
+  [null, "non_runner", "NR"], [null, "pulled_up", "PU"], [null, "fell", "F"],
+  [null, "unseated_rider", "UR"], [null, "brought_down", resultStatusLabel("brought_down")],
+] as const) test(`watch list renders and copies canonical result ${label}`, () => {
+  const { rows, text, html } = renderList(resultCard(position, status));
+  assert.equal(rows.length, 1);
+  assert.equal(rows[0].result?.label, label);
+  assert.equal(text, `Worcester 12:10 Horse 1 — T1 — ${label}`);
+  assert.ok(html.includes(`aria-label="Result: ${label}"`));
+  assert.equal(html.includes("bg-emerald-700"), position === 1);
+  assert.equal(rows[0].result?.settled, status !== "non_runner");
+});
+
+test("pending and partial results remain undecorated until Today's conclusive result gate passes", () => {
+  for (const card of [resultCard(null, null), resultCard(1)]) {
+    card.races[0].winningTime = null;
+    const { rows, text, html } = renderList(card);
+    assert.equal(rows[0].result, null);
+    assert.equal(text, "Worcester 12:10 Horse 1 — T1");
+    assert.doesNotMatch(html, /Result:|bg-emerald-700|\d winners?/);
+  }
+  const partial = resultCard(null, null);
+  assert.equal(renderList(partial).rows[0].result, null);
+});
+
+test("NR is visible before race completion, overrides a conflicting position and never counts as a settled loser", () => {
+  const card = resultCard(1, "non_runner");
+  card.races[0].winningTime = null;
+  const { rows, html } = renderList(card);
+  assert.deepEqual(rows[0].result, { label: "NR", winner: false, settled: false });
+  assert.doesNotMatch(html, /\d winners?|bg-emerald-700/);
+});
+
+test("agreement winners retain both markers with distinct research and result styling", () => {
+  const card = resultCard(1);
+  Object.assign(card.races[0].runners[0].tissueValue!, { valueRank: 1, bestL3SpeedRank: 2, marketPrice: 23 });
+  const { text, html } = renderList(card);
+  assert.equal(text, "Worcester 12:10 Horse 1 — T1 — T1=V1 — pale-red Speed watch — WIN");
+  assert.match(html, /aria-label="Tissue 1 and Value 1 agreement"/);
+  assert.match(html, /border-green-700 bg-green-100/);
+  assert.match(html, /bg-emerald-700[^\"]*text-white/);
+  assert.match(html, /Speed watch/);
+  assert.match(html, /1 selection · 1 race · 1 winner/);
+});
+
+test("settled non-winners show zero winners; every dead-heat winner is counted", () => {
+  assert.match(renderList(resultCard(2)).html, /1 selection · 1 race · 0 winners/);
+  const card = resultCard(1);
+  Object.assign(card.races[0].runners[1].tissueValue!, { tissueRank: 2, marketPrice: 8 });
+  const { rows, html } = renderList(card);
+  assert.equal(rows.filter(row => row.result?.winner).length, 2);
+  assert.match(html, /2 selections · 1 race · 2 winners/);
+});
+
+test("settlement decorates the identical frozen cohort without result-driven inclusion, exclusion or mutation", () => {
+  const candidates = [runner(1), runner(2), runner(1, 2), runner(3), runner(1, 3, 1)];
+  candidates.forEach((r, index) => { r.runnerId = `candidate-${index}`; r.resultStatus = null; r.finishingPosition = null; });
+  const card = meeting("Test", "14:00", candidates);
+  const cohort = () => buildNonRedTissueDailyList([card]).map(({ result, ...frozen }) => { void result; return frozen; });
+  const before = cohort();
+  const frozenValues = JSON.stringify(candidates.map(r => r.tissueValue));
+  for (const [position, status] of [[1, "finished"], [2, "finished"], [null, "pulled_up"], [null, "non_runner"]] as const) {
+    candidates.forEach(r => Object.assign(r, { finishingPosition: position, resultStatus: status, oddsDecimal: "50" }));
+    // An excluded runner wins; this must never cause entry into the list.
+    Object.assign(candidates[3], { finishingPosition: 1, resultStatus: "finished" });
+    card.races[0].winningTime = "4m";
+    const input = JSON.stringify(card);
+    assert.deepEqual(cohort(), before);
+    assert.equal(JSON.stringify(card), input);
+    assert.equal(JSON.stringify(candidates.map(r => r.tissueValue)), frozenValues);
+  }
 });
