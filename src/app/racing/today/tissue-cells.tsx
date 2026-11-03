@@ -2,6 +2,8 @@ import { summarizeTodayMarketPrice, type TodayRunner } from "@/lib/racing/todays
 import { isTissueTop2SpeedRankWatch, TISSUE_SPEED_RANK_WATCH_TOOLTIP } from "@/lib/racing/tissue-speed-rank-watch";
 import { TISSUE_INPUT_RELIABILITY_TOOLTIP } from "@/lib/racing/tissue-input-reliability";
 import { isLongerPriceTissueTop2, LONGER_PRICE_TISSUE_WATCH_TOOLTIP } from "@/lib/racing/longer-price-tissue-watch";
+import { isTissue1Value1Agreement } from "@/lib/racing/tissue-value-agreement";
+import { TissueValueAgreementBadge } from "./tissue-value-agreement-badge";
 
 export function AwTissueCell({ runner }: { runner: TodayRunner }) {
   const prediction = runner.awTissue;
@@ -83,6 +85,7 @@ export function FrozenValueRankCell({ runner, kind }: { runner: FrozenRankRunner
   const watch = available && kind === "tissueRank" && isTissueTop2SpeedRankWatch({ tissueRank: row?.tissueRank, bestL3SpeedRank: row?.bestL3SpeedRank });
   const longerPrice = available && kind === "tissueRank" && isLongerPriceTissueTop2({ tissueRank: row?.tissueRank, capturedPrice: row?.marketPrice });
   const caution = available && kind === "tissueRank" && (row?.tissueRank === 1 || row?.tissueRank === 2) && row.inputReliability?.level === "CAUTION";
+  const agreement = available && kind === "tissueRank" && hasMarket && isTissue1Value1Agreement(row);
   const prominent = available && kind === "tissueRank" && !watch && (row?.tissueRank === 1 || row?.tissueRank === 2);
   const badgeStyle = watch ? "border-red-200 bg-red-50"
     : prominent ? row?.tissueRank === 1 ? "border-slate-900 bg-slate-900 text-white" : "border-blue-800 bg-blue-800 text-white"
@@ -96,6 +99,7 @@ export function FrozenValueRankCell({ runner, kind }: { runner: FrozenRankRunner
     {longerPrice ? <span className="ml-1 inline-flex rounded-sm border border-blue-300 bg-blue-50 px-1 py-0.5 text-[10px] text-slate-900" aria-label="Longer-price Tissue watch" title={LONGER_PRICE_TISSUE_WATCH_TOOLTIP}>Price</span> : null}
     {caution ? <span className="ml-1 inline-flex rounded-sm border border-amber-300 px-1 py-0.5 text-[10px] text-amber-800" aria-label="Tissue input data caution"
       title={`${TISSUE_INPUT_RELIABILITY_TOOLTIP}${row.inputReliability!.reasons.length ? ` ${row.inputReliability!.reasons.join(" ")}` : ""}`}>Data</span> : null}
+    {agreement ? <TissueValueAgreementBadge /> : null}
     {kind === "tissueRank" && available ? <div className="mt-0.5 text-[10px] text-slate-500">{(probability! * 100).toFixed(2)}% frozen</div> : null}
   </div>;
 }

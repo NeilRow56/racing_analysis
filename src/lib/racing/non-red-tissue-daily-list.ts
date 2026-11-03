@@ -1,4 +1,5 @@
 import { isTissueTop2SpeedRankWatch } from "./tissue-speed-rank-watch";
+import { isTissue1Value1Agreement } from "./tissue-value-agreement";
 import { formatRaceTimeForDisplay, type TodayMeeting } from "./todays-racing";
 
 export type NonRedTissueDailyRow = {
@@ -8,14 +9,18 @@ export type NonRedTissueDailyRow = {
   time: string;
   horseName: string;
   tissueRank: number;
+  agreement: boolean;
+  speedWatch: boolean;
 };
 
 /** Research shortlist only. Pass the genuine frozen bookmaker price, never live/forecast odds or SP. */
 export function isTissueDailyWatchCandidate(candidate: {
   tissueRank?: number | null;
+  valueRank?: number | null;
   bestL3SpeedRank?: number | null;
   capturedPrice?: number | null;
 }): boolean {
+  if (isTissue1Value1Agreement(candidate)) return true;
   const { tissueRank, capturedPrice } = candidate;
   if (isTissueTop2SpeedRankWatch(candidate) || typeof capturedPrice !== "number" || !Number.isFinite(capturedPrice)) return false;
   return (tissueRank === 1 && capturedPrice >= 3 && capturedPrice < 6) ||
@@ -27,6 +32,7 @@ export function buildNonRedTissueDailyList(meetings: readonly TodayMeeting[]): N
   return meetings.flatMap(meeting => meeting.races.flatMap(race =>
     race.runners.filter(({ tissueValue }) =>
       isTissueDailyWatchCandidate({ tissueRank: tissueValue?.tissueRank,
+        valueRank: tissueValue?.valueRank,
         bestL3SpeedRank: tissueValue?.bestL3SpeedRank, capturedPrice: tissueValue?.marketPrice }),
     ).map(runner => ({
       raceId: race.raceId,
@@ -35,10 +41,12 @@ export function buildNonRedTissueDailyList(meetings: readonly TodayMeeting[]): N
       time: formatRaceTimeForDisplay(race),
       horseName: runner.horseName,
       tissueRank: runner.tissueValue!.tissueRank,
+      agreement: isTissue1Value1Agreement(runner.tissueValue),
+      speedWatch: isTissueTop2SpeedRankWatch(runner.tissueValue ?? {}),
     }))),
   ).sort((a, b) => a.time.localeCompare(b.time) || a.course.localeCompare(b.course, "en-GB"));
 }
 
 export function formatNonRedTissueDailyList(rows: readonly NonRedTissueDailyRow[]): string {
-  return rows.map(row => `${row.course} ${row.time} ${row.horseName} — T${row.tissueRank}`).join("\n");
+  return rows.map(row => `${row.course} ${row.time} ${row.horseName} — T${row.tissueRank}${row.agreement ? " — T1=V1" : ""}${row.speedWatch ? " — pale-red Speed watch" : ""}`).join("\n");
 }

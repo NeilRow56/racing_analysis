@@ -69,7 +69,7 @@ test("copy text contains only qualifying course, time, horse and Tissue rank; UI
   const html = renderToStaticMarkup(<NonRedTissueDailyList date="24 October 2026" rows={rows} clipboardText={clipboardText} />);
   assert.match(html, /Tissue Watch List — 24 October 2026/);
   assert.match(html, /Research watch list/);
-  assert.match(html, /T1 3.00–&lt;6.00 · T2 6.00–&lt;11.00 · excludes pale-red Speed watch/);
+  assert.match(html, /non-red T1 3.00–&lt;6.00 · non-red T2 6.00–&lt;11.00 · T1=V1 at any captured price, including pale-red/);
   assert.doesNotMatch(html, /Horse 3/);
   const component = readFileSync(new URL("./non-red-tissue-daily-list.tsx", import.meta.url), "utf8");
   assert.match(component, /navigator.clipboard.writeText\(clipboardText\)/);
@@ -99,7 +99,9 @@ test("Today summary consumes final attached racecard data and the shared watch h
   assert.match(helper, /isTissueTop2SpeedRankWatch\(candidate\)/);
   assert.match(helper, /capturedPrice: tissueValue\?\.marketPrice/);
   assert.match(page, /clipboardText=\{formatNonRedTissueDailyList\(dailyList\)\}/);
-  assert.doesNotMatch(helper, /valueRank|bestL3SpeedRank\s*===/);
+  assert.match(helper, /isTissue1Value1Agreement\(candidate\)/);
+  assert.match(helper, /valueRank: tissueValue\?\.valueRank/);
+  assert.doesNotMatch(helper, /bestL3SpeedRank\s*===/);
 });
 
 test("input reliability never changes the daily research shortlist", () => {
