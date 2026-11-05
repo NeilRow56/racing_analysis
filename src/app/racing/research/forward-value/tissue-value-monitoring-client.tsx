@@ -45,7 +45,11 @@ export function TissueValueMonitoringClient({ cohorts, date }: { cohorts: ValueC
     </details>
     <p className="mt-3 text-xs text-slate-500">Market % is normalized across the complete captured median-bookmaker field. A positive normalized edge need not imply a positive expected return at the quoted price. Value and market ties share competition ranks; Tissue ranks retain each model’s native tie policy. Runner IDs order tied rows. Alternative edge and ratio ranks appear on the Value rank cell tooltip.</p>
     <ValueRankV2Monitoring races={races} />
-    <TissueValueRaceTables races={races} date={date} />
+    <details className="mt-4">
+      <summary className="cursor-pointer text-sm font-medium">Archive · original frozen Value observations and previous Tissue generations</summary>
+      <p className="mt-2 text-xs text-slate-500">These original Value-cohort captures retain their own model probabilities, prices and Value ranks. Today’s latest Tissue captures are shown separately above.</p>
+      <TissueValueRaceTables races={races} date={date} />
+    </details>
   </section>;
 }
 function CalibrationTable({ title, rows }: { title: string; rows: Array<{ band: string } & ReturnType<typeof summarizeValueRunners>> }) {

@@ -69,6 +69,8 @@ import { ChaseTissueChallengerSection } from "./chase-tissue-challenger";
 import { loadHurdleRecency } from "@/lib/racing/hurdle-recency-forward";
 import { HurdleRecencyResearchSection } from "./hurdle-recency-research";
 import { ResearchPageLayout } from "./research-page-layout";
+import { selectActiveResearchCaptures } from "./active-tissue-captures";
+import { ActiveTissueRaceTables } from "./active-tissue-race-tables";
 
 type PageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
@@ -76,7 +78,7 @@ type PageProps = {
 
 export default async function ForwardValuePage({ searchParams }: PageProps) {
   const raceDate = getLocalRacingDate();
-  const [data, tissueData, awTissueData, jumpTissueData, awPairedData, g4Data, weightData, modelDisagreementData, reviewData, hurdlePairData, chasePairData, hurdleRecencyData, rankOneData, valueCohorts, params] = await Promise.all([
+  const [data, tissueData, awTissueData, jumpTissueData, awPairedData, g4Data, weightData, modelDisagreementData, reviewData, hurdlePairData, chasePairData, hurdleRecencyData, rankOneData, valueCohorts, generation, params] = await Promise.all([
     loadForwardValueData(),
     loadTissueForward(ACTIVE_TURF_TISSUE_CONFIG.forwardPath, ACTIVE_TURF_TISSUE_CONFIG),
     AW_TISSUE_V2_ACTIVE ? loadAwV2Forward() : loadAwTissueForward(),
@@ -91,6 +93,7 @@ export default async function ForwardValuePage({ searchParams }: PageProps) {
     loadHurdleRecency(),
     loadRankOne(),
     loadAllTissueValue(),
+    loadTissueGeneration(),
     searchParams,
   ]);
   const prospectiveTissue = buildProspectiveTissueSources({ turf: tissueData, aw: awTissueData, jump: jumpTissueData, cohorts: valueCohorts });
@@ -128,7 +131,7 @@ export default async function ForwardValuePage({ searchParams }: PageProps) {
   return (
     <ResearchPageLayout
       date={raceDate}
-      active={<><TissueGenerationMonitor data={await loadTissueGeneration()} /><TissueValueMonitoring cohorts={valueCohorts} date={raceDate} /></>}
+      active={<><TissueGenerationMonitor data={generation} /><ActiveTissueRaceTables races={selectActiveResearchCaptures(valueCohorts, generation, raceDate)} date={raceDate} /><TissueValueMonitoring cohorts={valueCohorts} date={raceDate} /></>}
       secondary={<SecondaryResearchMonitoring dashboard={dashboard} />}
     >
       <p className="mt-3 text-sm font-semibold">Retired Tissue generation and absorbed research · historical reference only</p>
