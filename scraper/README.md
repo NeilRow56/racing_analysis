@@ -114,3 +114,31 @@ bun run sl:racecard-status YYYY-MM-DD
 Racecard provenance is stored in `source_imports` as `racecard-index-next-data` and `racecard-next-data`. Existing racecard payloads are skipped by default on rerun; use `--refresh-existing-racecards` only when you intentionally want to refresh declarations, weights, jockeys, non-runner state, or live odds.
 
 Racecard imports create or update the same normalized course, race, horse, trainer, jockey, and runner rows keyed by Sporting Life source IDs. They do not set result-only fields such as winning time, off time, finishing position, beaten distance, result comments, Racing Post ratings, or Topspeed ratings. If full results have already completed a race, an older racecard refresh preserves those completed result fields and final result odds.
+
+## Python checks and VS Code
+
+Use the scraper interpreter (`scraper/.venv/bin/python`); the environment reviewed
+for these checks is Python 3.14.3 with Psycopg 3.3.5. Runtime dependencies remain in
+`requirements-rpscrape.txt`.
+
+From the repository root:
+
+```bash
+scraper/.venv/bin/python -m unittest discover -s scraper/tests -v
+bunx pyright@1.1.414
+```
+
+`pyrightconfig.json` uses basic checking for our Python code in `scraper/` and
+`scripts/`. Its search paths match the existing script/test `sys.path` setup.
+The optional vendor path resolves `utils.network` for the capture wrappers when
+the documented rpscrape checkout is installed. Vendor diagnostics are excluded
+and ignored separately; vendor code is not maintained by this project.
+
+Workspace settings default to the scraper interpreter and unittest discovery.
+If VS Code has already remembered another interpreter, run **Python: Select
+Interpreter** and choose `scraper/.venv/bin/python`, then restart the language
+server or reload the window. Pylance uses the selected interpreter; the Pyright
+CLI uses the configured `.venv`.
+
+See [the typing review](docs/python-typing-review.md) for diagnostic classification,
+validation results, and the limits of the editor comparison.

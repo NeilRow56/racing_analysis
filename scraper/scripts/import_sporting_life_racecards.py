@@ -20,7 +20,7 @@ RAW_OUTPUT_DIR = REPO_ROOT / "data" / "raw" / "sporting-life"
 
 sys.path.insert(0, str(REPO_ROOT / "scraper"))
 
-from sporting_life.client import SportingLifeClient, SportingLifeRequestError  # noqa: E402
+from sporting_life.client import SportingLifeClient, SportingLifeRequestError, TextClient  # noqa: E402
 from sporting_life.extract import (  # noqa: E402
     RacecardLink,
     build_racecards_api_url,
@@ -102,7 +102,7 @@ def import_sporting_life_racecards(
     skip_existing_racecards: bool = False,
     skip_completed_results: bool = True,
     refresh_existing_racecards: bool | None = None,
-    client: SportingLifeClient | None = None,
+    client: TextClient | None = None,
 ) -> RacecardImportResult:
     started_at = time.monotonic()
     if refresh_existing_racecards is True:

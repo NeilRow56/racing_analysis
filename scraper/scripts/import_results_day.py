@@ -198,7 +198,7 @@ class ObservationCollector:
         self.race_classes: Counter[str] = Counter()
         self.going: Counter[str] = Counter()
         self.distances: dict[str, set[int | None]] = defaultdict(set)
-        self.weights: dict[str, set[int | None]] = defaultdict(set)
+        self.weights: dict[str | None, set[int | None]] = defaultdict(set)
         self.claims: Counter[int | None] = Counter()
         self.odds: Counter[str | None] = Counter()
         self.outcomes: Counter[str | None] = Counter()

@@ -16,6 +16,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 
 sys.path.insert(0, str(REPO_ROOT / "scraper"))
 
+from db_typing import fetch_required_row  # noqa: E402
 from sporting_life.extract import is_uk_or_ireland_country_alias  # noqa: E402
 from sporting_life.importing import (  # noqa: E402
     RACECARD_INDEX_SOURCE_TYPE,
@@ -89,7 +90,7 @@ def build_report(cursor: psycopg.Cursor, race_date: date) -> list[str]:
         odds,
         non_runners,
         completed_race_rows,
-    ) = cursor.fetchone()
+    ) = fetch_required_row(cursor)
 
     cursor.execute(
         """
@@ -101,7 +102,7 @@ def build_report(cursor: psycopg.Cursor, race_date: date) -> list[str]:
         """,
         (SOURCE, RACECARD_INDEX_SOURCE_TYPE, race_date.isoformat()),
     )
-    index_imports = cursor.fetchone()[0]
+    index_imports = fetch_required_row(cursor)[0]
 
     cursor.execute(
         """
@@ -138,7 +139,7 @@ def build_report(cursor: psycopg.Cursor, race_date: date) -> list[str]:
         """,
         (SOURCE, race_date, RACECARD_SOURCE_TYPE),
     )
-    missing_racecard_payloads = cursor.fetchone()[0]
+    missing_racecard_payloads = fetch_required_row(cursor)[0]
 
     uk_ire_course_rows = [
         row for row in course_rows if is_uk_or_ireland_country_alias(row[1])

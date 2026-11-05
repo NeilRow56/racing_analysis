@@ -1,0 +1,23 @@
+{
+  "include": [
+    "scraper",
+    "scripts"
+  ],
+  "exclude": [
+    "scraper/.venv",
+    "scraper/vendor",
+    "**/__pycache__"
+  ],
+  "ignore": [
+    "scraper/vendor"
+  ],
+  "extraPaths": [
+    "scraper",
+    "scraper/scripts",
+    "scraper/vendor/rpscrape/scripts"
+  ],
+  "venvPath": "scraper",
+  "venv": ".venv",
+  "pythonVersion": "3.14",
+  "typeCheckingMode": "basic"
+}

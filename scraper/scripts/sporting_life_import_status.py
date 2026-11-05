@@ -6,13 +6,18 @@ import os
 import sys
 from datetime import date
 from pathlib import Path
-from typing import Any
+from typing import Any, LiteralString
 
 import psycopg
 from dotenv import load_dotenv
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(REPO_ROOT / "scraper"))
+
+from db_typing import fetch_required_row  # noqa: E402
+
+
 SOURCE = "sporting_life"
 FULL_RESULT_SOURCE_TYPE = "full-result-next-data"
 RESULTS_INDEX_SOURCE_TYPE = "results-index-next-data"
@@ -90,7 +95,7 @@ def build_report(
         horses,
         trainers,
         jockeys,
-    ) = cursor.fetchone()
+    ) = fetch_required_row(cursor)
 
     cursor.execute(
         f"""
@@ -125,7 +130,7 @@ def build_report(
         comments,
         weights,
         draws,
-    ) = cursor.fetchone()
+    ) = fetch_required_row(cursor)
 
     cursor.execute(
         f"""
@@ -143,7 +148,7 @@ def build_report(
         """,
         [SOURCE, *params],
     )
-    race_rows, winning_times, distance_yards = cursor.fetchone()
+    race_rows, winning_times, distance_yards = fetch_required_row(cursor)
 
     cursor.execute(
         f"""
@@ -183,7 +188,7 @@ def build_report(
             RESULTS_INDEX_SOURCE_TYPE,
         ],
     )
-    source_imports = cursor.fetchone()[0]
+    source_imports = fetch_required_row(cursor)[0]
 
     duplicate_counts = {
         "race_source_ids": duplicate_count(
@@ -278,14 +283,14 @@ def build_report(
     ]
 
 
-def duplicate_count(cursor: psycopg.Cursor, query: str, params: list[Any]) -> int:
+def duplicate_count(cursor: psycopg.Cursor, query: LiteralString, params: list[Any]) -> int:
     cursor.execute(f"select count(*) from ({query}) duplicates", params)
-    return int(cursor.fetchone()[0])
+    return int(fetch_required_row(cursor)[0])
 
 
-def scalar_count(cursor: psycopg.Cursor, query: str, params: list[Any]) -> int:
+def scalar_count(cursor: psycopg.Cursor, query: LiteralString, params: list[Any]) -> int:
     cursor.execute(query, params)
-    return int(cursor.fetchone()[0])
+    return int(fetch_required_row(cursor)[0])
 
 
 def coverage(count: int | None, total: int | None) -> str:

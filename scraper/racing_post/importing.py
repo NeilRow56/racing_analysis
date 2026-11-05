@@ -4,9 +4,9 @@ import json
 import re
 from datetime import datetime, time
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
-import psycopg
+from db_typing import ImportCursor, fetch_required_row
 from psycopg.types.json import Jsonb
 
 
@@ -32,7 +32,7 @@ def write_raw_payload(
 
 
 def import_results_index(
-    cursor: psycopg.Cursor,
+    cursor: ImportCursor,
     *,
     race_date: str,
     payload: dict[str, Any],
@@ -46,7 +46,7 @@ def import_results_index(
 
 
 def import_full_result(
-    cursor: psycopg.Cursor,
+    cursor: ImportCursor,
     *,
     payload: dict[str, Any],
 ) -> dict[str, int | str]:
@@ -73,7 +73,7 @@ def import_full_result(
 
 def upsert_source_import(
     *,
-    cursor: psycopg.Cursor,
+    cursor: ImportCursor,
     source_id: str,
     source_type: str,
     payload: dict[str, Any],
@@ -88,10 +88,10 @@ def upsert_source_import(
         """,
         (SOURCE, source_id, source_type, Jsonb(payload)),
     )
-    return str(cursor.fetchone()[0])
+    return str(fetch_required_row(cursor)[0])
 
 
-def upsert_course(cursor: psycopg.Cursor, race: dict[str, Any]) -> str:
+def upsert_course(cursor: ImportCursor, race: dict[str, Any]) -> str:
     source_id = str(race["courseUid"])
     display_name = race["courseName"]
 
@@ -109,10 +109,10 @@ def upsert_course(cursor: psycopg.Cursor, race: dict[str, Any]) -> str:
         """,
         (SOURCE, source_id, display_name, normalize_name(display_name), race.get("countryCode")),
     )
-    return str(cursor.fetchone()[0])
+    return str(fetch_required_row(cursor)[0])
 
 
-def upsert_race(cursor: psycopg.Cursor, race: dict[str, Any], course_id: str) -> str:
+def upsert_race(cursor: ImportCursor, race: dict[str, Any], course_id: str) -> str:
     header = race["header"]
     details = race["details"]
     race_datetime = parse_datetime(race["raceDatetime"])
@@ -172,10 +172,10 @@ def upsert_race(cursor: psycopg.Cursor, race: dict[str, Any], course_id: str) ->
             details.get("winningTime"),
         ),
     )
-    return str(cursor.fetchone()[0])
+    return str(fetch_required_row(cursor)[0])
 
 
-def upsert_runners(cursor: psycopg.Cursor, race: dict[str, Any], race_id: str) -> dict[str, int]:
+def upsert_runners(cursor: ImportCursor, race: dict[str, Any], race_id: str) -> dict[str, int]:
     counts = {"horses": 0, "trainers": 0, "jockeys": 0, "runners": 0}
 
     for runner in race["runners"]:
@@ -283,9 +283,9 @@ def upsert_runners(cursor: psycopg.Cursor, race: dict[str, Any], race_id: str) -
 
 
 def upsert_named_entity(
-    cursor: psycopg.Cursor,
+    cursor: ImportCursor,
     *,
-    table: str,
+    table: Literal["horses", "trainers", "jockeys"],
     source_id: str,
     display_name: str,
 ) -> str:
@@ -305,7 +305,7 @@ def upsert_named_entity(
         """,
         (SOURCE, source_id, display_name, normalize_name(display_name)),
     )
-    return str(cursor.fetchone()[0])
+    return str(fetch_required_row(cursor)[0])
 
 
 def parse_datetime(value: str) -> datetime:

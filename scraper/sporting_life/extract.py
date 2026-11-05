@@ -7,7 +7,7 @@ from zoneinfo import ZoneInfo
 
 from lxml import html
 
-from .client import SportingLifeClient, SportingLifeRequestError
+from .client import SportingLifeClient, SportingLifeRequestError, TextClient
 
 
 BASE_URL = "https://www.sportinglife.com"
@@ -100,7 +100,7 @@ class ResultsIndexPayload:
 @dataclass(frozen=True)
 class RacecardsIndexPayload:
     page_url: str
-    payload: dict
+    payload: dict | list
 
     @property
     def page_props(self) -> dict:
@@ -158,7 +158,7 @@ def build_racecard_url(
 
 def fetch_results_index(
     race_date: date,
-    client: SportingLifeClient | None = None,
+    client: TextClient | None = None,
 ) -> ResultsIndexPayload:
     client = client or SportingLifeClient()
     page_url = f"{BASE_URL}/racing/results/{race_date.isoformat()}"
@@ -167,7 +167,7 @@ def fetch_results_index(
 
 def fetch_racecards_index(
     race_date: date,
-    client: SportingLifeClient | None = None,
+    client: TextClient | None = None,
 ) -> RacecardsIndexPayload:
     client = client or SportingLifeClient()
     page_url = build_racecards_index_url(race_date)
@@ -198,12 +198,12 @@ def local_racing_date(now: datetime | None = None) -> date:
     return current.astimezone(RACING_TIME_ZONE).date()
 
 
-def fetch_full_result(page_url: str, client: SportingLifeClient | None = None) -> FullResultPayload:
+def fetch_full_result(page_url: str, client: TextClient | None = None) -> FullResultPayload:
     client = client or SportingLifeClient()
     return FullResultPayload(page_url=page_url, payload=fetch_page_next_data(page_url, client))
 
 
-def fetch_racecard(page_url: str, client: SportingLifeClient | None = None) -> RacecardPayload:
+def fetch_racecard(page_url: str, client: TextClient | None = None) -> RacecardPayload:
     client = client or SportingLifeClient()
     return RacecardPayload(page_url=page_url, payload=fetch_page_next_data(page_url, client))
 
@@ -295,7 +295,7 @@ def discover_uk_ire_racecard_links(index: RacecardsIndexPayload) -> list[Racecar
     return links
 
 
-def fetch_page_next_data(page_url: str, client: SportingLifeClient) -> dict:
+def fetch_page_next_data(page_url: str, client: TextClient) -> dict:
     page_text = client.get_text(page_url)
     document = html.fromstring(page_text)
     raw_next_data = document.xpath('string(//script[@id="__NEXT_DATA__"])')
@@ -312,7 +312,7 @@ def fetch_page_next_data(page_url: str, client: SportingLifeClient) -> dict:
     return json.loads(raw_next_data)
 
 
-def fetch_json_data(url: str, client: SportingLifeClient) -> dict | list:
+def fetch_json_data(url: str, client: TextClient) -> dict | list:
     page_text = client.get_text(url)
     if looks_like_access_control_page(page_text):
         raise SportingLifeRequestError(

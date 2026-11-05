@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 import time
+from typing import Protocol
 from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 
@@ -17,6 +18,10 @@ class SportingLifeRequestError(RuntimeError):
         super().__init__(message)
         self.status_code = status_code
         self.access_control_signal = access_control_signal
+
+
+class TextClient(Protocol):
+    def get_text(self, url: str, /) -> str: ...
 
 
 class SportingLifeClient:

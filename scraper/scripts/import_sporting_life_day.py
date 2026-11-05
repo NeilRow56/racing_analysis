@@ -21,7 +21,7 @@ DEFAULT_DATE = date(2020, 9, 13)
 
 sys.path.insert(0, str(REPO_ROOT / "scraper"))
 
-from sporting_life.client import SportingLifeClient  # noqa: E402
+from sporting_life.client import SportingLifeClient, TextClient  # noqa: E402
 from sporting_life.extract import (  # noqa: E402
     ResultLink,
     discover_uk_ire_result_links,
@@ -100,7 +100,7 @@ def import_sporting_life_day(
     database_url: str,
     request_delay_seconds: float | None = None,
     skip_existing_full_results: bool = False,
-    client: SportingLifeClient | None = None,
+    client: TextClient | None = None,
 ) -> ImportDayResult:
     started_at = time.monotonic()
     client = client or SportingLifeClient(request_delay_seconds=request_delay_seconds)

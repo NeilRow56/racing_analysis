@@ -4,10 +4,10 @@ import json
 import re
 from datetime import date, datetime, time, timezone
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 from zoneinfo import ZoneInfo
 
-import psycopg
+from db_typing import ImportCursor, fetch_required_row
 from psycopg.types.json import Jsonb
 from .winning_time_corrections import authoritative_winning_time
 
@@ -28,7 +28,7 @@ def write_raw_payload(
     course_name: str,
     race_id: str,
     payload_type: str,
-    payload: dict[str, Any],
+    payload: dict[str, Any] | list[Any],
 ) -> Path:
     raw_dir.mkdir(parents=True, exist_ok=True)
     filename = f"{race_date}-{slugify(course_name)}-{race_id}-{payload_type}.json"
@@ -38,7 +38,7 @@ def write_raw_payload(
 
 
 def import_full_result(
-    cursor: psycopg.Cursor,
+    cursor: ImportCursor,
     *,
     payload: dict[str, Any],
 ) -> dict[str, int | str]:
@@ -66,7 +66,7 @@ def import_full_result(
 
 
 def import_racecard(
-    cursor: psycopg.Cursor,
+    cursor: ImportCursor,
     *,
     payload: dict[str, Any],
 ) -> dict[str, int | str]:
@@ -94,7 +94,7 @@ def import_racecard(
 
 
 def import_results_index(
-    cursor: psycopg.Cursor,
+    cursor: ImportCursor,
     *,
     race_date: str,
     payload: dict[str, Any],
@@ -108,10 +108,10 @@ def import_results_index(
 
 
 def import_racecards_index(
-    cursor: psycopg.Cursor,
+    cursor: ImportCursor,
     *,
     race_date: str,
-    payload: dict[str, Any],
+    payload: dict[str, Any] | list[Any],
 ) -> str:
     return upsert_source_import(
         cursor=cursor,
@@ -122,7 +122,7 @@ def import_racecards_index(
 
 
 def import_no_race_payload(
-    cursor: psycopg.Cursor,
+    cursor: ImportCursor,
     *,
     race_id: str,
     payload: dict[str, Any],
@@ -137,10 +137,10 @@ def import_no_race_payload(
 
 def upsert_source_import(
     *,
-    cursor: psycopg.Cursor,
+    cursor: ImportCursor,
     source_id: str,
     source_type: str,
-    payload: dict[str, Any],
+    payload: dict[str, Any] | list[Any],
 ) -> str:
     cursor.execute(
         """
@@ -152,10 +152,10 @@ def upsert_source_import(
         """,
         (SOURCE, source_id, source_type, Jsonb(payload)),
     )
-    return str(cursor.fetchone()[0])
+    return str(fetch_required_row(cursor)[0])
 
 
-def upsert_racecard_course(cursor: psycopg.Cursor, page_props: dict[str, Any]) -> str:
+def upsert_racecard_course(cursor: ImportCursor, page_props: dict[str, Any]) -> str:
     meeting_summary = page_props["meeting"][0]["meeting_summary"]
     course = meeting_summary["course"]
     source_id = str(course["course_reference"]["id"])
@@ -176,10 +176,10 @@ def upsert_racecard_course(cursor: psycopg.Cursor, page_props: dict[str, Any]) -
         """,
         (SOURCE, source_id, display_name, normalize_name(display_name), country),
     )
-    return str(cursor.fetchone()[0])
+    return str(fetch_required_row(cursor)[0])
 
 
-def upsert_course(cursor: psycopg.Cursor, page_props: dict[str, Any]) -> str:
+def upsert_course(cursor: ImportCursor, page_props: dict[str, Any]) -> str:
     meeting_summary = page_props["meeting"][0]["meeting_summary"]
     course = meeting_summary["course"]
     source_id = str(course["course_reference"]["id"])
@@ -200,11 +200,11 @@ def upsert_course(cursor: psycopg.Cursor, page_props: dict[str, Any]) -> str:
         """,
         (SOURCE, source_id, display_name, normalize_name(display_name), country),
     )
-    return str(cursor.fetchone()[0])
+    return str(fetch_required_row(cursor)[0])
 
 
 def upsert_racecard_race(
-    cursor: psycopg.Cursor,
+    cursor: ImportCursor,
     race: dict[str, Any],
     course_id: str,
 ) -> str:
@@ -267,11 +267,11 @@ def upsert_racecard_race(
             None,
         ),
     )
-    return str(cursor.fetchone()[0])
+    return str(fetch_required_row(cursor)[0])
 
 
 def upsert_race(
-    cursor: psycopg.Cursor,
+    cursor: ImportCursor,
     race: dict[str, Any],
     page_props: dict[str, Any],
     course_id: str,
@@ -338,10 +338,10 @@ def upsert_race(
             ),
         ),
     )
-    return str(cursor.fetchone()[0])
+    return str(fetch_required_row(cursor)[0])
 
 
-def upsert_racecard_runners(cursor: psycopg.Cursor, race: dict[str, Any], race_id: str) -> dict[str, int]:
+def upsert_racecard_runners(cursor: ImportCursor, race: dict[str, Any], race_id: str) -> dict[str, int]:
     counts = {"horses": 0, "trainers": 0, "jockeys": 0, "runners": 0}
 
     for ride in race["rides"]:
@@ -491,7 +491,7 @@ def upsert_racecard_runners(cursor: psycopg.Cursor, race: dict[str, Any], race_i
     return counts
 
 
-def upsert_runners(cursor: psycopg.Cursor, race: dict[str, Any], race_id: str) -> dict[str, int]:
+def upsert_runners(cursor: ImportCursor, race: dict[str, Any], race_id: str) -> dict[str, int]:
     counts = {"horses": 0, "trainers": 0, "jockeys": 0, "runners": 0}
     race_source_id = str(race["race_summary"]["race_summary_reference"]["id"])
 
@@ -613,9 +613,9 @@ def upsert_runners(cursor: psycopg.Cursor, race: dict[str, Any], race_id: str) -
 
 
 def upsert_named_entity(
-    cursor: psycopg.Cursor,
+    cursor: ImportCursor,
     *,
-    table: str,
+    table: Literal["horses", "trainers", "jockeys"],
     source_id: str,
     display_name: str,
 ) -> str:
@@ -635,7 +635,7 @@ def upsert_named_entity(
         """,
         (SOURCE, source_id, display_name, normalize_name(display_name)),
     )
-    return str(cursor.fetchone()[0])
+    return str(fetch_required_row(cursor)[0])
 
 
 def trainer_reference_id(trainer: dict[str, Any] | None) -> Any:
