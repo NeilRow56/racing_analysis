@@ -251427,7 +251427,44 @@
         "forecastPrice": "11/2",
         "forecastDecimalPrice": 6.5
       },
-      "t60PriceSnapshot": null,
+      "t60PriceSnapshot": {
+        "price": null,
+        "decimalPrice": 3.75,
+        "impliedProbability": 0.26666666666666666,
+        "capturedAt": "2026-11-05T11:52:36.558Z",
+        "minutesBeforeScheduledOff": 49.3907,
+        "ratingProbability": 0.21241830065359477,
+        "ratingEdgePercentagePoints": -5.42483660130719,
+        "marketPriceBasisVersion": "median_bookmaker_v1",
+        "bookmakerQuoteCount": 3,
+        "bookmakerQuotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "11/4",
+            "decimalOdds": 3.75
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "11/4",
+            "decimalOdds": 3.75
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "11/4",
+            "decimalOdds": 3.75
+          }
+        ],
+        "medianBookmakerPriceDecimal": 3.75,
+        "medianBookmakerImpliedProbability": 0.26666666666666666,
+        "bestBookmakerPriceDecimal": 3.75,
+        "bestBookmakerPriceFractional": "11/4",
+        "bestBookmakerName": null,
+        "forecastPrice": "11/2",
+        "forecastDecimalPrice": 6.5
+      },
       "marketFavouriteRunnerIds": [
         "08fbc698-3c0d-4bd6-adb1-a1d6fd0dc33e"
       ],
@@ -251457,20 +251494,22 @@
       "tissueEarlyPriceSnapshot": null,
       "tissueT180PriceSnapshot": null,
       "tissueT60PriceSnapshot": null,
-      "winnerRunnerIds": [],
-      "leaderResultStatus": null,
-      "leaderFinishingPosition": null,
-      "leaderWon": null,
-      "finalSp": null,
-      "grossReturn": null,
-      "profitLoss": null,
-      "capturedPriceGrossReturn": null,
-      "capturedPriceProfitLoss": null,
-      "medianMarketPriceGrossReturn": null,
-      "medianMarketPriceProfitLoss": null,
-      "bestBookmakerPriceGrossReturn": null,
-      "bestBookmakerPriceProfitLoss": null,
-      "settledAt": null
+      "winnerRunnerIds": [
+        "33b31dd6-dea9-441d-8340-f744f0d61606"
+      ],
+      "leaderResultStatus": "finished",
+      "leaderFinishingPosition": 7,
+      "leaderWon": false,
+      "finalSp": 3.5,
+      "grossReturn": 0,
+      "profitLoss": -1,
+      "capturedPriceGrossReturn": 0,
+      "capturedPriceProfitLoss": -1,
+      "medianMarketPriceGrossReturn": 0,
+      "medianMarketPriceProfitLoss": -1,
+      "bestBookmakerPriceGrossReturn": 0,
+      "bestBookmakerPriceProfitLoss": -1,
+      "settledAt": "2026-11-05T13:52:07.003Z"
     },
     {
       "family": "jump",
@@ -251609,7 +251648,44 @@
         "forecastPrice": "20/1",
         "forecastDecimalPrice": 21
       },
-      "t60PriceSnapshot": null,
+      "t60PriceSnapshot": {
+        "price": null,
+        "decimalPrice": 19,
+        "impliedProbability": 0.05263157894736842,
+        "capturedAt": "2026-11-05T11:52:36.558Z",
+        "minutesBeforeScheduledOff": 84.3907,
+        "ratingProbability": 0.189280868385346,
+        "ratingEdgePercentagePoints": 13.664928943797758,
+        "marketPriceBasisVersion": "median_bookmaker_v1",
+        "bookmakerQuoteCount": 3,
+        "bookmakerQuotes": [
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "16/1",
+            "decimalOdds": 17
+          },
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "18/1",
+            "decimalOdds": 19
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "18/1",
+            "decimalOdds": 19
+          }
+        ],
+        "medianBookmakerPriceDecimal": 19,
+        "medianBookmakerImpliedProbability": 0.05263157894736842,
+        "bestBookmakerPriceDecimal": 19,
+        "bestBookmakerPriceFractional": "18/1",
+        "bestBookmakerName": null,
+        "forecastPrice": "20/1",
+        "forecastDecimalPrice": 21
+      },
       "marketFavouriteRunnerIds": [
         "7e55bab7-357c-42e9-8389-a1ab387de8ec"
       ],
@@ -251639,20 +251715,22 @@
       "tissueEarlyPriceSnapshot": null,
       "tissueT180PriceSnapshot": null,
       "tissueT60PriceSnapshot": null,
-      "winnerRunnerIds": [],
-      "leaderResultStatus": null,
-      "leaderFinishingPosition": null,
-      "leaderWon": null,
-      "finalSp": null,
-      "grossReturn": null,
-      "profitLoss": null,
-      "capturedPriceGrossReturn": null,
-      "capturedPriceProfitLoss": null,
-      "medianMarketPriceGrossReturn": null,
-      "medianMarketPriceProfitLoss": null,
-      "bestBookmakerPriceGrossReturn": null,
-      "bestBookmakerPriceProfitLoss": null,
-      "settledAt": null
+      "winnerRunnerIds": [
+        "7e55bab7-357c-42e9-8389-a1ab387de8ec"
+      ],
+      "leaderResultStatus": "finished",
+      "leaderFinishingPosition": 2,
+      "leaderWon": false,
+      "finalSp": 12,
+      "grossReturn": 0,
+      "profitLoss": -1,
+      "capturedPriceGrossReturn": 0,
+      "capturedPriceProfitLoss": -1,
+      "medianMarketPriceGrossReturn": 0,
+      "medianMarketPriceProfitLoss": -1,
+      "bestBookmakerPriceGrossReturn": 0,
+      "bestBookmakerPriceProfitLoss": -1,
+      "settledAt": "2026-11-05T13:52:07.003Z"
     },
     {
       "family": "jump",
@@ -251784,20 +251862,22 @@
       "tissueEarlyPriceSnapshot": null,
       "tissueT180PriceSnapshot": null,
       "tissueT60PriceSnapshot": null,
-      "winnerRunnerIds": [],
-      "leaderResultStatus": null,
-      "leaderFinishingPosition": null,
-      "leaderWon": null,
-      "finalSp": null,
-      "grossReturn": null,
-      "profitLoss": null,
-      "capturedPriceGrossReturn": null,
-      "capturedPriceProfitLoss": null,
-      "medianMarketPriceGrossReturn": null,
-      "medianMarketPriceProfitLoss": null,
-      "bestBookmakerPriceGrossReturn": null,
-      "bestBookmakerPriceProfitLoss": null,
-      "settledAt": null
+      "winnerRunnerIds": [
+        "205b78e6-597d-43ce-a8dd-fe1cac809289"
+      ],
+      "leaderResultStatus": "finished",
+      "leaderFinishingPosition": 7,
+      "leaderWon": false,
+      "finalSp": 51,
+      "grossReturn": 0,
+      "profitLoss": -1,
+      "capturedPriceGrossReturn": 0,
+      "capturedPriceProfitLoss": -1,
+      "medianMarketPriceGrossReturn": 0,
+      "medianMarketPriceProfitLoss": -1,
+      "bestBookmakerPriceGrossReturn": 0,
+      "bestBookmakerPriceProfitLoss": -1,
+      "settledAt": "2026-11-05T15:16:35.847Z"
     },
     {
       "family": "jump",
@@ -251898,7 +251978,44 @@
         "forecastPrice": "10/1",
         "forecastDecimalPrice": 11
       },
-      "t180PriceSnapshot": null,
+      "t180PriceSnapshot": {
+        "price": null,
+        "decimalPrice": 8.5,
+        "impliedProbability": 0.11764705882352941,
+        "capturedAt": "2026-11-05T11:52:36.558Z",
+        "minutesBeforeScheduledOff": 152.3907,
+        "ratingProbability": 0.189280868385346,
+        "ratingEdgePercentagePoints": 7.163380956181658,
+        "marketPriceBasisVersion": "median_bookmaker_v1",
+        "bookmakerQuoteCount": 3,
+        "bookmakerQuotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "15/2",
+            "decimalOdds": 8.5
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "15/2",
+            "decimalOdds": 8.5
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "8/1",
+            "decimalOdds": 9
+          }
+        ],
+        "medianBookmakerPriceDecimal": 8.5,
+        "medianBookmakerImpliedProbability": 0.11764705882352941,
+        "bestBookmakerPriceDecimal": 9,
+        "bestBookmakerPriceFractional": "8/1",
+        "bestBookmakerName": "Sky Bet v2",
+        "forecastPrice": "10/1",
+        "forecastDecimalPrice": 11
+      },
       "t60PriceSnapshot": null,
       "marketFavouriteRunnerIds": [
         "31ae3ca4-42e1-45a0-aa8f-bdc246f3659b"
@@ -251929,20 +252046,22 @@
       "tissueEarlyPriceSnapshot": null,
       "tissueT180PriceSnapshot": null,
       "tissueT60PriceSnapshot": null,
-      "winnerRunnerIds": [],
-      "leaderResultStatus": null,
-      "leaderFinishingPosition": null,
-      "leaderWon": null,
-      "finalSp": null,
-      "grossReturn": null,
-      "profitLoss": null,
-      "capturedPriceGrossReturn": null,
-      "capturedPriceProfitLoss": null,
-      "medianMarketPriceGrossReturn": null,
-      "medianMarketPriceProfitLoss": null,
-      "bestBookmakerPriceGrossReturn": null,
-      "bestBookmakerPriceProfitLoss": null,
-      "settledAt": null
+      "winnerRunnerIds": [
+        "451deff0-e1be-4d40-8015-6419fb07f0de"
+      ],
+      "leaderResultStatus": "finished",
+      "leaderFinishingPosition": 10,
+      "leaderWon": false,
+      "finalSp": 10,
+      "grossReturn": 0,
+      "profitLoss": -1,
+      "capturedPriceGrossReturn": 0,
+      "capturedPriceProfitLoss": -1,
+      "medianMarketPriceGrossReturn": 0,
+      "medianMarketPriceProfitLoss": -1,
+      "bestBookmakerPriceGrossReturn": 0,
+      "bestBookmakerPriceProfitLoss": -1,
+      "settledAt": "2026-11-05T15:16:35.847Z"
     },
     {
       "family": "jump",
@@ -252043,7 +252162,44 @@
         "forecastPrice": "12/1",
         "forecastDecimalPrice": 13
       },
-      "t180PriceSnapshot": null,
+      "t180PriceSnapshot": {
+        "price": null,
+        "decimalPrice": 6.5,
+        "impliedProbability": 0.15384615384615385,
+        "capturedAt": "2026-11-05T11:52:36.558Z",
+        "minutesBeforeScheduledOff": 185.3907,
+        "ratingProbability": 0.189280868385346,
+        "ratingEdgePercentagePoints": 3.543471453919214,
+        "marketPriceBasisVersion": "median_bookmaker_v1",
+        "bookmakerQuoteCount": 3,
+        "bookmakerQuotes": [
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "5/1",
+            "decimalOdds": 6
+          },
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "11/2",
+            "decimalOdds": 6.5
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "11/2",
+            "decimalOdds": 6.5
+          }
+        ],
+        "medianBookmakerPriceDecimal": 6.5,
+        "medianBookmakerImpliedProbability": 0.15384615384615385,
+        "bestBookmakerPriceDecimal": 6.5,
+        "bestBookmakerPriceFractional": "11/2",
+        "bestBookmakerName": null,
+        "forecastPrice": "12/1",
+        "forecastDecimalPrice": 13
+      },
       "t60PriceSnapshot": null,
       "marketFavouriteRunnerIds": [
         "410e0c6b-6421-490f-b82a-4f3f1f88aa31"
@@ -252074,20 +252230,22 @@
       "tissueEarlyPriceSnapshot": null,
       "tissueT180PriceSnapshot": null,
       "tissueT60PriceSnapshot": null,
-      "winnerRunnerIds": [],
-      "leaderResultStatus": null,
-      "leaderFinishingPosition": null,
-      "leaderWon": null,
-      "finalSp": null,
-      "grossReturn": null,
-      "profitLoss": null,
-      "capturedPriceGrossReturn": null,
-      "capturedPriceProfitLoss": null,
-      "medianMarketPriceGrossReturn": null,
-      "medianMarketPriceProfitLoss": null,
-      "bestBookmakerPriceGrossReturn": null,
-      "bestBookmakerPriceProfitLoss": null,
-      "settledAt": null
+      "winnerRunnerIds": [
+        "04121b59-ec7b-4619-92ac-2a29d4b2bd7c"
+      ],
+      "leaderResultStatus": "finished",
+      "leaderFinishingPosition": 8,
+      "leaderWon": false,
+      "finalSp": 9,
+      "grossReturn": 0,
+      "profitLoss": -1,
+      "capturedPriceGrossReturn": 0,
+      "capturedPriceProfitLoss": -1,
+      "medianMarketPriceGrossReturn": 0,
+      "medianMarketPriceProfitLoss": -1,
+      "bestBookmakerPriceGrossReturn": 0,
+      "bestBookmakerPriceProfitLoss": -1,
+      "settledAt": "2026-11-05T15:16:35.847Z"
     },
     {
       "family": "jump",
@@ -252226,7 +252384,44 @@
         "forecastPrice": "15/8",
         "forecastDecimalPrice": 2.875
       },
-      "t60PriceSnapshot": null,
+      "t60PriceSnapshot": {
+        "price": null,
+        "decimalPrice": 1.8,
+        "impliedProbability": 0.5555555555555556,
+        "capturedAt": "2026-11-05T11:52:36.558Z",
+        "minutesBeforeScheduledOff": 66.3907,
+        "ratingProbability": 0.189280868385346,
+        "ratingEdgePercentagePoints": -36.62746871702096,
+        "marketPriceBasisVersion": "median_bookmaker_v1",
+        "bookmakerQuoteCount": 3,
+        "bookmakerQuotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "8/11",
+            "decimalOdds": 1.73
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "4/5",
+            "decimalOdds": 1.8
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "4/5",
+            "decimalOdds": 1.8
+          }
+        ],
+        "medianBookmakerPriceDecimal": 1.8,
+        "medianBookmakerImpliedProbability": 0.5555555555555556,
+        "bestBookmakerPriceDecimal": 1.8,
+        "bestBookmakerPriceFractional": "4/5",
+        "bestBookmakerName": null,
+        "forecastPrice": "15/8",
+        "forecastDecimalPrice": 2.875
+      },
       "marketFavouriteRunnerIds": [
         "1a5a7e8e-83cb-4137-a8a8-77458c09a90d"
       ],
@@ -252256,20 +252451,22 @@
       "tissueEarlyPriceSnapshot": null,
       "tissueT180PriceSnapshot": null,
       "tissueT60PriceSnapshot": null,
-      "winnerRunnerIds": [],
-      "leaderResultStatus": null,
-      "leaderFinishingPosition": null,
-      "leaderWon": null,
-      "finalSp": null,
-      "grossReturn": null,
-      "profitLoss": null,
-      "capturedPriceGrossReturn": null,
-      "capturedPriceProfitLoss": null,
-      "medianMarketPriceGrossReturn": null,
-      "medianMarketPriceProfitLoss": null,
-      "bestBookmakerPriceGrossReturn": null,
-      "bestBookmakerPriceProfitLoss": null,
-      "settledAt": null
+      "winnerRunnerIds": [
+        "1a5a7e8e-83cb-4137-a8a8-77458c09a90d"
+      ],
+      "leaderResultStatus": "finished",
+      "leaderFinishingPosition": 3,
+      "leaderWon": false,
+      "finalSp": 1.727,
+      "grossReturn": 0,
+      "profitLoss": -1,
+      "capturedPriceGrossReturn": 0,
+      "capturedPriceProfitLoss": -1,
+      "medianMarketPriceGrossReturn": 0,
+      "medianMarketPriceProfitLoss": -1,
+      "bestBookmakerPriceGrossReturn": 0,
+      "bestBookmakerPriceProfitLoss": -1,
+      "settledAt": "2026-11-05T13:52:07.003Z"
     },
     {
       "family": "jump",
@@ -252401,20 +252598,22 @@
       "tissueEarlyPriceSnapshot": null,
       "tissueT180PriceSnapshot": null,
       "tissueT60PriceSnapshot": null,
-      "winnerRunnerIds": [],
-      "leaderResultStatus": null,
-      "leaderFinishingPosition": null,
-      "leaderWon": null,
-      "finalSp": null,
-      "grossReturn": null,
-      "profitLoss": null,
-      "capturedPriceGrossReturn": null,
-      "capturedPriceProfitLoss": null,
-      "medianMarketPriceGrossReturn": null,
-      "medianMarketPriceProfitLoss": null,
-      "bestBookmakerPriceGrossReturn": null,
-      "bestBookmakerPriceProfitLoss": null,
-      "settledAt": null
+      "winnerRunnerIds": [
+        "74c4c01f-1f79-454b-82f2-7d44e2755252"
+      ],
+      "leaderResultStatus": "finished",
+      "leaderFinishingPosition": 8,
+      "leaderWon": false,
+      "finalSp": 7.5,
+      "grossReturn": 0,
+      "profitLoss": -1,
+      "capturedPriceGrossReturn": 0,
+      "capturedPriceProfitLoss": -1,
+      "medianMarketPriceGrossReturn": 0,
+      "medianMarketPriceProfitLoss": -1,
+      "bestBookmakerPriceGrossReturn": 0,
+      "bestBookmakerPriceProfitLoss": -1,
+      "settledAt": "2026-11-05T13:52:07.003Z"
     },
     {
       "family": "jump",
@@ -252546,20 +252745,22 @@
       "tissueEarlyPriceSnapshot": null,
       "tissueT180PriceSnapshot": null,
       "tissueT60PriceSnapshot": null,
-      "winnerRunnerIds": [],
-      "leaderResultStatus": null,
-      "leaderFinishingPosition": null,
-      "leaderWon": null,
-      "finalSp": null,
-      "grossReturn": null,
-      "profitLoss": null,
-      "capturedPriceGrossReturn": null,
-      "capturedPriceProfitLoss": null,
-      "medianMarketPriceGrossReturn": null,
-      "medianMarketPriceProfitLoss": null,
-      "bestBookmakerPriceGrossReturn": null,
-      "bestBookmakerPriceProfitLoss": null,
-      "settledAt": null
+      "winnerRunnerIds": [
+        "a8575358-38b2-4711-96e6-5220647f0eb8"
+      ],
+      "leaderResultStatus": "finished",
+      "leaderFinishingPosition": 2,
+      "leaderWon": false,
+      "finalSp": 19,
+      "grossReturn": 0,
+      "profitLoss": -1,
+      "capturedPriceGrossReturn": 0,
+      "capturedPriceProfitLoss": -1,
+      "medianMarketPriceGrossReturn": 0,
+      "medianMarketPriceProfitLoss": -1,
+      "bestBookmakerPriceGrossReturn": 0,
+      "bestBookmakerPriceProfitLoss": -1,
+      "settledAt": "2026-11-05T15:16:35.847Z"
     },
     {
       "family": "jump",
@@ -252660,7 +252861,44 @@
         "forecastPrice": "8/1",
         "forecastDecimalPrice": 9
       },
-      "t180PriceSnapshot": null,
+      "t180PriceSnapshot": {
+        "price": null,
+        "decimalPrice": 7,
+        "impliedProbability": 0.14285714285714285,
+        "capturedAt": "2026-11-05T11:52:36.558Z",
+        "minutesBeforeScheduledOff": 167.3907,
+        "ratingProbability": 0.189280868385346,
+        "ratingEdgePercentagePoints": 4.642372552820315,
+        "marketPriceBasisVersion": "median_bookmaker_v1",
+        "bookmakerQuoteCount": 3,
+        "bookmakerQuotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "6/1",
+            "decimalOdds": 7
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "6/1",
+            "decimalOdds": 7
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "6/1",
+            "decimalOdds": 7
+          }
+        ],
+        "medianBookmakerPriceDecimal": 7,
+        "medianBookmakerImpliedProbability": 0.14285714285714285,
+        "bestBookmakerPriceDecimal": 7,
+        "bestBookmakerPriceFractional": "6/1",
+        "bestBookmakerName": null,
+        "forecastPrice": "8/1",
+        "forecastDecimalPrice": 9
+      },
       "t60PriceSnapshot": null,
       "marketFavouriteRunnerIds": [
         "3b8a3c9f-053c-4a85-8052-683c86290ce4"
@@ -252691,20 +252929,22 @@
       "tissueEarlyPriceSnapshot": null,
       "tissueT180PriceSnapshot": null,
       "tissueT60PriceSnapshot": null,
-      "winnerRunnerIds": [],
-      "leaderResultStatus": null,
-      "leaderFinishingPosition": null,
-      "leaderWon": null,
-      "finalSp": null,
-      "grossReturn": null,
-      "profitLoss": null,
-      "capturedPriceGrossReturn": null,
-      "capturedPriceProfitLoss": null,
-      "medianMarketPriceGrossReturn": null,
-      "medianMarketPriceProfitLoss": null,
-      "bestBookmakerPriceGrossReturn": null,
-      "bestBookmakerPriceProfitLoss": null,
-      "settledAt": null
+      "winnerRunnerIds": [
+        "d53af1d6-009d-41da-88c9-a3180993f909"
+      ],
+      "leaderResultStatus": "finished",
+      "leaderFinishingPosition": 4,
+      "leaderWon": false,
+      "finalSp": 9.5,
+      "grossReturn": 0,
+      "profitLoss": -1,
+      "capturedPriceGrossReturn": 0,
+      "capturedPriceProfitLoss": -1,
+      "medianMarketPriceGrossReturn": 0,
+      "medianMarketPriceProfitLoss": -1,
+      "bestBookmakerPriceGrossReturn": 0,
+      "bestBookmakerPriceProfitLoss": -1,
+      "settledAt": "2026-11-05T15:16:35.847Z"
     },
     {
       "family": "jump",
@@ -253098,7 +253338,44 @@
         "forecastPrice": "2/1",
         "forecastDecimalPrice": 3
       },
-      "t60PriceSnapshot": null,
+      "t60PriceSnapshot": {
+        "price": null,
+        "decimalPrice": 2.1,
+        "impliedProbability": 0.47619047619047616,
+        "capturedAt": "2026-11-05T11:52:36.558Z",
+        "minutesBeforeScheduledOff": 40.3907,
+        "ratingProbability": 0.21241830065359477,
+        "ratingEdgePercentagePoints": -26.377217553688137,
+        "marketPriceBasisVersion": "median_bookmaker_v1",
+        "bookmakerQuoteCount": 3,
+        "bookmakerQuotes": [
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "1/1",
+            "decimalOdds": 2
+          },
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "11/10",
+            "decimalOdds": 2.1
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "11/10",
+            "decimalOdds": 2.1
+          }
+        ],
+        "medianBookmakerPriceDecimal": 2.1,
+        "medianBookmakerImpliedProbability": 0.47619047619047616,
+        "bestBookmakerPriceDecimal": 2.1,
+        "bestBookmakerPriceFractional": "11/10",
+        "bestBookmakerName": null,
+        "forecastPrice": "2/1",
+        "forecastDecimalPrice": 3
+      },
       "marketFavouriteRunnerIds": [
         "05cef209-8ddf-49c9-b906-b1486ba97f6c"
       ],
@@ -253128,20 +253405,22 @@
       "tissueEarlyPriceSnapshot": null,
       "tissueT180PriceSnapshot": null,
       "tissueT60PriceSnapshot": null,
-      "winnerRunnerIds": [],
-      "leaderResultStatus": null,
-      "leaderFinishingPosition": null,
-      "leaderWon": null,
-      "finalSp": null,
-      "grossReturn": null,
-      "profitLoss": null,
-      "capturedPriceGrossReturn": null,
-      "capturedPriceProfitLoss": null,
-      "medianMarketPriceGrossReturn": null,
-      "medianMarketPriceProfitLoss": null,
-      "bestBookmakerPriceGrossReturn": null,
-      "bestBookmakerPriceProfitLoss": null,
-      "settledAt": null
+      "winnerRunnerIds": [
+        "73343ecf-1876-4faa-b93d-221a8f08c6e3"
+      ],
+      "leaderResultStatus": "finished",
+      "leaderFinishingPosition": 2,
+      "leaderWon": false,
+      "finalSp": 2.2,
+      "grossReturn": 0,
+      "profitLoss": -1,
+      "capturedPriceGrossReturn": 0,
+      "capturedPriceProfitLoss": -1,
+      "medianMarketPriceGrossReturn": 0,
+      "medianMarketPriceProfitLoss": -1,
+      "bestBookmakerPriceGrossReturn": 0,
+      "bestBookmakerPriceProfitLoss": -1,
+      "settledAt": "2026-11-05T13:52:07.003Z"
     },
     {
       "family": "jump",
@@ -253280,7 +253559,44 @@
         "forecastPrice": "2/1",
         "forecastDecimalPrice": 3
       },
-      "t60PriceSnapshot": null,
+      "t60PriceSnapshot": {
+        "price": null,
+        "decimalPrice": 2.38,
+        "impliedProbability": 0.42016806722689076,
+        "capturedAt": "2026-11-05T11:52:36.558Z",
+        "minutesBeforeScheduledOff": 75.3907,
+        "ratingProbability": 0.21241830065359477,
+        "ratingEdgePercentagePoints": -20.7749766573296,
+        "marketPriceBasisVersion": "median_bookmaker_v1",
+        "bookmakerQuoteCount": 3,
+        "bookmakerQuotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "11/8",
+            "decimalOdds": 2.38
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "11/8",
+            "decimalOdds": 2.38
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "6/4",
+            "decimalOdds": 2.5
+          }
+        ],
+        "medianBookmakerPriceDecimal": 2.38,
+        "medianBookmakerImpliedProbability": 0.42016806722689076,
+        "bestBookmakerPriceDecimal": 2.5,
+        "bestBookmakerPriceFractional": "6/4",
+        "bestBookmakerName": "Paddy Power",
+        "forecastPrice": "2/1",
+        "forecastDecimalPrice": 3
+      },
       "marketFavouriteRunnerIds": [
         "49284d7a-b2a0-47cc-83e1-ef60ca40a29e"
       ],
@@ -253310,20 +253626,22 @@
       "tissueEarlyPriceSnapshot": null,
       "tissueT180PriceSnapshot": null,
       "tissueT60PriceSnapshot": null,
-      "winnerRunnerIds": [],
-      "leaderResultStatus": null,
-      "leaderFinishingPosition": null,
-      "leaderWon": null,
-      "finalSp": null,
-      "grossReturn": null,
-      "profitLoss": null,
-      "capturedPriceGrossReturn": null,
-      "capturedPriceProfitLoss": null,
-      "medianMarketPriceGrossReturn": null,
-      "medianMarketPriceProfitLoss": null,
-      "bestBookmakerPriceGrossReturn": null,
-      "bestBookmakerPriceProfitLoss": null,
-      "settledAt": null
+      "winnerRunnerIds": [
+        "49284d7a-b2a0-47cc-83e1-ef60ca40a29e"
+      ],
+      "leaderResultStatus": "finished",
+      "leaderFinishingPosition": 1,
+      "leaderWon": true,
+      "finalSp": 3,
+      "grossReturn": 3,
+      "profitLoss": 2,
+      "capturedPriceGrossReturn": 2.25,
+      "capturedPriceProfitLoss": 1.25,
+      "medianMarketPriceGrossReturn": 2.25,
+      "medianMarketPriceProfitLoss": 1.25,
+      "bestBookmakerPriceGrossReturn": 2.38,
+      "bestBookmakerPriceProfitLoss": 1.38,
+      "settledAt": "2026-11-05T13:52:07.003Z"
     },
     {
       "family": "jump",
@@ -253455,20 +253773,22 @@
       "tissueEarlyPriceSnapshot": null,
       "tissueT180PriceSnapshot": null,
       "tissueT60PriceSnapshot": null,
-      "winnerRunnerIds": [],
-      "leaderResultStatus": null,
-      "leaderFinishingPosition": null,
-      "leaderWon": null,
-      "finalSp": null,
-      "grossReturn": null,
-      "profitLoss": null,
-      "capturedPriceGrossReturn": null,
-      "capturedPriceProfitLoss": null,
-      "medianMarketPriceGrossReturn": null,
-      "medianMarketPriceProfitLoss": null,
-      "bestBookmakerPriceGrossReturn": null,
-      "bestBookmakerPriceProfitLoss": null,
-      "settledAt": null
+      "winnerRunnerIds": [
+        "adc9d104-0880-4efc-9b05-4ad7bcd7a0ef"
+      ],
+      "leaderResultStatus": "finished",
+      "leaderFinishingPosition": 2,
+      "leaderWon": false,
+      "finalSp": 4,
+      "grossReturn": 0,
+      "profitLoss": -1,
+      "capturedPriceGrossReturn": 0,
+      "capturedPriceProfitLoss": -1,
+      "medianMarketPriceGrossReturn": 0,
+      "medianMarketPriceProfitLoss": -1,
+      "bestBookmakerPriceGrossReturn": 0,
+      "bestBookmakerPriceProfitLoss": -1,
+      "settledAt": "2026-11-05T13:52:07.003Z"
     },
     {
       "family": "jump",
@@ -253600,20 +253920,22 @@
       "tissueEarlyPriceSnapshot": null,
       "tissueT180PriceSnapshot": null,
       "tissueT60PriceSnapshot": null,
-      "winnerRunnerIds": [],
-      "leaderResultStatus": null,
-      "leaderFinishingPosition": null,
-      "leaderWon": null,
-      "finalSp": null,
-      "grossReturn": null,
-      "profitLoss": null,
-      "capturedPriceGrossReturn": null,
-      "capturedPriceProfitLoss": null,
-      "medianMarketPriceGrossReturn": null,
-      "medianMarketPriceProfitLoss": null,
-      "bestBookmakerPriceGrossReturn": null,
-      "bestBookmakerPriceProfitLoss": null,
-      "settledAt": null
+      "winnerRunnerIds": [
+        "dff078a4-79d1-459c-84b2-363acf2c9593"
+      ],
+      "leaderResultStatus": "finished",
+      "leaderFinishingPosition": 3,
+      "leaderWon": false,
+      "finalSp": 2.625,
+      "grossReturn": 0,
+      "profitLoss": -1,
+      "capturedPriceGrossReturn": 0,
+      "capturedPriceProfitLoss": -1,
+      "medianMarketPriceGrossReturn": 0,
+      "medianMarketPriceProfitLoss": -1,
+      "bestBookmakerPriceGrossReturn": 0,
+      "bestBookmakerPriceProfitLoss": -1,
+      "settledAt": "2026-11-05T15:16:35.847Z"
     },
     {
       "family": "jump",
@@ -253714,7 +254036,44 @@
         "forecastPrice": "66/1",
         "forecastDecimalPrice": 67
       },
-      "t180PriceSnapshot": null,
+      "t180PriceSnapshot": {
+        "price": null,
+        "decimalPrice": 36,
+        "impliedProbability": 0.027777777777777776,
+        "capturedAt": "2026-11-05T11:52:36.558Z",
+        "minutesBeforeScheduledOff": 174.3907,
+        "ratingProbability": 0.189280868385346,
+        "ratingEdgePercentagePoints": 16.150309060756822,
+        "marketPriceBasisVersion": "median_bookmaker_v1",
+        "bookmakerQuoteCount": 3,
+        "bookmakerQuotes": [
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "33/1",
+            "decimalOdds": 34
+          },
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "35/1",
+            "decimalOdds": 36
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "35/1",
+            "decimalOdds": 36
+          }
+        ],
+        "medianBookmakerPriceDecimal": 36,
+        "medianBookmakerImpliedProbability": 0.027777777777777776,
+        "bestBookmakerPriceDecimal": 36,
+        "bestBookmakerPriceFractional": "35/1",
+        "bestBookmakerName": null,
+        "forecastPrice": "66/1",
+        "forecastDecimalPrice": 67
+      },
       "t60PriceSnapshot": null,
       "marketFavouriteRunnerIds": [
         "65ddceab-65fe-48ae-950a-1eab2c7c568f"
@@ -253745,20 +254104,22 @@
       "tissueEarlyPriceSnapshot": null,
       "tissueT180PriceSnapshot": null,
       "tissueT60PriceSnapshot": null,
-      "winnerRunnerIds": [],
-      "leaderResultStatus": null,
-      "leaderFinishingPosition": null,
-      "leaderWon": null,
-      "finalSp": null,
-      "grossReturn": null,
-      "profitLoss": null,
-      "capturedPriceGrossReturn": null,
-      "capturedPriceProfitLoss": null,
-      "medianMarketPriceGrossReturn": null,
-      "medianMarketPriceProfitLoss": null,
-      "bestBookmakerPriceGrossReturn": null,
-      "bestBookmakerPriceProfitLoss": null,
-      "settledAt": null
+      "winnerRunnerIds": [
+        "65ddceab-65fe-48ae-950a-1eab2c7c568f"
+      ],
+      "leaderResultStatus": "finished",
+      "leaderFinishingPosition": 4,
+      "leaderWon": false,
+      "finalSp": 51,
+      "grossReturn": 0,
+      "profitLoss": -1,
+      "capturedPriceGrossReturn": 0,
+      "capturedPriceProfitLoss": -1,
+      "medianMarketPriceGrossReturn": 0,
+      "medianMarketPriceProfitLoss": -1,
+      "bestBookmakerPriceGrossReturn": 0,
+      "bestBookmakerPriceProfitLoss": -1,
+      "settledAt": "2026-11-05T15:16:35.847Z"
     },
     {
       "family": "jump",
@@ -253859,7 +254220,44 @@
         "forecastPrice": "11/10",
         "forecastDecimalPrice": 2.1
       },
-      "t180PriceSnapshot": null,
+      "t180PriceSnapshot": {
+        "price": null,
+        "decimalPrice": 1.91,
+        "impliedProbability": 0.5235602094240838,
+        "capturedAt": "2026-11-05T11:52:36.558Z",
+        "minutesBeforeScheduledOff": 209.3907,
+        "ratingProbability": 0.189280868385346,
+        "ratingEdgePercentagePoints": -33.42793410387378,
+        "marketPriceBasisVersion": "median_bookmaker_v1",
+        "bookmakerQuoteCount": 3,
+        "bookmakerQuotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "10/11",
+            "decimalOdds": 1.91
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "10/11",
+            "decimalOdds": 1.91
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "10/11",
+            "decimalOdds": 1.91
+          }
+        ],
+        "medianBookmakerPriceDecimal": 1.91,
+        "medianBookmakerImpliedProbability": 0.5235602094240838,
+        "bestBookmakerPriceDecimal": 1.91,
+        "bestBookmakerPriceFractional": "10/11",
+        "bestBookmakerName": null,
+        "forecastPrice": "11/10",
+        "forecastDecimalPrice": 2.1
+      },
       "t60PriceSnapshot": null,
       "marketFavouriteRunnerIds": [
         "7bbe0920-130a-4fc1-a8f8-751ef0eeb508"
@@ -254187,7 +254585,44 @@
         "forecastPrice": "11/4",
         "forecastDecimalPrice": 3.75
       },
-      "t60PriceSnapshot": null,
+      "t60PriceSnapshot": {
+        "price": null,
+        "decimalPrice": 2.63,
+        "impliedProbability": 0.3802281368821293,
+        "capturedAt": "2026-11-05T11:52:36.558Z",
+        "minutesBeforeScheduledOff": 57.3907,
+        "ratingProbability": 0.21241830065359477,
+        "ratingEdgePercentagePoints": -16.780983622853455,
+        "marketPriceBasisVersion": "median_bookmaker_v1",
+        "bookmakerQuoteCount": 3,
+        "bookmakerQuotes": [
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "6/4",
+            "decimalOdds": 2.5
+          },
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "13/8",
+            "decimalOdds": 2.63
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "13/8",
+            "decimalOdds": 2.63
+          }
+        ],
+        "medianBookmakerPriceDecimal": 2.63,
+        "medianBookmakerImpliedProbability": 0.3802281368821293,
+        "bestBookmakerPriceDecimal": 2.63,
+        "bestBookmakerPriceFractional": "13/8",
+        "bestBookmakerName": null,
+        "forecastPrice": "11/4",
+        "forecastDecimalPrice": 3.75
+      },
       "marketFavouriteRunnerIds": [
         "5b944ba6-6943-486b-a559-c4303e0085c4"
       ],
@@ -254217,20 +254652,22 @@
       "tissueEarlyPriceSnapshot": null,
       "tissueT180PriceSnapshot": null,
       "tissueT60PriceSnapshot": null,
-      "winnerRunnerIds": [],
-      "leaderResultStatus": null,
+      "winnerRunnerIds": [
+        "5b944ba6-6943-486b-a559-c4303e0085c4"
+      ],
+      "leaderResultStatus": "other",
       "leaderFinishingPosition": null,
-      "leaderWon": null,
-      "finalSp": null,
-      "grossReturn": null,
-      "profitLoss": null,
-      "capturedPriceGrossReturn": null,
-      "capturedPriceProfitLoss": null,
-      "medianMarketPriceGrossReturn": null,
-      "medianMarketPriceProfitLoss": null,
-      "bestBookmakerPriceGrossReturn": null,
-      "bestBookmakerPriceProfitLoss": null,
-      "settledAt": null
+      "leaderWon": false,
+      "finalSp": 2.25,
+      "grossReturn": 0,
+      "profitLoss": -1,
+      "capturedPriceGrossReturn": 0,
+      "capturedPriceProfitLoss": -1,
+      "medianMarketPriceGrossReturn": 0,
+      "medianMarketPriceProfitLoss": -1,
+      "bestBookmakerPriceGrossReturn": 0,
+      "bestBookmakerPriceProfitLoss": -1,
+      "settledAt": "2026-11-05T13:52:07.003Z"
     },
     {
       "family": "jump",
@@ -254399,20 +254836,22 @@
       "tissueEarlyPriceSnapshot": null,
       "tissueT180PriceSnapshot": null,
       "tissueT60PriceSnapshot": null,
-      "winnerRunnerIds": [],
-      "leaderResultStatus": null,
-      "leaderFinishingPosition": null,
-      "leaderWon": null,
-      "finalSp": null,
-      "grossReturn": null,
-      "profitLoss": null,
-      "capturedPriceGrossReturn": null,
-      "capturedPriceProfitLoss": null,
-      "medianMarketPriceGrossReturn": null,
-      "medianMarketPriceProfitLoss": null,
-      "bestBookmakerPriceGrossReturn": null,
-      "bestBookmakerPriceProfitLoss": null,
-      "settledAt": null
+      "winnerRunnerIds": [
+        "0851b42e-96d5-4140-bea9-620e8a85e8aa"
+      ],
+      "leaderResultStatus": "finished",
+      "leaderFinishingPosition": 2,
+      "leaderWon": false,
+      "finalSp": 301,
+      "grossReturn": 0,
+      "profitLoss": -1,
+      "capturedPriceGrossReturn": 0,
+      "capturedPriceProfitLoss": -1,
+      "medianMarketPriceGrossReturn": 0,
+      "medianMarketPriceProfitLoss": -1,
+      "bestBookmakerPriceGrossReturn": 0,
+      "bestBookmakerPriceProfitLoss": -1,
+      "settledAt": "2026-11-05T13:52:07.003Z"
     },
     {
       "family": "jump",
@@ -254544,20 +254983,22 @@
       "tissueEarlyPriceSnapshot": null,
       "tissueT180PriceSnapshot": null,
       "tissueT60PriceSnapshot": null,
-      "winnerRunnerIds": [],
-      "leaderResultStatus": null,
-      "leaderFinishingPosition": null,
-      "leaderWon": null,
-      "finalSp": null,
-      "grossReturn": null,
-      "profitLoss": null,
-      "capturedPriceGrossReturn": null,
-      "capturedPriceProfitLoss": null,
-      "medianMarketPriceGrossReturn": null,
-      "medianMarketPriceProfitLoss": null,
-      "bestBookmakerPriceGrossReturn": null,
-      "bestBookmakerPriceProfitLoss": null,
-      "settledAt": null
+      "winnerRunnerIds": [
+        "d4729802-ea1f-453b-8c28-1500ec605079"
+      ],
+      "leaderResultStatus": "finished",
+      "leaderFinishingPosition": 7,
+      "leaderWon": false,
+      "finalSp": 10,
+      "grossReturn": 0,
+      "profitLoss": -1,
+      "capturedPriceGrossReturn": 0,
+      "capturedPriceProfitLoss": -1,
+      "medianMarketPriceGrossReturn": 0,
+      "medianMarketPriceProfitLoss": -1,
+      "bestBookmakerPriceGrossReturn": 0,
+      "bestBookmakerPriceProfitLoss": -1,
+      "settledAt": "2026-11-05T15:16:35.847Z"
     },
     {
       "family": "jump",
@@ -254573,7 +255014,7 @@
       "recordedPreRace": true,
       "captureMode": "live_sync",
       "settlementVersion": "canonical_settlement_v2",
-      "phase2ExclusionReason": null,
+      "phase2ExclusionReason": "non_runner",
       "leaderRunnerId": "64591406-e68a-4996-9d3c-e5a00efbc006",
       "leaderHorseId": "f723c510-ac62-4464-84f7-93bce3dac1e4",
       "leaderHorseName": "Dinoblue",
@@ -254689,11 +255130,13 @@
       "tissueEarlyPriceSnapshot": null,
       "tissueT180PriceSnapshot": null,
       "tissueT60PriceSnapshot": null,
-      "winnerRunnerIds": [],
-      "leaderResultStatus": null,
+      "winnerRunnerIds": [
+        "cb9c2a73-1b1b-494a-8a10-34c83d87a9b9"
+      ],
+      "leaderResultStatus": "non_runner",
       "leaderFinishingPosition": null,
-      "leaderWon": null,
-      "finalSp": null,
+      "leaderWon": false,
+      "finalSp": 1.083,
       "grossReturn": null,
       "profitLoss": null,
       "capturedPriceGrossReturn": null,
@@ -254702,7 +255145,7 @@
       "medianMarketPriceProfitLoss": null,
       "bestBookmakerPriceGrossReturn": null,
       "bestBookmakerPriceProfitLoss": null,
-      "settledAt": null
+      "settledAt": "2026-11-05T15:16:35.847Z"
     },
     {
       "family": "jump",
@@ -254803,7 +255246,44 @@
         "forecastPrice": "1/5",
         "forecastDecimalPrice": 1.2
       },
-      "t180PriceSnapshot": null,
+      "t180PriceSnapshot": {
+        "price": null,
+        "decimalPrice": 1.17,
+        "impliedProbability": 0.8547008547008548,
+        "capturedAt": "2026-11-05T11:52:36.558Z",
+        "minutesBeforeScheduledOff": 197.3907,
+        "ratingProbability": 0.189280868385346,
+        "ratingEdgePercentagePoints": -66.54199863155088,
+        "marketPriceBasisVersion": "median_bookmaker_v1",
+        "bookmakerQuoteCount": 3,
+        "bookmakerQuotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "1/6",
+            "decimalOdds": 1.17
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "1/6",
+            "decimalOdds": 1.17
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "1/6",
+            "decimalOdds": 1.17
+          }
+        ],
+        "medianBookmakerPriceDecimal": 1.17,
+        "medianBookmakerImpliedProbability": 0.8547008547008548,
+        "bestBookmakerPriceDecimal": 1.17,
+        "bestBookmakerPriceFractional": "1/6",
+        "bestBookmakerName": null,
+        "forecastPrice": "1/5",
+        "forecastDecimalPrice": 1.2
+      },
       "t60PriceSnapshot": null,
       "marketFavouriteRunnerIds": [
         "d7fb09a7-9aeb-4f42-bbd2-44a200ab60d8"
@@ -255124,20 +255604,22 @@
       "tissueEarlyPriceSnapshot": null,
       "tissueT180PriceSnapshot": null,
       "tissueT60PriceSnapshot": null,
-      "winnerRunnerIds": [],
-      "leaderResultStatus": null,
-      "leaderFinishingPosition": null,
-      "leaderWon": null,
-      "finalSp": null,
-      "grossReturn": null,
-      "profitLoss": null,
-      "capturedPriceGrossReturn": null,
-      "capturedPriceProfitLoss": null,
-      "medianMarketPriceGrossReturn": null,
-      "medianMarketPriceProfitLoss": null,
-      "bestBookmakerPriceGrossReturn": null,
-      "bestBookmakerPriceProfitLoss": null,
-      "settledAt": null
+      "winnerRunnerIds": [
+        "a3ee7e8d-0e5d-4457-94a9-fb2c594bf54e"
+      ],
+      "leaderResultStatus": "finished",
+      "leaderFinishingPosition": 3,
+      "leaderWon": false,
+      "finalSp": 4.5,
+      "grossReturn": 0,
+      "profitLoss": -1,
+      "capturedPriceGrossReturn": 0,
+      "capturedPriceProfitLoss": -1,
+      "medianMarketPriceGrossReturn": 0,
+      "medianMarketPriceProfitLoss": -1,
+      "bestBookmakerPriceGrossReturn": 0,
+      "bestBookmakerPriceProfitLoss": -1,
+      "settledAt": "2026-11-05T15:16:35.847Z"
     },
     {
       "family": "aw",
@@ -255238,7 +255720,44 @@
         "forecastPrice": "6/1",
         "forecastDecimalPrice": 7
       },
-      "t180PriceSnapshot": null,
+      "t180PriceSnapshot": {
+        "price": null,
+        "decimalPrice": 5,
+        "impliedProbability": 0.2,
+        "capturedAt": "2026-11-05T11:53:02.910Z",
+        "minutesBeforeScheduledOff": 179.9515,
+        "ratingProbability": 0.19831223628691982,
+        "ratingEdgePercentagePoints": -0.1687763713080187,
+        "marketPriceBasisVersion": "median_bookmaker_v1",
+        "bookmakerQuoteCount": 3,
+        "bookmakerQuotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "4/1",
+            "decimalOdds": 5
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "4/1",
+            "decimalOdds": 5
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "4/1",
+            "decimalOdds": 5
+          }
+        ],
+        "medianBookmakerPriceDecimal": 5,
+        "medianBookmakerImpliedProbability": 0.2,
+        "bestBookmakerPriceDecimal": 5,
+        "bestBookmakerPriceFractional": "4/1",
+        "bestBookmakerName": null,
+        "forecastPrice": "6/1",
+        "forecastDecimalPrice": 7
+      },
       "t60PriceSnapshot": null,
       "marketFavouriteRunnerIds": [
         "05a8c459-5e5c-4b54-953f-1b1889065440"
@@ -255269,20 +255788,22 @@
       "tissueEarlyPriceSnapshot": null,
       "tissueT180PriceSnapshot": null,
       "tissueT60PriceSnapshot": null,
-      "winnerRunnerIds": [],
-      "leaderResultStatus": null,
-      "leaderFinishingPosition": null,
-      "leaderWon": null,
-      "finalSp": null,
-      "grossReturn": null,
-      "profitLoss": null,
-      "capturedPriceGrossReturn": null,
-      "capturedPriceProfitLoss": null,
-      "medianMarketPriceGrossReturn": null,
-      "medianMarketPriceProfitLoss": null,
-      "bestBookmakerPriceGrossReturn": null,
-      "bestBookmakerPriceProfitLoss": null,
-      "settledAt": null
+      "winnerRunnerIds": [
+        "454207b8-c980-4cbd-a1cc-5612cda171be"
+      ],
+      "leaderResultStatus": "finished",
+      "leaderFinishingPosition": 2,
+      "leaderWon": false,
+      "finalSp": 5,
+      "grossReturn": 0,
+      "profitLoss": -1,
+      "capturedPriceGrossReturn": 0,
+      "capturedPriceProfitLoss": -1,
+      "medianMarketPriceGrossReturn": 0,
+      "medianMarketPriceProfitLoss": -1,
+      "bestBookmakerPriceGrossReturn": 0,
+      "bestBookmakerPriceProfitLoss": -1,
+      "settledAt": "2026-11-05T15:16:35.847Z"
     },
     {
       "family": "aw",
@@ -256431,20 +256952,22 @@
       "tissueEarlyPriceSnapshot": null,
       "tissueT180PriceSnapshot": null,
       "tissueT60PriceSnapshot": null,
-      "winnerRunnerIds": [],
-      "leaderResultStatus": null,
-      "leaderFinishingPosition": null,
-      "leaderWon": null,
-      "finalSp": null,
-      "grossReturn": null,
-      "profitLoss": null,
-      "capturedPriceGrossReturn": null,
-      "capturedPriceProfitLoss": null,
-      "medianMarketPriceGrossReturn": null,
-      "medianMarketPriceProfitLoss": null,
-      "bestBookmakerPriceGrossReturn": null,
-      "bestBookmakerPriceProfitLoss": null,
-      "settledAt": null
+      "winnerRunnerIds": [
+        "865aca9a-3b32-4285-9e30-1a427b690ae1"
+      ],
+      "leaderResultStatus": "finished",
+      "leaderFinishingPosition": 6,
+      "leaderWon": false,
+      "finalSp": 2.75,
+      "grossReturn": 0,
+      "profitLoss": -1,
+      "capturedPriceGrossReturn": 0,
+      "capturedPriceProfitLoss": -1,
+      "medianMarketPriceGrossReturn": 0,
+      "medianMarketPriceProfitLoss": -1,
+      "bestBookmakerPriceGrossReturn": 0,
+      "bestBookmakerPriceProfitLoss": -1,
+      "settledAt": "2026-11-05T15:16:35.847Z"
     },
     {
       "family": "aw",
@@ -256460,7 +256983,7 @@
       "recordedPreRace": true,
       "captureMode": "live_sync",
       "settlementVersion": "canonical_settlement_v2",
-      "phase2ExclusionReason": null,
+      "phase2ExclusionReason": "non_runner",
       "leaderRunnerId": "ec91a910-9670-409a-888d-bc7c7a254f07",
       "leaderHorseId": "e76dbe3f-2a10-44e2-a016-a42f24b0e77b",
       "leaderHorseName": "Taskheer",
@@ -256576,11 +257099,13 @@
       "tissueEarlyPriceSnapshot": null,
       "tissueT180PriceSnapshot": null,
       "tissueT60PriceSnapshot": null,
-      "winnerRunnerIds": [],
-      "leaderResultStatus": null,
+      "winnerRunnerIds": [
+        "834c727e-f023-4103-b8cd-be1930583152"
+      ],
+      "leaderResultStatus": "non_runner",
       "leaderFinishingPosition": null,
-      "leaderWon": null,
-      "finalSp": null,
+      "leaderWon": false,
+      "finalSp": 8,
       "grossReturn": null,
       "profitLoss": null,
       "capturedPriceGrossReturn": null,
@@ -256589,7 +257114,7 @@
       "medianMarketPriceProfitLoss": null,
       "bestBookmakerPriceGrossReturn": null,
       "bestBookmakerPriceProfitLoss": null,
-      "settledAt": null
+      "settledAt": "2026-11-05T15:16:35.847Z"
     },
     {
       "family": "aw",
@@ -256690,7 +257215,44 @@
         "forecastPrice": "5/1",
         "forecastDecimalPrice": 6
       },
-      "t180PriceSnapshot": null,
+      "t180PriceSnapshot": {
+        "price": null,
+        "decimalPrice": 4.5,
+        "impliedProbability": 0.2222222222222222,
+        "capturedAt": "2026-11-05T11:53:02.910Z",
+        "minutesBeforeScheduledOff": 191.9515,
+        "ratingProbability": 0.18901660280970625,
+        "ratingEdgePercentagePoints": -3.320561941251596,
+        "marketPriceBasisVersion": "median_bookmaker_v1",
+        "bookmakerQuoteCount": 3,
+        "bookmakerQuotes": [
+          {
+            "bookmakerId": 4,
+            "bookmakerName": "Betfair Sportsbook",
+            "fractionalOdds": "7/2",
+            "decimalOdds": 4.5
+          },
+          {
+            "bookmakerId": 17,
+            "bookmakerName": "Sky Bet v2",
+            "fractionalOdds": "7/2",
+            "decimalOdds": 4.5
+          },
+          {
+            "bookmakerId": 6,
+            "bookmakerName": "Paddy Power",
+            "fractionalOdds": "4/1",
+            "decimalOdds": 5
+          }
+        ],
+        "medianBookmakerPriceDecimal": 4.5,
+        "medianBookmakerImpliedProbability": 0.2222222222222222,
+        "bestBookmakerPriceDecimal": 5,
+        "bestBookmakerPriceFractional": "4/1",
+        "bestBookmakerName": "Paddy Power",
+        "forecastPrice": "5/1",
+        "forecastDecimalPrice": 6
+      },
       "t60PriceSnapshot": null,
       "marketFavouriteRunnerIds": [
         "e4e0cfc9-4f18-4b12-a422-08015a553f24",
@@ -256723,20 +257285,22 @@
       "tissueEarlyPriceSnapshot": null,
       "tissueT180PriceSnapshot": null,
       "tissueT60PriceSnapshot": null,
-      "winnerRunnerIds": [],
-      "leaderResultStatus": null,
-      "leaderFinishingPosition": null,
-      "leaderWon": null,
-      "finalSp": null,
-      "grossReturn": null,
-      "profitLoss": null,
-      "capturedPriceGrossReturn": null,
-      "capturedPriceProfitLoss": null,
-      "medianMarketPriceGrossReturn": null,
-      "medianMarketPriceProfitLoss": null,
-      "bestBookmakerPriceGrossReturn": null,
-      "bestBookmakerPriceProfitLoss": null,
-      "settledAt": null
+      "winnerRunnerIds": [
+        "53e947c5-323a-45a4-9859-37e010e05ada"
+      ],
+      "leaderResultStatus": "finished",
+      "leaderFinishingPosition": 1,
+      "leaderWon": true,
+      "finalSp": 5.5,
+      "grossReturn": 5.5,
+      "profitLoss": 4.5,
+      "capturedPriceGrossReturn": 4.5,
+      "capturedPriceProfitLoss": 3.5,
+      "medianMarketPriceGrossReturn": 4.5,
+      "medianMarketPriceProfitLoss": 3.5,
+      "bestBookmakerPriceGrossReturn": 5,
+      "bestBookmakerPriceProfitLoss": 4,
+      "settledAt": "2026-11-05T15:16:35.847Z"
     },
     {
       "family": "aw",
