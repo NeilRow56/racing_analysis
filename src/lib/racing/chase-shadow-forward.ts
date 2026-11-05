@@ -1,3 +1,4 @@
+import { retiredTissueCaptureAllowed } from "./tissue-generation-config";
 import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { raceSoftmax, score } from "../../../scripts/diagnose-independent-tissue-feasibility";
@@ -42,7 +43,7 @@ export const emptyChaseShadow = (): ChaseShadowData => ({ version: "chase_shadow
 /** Accept only a newly created primary book, while still at its capture point. Never reconstruct an old book. */
 export function buildChaseShadow(current: JumpTissueRace, race: TodayRace, contexts: ReadonlyMap<string, ChaseContext>, model: ChaseShadowModel, now = new Date()): ChaseShadowRace | null {
   const at = Date.parse(current.recordedAt), off = race.raceDateTime?.getTime() ?? NaN, frozenOff = Date.parse(current.scheduledOffAt);
-  if (current.subtype !== "Chase" || current.raceId !== race.raceId || !current.recordedPreRace || current.settledAt !== null ||
+  if (!retiredTissueCaptureAllowed(current.recordedAt) || current.subtype !== "Chase" || current.raceId !== race.raceId || !current.recordedPreRace || current.settledAt !== null ||
     !Number.isFinite(at) || !Number.isFinite(off) || !Number.isFinite(frozenOff) || !Number.isFinite(now.getTime()) || at < Date.parse(CHASE_SHADOW_EPOCH.declaredAt) ||
     at > now.getTime() || now.getTime() - at > 60_000 || now.getTime() >= off || now.getTime() >= frozenOff ||
     race.winningTime || race.runners.some(r => r.finishingPosition !== null || (r.resultStatus !== null && r.resultStatus !== "non_runner"))) return null;
@@ -73,7 +74,7 @@ export function buildChaseShadow(current: JumpTissueRace, race: TodayRace, conte
 export function captureChaseShadow(data: ChaseShadowData, additions: ChaseShadowRace[]): ChaseShadowData {
   const known = new Set(data.races.map(r => r.raceId));
   const accepted = additions.filter(r => {
-    if (known.has(r.raceId) || Date.parse(r.capturedAt) < Date.parse(data.epoch.declaredAt)) return false;
+    if (!retiredTissueCaptureAllowed(r.capturedAt) || known.has(r.raceId) || Date.parse(r.capturedAt) < Date.parse(data.epoch.declaredAt)) return false;
     known.add(r.raceId); return true;
   });
   return accepted.length ? { ...data, races: [...data.races, ...accepted] } : data;

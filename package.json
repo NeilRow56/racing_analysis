@@ -3,6 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "today:refresh": "bun --env-file=.env.local run scripts/refresh-today-racecards.ts",
+    "tissue-generation:sync": "bun --env-file=.env.local run scripts/track-tissue-generation.ts sync",
+    "tissue-generation:results": "bun --env-file=.env.local run scripts/track-tissue-generation.ts results",
+    "tissue-generation:summary": "bun run scripts/track-tissue-generation.ts summary",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",

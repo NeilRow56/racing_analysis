@@ -1,4 +1,5 @@
 import { loadOrSpeed, mutateOrSpeed, pendingOrSpeedRaceIds, settleOrSpeed } from "@/lib/racing/or-speed-forward";
+import { loadTissueGeneration, mutateTissueGeneration, settleTissueGeneration } from "@/lib/racing/tissue-generation-forward";
 import { loadChaseShadow, mutateChaseShadow, settleChaseShadow } from "@/lib/racing/chase-shadow-forward";
 import { pathToFileURL } from "node:url";
 import { resolve } from "node:path";
@@ -39,6 +40,7 @@ export async function main(args: string[]) {
       ...await pendingFromMutationSources(),
     ])];
     const races = await loadRacesByIds(connection.db, raceIds);
+    await mutateTissueGeneration(latest => settleTissueGeneration(latest, races, now));
     let settledOrSpeed = 0;
     await mutateOrSpeed(latest => {
       const next = settleOrSpeed(latest, races, now);
@@ -167,6 +169,7 @@ async function pendingFromMutationSources() {
     loadModelDisagreementForward(),
   ]);
   return [
+    ...(await loadTissueGeneration()).races.filter(r => r.runners.some(x => x.outcome === null)).map(r => r.raceId),
     ...(await loadChaseShadow()).races.filter(race => race.current.settledAt === null).map(race => race.raceId),
     ...(await loadHurdlePair()).races.filter((race) => race.settledAt === null).map((race) => race.raceId),
     ...(await loadChasePair()).races.filter((race) => race.settledAt === null).map((race) => race.raceId),

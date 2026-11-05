@@ -6,6 +6,7 @@ import { filterValueRaces } from "@/lib/racing/tissue-value-view";
 import { TISSUE_VALUE_FAMILIES, type TissueValueFamilyFilter } from "@/lib/racing/tissue-value-metrics";
 import { summarizeValueBands, summarizeValueRunners } from "@/lib/racing/tissue-value-metrics";
 import { TissueValueRaceTables } from "./tissue-value-race-tables";
+import { ValueRankV2Monitoring } from "./value-rank-v2-monitoring";
 const pct = (value: number | null) => value === null ? "—" : `${(value * 100).toFixed(2)}%`;
 const number = (value: number | null) => value === null ? "—" : value.toFixed(2);
 
@@ -17,7 +18,7 @@ export function TissueValueMonitoringClient({ cohorts, date }: { cohorts: ValueC
     <h3 id="tissue-value-monitoring-heading" className="text-base font-semibold">Tissue Value Monitoring</h3>
     <p className="mt-1 text-sm text-slate-600">All eligible Tissue runners · separate family/model cohorts · no historical backfill.</p>
     <p className="mt-2 text-sm"><strong>Tissue rank</strong> orders likelihood of winning. <strong>Value rank</strong> orders model-vs-market apparent value by expected return at the captured price.</p>
-    <p className="mt-1 text-xs text-slate-500">Large disagreements are highlighted for review, whether the runner wins or loses. No runner is suppressed. These estimates are descriptive research, with no betting recommendation or proven superior value metric.</p>
+    <p className="mt-1 text-xs text-slate-500">Large disagreements are highlighted for review, whether the runner wins or loses. All raw scores and ranks remain visible; active Value 1 V2 applies its frozen experience gate separately. These estimates are descriptive research, with no betting recommendation or proven superior value metric.</p>
     <div className="mt-3 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">{cohorts.map(cohort => {
       const totals = summarizeValueRunners(cohort.races.flatMap(r => r.runners));
       return <article key={cohort.version} className="border border-slate-200 bg-white p-3 text-xs">
@@ -43,6 +44,7 @@ export function TissueValueMonitoringClient({ cohorts, date }: { cohorts: ValueC
       <p className="mt-2 text-xs text-slate-500">Runners in these tables are settled starters only. Pending: {summary.pending}; NR: {summary.nonRunners}; void: {summary.voids}. NR/void are excluded from stakes and expected-winner sums. Frozen probabilities are retained without hindsight renormalization after withdrawals. Dead-heat winners each count as a winner; canonical dead-heat deductions apply to captured-price P/L.</p>
     </details>
     <p className="mt-3 text-xs text-slate-500">Market % is normalized across the complete captured median-bookmaker field. A positive normalized edge need not imply a positive expected return at the quoted price. Value and market ties share competition ranks; Tissue ranks retain each model’s native tie policy. Runner IDs order tied rows. Alternative edge and ratio ranks appear on the Value rank cell tooltip.</p>
+    <ValueRankV2Monitoring races={races} />
     <TissueValueRaceTables races={races} date={date} />
   </section>;
 }

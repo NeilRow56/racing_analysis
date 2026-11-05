@@ -1,6 +1,7 @@
 import { spawn } from "node:child_process";
 import { pathToFileURL } from "node:url";
 import { resolve } from "node:path";
+import { tissueGenerationActive } from "../src/lib/racing/tissue-generation-config";
 import { checkStoredRacecards, isRacecardAcquisitionFailure, type StoredRacecardStatus } from "./research-racecard-fallback";
 
 type WorkflowMode = "night" | "morning" | "live" | "late" | "after";
@@ -55,7 +56,17 @@ export function parseArgs(args: string[], now = new Date()): { mode: WorkflowMod
   return { mode: modeValue, date };
 }
 
-export function workflowSteps(mode: WorkflowMode, date: string): WorkflowStep[] {
+export function workflowSteps(mode: WorkflowMode, date: string, now = new Date()): WorkflowStep[] {
+  const steps = legacyWorkflowSteps(mode, date);
+  if (!tissueGenerationActive(now) || mode === "night") return steps;
+  const retired = new Set(["rank-one:sync", "tissue:sync", "jump-tissue:sync", "aw-tissue:sync", "hurdle-recency:sync",
+    "hurdle-pair:sync", "chase-pair:sync", "aw-pair:sync", "sync:aw-shadow", "aw-pair:compact", "aw-pair:challenger",
+    "hurdle-pair:today", "chase-pair:today", "aw-pair:results", "hurdle-pair:results", "chase-pair:results"]);
+  const retained = steps.filter(s => !retired.has(s.script));
+  // Live/after already settle the new ledger through research:settle. Do not recapture.
+  return [...retained, { label: "Clean Tissue generation", script: mode === "morning" || mode === "late" ? "tissue-generation:sync" : "tissue-generation:summary", args: [date] }];
+}
+function legacyWorkflowSteps(mode: WorkflowMode, date: string): WorkflowStep[] {
   if (mode === "night") {
     return [
       { label: "Importing first next-day racecards", script: "sl:import-racecards", args: [date, "--request-delay-seconds", "2", "--skip-existing-racecards"] },
@@ -133,11 +144,11 @@ export function workflowSteps(mode: WorkflowMode, date: string): WorkflowStep[] 
 }
 
 export async function runWorkflow(
-  options: { mode: WorkflowMode; date: string },
+  options: { mode: WorkflowMode; date: string; now?: Date },
   runner: ChildRunner = runBunScript,
   cardChecker = checkStoredRacecards,
 ): Promise<WorkflowResult> {
-  const steps = workflowSteps(options.mode, options.date);
+  const steps = workflowSteps(options.mode, options.date, options.now);
   let existingCards: StoredRacecardStatus | undefined;
 
   console.log(`Research ${options.mode} - ${options.date}`);

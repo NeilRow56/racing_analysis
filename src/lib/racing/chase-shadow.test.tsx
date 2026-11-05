@@ -175,7 +175,8 @@ test("dashboard renders shadow-only labels, weakness views, price counts and emp
 });
 test("shadow integration supplies display-only badges to Today and never changes Value", async () => {
   const today = await readFile("src/app/racing/today/page.tsx", "utf8");
-  assert.match(today, /loadChaseShadow\(\)\.catch/);
+  assert.match(today, /newTissueForDate \? Promise\.resolve/);
+  assert.match(today, /: loadChaseShadow\(\)\)\.catch/);
   assert.doesNotMatch(today, /buildChaseShadow|raceSoftmax|score\(/);
   const sync = await readFile("src/lib/racing/jump-tissue-sync.ts", "utf8");
   assert.match(sync, /buildChaseShadow\(book, race/);

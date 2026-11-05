@@ -197,7 +197,7 @@ test("workflow adds independent fresh capture and settlement without changing Ra
     const steps = workflowSteps(mode, date); assert.ok(steps.some(s => s.script === "tissue-value:results")); assert.ok(!steps.some(s => s.script === "tissue-value:sync"));
   }
   assert.ok(!workflowSteps("night", date).some(s => s.script.startsWith("tissue-value:")));
-  assert.equal(workflowSteps("morning", date).filter(s => s.script === "rank-one:sync").length, 1);
+  assert.equal(workflowSteps("morning", date, new Date("2026-10-23T08:00:00Z")).filter(s => s.script === "rank-one:sync").length, 1);
 });
 test("Research section labels both ranks, exposes sorting and calibration, retains losing disagreements", () => {
   const data = settleTurfValue(captured(), new Map([["race", result()]]), after);

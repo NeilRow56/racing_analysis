@@ -1,3 +1,4 @@
+import { retiredTissueCaptureAllowed } from "./tissue-generation-config";
 import { createHash } from "node:crypto";
 import { mkdir, readFile, readdir, rename, writeFile } from "node:fs/promises";
 import { join } from "node:path";
@@ -17,7 +18,7 @@ export async function freezeChaseSpeedState(input: {
   featureNames: readonly string[]; runners: readonly { runnerId: string; modelInputs?: readonly number[] | null; marketRank?: number; modelMarketRatio?: number; rank?: number | null; tissueRank?: number | null }[];
 }, directory = CHASE_SPEED_SNAPSHOT_DIRECTORY, now = new Date()) {
   const at = Date.parse(input.capturedAt);
-  if (classifyJumpRaceSubtype(input.race) !== "chase" || !Number.isFinite(now.getTime()) || !Number.isFinite(at) || at < Date.parse(CHASE_SPEED_RELIABILITY_EPOCH) || !input.race.raceDateTime || now >= input.race.raceDateTime || at > now.getTime() || now.getTime() - at > 60_000) return;
+  if (!retiredTissueCaptureAllowed(input.capturedAt) || classifyJumpRaceSubtype(input.race) !== "chase" || !Number.isFinite(now.getTime()) || !Number.isFinite(at) || at < Date.parse(CHASE_SPEED_RELIABILITY_EPOCH) || !input.race.raceDateTime || now >= input.race.raceDateTime || at > now.getTime() || now.getTime() - at > 60_000) return;
   const value = (r: typeof input.runners[number], name: string) => {
     const i = input.featureNames.indexOf(name), missing = input.featureNames.indexOf(`${name}_missing`);
     return i < 0 || r.modelInputs?.length !== input.featureNames.length || (missing >= 0 && r.modelInputs[missing] !== 0) || !Number.isFinite(r.modelInputs[i]) ? null : r.modelInputs[i];

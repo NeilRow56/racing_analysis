@@ -21,6 +21,7 @@ export type NonRedTissueDailyRow = {
 export function isTissueDailyWatchCandidate(candidate: {
   tissueRank?: number | null;
   valueRank?: number | null;
+  activeValue1?: boolean;
   bestL3SpeedRank?: number | null;
   capturedPrice?: number | null;
 }): boolean {
@@ -38,6 +39,7 @@ export function buildNonRedTissueDailyList(meetings: readonly TodayMeeting[]): N
     return race.runners.filter(({ tissueValue }) =>
       isTissueDailyWatchCandidate({ tissueRank: tissueValue?.tissueRank,
         valueRank: tissueValue?.valueRank,
+        activeValue1: tissueValue?.activeValue1,
         bestL3SpeedRank: tissueValue?.bestL3SpeedRank, capturedPrice: tissueValue?.marketPrice }),
     ).map(runner => ({
       raceId: race.raceId,

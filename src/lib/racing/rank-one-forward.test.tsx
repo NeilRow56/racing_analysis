@@ -141,7 +141,7 @@ test("morning captures; live/after never invoke capture even with completed hist
   await runRankOneCycle({ ...input, mode: "morning", raceDate: "2025-01-01" });
   assert.equal(calls, 1);
   for (const mode of ["morning", "live", "after"] as const) {
-    const steps = workflowSteps(mode, date);
+    const steps = workflowSteps(mode, date, now);
     assert.equal(steps.some(s => s.script === "rank-one:sync"), mode === "morning");
     assert.equal(steps.some(s => s.script === "rank-one:results"), mode !== "morning");
   }

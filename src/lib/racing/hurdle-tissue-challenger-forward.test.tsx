@@ -210,9 +210,9 @@ test("14/1 boundary is reporting context only, with no VALUE or capture filter",
 });
 
 test("morning captures after Jump sync; live and after only report or settle", () => {
-  const morning = workflowSteps("morning", date).map((step) => step.script);
+  const morning = workflowSteps("morning", date, now).map((step) => step.script);
   assert.ok(morning.indexOf("hurdle-pair:sync") > morning.indexOf("jump-tissue:sync"));
-  for (const mode of ["live", "after", "late", "night"] as const) assert.ok(!workflowSteps(mode, date).some((step) => step.script === "hurdle-pair:sync"));
+  for (const mode of ["live", "after", "late", "night"] as const) assert.ok(!workflowSteps(mode, date, now).some((step) => step.script === "hurdle-pair:sync"));
 });
 
 test("secondary UI renders agreement compactly, disagreement horses and settled results", () => {

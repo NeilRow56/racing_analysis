@@ -22,6 +22,7 @@ export const BACKUP_TRACKERS = [
   ["forward-value-v1.json", "src/lib/racing/forward-value.ts"],
   ["model-disagreement-forward-v1.json", "src/lib/racing/model-disagreement-forward.ts"],
   ["rank-one-forward-v1.json", "src/lib/racing/rank-one-forward.ts"],
+  ["tissue-generation-forward-2026-11.json", "src/lib/racing/tissue-generation-forward.ts"],
   ["hurdle-recency-completion-forward-v1.json", "src/lib/racing/hurdle-recency-forward.ts"],
   ["tissue-forward-v3.json", "src/lib/racing/tissue-forward.ts"],
   ["aw-tissue-forward-v2.json", "src/lib/racing/aw-tissue-v2.ts"],

@@ -140,10 +140,10 @@ test("canonical settlement, summary disagreement and compact UI use the Chase ch
 });
 
 test("morning captures Chase pairs after Jump sync; live and after only report or settle", () => {
-  const morning = workflowSteps("morning", date).map((step) => step.script);
+  const morning = workflowSteps("morning", date, now).map((step) => step.script);
   assert.ok(morning.indexOf("chase-pair:sync") > morning.indexOf("jump-tissue:sync"));
-  assert.ok(!workflowSteps("live", date).some((step) => step.script === "chase-pair:sync"));
-  assert.ok(!workflowSteps("after", date).some((step) => step.script === "chase-pair:sync"));
-  assert.ok(workflowSteps("live", date).some((step) => step.script === "chase-pair:today"));
-  assert.ok(workflowSteps("after", date).some((step) => step.script === "chase-pair:results"));
+  assert.ok(!workflowSteps("live", date, now).some((step) => step.script === "chase-pair:sync"));
+  assert.ok(!workflowSteps("after", date, now).some((step) => step.script === "chase-pair:sync"));
+  assert.ok(workflowSteps("live", date, now).some((step) => step.script === "chase-pair:today"));
+  assert.ok(workflowSteps("after", date, now).some((step) => step.script === "chase-pair:results"));
 });

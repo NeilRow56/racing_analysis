@@ -1,3 +1,4 @@
+import { retiredTissueCaptureAllowed } from "./tissue-generation-config";
 import type { ProspectiveGoing } from "./prospective-going";
 import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
@@ -142,7 +143,7 @@ export function captureAwTissueRaces(data: AwTissueForwardData, races: AwTissueR
   const existing = new Set(data.races.map((r) => r.raceId));
   const additions: AwTissueRace[] = [];
   for (const race of races) {
-    if (existing.has(race.raceId) || !race.recordedPreRace || race.recordedAt < AW_TISSUE_IMPLEMENTED_AT || race.recordedAt >= race.scheduledOffAt || race.settledAt !== null) continue;
+    if (!retiredTissueCaptureAllowed(race.recordedAt) || existing.has(race.raceId) || !race.recordedPreRace || race.recordedAt < AW_TISSUE_IMPLEMENTED_AT || race.recordedAt >= race.scheduledOffAt || race.settledAt !== null) continue;
     existing.add(race.raceId); additions.push(race);
   }
   return additions.length ? { ...data, races: [...data.races, ...additions] } : data;

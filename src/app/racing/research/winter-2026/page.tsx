@@ -9,5 +9,6 @@ export const dynamic = "force-dynamic";
 
 export default async function WinterResearchPage() {
   const [{ summary, quarantined }, shadow] = await Promise.all([loadWinterResearch(), loadChaseShadow(), loadChaseShadowModel()]);
-  return <WinterResearchDashboard summary={summary} quarantined={quarantined.length} shadowPanel={<ChaseShadowPanel summary={summarizeChaseShadow(shadow)} />} />;
+  return <><aside className="border-b border-amber-300 bg-amber-50 p-4 text-sm"><strong>ARCHIVED TISSUE RESEARCH</strong> · Historical observations and pending settlements only. New captures are retired; the clean active Tissue monitor is on <a className="underline" href="/racing/research/forward-value">Racing Research</a>.</aside>
+    <WinterResearchDashboard summary={summary} quarantined={quarantined.length} shadowPanel={<ChaseShadowPanel summary={summarizeChaseShadow(shadow)} />} /></>;
 }

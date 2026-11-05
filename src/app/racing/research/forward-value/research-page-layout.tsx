@@ -16,7 +16,7 @@ export function ResearchPageLayout({ date, active, secondary, children }: {
           <p className="mt-2 text-sm text-slate-500">Current prospective research first; previous Tissue and model experiments are retained below for reference.</p>
         </div>
         <nav aria-label="Racing Research" className="flex flex-wrap gap-2 text-sm font-semibold">
-          <Link className="border border-slate-300 bg-white px-3 py-2 text-slate-700 hover:border-emerald-400 hover:text-emerald-800" href="/racing/research/winter-2026">Winter 2026/27</Link>
+          <Link className="border border-slate-300 bg-white px-3 py-2 text-slate-700 hover:border-emerald-400 hover:text-emerald-800" href="/racing/research/winter-2026">Tissue archive</Link>
           <time className="self-center px-2 text-xs font-normal tabular-nums text-slate-500" dateTime={date}>{date}</time>
           <a className="px-3 py-2 text-slate-700 hover:text-emerald-800" href="/racing/research/forward-value">Refresh</a>
           <Link className="border border-slate-300 bg-white px-3 py-2 text-slate-700 hover:border-emerald-400 hover:text-emerald-800" href="/racing/research">Research Filters</Link>
@@ -33,7 +33,7 @@ export function ResearchPageLayout({ date, active, secondary, children }: {
       <details id="secondary-monitoring" className="mt-7 border-t border-slate-200 py-4">
         <summary className="cursor-pointer">
           <h2 className="inline text-sm font-semibold">SECONDARY MONITORING</h2>
-          <span className="ml-2 text-xs text-slate-500">Rank 1 Monitoring · Today&apos;s Rating - Lighter Weight</span>
+          <span className="ml-2 text-xs text-slate-500">Today&apos;s Rating - Lighter Weight · Independent rating research</span>
         </summary>
         {secondary}
       </details>

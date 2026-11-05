@@ -38,6 +38,7 @@ export function buildProspectiveTissueSources(input: {
   const quarantined: Array<{ family: string; sourceId: string; raceId: string; reason: string }> = [];
   const unresolvedResults: string[] = [];
   const results = new Map<string, ValueOutcome | null>();
+  const captureRows = new Set<string>();
   for (const { config, data } of input.cohorts) {
     if (!config.probabilityAvailable) continue;
     for (const race of data.races) {
@@ -45,8 +46,14 @@ export function buildProspectiveTissueSources(input: {
       const speedRanks = frozenBestL3SpeedRanks(race.family, race.featureNames, race.runners);
       for (const runner of race.runners) {
         const key = `${race.family}|${race.raceId}|${runner.runnerId}`;
-        if (results.has(key)) throw new Error("Duplicate prospective Tissue result evidence");
-        results.set(key, runner.outcome);
+        const captureKey = `${key}|${race.capturedAt}`;
+        if (captureRows.has(captureKey)) throw new Error("Duplicate prospective Tissue result evidence");
+        captureRows.add(captureKey);
+        const previous = results.get(key);
+        if (previous && runner.outcome && ["finishPosition", "resultStatus", "winner", "deadHeatDivisor"].some(field =>
+          previous[field as keyof ValueOutcome] !== runner.outcome![field as keyof ValueOutcome])) throw new Error("Conflicting prospective Tissue result evidence");
+        // Multiple price captures share canonical result evidence, never captured-price returns.
+        if (!previous) results.set(key, runner.outcome);
         priceObservations.push({ family: race.family, tissueRank: runner.tissueRank, probability: runner.probability,
           runnerId: runner.runnerId, raceId: race.raceId, capturedAt: race.capturedAt,
           inputReliability: getTissueInputReliability({ family: race.family, featureNames: race.featureNames, modelInputs: runner.modelInputs }),

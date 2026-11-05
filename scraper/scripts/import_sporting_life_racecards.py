@@ -7,8 +7,9 @@ import sys
 import time
 from collections import Counter
 from dataclasses import dataclass
-from datetime import date
+from datetime import date, datetime, timezone
 from pathlib import Path
+from zoneinfo import ZoneInfo
 from typing import Any, Callable, TypeVar
 
 import psycopg
@@ -36,12 +37,14 @@ from sporting_life.importing import (  # noqa: E402
     import_racecard,
     import_racecards_index,
     write_raw_payload,
+    parse_race_datetime,
 )
 
 
 T = TypeVar("T")
 ACCESS_CONTROL_STATUS_CODES = {403, 406, 429}
 TRANSIENT_RETRY_ATTEMPTS = 3
+PRE_RACE_STAGES = {"DORMANT", "PRE_RACE", "GOINGDOWN", "GOINGBEHIND", "ATTHEPOST"}
 
 
 @dataclass
@@ -54,6 +57,7 @@ class RacecardImportResult:
     raw_files: int
     totals: Counter[str]
     elapsed_seconds: float
+    preserved_off: int = 0
 
 
 def main() -> None:
@@ -77,6 +81,11 @@ def main() -> None:
         action="store_true",
         help=argparse.SUPPRESS,
     )
+    parser.add_argument(
+        "--force-refresh",
+        action="store_true",
+        help="Re-fetch TODAY's future racecards, preserving already-off races.",
+    )
     args = parser.parse_args()
 
     load_dotenv(REPO_ROOT / ".env.local")
@@ -88,6 +97,7 @@ def main() -> None:
         race_date=args.race_date,
         database_url=database_url,
         request_delay_seconds=args.request_delay_seconds,
+        force_refresh=args.force_refresh,
         skip_existing_racecards=args.skip_existing_racecards
         and not args.refresh_existing_racecards,
     )
@@ -103,9 +113,13 @@ def import_sporting_life_racecards(
     skip_completed_results: bool = True,
     refresh_existing_racecards: bool | None = None,
     client: TextClient | None = None,
+    force_refresh: bool = False,
+    now: Callable[[], datetime] = lambda: datetime.now(timezone.utc),
 ) -> RacecardImportResult:
     started_at = time.monotonic()
-    if refresh_existing_racecards is True:
+    if force_refresh and race_date != now().astimezone(ZoneInfo("Europe/London")).date():
+        raise ValueError("--force-refresh is restricted to TODAY in Europe/London; no backfill")
+    if force_refresh or refresh_existing_racecards is True:
         skip_existing_racecards = False
     delay = request_delay_seconds if request_delay_seconds is not None else 2.0
     client = client or SportingLifeClient(request_delay_seconds=delay)
@@ -157,6 +171,7 @@ def import_sporting_life_racecards(
     skipped_existing = 0
     skipped_completed_results = 0
     raw_files = 1
+    preserved_off = 0
 
     with psycopg.connect(database_url) as connection:
         with connection.cursor() as cursor:
@@ -181,6 +196,12 @@ def import_sporting_life_racecards(
             )
 
         for link in links:
+            if force_refresh:
+                scheduled_off = parse_race_datetime(link.race_date, link.race_time)
+                if scheduled_off is None or now() >= scheduled_off or link.race_stage not in PRE_RACE_STAGES:
+                    preserved_off += 1
+                    print(f"RACECARD_PRESERVED_OFF race_id={link.race_id}", flush=True)
+                    continue
             with connection.cursor() as cursor:
                 if skip_completed_results and full_result_source_import_exists(
                     cursor,
@@ -241,6 +262,10 @@ def import_sporting_life_racecards(
                     f"course={link.course_name!r} time={link.race_time} "
                     f"race_id={link.race_id} url={link.url}"
                 )
+            if force_refresh and not refreshable_prerace_summary(race_summary, now()):
+                preserved_off += 1
+                print(f"RACECARD_PRESERVED_OFF race_id={link.race_id}", flush=True)
+                continue
             write_raw_payload(
                 raw_dir=RAW_OUTPUT_DIR,
                 race_date=target_race_date,
@@ -251,6 +276,10 @@ def import_sporting_life_racecards(
             )
             raw_files += 1
 
+            # Check again immediately before the canonical upsert after any fetch delay.
+            if force_refresh and not refreshable_prerace_summary(race_summary, now()):
+                preserved_off += 1
+                continue
             with connection.cursor() as cursor:
                 counts = import_racecard(
                     cursor,
@@ -276,6 +305,17 @@ def import_sporting_life_racecards(
         raw_files=raw_files,
         totals=totals,
         elapsed_seconds=time.monotonic() - started_at,
+        preserved_off=preserved_off,
+    )
+
+
+def refreshable_prerace_summary(summary: dict[str, Any], now: datetime) -> bool:
+    off = parse_race_datetime(summary["date"], summary.get("time"))
+    # Unknown source stages fail closed during an explicit current capture.
+    return (
+        off is not None
+        and now < off
+        and summary.get("race_stage") in PRE_RACE_STAGES
     )
 
 
@@ -391,6 +431,7 @@ def print_import_result(result: RacecardImportResult) -> None:
     print(f"IMPORTED_RACECARDS={len(result.imported_links)}")
     print(f"SKIPPED_EXISTING_RACECARDS={result.skipped_existing}")
     print(f"SKIPPED_COMPLETED_RESULTS={result.skipped_completed_results}")
+    print(f"ALREADY_OFF_RACES_PRESERVED={result.preserved_off + result.skipped_completed_results}")
     print(f"RAW_FILES={result.raw_files}")
     print(
         "UPSERT_ATTEMPTS "

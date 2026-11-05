@@ -1,3 +1,4 @@
+import { retiredTissueCaptureAllowed } from "./tissue-generation-config";
 import { captureProspectiveGoing, type ProspectiveGoing } from "./prospective-going";
 import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
@@ -183,7 +184,7 @@ export function buildRankOneObservations(input: {
   models: RankOneModels;
 }): RankOneObservation[] {
   const { capturedAt: now, raceDate, models } = input;
-  if (!Number.isFinite(now.getTime()) || now.toISOString() < RANK_ONE_CONTRACT_EFFECTIVE_AT || raceDate !== getLocalRacingDate(now))
+  if (!Number.isFinite(now.getTime()) || !retiredTissueCaptureAllowed(now.toISOString()) || now.toISOString() < RANK_ONE_CONTRACT_EFFECTIVE_AT || raceDate !== getLocalRacingDate(now))
     return [];
   return input.meetings.flatMap(m => m.races.flatMap(race => {
     if (!race.raceDateTime || now >= race.raceDateTime || getLocalRacingDate(race.raceDateTime) !== raceDate || race.winningTime ||
@@ -218,7 +219,7 @@ export function appendRankOne(data: RankOneData, rows: RankOneObservation[]) {
   // Also enforce one frozen selection per race/family/version if the live rank changes later.
   const key = (r: RankOneObservation) => `${r.version}|${r.family}|${r.raceId}`;
   const known = new Set(data.observations.map(key));
-  const additions = rows.filter(r => { if (known.has(key(r)) || r.version !== data.version || r.firstCapturedAt < data.epoch || r.firstCapturedAt >= r.scheduledOff || r.raceDate !== getLocalRacingDate(new Date(r.firstCapturedAt)) || r.outcome)
+  const additions = rows.filter(r => { if (!retiredTissueCaptureAllowed(r.firstCapturedAt) || known.has(key(r)) || r.version !== data.version || r.firstCapturedAt < data.epoch || r.firstCapturedAt >= r.scheduledOff || r.raceDate !== getLocalRacingDate(new Date(r.firstCapturedAt)) || r.outcome)
     return false; known.add(key(r)); return true; });
   return additions.length ? { ...data, observations: [...data.observations, ...additions] } : data;
 }

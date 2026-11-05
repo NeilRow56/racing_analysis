@@ -1,15 +1,19 @@
 "use client";
 
 import { useState } from "react";
-import type { NonRedTissueDailyRow } from "@/lib/racing/non-red-tissue-daily-list";
+import type { TissueDailyWatchRow } from "@/lib/racing/tissue-daily-watch-list";
 import { TISSUE_SPEED_RANK_WATCH_TOOLTIP } from "@/lib/racing/tissue-speed-rank-watch";
 import { TissueValueAgreementBadge } from "./tissue-value-agreement-badge";
 
-export function NonRedTissueDailyList({ date, rows, clipboardText }: {
+type ListProps = {
   date: string;
-  rows: NonRedTissueDailyRow[];
+  rows: Array<TissueDailyWatchRow & { speedWatch?: boolean }>;
   clipboardText: string;
-}) {
+};
+export function TissueDailyWatchList(props: ListProps) {
+  return <NonRedTissueDailyList {...props} legacy={false} />;
+}
+export function NonRedTissueDailyList({ date, rows, clipboardText, legacy = true }: ListProps & { legacy?: boolean }) {
   const [copyStatus, setCopyStatus] = useState("");
   const raceCount = new Set(rows.map(row => row.raceId)).size;
   const hasSettledResult = rows.some(row => row.result?.settled);
@@ -29,7 +33,9 @@ export function NonRedTissueDailyList({ date, rows, clipboardText }: {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h2 className="font-semibold">Tissue Watch List — {date}</h2>
-          <p className="mt-1 text-xs text-slate-500">Research watch list · non-red T1 3.00–&lt;6.00 · non-red T2 6.00–&lt;11.00 · T1=V1 at any captured price, including pale-red</p>
+          <p className="mt-1 text-xs text-slate-500">{legacy
+            ? "Research watch list · non-red T1 3.00–<6.00 · non-red T2 6.00–<11.00 · T1=V1 at any captured price, including pale-red"
+            : "Research watch list · active T1 3.00–<6.00 · active T2 6.00–<11.00 · active T1=V1 at any captured price"}</p>
           <p className="mt-1 text-xs text-slate-500">Agreement sample remains small; this is not a proven betting signal.</p>
           <p className="mt-1 text-xs text-slate-500">
             {rows.length} {rows.length === 1 ? "selection" : "selections"} · {raceCount} {raceCount === 1 ? "race" : "races"}
@@ -51,7 +57,7 @@ export function NonRedTissueDailyList({ date, rows, clipboardText }: {
             {rows.map(row => <p key={`${row.raceId}|${row.runnerId}`}>
               {row.course} {row.time} {row.horseName} — T{row.tissueRank}
               {row.agreement ? <> — <TissueValueAgreementBadge /></> : null}
-              {row.speedWatch ? <span className="ml-1 inline-flex rounded-sm border border-red-200 bg-red-50 px-1 py-0.5 text-[10px] text-slate-900"
+              {legacy && row.speedWatch ? <span className="ml-1 inline-flex rounded-sm border border-red-200 bg-red-50 px-1 py-0.5 text-[10px] text-slate-900"
                 aria-label="Pale-red Speed watch" title={TISSUE_SPEED_RANK_WATCH_TOOLTIP}>Speed watch</span> : null}
               {row.result ? <> — <span aria-label={`Result: ${row.result.label}`}
                 className={row.result.winner

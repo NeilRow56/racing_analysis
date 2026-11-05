@@ -1,3 +1,4 @@
+import { retiredTissueCaptureAllowed } from "./tissue-generation-config";
 import { captureProspectiveGoing, type ProspectiveGoing } from "./prospective-going";
 import { readFile, writeFile, mkdir, rename } from "node:fs/promises";
 import { dirname } from "node:path";
@@ -205,7 +206,7 @@ export function upsertTissueRaces(data: TissueForwardData, races: TissueForwardR
   const existing = new Set(data.races.map((race) => race.raceId));
   const additions: TissueForwardRace[] = [];
   for (const race of races) {
-    if (existing.has(race.raceId)) continue;
+    if (existing.has(race.raceId) || !retiredTissueCaptureAllowed(race.recordedAt)) continue;
     existing.add(race.raceId);
     additions.push(race);
   }

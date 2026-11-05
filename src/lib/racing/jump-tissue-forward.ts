@@ -1,3 +1,4 @@
+import { retiredTissueCaptureAllowed } from "./tissue-generation-config";
 import { captureProspectiveGoing, type ProspectiveGoing } from "./prospective-going";
 import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
@@ -181,7 +182,7 @@ export function buildJumpTissueRace(input: {
 export function captureJumpTissueRaces(data: JumpTissueForwardData, races: JumpTissueRace[]): JumpTissueForwardData {
   const existing = new Set(data.races.map((race) => race.raceId));
   const additions = races.filter((race) => {
-    if (existing.has(race.raceId) || !race.recordedPreRace || race.recordedAt < JUMP_TISSUE_IMPLEMENTED_AT || race.recordedAt >= race.scheduledOffAt || race.settledAt !== null) return false;
+    if (!retiredTissueCaptureAllowed(race.recordedAt) || existing.has(race.raceId) || !race.recordedPreRace || race.recordedAt < JUMP_TISSUE_IMPLEMENTED_AT || race.recordedAt >= race.scheduledOffAt || race.settledAt !== null) return false;
     existing.add(race.raceId);
     return true;
   });

@@ -4,7 +4,7 @@ import json
 import sys
 import tempfile
 from contextlib import redirect_stdout
-from datetime import date
+from datetime import date, datetime, timezone
 from io import StringIO
 from pathlib import Path
 from typing import Any
@@ -26,6 +26,40 @@ from sporting_life.importing import (  # noqa: E402
 
 
 class SportingLifeRacecardDayImportTest(unittest.TestCase):
+    def test_force_refresh_refetches_existing_future_card_but_preserves_off_card(self) -> None:
+        for hour, stage, expected_imports in [(9, "DORMANT", 1), (14, "DORMANT", 0), (9, "OFF", 0)]:
+            index = index_payload()
+            index["props"]["pageProps"]["meetings"][0]["races"][0]["race_stage"] = stage
+            client = FakeSportingLifeClient({
+                f"{BASE_URL}/api/horse-racing/racing/racecards/2026-09-09": json.dumps(index["props"]["pageProps"]["meetings"]),
+                f"{BASE_URL}/racing/racecards/2026-09-09/carlisle/racecard/937435/carlisle-novice": next_data_html(racecard_payload()),
+            })
+            connection = FakeConnection(existing_racecard_ids={"937435"})
+            with tempfile.TemporaryDirectory() as tmp_dir:
+                with patch.object(racecard_importer, "RAW_OUTPUT_DIR", Path(tmp_dir)):
+                    with patch.object(racecard_importer.psycopg, "connect", return_value=connection):
+                        result = racecard_importer.import_sporting_life_racecards(
+                            race_date=date(2026, 9, 9), database_url="postgresql://example.test/db",
+                            request_delay_seconds=0, client=client, skip_existing_racecards=True,
+                            force_refresh=True, now=lambda: datetime(2026, 9, 9, hour, tzinfo=timezone.utc),
+                        )
+            self.assertEqual(len(result.imported_links), expected_imports)
+            self.assertEqual(len(client.racecard_urls), expected_imports)
+            self.assertEqual(result.preserved_off, 1 - expected_imports)
+            self.assertEqual(connection.racecard_lookup_ids, [])
+
+    def test_force_refresh_refuses_started_or_unknown_source_stage_and_checks_deadline(self) -> None:
+        summary = racecard_payload()["props"]["pageProps"]["race"]["race_summary"]
+        before = datetime(2026, 9, 9, 9, tzinfo=timezone.utc)
+        self.assertTrue(racecard_importer.refreshable_prerace_summary(summary, before))
+        self.assertFalse(racecard_importer.refreshable_prerace_summary(summary, datetime(2026, 9, 9, 13, 12, tzinfo=timezone.utc)))
+        for stage in ["OFF", "RESULT", "WEIGHEDIN", None, "UNKNOWN"]:
+            self.assertFalse(racecard_importer.refreshable_prerace_summary({**summary, "race_stage": stage}, before))
+        with self.assertRaisesRegex(ValueError, "TODAY"):
+            racecard_importer.import_sporting_life_racecards(
+                race_date=date(2026, 9, 8), database_url="unused", force_refresh=True, now=lambda: before,
+            )
+
     def test_existing_racecard_is_refreshed_by_default(self) -> None:
         client = FakeSportingLifeClient(
             {

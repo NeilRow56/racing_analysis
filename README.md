@@ -1,5 +1,12 @@
 # Racing Analysis
 
+The active Tissue generation is `TISSUE_GENERATION_2026_11`, frozen from
+`2026-11-05T07:26:36.629Z`. Use `bun run tissue-generation:summary` for the clean
+T1/T2/Top2 monitor. Morning/late workflows capture it; live/after settle it.
+The previous Tissue watches are archived and stop new captures, while pending
+observations may settle. Value logic and its separate frozen cohorts are unchanged.
+See [the model specification, development comparison and activation report](docs/tissue-generation-2026-11.md).
+
 Personal horse-racing analysis application for importing and studying UK racing data.
 
 The project is intentionally small at this stage. It establishes the application foundation only: Next.js, TypeScript, Tailwind CSS, PostgreSQL schema scaffolding, Drizzle configuration, and a placeholder for the future Python ingestion layer.
@@ -43,6 +50,8 @@ bun run research:live
 bun run research:late
 bun run research:after [YYYY-MM-DD]
 ```
+
+For an explicit refresh of today’s existing cards and latest valid pre-off captures, run `bun run today:refresh`. Early captures stay in research history. See [Today racecard refresh](docs/today-racecard-refresh.md) for capture safety, model identities and the original reload diagnosis.
 
 `research:night` captures first next-day cards. `research:morning` imports current cards, runs the normal Tissue VALUE and shadow syncs, and includes AW paired research sync automatically after its inputs are ready. `research:live` imports available results and settles existing prospective observations only; it does not create missed selections or rewrite qualifying prices. `research:late` is an optional late price refresh. `research:after` defaults to yesterday when no date is supplied, imports complete results, settles existing rows, and prints the result summary.
 

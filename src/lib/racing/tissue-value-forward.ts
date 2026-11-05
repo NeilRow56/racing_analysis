@@ -1,3 +1,4 @@
+import { captureIdentity, captureState, latestPreOffCaptures } from "./frozen-capture-selection";
 import { captureProspectiveGoing } from "./prospective-going";
 import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
@@ -11,6 +12,7 @@ import { calculateValueMetrics, valueCompetitionRanks, TISSUE_VALUE_FAMILIES } f
 import { VALUE_MARKET_SOURCE } from "./turf-value-definition";
 import { valueFamilyForRace } from "./tissue-value-family";
 import type { ValueCohortConfig } from "./tissue-value-config";
+import { buildValueRankPolicy, VALUE_RANK_VERSION, VALUE_RANK_EPOCH, VALUE_RANK_REJECTION_REASONS } from "./value-rank-v2";
 
 const finite = z.number().finite();
 const probability = finite.positive().max(1);
@@ -28,6 +30,13 @@ const runnerSchema = z.object({
   fairOdds: finite.positive(), probabilityEdge: finite, modelMarketRatio: finite.positive(), expectedReturn: finite,
   valueRank: rank, probabilityEdgeRank: rank, modelMarketRatioRank: rank, outcome: outcomeSchema.nullable(),
 }).strict();
+const valueRankPolicySchema = z.object({
+  version: z.literal(VALUE_RANK_VERSION), epoch: z.literal(VALUE_RANK_EPOCH),
+  legacyRankOne: z.array(z.object({
+    runnerId: z.string().min(1), priorCareerRuns: z.number().int().nonnegative().nullable(),
+    retained: z.boolean(), rejectionReason: z.enum(VALUE_RANK_REJECTION_REASONS).nullable(),
+  }).strict()).min(1),
+}).strict();
 const raceSchema = z.object({
   goingRaw: z.string().nullable().optional(), goingCanonical: z.string().nullable().optional(),
   version: z.string().min(1), family: z.enum(TISSUE_VALUE_FAMILIES), raceId: z.string().min(1), sourceId: z.string().nullable(),
@@ -36,6 +45,7 @@ const raceSchema = z.object({
   featureSchemaVersion: z.string().min(1), featureNames: z.array(z.string()).min(1), featureCutoffAt: timestamp,
   marketSource: z.literal(VALUE_MARKET_SOURCE), marketBookSum: finite.positive(), declaredRunnerCount: rank,
   runners: z.array(runnerSchema).min(2),
+  valueRankPolicy: valueRankPolicySchema.optional(),
 }).strict();
 const dataSchema = z.object({ version: z.string().min(1), epoch: z.string().min(1), races: z.array(raceSchema) }).strict();
 export type TissueValueRace = z.infer<typeof raceSchema>;
@@ -50,6 +60,8 @@ export function validValueCapture(row: TissueValueRace, config: ValueCohortConfi
     row.raceDate !== getLocalRacingDate(at) || row.raceDate !== getLocalRacingDate(off) ||
     JSON.stringify(row.featureNames) !== JSON.stringify(config.featureNames) || new Set(row.runners.map(r => r.runnerId)).size !== row.runners.length)
     return false;
+  // A new policy is frozen only on new captures. Historical books must not gain V2 metadata.
+  if (JSON.stringify(row.valueRankPolicy) !== JSON.stringify(buildValueRankPolicy(row))) return false;
   const sum = (values: number[]) => values.reduce((a, b) => a + b, 0);
   const close = (a: number, b: number) => Math.abs(a - b) <= 1e-10 * Math.max(1, Math.abs(a), Math.abs(b));
   if (!close(sum(row.runners.map(r => r.probability)), 1) || !close(sum(row.runners.map(r => r.marketProbability)), 1) ||
@@ -102,7 +114,7 @@ export function settleValueForward(data: TissueValueData, results: ReadonlyMap<s
 export async function loadValueForward(config: ValueCohortConfig, path = config.path): Promise<TissueValueData> {
   try {
     const data = dataSchema.parse(JSON.parse(await readFile(path, "utf8")));
-    if (data.version !== config.version || data.epoch !== config.epoch || new Set(data.races.map(r => r.raceId)).size !== data.races.length || data.races.some(r => !validValueCapture(r, config))) throw new Error("Invalid Tissue value capture");
+    if (data.version !== config.version || data.epoch !== config.epoch || new Set(data.races.map(captureIdentity)).size !== data.races.length || data.races.some(r => !validValueCapture(r, config))) throw new Error("Invalid Tissue value capture");
     return data;
   } catch (error) {
     if ((error as NodeJS.ErrnoException).code === "ENOENT") return emptyValueForward(config);
@@ -134,7 +146,7 @@ export async function mutateValueForward(config: ValueCohortConfig, mutate: (dat
       if (JSON.stringify(captures(old)) !== JSON.stringify(captures(next)) || old.runners.some((row, j) => row.outcome !== null && JSON.stringify(row.outcome) !== JSON.stringify(next.runners[j].outcome)))
         throw new Error("Cannot rewrite frozen Tissue value observations");
     }
-    if (after.races.some(r => !validValueCapture(r, config)) || new Set(after.races.map(r => r.raceId)).size !== after.races.length || after.races.slice(before.races.length).some(r => r.runners.some(row => row.outcome !== null)))
+    if (after.races.some(r => !validValueCapture(r, config)) || new Set(after.races.map(captureIdentity)).size !== after.races.length || after.races.slice(before.races.length).some(r => r.runners.some(row => row.outcome !== null)))
       throw new Error("Invalid prospective Tissue value additions");
     if (JSON.stringify(after) !== snapshot) {
       temporary = `${path}.tmp-${process.pid}-${Date.now()}`;
@@ -188,18 +200,23 @@ export function buildValueRace(input: {
   });
   const values = valueCompetitionRanks(runners.map(r => r.expectedReturn)), edges = valueCompetitionRanks(runners.map(r => r.probabilityEdge)), ratios = valueCompetitionRanks(runners.map(r => r.modelMarketRatio));
   runners.forEach((r, i) => { r.valueRank = values[i]; r.probabilityEdgeRank = edges[i]; r.modelMarketRatioRank = ratios[i]; });
+  const valueRankPolicy = buildValueRankPolicy({ family: config.family, capturedAt: now.toISOString(), featureNames: book.featureNames, runners });
   const parsed = raceSchema.safeParse({ version: config.version, family: config.family, raceId: race.raceId, sourceId: race.sourceId,
     raceDate: input.raceDate, course: input.course, raceName: race.raceName, scheduledOff: race.raceDateTime.toISOString(), capturedAt: now.toISOString(),
-    ...book, ...captureProspectiveGoing(race.going, now, config.family === "AW"), runners, marketSource: VALUE_MARKET_SOURCE, marketBookSum: total, declaredRunnerCount: race.declaredRunnerCount });
+    ...book, ...captureProspectiveGoing(race.going, now, config.family === "AW"), runners, marketSource: VALUE_MARKET_SOURCE, marketBookSum: total, declaredRunnerCount: race.declaredRunnerCount,
+    ...(valueRankPolicy ? { valueRankPolicy } : {}) });
   return parsed.success && validValueCapture(parsed.data, config) ? parsed.data : null;
 }
 
-export function appendValueForward(data: TissueValueData, races: TissueValueRace[], config: ValueCohortConfig): TissueValueData {
+export function appendValueForward(data: TissueValueData, races: TissueValueRace[], config: ValueCohortConfig, forceRefresh = false, now = new Date()): TissueValueData {
   if (data.version !== config.version || data.epoch !== config.epoch) throw new Error("Value cohort mismatch");
   const known = new Set(data.races.map(r => r.raceId));
+  const identities = new Set(data.races.map(captureIdentity));
+  const states = new Map(latestPreOffCaptures(data.races).map(r => [r.raceId, captureState(r)]));
   const additions = races.filter(r => {
-    if (known.has(r.raceId) || !raceSchema.safeParse(r).success || !validValueCapture(r, config) || r.runners.some(row => row.outcome !== null)) return false;
-    known.add(r.raceId); return true;
+    if ((!forceRefresh && known.has(r.raceId)) || identities.has(captureIdentity(r)) || states.get(r.raceId) === captureState(r) ||
+      (forceRefresh && (Date.parse(r.capturedAt) > now.getTime() || now.getTime() >= Date.parse(r.scheduledOff) || getLocalRacingDate(now) !== r.raceDate)) || !raceSchema.safeParse(r).success || !validValueCapture(r, config) || r.runners.some(row => row.outcome !== null)) return false;
+    known.add(r.raceId); identities.add(captureIdentity(r)); states.set(r.raceId, captureState(r)); return true;
   });
   return additions.length ? { ...data, races: [...data.races, ...structuredClone(additions)] } : data;
 }

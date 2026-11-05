@@ -1,4 +1,7 @@
 import { loadChaseShadow, type ChaseShadowRace } from "@/lib/racing/chase-shadow-forward";
+import { tissueGenerationActive, TISSUE_GENERATION_EPOCH } from "@/lib/racing/tissue-generation-config";
+import { syncTissueGeneration } from "@/lib/racing/tissue-generation-sync";
+import { attachTissueGeneration } from "@/lib/racing/tissue-generation-forward";
 import { chaseShadowBadgeRanks } from "./chase-shadow-badges";
 import { loadAllTissueValue } from "@/lib/racing/tissue-value-readers";
 import { attachFrozenValueToMeetings } from "@/lib/racing/tissue-value-view";
@@ -66,7 +69,8 @@ import { syncJumpTissueMeetings } from "@/lib/racing/jump-tissue-sync";
 import { attachJumpTissueToMeetings } from "@/lib/racing/jump-tissue-forward";
 import { SavedRuleResearchNote } from "../research/saved-rule-research-note";
 import { buildNonRedTissueDailyList, formatNonRedTissueDailyList } from "@/lib/racing/non-red-tissue-daily-list";
-import { NonRedTissueDailyList } from "./non-red-tissue-daily-list";
+import { NonRedTissueDailyList, TissueDailyWatchList } from "./non-red-tissue-daily-list";
+import { buildTissueDailyWatchList, formatTissueDailyWatchList } from "@/lib/racing/tissue-daily-watch-list";
 
 export const dynamic = "force-dynamic";
 
@@ -82,6 +86,7 @@ export default async function TodaysRacingPage({ searchParams }: PageProps) {
   const { raceDate, invalidDateParam } = resolveRacingDate({
     dateParam: params?.date,
   });
+  const newTissueForDate = tissueGenerationActive() && raceDate >= TISSUE_GENERATION_EPOCH.slice(0, 10);
   let connection: ReturnType<typeof createDbConnection> | null = null;
 
   try {
@@ -128,11 +133,16 @@ export default async function TodaysRacingPage({ searchParams }: PageProps) {
       }
     }
     if (displayData.status === "ok") {
-      const [awTissue, jumpTissue] = await Promise.all([
-        syncAwTissueMeetings(connection, displayData.meetings, raceDate),
-        syncJumpTissueMeetings(connection, displayData.meetings, raceDate),
-      ]);
-      displayData = { ...displayData, meetings: attachFrozenValueToMeetings(attachJumpTissueToMeetings(attachAwTissueToMeetings(displayData.meetings, awTissue), jumpTissue), valueCohorts.map(c => c.data)) };
+      if (newTissueForDate) {
+        const generation = await syncTissueGeneration(connection, displayData.meetings, raceDate);
+        displayData = { ...displayData, meetings: attachTissueGeneration(attachFrozenValueToMeetings(displayData.meetings, valueCohorts.map(c => c.data)), generation) };
+      } else {
+        const [awTissue, jumpTissue] = await Promise.all([
+          syncAwTissueMeetings(connection, displayData.meetings, raceDate),
+          syncJumpTissueMeetings(connection, displayData.meetings, raceDate),
+        ]);
+        displayData = { ...displayData, meetings: attachFrozenValueToMeetings(attachJumpTissueToMeetings(attachAwTissueToMeetings(displayData.meetings, awTissue), jumpTissue), valueCohorts.map(c => c.data)) };
+      }
     }
     await connection.client.end();
     connection = null;
@@ -150,12 +160,15 @@ export default async function TodaysRacingPage({ searchParams }: PageProps) {
 
     // Read after the existing sync so newly captured prospective books can display immediately.
     // Display failure must not hide the racecard or substitute recalculated ranks.
-    const chaseShadow = await loadChaseShadow().catch((error: unknown) => {
+    const chaseShadow = await (newTissueForDate ? Promise.resolve({ races: [] as ChaseShadowRace[] }) : loadChaseShadow()).catch((error: unknown) => {
       console.error("Unable to read prospective Chase Shadow badges", error);
       return { races: [] };
     });
     const chaseShadowByRace = new Map(chaseShadow.races.map(book => [book.raceId, book]));
-    const dailyList = buildNonRedTissueDailyList(displayData.status === "ok" ? displayData.meetings : []);
+    const watchMeetings = displayData.status === "ok" ? displayData.meetings : [];
+    const legacyDailyList = newTissueForDate ? [] : buildNonRedTissueDailyList(watchMeetings);
+    const dailyList = newTissueForDate ? buildTissueDailyWatchList(watchMeetings) : legacyDailyList;
+    const WatchList = newTissueForDate ? TissueDailyWatchList : NonRedTissueDailyList;
 
     return (
       <main className="min-h-full bg-stone-50 px-4 py-8 text-slate-950 sm:px-6 lg:px-8">
@@ -194,10 +207,10 @@ export default async function TodaysRacingPage({ searchParams }: PageProps) {
             </form>
           </div>
 
-          <NonRedTissueDailyList
+          <WatchList
             date={new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "Europe/London" }).format(new Date(`${raceDate}T12:00:00Z`))}
             rows={dailyList}
-            clipboardText={formatNonRedTissueDailyList(dailyList)}
+            clipboardText={newTissueForDate ? formatTissueDailyWatchList(dailyList) : formatNonRedTissueDailyList(legacyDailyList)}
           />
 
           {displayData.status === "empty" ? (

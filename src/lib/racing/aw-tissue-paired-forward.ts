@@ -1,3 +1,4 @@
+import { retiredTissueCaptureAllowed } from "./tissue-generation-config";
 import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { settleSelection, isVoidBetResultStatus } from "./backtest";
@@ -195,7 +196,7 @@ export function buildAwTissuePairedRace(input: {
 export function captureAwTissuePairedRaces(data: AwTissuePairedForwardData, races: AwTissuePairedRace[]): AwTissuePairedForwardData {
   const existing = new Set(data.races.map((race) => race.raceId));
   const additions = races.filter((race) => {
-    if (existing.has(race.raceId) || race.firstCapturedAt < AW_TISSUE_PAIRED_FORWARD_EPOCH || race.firstCapturedAt >= race.scheduledOffAt || race.settledAt !== null) return false;
+    if (!retiredTissueCaptureAllowed(race.firstCapturedAt) || existing.has(race.raceId) || race.firstCapturedAt < AW_TISSUE_PAIRED_FORWARD_EPOCH || race.firstCapturedAt >= race.scheduledOffAt || race.settledAt !== null) return false;
     existing.add(race.raceId);
     return true;
   });

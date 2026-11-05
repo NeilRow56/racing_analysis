@@ -1,3 +1,4 @@
+import { retiredTissueCaptureAllowed } from "./tissue-generation-config";
 import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { isVoidBetResultStatus, settleSelection } from "./backtest";
@@ -188,7 +189,7 @@ export function buildHurdleRecencyObservations(input: {
   capturedAt: Date;
 }): HurdleRecencyObservation[] {
   const { capturedAt } = input;
-  if (!Number.isFinite(capturedAt.getTime()) || capturedAt.toISOString() < HURDLE_RECENCY_EPOCH || input.raceDate !== getLocalRacingDate(capturedAt)) return [];
+  if (!Number.isFinite(capturedAt.getTime()) || !retiredTissueCaptureAllowed(capturedAt.toISOString()) || capturedAt.toISOString() < HURDLE_RECENCY_EPOCH || input.raceDate !== getLocalRacingDate(capturedAt)) return [];
   return input.meetings.flatMap((meeting) => meeting.races.flatMap((race) => {
     if (classifyJumpRaceSubtype(race) !== "hurdle" || !race.raceDateTime || capturedAt >= race.raceDateTime ||
         getLocalRacingDate(race.raceDateTime) !== input.raceDate || race.winningTime ||
@@ -223,7 +224,7 @@ export function appendHurdleRecency(data: HurdleRecencyData, additions: HurdleRe
   const key = (row: HurdleRecencyObservation) => `${row.version}|${row.raceId}|${row.runnerId}`;
   const known = new Set(data.observations.map(key));
   const fresh = additions.filter((row) => {
-    if (known.has(key(row)) || row.version !== data.version || row.firstCapturedAt < data.epoch ||
+    if (!retiredTissueCaptureAllowed(row.firstCapturedAt) || known.has(key(row)) || row.version !== data.version || row.firstCapturedAt < data.epoch ||
         row.firstCapturedAt >= row.scheduledOff || row.raceDate !== getLocalRacingDate(new Date(row.firstCapturedAt)) || row.outcome) return false;
     known.add(key(row)); return true;
   });

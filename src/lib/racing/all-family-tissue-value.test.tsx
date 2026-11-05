@@ -4,6 +4,7 @@ import { mkdtemp, readFile, rm } from "node:fs/promises";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { renderToStaticMarkup } from "react-dom/server";
+import { buildProspectiveTissueSources } from "./tissue-prospective-sources";
 import { buildAllFamilyValueRaces } from "./tissue-value-capture";
 import { VALUE_COHORTS, TURF_VALUE_CONFIG, type ValueCohortConfig } from "./tissue-value-config";
 import { appendValueForward, buildValueRace, emptyValueForward, loadValueForward, mutateValueForward, settleValueForward, type TissueValueRace, type ValueModelBook } from "./tissue-value-forward";
@@ -242,4 +243,46 @@ test("Speed watch reaches both Value monitoring and daily badges from the same i
     current.metrics!.jumpSpeedReliability = { ...assessJumpSpeedReliability(), level: "HIGH" };
     assert.equal(current.tissueValue!.bestL3SpeedRank, 2);
   }
+});
+
+test("manual Value refresh preserves 05:36 Legacy V1, freezes V2 with its V1 shadow, and Today selects newest", async () => {
+  const earlyAt = new Date("2026-11-05T05:36:00.000Z"), laterAt = new Date("2026-11-05T09:00:00.000Z");
+  const input = inputs();
+  for (const race of input.meetings[0].races) {
+    race.raceDateTime = new Date("2026-11-05T14:00:00.000Z");
+    race.turfTissueHistoryAsOf = earlyAt.toISOString();
+  }
+  const first = buildAllFamilyValueRaces({ ...input, raceDate: "2026-11-05", capturedAt: earlyAt, historyCutoffAt: earlyAt.toISOString(),
+    awContext: { ...input.awContext, historyCutoffAt: earlyAt.toISOString() } });
+  const later = buildAllFamilyValueRaces({ ...input, raceDate: "2026-11-05", capturedAt: laterAt, historyCutoffAt: earlyAt.toISOString(),
+    awContext: { ...input.awContext, historyCutoffAt: earlyAt.toISOString() } });
+  assert.equal(first.length, 4); assert.equal(later.length, 4);
+  const directory = await mkdtemp(join(tmpdir(), "refresh-value-"));
+  try {
+    for (const config of VALUE_COHORTS) {
+      const early = first.find(b => b.family === config.family)!, fresh = later.find(b => b.family === config.family)!;
+      assert.equal(early.valueRankPolicy, undefined);
+      assert.equal(fresh.valueRankPolicy?.version, "VALUE_RANK_V2");
+      assert.deepEqual(fresh.valueRankPolicy!.legacyRankOne.map(d => d.runnerId), fresh.runners.filter(r => r.valueRank === 1).map(r => r.runnerId));
+      const path = join(directory, `${config.family}.json`);
+      const original = appendValueForward(emptyValueForward(config), [early], config);
+      const frozen = JSON.stringify(original);
+      assert.equal(appendValueForward(original, [fresh], config).races.length, 1);
+      const refreshed = appendValueForward(original, [fresh], config, true, laterAt);
+      assert.equal(refreshed.races.length, 2); assert.equal(JSON.stringify(original), frozen);
+      const research = buildProspectiveTissueSources({ turf: { version: "test", races: [] } as unknown as import("./tissue-forward").TissueForwardData,
+        aw: { version: "test", races: [] } as unknown as import("./aw-tissue-forward").AwTissueForwardData,
+        jump: { version: "test", races: [] } as unknown as import("./jump-tissue-forward").JumpTissueForwardData,
+        cohorts: [{ config, data: refreshed }] });
+      assert.equal(research.priceObservations.length, early.runners.length + fresh.runners.length);
+      assert.deepEqual(new Set(research.priceObservations.map(r => r.capturedAt)), new Set([early.capturedAt, fresh.capturedAt]));
+      assert.equal(appendValueForward(refreshed, [fresh], config, true, laterAt).races.length, 2);
+      assert.equal(appendValueForward(original, [fresh], config, true, new Date("2026-11-05T14:00:00.000Z")).races.length, 1);
+      assert.equal(frozenValueIndex([{ ...refreshed, races: [fresh, early] }]).get(`${early.raceId}|${early.runners[0].runnerId}`)!.capturedAt, laterAt.toISOString());
+      await mutateValueForward(config, () => original, path);
+      await mutateValueForward(config, data => appendValueForward(data, [fresh], config, true, laterAt), path);
+      assert.deepEqual((await loadValueForward(config, path)).races, refreshed.races);
+      if (config.family === "CHASE" || config.family === "HURDLE") assert.equal(early.modelVersion, "JUMP_TISSUE_V1");
+    }
+  } finally { await rm(directory, { recursive: true, force: true }); }
 });

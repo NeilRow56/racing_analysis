@@ -1,0 +1,779 @@
+{
+  "generation": "TISSUE_GENERATION_2026_11",
+  "developmentCutoff": "2026-11-05T06:57:32.000Z",
+  "prospectiveEpoch": "2026-11-05T07:26:36.629Z",
+  "models": {
+    "TURF": "e106fadd07263b1fcc4ece821a4bfcad645faeae873db026433a4902eabbe3fe",
+    "AW": "c8f75faa0aeacc88ba76f100e7d154a872bc9b2ee31a5a42d18e611e3e64f9a5",
+    "HURDLE": "53defc50d717aba63c80c9f3c01c4df4360b709f6f4a21509a514179e23cce90",
+    "CHASE": "be65702490403f6a287d11ecb19307a67b58ca975ee7bd9ece71b4e0d759aa81"
+  },
+  "codeCommit": "c54fa8ec7b3ffd0550a46008f456bdf9ab21caad",
+  "uncommittedImplementation": true,
+  "comparison": [
+    {
+      "family": "TURF",
+      "oldVersion": "tissue_model_v3",
+      "newVersion": "TURF_TISSUE_V4",
+      "baseVersion": "tissue_model_v3",
+      "selectedL2": 0.2,
+      "contextRetained": true,
+      "baseValidation": {
+        "races": 22,
+        "runners": 246,
+        "logLoss": 2.156794903124321,
+        "calibrationError": 0.01626491315377579,
+        "brier": 0.8432323210006487,
+        "top1": 7,
+        "top2": 9,
+        "top3": 10,
+        "meanWinnerRank": 4.409090909090909
+      },
+      "features": [
+        "speed_rank_2_3",
+        "speed_rank_missing",
+        "same_or_speed_gap"
+      ],
+      "coefficients": [
+        0.06959115978972936,
+        -0.10257072160368265,
+        0.14266419052702936
+      ],
+      "split": {
+        "training": 49,
+        "validation": 22,
+        "boundary": "2026-10-30T05:08:54.583Z"
+      },
+      "validationOld": {
+        "races": 22,
+        "runners": 246,
+        "logLoss": 2.156794903124321,
+        "calibrationError": 0.01626491315377579,
+        "brier": 0.8432323210006487,
+        "top1": 7,
+        "top2": 9,
+        "top3": 10,
+        "meanWinnerRank": 4.409090909090909
+      },
+      "candidates": [
+        {
+          "l2": 0.2,
+          "validation": {
+            "races": 22,
+            "runners": 246,
+            "logLoss": 2.1174165769880275,
+            "calibrationError": 0.032022169161135414,
+            "brier": 0.831262236349012,
+            "top1": 8,
+            "top2": 10,
+            "top3": 11,
+            "meanWinnerRank": 4.181818181818182
+          }
+        },
+        {
+          "l2": 2,
+          "validation": {
+            "races": 22,
+            "runners": 246,
+            "logLoss": 2.1400624867221336,
+            "calibrationError": 0.01691702773504739,
+            "brier": 0.8384729037070446,
+            "top1": 7,
+            "top2": 9,
+            "top3": 12,
+            "meanWinnerRank": 4.2272727272727275
+          }
+        }
+      ],
+      "old": {
+        "races": 71,
+        "runners": 743,
+        "logLoss": 2.1163690467144103,
+        "calibrationError": 0.0055134832551755756,
+        "brier": 0.8591088608627628,
+        "top1": 19,
+        "top2": 31,
+        "top3": 38,
+        "meanWinnerRank": 3.915492957746479
+      },
+      "next": {
+        "races": 71,
+        "runners": 743,
+        "logLoss": 2.091259970162344,
+        "calibrationError": 0.004523697405551782,
+        "brier": 0.8555655783719995,
+        "top1": 20,
+        "top2": 28,
+        "top3": 38,
+        "meanWinnerRank": 3.915492957746479
+      },
+      "agreement": {
+        "races": 71,
+        "t1Agreement": 0.6901408450704225,
+        "t2Agreement": 0.5492957746478874,
+        "top2SetAgreement": 0.704225352112676,
+        "t1OnlyChanged": 1,
+        "t2OnlyChanged": 11,
+        "bothPositionsChanged": 21,
+        "bothTop2MembersReplaced": 1
+      },
+      "blocks": [
+        {
+          "block": "2026-10-early",
+          "old": {
+            "races": 39,
+            "runners": 377,
+            "logLoss": 2.0936302714203565,
+            "calibrationError": 0.013187218050463011,
+            "brier": 0.8684197390699876,
+            "top1": 10,
+            "top2": 18,
+            "top3": 21,
+            "meanWinnerRank": 3.8461538461538463
+          },
+          "next": {
+            "races": 39,
+            "runners": 377,
+            "logLoss": 2.0890836958919694,
+            "calibrationError": 0.018763066911406653,
+            "brier": 0.8761911617701031,
+            "top1": 9,
+            "top2": 14,
+            "top3": 21,
+            "meanWinnerRank": 3.8974358974358974
+          }
+        },
+        {
+          "block": "2026-10-late",
+          "old": {
+            "races": 19,
+            "runners": 221,
+            "logLoss": 2.105739586712424,
+            "calibrationError": 0.025153110459156892,
+            "brier": 0.8480463148475502,
+            "top1": 6,
+            "top2": 10,
+            "top3": 13,
+            "meanWinnerRank": 3.1052631578947367
+          },
+          "next": {
+            "races": 19,
+            "runners": 221,
+            "logLoss": 2.099385545201669,
+            "calibrationError": 0.020312460900346625,
+            "brier": 0.8434436675336376,
+            "top1": 7,
+            "top2": 10,
+            "top3": 12,
+            "meanWinnerRank": 3.3157894736842106
+          }
+        },
+        {
+          "block": "2026-11-early",
+          "old": {
+            "races": 13,
+            "runners": 145,
+            "logLoss": 2.200120737214861,
+            "calibrationError": 0.01575137858255257,
+            "brier": 0.8473445627248599,
+            "top1": 3,
+            "top2": 3,
+            "top3": 4,
+            "meanWinnerRank": 5.3076923076923075
+          },
+          "next": {
+            "races": 13,
+            "runners": 145,
+            "logLoss": 2.0859129525313795,
+            "calibrationError": 0.015633487104551324,
+            "brier": 0.8114054670952972,
+            "top1": 4,
+            "top2": 4,
+            "top3": 5,
+            "meanWinnerRank": 4.846153846153846
+          }
+        }
+      ]
+    },
+    {
+      "family": "AW",
+      "oldVersion": "AW_TISSUE_V2",
+      "newVersion": "AW_TISSUE_V3",
+      "baseVersion": "AW_TISSUE_V2",
+      "selectedL2": 0.2,
+      "contextRetained": true,
+      "baseValidation": {
+        "races": 24,
+        "runners": 229,
+        "logLoss": 2.200179575446195,
+        "calibrationError": 0.03181761196971828,
+        "brier": 0.9040035011271139,
+        "top1": 2,
+        "top2": 9,
+        "top3": 13,
+        "meanWinnerRank": 4.333333333333333
+      },
+      "features": [
+        "speed_rank_2_3",
+        "speed_rank_missing",
+        "same_or_speed_gap"
+      ],
+      "coefficients": [
+        0.06536723816051147,
+        0.14536653750881404,
+        -0.17415188659050265
+      ],
+      "split": {
+        "training": 55,
+        "validation": 24,
+        "boundary": "2026-10-30T05:08:54.583Z"
+      },
+      "validationOld": {
+        "races": 24,
+        "runners": 229,
+        "logLoss": 2.200179575446195,
+        "calibrationError": 0.03181761196971828,
+        "brier": 0.9040035011271139,
+        "top1": 2,
+        "top2": 9,
+        "top3": 13,
+        "meanWinnerRank": 4.333333333333333
+      },
+      "candidates": [
+        {
+          "l2": 0.2,
+          "validation": {
+            "races": 24,
+            "runners": 229,
+            "logLoss": 2.1716003306615907,
+            "calibrationError": 0.044226572331454286,
+            "brier": 0.9000599840230463,
+            "top1": 1,
+            "top2": 6,
+            "top3": 13,
+            "meanWinnerRank": 4.25
+          }
+        },
+        {
+          "l2": 2,
+          "validation": {
+            "races": 24,
+            "runners": 229,
+            "logLoss": 2.1866248978344167,
+            "calibrationError": 0.035683303639200144,
+            "brier": 0.9018064159353908,
+            "top1": 2,
+            "top2": 8,
+            "top3": 13,
+            "meanWinnerRank": 4.375
+          }
+        }
+      ],
+      "old": {
+        "races": 79,
+        "runners": 781,
+        "logLoss": 2.1748428956336037,
+        "calibrationError": 0.024445568655183044,
+        "brier": 0.8750912883382751,
+        "top1": 14,
+        "top2": 33,
+        "top3": 45,
+        "meanWinnerRank": 4.189873417721519
+      },
+      "next": {
+        "races": 79,
+        "runners": 781,
+        "logLoss": 2.1450913689464657,
+        "calibrationError": 0.007741498017228639,
+        "brier": 0.8678956069082647,
+        "top1": 11,
+        "top2": 28,
+        "top3": 43,
+        "meanWinnerRank": 4.253164556962025
+      },
+      "agreement": {
+        "races": 79,
+        "t1Agreement": 0.6962025316455697,
+        "t2Agreement": 0.45569620253164556,
+        "top2SetAgreement": 0.5443037974683544,
+        "t1OnlyChanged": 3,
+        "t2OnlyChanged": 22,
+        "bothPositionsChanged": 21,
+        "bothTop2MembersReplaced": 2
+      },
+      "blocks": [
+        {
+          "block": "2026-10-early",
+          "old": {
+            "races": 40,
+            "runners": 399,
+            "logLoss": 2.216590925552781,
+            "calibrationError": 0.015704761597887827,
+            "brier": 0.8721552920592328,
+            "top1": 9,
+            "top2": 16,
+            "top3": 21,
+            "meanWinnerRank": 4.45
+          },
+          "next": {
+            "races": 40,
+            "runners": 399,
+            "logLoss": 2.2300911214561165,
+            "calibrationError": 0.027608224448310906,
+            "brier": 0.8755844280868443,
+            "top1": 5,
+            "top2": 15,
+            "top3": 18,
+            "meanWinnerRank": 4.9
+          }
+        },
+        {
+          "block": "2026-10-late",
+          "old": {
+            "races": 18,
+            "runners": 185,
+            "logLoss": 2.086845147654099,
+            "calibrationError": 0.04858972813299489,
+            "brier": 0.8622112403784975,
+            "top1": 3,
+            "top2": 10,
+            "top3": 13,
+            "meanWinnerRank": 3.5
+          },
+          "next": {
+            "races": 18,
+            "runners": 185,
+            "logLoss": 1.9659929083393821,
+            "calibrationError": 0.05689016475612909,
+            "brier": 0.8342004512690407,
+            "top1": 4,
+            "top2": 8,
+            "top3": 14,
+            "meanWinnerRank": 2.7777777777777777
+          }
+        },
+        {
+          "block": "2026-11-early",
+          "old": {
+            "races": 21,
+            "runners": 197,
+            "logLoss": 2.170749479769982,
+            "calibrationError": 0.02916546398334945,
+            "brier": 0.8917237033114981,
+            "top1": 2,
+            "top2": 7,
+            "top3": 11,
+            "meanWinnerRank": 4.285714285714286
+          },
+          "next": {
+            "races": 21,
+            "runners": 197,
+            "logLoss": 2.136700044686535,
+            "calibrationError": 0.023784908997351976,
+            "brier": 0.8821317952112546,
+            "top1": 2,
+            "top2": 5,
+            "top3": 11,
+            "meanWinnerRank": 4.285714285714286
+          }
+        }
+      ]
+    },
+    {
+      "family": "HURDLE",
+      "oldVersion": "JUMP_TISSUE_V1",
+      "newVersion": "HURDLE_TISSUE_V2",
+      "baseVersion": "JUMP_TISSUE_V1",
+      "selectedL2": 2,
+      "contextRetained": true,
+      "baseValidation": {
+        "races": 29,
+        "runners": 278,
+        "logLoss": 1.8222538475963734,
+        "calibrationError": 0.03776629668720653,
+        "brier": 0.767690015672368,
+        "top1": 10,
+        "top2": 18,
+        "top3": 22,
+        "meanWinnerRank": 3.206896551724138
+      },
+      "features": [
+        "speed_rank_2_3",
+        "speed_rank_missing",
+        "recent_non_completion",
+        "latest_pulled_up",
+        "completed_last3_fraction",
+        "completion_history_missing"
+      ],
+      "coefficients": [
+        0.0045950120362376464,
+        0.003273891557781568,
+        -0.05075321311070166,
+        -0.0417139308264011,
+        0.03627946980596425,
+        -0.03025107191415927
+      ],
+      "split": {
+        "training": 65,
+        "validation": 29,
+        "boundary": "2026-11-01T05:51:30.664Z"
+      },
+      "validationOld": {
+        "races": 29,
+        "runners": 278,
+        "logLoss": 1.8222538475963734,
+        "calibrationError": 0.03776629668720653,
+        "brier": 0.767690015672368,
+        "top1": 10,
+        "top2": 18,
+        "top3": 22,
+        "meanWinnerRank": 3.206896551724138
+      },
+      "candidates": [
+        {
+          "l2": 2,
+          "validation": {
+            "races": 29,
+            "runners": 278,
+            "logLoss": 1.8179925907745473,
+            "calibrationError": 0.04163151857471941,
+            "brier": 0.7679578899951568,
+            "top1": 10,
+            "top2": 15,
+            "top3": 22,
+            "meanWinnerRank": 3.2413793103448274
+          }
+        },
+        {
+          "l2": 0.2,
+          "validation": {
+            "races": 29,
+            "runners": 278,
+            "logLoss": 1.8339740736991217,
+            "calibrationError": 0.032874484311072524,
+            "brier": 0.7755086432252696,
+            "top1": 8,
+            "top2": 13,
+            "top3": 21,
+            "meanWinnerRank": 3.4827586206896552
+          }
+        }
+      ],
+      "old": {
+        "races": 94,
+        "runners": 840,
+        "logLoss": 1.958004749439049,
+        "calibrationError": 0.01385676318972207,
+        "brier": 0.8177375921476264,
+        "top1": 28,
+        "top2": 49,
+        "top3": 56,
+        "meanWinnerRank": 3.75531914893617
+      },
+      "next": {
+        "races": 94,
+        "runners": 840,
+        "logLoss": 1.9415267289262153,
+        "calibrationError": 0.011530443082900138,
+        "brier": 0.8135251367511467,
+        "top1": 28,
+        "top2": 45,
+        "top3": 57,
+        "meanWinnerRank": 3.6382978723404253
+      },
+      "agreement": {
+        "races": 94,
+        "t1Agreement": 0.9787234042553191,
+        "t2Agreement": 0.9042553191489362,
+        "top2SetAgreement": 0.9148936170212766,
+        "t1OnlyChanged": 0,
+        "t2OnlyChanged": 7,
+        "bothPositionsChanged": 2,
+        "bothTop2MembersReplaced": 0
+      },
+      "blocks": [
+        {
+          "block": "2026-10-early",
+          "old": {
+            "races": 39,
+            "runners": 357,
+            "logLoss": 2.108220119691354,
+            "calibrationError": 0.023499584640975464,
+            "brier": 0.8600556577070899,
+            "top1": 10,
+            "top2": 16,
+            "top3": 18,
+            "meanWinnerRank": 4.282051282051282
+          },
+          "next": {
+            "races": 39,
+            "runners": 357,
+            "logLoss": 2.089331260477794,
+            "calibrationError": 0.01613141630572468,
+            "brier": 0.8547183840138268,
+            "top1": 11,
+            "top2": 16,
+            "top3": 19,
+            "meanWinnerRank": 3.948717948717949
+          }
+        },
+        {
+          "block": "2026-10-late",
+          "old": {
+            "races": 24,
+            "runners": 191,
+            "logLoss": 1.8606668979638057,
+            "calibrationError": 0.025480612333996525,
+            "brier": 0.7979514538066846,
+            "top1": 8,
+            "top2": 14,
+            "top3": 15,
+            "meanWinnerRank": 3.5833333333333335
+          },
+          "next": {
+            "races": 24,
+            "runners": 191,
+            "logLoss": 1.8410192604345512,
+            "calibrationError": 0.0348530472274982,
+            "brier": 0.7930515821862439,
+            "top1": 8,
+            "top2": 14,
+            "top3": 15,
+            "meanWinnerRank": 3.5
+          }
+        },
+        {
+          "block": "2026-11-early",
+          "old": {
+            "races": 31,
+            "runners": 292,
+            "logLoss": 1.844382458973431,
+            "calibrationError": 0.03439901373787474,
+            "brier": 0.7798170361270966,
+            "top1": 10,
+            "top2": 19,
+            "top3": 23,
+            "meanWinnerRank": 3.225806451612903
+          },
+          "next": {
+            "races": 31,
+            "runners": 292,
+            "logLoss": 1.8333913261290677,
+            "calibrationError": 0.034051575597806284,
+            "brier": 0.7775518679225368,
+            "top1": 9,
+            "top2": 15,
+            "top3": 23,
+            "meanWinnerRank": 3.3548387096774195
+          }
+        }
+      ]
+    },
+    {
+      "family": "CHASE",
+      "oldVersion": "JUMP_TISSUE_V1",
+      "newVersion": "CHASE_TISSUE_V2",
+      "baseVersion": "CHASE_SHADOW_V1",
+      "selectedL2": null,
+      "contextRetained": false,
+      "baseValidation": {
+        "races": 19,
+        "runners": 110,
+        "logLoss": 1.5596645497835233,
+        "calibrationError": 0.041935119764514174,
+        "brier": 0.7668236746755606,
+        "top1": 7,
+        "top2": 12,
+        "top3": 13,
+        "meanWinnerRank": 2.5789473684210527
+      },
+      "features": [
+        "speed_rank_2_3",
+        "speed_rank_missing",
+        "usable_jump_speed_last3",
+        "usable_jump_speed_missing"
+      ],
+      "coefficients": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "split": {
+        "training": 42,
+        "validation": 19,
+        "boundary": "2026-11-01T05:51:30.664Z"
+      },
+      "validationOld": {
+        "races": 19,
+        "runners": 110,
+        "logLoss": 1.5417049703788035,
+        "calibrationError": 0.05094381275096933,
+        "brier": 0.7440839730505369,
+        "top1": 8,
+        "top2": 14,
+        "top3": 15,
+        "meanWinnerRank": 2.526315789473684
+      },
+      "candidates": [
+        {
+          "l2": 2,
+          "validation": {
+            "races": 19,
+            "runners": 110,
+            "logLoss": 1.56517100418534,
+            "calibrationError": 0.03742429915569085,
+            "brier": 0.7702252782889807,
+            "top1": 7,
+            "top2": 13,
+            "top3": 14,
+            "meanWinnerRank": 2.473684210526316
+          }
+        },
+        {
+          "l2": 0.2,
+          "validation": {
+            "races": 19,
+            "runners": 110,
+            "logLoss": 1.594328740785351,
+            "calibrationError": 0.05011565010209859,
+            "brier": 0.7843393994723452,
+            "top1": 7,
+            "top2": 13,
+            "top3": 15,
+            "meanWinnerRank": 2.4210526315789473
+          }
+        }
+      ],
+      "old": {
+        "races": 61,
+        "runners": 402,
+        "logLoss": 1.7378960782363913,
+        "calibrationError": 0.02182329145582153,
+        "brier": 0.7980361779652213,
+        "top1": 18,
+        "top2": 32,
+        "top3": 37,
+        "meanWinnerRank": 3.262295081967213
+      },
+      "next": {
+        "races": 61,
+        "runners": 402,
+        "logLoss": 1.7297516290205406,
+        "calibrationError": 0.019683143581180222,
+        "brier": 0.7982370172170875,
+        "top1": 18,
+        "top2": 30,
+        "top3": 38,
+        "meanWinnerRank": 3.1475409836065573
+      },
+      "agreement": {
+        "races": 61,
+        "t1Agreement": 0.6065573770491803,
+        "t2Agreement": 0.4426229508196721,
+        "top2SetAgreement": 0.5573770491803278,
+        "t1OnlyChanged": 2,
+        "t2OnlyChanged": 12,
+        "bothPositionsChanged": 22,
+        "bothTop2MembersReplaced": 2
+      },
+      "blocks": [
+        {
+          "block": "2026-10-early",
+          "old": {
+            "races": 25,
+            "runners": 174,
+            "logLoss": 1.9106202023786216,
+            "calibrationError": 0.025297447910465093,
+            "brier": 0.8399324686497697,
+            "top1": 6,
+            "top2": 10,
+            "top3": 12,
+            "meanWinnerRank": 3.96
+          },
+          "next": {
+            "races": 25,
+            "runners": 174,
+            "logLoss": 1.8553350872610885,
+            "calibrationError": 0.04130307027886591,
+            "brier": 0.8126878216043562,
+            "top1": 7,
+            "top2": 12,
+            "top3": 13,
+            "meanWinnerRank": 3.72
+          }
+        },
+        {
+          "block": "2026-10-late",
+          "old": {
+            "races": 15,
+            "runners": 102,
+            "logLoss": 1.631766525308572,
+            "calibrationError": 0.06710122228727307,
+            "brier": 0.7804975347637055,
+            "top1": 4,
+            "top2": 8,
+            "top3": 9,
+            "meanWinnerRank": 2.8
+          },
+          "next": {
+            "races": 15,
+            "runners": 102,
+            "logLoss": 1.6779615202471923,
+            "calibrationError": 0.07783464783640666,
+            "brier": 0.800542383830535,
+            "top1": 4,
+            "top2": 6,
+            "top3": 12,
+            "meanWinnerRank": 2.6
+          }
+        },
+        {
+          "block": "2026-11-early",
+          "old": {
+            "races": 21,
+            "runners": 126,
+            "logLoss": 1.6080789444440817,
+            "calibrationError": 0.05111926157517316,
+            "brier": 0.7606872437227967,
+            "top1": 8,
+            "top2": 14,
+            "top3": 16,
+            "meanWinnerRank": 2.761904761904762
+          },
+          "next": {
+            "races": 21,
+            "runners": 126,
+            "logLoss": 1.6172404469056125,
+            "calibrationError": 0.04719962404555961,
+            "brier": 0.7793869882226381,
+            "top1": 7,
+            "top2": 12,
+            "top3": 13,
+            "meanWinnerRank": 2.857142857142857
+          }
+        }
+      ]
+    }
+  ],
+  "note": "Development only; selected from previous prospective research. First clean evaluation begins at the new epoch. No ROI-based selection. New ledger begins empty.",
+  "auditDatasets": [
+    {
+      "path": "data/research/tissue-generation-development-2026-11.json",
+      "sha256": "0dc2c37ce5ce14426e8399a1bfb68254ea8f714e12184bcce430c124064fd4b1",
+      "kind": "DEVELOPMENT_NOT_PROSPECTIVE"
+    },
+    {
+      "path": "data/research/tissue-generation-chase-promotion-2026-11.json",
+      "sha256": "56116ca16d8e3d514d407833b08a8de6c7a6e253c3fd733aaf995ebe49ab1ff2",
+      "kind": "HISTORICAL_REFERENCE_NOT_PROSPECTIVE"
+    }
+  ],
+  "scoringCodeHashes": {
+    "src/lib/racing/tissue-generation-features.ts": "f07bc6dbf0ff73e33c05a74bb847cf5efe03a091272f4de7d002e63518e73aa5",
+    "src/lib/racing/tissue-generation-model.ts": "85ce056b96a1827689234fff87881a4697eee724d92460e44824db2f0c68bbd8",
+    "src/lib/racing/tissue-generation-context.ts": "b85460290771fa695b853e1753eb45fa28c22211f863946a628bf367694277aa",
+    "src/lib/racing/tissue-generation-sync.ts": "473cf7c1a0e189fa37381cc19845c8f50641c0aa5cbdd4d794fe3a7d2521686b",
+    "src/lib/racing/tissue-generation-config.ts": "5beceb5f4be3933dc7725003a0d7aef8637c055d183a4e76c107e2acd499f87d"
+  }
+}

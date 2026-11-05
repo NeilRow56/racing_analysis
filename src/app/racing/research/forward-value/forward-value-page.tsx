@@ -7,6 +7,8 @@ import { TissueSpeedRankWatch } from "./tissue-speed-rank-watch";
 import { TissueInputReliabilityWatch } from "./tissue-input-reliability";
 import { loadAllTissueValue } from "@/lib/racing/tissue-value-readers";
 import { TissueValueMonitoring } from "./tissue-value-monitoring";
+import { TissueGenerationMonitor } from "./tissue-generation-monitor";
+import { loadTissueGeneration } from "@/lib/racing/tissue-generation-forward";
 import { loadRankOne } from "@/lib/racing/rank-one-forward";
 import { RankOneMonitoring } from "./rank-one-monitoring";
 import { createDbConnection } from "@/db";
@@ -126,9 +128,16 @@ export default async function ForwardValuePage({ searchParams }: PageProps) {
   return (
     <ResearchPageLayout
       date={raceDate}
-      active={<><HurdleRecencyResearchSection data={hurdleRecencyData} /><TissueProspectiveSummary {...prospectiveTissue} /><TissueInputReliabilityWatch {...prospectiveTissue} /><TissueSpeedRankWatch {...prospectiveTissue} /><ChaseSpeedReliabilityShadow {...chaseSpeed} /><TissueValueMonitoring cohorts={valueCohorts} date={raceDate} /></>}
-      secondary={<><RankOneMonitoring data={rankOneData} date={raceDate} /><SecondaryResearchMonitoring dashboard={dashboard} /></>}
+      active={<><TissueGenerationMonitor data={await loadTissueGeneration()} /><TissueValueMonitoring cohorts={valueCohorts} date={raceDate} /></>}
+      secondary={<SecondaryResearchMonitoring dashboard={dashboard} />}
     >
+      <p className="mt-3 text-sm font-semibold">Retired Tissue generation and absorbed research · historical reference only</p>
+      <HurdleRecencyResearchSection data={hurdleRecencyData} />
+      <TissueProspectiveSummary {...prospectiveTissue} />
+      <TissueInputReliabilityWatch {...prospectiveTissue} />
+      <TissueSpeedRankWatch {...prospectiveTissue} />
+      <ChaseSpeedReliabilityShadow {...chaseSpeed} />
+      <RankOneMonitoring data={rankOneData} date={raceDate} />
       <DailyResearchDashboard dashboard={dashboard} excludeSecondaryMonitoring>
         <AwTurfChallengerSection data={awPairedData} date={raceDate} prices={currentPrices} />
       </DailyResearchDashboard>

@@ -134,6 +134,7 @@ class RacecardLink:
     race_time: str
     race_title: str
     url: str
+    race_stage: str | None = None
 
 
 def build_full_result_url(
@@ -281,6 +282,7 @@ def discover_uk_ire_racecard_links(index: RacecardsIndexPayload) -> list[Racecar
                     course_name=course_name,
                     race_id=race_id,
                     race_date=race["date"],
+                    race_stage=race.get("race_stage"),
                     race_time=race["time"],
                     race_title=race_title,
                     url=build_racecard_url(

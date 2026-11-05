@@ -1,3 +1,4 @@
+import { retiredTissueCaptureAllowed } from "./tissue-generation-config";
 import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { AW_TISSUE_ARTIFACT_HASH, awTissueModelInputs, awTissueProbabilities, awTissueRawInputs, type AwTissueModel } from "./aw-tissue-model";
@@ -60,7 +61,7 @@ export async function mutateAwShadow(mutation: (data: ShadowData) => ShadowData 
 
 export function captureAwShadow(source: AwTissueRace, current: TodayRace, extras: ReadonlyMap<string, AwShadowExtras>, v1: AwTissueModel, candidate: AwShadowModel, now = new Date()): ShadowRace | null {
   const capturedAt = now.toISOString();
-  if (!cleanAwTissueRace(source) || source.modelHash !== v1.checksum || source.settledAt || source.recordedAt > capturedAt ||
+  if (!retiredTissueCaptureAllowed(capturedAt) || !cleanAwTissueRace(source) || source.modelHash !== v1.checksum || source.settledAt || source.recordedAt > capturedAt ||
       capturedAt < AW_SHADOW_IMPLEMENTED_AT || !current.raceDateTime || current.raceId !== source.raceId ||
       current.raceDateTime.toISOString() !== source.scheduledOffAt || now >= current.raceDateTime ||
       current.winningTime || current.runners.some(r => r.finishingPosition !== null || (r.resultStatus !== null && r.resultStatus !== "non_runner"))) return null;

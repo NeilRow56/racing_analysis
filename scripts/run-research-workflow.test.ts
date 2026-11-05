@@ -7,10 +7,17 @@ import {
   nextLocalDateString,
   parseArgs,
   previousLocalDateString,
-  runWorkflow,
+  runWorkflow as currentRunWorkflow,
   isNextDayCardsUnavailable,
-  workflowSteps,
+  workflowSteps as currentWorkflowSteps,
 } from "./run-research-workflow";
+
+// Existing protocol fixtures explicitly exercise the historical, pre-consolidation workflow.
+const workflowSteps = (mode: Parameters<typeof currentWorkflowSteps>[0], date: string) => currentWorkflowSteps(mode, date, new Date("2026-10-09T08:00:00Z"));
+const runWorkflow = (...args: Parameters<typeof currentRunWorkflow>) => {
+  args[0] = { ...args[0], now: new Date("2026-10-09T08:00:00Z") };
+  return currentRunWorkflow(...args);
+};
 
 const originalLog = console.log;
 const originalError = console.error;

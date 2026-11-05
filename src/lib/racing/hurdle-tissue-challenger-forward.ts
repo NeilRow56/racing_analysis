@@ -1,3 +1,4 @@
+import { retiredTissueCaptureAllowed } from "./tissue-generation-config";
 import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { isVoidBetResultStatus } from "./backtest";
@@ -116,7 +117,7 @@ export function buildHurdlePair(input: {
 export function captureHurdlePairs(data: HurdlePairData, additions: HurdlePairRace[]): HurdlePairData {
   const known = new Set(data.races.map((race) => race.raceId));
   const fresh = additions.filter((race) => {
-    if (known.has(race.raceId) || race.firstCapturedAt < data.epoch || race.firstCapturedAt >= race.control.scheduledOffAt ||
+    if (!retiredTissueCaptureAllowed(race.firstCapturedAt) || known.has(race.raceId) || race.firstCapturedAt < data.epoch || race.firstCapturedAt >= race.control.scheduledOffAt ||
         race.raceDate !== getLocalRacingDate(new Date(race.firstCapturedAt)) || race.settledAt !== null ||
         race.control.subtype !== "Hurdle" || race.challengerVersion !== data.version) return false;
     known.add(race.raceId);

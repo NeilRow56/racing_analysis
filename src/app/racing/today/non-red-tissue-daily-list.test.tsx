@@ -95,11 +95,13 @@ test("empty input and all-watch cards show the requested empty state and disable
 test("Today summary consumes final attached racecard data and the shared watch helper", () => {
   const page = readFileSync(new URL("./page.tsx", import.meta.url), "utf8");
   assert.ok(page.indexOf("const dailyList =") > page.indexOf("attachFrozenValueToMeetings(attachJump"));
-  assert.match(page, /buildNonRedTissueDailyList\(displayData.status === "ok" \? displayData.meetings : \[\]\)/);
+  assert.match(page, /const watchMeetings = displayData.status === "ok" \? displayData.meetings : \[\]/);
+  assert.match(page, /const legacyDailyList = newTissueForDate \? \[\] : buildNonRedTissueDailyList\(watchMeetings\)/);
+  assert.match(page, /const dailyList = newTissueForDate \? buildTissueDailyWatchList\(watchMeetings\) : legacyDailyList/);
   const helper = readFileSync(new URL("../../../lib/racing/non-red-tissue-daily-list.ts", import.meta.url), "utf8");
   assert.match(helper, /isTissueTop2SpeedRankWatch\(candidate\)/);
   assert.match(helper, /capturedPrice: tissueValue\?\.marketPrice/);
-  assert.match(page, /clipboardText=\{formatNonRedTissueDailyList\(dailyList\)\}/);
+  assert.match(page, /clipboardText=\{newTissueForDate \? formatTissueDailyWatchList\(dailyList\) : formatNonRedTissueDailyList\(legacyDailyList\)\}/);
   assert.match(helper, /isTissue1Value1Agreement\(candidate\)/);
   assert.match(helper, /valueRank: tissueValue\?\.valueRank/);
   assert.doesNotMatch(helper, /bestL3SpeedRank\s*===/);

@@ -245,9 +245,9 @@ test("results never calls capture; summary/today are read-only commands, live/af
   assert.deepEqual(fetched,["race"]);assert.equal(data.observations.length,6);assert.equal(data.observations[0]!.outcome!.status,"settled");
   const empty=await runHurdleRecencyCycle({command:"results",raceDate:date,data:emptyHurdleRecency(),loadCapture:async()=>{throw Error("no capture");},loadResults:async()=>{throw Error("no pending results");}});
   assert.equal(empty.observations.length,0);
-  for(const mode of ["live","after"] as const){const steps=workflowSteps(mode,date).filter(s=>s.script.startsWith("hurdle-recency:"));assert.deepEqual(steps.map(s=>s.script),["hurdle-recency:results"]);}
-  assert.equal(workflowSteps("morning",date).filter(s=>s.script==="hurdle-recency:sync").length,1);
-  for(const mode of ["night","late"] as const)assert.equal(workflowSteps(mode,date).some(s=>s.script.startsWith("hurdle-recency:")),false);
+  for(const mode of ["live","after"] as const){const steps=workflowSteps(mode, date, now).filter(s=>s.script.startsWith("hurdle-recency:"));assert.deepEqual(steps.map(s=>s.script),["hurdle-recency:results"]);}
+  assert.equal(workflowSteps("morning", date, now).filter(s=>s.script==="hurdle-recency:sync").length,1);
+  for(const mode of ["night","late"] as const)assert.equal(workflowSteps(mode, date, now).some(s=>s.script.startsWith("hurdle-recency:")),false);
 });
 
 test("sync only reads today's cards, and a load crossing the off cannot create retrospective captures", async () => {
