@@ -1,11 +1,12 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 
-export function ResearchPageLayout({ date, active, secondary, children }: {
+export function ResearchPageLayout({ date, active, secondary, children, archiveLoaded }: {
   date: string;
   active: ReactNode;
   secondary: ReactNode;
   children: ReactNode;
+  archiveLoaded?: boolean;
 }) {
   return <main className="min-h-screen bg-gray-50 px-4 py-6 text-slate-950 sm:px-6 lg:px-8">
     <div className="mx-auto max-w-[1600px]">
@@ -38,14 +39,14 @@ export function ResearchPageLayout({ date, active, secondary, children }: {
         {secondary}
       </details>
 
-      <details id="archived-research" className="mt-3 border-t border-slate-200 py-4">
+      <details open={archiveLoaded === true || undefined} id="archived-research" className="mt-3 border-t border-slate-200 py-4">
         <summary className="cursor-pointer">
           <h2 className="inline text-sm font-semibold">ARCHIVED / LEGACY RESEARCH</h2>
           <span className="ml-2 text-xs text-slate-500">Tissue VALUE, model monitors, challengers and research history</span>
         </summary>
         <p className="mt-2 text-sm text-slate-500">Previous prospective and historical experiments retained for audit and reference. These are not current active research signals.</p>
         <p className="mt-1 text-xs text-slate-500">Tissue VALUE did not establish a robust betting edge or material incremental predictive value beyond the market. Existing records and calculations are retained below.</p>
-        {children}
+        {archiveLoaded === false ? <Link prefetch={false} className="mt-3 inline-block text-sm font-semibold text-emerald-800 underline" href="?archive=1#archived-research">Load archived research</Link> : children}
       </details>
     </div>
   </main>;

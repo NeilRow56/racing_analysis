@@ -1,3 +1,7 @@
+import { createResearchCache, researchFileIdentity } from "@/lib/racing/research-cache";
+import { researchDatabaseIdentity, getResearchCanonicalResultRaceIds } from "@/lib/racing/research-result-status";
+import { researchStage } from "@/lib/racing/research-profile";
+import { ActiveValuePerformance } from "./active-value-performance";
 import { BookmakerQuoteLines } from "./bookmaker-quote-lines";
 import { attachChaseSpeedState, loadChaseSpeedSnapshots } from "@/lib/racing/chase-speed-reliability-capture";
 import { ChaseSpeedReliabilityShadow } from "./chase-speed-reliability-shadow";
@@ -44,8 +48,7 @@ import {
   type ForwardValueReportingStatus,
   type TurfModelAgreementSummary,
 } from "@/lib/racing/forward-value-summary";
-import { getLocalRacingDate, getSportingLifeCurrentPricesForDate, getRacecardRowsForRaceIds, getSportingLifeCurrentCardRaceStatuses, groupTodaysRacingRows } from "@/lib/racing/todays-racing";
-import { todayRaceHasConclusiveResult } from "@/lib/racing/today-race-status";
+import { getLocalRacingDate, getSportingLifeCurrentPricesForDate, getSportingLifeCurrentCardRaceStatuses } from "@/lib/racing/todays-racing";
 import { loadTissueForward, ACTIVE_TURF_TISSUE_CONFIG } from "@/lib/racing/tissue-forward";
 import { RecentObservationsScroll } from "./recent-observations-scroll";
 import { cleanAwTissueRace, loadAwTissueForward, type AwTissueForwardData, type AwTissueRace } from "@/lib/racing/aw-tissue-forward";
@@ -69,51 +72,45 @@ import { ChaseTissueChallengerSection } from "./chase-tissue-challenger";
 import { loadHurdleRecency } from "@/lib/racing/hurdle-recency-forward";
 import { HurdleRecencyResearchSection } from "./hurdle-recency-research";
 import { ResearchPageLayout } from "./research-page-layout";
-import { selectActiveResearchCaptures } from "./active-tissue-captures";
-import { ActiveTissueRaceTables } from "./active-tissue-race-tables";
 
 type PageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
 };
 
-export default async function ForwardValuePage({ searchParams }: PageProps) {
-  const raceDate = getLocalRacingDate();
-  const [data, tissueData, awTissueData, jumpTissueData, awPairedData, g4Data, weightData, modelDisagreementData, reviewData, hurdlePairData, chasePairData, hurdleRecencyData, rankOneData, valueCohorts, generation, params] = await Promise.all([
-    loadForwardValueData(),
-    loadTissueForward(ACTIVE_TURF_TISSUE_CONFIG.forwardPath, ACTIVE_TURF_TISSUE_CONFIG),
-    AW_TISSUE_V2_ACTIVE ? loadAwV2Forward() : loadAwTissueForward(),
-    loadJumpTissueForward(),
-    loadAwTissuePairedForward(),
-    loadJumpG4Forward(),
-    loadTodaysRatingWeightForward(),
-    loadModelDisagreementForward(),
-    loadTissueValueReviews(),
-    loadHurdlePair(),
-    loadChasePair(),
-    loadHurdleRecency(),
-    loadRankOne(),
-    loadAllTissueValue(),
-    loadTissueGeneration(),
-    searchParams,
-  ]);
+
+const cachedFiles = createResearchCache<Awaited<ReturnType<typeof readResearchFiles>>>();
+async function readResearchFiles() {
+  return Promise.all([
+    researchStage("loadForwardValueData", () => loadForwardValueData()),
+    researchStage("loadTissueForward", () => loadTissueForward(ACTIVE_TURF_TISSUE_CONFIG.forwardPath, ACTIVE_TURF_TISSUE_CONFIG)),
+    researchStage("AW_TISSUE_V2_ACTIVE ? loadAwV2Forward", () => AW_TISSUE_V2_ACTIVE ? loadAwV2Forward() : loadAwTissueForward()),
+    researchStage("loadJumpTissueForward", () => loadJumpTissueForward()),
+    researchStage("loadAwTissuePairedForward", () => loadAwTissuePairedForward()),
+    researchStage("loadJumpG4Forward", () => loadJumpG4Forward()),
+    researchStage("loadTodaysRatingWeightForward", () => loadTodaysRatingWeightForward()),
+    researchStage("loadModelDisagreementForward", () => loadModelDisagreementForward()),
+    researchStage("loadTissueValueReviews", () => loadTissueValueReviews()),
+    researchStage("loadHurdlePair", () => loadHurdlePair()),
+    researchStage("loadChasePair", () => loadChasePair()),
+    researchStage("loadHurdleRecency", () => loadHurdleRecency()),
+    researchStage("loadRankOne", () => loadRankOne()),
+    researchStage("loadAllTissueValue", () => loadAllTissueValue()),
+    researchStage("loadTissueGeneration", () => loadTissueGeneration()),
+    researchStage("chase snapshot filesystem", () => loadChaseSpeedSnapshots()),
+  ] as const);
+}
+type ResearchDatabase = { currentCardStatuses: Awaited<ReturnType<typeof getSportingLifeCurrentCardRaceStatuses>>; canonicalResultRaceIds: ReadonlySet<string>; currentPrices: Awaited<ReturnType<typeof getSportingLifeCurrentPricesForDate>> };
+const cachedDatabase = createResearchCache<ResearchDatabase>(30_000);
+
+const cachedReporting = createResearchCache<ReturnType<typeof buildResearchReport>>(30_000);
+function buildResearchReport(files: Awaited<ReturnType<typeof readResearchFiles>>, database: ResearchDatabase, raceDate: string, params: Awaited<PageProps["searchParams"]>) {
+  const [data, tissueData, awTissueData, jumpTissueData, , g4Data, weightData, modelDisagreementData, , , , , , valueCohorts] = files;
+  const { currentCardStatuses, currentPrices } = database;
   const prospectiveTissue = buildProspectiveTissueSources({ turf: tissueData, aw: awTissueData, jump: jumpTissueData, cohorts: valueCohorts });
-  const chaseSpeedSnapshots = await loadChaseSpeedSnapshots();
+  const chaseSpeedSnapshots = files[15];
   const chaseSpeed = { observations: attachChaseSpeedState(prospectiveTissue.observations, chaseSpeedSnapshots, "primary"),
     priceObservations: attachChaseSpeedState(prospectiveTissue.priceObservations, chaseSpeedSnapshots, "price") };
-  const connection = createDbConnection();
-  let currentCardStatuses;
-  let canonicalResultRaceIds;
-  let currentPrices;
-  try {
-    const raceIds = data.races.map((race) => race.raceId);
-    [currentCardStatuses, canonicalResultRaceIds, currentPrices] = await Promise.all([
-      getSportingLifeCurrentCardRaceStatuses(connection.db, raceIds),
-      getCanonicalResultRaceIds(connection.db, raceIds),
-      getSportingLifeCurrentPricesForDate(connection.db, raceDate),
-    ]);
-  } finally {
-    await connection.client.end();
-  }
+  const calculationStarted = performance.now();
   const reportingScope = buildForwardValueReportingScope(data.races, currentCardStatuses);
   const dashboard = buildResearchDashboard({ date: raceDate, prices: currentPrices, turf: tissueData, jump: jumpTissueData, aw: awTissueData, g4: g4Data, todaysRatingWeight: weightData, modelDisagreement: modelDisagreementData, ratings: reportingScope.analyticalRecords });
   const filters = parseFilters(params);
@@ -128,12 +125,46 @@ export default async function ForwardValuePage({ searchParams }: PageProps) {
     filters.family,
   );
 
+  if (process.env.RESEARCH_PROFILE) console.info(`[research] reporting summaries: ${(performance.now() - calculationStarted).toFixed(1)}ms`);
+  return { prospectiveTissue, chaseSpeed, reportingScope, dashboard, filters, summary, disagreementDiagnostics, observations, probabilityGapDiagnostics };
+}
+
+export default async function ForwardValuePage({ searchParams }: PageProps) {
+  const raceDate = getLocalRacingDate();
+  const fileIdentity = await researchStage("file modification identity", () => researchFileIdentity());
+  const [params, files] = await Promise.all([searchParams, researchStage("research files (cached)", () => cachedFiles(fileIdentity, readResearchFiles))]);
+  const [data, , awTissueData, jumpTissueData, awPairedData, , , , reviewData, hurdlePairData, chasePairData, hurdleRecencyData, rankOneData, valueCohorts, generation] = files;
+  const connection = createDbConnection();
+  let currentCardStatuses;
+  let canonicalResultRaceIds;
+  let currentPrices;
+  let databaseIdentity: string;
+  try {
+    databaseIdentity = await researchStage("DB modification identity", () => researchDatabaseIdentity(connection.db));
+    const database = await researchStage("DB reporting snapshot (cached)", () => cachedDatabase(`${fileIdentity}|${raceDate}|${databaseIdentity}`, async () => {
+      const raceIds = data.races.map(race => race.raceId);
+      const [currentCardStatuses, canonicalResultRaceIds, currentPrices] = await Promise.all([
+        researchStage("DB card statuses", () => getSportingLifeCurrentCardRaceStatuses(connection.db, raceIds)),
+        researchStage("DB canonical result projection", () => getResearchCanonicalResultRaceIds(connection.db, raceIds)),
+        researchStage("DB current prices", () => getSportingLifeCurrentPricesForDate(connection.db, raceDate)),
+      ]);
+      return { currentCardStatuses, canonicalResultRaceIds, currentPrices };
+    }));
+    ({ currentCardStatuses, canonicalResultRaceIds, currentPrices } = database);
+  } finally {
+    await connection.client.end();
+  }
+  const filtersKey = JSON.stringify(parseFilters(params));
+  const { prospectiveTissue, chaseSpeed, reportingScope, dashboard, filters, summary, disagreementDiagnostics, observations, probabilityGapDiagnostics } = await researchStage("derived reporting (cached)", () =>
+    cachedReporting(`${fileIdentity}|${raceDate}|${databaseIdentity}|${filtersKey}`, async () => buildResearchReport(files, { currentCardStatuses, canonicalResultRaceIds, currentPrices }, raceDate, params)));
   return (
     <ResearchPageLayout
       date={raceDate}
-      active={<><TissueGenerationMonitor data={generation} /><ActiveTissueRaceTables races={selectActiveResearchCaptures(valueCohorts, generation, raceDate)} date={raceDate} /><TissueValueMonitoring cohorts={valueCohorts} date={raceDate} /></>}
+      archiveLoaded={scalar(params?.archive) === "1"}
+      active={<><ActiveValuePerformance datasets={valueCohorts.map(c => c.data)} generation={generation} date={raceDate} /><TissueGenerationMonitor data={generation} /><TissueValueMonitoring cohorts={valueCohorts} date={raceDate} includeArchive={scalar(params?.archive) === "1"} /></>}
       secondary={<SecondaryResearchMonitoring dashboard={dashboard} />}
     >
+      {scalar(params?.archive) === "1" ? <>
       <p className="mt-3 text-sm font-semibold">Retired Tissue generation and absorbed research · historical reference only</p>
       <HurdleRecencyResearchSection data={hurdleRecencyData} />
       <TissueProspectiveSummary {...prospectiveTissue} />
@@ -172,18 +203,9 @@ export default async function ForwardValuePage({ searchParams }: PageProps) {
           canonicalResultRaceIds={canonicalResultRaceIds}
         />
       </details>
+      </> : null}
     </ResearchPageLayout>
   );
-}
-
-async function getCanonicalResultRaceIds(
-  db: ReturnType<typeof createDbConnection>["db"],
-  raceIds: string[],
-): Promise<ReadonlySet<string>> {
-  const rows = await getRacecardRowsForRaceIds(db, raceIds);
-  return new Set(groupTodaysRacingRows(rows).flatMap((meeting) =>
-    meeting.races.filter(todayRaceHasConclusiveResult).map((race) => race.raceId)
-  ));
 }
 
 function familyFilteredProbabilityGapDiagnostics(

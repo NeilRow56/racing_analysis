@@ -1,3 +1,6 @@
+import { activeValueDay, activeValuePerformance } from "./active-value-performance";
+import { pendingTissueValueRaceIds } from "./tissue-value-forward";
+import { workflowSteps } from "../../../scripts/run-research-workflow";
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { mkdtemp, readFile, rm } from "node:fs/promises";
@@ -7,7 +10,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { VALUE_COHORTS, TURF_VALUE_CONFIG, type ValueCohortConfig } from "./tissue-value-config";
 import { appendValueForward, buildValueRace, emptyValueForward, loadValueForward, mutateValueForward, settleValueForward, validValueCapture } from "./tissue-value-forward";
 import { frozenValueIndex, type DisplayValueRace } from "./tissue-value-view";
-import { frozenPriorCareerRuns, summarizeValueRankV2, valueRankOneDecision, VALUE_RANK_EPOCH, VALUE_RANK_VERSION } from "./value-rank-v2";
+import { frozenPriorCareerRuns, summarizeValueRankV2, valueRankOneDecision, VALUE_RANK_EPOCH, VALUE_RANK_PRICE_CAP_EPOCH, VALUE_RANK_VERSION } from "./value-rank-v2";
 import { isTissue1Value1Agreement } from "./tissue-value-agreement";
 import { buildNonRedTissueDailyList } from "./non-red-tissue-daily-list";
 import type { TodayMeeting, TodayRace, TodayRunner } from "./todays-racing";
@@ -17,11 +20,12 @@ import { TissueValueRaceTables } from "../../app/racing/research/forward-value/t
 
 const now = new Date(VALUE_RANK_EPOCH), date = VALUE_RANK_EPOCH.slice(0, 10);
 function fixture(price = 35, count: number | null = 7, config: ValueCohortConfig = TURF_VALUE_CONFIG, at = now, tie = false) {
+  const fixtureDate = at.toISOString().slice(0, 10);
   const runner = (runnerId: string, p: number): TodayRunner => ({ runnerId, horseId: runnerId, horseName: runnerId,
     resultStatus: null, finishingPosition: null, bookmakerQuotes: [{ bookmakerId: 1, bookmakerName: "Book", fractionalOdds: null, decimalOdds: p }],
   }) as TodayRunner;
   const race: TodayRace = {
-    raceId: config.family, sourceId: "source", scheduledTime: "14:00", raceDateTime: new Date(`${date}T14:00:00Z`), courseCountry: "GB",
+    raceId: config.family, sourceId: "source", scheduledTime: "14:00", raceDateTime: new Date(`${fixtureDate}T14:00:00Z`), courseCountry: "GB",
     raceName: config.family === "HURDLE" ? "Handicap Hurdle" : config.family === "CHASE" ? "Handicap Chase" : "Handicap Stakes",
     raceType: config.family === "HURDLE" ? "hurdle" : config.family === "CHASE" ? "chase" : "flat", raceTypeCode: null,
     raceClass: "4", distance: "2m", distanceYards: 3520, going: config.family === "AW" ? "Standard" : "Good",
@@ -33,7 +37,7 @@ function fixture(price = 35, count: number | null = 7, config: ValueCohortConfig
   const inputs = Array<number>(names.length).fill(0);
   inputs[names.indexOf(feature)] = Math.log1p(count ?? 0);
   inputs[names.indexOf(`${feature}_missing`)] = count === null ? 1 : 0;
-  const book = buildValueRace({ config, race, course: "Test course", raceDate: date, capturedAt: at, book: {
+  const book = buildValueRace({ config, race, course: "Test course", raceDate: fixtureDate, capturedAt: at, book: {
     modelVersion: config.modelVersion, modelChecksum: "a".repeat(64), scorerVersion: config.scorerVersion,
     featureSchemaVersion: config.featureSchemaVersion, featureNames: names, featureCutoffAt: at.toISOString(),
     runners: race.runners.map((r, i) => ({ runnerId: r.runnerId, probability: tie ? .5 : i === 0 ? .8 : .2, tissueRank: tie && config.tissueTies === "competition" ? 1 : i + 1, modelInputs: [...inputs] })),
@@ -207,4 +211,95 @@ test("prospective monitor separates target-band reasons and excludes historical/
   const rejected = fixture(35, 10).book;
   const table = renderToStaticMarkup(<TissueValueRaceTables races={[rejected]} date={date} />);
   assert.ok(table.includes("Legacy 1 · rejected"));
+});
+
+for (const [label, count, won, historical, active] of [
+  ["retained winner", 7, true, false, true],
+  ["retained loser", 7, false, false, true],
+  ["rejected legacy winner", 10, true, false, false],
+  ["pre-epoch winner", 7, true, true, false],
+] as const) test(`daily/cumulative V2 settlement: ${label}`, () => {
+  const at = historical ? new Date(Date.parse(VALUE_RANK_EPOCH) - 1) : now;
+  const { book, race, config } = fixture(35, count, TURF_VALUE_CONFIG, at);
+  const data = { ...emptyValueForward(config), races: [book] };
+  const frozen = JSON.stringify(book);
+  assert.deepEqual(pendingTissueValueRaceIds([data]), [race.raceId]);
+  const result = { ...race, actualRunnerCount: 2, runners: race.runners.map((r, i) => ({ ...r,
+    resultStatus: "finished", finishingPosition: won ? i + 1 : 2 - i, oddsDecimal: "999" })) };
+  const results = new Map([[race.raceId, result]]);
+  const settled = settleValueForward(data, results, new Date(`${date}T18:00:00Z`));
+  const performance = activeValuePerformance([settled]), daily = activeValueDay(performance, date);
+  const cumulative = summarizeValueRankV2(settled.races);
+  assert.equal(daily.summary.tracked, active ? 1 : 0);
+  assert.deepEqual(daily.summary, cumulative.active);
+  assert.deepEqual(daily.rows.map(r => r.runnerId), performance.active.map(r => r.runnerId));
+  assert.equal(daily.summary.winners, active && won ? 1 : 0);
+  assert.equal(daily.summary.profitLoss, active ? won ? 34 : -1 : null);
+  assert.equal(activeValueDay(performance, "2026-11-06").summary.tracked, 0);
+  assert.equal(daily.rejected.length, !historical && !active ? 1 : 0);
+  assert.deepEqual(settled.races[0].valueRankPolicy, book.valueRankPolicy);
+  assert.equal(settled.races[0].runners[0].marketPrice, 35);
+  assert.equal(JSON.stringify(data.races[0]), frozen, "settlement never mutates the original capture");
+  assert.deepEqual(pendingTissueValueRaceIds([settled]), []);
+  assert.deepEqual(settleValueForward(settled, results, new Date(`${date}T19:00:00Z`)), settled);
+});
+
+test("live/after and standalone result settlement reach every family Value ledger without recapture", async () => {
+  for (const mode of ["live", "after"] as const) {
+    const steps = workflowSteps(mode, date, new Date(`${date}T18:00:00Z`));
+    assert.ok(steps.some(s => s.script === "research:settle"));
+    assert.ok(steps.some(s => s.script === "tissue-value:results"));
+    assert.ok(!steps.some(s => s.script === "tissue-value:sync"));
+  }
+  const source = await readFile("scripts/settle-research-results.ts", "utf8");
+  assert.match(source, /pendingTissueValueRaceIds\(valueCohorts.map/);
+  assert.match(source, /for \(const \{ config \} of valueCohorts\)/);
+  assert.match(source, /mutateValueForward\(config/);
+  assert.match(source, /settleValueForward\(latest, races, now\)/);
+  assert.doesNotMatch(source, /appendValueForward|buildValueRace/);
+});
+
+for (const [price, count, retained, reason] of [
+  [20.99, null, true, null], [21, 4, false, "PRIOR_RUNS_0_4"],
+  [35, 7, true, null], [50.99, 10, false, "PRIOR_RUNS_10_PLUS"],
+  [35, null, false, "PRIOR_RUNS_MISSING"], [51, null, true, null],
+  [66.99, 20, true, null], [67, null, true, null],
+  [67.01, 7, false, "PRICE_ABOVE_67"], [101, 7, false, "PRICE_ABOVE_67"], [251, null, false, "PRICE_ABOVE_67"],
+] as const) test(`capped epoch: price ${price}, runs ${count}`, () => {
+  for (const config of VALUE_COHORTS) {
+    const { book } = fixture(price, count, config, new Date(VALUE_RANK_PRICE_CAP_EPOCH));
+    assert.equal(book.valueRankPolicy!.epoch, VALUE_RANK_PRICE_CAP_EPOCH);
+    assert.equal(validValueCapture(book, config), true);
+    const index = display(book), leader = index.get(`${book.raceId}|leader`)!;
+    assert.equal(leader.activeValue1, retained);
+    assert.equal(leader.valueRankDecision!.rejectionReason, reason);
+    assert.equal(index.get(`${book.raceId}|second`)!.activeValue1, false, "No Value 2 promotion");
+    assert.equal(isTissue1Value1Agreement(leader), retained, "T1=V1 uses active capped V1");
+    assert.deepEqual(book.runners.map(r => r.valueRank), [1, 2]);
+    if (reason === "PRICE_ABOVE_67") {
+      const summary = summarizeValueRankV2([book]);
+      assert.equal(summary.rejectionReasons.find(r => r.reason === reason)!.tracked, 1);
+      assert.equal(summary.active.tracked, 0);
+    }
+  }
+});
+
+test("old V2 extreme prices stay active immediately before the cap epoch, and cannot be relabelled", async () => {
+  const config = TURF_VALUE_CONFIG;
+  const { book } = fixture(101, 7, config, new Date(Date.parse(VALUE_RANK_PRICE_CAP_EPOCH) - 1));
+  const before = structuredClone(book);
+  assert.equal(book.valueRankPolicy!.epoch, VALUE_RANK_EPOCH);
+  assert.equal(display(book).get(`${book.raceId}|leader`)!.activeValue1, true);
+  assert.equal(validValueCapture(book, config), true);
+  const capped = fixture(101, 7, config, new Date(VALUE_RANK_PRICE_CAP_EPOCH)).book;
+  assert.equal(capped.valueRankPolicy!.legacyRankOne[0].retained, false);
+  book.valueRankPolicy = capped.valueRankPolicy;
+  assert.equal(validValueCapture(book, config), false);
+  const dir = await mkdtemp(join(tmpdir(), "value-cap-epoch-"));
+  try {
+    const path = join(dir, "value.json");
+    await mutateValueForward(config, data => ({ ...data, races: [before, capped] }), path);
+    const loaded = await loadValueForward(config, path);
+    assert.deepEqual(loaded.races, [before, capped]);
+  } finally { await rm(dir, { recursive: true, force: true }); }
 });

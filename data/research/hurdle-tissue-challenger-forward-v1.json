@@ -1036039,7 +1036039,14 @@
             },
             "horseId": "0b2537b5-3bb1-4009-ae38-4b86d7995b87",
             "horseName": "Crest of Arms",
-            "outcome": null
+            "outcome": {
+              "finishingPosition": 2,
+              "resultStatus": "finished",
+              "won": false,
+              "finalSp": 3.5,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "ac1d06a0-d535-4898-ab42-4e74f97c773e",
@@ -1036232,7 +1036239,14 @@
             },
             "horseId": "18e79d24-e35e-4296-a8ea-1d3966fea9c2",
             "horseName": "Ez Tiger",
-            "outcome": null
+            "outcome": {
+              "finishingPosition": 3,
+              "resultStatus": "finished",
+              "won": false,
+              "finalSp": 2.25,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "7c9e77f4-e136-4797-9def-2df651d4e7a8",
@@ -1036423,7 +1036437,14 @@
             },
             "horseId": "94de0db1-9e89-416c-8279-8175b2dbf3f3",
             "horseName": "Stroll On By",
-            "outcome": null
+            "outcome": {
+              "finishingPosition": 4,
+              "resultStatus": "finished",
+              "won": false,
+              "finalSp": 8.5,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "c6344a0e-0141-4fee-8827-c60744e20037",
@@ -1036616,7 +1036637,14 @@
             },
             "horseId": "4fe32f28-482d-47e2-ac26-bb94ccb314a4",
             "horseName": "Basilette",
-            "outcome": null
+            "outcome": {
+              "finishingPosition": 1,
+              "resultStatus": "finished",
+              "won": true,
+              "finalSp": 4.5,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": 3.5
+            }
           },
           {
             "runnerId": "5ed294d4-e7fe-4445-8333-e764f2248319",
@@ -1036809,7 +1036837,14 @@
             },
             "horseId": "4b6dfad4-08c0-4dc8-b93b-6f339df2214a",
             "horseName": "Activist",
-            "outcome": null
+            "outcome": {
+              "finishingPosition": null,
+              "resultStatus": "non_runner",
+              "won": null,
+              "finalSp": null,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": null
+            }
           }
         ],
         "activeRunnerCount": 5,
@@ -1036845,8 +1036880,10 @@
         ],
         "jprALeader": "40b8358d-f22d-4ace-a2a4-adc18bbbc869",
         "jprBLeader": "c6344a0e-0141-4fee-8827-c60744e20037",
-        "winners": [],
-        "settledAt": null,
+        "winners": [
+          "c6344a0e-0141-4fee-8827-c60744e20037"
+        ],
+        "settledAt": "2026-11-05T16:38:56.184Z",
         "excludedReason": null,
         "marketPriceBasisVersion": "median_bookmaker_v1",
         "priceSnapshotScheduleVersion": "early_t180_t60_v1",
@@ -1036893,11 +1036930,11 @@
           "t60": null
         },
         "selectedPriceProfitLoss": {
-          "early": null,
+          "early": -1,
           "t180": null,
           "t60": null,
-          "bestEarly": null,
-          "finalSp": null
+          "bestEarly": -1,
+          "finalSp": -1
         },
         "valueQualified": false
       },
@@ -1037091,7 +1037128,14 @@
             },
             "horseId": "0b2537b5-3bb1-4009-ae38-4b86d7995b87",
             "horseName": "Crest of Arms",
-            "outcome": null
+            "outcome": {
+              "finishingPosition": 2,
+              "resultStatus": "finished",
+              "won": false,
+              "finalSp": 3.5,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "ac1d06a0-d535-4898-ab42-4e74f97c773e",
@@ -1037284,7 +1037328,14 @@
             },
             "horseId": "18e79d24-e35e-4296-a8ea-1d3966fea9c2",
             "horseName": "Ez Tiger",
-            "outcome": null
+            "outcome": {
+              "finishingPosition": 3,
+              "resultStatus": "finished",
+              "won": false,
+              "finalSp": 2.25,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "7c9e77f4-e136-4797-9def-2df651d4e7a8",
@@ -1037475,7 +1037526,14 @@
             },
             "horseId": "94de0db1-9e89-416c-8279-8175b2dbf3f3",
             "horseName": "Stroll On By",
-            "outcome": null
+            "outcome": {
+              "finishingPosition": 4,
+              "resultStatus": "finished",
+              "won": false,
+              "finalSp": 8.5,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": -1
+            }
           },
           {
             "runnerId": "c6344a0e-0141-4fee-8827-c60744e20037",
@@ -1037668,7 +1037726,14 @@
             },
             "horseId": "4fe32f28-482d-47e2-ac26-bb94ccb314a4",
             "horseName": "Basilette",
-            "outcome": null
+            "outcome": {
+              "finishingPosition": 1,
+              "resultStatus": "finished",
+              "won": true,
+              "finalSp": 4.5,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": 3.5
+            }
           },
           {
             "runnerId": "5ed294d4-e7fe-4445-8333-e764f2248319",
@@ -1037861,7 +1037926,14 @@
             },
             "horseId": "4b6dfad4-08c0-4dc8-b93b-6f339df2214a",
             "horseName": "Activist",
-            "outcome": null
+            "outcome": {
+              "finishingPosition": null,
+              "resultStatus": "non_runner",
+              "won": null,
+              "finalSp": null,
+              "deadHeatDivisor": 1,
+              "finalSpProfitLoss": null
+            }
           }
         ],
         "activeRunnerCount": 5,
@@ -1037897,8 +1037969,10 @@
         ],
         "jprALeader": "40b8358d-f22d-4ace-a2a4-adc18bbbc869",
         "jprBLeader": "c6344a0e-0141-4fee-8827-c60744e20037",
-        "winners": [],
-        "settledAt": null,
+        "winners": [
+          "c6344a0e-0141-4fee-8827-c60744e20037"
+        ],
+        "settledAt": "2026-11-05T16:38:56.184Z",
         "excludedReason": null,
         "marketPriceBasisVersion": "median_bookmaker_v1",
         "priceSnapshotScheduleVersion": "early_t180_t60_v1",
@@ -1037945,16 +1038019,16 @@
           "t60": null
         },
         "selectedPriceProfitLoss": {
-          "early": null,
+          "early": -1,
           "t180": null,
           "t60": null,
-          "bestEarly": null,
-          "finalSp": null
+          "bestEarly": -1,
+          "finalSp": -1
         },
         "valueQualified": true
       },
       "classification": "AGREE",
-      "settledAt": null
+      "settledAt": "2026-11-05T16:38:56.184Z"
     },
     {
       "raceId": "df5e526b-2751-44bf-ae9c-e88e44b72240",

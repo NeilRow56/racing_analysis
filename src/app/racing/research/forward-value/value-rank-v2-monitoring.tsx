@@ -6,12 +6,12 @@ const pct = (n: number | null) => n === null ? "—" : `${(n * 100).toFixed(2)}%
 const num = (n: number | null) => n === null ? "—" : n.toFixed(2);
 type Row = { label: string } & ReturnType<typeof summarizeValueRunners>;
 
-export function ValueRankV2Monitoring({ races }: { races: DisplayValueRace[] }) {
-  const summary = summarizeValueRankV2(races);
+export function ValueRankV2Monitoring({ races, summary = summarizeValueRankV2(races) }: { races: DisplayValueRace[]; summary?: ReturnType<typeof summarizeValueRankV2> }) {
   return <section className="mt-5 border border-slate-300 p-3" aria-labelledby="value-rank-v2-heading">
-    <h4 id="value-rank-v2-heading" className="text-sm font-semibold">Active Value 1 V2 / Legacy Value 1 V1 shadow</h4>
-    <p className="mt-1 text-xs text-slate-600">Since {summary.epoch}. At captured prices 21.00–&lt;51.00, the original leader needs 5–9 prior career runs. Failed or missing experience means no Value 1; no promotion. Outside this band the selection is unchanged.</p>
+    <h4 id="value-rank-v2-heading" className="text-sm font-semibold">Complete-market cohort · Value 1 V2 / Legacy V1 shadow</h4>
+    <p className="mt-1 text-xs text-slate-600">Counts frozen observations in the family Value research JSON, including superseded captures; not Today’s latest-book population. Requires a complete pre-race field, valid family model probabilities and a bookmaker price for every runner (one valid quote suffices per runner). V2 requires a frozen post-epoch policy. Since {summary.epoch}. At captured prices 21.00–&lt;51.00, the original leader needs 5–9 prior career runs. Failed or missing experience means no Value 1; no promotion. From {summary.priceCapEpoch}, a frozen price above 67.00 also means no Value 1 and no promotion; 67.00 is included. Earlier captures retain their original policy.</p>
     <p className="mt-1 text-xs text-slate-500">Retrospective discovery, not independent validation. Only new post-epoch captures enter this comparison; previously frozen races remain V1 history. Exact original rank-1 ties are gated individually.</p>
+    <p className="mt-1 text-xs text-slate-500">Policy epochs: {summary.policyEpochs.map(p => `${p.epoch}: ${p.races} captures`).join(" · ")}</p>
     <dl className="mt-3 grid gap-2 text-xs sm:grid-cols-3">
       <div><dt>Races evaluated</dt><dd>{summary.racesEvaluated}</dd></div>
       <div><dt>Races with Value 1 V2</dt><dd>{summary.racesWithValue1}</dd></div>

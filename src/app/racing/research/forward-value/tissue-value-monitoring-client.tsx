@@ -6,24 +6,29 @@ import { filterValueRaces } from "@/lib/racing/tissue-value-view";
 import { TISSUE_VALUE_FAMILIES, type TissueValueFamilyFilter } from "@/lib/racing/tissue-value-metrics";
 import { summarizeValueBands, summarizeValueRunners } from "@/lib/racing/tissue-value-metrics";
 import { TissueValueRaceTables } from "./tissue-value-race-tables";
+import type { summarizeValueRankV2 } from "@/lib/racing/value-rank-v2";
 import { ValueRankV2Monitoring } from "./value-rank-v2-monitoring";
 const pct = (value: number | null) => value === null ? "—" : `${(value * 100).toFixed(2)}%`;
 const number = (value: number | null) => value === null ? "—" : value.toFixed(2);
 
-export function TissueValueMonitoringClient({ cohorts, date }: { cohorts: ValueCohortDisplay[]; date: string }) {
+type CohortSummary = { summary: ReturnType<typeof summarizeValueRunners>; bands: ReturnType<typeof summarizeValueBands>; valueRank: ReturnType<typeof summarizeValueRankV2> };
+export function TissueValueMonitoringClient({ cohorts, date, summaries, totals, includeArchive = true }: {
+  cohorts: ValueCohortDisplay[]; date: string; summaries?: Record<string, CohortSummary>;
+  totals?: ReturnType<typeof summarizeValueRunners>[]; includeArchive?: boolean;
+}) {
   const [family, setFamily] = useState<TissueValueFamilyFilter>("ALL");
   const races = filterValueRaces(cohorts.filter(c => c.available).flatMap(c => c.races), family);
-  const runners = races.flatMap(r => r.runners), summary = summarizeValueRunners(runners), bands = summarizeValueBands(runners);
+  const runners = races.flatMap(r => r.runners), summary = summaries?.[family]?.summary ?? summarizeValueRunners(runners), bands = summaries?.[family]?.bands ?? summarizeValueBands(runners);
   return <section className="mt-6 border-t-2 border-amber-300 pt-5" aria-labelledby="tissue-value-monitoring-heading">
-    <h3 id="tissue-value-monitoring-heading" className="text-base font-semibold">Tissue Value Monitoring</h3>
+    <h3 id="tissue-value-monitoring-heading" className="text-base font-semibold">Complete-market Value research cohort</h3>
     <p className="mt-1 text-sm text-slate-600">All eligible Tissue runners · separate family/model cohorts · no historical backfill.</p>
     <p className="mt-2 text-sm"><strong>Tissue rank</strong> orders likelihood of winning. <strong>Value rank</strong> orders model-vs-market apparent value by expected return at the captured price.</p>
-    <p className="mt-1 text-xs text-slate-500">Large disagreements are highlighted for review, whether the runner wins or loses. All raw scores and ranks remain visible; active Value 1 V2 applies its frozen experience gate separately. These estimates are descriptive research, with no betting recommendation or proven superior value metric.</p>
-    <div className="mt-3 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">{cohorts.map(cohort => {
-      const totals = summarizeValueRunners(cohort.races.flatMap(r => r.runners));
+    <p className="mt-1 text-xs text-slate-500">Large disagreements are highlighted for review, whether the runner wins or loses. All raw scores and ranks remain visible; active Value 1 V2 applies its frozen experience and maximum-price policy separately. These estimates are descriptive research, with no betting recommendation or proven superior value metric.</p>
+    <div className="mt-3 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">{cohorts.map((cohort, index) => {
+      const cohortTotals = totals?.[index] ?? summarizeValueRunners(cohort.races.flatMap(r => r.runners));
       return <article key={cohort.version} className="border border-slate-200 bg-white p-3 text-xs">
         <h4 className="font-semibold">{cohort.family}</h4><p className="mt-1">{cohort.modelVersion}</p>
-        {cohort.available ? <p className="mt-2">Captured / settled: {totals.tracked} / {totals.runners}</p> : <p className="mt-2">VALUE MONITORING NOT AVAILABLE<br />Reason: {cohort.reason ?? "Valid all-runner model probabilities unavailable"}</p>}
+        {cohort.available ? <p className="mt-2">Captured / settled: {cohortTotals.tracked} / {cohortTotals.runners}</p> : <p className="mt-2">VALUE MONITORING NOT AVAILABLE<br />Reason: {cohort.reason ?? "Valid all-runner model probabilities unavailable"}</p>}
         <p className="mt-1 text-slate-500">Since {cohort.epoch}</p>
       </article>;
     })}</div>
@@ -44,11 +49,11 @@ export function TissueValueMonitoringClient({ cohorts, date }: { cohorts: ValueC
       <p className="mt-2 text-xs text-slate-500">Runners in these tables are settled starters only. Pending: {summary.pending}; NR: {summary.nonRunners}; void: {summary.voids}. NR/void are excluded from stakes and expected-winner sums. Frozen probabilities are retained without hindsight renormalization after withdrawals. Dead-heat winners each count as a winner; canonical dead-heat deductions apply to captured-price P/L.</p>
     </details>
     <p className="mt-3 text-xs text-slate-500">Market % is normalized across the complete captured median-bookmaker field. A positive normalized edge need not imply a positive expected return at the quoted price. Value and market ties share competition ranks; Tissue ranks retain each model’s native tie policy. Runner IDs order tied rows. Alternative edge and ratio ranks appear on the Value rank cell tooltip.</p>
-    <ValueRankV2Monitoring races={races} />
+    <ValueRankV2Monitoring races={races} summary={summaries?.[family]?.valueRank} />
     <details className="mt-4">
       <summary className="cursor-pointer text-sm font-medium">Archive · original frozen Value observations and previous Tissue generations</summary>
       <p className="mt-2 text-xs text-slate-500">These original Value-cohort captures retain their own model probabilities, prices and Value ranks. Today’s latest Tissue captures are shown separately above.</p>
-      <TissueValueRaceTables races={races} date={date} />
+      {includeArchive ? <TissueValueRaceTables races={races} date={date} /> : <a className="mt-2 inline-block text-xs font-semibold text-emerald-800 underline" href="?archive=1#tissue-value-monitoring-heading">Load original frozen Value observations</a>}
     </details>
   </section>;
 }

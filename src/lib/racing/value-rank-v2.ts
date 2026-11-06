@@ -2,9 +2,11 @@ import { summarizeValueRunners, type ValueSummaryRunner } from "./tissue-value-m
 
 export const VALUE_RANK_VERSION = "VALUE_RANK_V2" as const;
 export const VALUE_RANK_EPOCH = "2026-11-05T06:37:02.000Z" as const;
-export const VALUE_RANK_REJECTION_REASONS = ["PRIOR_RUNS_0_4", "PRIOR_RUNS_10_PLUS", "PRIOR_RUNS_MISSING"] as const;
+export const VALUE_RANK_PRICE_CAP_EPOCH = "2026-11-06T04:00:07.000Z" as const;
+export const VALUE_RANK_REJECTION_REASONS = ["PRIOR_RUNS_0_4", "PRIOR_RUNS_10_PLUS", "PRIOR_RUNS_MISSING", "PRICE_ABOVE_67"] as const;
 export type ValueRankRejection = typeof VALUE_RANK_REJECTION_REASONS[number];
 export const VALUE_RANK_REJECTION_LABELS: Record<ValueRankRejection, string> = {
+  PRICE_ABOVE_67: "PRICE ABOVE 67.00",
   PRIOR_RUNS_0_4: "0–4 prior runs",
   PRIOR_RUNS_10_PLUS: "10+ prior runs",
   PRIOR_RUNS_MISSING: "Missing prior runs",
@@ -17,7 +19,7 @@ export type ValueRankDecision = {
 };
 export type ValueRankPolicy = {
   version: typeof VALUE_RANK_VERSION;
-  epoch: typeof VALUE_RANK_EPOCH;
+  epoch: typeof VALUE_RANK_EPOCH | typeof VALUE_RANK_PRICE_CAP_EPOCH;
   legacyRankOne: ValueRankDecision[];
 };
 
@@ -38,9 +40,9 @@ export function frozenPriorCareerRuns(family: string, names: readonly string[], 
   return Number.isSafeInteger(count) && count >= 0 && Math.abs(value - count) < 1e-7 ? count : null;
 }
 
-export function valueRankOneDecision(runnerId: string, capturedPrice: number, priorCareerRuns: number | null): ValueRankDecision {
+export function valueRankOneDecision(runnerId: string, capturedPrice: number, priorCareerRuns: number | null, applyPriceCap = true): ValueRankDecision {
   const count = priorCareerRuns !== null && Number.isSafeInteger(priorCareerRuns) && priorCareerRuns >= 0 ? priorCareerRuns : null;
-  const rejectionReason = capturedPrice >= 21 && capturedPrice < 51
+  const rejectionReason = applyPriceCap && capturedPrice > 67 ? "PRICE_ABOVE_67" : capturedPrice >= 21 && capturedPrice < 51
     ? count === null ? "PRIOR_RUNS_MISSING" : count < 5 ? "PRIOR_RUNS_0_4" : count > 9 ? "PRIOR_RUNS_10_PLUS" : null
     : null;
   return { runnerId, priorCareerRuns: count, retained: rejectionReason === null, rejectionReason };
@@ -51,9 +53,10 @@ export function valueRankOneDecision(runnerId: string, capturedPrice: number, pr
  */
 export function buildValueRankPolicy(book: CaptureBook): ValueRankPolicy | undefined {
   if (book.capturedAt < VALUE_RANK_EPOCH) return undefined;
-  return { version: VALUE_RANK_VERSION, epoch: VALUE_RANK_EPOCH,
+  const applyPriceCap = book.capturedAt >= VALUE_RANK_PRICE_CAP_EPOCH;
+  return { version: VALUE_RANK_VERSION, epoch: applyPriceCap ? VALUE_RANK_PRICE_CAP_EPOCH : VALUE_RANK_EPOCH,
     legacyRankOne: book.runners.filter(r => r.valueRank === 1).map(r =>
-      valueRankOneDecision(r.runnerId, r.marketPrice, frozenPriorCareerRuns(book.family, book.featureNames, r.modelInputs))) };
+      valueRankOneDecision(r.runnerId, r.marketPrice, frozenPriorCareerRuns(book.family, book.featureNames, r.modelInputs), applyPriceCap)) };
 }
 
 /** Historical observations retain V1 semantics; V2 observations carry an explicit flag. */
@@ -79,7 +82,8 @@ export function summarizeValueRankV2(races: readonly SummaryBook[]) {
   const racesWithValue1 = prospective.filter(r => r.valueRankPolicy!.legacyRankOne.some(d => d.retained)).length;
   const target = decisions.filter(r => r.runner.marketPrice >= 21 && r.runner.marketPrice < 51);
   return {
-    version: VALUE_RANK_VERSION, epoch: VALUE_RANK_EPOCH,
+    version: VALUE_RANK_VERSION, epoch: VALUE_RANK_EPOCH, priceCapEpoch: VALUE_RANK_PRICE_CAP_EPOCH,
+    policyEpochs: [VALUE_RANK_EPOCH, VALUE_RANK_PRICE_CAP_EPOCH].map(epoch => ({ epoch, races: prospective.filter(r => r.valueRankPolicy!.epoch === epoch).length })),
     racesEvaluated: prospective.length, racesWithValue1, racesWithoutValue1: prospective.length - racesWithValue1,
     active: summarizeValueRunners(retained.map(r => r.runner)),
     legacyShadow: summarizeValueRunners(decisions.map(r => r.runner)),
@@ -88,7 +92,7 @@ export function summarizeValueRankV2(races: readonly SummaryBook[]) {
       ...summarizeValueRunners(rejected.filter(r => r.decision.rejectionReason === reason).map(r => r.runner)) })),
     targetBand: [
       { group: "V2 RETAINED: 5–9 prior runs", ...summarizeValueRunners(target.filter(r => r.decision.retained).map(r => r.runner)) },
-      ...VALUE_RANK_REJECTION_REASONS.map(reason => ({ group: `V1 REJECTED: ${VALUE_RANK_REJECTION_LABELS[reason]}`,
+      ...VALUE_RANK_REJECTION_REASONS.filter(reason => reason !== "PRICE_ABOVE_67").map(reason => ({ group: `V1 REJECTED: ${VALUE_RANK_REJECTION_LABELS[reason]}`,
         ...summarizeValueRunners(target.filter(r => r.decision.rejectionReason === reason).map(r => r.runner)) })),
     ],
     historicalV1: summarizeValueRunners(races.filter(r => r.capturedAt < VALUE_RANK_EPOCH).flatMap(r => r.runners.filter(r => r.valueRank === 1))),

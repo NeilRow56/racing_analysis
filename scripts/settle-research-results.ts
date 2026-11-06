@@ -1,3 +1,5 @@
+import { loadAllTissueValue } from "@/lib/racing/tissue-value-readers";
+import { mutateValueForward, pendingTissueValueRaceIds, settleValueForward } from "@/lib/racing/tissue-value-forward";
 import { loadOrSpeed, mutateOrSpeed, pendingOrSpeedRaceIds, settleOrSpeed } from "@/lib/racing/or-speed-forward";
 import { loadTissueGeneration, mutateTissueGeneration, settleTissueGeneration } from "@/lib/racing/tissue-generation-forward";
 import { loadChaseShadow, mutateChaseShadow, settleChaseShadow } from "@/lib/racing/chase-shadow-forward";
@@ -28,11 +30,13 @@ export async function main(args: string[]) {
   const now = new Date();
   const connection = createDbConnection();
   try {
-    const [tpr, tissue] = await Promise.all([
+    const [valueCohorts, tpr, tissue] = await Promise.all([
+      loadAllTissueValue(),
       loadTrackerData(),
       loadTissueForward(ACTIVE_TURF_TISSUE_CONFIG.forwardPath, ACTIVE_TURF_TISSUE_CONFIG),
     ]);
     const raceIds = [...new Set([
+      ...pendingTissueValueRaceIds(valueCohorts.map(c => c.data)),
       ...pendingTprForwardRaceIds(tpr),
       ...pendingOrSpeedRaceIds(await loadOrSpeed()),
       ...pendingForwardValueRaceIds(await importForwardValueSnapshot()),
@@ -41,6 +45,15 @@ export async function main(args: string[]) {
     ])];
     const races = await loadRacesByIds(connection.db, raceIds);
     await mutateTissueGeneration(latest => settleTissueGeneration(latest, races, now));
+    let settledTissueValue = 0;
+    for (const { config } of valueCohorts) {
+      await mutateValueForward(config, latest => {
+        const next = settleValueForward(latest, races, now);
+        settledTissueValue += next.races.flatMap(r => r.runners).filter(r => r.outcome !== null).length
+          - latest.races.flatMap(r => r.runners).filter(r => r.outcome !== null).length;
+        return next;
+      });
+    }
     let settledOrSpeed = 0;
     await mutateOrSpeed(latest => {
       const next = settleOrSpeed(latest, races, now);
@@ -124,6 +137,7 @@ export async function main(args: string[]) {
       `tpr=${settledTpr}`,
       `or_speed=${settledOrSpeed}`,
       `value=${settledValue}`,
+      `tissue_value=${settledTissueValue}`,
       `turf_tissue=${settledTurfTissue}`,
       `jump_tissue=${settledJumpTissue}`,
       `aw_tissue=${settledAwTissue}`,

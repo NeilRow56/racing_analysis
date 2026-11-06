@@ -1,3 +1,6 @@
+import { readFile } from "node:fs/promises";
+import { TissueGenerationMonitor } from "./tissue-generation-monitor";
+import { emptyTissueGeneration } from "@/lib/racing/tissue-generation-forward";
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { Children, cloneElement, isValidElement, type ReactElement, type ReactNode } from "react";
@@ -134,4 +137,28 @@ test("presentational separation preserves every supplied observation, monitor an
   assert.match(secondary, /Separate weight context/);assert.match(secondary, /Tissue and Weight/);
   assert.match(legacy, /Tissue and Weight/);assert.doesNotMatch(legacy, /Separate weight context/);
   assert.match(legacy, /P\/L \+£3\.00/);assert.match(legacy, /ROI \+15\.0%/);
+});
+
+test("removing duplicate Today Tissue tables keeps generation T1/T2/Top2 monitoring and the archive", async () => {
+  const source = await readFile("src/app/racing/research/forward-value/forward-value-page.tsx", "utf8");
+  assert.doesNotMatch(source, /ActiveTissueRaceTables|selectActiveResearchCaptures/);
+  assert.match(source, /<TissueGenerationMonitor data=\{generation\}/);
+  assert.match(source, /<TissueProspectiveSummary/);
+  assert.match(source, /<TissueValueMonitoring/);
+  const data = emptyTissueGeneration(), before = JSON.stringify(data);
+  const html = renderToStaticMarkup(<TissueGenerationMonitor data={data} />);
+  for (const title of ["TISSUE RANK 1", "TISSUE RANK 2", "TISSUE TOP 2"]) assert.ok(html.includes(title));
+  assert.equal(JSON.stringify(data), before);
+  const archive = renderToStaticMarkup(openArchive(view()));
+  assert.match(archive, /Saved Turf History/);
+  assert.match(archive, /Historical rank-one Tissue evidence/);
+});
+
+test("normal page defers server archive content until explicitly requested", () => {
+  const props = { date: "2026-11-06", active: <p>Active summary</p>, secondary: <p>Secondary summary</p>, children: <p>Historical records</p> };
+  const active = renderToStaticMarkup(<ResearchPageLayout {...props} archiveLoaded={false} />);
+  assert.match(active, /Load archived research/); assert.doesNotMatch(active, /Historical records/);
+  const archive = renderToStaticMarkup(<ResearchPageLayout {...props} archiveLoaded />);
+  assert.match(archive, /Historical records/);
+  assert.match(archive, /<details[^>]*open=""[^>]*id="archived-research"/);
 });

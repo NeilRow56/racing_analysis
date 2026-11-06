@@ -12,7 +12,7 @@ import { calculateValueMetrics, valueCompetitionRanks, TISSUE_VALUE_FAMILIES } f
 import { VALUE_MARKET_SOURCE } from "./turf-value-definition";
 import { valueFamilyForRace } from "./tissue-value-family";
 import type { ValueCohortConfig } from "./tissue-value-config";
-import { buildValueRankPolicy, VALUE_RANK_VERSION, VALUE_RANK_EPOCH, VALUE_RANK_REJECTION_REASONS } from "./value-rank-v2";
+import { buildValueRankPolicy, VALUE_RANK_VERSION, VALUE_RANK_EPOCH, VALUE_RANK_PRICE_CAP_EPOCH, VALUE_RANK_REJECTION_REASONS } from "./value-rank-v2";
 
 const finite = z.number().finite();
 const probability = finite.positive().max(1);
@@ -31,7 +31,7 @@ const runnerSchema = z.object({
   valueRank: rank, probabilityEdgeRank: rank, modelMarketRatioRank: rank, outcome: outcomeSchema.nullable(),
 }).strict();
 const valueRankPolicySchema = z.object({
-  version: z.literal(VALUE_RANK_VERSION), epoch: z.literal(VALUE_RANK_EPOCH),
+  version: z.literal(VALUE_RANK_VERSION), epoch: z.enum([VALUE_RANK_EPOCH, VALUE_RANK_PRICE_CAP_EPOCH]),
   legacyRankOne: z.array(z.object({
     runnerId: z.string().min(1), priorCareerRuns: z.number().int().nonnegative().nullable(),
     retained: z.boolean(), rejectionReason: z.enum(VALUE_RANK_REJECTION_REASONS).nullable(),
@@ -51,6 +51,11 @@ const dataSchema = z.object({ version: z.string().min(1), epoch: z.string().min(
 export type TissueValueRace = z.infer<typeof raceSchema>;
 export type TissueValueRunner = z.infer<typeof runnerSchema>;
 export type TissueValueData = z.infer<typeof dataSchema>;
+/** Includes every family and capture; settlements never need a new pre-race capture. */
+export function pendingTissueValueRaceIds(datasets: readonly TissueValueData[]): string[] {
+  return [...new Set(datasets.flatMap(d => d.races.filter(r => r.runners.some(x => x.outcome === null)).map(r => r.raceId)))];
+}
+
 export function emptyValueForward(config: ValueCohortConfig): TissueValueData { return { version: config.version, epoch: config.epoch, races: [] }; }
 
 export function validValueCapture(row: TissueValueRace, config: ValueCohortConfig): boolean {

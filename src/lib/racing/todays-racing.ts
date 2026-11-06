@@ -611,7 +611,7 @@ export async function getSportingLifeCurrentCardRaceStatuses(
   const reconciliations = await Promise.all(dates.map(async (raceDate) => {
     const [indexImport, rows] = await Promise.all([
       getLatestRacecardIndexImport(db, raceDate),
-      getRacecardRows(db, raceDate),
+      getCurrentCardIdentityRows(db, raceDate),
     ]);
     return sportingLifeCurrentCardReconciliation(rows, indexImport?.payload);
   }));
@@ -625,6 +625,44 @@ export async function getSportingLifeCurrentCardRaceStatuses(
     ),
     diagnostics: reconciliations.flatMap((result) => result.diagnostics),
   };
+}
+
+/** Reconciliation needs race identity and field membership only. Avoid the
+ * per-runner bookmaker/forecast/surface JSON subqueries in the Today loader. */
+async function getCurrentCardIdentityRows(db: Db, raceDate: string): Promise<SportingLifeCurrentCardRaceRow[]> {
+  return db.select({
+    raceId: races.id, raceSourceId: races.sourceId, raceDate: races.raceDate,
+    scheduledTime: races.scheduledTime, raceName: races.raceName,
+    distanceYards: races.distanceYards, courseName: courses.displayName,
+    horseId: horses.id, horseName: horses.displayName,
+  }).from(races)
+    .innerJoin(courses, eq(races.courseId, courses.id))
+    .innerJoin(raceRunners, eq(raceRunners.raceId, races.id))
+    .innerJoin(horses, eq(raceRunners.horseId, horses.id))
+    .where(
+      and(
+        eq(races.source, SPORTING_LIFE_SOURCE),
+        eq(raceRunners.source, SPORTING_LIFE_SOURCE),
+        eq(races.raceDate, raceDate),
+        sql`exists (
+          select 1
+          from ${sourceImports}
+          where ${sourceImports.source} = ${SPORTING_LIFE_SOURCE}
+            and ${sourceImports.sourceType} in (${sql.join(
+              TODAY_RACE_SOURCE_TYPES.map((sourceType) => sql`${sourceType}`),
+              sql`, `,
+            )})
+            and ${sourceImports.sourceId} = ${races.sourceId}
+        )`,
+      ),
+    )
+    .orderBy(
+      asc(courses.displayName),
+      asc(races.scheduledTime),
+      asc(races.sourceId),
+      asc(raceRunners.saddleclothNumber),
+      asc(raceRunners.sourceId),
+    );
 }
 
 function emptyCurrentCardRaceStatuses(): SportingLifeCurrentCardRaceStatuses {
