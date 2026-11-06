@@ -55446,7 +55446,16 @@
               "decimalOdds": 2.25
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": true,
+            "finishPosition": 1,
+            "resultStatus": "finished",
+            "deadHeatDivisor": 1,
+            "grossReturn": 2.25,
+            "profitLoss": 1.25,
+            "settledAt": "2026-11-06T14:24:03.060Z"
+          }
         },
         {
           "runnerId": "bb47646d-3ab5-421e-b951-5470d50cbcf4",
@@ -55564,7 +55573,16 @@
               "decimalOdds": 2.38
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": false,
+            "finishPosition": 3,
+            "resultStatus": "finished",
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-11-06T14:24:03.060Z"
+          }
         },
         {
           "runnerId": "44e521cd-d900-4728-b493-571fe9b1d07e",
@@ -55682,7 +55700,16 @@
               "decimalOdds": 5.5
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": false,
+            "finishPosition": 2,
+            "resultStatus": "finished",
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-11-06T14:24:03.060Z"
+          }
         },
         {
           "runnerId": "30e05b7f-0359-416d-a6e5-da06191b2811",
@@ -55800,7 +55827,16 @@
               "decimalOdds": 13
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": false,
+            "finishPosition": 4,
+            "resultStatus": "finished",
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-11-06T14:24:03.060Z"
+          }
         }
       ]
     },
@@ -56018,7 +56054,16 @@
               "decimalOdds": 4
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "NR",
+            "winner": null,
+            "finishPosition": null,
+            "resultStatus": "non_runner",
+            "deadHeatDivisor": 1,
+            "grossReturn": null,
+            "profitLoss": null,
+            "settledAt": "2026-11-06T13:34:26.202Z"
+          }
         },
         {
           "runnerId": "ee1c0d94-fcac-48de-af13-ea01efce4558",
@@ -56134,7 +56179,16 @@
               "decimalOdds": 5
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": true,
+            "finishPosition": 1,
+            "resultStatus": "finished",
+            "deadHeatDivisor": 1,
+            "grossReturn": null,
+            "profitLoss": null,
+            "settledAt": "2026-11-06T13:34:26.202Z"
+          }
         },
         {
           "runnerId": "a6b5d7a3-783e-472e-9390-6eebfcfa9b95",
@@ -56250,7 +56304,16 @@
               "decimalOdds": 5.5
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": false,
+            "finishPosition": 4,
+            "resultStatus": "finished",
+            "deadHeatDivisor": 1,
+            "grossReturn": null,
+            "profitLoss": null,
+            "settledAt": "2026-11-06T13:34:26.202Z"
+          }
         },
         {
           "runnerId": "57e2e5b7-c5fb-49bb-9d42-f11f12ee6816",
@@ -56366,7 +56429,16 @@
               "decimalOdds": 6.5
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": false,
+            "finishPosition": 3,
+            "resultStatus": "finished",
+            "deadHeatDivisor": 1,
+            "grossReturn": null,
+            "profitLoss": null,
+            "settledAt": "2026-11-06T13:34:26.202Z"
+          }
         },
         {
           "runnerId": "47c3a84c-8834-4a88-b648-72746085eb71",
@@ -56482,7 +56554,16 @@
               "decimalOdds": 6
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": false,
+            "finishPosition": 2,
+            "resultStatus": "finished",
+            "deadHeatDivisor": 1,
+            "grossReturn": null,
+            "profitLoss": null,
+            "settledAt": "2026-11-06T13:34:26.202Z"
+          }
         },
         {
           "runnerId": "ec10f44e-728c-4469-a0dc-50cb9724f2fa",
@@ -56598,7 +56679,16 @@
               "decimalOdds": 6
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": false,
+            "finishPosition": 5,
+            "resultStatus": "finished",
+            "deadHeatDivisor": 1,
+            "grossReturn": null,
+            "profitLoss": null,
+            "settledAt": "2026-11-06T13:34:26.202Z"
+          }
         },
         {
           "runnerId": "35b90c0a-76cd-4600-acaa-59149ee5aec4",
@@ -56695,7 +56785,16 @@
           ],
           "capturedPrice": null,
           "quotes": [],
-          "outcome": null
+          "outcome": {
+            "status": "NR",
+            "winner": null,
+            "finishPosition": null,
+            "resultStatus": "non_runner",
+            "deadHeatDivisor": 1,
+            "grossReturn": null,
+            "profitLoss": null,
+            "settledAt": "2026-11-06T13:34:26.202Z"
+          }
         }
       ]
     },
@@ -56917,7 +57016,16 @@
               "decimalOdds": 2.75
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": false,
+            "finishPosition": 2,
+            "resultStatus": "finished",
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-11-06T14:24:03.060Z"
+          }
         },
         {
           "runnerId": "f53278d9-2cfb-4935-a4f8-708c748fd7c2",
@@ -57035,7 +57143,16 @@
               "decimalOdds": 2.88
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": true,
+            "finishPosition": 1,
+            "resultStatus": "finished",
+            "deadHeatDivisor": 1,
+            "grossReturn": 2.88,
+            "profitLoss": 1.88,
+            "settledAt": "2026-11-06T14:24:03.060Z"
+          }
         },
         {
           "runnerId": "d70346e4-bf4a-4119-b4d5-66c01cb863c5",
@@ -57153,7 +57270,16 @@
               "decimalOdds": 8.5
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": false,
+            "finishPosition": 5,
+            "resultStatus": "finished",
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-11-06T14:24:03.060Z"
+          }
         },
         {
           "runnerId": "57abb8ca-a8de-4696-b78d-20887db88aff",
@@ -57271,7 +57397,16 @@
               "decimalOdds": 10
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": false,
+            "finishPosition": 6,
+            "resultStatus": "finished",
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-11-06T14:24:03.060Z"
+          }
         },
         {
           "runnerId": "f4f382a8-3d38-418f-9ec8-bd831c8bcf70",
@@ -57389,7 +57524,16 @@
               "decimalOdds": 12
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": false,
+            "finishPosition": 4,
+            "resultStatus": "finished",
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-11-06T14:24:03.060Z"
+          }
         },
         {
           "runnerId": "d2c9d231-6c5f-4ba1-af5e-714fd966f1d8",
@@ -57507,7 +57651,16 @@
               "decimalOdds": 13
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": false,
+            "finishPosition": 7,
+            "resultStatus": "finished",
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-11-06T14:24:03.060Z"
+          }
         },
         {
           "runnerId": "8ff9aed2-95f7-4946-bd0c-4a5724b771aa",
@@ -57625,7 +57778,16 @@
               "decimalOdds": 23
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": false,
+            "finishPosition": 3,
+            "resultStatus": "finished",
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-11-06T14:24:03.060Z"
+          }
         }
       ]
     },
@@ -61873,7 +62035,16 @@
               "decimalOdds": 2.2
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": true,
+            "finishPosition": 1,
+            "resultStatus": "finished",
+            "deadHeatDivisor": 1,
+            "grossReturn": 2.2,
+            "profitLoss": 1.2000000000000002,
+            "settledAt": "2026-11-06T14:24:03.060Z"
+          }
         },
         {
           "runnerId": "0f4aec1d-559c-4aed-8d20-e1afec9556ec",
@@ -61991,7 +62162,16 @@
               "decimalOdds": 2.75
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": false,
+            "finishPosition": 4,
+            "resultStatus": "finished",
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-11-06T14:24:03.060Z"
+          }
         },
         {
           "runnerId": "94a8ed5c-a459-403c-969a-97e718f19cec",
@@ -62109,7 +62289,16 @@
               "decimalOdds": 7.5
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": false,
+            "finishPosition": 5,
+            "resultStatus": "finished",
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-11-06T14:24:03.060Z"
+          }
         },
         {
           "runnerId": "77e86464-f848-416b-8eab-903a320ddd1e",
@@ -62227,7 +62416,16 @@
               "decimalOdds": 9
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": false,
+            "finishPosition": 2,
+            "resultStatus": "finished",
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-11-06T14:24:03.060Z"
+          }
         },
         {
           "runnerId": "0b4ec76f-3189-4daa-bfc2-1b1c34df83b0",
@@ -62345,7 +62543,16 @@
               "decimalOdds": 11
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": false,
+            "finishPosition": 6,
+            "resultStatus": "finished",
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-11-06T14:24:03.060Z"
+          }
         },
         {
           "runnerId": "1914d113-0d64-4e8f-97c3-10c73f021fdd",
@@ -62463,7 +62670,16 @@
               "decimalOdds": 12
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": false,
+            "finishPosition": 3,
+            "resultStatus": "finished",
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-11-06T14:24:03.060Z"
+          }
         },
         {
           "runnerId": "c9a702a0-12c9-4868-87ed-d5a4eb2c59f2",
@@ -62581,7 +62797,16 @@
               "decimalOdds": 34
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": false,
+            "finishPosition": null,
+            "resultStatus": "unseated_rider",
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-11-06T14:24:03.060Z"
+          }
         },
         {
           "runnerId": "617bc43e-59f1-4b88-854f-b8037f185687",
@@ -62699,7 +62924,16 @@
               "decimalOdds": 41
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": false,
+            "finishPosition": 7,
+            "resultStatus": "finished",
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-11-06T14:24:03.060Z"
+          }
         },
         {
           "runnerId": "7c03f6d6-c156-47e9-8627-4ec005d83d74",
@@ -62817,7 +63051,16 @@
               "decimalOdds": 101
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": false,
+            "finishPosition": 8,
+            "resultStatus": "finished",
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-11-06T14:24:03.060Z"
+          }
         },
         {
           "runnerId": "dcc88620-b837-46f6-83a1-d00d4062fd1c",
@@ -62935,7 +63178,16 @@
               "decimalOdds": 101
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": false,
+            "finishPosition": 9,
+            "resultStatus": "finished",
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-11-06T14:24:03.060Z"
+          }
         }
       ]
     },
@@ -63153,7 +63405,16 @@
               "decimalOdds": 2.2
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": true,
+            "finishPosition": 1,
+            "resultStatus": "finished",
+            "deadHeatDivisor": 1,
+            "grossReturn": 2.2,
+            "profitLoss": 1.2000000000000002,
+            "settledAt": "2026-11-06T14:24:03.060Z"
+          }
         },
         {
           "runnerId": "29b25b61-297d-485c-bcc8-810d466d244f",
@@ -63269,7 +63530,16 @@
               "decimalOdds": 6
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": false,
+            "finishPosition": 2,
+            "resultStatus": "finished",
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-11-06T14:24:03.060Z"
+          }
         },
         {
           "runnerId": "00394360-46a9-4789-b652-cf9dfb921991",
@@ -63385,7 +63655,16 @@
               "decimalOdds": 7
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": false,
+            "finishPosition": 4,
+            "resultStatus": "finished",
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-11-06T14:24:03.060Z"
+          }
         },
         {
           "runnerId": "a8dfb06b-1b52-4fe6-8acf-69ca6afa5388",
@@ -63501,7 +63780,16 @@
               "decimalOdds": 7.5
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": false,
+            "finishPosition": 5,
+            "resultStatus": "finished",
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-11-06T14:24:03.060Z"
+          }
         },
         {
           "runnerId": "ac27b83b-7e86-49e4-8144-1d0384beb547",
@@ -63617,7 +63905,16 @@
               "decimalOdds": 7.5
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": false,
+            "finishPosition": 6,
+            "resultStatus": "finished",
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-11-06T14:24:03.060Z"
+          }
         },
         {
           "runnerId": "857e8c4d-43d8-4a6e-9441-2b75d69c5e78",
@@ -63733,7 +64030,16 @@
               "decimalOdds": 7
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "NR",
+            "winner": null,
+            "finishPosition": null,
+            "resultStatus": "non_runner",
+            "deadHeatDivisor": 1,
+            "grossReturn": null,
+            "profitLoss": null,
+            "settledAt": "2026-11-06T14:24:03.060Z"
+          }
         },
         {
           "runnerId": "ae2eb393-796b-4940-ac0a-db890edfab0d",
@@ -63849,7 +64155,16 @@
               "decimalOdds": 31
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": false,
+            "finishPosition": 3,
+            "resultStatus": "finished",
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-11-06T14:24:03.060Z"
+          }
         }
       ]
     },
@@ -64071,7 +64386,16 @@
               "decimalOdds": 2.38
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": true,
+            "finishPosition": 1,
+            "resultStatus": "finished",
+            "deadHeatDivisor": 1,
+            "grossReturn": 2.38,
+            "profitLoss": 1.38,
+            "settledAt": "2026-11-06T14:24:03.060Z"
+          }
         },
         {
           "runnerId": "c4c2567b-fdbd-451a-b138-0e1f763622ec",
@@ -64189,7 +64513,16 @@
               "decimalOdds": 3.75
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": false,
+            "finishPosition": 2,
+            "resultStatus": "finished",
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-11-06T14:24:03.060Z"
+          }
         },
         {
           "runnerId": "25e00ffc-7dbd-4760-a859-8849eff7e9ec",
@@ -64307,7 +64640,16 @@
               "decimalOdds": 5.5
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "NR",
+            "winner": null,
+            "finishPosition": null,
+            "resultStatus": "non_runner",
+            "deadHeatDivisor": 1,
+            "grossReturn": null,
+            "profitLoss": null,
+            "settledAt": "2026-11-06T14:24:03.060Z"
+          }
         },
         {
           "runnerId": "387de6ee-4f23-496c-9e34-043536ca4c47",
@@ -64425,7 +64767,16 @@
               "decimalOdds": 6.5
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": false,
+            "finishPosition": 4,
+            "resultStatus": "finished",
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-11-06T14:24:03.060Z"
+          }
         },
         {
           "runnerId": "5989d955-0c58-42d9-a9d9-d9f9e786df17",
@@ -64543,7 +64894,16 @@
               "decimalOdds": 8
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": false,
+            "finishPosition": 3,
+            "resultStatus": "finished",
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-11-06T14:24:03.060Z"
+          }
         }
       ]
     },
@@ -67891,7 +68251,16 @@
               "decimalOdds": 2.5
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": true,
+            "finishPosition": 1,
+            "resultStatus": "finished",
+            "deadHeatDivisor": 1,
+            "grossReturn": 2.5,
+            "profitLoss": 1.5,
+            "settledAt": "2026-11-06T14:24:03.060Z"
+          }
         },
         {
           "runnerId": "53e7c2b3-3899-4536-9992-d2ed92b872d2",
@@ -68007,7 +68376,16 @@
               "decimalOdds": 3.5
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": false,
+            "finishPosition": 2,
+            "resultStatus": "finished",
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-11-06T14:24:03.060Z"
+          }
         },
         {
           "runnerId": "e41b9023-c593-4427-8992-c001f17987bc",
@@ -68123,7 +68501,16 @@
               "decimalOdds": 6
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": false,
+            "finishPosition": null,
+            "resultStatus": "fell",
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-11-06T14:24:03.060Z"
+          }
         },
         {
           "runnerId": "e4b3acc3-66cf-4fad-85f9-d00870dcf66c",
@@ -68239,7 +68626,16 @@
               "decimalOdds": 7.5
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": false,
+            "finishPosition": 4,
+            "resultStatus": "finished",
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-11-06T14:24:03.060Z"
+          }
         },
         {
           "runnerId": "5f564302-8189-4d9e-b761-156212642262",
@@ -68355,7 +68751,16 @@
               "decimalOdds": 12
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": false,
+            "finishPosition": 3,
+            "resultStatus": "finished",
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-11-06T14:24:03.060Z"
+          }
         },
         {
           "runnerId": "36abfa6e-25ea-4f52-a72b-30fa150e621d",
@@ -68471,7 +68876,16 @@
               "decimalOdds": 15
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": false,
+            "finishPosition": 5,
+            "resultStatus": "finished",
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-11-06T14:24:03.060Z"
+          }
         },
         {
           "runnerId": "3e0cfde4-6287-44d8-81ad-15703cb53047",
@@ -68587,7 +69001,16 @@
               "decimalOdds": 15
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": false,
+            "finishPosition": 6,
+            "resultStatus": "finished",
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-11-06T14:24:03.060Z"
+          }
         }
       ]
     },
@@ -68809,7 +69232,16 @@
               "decimalOdds": 1.44
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": true,
+            "finishPosition": 1,
+            "resultStatus": "finished",
+            "deadHeatDivisor": 1,
+            "grossReturn": 1.44,
+            "profitLoss": 0.43999999999999995,
+            "settledAt": "2026-11-06T14:24:03.060Z"
+          }
         },
         {
           "runnerId": "2dcbdb1f-8cac-4c08-9a5b-d97f30c6967f",
@@ -68927,7 +69359,16 @@
               "decimalOdds": 3
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": false,
+            "finishPosition": 3,
+            "resultStatus": "finished",
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-11-06T14:24:03.060Z"
+          }
         },
         {
           "runnerId": "c47e336a-e219-48f1-9842-a11c9c639634",
@@ -69045,7 +69486,16 @@
               "decimalOdds": 11
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "NR",
+            "winner": null,
+            "finishPosition": null,
+            "resultStatus": "non_runner",
+            "deadHeatDivisor": 1,
+            "grossReturn": null,
+            "profitLoss": null,
+            "settledAt": "2026-11-06T14:24:03.060Z"
+          }
         },
         {
           "runnerId": "2b57575b-db04-4008-85d3-548d8390af96",
@@ -69163,7 +69613,16 @@
               "decimalOdds": 15
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": false,
+            "finishPosition": 2,
+            "resultStatus": "finished",
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-11-06T14:24:03.060Z"
+          }
         },
         {
           "runnerId": "47f25f6d-991b-40c9-afa2-14f0ae38e325",
@@ -69281,7 +69740,16 @@
               "decimalOdds": 101
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": false,
+            "finishPosition": 4,
+            "resultStatus": "finished",
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-11-06T14:24:03.060Z"
+          }
         }
       ]
     },
@@ -69517,7 +69985,16 @@
               "decimalOdds": 2.5
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": false,
+            "finishPosition": 2,
+            "resultStatus": "finished",
+            "deadHeatDivisor": 1,
+            "grossReturn": null,
+            "profitLoss": null,
+            "settledAt": "2026-11-06T14:17:37.507Z"
+          }
         },
         {
           "runnerId": "57017f9f-31c8-4efa-9059-4932e925ef9e",
@@ -69651,7 +70128,16 @@
               "decimalOdds": 3
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": false,
+            "finishPosition": null,
+            "resultStatus": "unseated_rider",
+            "deadHeatDivisor": 1,
+            "grossReturn": null,
+            "profitLoss": null,
+            "settledAt": "2026-11-06T14:17:37.507Z"
+          }
         },
         {
           "runnerId": "f4ffa9f2-0067-46e2-b10c-89d9b447b80b",
@@ -69785,7 +70271,16 @@
               "decimalOdds": 7
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": true,
+            "finishPosition": 1,
+            "resultStatus": "finished",
+            "deadHeatDivisor": 1,
+            "grossReturn": null,
+            "profitLoss": null,
+            "settledAt": "2026-11-06T14:17:37.507Z"
+          }
         },
         {
           "runnerId": "20af2145-1a7e-4c68-a4de-4377ee52f224",
@@ -69919,7 +70414,16 @@
               "decimalOdds": 10
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": false,
+            "finishPosition": 3,
+            "resultStatus": "finished",
+            "deadHeatDivisor": 1,
+            "grossReturn": null,
+            "profitLoss": null,
+            "settledAt": "2026-11-06T14:17:37.507Z"
+          }
         },
         {
           "runnerId": "9e8511da-c056-43e7-8220-106c5f61c622",
@@ -70053,7 +70557,16 @@
               "decimalOdds": 15
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": false,
+            "finishPosition": null,
+            "resultStatus": "pulled_up",
+            "deadHeatDivisor": 1,
+            "grossReturn": null,
+            "profitLoss": null,
+            "settledAt": "2026-11-06T14:17:37.507Z"
+          }
         },
         {
           "runnerId": "4b1992b1-016d-4093-916e-942fc3666369",
@@ -70187,7 +70700,16 @@
               "decimalOdds": 15
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": false,
+            "finishPosition": null,
+            "resultStatus": "unseated_rider",
+            "deadHeatDivisor": 1,
+            "grossReturn": null,
+            "profitLoss": null,
+            "settledAt": "2026-11-06T14:17:37.507Z"
+          }
         },
         {
           "runnerId": "a8933862-f498-4be5-b226-91409bd80779",
@@ -70321,7 +70843,16 @@
               "decimalOdds": 21
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": false,
+            "finishPosition": null,
+            "resultStatus": "unseated_rider",
+            "deadHeatDivisor": 1,
+            "grossReturn": null,
+            "profitLoss": null,
+            "settledAt": "2026-11-06T14:17:37.507Z"
+          }
         },
         {
           "runnerId": "1e8f7f85-4063-4a38-b90d-da26453ce436",
@@ -70418,7 +70949,16 @@
           ],
           "capturedPrice": null,
           "quotes": [],
-          "outcome": null
+          "outcome": {
+            "status": "NR",
+            "winner": null,
+            "finishPosition": null,
+            "resultStatus": "non_runner",
+            "deadHeatDivisor": 1,
+            "grossReturn": null,
+            "profitLoss": null,
+            "settledAt": "2026-11-06T14:17:37.507Z"
+          }
         }
       ]
     },
@@ -70636,7 +71176,16 @@
               "decimalOdds": 3.5
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": true,
+            "finishPosition": 1,
+            "resultStatus": "finished",
+            "deadHeatDivisor": 1,
+            "grossReturn": 3.5,
+            "profitLoss": 2.5,
+            "settledAt": "2026-11-06T14:24:03.060Z"
+          }
         },
         {
           "runnerId": "0f4b1837-d9ee-4747-b149-3ebb629f9655",
@@ -70752,7 +71301,16 @@
               "decimalOdds": 4.5
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": false,
+            "finishPosition": 3,
+            "resultStatus": "finished",
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-11-06T14:24:03.060Z"
+          }
         },
         {
           "runnerId": "705050f2-b678-48dc-9aa9-746904dbf3df",
@@ -70868,7 +71426,16 @@
               "decimalOdds": 4.33
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": false,
+            "finishPosition": 2,
+            "resultStatus": "finished",
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-11-06T14:24:03.060Z"
+          }
         },
         {
           "runnerId": "df1f6372-ffa7-46e6-907e-bee1f42752b5",
@@ -70984,7 +71551,16 @@
               "decimalOdds": 5
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": false,
+            "finishPosition": 4,
+            "resultStatus": "finished",
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-11-06T14:24:03.060Z"
+          }
         },
         {
           "runnerId": "6af4d861-8c2c-45f2-b6d3-34f286c526ee",
@@ -71100,7 +71676,16 @@
               "decimalOdds": 7.5
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": false,
+            "finishPosition": 5,
+            "resultStatus": "finished",
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-11-06T14:24:03.060Z"
+          }
         },
         {
           "runnerId": "f7b3887b-de45-4407-a718-1f3c89aea833",
@@ -71216,7 +71801,16 @@
               "decimalOdds": 15
             }
           ],
-          "outcome": null
+          "outcome": {
+            "status": "settled",
+            "winner": false,
+            "finishPosition": null,
+            "resultStatus": "pulled_up",
+            "deadHeatDivisor": 1,
+            "grossReturn": 0,
+            "profitLoss": -1,
+            "settledAt": "2026-11-06T14:24:03.060Z"
+          }
         }
       ]
     },

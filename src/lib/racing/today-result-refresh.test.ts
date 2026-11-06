@@ -9,6 +9,11 @@ import {
   type EligibleResultRefreshRace,
 } from "./today-result-refresh";
 import { buildTodayRuleSelections } from "./today-rule-matches";
+import { todayRaceStatusLabel } from "./today-race-status";
+import { readFileSync } from "node:fs";
+import { renderToStaticMarkup } from "react-dom/server";
+import { createElement } from "react";
+import { RunnerWinnerBadge } from "../../app/racing/today/runner-result-display";
 import type {
   TodayMeeting,
   TodayRace,
@@ -77,14 +82,14 @@ describe("Today result refresh eligibility", () => {
     assert.equal(eligible.length, 0);
   });
 
-  test("race with no frozen-rule matched runner is not eligible", () => {
+  test("race with no frozen-rule matched runner is eligible", () => {
     const eligible = getEligibleResultRefreshRaces(
       [meeting(race(), [runner({ savedRuleMatches: [] })])],
       "2026-09-12",
       { now: new Date("2026-09-12T14:00:00.000Z") },
     );
 
-    assert.equal(eligible.length, 0);
+    assert.equal(eligible.length, 1);
   });
 
   test("recently checked race inside retry interval is not eligible", async () => {
@@ -250,6 +255,75 @@ describe("Today result refresh eligibility", () => {
 describe("Today result refresh", () => {
   beforeEach(() => {
     clearTodayResultRefreshChecksForTest();
+  });
+
+  test("unfinished race makes no import request", async () => {
+    let calls = 0;
+    const summary = await refreshEligibleTodaySelectionResults([meeting(race())], "2026-09-12", {
+      now: new Date("2026-09-12T13:09:59Z"),
+      refreshRaceResult: async (value) => { calls++; return outcome(value, "imported"); },
+    });
+    assert.equal(calls, 0);
+    assert.equal(summary.attempted, 0);
+  });
+
+  test("Hexham 13:00 without selections retries unavailable results and automatically displays winner", async () => {
+    const meetings = [meeting(race({
+      sourceId: "947282", raceDateTime: new Date("2026-11-06T13:00:00Z"),
+    }), [runner({ savedRuleMatches: [] })])];
+    const currentRace = meetings[0]!.races[0]!;
+    let calls = 0;
+    const refreshRaceResult = async (value: EligibleResultRefreshRace) => {
+      calls++;
+      if (calls === 1) return outcome(value, "not_ready");
+      // Simulate the committed result returned by the page's database reload.
+      currentRace.winningTime = "4m 10s";
+      currentRace.runners[0]!.finishingPosition = 1;
+      currentRace.runners[0]!.resultStatus = "finished";
+      return outcome(value, "imported");
+    };
+    const refreshAt = (time: string) => refreshEligibleTodaySelectionResults(meetings, "2026-11-06", {
+      now: new Date(`2026-11-06T${time}Z`), refreshRaceResult,
+    });
+    assert.equal((await refreshAt("13:10:00")).notReady, 1);
+    assert.equal(todayRaceStatusLabel(currentRace, new Date("2026-11-06T13:10:00Z")), "Awaiting result");
+    assert.equal((await refreshAt("13:24:59")).attempted, 0);
+    assert.equal((await refreshAt("13:25:00")).imported, 1);
+    assert.equal(todayRaceStatusLabel(currentRace), "Race over");
+    assert.match(renderToStaticMarkup(createElement(RunnerWinnerBadge, {
+      runner: currentRace.runners[0]!, hasConclusiveResult: todayRaceHasConclusiveResult(currentRace),
+    })), /WINNER/);
+    assert.equal((await refreshAt("14:00:00")).attempted, 0);
+    assert.equal(calls, 2);
+  });
+
+  for (const failure of ["throw", "failed"] as const) {
+    test(`temporary ${failure} response remains retryable after throttle`, async () => {
+      const meetings = [meeting(race(), [runner({ savedRuleMatches: [] })])];
+      const first = await refreshEligibleTodaySelectionResults(meetings, "2026-09-12", {
+        now: new Date("2026-09-12T14:00:00Z"),
+        refreshRaceResult: async (value) => {
+          if (failure === "throw") throw new Error("temporary timeout");
+          return { ...outcome(value, "not_ready"), status: "failed", message: "temporary HTTP 503" };
+        },
+      });
+      assert.equal(first.failed, 1);
+      const retry = await refreshEligibleTodaySelectionResults(meetings, "2026-09-12", {
+        now: new Date("2026-09-12T14:15:00Z"),
+        refreshRaceResult: async (value) => outcome(value, "imported"),
+      });
+      assert.equal(retry.imported, 1);
+    });
+  }
+
+  test("Today reloads uncached database state after imports; manual refresh revalidates the route", () => {
+    const page = readFileSync("src/app/racing/today/page.tsx", "utf8");
+    assert.match(page, /if \(refreshSummary.imported > 0\) \{\s*data = await getTodaysRacingData\(connection.db, raceDate\);\s*displayData = attachMatches\(\);/);
+    assert.match(page, /export const dynamic = "force-dynamic"/);
+    const loader = readFileSync("src/lib/racing/todays-racing.ts", "utf8");
+    assert.doesNotMatch(loader, /unstable_cache|use cache/);
+    const action = readFileSync("src/app/racing/today/actions.ts", "utf8");
+    assert.match(action, /revalidatePath\("\/racing\/today"\)/);
   });
 
   test("completed result reports imported", async () => {

@@ -62,8 +62,7 @@ export function getEligibleResultRefreshRaces(
 
   for (const meeting of meetings) {
     for (const race of meeting.races) {
-      if (!raceHasFrozenRuleSelection(race) ||
-          todayRaceHasConclusiveResult(race) ||
+      if (todayRaceHasConclusiveResult(race) ||
           !race.sourceId ||
           !isPastRefreshBuffer(race, raceDate, now) ||
           (!options.forceRetry && checkedRecently(race.sourceId, now))) {
@@ -199,10 +198,6 @@ function parseRefreshScriptOutput(stdout: string): {
     return { status: parsed.status, message: parsed.message ?? null };
   }
   return { status: "failed", message: parsed.message ?? "unexpected refresh script status" };
-}
-
-function raceHasFrozenRuleSelection(race: TodayRace): boolean {
-  return race.runners.some((runner) => (runner.savedRuleMatches?.length ?? 0) > 0);
 }
 
 function isPastRefreshBuffer(race: TodayRace, raceDate: string, now: Date): boolean {
