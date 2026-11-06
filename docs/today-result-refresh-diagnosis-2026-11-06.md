@@ -75,3 +75,13 @@ No cache fix was needed. Today is `force-dynamic`, its loader is uncached, and i
 - This report.
 
 Validation passed: 42 tests across Today refresh, winner rendering, research cache, and read-only result-surface SQL fixtures; TypeScript typecheck; targeted ESLint. The initial test invocation omitted the database environment and failed the SQL fixture; rerunning with `.env.local` and local database access passed all 42. Cache wiring is checked structurally; the live loader/database checks above separately verify real result state after the running app imported it.
+
+## Subsequent verification of the committed fix
+
+The fix and focused tests above are already present in commit `c35ee0c` (`Updated results scraping`). A subsequent investigation made no further behaviour changes and issued no Sporting Life requests or result imports. Re-running the focused suites passed all 42 tests, TypeScript typecheck, and targeted ESLint.
+
+A fresh read-only PostgreSQL query confirms both example winners are still stored: Hexham 13:00, Kamille Au Kanada; Hexham 13:35, Defence Witness. The full-result `updated_at` values are now 16:53:29.170 and 16:53:31.217 GMT respectively. These are latest upsert timestamps, not immutable first-import timestamps; the earlier table records the original investigation's observations. Current database state alone cannot reconstruct every earlier refresh attempt or Sporting Life publication time.
+
+Calling the actual `getTodaysRacingData` loader independently confirms both races have conclusive results and produce `Race over` with those winners.
+
+The existing retry policy remains scheduled off plus ten minutes, followed by a fifteen-minute per-race throttle on automatic page refreshes, through the end of the London racing date. Incomplete results and temporary failures do not create a permanent failure marker. Today rereads the database after a successful import, and research database cache identity includes updated timestamps. The cache wiring assertions are structural checks, not an end-to-end browser cache test. No model, value, tissue, or research-history files were changed in this subsequent verification.

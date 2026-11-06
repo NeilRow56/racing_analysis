@@ -1,0 +1,1363 @@
+{
+  "source_hashes": {
+    "jump-tissue-model-v1.json": "bfc152a49d029e57dcd0d40e06a2b5e097d00aa90cc53cb6de0fe1f2c4c661c7",
+    "chase-shadow-v1-frozen.json": "5555629b517413a2caed8e15be46619309d88d527e888a1720d3de6a12ea8dd4",
+    "tissue-generation-2026-11-chase.json": "35208f1c097ede47b2637e535b4a186c4fc79ee34dd4cb0e5b8852342f5e854d",
+    "jump-tissue-forward-v1.json": "ae2a315d35806630771c77ac509176f01687113c4b149a1bbc92508da36a5f28",
+    "tissue-generation-development-2026-11.json": "0dc2c37ce5ce14426e8399a1bfb68254ea8f714e12184bcce430c124064fd4b1",
+    "tissue-generation-forward-2026-11.json": "831f9881739a4819c9743bc777580aa986bf6d829b8e7aeef886a498904b7bea",
+    "tissue-generation-chase-promotion-2026-11.json": "56116ca16d8e3d514d407833b08a8de6c7a6e253c3fd733aaf995ebe49ab1ff2"
+  },
+  "shadow_equals_active_base": true,
+  "active_adjustment_zero": true,
+  "comment_coefficients": [
+    {
+      "feature": "prior_comment_count",
+      "old_effective": 0.0758835415099768,
+      "new_effective": 0.10731247219747837
+    },
+    {
+      "feature": "last_slowlyAway",
+      "old_effective": -0.01798380643131592,
+      "new_effective": -0.07526145988508513
+    },
+    {
+      "feature": "last_awkwardStart",
+      "old_effective": -1.5709786631318357,
+      "new_effective": -1.1393478545917233
+    },
+    {
+      "feature": "last_prominent",
+      "old_effective": -0.09347170766869688,
+      "new_effective": -0.09095829043864385
+    },
+    {
+      "feature": "last_led",
+      "old_effective": 0.21344895563663896,
+      "new_effective": 0.06709604469457806
+    },
+    {
+      "feature": "last_heldUpRear",
+      "old_effective": -0.1556097066616843,
+      "new_effective": -0.12104863712045075
+    },
+    {
+      "feature": "last_racedFreely",
+      "old_effective": -0.06545395183769179,
+      "new_effective": -0.22830987294386593
+    },
+    {
+      "feature": "last_hampered",
+      "old_effective": -0.23121897856782594,
+      "new_effective": -0.0275573968676552
+    },
+    {
+      "feature": "last_bumped",
+      "old_effective": -0.1468711446328099,
+      "new_effective": -0.4635785345447558
+    },
+    {
+      "feature": "last_checked",
+      "old_effective": -2.3052275697944196,
+      "new_effective": -1.742506779833804
+    },
+    {
+      "feature": "last_deniedRoom",
+      "old_effective": 0.0,
+      "new_effective": 0.0
+    },
+    {
+      "feature": "last_shortRoom",
+      "old_effective": 0.23086761764463665,
+      "new_effective": -0.11050211338878971
+    },
+    {
+      "feature": "last_switched",
+      "old_effective": 0.12576091491289265,
+      "new_effective": 0.14533413141004034
+    },
+    {
+      "feature": "last_racedWide",
+      "old_effective": -0.5665264867967488,
+      "new_effective": -0.2562270040688554
+    },
+    {
+      "feature": "last_stayedOn",
+      "old_effective": 0.14111880143443775,
+      "new_effective": 0.2592191576353343
+    },
+    {
+      "feature": "last_strongFinish",
+      "old_effective": 0.12294525416240712,
+      "new_effective": 0.22699056856027622
+    },
+    {
+      "feature": "last_weakened",
+      "old_effective": -0.13022371978175507,
+      "new_effective": -0.09378958163379392
+    },
+    {
+      "feature": "last_faded",
+      "old_effective": -0.2849266686146901,
+      "new_effective": 0.0754026910991731
+    },
+    {
+      "feature": "last_eased",
+      "old_effective": 0.07435150826754144,
+      "new_effective": -0.264091912408049
+    },
+    {
+      "feature": "last_neverDangerous",
+      "old_effective": -0.20693361459624893,
+      "new_effective": -0.014944686631569214
+    },
+    {
+      "feature": "last_lostTouch",
+      "old_effective": -0.015224070365148147,
+      "new_effective": 0.23618504449809424
+    },
+    {
+      "feature": "last_equipment",
+      "old_effective": 0.03896379966147485,
+      "new_effective": 0.19223217091852463
+    },
+    {
+      "feature": "last3_slowlyAway_count",
+      "old_effective": 0.21441070511620994,
+      "new_effective": 0.18148820701927543
+    },
+    {
+      "feature": "last3_awkwardStart_count",
+      "old_effective": 0.1100971840512486,
+      "new_effective": -1.1553898675390215
+    },
+    {
+      "feature": "last3_prominent_count",
+      "old_effective": -0.018388530913229728,
+      "new_effective": 0.09346779345391458
+    },
+    {
+      "feature": "last3_led_count",
+      "old_effective": 0.06637619239359534,
+      "new_effective": 0.05371920575873702
+    },
+    {
+      "feature": "last3_heldUpRear_count",
+      "old_effective": -0.002162238363402368,
+      "new_effective": 0.017537355723465247
+    },
+    {
+      "feature": "last3_racedFreely_count",
+      "old_effective": 0.2675487262429012,
+      "new_effective": 0.08145236628667883
+    },
+    {
+      "feature": "last3_hampered_count",
+      "old_effective": 0.10025451169048798,
+      "new_effective": -0.04420861108948165
+    },
+    {
+      "feature": "last3_bumped_count",
+      "old_effective": 0.002731055129865889,
+      "new_effective": 0.27479035336524904
+    },
+    {
+      "feature": "last3_checked_count",
+      "old_effective": 1.4147294312221341,
+      "new_effective": 0.10011037673203813
+    },
+    {
+      "feature": "last3_deniedRoom_count",
+      "old_effective": 6.275277310570152,
+      "new_effective": 0.0
+    },
+    {
+      "feature": "last3_shortRoom_count",
+      "old_effective": 0.11884336902031424,
+      "new_effective": 0.08841770919944832
+    },
+    {
+      "feature": "last3_switched_count",
+      "old_effective": -0.02428880797822712,
+      "new_effective": 0.026675797262257387
+    },
+    {
+      "feature": "last3_racedWide_count",
+      "old_effective": 0.2740547780061744,
+      "new_effective": 0.14453084124272325
+    },
+    {
+      "feature": "last3_stayedOn_count",
+      "old_effective": 0.10329980742424705,
+      "new_effective": 0.09582422234182875
+    },
+    {
+      "feature": "last3_strongFinish_count",
+      "old_effective": 0.1221603259281422,
+      "new_effective": -0.21360622139083857
+    },
+    {
+      "feature": "last3_weakened_count",
+      "old_effective": -0.1496720250123616,
+      "new_effective": -0.10229668852881559
+    },
+    {
+      "feature": "last3_faded_count",
+      "old_effective": 0.09772183583922393,
+      "new_effective": 0.10382791353063492
+    },
+    {
+      "feature": "last3_eased_count",
+      "old_effective": 0.3348763108724979,
+      "new_effective": 0.17529093382413574
+    },
+    {
+      "feature": "last3_neverDangerous_count",
+      "old_effective": 0.08014483815279985,
+      "new_effective": -0.09175559520854823
+    },
+    {
+      "feature": "last3_lostTouch_count",
+      "old_effective": -0.38938753767690343,
+      "new_effective": -0.47526233827726927
+    },
+    {
+      "feature": "last3_equipment_count",
+      "old_effective": -0.014301011513165575,
+      "new_effective": -0.005215163418544166
+    }
+  ],
+  "protocol": {
+    "version": "CHASE_SHADOW_V1",
+    "declaredBeforeHoldout": true,
+    "split": {
+      "train": "2025-01-01/2025-09-30",
+      "validate": "2025-10-01/2025-12-31"
+    },
+    "candidates": {
+      "A": "Unchanged Jump numeric and prior comment inputs; Chase-only fit",
+      "B": "A with separately named Chase-only latest/best/average Speed where at least two eligible prior Chase starts; explicit missing flags, Chase experience, usable counts, OR rank, recent non-completion and coverage",
+      "C": "Reduced OR/relative OR, trainer/jockey, age, weight, days since run, handicap, blend Speed with weight min(Chase usable count/3,1), coverage, completion and Chase experience"
+    },
+    "optimizer": {
+      "epochs": 90,
+      "learningRate": "0.12/sqrt(1+epoch/10)",
+      "l2": 0.02
+    },
+    "selection": "Lowest 2025 validation race log loss; within 0.005 choose lower fixed-band ECE, then higher top2 capture, then fewer features. Report monthly stability and coverage; no ROI used.",
+    "refit": "Selected representation refitted on all eligible 2025 Chases, unchanged optimizer; then freeze artifact before reading 2026 outcomes",
+    "bands": [
+      0,
+      0.1,
+      0.15,
+      0.2,
+      0.3,
+      1.000001
+    ],
+    "chaseSufficient": 2,
+    "blendWeight": "min(chaseUsable/3,1)",
+    "holdoutCutoff": "2026-10-29",
+    "noRetuning": true
+  },
+  "archive": {
+    "counts": {
+      "races": 201,
+      "runners": 1479,
+      "changed_t1": 61,
+      "old_t1_to_new_t2": 37,
+      "comment_delta_positive_for_new_t1": 33,
+      "comment_delta_dominant": 23,
+      "restore_old_comments_restores_old_t1": 26,
+      "new_comments_alone_demote_old_t1": 22,
+      "numeric_change_alone_demotes_old_t1": 11
+    },
+    "excluded": 0,
+    "stored_probability_max_error": 7.771561172376096e-16,
+    "metrics": {
+      "old": {
+        "races": 108,
+        "top1_winners": 34,
+        "top2_winners": 53,
+        "log_loss": 1.6849890775467364
+      },
+      "new": {
+        "races": 108,
+        "top1_winners": 28,
+        "top2_winners": 51,
+        "log_loss": 1.6859995242541614
+      },
+      "new_numeric_old_comments": {
+        "races": 108,
+        "top1_winners": 33,
+        "top2_winners": 55,
+        "log_loss": 1.6711724131837087
+      },
+      "old_numeric_new_comments": {
+        "races": 108,
+        "top1_winners": 27,
+        "top2_winners": 55,
+        "log_loss": 1.7008359134017854
+      }
+    },
+    "mean_within_race_logit_sd": {
+      "numeric": {
+        "old": 0.4117860491970164,
+        "new": 0.30774974518773357,
+        "delta": 0.21734765512494827
+      },
+      "comments": {
+        "old": 0.27264909031141665,
+        "new": 0.21496166951883447,
+        "delta": 0.1593787983906109
+      }
+    },
+    "demotions": [
+      {
+        "raceId": "247c84f4-33ba-41b0-bd30-0b5372141d50",
+        "date": "2026-10-04",
+        "course": "Killarney",
+        "old_t1": "Kilbrin Rocco",
+        "new_t1": "Stoneyford Lady",
+        "old_margin": -0.09722251198682119,
+        "new_margin": 0.11775591695480858,
+        "comment_delta": 0.29081603372203046,
+        "numeric_delta": -0.07583760478040075,
+        "restores_old_t1": true,
+        "settled": true,
+        "old_t1_won": true,
+        "new_t1_won": false
+      },
+      {
+        "raceId": "36f52f44-229c-4f0b-8289-10eb03df0503",
+        "date": "2026-10-04",
+        "course": "Killarney",
+        "old_t1": "Stede Bonnet",
+        "new_t1": "Time Is A Thief",
+        "old_margin": -0.21932883261140568,
+        "new_margin": 0.28034512482306506,
+        "comment_delta": -0.06851769817571751,
+        "numeric_delta": 0.5681916556101883,
+        "restores_old_t1": false,
+        "settled": false,
+        "old_t1_won": null,
+        "new_t1_won": null
+      },
+      {
+        "raceId": "91db3ef5-d3f8-459c-aaa3-77b5ee6b57f5",
+        "date": "2026-10-05",
+        "course": "Stratford",
+        "old_t1": "Golly Gosh",
+        "new_t1": "Expert Analysis",
+        "old_margin": -0.03798106073440666,
+        "new_margin": 0.10932955502396646,
+        "comment_delta": 0.27868461742383205,
+        "numeric_delta": -0.13137400166545898,
+        "restores_old_t1": true,
+        "settled": true,
+        "old_t1_won": false,
+        "new_t1_won": false
+      },
+      {
+        "raceId": "82fbbc89-fada-4b17-9b9b-baced566b6f1",
+        "date": "2026-10-07",
+        "course": "Sedgefield",
+        "old_t1": "Neigh Botha",
+        "new_t1": "Lady Kara",
+        "old_margin": -0.11846104860499596,
+        "new_margin": 0.36693141214225766,
+        "comment_delta": 0.1824867910689478,
+        "numeric_delta": 0.3029056696783058,
+        "restores_old_t1": false,
+        "settled": true,
+        "old_t1_won": false,
+        "new_t1_won": false
+      },
+      {
+        "raceId": "bb12fea3-4e7d-4a97-9158-3bb16bd501ad",
+        "date": "2026-10-11",
+        "course": "Cork",
+        "old_t1": "Phoenix Arizona",
+        "new_t1": "Seven Towers",
+        "old_margin": -0.4042259473402316,
+        "new_margin": 0.2844283835587904,
+        "comment_delta": 0.019122781742381745,
+        "numeric_delta": 0.6695315491566403,
+        "restores_old_t1": false,
+        "settled": false,
+        "old_t1_won": null,
+        "new_t1_won": null
+      },
+      {
+        "raceId": "fdac4920-c9c3-4b47-a9f9-e3f162d26dfd",
+        "date": "2026-10-11",
+        "course": "Cork",
+        "old_t1": "Birdie Or Bust",
+        "new_t1": "Jasko Des Dames",
+        "old_margin": -0.12302590214282116,
+        "new_margin": 0.44141799100992174,
+        "comment_delta": 0.4120512600282321,
+        "numeric_delta": 0.1523926331245108,
+        "restores_old_t1": false,
+        "settled": true,
+        "old_t1_won": true,
+        "new_t1_won": false
+      },
+      {
+        "raceId": "a00db3a7-f525-43fe-8495-594aaddbd046",
+        "date": "2026-10-12",
+        "course": "Worcester",
+        "old_t1": "Broomfield Aderra",
+        "new_t1": "Mighty Fleur",
+        "old_margin": -0.2280954871241534,
+        "new_margin": 0.06026294114758901,
+        "comment_delta": 0.08905576832748073,
+        "numeric_delta": 0.19930265994426155,
+        "restores_old_t1": true,
+        "settled": false,
+        "old_t1_won": null,
+        "new_t1_won": null
+      },
+      {
+        "raceId": "cc1115e0-f0da-443b-b365-bc568eb386cd",
+        "date": "2026-10-15",
+        "course": "Perth",
+        "old_t1": "Kabral Du Mathan",
+        "new_t1": "Hold The Serve",
+        "old_margin": -0.7294931615034383,
+        "new_margin": 0.1515534486399257,
+        "comment_delta": 0.7969977008732041,
+        "numeric_delta": 0.08404890927015995,
+        "restores_old_t1": true,
+        "settled": false,
+        "old_t1_won": null,
+        "new_t1_won": null
+      },
+      {
+        "raceId": "536bd0da-55e6-4263-bd90-1230692e8c39",
+        "date": "2026-10-16",
+        "course": "Uttoxeter",
+        "old_t1": "Getawhisky",
+        "new_t1": "Lady Tadita",
+        "old_margin": -0.0997549010991583,
+        "new_margin": 0.4046078271645177,
+        "comment_delta": 0.2757464987586722,
+        "numeric_delta": 0.2286162295050035,
+        "restores_old_t1": false,
+        "settled": false,
+        "old_t1_won": null,
+        "new_t1_won": null
+      },
+      {
+        "raceId": "0dd05376-bd68-4a64-ae59-9a403c215044",
+        "date": "2026-10-17",
+        "course": "Market Rasen",
+        "old_t1": "Fringill Dike",
+        "new_t1": "King Jon Oliver",
+        "old_margin": -0.0775975844603436,
+        "new_margin": 0.4334111700578662,
+        "comment_delta": 0.5140590055293522,
+        "numeric_delta": -0.003050251011142313,
+        "restores_old_t1": true,
+        "settled": false,
+        "old_t1_won": null,
+        "new_t1_won": null
+      },
+      {
+        "raceId": "2335fbc2-56da-47c4-afb0-0d0ef43ead82",
+        "date": "2026-10-18",
+        "course": "Sedgefield",
+        "old_t1": "Dexperts Opinion",
+        "new_t1": "Ki Woo",
+        "old_margin": -0.06431202879000941,
+        "new_margin": 0.29045971695923223,
+        "comment_delta": 0.5663985563973714,
+        "numeric_delta": -0.21162681064812983,
+        "restores_old_t1": true,
+        "settled": true,
+        "old_t1_won": false,
+        "new_t1_won": false
+      },
+      {
+        "raceId": "4c43d41d-531d-4724-ba5b-2fdd1d96448d",
+        "date": "2026-10-18",
+        "course": "Limerick",
+        "old_t1": "Zurich",
+        "new_t1": "Park That",
+        "old_margin": -0.2555076105411832,
+        "new_margin": 0.0072603664993633465,
+        "comment_delta": 0.0367426276060942,
+        "numeric_delta": 0.22602534943445224,
+        "restores_old_t1": true,
+        "settled": false,
+        "old_t1_won": null,
+        "new_t1_won": null
+      },
+      {
+        "raceId": "8c6e96d1-e2ce-4929-af30-4e27a41a9873",
+        "date": "2026-10-21",
+        "course": "Worcester",
+        "old_t1": "Talk To The Man",
+        "new_t1": "Scorpio Rising",
+        "old_margin": -0.021108816275444697,
+        "new_margin": 0.11689918970329782,
+        "comment_delta": 0.15652782469646698,
+        "numeric_delta": -0.018519818717724568,
+        "restores_old_t1": true,
+        "settled": true,
+        "old_t1_won": true,
+        "new_t1_won": false
+      },
+      {
+        "raceId": "c36811e9-4ab8-4525-804b-945854151e08",
+        "date": "2026-10-22",
+        "course": "Carlisle",
+        "old_t1": "Hello Judge",
+        "new_t1": "Dearkeithandkaty",
+        "old_margin": -0.7096545753961954,
+        "new_margin": 0.06434269833137318,
+        "comment_delta": 0.2505141909909194,
+        "numeric_delta": 0.5234830827366491,
+        "restores_old_t1": true,
+        "settled": true,
+        "old_t1_won": false,
+        "new_t1_won": true
+      },
+      {
+        "raceId": "7f324580-25f4-4c0f-9982-ae21382838bd",
+        "date": "2026-10-23",
+        "course": "Cheltenham",
+        "old_t1": "Ice Jet",
+        "new_t1": "Passing Diamond",
+        "old_margin": -0.5635927256408468,
+        "new_margin": 0.00418190374539229,
+        "comment_delta": 0.42625874672018255,
+        "numeric_delta": 0.14151588266605664,
+        "restores_old_t1": true,
+        "settled": true,
+        "old_t1_won": false,
+        "new_t1_won": false
+      },
+      {
+        "raceId": "5edd49fe-5bee-4a50-bd77-7402b229ae70",
+        "date": "2026-10-23",
+        "course": "Cheltenham",
+        "old_t1": "Palacio",
+        "new_t1": "Sans Bruit",
+        "old_margin": -0.024866620843620568,
+        "new_margin": 0.09262033475969778,
+        "comment_delta": 0.23007366878358526,
+        "numeric_delta": -0.11258671318026708,
+        "restores_old_t1": true,
+        "settled": false,
+        "old_t1_won": null,
+        "new_t1_won": null
+      },
+      {
+        "raceId": "81c655ff-60f5-4336-b8b0-033cd4c149e5",
+        "date": "2026-10-24",
+        "course": "Cheltenham",
+        "old_t1": "Here Comes Georgie",
+        "new_t1": "Diamond Dealer",
+        "old_margin": -0.1961754773054467,
+        "new_margin": 0.4988938731806246,
+        "comment_delta": 0.5492069508707318,
+        "numeric_delta": 0.14586239961533953,
+        "restores_old_t1": true,
+        "settled": true,
+        "old_t1_won": true,
+        "new_t1_won": false
+      },
+      {
+        "raceId": "f5adbf19-73e0-4df5-8bec-a1ab895388ed",
+        "date": "2026-10-24",
+        "course": "Cheltenham",
+        "old_t1": "Butch Cassidy",
+        "new_t1": "Follow Your Luck",
+        "old_margin": -0.05864663852596941,
+        "new_margin": 0.39693939185133376,
+        "comment_delta": 0.27021014816684047,
+        "numeric_delta": 0.18537588221046264,
+        "restores_old_t1": false,
+        "settled": true,
+        "old_t1_won": true,
+        "new_t1_won": false
+      },
+      {
+        "raceId": "474b8576-21fe-48cf-93c8-4d650bd5c926",
+        "date": "2026-10-25",
+        "course": "Aintree",
+        "old_t1": "Un Sens A La Vie",
+        "new_t1": "Kadastral",
+        "old_margin": -0.4079261853995477,
+        "new_margin": 0.02589342448316967,
+        "comment_delta": 0.6028398988145991,
+        "numeric_delta": -0.1690202889318818,
+        "restores_old_t1": true,
+        "settled": false,
+        "old_t1_won": null,
+        "new_t1_won": null
+      },
+      {
+        "raceId": "758a46f1-6cfa-4ada-987d-453e57efd875",
+        "date": "2026-10-25",
+        "course": "Market Rasen",
+        "old_t1": "Livin On Luco",
+        "new_t1": "Paper Mill",
+        "old_margin": -0.04817070989434136,
+        "new_margin": 0.23837885620141697,
+        "comment_delta": 0.16925622784138694,
+        "numeric_delta": 0.11729333825437127,
+        "restores_old_t1": false,
+        "settled": true,
+        "old_t1_won": false,
+        "new_t1_won": true
+      },
+      {
+        "raceId": "b7a7746e-065a-413a-afdd-33b3e28dab83",
+        "date": "2026-10-25",
+        "course": "Galway",
+        "old_t1": "Will Do",
+        "new_t1": "Chart Topper",
+        "old_margin": -0.6360578321136041,
+        "new_margin": 0.13745898738263762,
+        "comment_delta": 0.2472645755482354,
+        "numeric_delta": 0.5262522439480063,
+        "restores_old_t1": true,
+        "settled": true,
+        "old_t1_won": false,
+        "new_t1_won": true
+      },
+      {
+        "raceId": "1cb30643-93a5-4bee-89d2-0f7246da658c",
+        "date": "2026-10-26",
+        "course": "Galway",
+        "old_t1": "County Final",
+        "new_t1": "Karl Des Tourelles",
+        "old_margin": -0.03257829978466553,
+        "new_margin": 0.24969717400107255,
+        "comment_delta": 0.4604164035136258,
+        "numeric_delta": -0.1781409297278877,
+        "restores_old_t1": true,
+        "settled": true,
+        "old_t1_won": false,
+        "new_t1_won": true
+      },
+      {
+        "raceId": "16d4b1a4-162d-4da6-aa35-e4b38d9fe5e0",
+        "date": "2026-10-27",
+        "course": "Newcastle",
+        "old_t1": "Loulou Madrik",
+        "new_t1": "Balking",
+        "old_margin": -0.249575986717895,
+        "new_margin": 0.17611891177381084,
+        "comment_delta": 0.5951287051828077,
+        "numeric_delta": -0.1694338066911018,
+        "restores_old_t1": true,
+        "settled": true,
+        "old_t1_won": false,
+        "new_t1_won": false
+      },
+      {
+        "raceId": "a2390053-4e07-4d5f-b74d-ed29460fb1d5",
+        "date": "2026-10-28",
+        "course": "Newton Abbot",
+        "old_t1": "Centara",
+        "new_t1": "Sinchi Roca",
+        "old_margin": -0.8465498043201138,
+        "new_margin": 0.021384636585987882,
+        "comment_delta": 0.3038369987410065,
+        "numeric_delta": 0.5640974421650954,
+        "restores_old_t1": true,
+        "settled": false,
+        "old_t1_won": null,
+        "new_t1_won": null
+      },
+      {
+        "raceId": "d656cac4-20ac-41fc-b983-7e4a35380f82",
+        "date": "2026-10-30",
+        "course": "Down Royal",
+        "old_t1": "Costacurta",
+        "new_t1": "Manoir De Mirande",
+        "old_margin": -0.06982872741939583,
+        "new_margin": 0.10332635437793702,
+        "comment_delta": 0.17166688421177745,
+        "numeric_delta": 0.0014881975855554064,
+        "restores_old_t1": true,
+        "settled": false,
+        "old_t1_won": null,
+        "new_t1_won": null
+      },
+      {
+        "raceId": "18456f8e-777e-4c15-8468-166abd9c1049",
+        "date": "2026-10-31",
+        "course": "Wetherby",
+        "old_t1": "Upfordebate",
+        "new_t1": "Sledgehammer",
+        "old_margin": -0.2208978983838954,
+        "new_margin": 0.27062307758064785,
+        "comment_delta": 0.17307828344074716,
+        "numeric_delta": 0.3184426925237961,
+        "restores_old_t1": false,
+        "settled": true,
+        "old_t1_won": false,
+        "new_t1_won": true
+      },
+      {
+        "raceId": "1d4f97f4-5698-4e12-8ba2-5da034a3b7d7",
+        "date": "2026-10-31",
+        "course": "Ayr",
+        "old_t1": "Didntgotwenty",
+        "new_t1": "The Grey Venture",
+        "old_margin": -0.4768798657107051,
+        "new_margin": 0.042663321313334224,
+        "comment_delta": 0.49799445690902044,
+        "numeric_delta": 0.02154873011501887,
+        "restores_old_t1": true,
+        "settled": false,
+        "old_t1_won": null,
+        "new_t1_won": null
+      },
+      {
+        "raceId": "caea9335-e33a-437c-b96b-3bc44a7b5427",
+        "date": "2026-11-01",
+        "course": "Carlisle",
+        "old_t1": "Fishery Lane",
+        "new_t1": "Patrick's Wells",
+        "old_margin": -0.394881694586131,
+        "new_margin": 0.031001471884835596,
+        "comment_delta": -0.08188011144659779,
+        "numeric_delta": 0.5077632779175645,
+        "restores_old_t1": false,
+        "settled": false,
+        "old_t1_won": null,
+        "new_t1_won": null
+      },
+      {
+        "raceId": "73fe40db-47ee-44ff-a3d1-93544ba26b0a",
+        "date": "2026-11-01",
+        "course": "Huntingdon",
+        "old_t1": "Irish Chorus",
+        "new_t1": "Lady Kara",
+        "old_margin": -0.5269779493431295,
+        "new_margin": 0.09542664257611899,
+        "comment_delta": 0.3633820252163807,
+        "numeric_delta": 0.2590225667028677,
+        "restores_old_t1": true,
+        "settled": true,
+        "old_t1_won": false,
+        "new_t1_won": false
+      },
+      {
+        "raceId": "05475004-8aba-4de2-8ab2-48cac46dfe88",
+        "date": "2026-11-01",
+        "course": "Cork",
+        "old_t1": "Chanceawetmorning",
+        "new_t1": "Love Me Tender",
+        "old_margin": -0.040023722827974506,
+        "new_margin": 0.08789734014239348,
+        "comment_delta": -0.2643645503529748,
+        "numeric_delta": 0.3922856133233428,
+        "restores_old_t1": false,
+        "settled": false,
+        "old_t1_won": null,
+        "new_t1_won": null
+      },
+      {
+        "raceId": "5123315f-2641-475c-a8f9-c7819d3a103b",
+        "date": "2026-11-04",
+        "course": "Chepstow",
+        "old_t1": "Ballynaheer",
+        "new_t1": "Annie Express",
+        "old_margin": -0.05041499459943244,
+        "new_margin": 0.15663441037198422,
+        "comment_delta": 0.2838576267800296,
+        "numeric_delta": -0.07680822180861295,
+        "restores_old_t1": true,
+        "settled": true,
+        "old_t1_won": false,
+        "new_t1_won": false
+      },
+      {
+        "raceId": "40ad93bb-d3b1-4591-85cb-02be48c9011b",
+        "date": "2026-11-04",
+        "course": "Chepstow",
+        "old_t1": "Mr Mcwhinny",
+        "new_t1": "Karton Plein",
+        "old_margin": -0.25959240631845204,
+        "new_margin": 0.06841868949374796,
+        "comment_delta": 0.4077157398549214,
+        "numeric_delta": -0.07970464404272148,
+        "restores_old_t1": true,
+        "settled": false,
+        "old_t1_won": null,
+        "new_t1_won": null
+      },
+      {
+        "raceId": "e9923789-ea9d-4b7a-91ba-1ecba8cb9ff6",
+        "date": "2026-11-04",
+        "course": "Wexford",
+        "old_t1": "Take Stock",
+        "new_t1": "The Store Boy",
+        "old_margin": -0.5784050659555173,
+        "new_margin": 0.028630023280396655,
+        "comment_delta": 0.7072056203933352,
+        "numeric_delta": -0.100170531157421,
+        "restores_old_t1": true,
+        "settled": false,
+        "old_t1_won": null,
+        "new_t1_won": null
+      },
+      {
+        "raceId": "cb59e12a-0358-4b04-a17e-c08be1cf9680",
+        "date": "2026-11-05",
+        "course": "Plumpton",
+        "old_t1": "Bond Broker",
+        "new_t1": "Crest Of Stars",
+        "old_margin": -0.36545455797307125,
+        "new_margin": 0.373956749017986,
+        "comment_delta": 0.4005475201381394,
+        "numeric_delta": 0.33886378685291785,
+        "restores_old_t1": true,
+        "settled": true,
+        "old_t1_won": true,
+        "new_t1_won": false
+      },
+      {
+        "raceId": "ac5ffc37-10f2-4ddd-a058-2bbaf10741e0",
+        "date": "2026-11-05",
+        "course": "Plumpton",
+        "old_t1": "Marlacoo",
+        "new_t1": "Klic Boum",
+        "old_margin": -0.5853401341919744,
+        "new_margin": 0.09934165052321359,
+        "comment_delta": 0.23122177287114126,
+        "numeric_delta": 0.4534600118440468,
+        "restores_old_t1": true,
+        "settled": true,
+        "old_t1_won": true,
+        "new_t1_won": false
+      },
+      {
+        "raceId": "c912eabd-6719-4b76-ad76-2a38f392ed79",
+        "date": "2026-11-05",
+        "course": "Plumpton",
+        "old_t1": "Ferret Jeeter",
+        "new_t1": "Melton Mossy",
+        "old_margin": -0.4957315404316206,
+        "new_margin": 0.1714011384421089,
+        "comment_delta": 0.20983451913684675,
+        "numeric_delta": 0.4572981597368827,
+        "restores_old_t1": true,
+        "settled": true,
+        "old_t1_won": false,
+        "new_t1_won": false
+      },
+      {
+        "raceId": "3c62150a-87e3-45b3-852f-64a14f8fc48e",
+        "date": "2026-11-05",
+        "course": "Clonmel",
+        "old_t1": "Dinoblue",
+        "new_t1": "A Snow White Park",
+        "old_margin": -0.729177151454,
+        "new_margin": 0.08463298112423168,
+        "comment_delta": -0.07826633757311463,
+        "numeric_delta": 0.8920764701513465,
+        "restores_old_t1": false,
+        "settled": false,
+        "old_t1_won": null,
+        "new_t1_won": null
+      }
+    ]
+  },
+  "development": {
+    "counts": {
+      "races": 61,
+      "runners": 402,
+      "changed_t1": 24,
+      "old_t1_to_new_t2": 12,
+      "comment_delta_positive_for_new_t1": 12,
+      "comment_delta_dominant": 9,
+      "restore_old_comments_restores_old_t1": 9,
+      "new_comments_alone_demote_old_t1": 7,
+      "numeric_change_alone_demotes_old_t1": 3
+    },
+    "excluded": 0,
+    "stored_probability_max_error": 2.220446049250313e-16,
+    "metrics": {
+      "old": {
+        "races": 61,
+        "top1_winners": 18,
+        "top2_winners": 32,
+        "log_loss": 1.7378960782363908
+      },
+      "new": {
+        "races": 61,
+        "top1_winners": 18,
+        "top2_winners": 30,
+        "log_loss": 1.7297516290205406
+      },
+      "new_numeric_old_comments": {
+        "races": 61,
+        "top1_winners": 17,
+        "top2_winners": 33,
+        "log_loss": 1.734321927861094
+      },
+      "old_numeric_new_comments": {
+        "races": 61,
+        "top1_winners": 15,
+        "top2_winners": 33,
+        "log_loss": 1.7368708127954482
+      }
+    },
+    "mean_within_race_logit_sd": {
+      "numeric": {
+        "old": 0.3449109998224515,
+        "new": 0.2802875368884539,
+        "delta": 0.17540027106150916
+      },
+      "comments": {
+        "old": 0.2717274046250392,
+        "new": 0.22612375968304937,
+        "delta": 0.1666926141527427
+      }
+    },
+    "demotions": [
+      {
+        "raceId": "8c6e96d1-e2ce-4929-af30-4e27a41a9873",
+        "date": "2026-10-21",
+        "course": "Worcester",
+        "old_t1": "Talk To The Man",
+        "new_t1": "Scorpio Rising",
+        "old_margin": -0.021108816275444697,
+        "new_margin": 0.11689918970329782,
+        "comment_delta": 0.15652782469646698,
+        "numeric_delta": -0.018519818717724568,
+        "restores_old_t1": true,
+        "settled": true,
+        "old_t1_won": true,
+        "new_t1_won": false
+      },
+      {
+        "raceId": "c36811e9-4ab8-4525-804b-945854151e08",
+        "date": "2026-10-22",
+        "course": "Carlisle",
+        "old_t1": "Hello Judge",
+        "new_t1": "Dearkeithandkaty",
+        "old_margin": -0.7096545753961954,
+        "new_margin": 0.06434269833137318,
+        "comment_delta": 0.2505141909909194,
+        "numeric_delta": 0.5234830827366491,
+        "restores_old_t1": true,
+        "settled": true,
+        "old_t1_won": false,
+        "new_t1_won": true
+      },
+      {
+        "raceId": "7f324580-25f4-4c0f-9982-ae21382838bd",
+        "date": "2026-10-23",
+        "course": "Cheltenham",
+        "old_t1": "Ice Jet",
+        "new_t1": "Passing Diamond",
+        "old_margin": -0.5635927256408468,
+        "new_margin": 0.00418190374539229,
+        "comment_delta": 0.42625874672018255,
+        "numeric_delta": 0.14151588266605664,
+        "restores_old_t1": true,
+        "settled": true,
+        "old_t1_won": false,
+        "new_t1_won": false
+      },
+      {
+        "raceId": "81c655ff-60f5-4336-b8b0-033cd4c149e5",
+        "date": "2026-10-24",
+        "course": "Cheltenham",
+        "old_t1": "Here Comes Georgie",
+        "new_t1": "Diamond Dealer",
+        "old_margin": -0.1961754773054467,
+        "new_margin": 0.4988938731806246,
+        "comment_delta": 0.5492069508707318,
+        "numeric_delta": 0.14586239961533953,
+        "restores_old_t1": true,
+        "settled": true,
+        "old_t1_won": true,
+        "new_t1_won": false
+      },
+      {
+        "raceId": "f5adbf19-73e0-4df5-8bec-a1ab895388ed",
+        "date": "2026-10-24",
+        "course": "Cheltenham",
+        "old_t1": "Butch Cassidy",
+        "new_t1": "Follow Your Luck",
+        "old_margin": -0.05864663852596941,
+        "new_margin": 0.39693939185133376,
+        "comment_delta": 0.27021014816684047,
+        "numeric_delta": 0.18537588221046264,
+        "restores_old_t1": false,
+        "settled": true,
+        "old_t1_won": true,
+        "new_t1_won": false
+      },
+      {
+        "raceId": "758a46f1-6cfa-4ada-987d-453e57efd875",
+        "date": "2026-10-25",
+        "course": "Market Rasen",
+        "old_t1": "Livin On Luco",
+        "new_t1": "Paper Mill",
+        "old_margin": -0.04817070989434136,
+        "new_margin": 0.23837885620141697,
+        "comment_delta": 0.16925622784138694,
+        "numeric_delta": 0.11729333825437127,
+        "restores_old_t1": false,
+        "settled": true,
+        "old_t1_won": false,
+        "new_t1_won": true
+      },
+      {
+        "raceId": "b7a7746e-065a-413a-afdd-33b3e28dab83",
+        "date": "2026-10-25",
+        "course": "Galway",
+        "old_t1": "Will Do",
+        "new_t1": "Chart Topper",
+        "old_margin": -0.6360578321136041,
+        "new_margin": 0.13745898738263762,
+        "comment_delta": 0.2472645755482354,
+        "numeric_delta": 0.5262522439480063,
+        "restores_old_t1": true,
+        "settled": true,
+        "old_t1_won": false,
+        "new_t1_won": true
+      },
+      {
+        "raceId": "1cb30643-93a5-4bee-89d2-0f7246da658c",
+        "date": "2026-10-26",
+        "course": "Galway",
+        "old_t1": "County Final",
+        "new_t1": "Karl Des Tourelles",
+        "old_margin": -0.03257829978466553,
+        "new_margin": 0.24969717400107255,
+        "comment_delta": 0.4604164035136258,
+        "numeric_delta": -0.1781409297278877,
+        "restores_old_t1": true,
+        "settled": true,
+        "old_t1_won": false,
+        "new_t1_won": true
+      },
+      {
+        "raceId": "16d4b1a4-162d-4da6-aa35-e4b38d9fe5e0",
+        "date": "2026-10-27",
+        "course": "Newcastle",
+        "old_t1": "Loulou Madrik",
+        "new_t1": "Balking",
+        "old_margin": -0.249575986717895,
+        "new_margin": 0.17611891177381084,
+        "comment_delta": 0.5951287051828077,
+        "numeric_delta": -0.1694338066911018,
+        "restores_old_t1": true,
+        "settled": true,
+        "old_t1_won": false,
+        "new_t1_won": false
+      },
+      {
+        "raceId": "18456f8e-777e-4c15-8468-166abd9c1049",
+        "date": "2026-10-31",
+        "course": "Wetherby",
+        "old_t1": "Upfordebate",
+        "new_t1": "Sledgehammer",
+        "old_margin": -0.2208978983838954,
+        "new_margin": 0.27062307758064785,
+        "comment_delta": 0.17307828344074716,
+        "numeric_delta": 0.3184426925237961,
+        "restores_old_t1": false,
+        "settled": true,
+        "old_t1_won": false,
+        "new_t1_won": true
+      },
+      {
+        "raceId": "73fe40db-47ee-44ff-a3d1-93544ba26b0a",
+        "date": "2026-11-01",
+        "course": "Huntingdon",
+        "old_t1": "Irish Chorus",
+        "new_t1": "Lady Kara",
+        "old_margin": -0.5269779493431295,
+        "new_margin": 0.09542664257611899,
+        "comment_delta": 0.3633820252163807,
+        "numeric_delta": 0.2590225667028677,
+        "restores_old_t1": true,
+        "settled": true,
+        "old_t1_won": false,
+        "new_t1_won": false
+      },
+      {
+        "raceId": "5123315f-2641-475c-a8f9-c7819d3a103b",
+        "date": "2026-11-04",
+        "course": "Chepstow",
+        "old_t1": "Ballynaheer",
+        "new_t1": "Annie Express",
+        "old_margin": -0.05041499459943244,
+        "new_margin": 0.15663441037198422,
+        "comment_delta": 0.2838576267800296,
+        "numeric_delta": -0.07680822180861295,
+        "restores_old_t1": true,
+        "settled": true,
+        "old_t1_won": false,
+        "new_t1_won": false
+      }
+    ]
+  },
+  "post_epoch": {
+    "counts": {
+      "races": 19,
+      "runners": 128,
+      "changed_t1": 7,
+      "old_t1_to_new_t2": 7,
+      "comment_delta_positive_for_new_t1": 5,
+      "comment_delta_dominant": 2,
+      "restore_old_comments_restores_old_t1": 5,
+      "new_comments_alone_demote_old_t1": 1,
+      "numeric_change_alone_demotes_old_t1": 2
+    },
+    "excluded": 0,
+    "stored_probability_max_error": 1.6653345369377348e-16,
+    "metrics": {
+      "old": {
+        "races": 13,
+        "top1_winners": 5,
+        "top2_winners": 7,
+        "log_loss": 1.582082953801967
+      },
+      "new": {
+        "races": 13,
+        "top1_winners": 2,
+        "top2_winners": 6,
+        "log_loss": 1.6380021986731221
+      },
+      "new_numeric_old_comments": {
+        "races": 13,
+        "top1_winners": 4,
+        "top2_winners": 8,
+        "log_loss": 1.5996071149837228
+      },
+      "old_numeric_new_comments": {
+        "races": 13,
+        "top1_winners": 4,
+        "top2_winners": 7,
+        "log_loss": 1.614085881351712
+      }
+    },
+    "mean_within_race_logit_sd": {
+      "numeric": {
+        "old": 0.43429861855544594,
+        "new": 0.2762741468055662,
+        "delta": 0.2849720416099972
+      },
+      "comments": {
+        "old": 0.24020025865208217,
+        "new": 0.199133157675826,
+        "delta": 0.13637342456733023
+      }
+    },
+    "demotions": [
+      {
+        "raceId": "cb59e12a-0358-4b04-a17e-c08be1cf9680",
+        "date": "2026-11-05",
+        "course": "Plumpton",
+        "old_t1": "Bond Broker",
+        "new_t1": "Crest Of Stars",
+        "old_margin": -0.36545455797307125,
+        "new_margin": 0.373956749017986,
+        "comment_delta": 0.4005475201381394,
+        "numeric_delta": 0.33886378685291785,
+        "restores_old_t1": true,
+        "settled": true,
+        "old_t1_won": true,
+        "new_t1_won": false
+      },
+      {
+        "raceId": "ac5ffc37-10f2-4ddd-a058-2bbaf10741e0",
+        "date": "2026-11-05",
+        "course": "Plumpton",
+        "old_t1": "Marlacoo",
+        "new_t1": "Klic Boum",
+        "old_margin": -0.5853401341919744,
+        "new_margin": 0.09934165052321359,
+        "comment_delta": 0.23122177287114126,
+        "numeric_delta": 0.4534600118440468,
+        "restores_old_t1": true,
+        "settled": true,
+        "old_t1_won": true,
+        "new_t1_won": false
+      },
+      {
+        "raceId": "c912eabd-6719-4b76-ad76-2a38f392ed79",
+        "date": "2026-11-05",
+        "course": "Plumpton",
+        "old_t1": "Ferret Jeeter",
+        "new_t1": "Melton Mossy",
+        "old_margin": -0.4957315404316206,
+        "new_margin": 0.1714011384421089,
+        "comment_delta": 0.20983451913684675,
+        "numeric_delta": 0.4572981597368827,
+        "restores_old_t1": true,
+        "settled": true,
+        "old_t1_won": false,
+        "new_t1_won": false
+      },
+      {
+        "raceId": "8dd2384c-7bd0-43f4-8832-12c0e8a5e8b0",
+        "date": "2026-11-06",
+        "course": "Aintree",
+        "old_t1": "Off The Jury",
+        "new_t1": "Barnpark",
+        "old_margin": -0.27847171678036164,
+        "new_margin": 0.08427243370686865,
+        "comment_delta": 0.2006135745701621,
+        "numeric_delta": 0.16213057591706803,
+        "restores_old_t1": true,
+        "settled": false,
+        "old_t1_won": null,
+        "new_t1_won": null
+      },
+      {
+        "raceId": "901e71f8-89ea-406e-84c4-c9987f13be05",
+        "date": "2026-11-06",
+        "course": "Aintree",
+        "old_t1": "Royal Infantry",
+        "new_t1": "Intosomethinggood",
+        "old_margin": -0.08653564745827369,
+        "new_margin": 0.07865367624287001,
+        "comment_delta": -0.15966463848109924,
+        "numeric_delta": 0.32485396218224327,
+        "restores_old_t1": false,
+        "settled": true,
+        "old_t1_won": true,
+        "new_t1_won": false
+      },
+      {
+        "raceId": "787f0481-36eb-400c-99cc-8a7e1f484bc5",
+        "date": "2026-11-06",
+        "course": "Aintree",
+        "old_t1": "Mirabad",
+        "new_t1": "Stencil",
+        "old_margin": -0.5523330006852409,
+        "new_margin": 0.043801162080035705,
+        "comment_delta": 0.15056920047138062,
+        "numeric_delta": 0.44556496229389597,
+        "restores_old_t1": true,
+        "settled": true,
+        "old_t1_won": false,
+        "new_t1_won": false
+      },
+      {
+        "raceId": "90f079f8-2a8b-40ec-93fe-6b98b8612a22",
+        "date": "2026-11-06",
+        "course": "Hexham",
+        "old_t1": "Walk Tall",
+        "new_t1": "C'mon So",
+        "old_margin": -0.029911442091584584,
+        "new_margin": 0.3435297528082307,
+        "comment_delta": -0.14113211467658077,
+        "numeric_delta": 0.514573309576396,
+        "restores_old_t1": false,
+        "settled": false,
+        "old_t1_won": null,
+        "new_t1_won": null
+      }
+    ]
+  },
+  "promotion_reference": {
+    "old": {
+      "races": 1220,
+      "runners": 9083,
+      "logLoss": 1.858266864454479,
+      "ece": 0.01579010292374719,
+      "top1": 303,
+      "top2": 547
+    },
+    "shadow": {
+      "races": 1220,
+      "runners": 9083,
+      "logLoss": 1.8250716289388786,
+      "ece": 0.007557109176115523,
+      "top1": 321,
+      "top2": 554
+    },
+    "quarters": [
+      {
+        "quarter": 1,
+        "old": {
+          "races": 509,
+          "runners": 3743,
+          "logLoss": 1.8589347618451006,
+          "ece": 0.017376285481801618,
+          "top1": 122,
+          "top2": 221
+        },
+        "shadow": {
+          "races": 509,
+          "runners": 3743,
+          "logLoss": 1.8250796066048722,
+          "ece": 0.016047777299024252,
+          "top1": 130,
+          "top2": 226
+        }
+      },
+      {
+        "quarter": 2,
+        "old": {
+          "races": 377,
+          "runners": 2920,
+          "logLoss": 1.9128100087634685,
+          "ece": 0.01672112480685427,
+          "top1": 92,
+          "top2": 170
+        },
+        "shadow": {
+          "races": 377,
+          "runners": 2920,
+          "logLoss": 1.8666075313532633,
+          "ece": 0.0072296937281860875,
+          "top1": 99,
+          "top2": 165
+        }
+      },
+      {
+        "quarter": 3,
+        "old": {
+          "races": 203,
+          "runners": 1574,
+          "logLoss": 1.8177248204396461,
+          "ece": 0.015724757463077166,
+          "top1": 58,
+          "top2": 100
+        },
+        "shadow": {
+          "races": 203,
+          "runners": 1574,
+          "logLoss": 1.801793232321805,
+          "ece": 0.017989587891571884,
+          "top1": 62,
+          "top2": 105
+        }
+      },
+      {
+        "quarter": 4,
+        "old": {
+          "races": 131,
+          "runners": 846,
+          "logLoss": 1.7615287710094025,
+          "ece": 0.027945781145256293,
+          "top1": 31,
+          "top2": 56
+        },
+        "shadow": {
+          "races": 131,
+          "runners": 846,
+          "logLoss": 1.7415786416949903,
+          "ece": 0.021264100007259524,
+          "top1": 30,
+          "top2": 58
+        }
+      }
+    ]
+  }
+}
