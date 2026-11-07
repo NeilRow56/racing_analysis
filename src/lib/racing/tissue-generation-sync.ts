@@ -1,4 +1,5 @@
 import { refreshedSourceAllowed } from "./frozen-capture-selection";
+import { contextShadowAfterProduction, pendingContextWeightShadowRaceIds, syncContextWeightShadow } from "./context-weight-shadow-sync";
 import type { createDbConnection } from "@/db";
 import { loadValueCaptureInputs } from "./tissue-value-sync";
 import { loadTissueGenerationContexts } from "./tissue-generation-context";
@@ -67,7 +68,10 @@ export async function syncTissueGeneration(connection: ReturnType<typeof createD
     const contexts = await loadTissueGenerationContexts(connection, inputs.meetings, cutoff);
     additions = buildTissueGenerationRaces({ ...inputs, contexts, generationModels, raceDate: date, capturedAt: new Date(), historyCutoffAt: cutoff.toISOString() });
   }
-  const pending = before.races.filter(r => r.runners.some(x => x.outcome === null)).map(r => r.raceId);
+  const pending = [...new Set([...before.races.filter(r => r.runners.some(x => x.outcome === null)).map(r => r.raceId), ...await pendingContextWeightShadowRaceIds()])];
   const results = new Map(groupTodaysRacingRows(pending.length ? await getRacecardRowsForRaceIds(connection.db, pending) : []).flatMap(m => m.races.map(r => [r.raceId, r] as const)));
-  return mutateTissueGeneration(data => settleTissueGeneration(appendTissueGeneration(data, additions, new Date(), forceRefresh), results));
+  const production = await mutateTissueGeneration(data => settleTissueGeneration(appendTissueGeneration(data, additions, new Date(), forceRefresh), results));
+  // Only books actually accepted by the production writer can be paired. Never backfill from before.races.
+  const accepted = production.races.slice(before.races.length).filter(r => additions.some(a => a.raceId === r.raceId && a.capturedAt === r.capturedAt));
+  return contextShadowAfterProduction(production, () => syncContextWeightShadow(accepted, results));
 }

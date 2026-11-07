@@ -32,8 +32,8 @@ const now = new Date("2026-10-18T05:30:00Z");
 const env = { NODE_ENV: "test" as const, DATABASE_URL: "postgresql://user:secret@localhost:5432/racing_analysis?sslmode=prefer" };
 
 test("inventory is unique, exists, and is tied to current writer path definitions", async () => {
-  assert.equal(BACKUP_TRACKERS.length, 24);
-  assert.equal(new Set(BACKUP_TRACKERS.map(([name]) => name)).size, 24);
+  assert.equal(BACKUP_TRACKERS.length, 26);
+  assert.equal(new Set(BACKUP_TRACKERS.map(([name]) => name)).size, 26);
   for (const [filename, source] of BACKUP_TRACKERS) {
     assert.ok((await readFile(source, "utf8")).includes(filename), `${filename} moved; update inventory`);
     await inspectTracker(process.cwd(), filename, source);
@@ -94,7 +94,7 @@ test("complete archive, extracted checksums, offsite copy, and no overwrite", as
   await mkdir(offsite);
   const options = { root, env: { ...env, RACING_BACKUP_OFFSITE_DIR: offsite }, now, run: runner };
   const result = (await createWeeklyBackup(options))!;
-  assert.equal(result.manifest.totalTrackerCount, 25);
+  assert.equal(result.manifest.totalTrackerCount, BACKUP_TRACKERS.length + 1);
   assert.ok(result.manifest.trackers.some(t => t.filename === "chase-speed-reliability-shadow-v1/frozen.json"));
   assert.equal((await stat(result.archivePath)).mode & 0o777, 0o600);
   assert.equal(result.offsiteStatus, "COPIED");

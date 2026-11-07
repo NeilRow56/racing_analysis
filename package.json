@@ -129,7 +129,8 @@
     "turf-value:summary": "bun run scripts/track-turf-value-forward.ts summary",
     "tissue-value:sync": "bun --env-file=.env.local run scripts/track-tissue-value-forward.ts sync",
     "tissue-value:results": "bun --env-file=.env.local run scripts/track-tissue-value-forward.ts results",
-    "tissue-value:summary": "bun run scripts/track-tissue-value-forward.ts summary"
+    "tissue-value:summary": "bun run scripts/track-tissue-value-forward.ts summary",
+    "report-context-weight-shadow": "bun run scripts/report-context-weight-shadow.ts"
   },
   "dependencies": {
     "drizzle-orm": "^0.45.2",

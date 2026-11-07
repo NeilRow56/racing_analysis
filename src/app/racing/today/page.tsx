@@ -1,3 +1,6 @@
+import { loadContextWeightShadow } from "@/lib/racing/context-weight-shadow-forward";
+import { contextWeightShadowViews, type ContextShadowViews } from "@/lib/racing/context-weight-shadow-view";
+import { ContextWeightShadowBadge } from "./context-weight-shadow-badge";
 import { loadChaseShadow, type ChaseShadowRace } from "@/lib/racing/chase-shadow-forward";
 import { tissueGenerationActive, TISSUE_GENERATION_EPOCH } from "@/lib/racing/tissue-generation-config";
 import { syncTissueGeneration } from "@/lib/racing/tissue-generation-sync";
@@ -166,6 +169,10 @@ export default async function TodaysRacingPage({ searchParams }: PageProps) {
     });
     const chaseShadowByRace = new Map(chaseShadow.races.map(book => [book.raceId, book]));
     const watchMeetings = displayData.status === "ok" ? displayData.meetings : [];
+    const contextShadows = await loadContextWeightShadow().then(data => contextWeightShadowViews(watchMeetings, data)).catch((error: unknown): ContextShadowViews => {
+      console.error("Unable to display context-weight shadows; production unchanged", error);
+      return new Map();
+    });
     const legacyDailyList = newTissueForDate ? [] : buildNonRedTissueDailyList(watchMeetings);
     const dailyList = newTissueForDate ? buildTissueDailyWatchList(watchMeetings) : legacyDailyList;
     const WatchList = newTissueForDate ? TissueDailyWatchList : NonRedTissueDailyList;
@@ -222,6 +229,7 @@ export default async function TodaysRacingPage({ searchParams }: PageProps) {
               meetings={displayData.meetings}
               shadowSummary={shadowSummary}
               chaseShadowByRace={chaseShadowByRace}
+              contextShadows={contextShadows}
             />
           )}
           <details className="mt-8 border-t border-slate-200 py-4">
@@ -284,9 +292,11 @@ function TodaysRacing({
   meetings,
   shadowSummary,
   chaseShadowByRace,
+  contextShadows,
 }: {
   meetings: TodayMeeting[];
   chaseShadowByRace: ReadonlyMap<string, ChaseShadowRace>;
+  contextShadows: ContextShadowViews;
   shadowSummary: TurfPerformanceShadowSummary | null;
 }) {
   return (
@@ -332,6 +342,7 @@ function TodaysRacing({
               key={meeting.courseId}
               meeting={meeting}
               chaseShadowByRace={chaseShadowByRace}
+              contextShadows={contextShadows}
             />
           ))}
         </div>
@@ -340,8 +351,9 @@ function TodaysRacing({
   );
 }
 
-function MeetingSection({ meeting, chaseShadowByRace }: {
+function MeetingSection({ meeting, chaseShadowByRace, contextShadows }: {
   chaseShadowByRace: ReadonlyMap<string, ChaseShadowRace>;
+  contextShadows: ContextShadowViews;
   meeting: TodayMeeting;
 }) {
   return (
@@ -363,6 +375,7 @@ function MeetingSection({ meeting, chaseShadowByRace }: {
             key={race.raceId}
             race={race}
             chaseShadow={chaseShadowByRace.get(race.raceId)}
+            contextShadows={contextShadows}
           />
         ))}
       </div>
@@ -370,8 +383,9 @@ function MeetingSection({ meeting, chaseShadowByRace }: {
   );
 }
 
-function RaceBlock({ race, chaseShadow }: {
+function RaceBlock({ race, chaseShadow, contextShadows }: {
   chaseShadow?: ChaseShadowRace;
+  contextShadows: ContextShadowViews;
   race: TodayRace;
 }) {
   const isJumpRace = isJumpRaceForDisplay(race);
@@ -449,6 +463,8 @@ function RaceBlock({ race, chaseShadow }: {
         isJumpRace={isJumpRace}
         isTurfRace={isTurfRace}
         shadowRanks={chaseShadowBadgeRanks(race, chaseShadow)}
+        contextShadows={contextShadows}
+        raceId={race.raceId}
         runners={race.runners}
       />
       {/* TODO: The retired manual-comparator slot may host another prospective test later. */}
@@ -481,6 +497,8 @@ function RaceMeta({ race }: { race: TodayRace }) {
 
 function RunnerTable({
   shadowRanks,
+  contextShadows,
+  raceId,
   jumpSubtype,
   hasConclusiveResult,
   isAllWeatherRace,
@@ -501,6 +519,8 @@ function RunnerTable({
   isTurfRace: boolean;
   runners: TodayRunner[];
   shadowRanks: ReadonlyMap<string, 1 | 2>;
+  contextShadows: ContextShadowViews;
+  raceId: string;
 }) {
   const speedEdges = isAllWeatherRace
     ? sameOrAwSpeedEdges(runners, isAllWeatherRace)
@@ -585,6 +605,7 @@ function RunnerTable({
               orRank={orRanks.get(runner.runnerId)}
               runner={runner}
               shadowRank={shadowRanks.get(runner.runnerId)}
+              contextShadow={contextShadows.get(`${raceId}|${runner.runnerId}`)}
             />
           ))}
         </tbody>
@@ -595,6 +616,7 @@ function RunnerTable({
 
 function RunnerRow({
   shadowRank,
+  contextShadow,
   jumpSubtype,
   hasConclusiveResult,
   isAllWeatherRace,
@@ -617,6 +639,7 @@ function RunnerRow({
   isTurfRace: boolean;
   runner: TodayRunner;
   shadowRank?: 1 | 2;
+  contextShadow?: import("@/lib/racing/context-weight-shadow-view").ContextShadowView;
   speedEdge?: number;
   orRank?: number;
 }) {
@@ -686,7 +709,7 @@ function RunnerRow({
           <TurfPerformanceRatingCell coverage={tprCoverage} runner={runner} />
         </td>
       ) : null}
-      <td className="px-1.5 py-2"><FrozenRacecardRanks runner={runner} shadowRank={shadowRank} /></td>
+      <td className="px-1.5 py-2"><FrozenRacecardRanks runner={runner} shadowRank={shadowRank} /><ContextWeightShadowBadge observation={contextShadow} /></td>
       <td className="px-1.5 py-2">
         {runner.metrics?.daysSinceLastRun ?? "-"}
       </td>

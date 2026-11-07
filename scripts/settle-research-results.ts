@@ -2,6 +2,8 @@ import { loadAllTissueValue } from "@/lib/racing/tissue-value-readers";
 import { mutateValueForward, pendingTissueValueRaceIds, settleValueForward } from "@/lib/racing/tissue-value-forward";
 import { loadOrSpeed, mutateOrSpeed, pendingOrSpeedRaceIds, settleOrSpeed } from "@/lib/racing/or-speed-forward";
 import { loadTissueGeneration, mutateTissueGeneration, settleTissueGeneration } from "@/lib/racing/tissue-generation-forward";
+import { contextShadowAfterProduction, pendingContextWeightShadowRaceIds } from "@/lib/racing/context-weight-shadow-sync";
+import { mutateContextWeightShadow, settleContextWeightShadow } from "@/lib/racing/context-weight-shadow-forward";
 import { loadChaseShadow, mutateChaseShadow, settleChaseShadow } from "@/lib/racing/chase-shadow-forward";
 import { pathToFileURL } from "node:url";
 import { resolve } from "node:path";
@@ -45,6 +47,7 @@ export async function main(args: string[]) {
     ])];
     const races = await loadRacesByIds(connection.db, raceIds);
     await mutateTissueGeneration(latest => settleTissueGeneration(latest, races, now));
+    await contextShadowAfterProduction(undefined, () => mutateContextWeightShadow(latest => settleContextWeightShadow(latest, races, now)));
     let settledTissueValue = 0;
     for (const { config } of valueCohorts) {
       await mutateValueForward(config, latest => {
@@ -183,6 +186,7 @@ async function pendingFromMutationSources() {
     loadModelDisagreementForward(),
   ]);
   return [
+    ...await pendingContextWeightShadowRaceIds(),
     ...(await loadTissueGeneration()).races.filter(r => r.runners.some(x => x.outcome === null)).map(r => r.raceId),
     ...(await loadChaseShadow()).races.filter(race => race.current.settledAt === null).map(race => race.raceId),
     ...(await loadHurdlePair()).races.filter((race) => race.settledAt === null).map((race) => race.raceId),

@@ -1,6 +1,6 @@
 import { captureIdentity, captureState, latestPreOffCaptures } from "./frozen-capture-selection";
-import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
-import { dirname, resolve } from "node:path";
+import { readFile } from "node:fs/promises";
+import { mutateFrozenJson } from "./frozen-json-store";
 import { z } from "zod";
 import { GENERATION_MODEL_HASHES, TISSUE_GENERATION, TISSUE_GENERATION_EPOCH, tissueGenerationActive } from "./tissue-generation-config";
 import { GENERATION_MODEL_VERSIONS } from "./tissue-generation-model";
@@ -25,6 +25,7 @@ const raceSchema = z.object({ family: z.enum(TISSUE_VALUE_FAMILIES), modelVersio
     outcome: outcome.nullable() }).strict()).min(2),
 }).strict();
 const schema = z.object({ version: z.literal(TISSUE_GENERATION), epoch: z.literal(TISSUE_GENERATION_EPOCH), races: z.array(raceSchema) }).strict();
+export const generationRaceSchema = raceSchema;
 export type GenerationRace = z.infer<typeof raceSchema>;
 export type GenerationData = z.infer<typeof schema>;
 export const emptyTissueGeneration = (): GenerationData => ({ version: TISSUE_GENERATION, epoch: TISSUE_GENERATION_EPOCH, races: [] });
@@ -85,22 +86,14 @@ export function settleTissueGeneration(data: GenerationData, results: ReadonlyMa
   }) };
 }
 export async function mutateTissueGeneration(mutate: (data: GenerationData) => GenerationData | Promise<GenerationData>, path = TISSUE_GENERATION_FORWARD_PATH) {
-  const lock = `${resolve(path)}.lock`; await mkdir(dirname(lock), { recursive: true }); const deadline = Date.now() + 30000;
-  while (true) { try { await mkdir(lock); break; } catch (e) { if ((e as NodeJS.ErrnoException).code !== "EEXIST" || Date.now() > deadline) throw e; await new Promise(r => setTimeout(r, 10)); } }
-  let temporary: string | undefined;
-  try {
-    const before = await loadTissueGeneration(path), after = schema.parse(await mutate(structuredClone(before)));
+  return mutateFrozenJson(path, () => loadTissueGeneration(path), value => schema.parse(value), (before, after) => {
     if (after.races.length < before.races.length) throw new Error("Cannot remove generation observations");
     for (const [i, old] of before.races.entries()) {
       const frozen = (r: GenerationRace) => ({ ...r, runners: r.runners.map(x => ({ ...x, outcome: null })) });
       if (JSON.stringify(frozen(old)) !== JSON.stringify(frozen(after.races[i])) || old.runners.some((r, j) => r.outcome && JSON.stringify(r.outcome) !== JSON.stringify(after.races[i].runners[j].outcome))) throw new Error("Cannot rewrite frozen generation observations");
     }
     if (after.races.some(r => !validGenerationCapture(r)) || new Set(after.races.map(captureIdentity)).size !== after.races.length || after.races.slice(before.races.length).some(r => r.runners.some(x => x.outcome !== null))) throw new Error("Invalid generation additions");
-    if (JSON.stringify(before) !== JSON.stringify(after)) {
-      temporary = `${path}.tmp-${process.pid}`; await writeFile(temporary, JSON.stringify(after, null, 2) + "\n"); await rename(temporary, path);
-    }
-    return after;
-  } finally { if (temporary) await rm(temporary, { force: true }); await rm(lock, { recursive: true, force: true }); }
+  }, mutate);
 }
 export function summarizeTissueGeneration(data: GenerationData) {
   return summarizeProspectiveTissue(data.races.flatMap(r => r.runners.map(x => ({ family: r.family, tissueRank: x.rank, probability: x.probability,

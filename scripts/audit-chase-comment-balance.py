@@ -70,8 +70,10 @@ def audit(races, stored_model):
         settled = (all(o is not None and o.get("status", "settled") == "settled" and
                        o.get("resultStatus") not in ["non_runner", "void"] for o in outcomes)
                    and sum(bool(o and o.get("winner", o.get("won", False))) for o in outcomes) == 1)
-        winner = next((i for i,o in enumerate(outcomes) if o and o.get("winner",o.get("won",False))), None)
+        winner: int | None = next((i for i,o in enumerate(outcomes) if o and o.get("winner",o.get("won",False))), None)
         if settled:
+            # A settled field has exactly one winner, so its index must exist.
+            assert winner is not None
             for k,order in orders.items():
                 m = metrics[k]
                 m["races"] += 1
