@@ -1,3 +1,5 @@
+import { loadHurdleV3Shadow, type HurdleV3ShadowObservation } from "@/lib/racing/hurdle-v3-shadow";
+import { HurdleModelComparison } from "./hurdle-model-comparison";
 import { loadContextWeightShadow } from "@/lib/racing/context-weight-shadow-forward";
 import { contextWeightShadowViews, type ContextShadowViews } from "@/lib/racing/context-weight-shadow-view";
 import { ContextWeightShadowBadge } from "./context-weight-shadow-badge";
@@ -57,7 +59,7 @@ import {
   type TodayRunner,
 } from "@/lib/racing/todays-racing";
 import { todayRaceHasConclusiveResult, todayRaceStatusLabel } from "@/lib/racing/today-race-status";
-import { RunnerResultRow, RunnerWinnerBadge } from "./runner-result-display";
+import { RunnerResultRow, RunnerWinnerBadge, RunnerNonRunnerBadge } from "./runner-result-display";
 import { enrichTodayForwardTrackerResults } from "@/lib/racing/tpr-timewise-forward-settlement";
 import { loadTrackerData } from "../../../../scripts/diagnose-tpr-vs-timewise-forward";
 import { refreshTodaySelectionResultsAction } from "./actions";
@@ -74,6 +76,7 @@ import { SavedRuleResearchNote } from "../research/saved-rule-research-note";
 import { buildNonRedTissueDailyList, formatNonRedTissueDailyList } from "@/lib/racing/non-red-tissue-daily-list";
 import { NonRedTissueDailyList, TissueDailyWatchList } from "./non-red-tissue-daily-list";
 import { buildTissueDailyWatchList, formatTissueDailyWatchList } from "@/lib/racing/tissue-daily-watch-list";
+import { isLiveRunnerEligible } from "@/lib/racing/live-runner-eligibility";
 
 export const dynamic = "force-dynamic";
 
@@ -168,6 +171,11 @@ export default async function TodaysRacingPage({ searchParams }: PageProps) {
       return { races: [] };
     });
     const chaseShadowByRace = new Map(chaseShadow.races.map(book => [book.raceId, book]));
+    const hurdleShadow = await loadHurdleV3Shadow().catch((error: unknown) => {
+      console.error("Unable to display Hurdle V3 shadow comparison; production unchanged", error);
+      return null;
+    });
+    const hurdleShadowByRace = new Map(hurdleShadow?.observations.map(book => [book.raceId, book]) ?? []);
     const watchMeetings = displayData.status === "ok" ? displayData.meetings : [];
     const contextShadows = await loadContextWeightShadow().then(data => contextWeightShadowViews(watchMeetings, data)).catch((error: unknown): ContextShadowViews => {
       console.error("Unable to display context-weight shadows; production unchanged", error);
@@ -229,6 +237,7 @@ export default async function TodaysRacingPage({ searchParams }: PageProps) {
               meetings={displayData.meetings}
               shadowSummary={shadowSummary}
               chaseShadowByRace={chaseShadowByRace}
+              hurdleShadowByRace={hurdleShadowByRace}
               contextShadows={contextShadows}
             />
           )}
@@ -292,10 +301,12 @@ function TodaysRacing({
   meetings,
   shadowSummary,
   chaseShadowByRace,
+  hurdleShadowByRace,
   contextShadows,
 }: {
   meetings: TodayMeeting[];
   chaseShadowByRace: ReadonlyMap<string, ChaseShadowRace>;
+  hurdleShadowByRace: ReadonlyMap<string, HurdleV3ShadowObservation>;
   contextShadows: ContextShadowViews;
   shadowSummary: TurfPerformanceShadowSummary | null;
 }) {
@@ -342,6 +353,7 @@ function TodaysRacing({
               key={meeting.courseId}
               meeting={meeting}
               chaseShadowByRace={chaseShadowByRace}
+              hurdleShadowByRace={hurdleShadowByRace}
               contextShadows={contextShadows}
             />
           ))}
@@ -351,8 +363,9 @@ function TodaysRacing({
   );
 }
 
-function MeetingSection({ meeting, chaseShadowByRace, contextShadows }: {
+function MeetingSection({ meeting, chaseShadowByRace, hurdleShadowByRace, contextShadows }: {
   chaseShadowByRace: ReadonlyMap<string, ChaseShadowRace>;
+  hurdleShadowByRace: ReadonlyMap<string, HurdleV3ShadowObservation>;
   contextShadows: ContextShadowViews;
   meeting: TodayMeeting;
 }) {
@@ -375,6 +388,7 @@ function MeetingSection({ meeting, chaseShadowByRace, contextShadows }: {
             key={race.raceId}
             race={race}
             chaseShadow={chaseShadowByRace.get(race.raceId)}
+            hurdleShadow={hurdleShadowByRace.get(race.raceId)}
             contextShadows={contextShadows}
           />
         ))}
@@ -383,8 +397,9 @@ function MeetingSection({ meeting, chaseShadowByRace, contextShadows }: {
   );
 }
 
-function RaceBlock({ race, chaseShadow, contextShadows }: {
+function RaceBlock({ race, chaseShadow, hurdleShadow, contextShadows }: {
   chaseShadow?: ChaseShadowRace;
+  hurdleShadow?: HurdleV3ShadowObservation;
   contextShadows: ContextShadowViews;
   race: TodayRace;
 }) {
@@ -453,6 +468,8 @@ function RaceBlock({ race, chaseShadow, contextShadows }: {
         </p>
       ) : null}
 
+      <HurdleModelComparison race={race} shadow={hurdleShadow} />
+
       <RunnerTable
         jumpSubtype={classifyJumpRaceSubtype(race)}
         hasConclusiveResult={todayRaceHasConclusiveResult(race)}
@@ -479,8 +496,9 @@ function RaceMeta({ race }: { race: TodayRace }) {
     race.distance,
     race.going,
     race.raceTypeCode,
+    `${race.runners.filter(isLiveRunnerEligible).length} runners`,
     race.declaredRunnerCount !== null
-      ? `${race.declaredRunnerCount} declared`
+      ? `${race.declaredRunnerCount} declared (last import)`
       : null,
   ].filter(Boolean);
 
@@ -643,7 +661,6 @@ function RunnerRow({
   speedEdge?: number;
   orRank?: number;
 }) {
-  const nonRunner = runner.resultStatus === "non_runner";
   const speedMetrics = speedMetricValues({
     isAllWeatherRace,
     isJumpRace,
@@ -664,11 +681,7 @@ function RunnerRow({
           </Link>
           <RunnerWinnerBadge runner={runner} hasConclusiveResult={hasConclusiveResult} />
           <HistoricalFormBadges flags={runner.historicalFormFlags} officialRating={runner.officialRating} />
-          {nonRunner ? (
-            <span className="border border-slate-300 bg-white px-1.5 py-0.5 text-xs font-semibold text-slate-600 no-underline">
-              NR
-            </span>
-          ) : null}
+          <RunnerNonRunnerBadge runner={runner} />
         </div>
         <SavedRuleMatches matches={runner.savedRuleMatches ?? []} />
       </td>

@@ -29,3 +29,11 @@ export function RunnerWinnerBadge(result: ResultProps) {
     </span>
   ) : null;
 }
+
+export function RunnerNonRunnerBadge({ runner }: Pick<ResultProps, "runner">) {
+  return runner.resultStatus === "non_runner" ? (
+    <span className="border border-slate-300 bg-white px-1.5 py-0.5 text-xs font-semibold text-slate-600 no-underline">
+      NR
+    </span>
+  ) : null;
+}

@@ -19,3 +19,4 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - Inspect relevant existing code and local Next.js docs before editing.
 - Avoid unnecessary dependencies and infrastructure. Add packages only when they are genuinely needed for the current task.
 - Run targeted validation after changes, such as typecheck, lint, and build when appropriate.
+- Any new or edited Python diagnostic/training script must leave Pyright/Pylance clean under the project's configured Python interpreter before the task is reported complete. Run `bun run typecheck:python <script paths>` for targeted checks, or `bun run typecheck:python` for all project Python files.

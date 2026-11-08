@@ -10,12 +10,14 @@ import os
 import pathlib
 import resource
 from datetime import datetime, timezone
+from typing import Literal, overload
 
 # Keep numerical work on this 16 GB machine sequential.
 os.environ.setdefault("OPENBLAS_NUM_THREADS", "1")
 os.environ.setdefault("VECLIB_MAXIMUM_THREADS", "1")
 os.environ.setdefault("OMP_NUM_THREADS", "1")
 import numpy as np
+from numpy.typing import NDArray
 
 CORE = ["official_rating", "latest_hurdle_speed", "best_l3_hurdle_speed", "average_l3_hurdle_speed",
         "trainer_starter_win_rate", "log_trainer_starters", "jockey_starter_win_rate", "log_jockey_starters",
@@ -82,7 +84,11 @@ def fit(races,names,l2):
     penalty=np.array([4. if n=="age" or n.startswith("hurdle_comment_") else 1. for n in names])
     bounded=np.array([n.endswith("_missing") or "_missing_with_history" in n for n in names])
     w=np.zeros(pdim)
-    def objective(v,derivatives=False):
+    @overload
+    def objective(v: NDArray[np.float64], derivatives: Literal[False] = False) -> float: ...
+    @overload
+    def objective(v: NDArray[np.float64], derivatives: Literal[True]) -> tuple[float, NDArray[np.float64], NDArray[np.float64]]: ...
+    def objective(v: NDArray[np.float64], derivatives: bool = False) -> float | tuple[float, NDArray[np.float64], NDArray[np.float64]]:
         z=x@v;p=softmax(z,starts,sizes)
         value=float(-np.sum(y*np.log(np.maximum(p,1e-300)))/nr+.5*l2*np.sum(penalty*v*v))
         if not derivatives:return value

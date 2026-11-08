@@ -4,6 +4,7 @@ import { formatRaceTimeForDisplay, type TodayMeeting, type TodayRunner } from ".
 import { todayRaceHasConclusiveResult } from "./today-race-status";
 import { resultStatusLabel } from "./today-rule-matches";
 import { isVoidBetResultStatus } from "./backtest";
+import { isLiveRunnerEligible } from "./live-runner-eligibility";
 
 export type NonRedTissueDailyRow = {
   raceId: string;
@@ -19,12 +20,14 @@ export type NonRedTissueDailyRow = {
 
 /** Research shortlist only. Pass the genuine frozen bookmaker price, never live/forecast odds or SP. */
 export function isTissueDailyWatchCandidate(candidate: {
+  resultStatus?: string | null;
   tissueRank?: number | null;
   valueRank?: number | null;
   activeValue1?: boolean;
   bestL3SpeedRank?: number | null;
   capturedPrice?: number | null;
 }): boolean {
+  if (!isLiveRunnerEligible(candidate)) return false;
   if (isTissue1Value1Agreement(candidate)) return true;
   const { tissueRank, capturedPrice } = candidate;
   if (isTissueTop2SpeedRankWatch(candidate) || typeof capturedPrice !== "number" || !Number.isFinite(capturedPrice)) return false;
@@ -36,8 +39,8 @@ export function isTissueDailyWatchCandidate(candidate: {
 export function buildNonRedTissueDailyList(meetings: readonly TodayMeeting[]): NonRedTissueDailyRow[] {
   return meetings.flatMap(meeting => meeting.races.flatMap(race => {
     const hasConclusiveResult = todayRaceHasConclusiveResult(race);
-    return race.runners.filter(({ tissueValue }) =>
-      isTissueDailyWatchCandidate({ tissueRank: tissueValue?.tissueRank,
+    return race.runners.filter(({ tissueValue, resultStatus }) =>
+      isTissueDailyWatchCandidate({ resultStatus, tissueRank: tissueValue?.tissueRank,
         valueRank: tissueValue?.valueRank,
         activeValue1: tissueValue?.activeValue1,
         bestL3SpeedRank: tissueValue?.bestL3SpeedRank, capturedPrice: tissueValue?.marketPrice }),

@@ -6,8 +6,15 @@ import json
 import math
 import pathlib
 import statistics
-import numpy as np
 from importlib.util import module_from_spec, spec_from_file_location
+import numpy as np
+
+
+def group_value(values: dict[str, float], group: str) -> float:
+    # max() only requests keys from this same dictionary; absence is an error.
+    value: float | None = values.get(group)
+    assert value is not None, f"Missing contribution group: {group}"
+    return value
 
 def main():
     parser=argparse.ArgumentParser();parser.add_argument("--directory",default="/tmp/hurdle-v3-rebuild");parser.add_argument("--model",default="data/research/hurdle-tissue-v3-challenger.json");args=parser.parse_args();p=pathlib.Path(args.directory)
@@ -42,12 +49,12 @@ def main():
         cc2=np.array([v["v2Contributions"]for v in r["runners"]]);cg2={g:cc2[:,[i for i,n in enumerate(n2)if group(n)==g]].sum(1)for g in groups};cg3={g:C[:,[i for i,n in enumerate(names)if group(n)==g]].sum(1)for g in groups}
         assert max(abs(sum(cg3.values())-z))<1e-12
         compare=(old[0],order[0])if old[0]!=order[0]else(old[1],order[1])
-        a,b=compare;delta={g:float((cg3[g][b]-cg3[g][a])-(cg2[g][b]-cg2[g][a]))for g in groups}
-        driver=max(delta,key=delta.get)if a!=b else "No Top2 identity change"
+        a,b=compare;group_delta: dict[str, float]={g:float((cg3[g][b]-cg3[g][a])-(cg2[g][b]-cg2[g][a]))for g in groups}
+        driver=max(group_delta,key=lambda g: group_value(group_delta,g))if a!=b else "No Top2 identity change"
         winner_ids=[i for i,v in enumerate(r["runners"])if v["winner"]]
         row={"id":r["id"],"date":r["date"],"year":r["year"],"course":r["course"],"time":r["scheduledTime"],"kind":r["kind"],"cutoff":r["cutoff"],"off":r["off"],"source":r["source"],
              "v2T1":r["runners"][old[0]]["horse"],"v2T2":r["runners"][old[1]]["horse"],"v3T1":r["runners"][order[0]]["horse"],"v3T2":r["runners"][order[1]]["horse"],
-             "sameT1":old[0]==order[0],"sameT2":old[1]==order[1],"sameTop2":set(old[:2])==set(order[:2]),"mainDriver":driver,"driverDelta":delta,
+             "sameT1":old[0]==order[0],"sameT2":old[1]==order[1],"sameTop2":set(old[:2])==set(order[:2]),"mainDriver":driver,"driverDelta":group_delta,
              "winners":" / ".join(r["runners"][i]["horse"]for i in winner_ids)or"UNRESOLVED",
              "v2WinnerRank":statistics.mean(old.index(i)+1 for i in winner_ids)if winner_ids else None,
              "v3WinnerRank":statistics.mean(order.index(i)+1 for i in winner_ids)if winner_ids else None,
@@ -102,7 +109,9 @@ def main():
     or_flag_drivers=collections.Counter();largest_v3=collections.Counter()
     for r in outputs:
         if r["kind"]!="historical":continue
-        rr=sorted(r["runners"],key=lambda v:v["v3Rank"]);a,b=rr[:2];gaps={g:a["v3Groups"][g]-b["v3Groups"][g]for g in groups};largest_v3[max(gaps,key=gaps.get)]+=1
+        rr=sorted(r["runners"],key=lambda v:v["v3Rank"]);a,b=rr[:2]
+        gaps: dict[str, float]={g:a["v3Groups"][g]-b["v3Groups"][g]for g in groups}
+        largest_v3[max(gaps,key=lambda g: group_value(gaps,g))]+=1
         single=[a["v3Contributions"][i]-b["v3Contributions"][i]for i in range(len(names))]
         best=int(np.argmax(single));
         if names[best]=="official_rating_missing":or_flag_drivers[r["year"]]+=1

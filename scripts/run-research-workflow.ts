@@ -2,6 +2,7 @@ import { spawn } from "node:child_process";
 import { pathToFileURL } from "node:url";
 import { resolve } from "node:path";
 import { tissueGenerationActive } from "../src/lib/racing/tissue-generation-config";
+import { getLocalRacingDate } from "../src/lib/racing/todays-racing";
 import { checkStoredRacecards, isRacecardAcquisitionFailure, type StoredRacecardStatus } from "./research-racecard-fallback";
 
 type WorkflowMode = "night" | "morning" | "live" | "late" | "after";
@@ -58,6 +59,9 @@ export function parseArgs(args: string[], now = new Date()): { mode: WorkflowMod
 
 export function workflowSteps(mode: WorkflowMode, date: string, now = new Date()): WorkflowStep[] {
   const steps = legacyWorkflowSteps(mode, date);
+  if ((mode === "morning" || mode === "late" || mode === "live") && date === getLocalRacingDate(now)) {
+    steps.splice(1, 0, { label: "Reconciling live runner status", script: "today:status-refresh", args: [date] });
+  }
   if (!tissueGenerationActive(now) || mode === "night") return steps;
   const retired = new Set(["rank-one:sync", "tissue:sync", "jump-tissue:sync", "aw-tissue:sync", "hurdle-recency:sync",
     "hurdle-pair:sync", "chase-pair:sync", "aw-pair:sync", "sync:aw-shadow", "aw-pair:compact", "aw-pair:challenger",
@@ -155,6 +159,10 @@ export async function runWorkflow(
   console.log();
 
   for (const [index, step] of steps.entries()) {
+    if (existingCards && step.script === "today:status-refresh") {
+      console.warn("STATUS_REFRESH_SKIPPED: source acquisition failed; live statuses may be stale.");
+      continue;
+    }
     console.log(`[${index + 1}/${steps.length}] ${step.label}...`);
     const result = await runner(existingCards ? { ...step, env: { RESEARCH_EXISTING_CARDS_DATE: options.date } } : step);
     const exitCode = typeof result === "number" ? result : result.exitCode;

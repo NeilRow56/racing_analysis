@@ -4,6 +4,7 @@ import { loadOrSpeed, mutateOrSpeed, pendingOrSpeedRaceIds, settleOrSpeed } from
 import { loadTissueGeneration, mutateTissueGeneration, settleTissueGeneration } from "@/lib/racing/tissue-generation-forward";
 import { contextShadowAfterProduction, pendingContextWeightShadowRaceIds } from "@/lib/racing/context-weight-shadow-sync";
 import { mutateContextWeightShadow, settleContextWeightShadow } from "@/lib/racing/context-weight-shadow-forward";
+import { pendingHurdleV3ShadowRaceIds, settleHurdleV3ShadowResults } from "@/lib/racing/hurdle-v3-shadow-sync";
 import { loadChaseShadow, mutateChaseShadow, settleChaseShadow } from "@/lib/racing/chase-shadow-forward";
 import { pathToFileURL } from "node:url";
 import { resolve } from "node:path";
@@ -48,6 +49,7 @@ export async function main(args: string[]) {
     const races = await loadRacesByIds(connection.db, raceIds);
     await mutateTissueGeneration(latest => settleTissueGeneration(latest, races, now));
     await contextShadowAfterProduction(undefined, () => mutateContextWeightShadow(latest => settleContextWeightShadow(latest, races, now)));
+    await contextShadowAfterProduction(undefined, () => settleHurdleV3ShadowResults(races, now), error => console.error("Hurdle V3 shadow settlement unavailable", error));
     let settledTissueValue = 0;
     for (const { config } of valueCohorts) {
       await mutateValueForward(config, latest => {
@@ -187,6 +189,7 @@ async function pendingFromMutationSources() {
   ]);
   return [
     ...await pendingContextWeightShadowRaceIds(),
+    ...await pendingHurdleV3ShadowRaceIds(),
     ...(await loadTissueGeneration()).races.filter(r => r.runners.some(x => x.outcome === null)).map(r => r.raceId),
     ...(await loadChaseShadow()).races.filter(race => race.current.settledAt === null).map(race => race.raceId),
     ...(await loadHurdlePair()).races.filter((race) => race.settledAt === null).map((race) => race.raceId),

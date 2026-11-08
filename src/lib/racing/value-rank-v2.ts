@@ -60,8 +60,8 @@ export function buildValueRankPolicy(book: CaptureBook): ValueRankPolicy | undef
 }
 
 /** Historical observations retain V1 semantics; V2 observations carry an explicit flag. */
-export function isActiveValueOne(row?: { valueRank?: number | null; activeValue1?: boolean } | null): boolean {
-  return row?.valueRank === 1 && row.activeValue1 !== false;
+export function isActiveValueOne(row?: { valueRank?: number | null; activeValue1?: boolean; resultStatus?: string | null } | null): boolean {
+  return row?.resultStatus !== "non_runner" && row?.valueRank === 1 && row.activeValue1 !== false;
 }
 
 type SummaryBook = {

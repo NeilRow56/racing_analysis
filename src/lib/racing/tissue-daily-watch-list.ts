@@ -1,4 +1,5 @@
 import { TISSUE_GENERATION } from "./tissue-generation-config";
+import { isLiveRunnerEligible } from "./live-runner-eligibility";
 import { isTissue1Value1Agreement } from "./tissue-value-agreement";
 import { formatRaceTimeForDisplay, type TodayMeeting, type TodayRunner } from "./todays-racing";
 import { todayRaceHasConclusiveResult } from "./today-race-status";
@@ -11,10 +12,12 @@ export type TissueDailyWatchRow = {
   result: { label: string; winner: boolean; settled: boolean } | null;
 };
 type Candidate = {
+  resultStatus?: string | null;
   generation?: string; tissueRank?: number | null; capturedPrice?: number | null;
   valueRank?: number | null; activeValue1?: boolean; valueSelectionVersion?: string;
 };
 export function isActiveTissueWatchCandidate(candidate: Candidate): boolean {
+  if (!isLiveRunnerEligible(candidate)) return false;
   if (candidate.generation !== TISSUE_GENERATION) return false;
   if (isTissue1Value1Agreement({ ...candidate, activeTissueRank: candidate.tissueRank ?? null })) return true;
   const price = candidate.capturedPrice;
@@ -23,14 +26,14 @@ export function isActiveTissueWatchCandidate(candidate: Candidate): boolean {
     (candidate.tissueRank === 2 && price >= 6 && price < 11);
 }
 
-/** Read membership from first frozen generation/Value captures only. Results decorate it. */
+/** Use frozen ranks/prices, with canonical NR status controlling live eligibility. */
 export function buildTissueDailyWatchList(meetings: readonly TodayMeeting[]): TissueDailyWatchRow[] {
   const seen = new Set<string>();
   return meetings.flatMap(meeting => meeting.races.flatMap(race => {
     const complete = todayRaceHasConclusiveResult(race);
     return race.runners.flatMap(runner => {
       const tissue = runner.activeTissue, value = runner.tissueValue;
-      const candidate = { generation: tissue?.generation, tissueRank: tissue?.rank, capturedPrice: tissue?.capturedPrice,
+      const candidate = { resultStatus: runner.resultStatus, generation: tissue?.generation, tissueRank: tissue?.rank, capturedPrice: tissue?.capturedPrice,
         valueRank: value?.valueRank, activeValue1: value?.activeValue1, valueSelectionVersion: value?.valueSelectionVersion };
       const key = `${race.raceId}|${runner.runnerId}`;
       if (seen.has(key) || !isActiveTissueWatchCandidate(candidate)) return [];

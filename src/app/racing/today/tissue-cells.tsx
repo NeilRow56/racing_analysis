@@ -4,8 +4,10 @@ import { TISSUE_INPUT_RELIABILITY_TOOLTIP } from "@/lib/racing/tissue-input-reli
 import { isLongerPriceTissueTop2, LONGER_PRICE_TISSUE_WATCH_TOOLTIP } from "@/lib/racing/longer-price-tissue-watch";
 import { isTissue1Value1Agreement } from "@/lib/racing/tissue-value-agreement";
 import { TissueValueAgreementBadge } from "./tissue-value-agreement-badge";
+import { isLiveRunnerEligible } from "@/lib/racing/live-runner-eligibility";
 
 export function AwTissueCell({ runner }: { runner: TodayRunner }) {
+  if (!isLiveRunnerEligible(runner)) return <FrozenValueRankCell runner={runner} kind="tissueRank" />;
   if (runner.activeTissue) return <div className="tabular-nums"><span className="font-semibold">{(runner.activeTissue.probability * 100).toFixed(1)}%</span> #{runner.activeTissue.rank}<div className="text-[10px] text-slate-500">{runner.activeTissue.modelVersion}</div></div>;
   if (runner.tissueGenerationActive) return <span title="No frozen new-generation Tissue capture">-</span>;
   const prediction = runner.awTissue;
@@ -18,6 +20,7 @@ export function AwTissueCell({ runner }: { runner: TodayRunner }) {
 }
 
 export function JumpTissueCell({ runner }: { runner: TodayRunner }) {
+  if (!isLiveRunnerEligible(runner)) return <FrozenValueRankCell runner={runner} kind="tissueRank" />;
   if (runner.activeTissue) return <div className="tabular-nums"><span className="font-semibold">{(runner.activeTissue.probability * 100).toFixed(1)}%</span> #{runner.activeTissue.rank}<div className="text-[10px] text-slate-500">{runner.activeTissue.modelVersion} · JPR-A {runner.jumpRating?.jprA?.rank ? `#${runner.jumpRating.jprA.rank}` : "-"}</div></div>;
   if (runner.tissueGenerationActive) return <span title="No frozen new-generation Tissue capture">-</span>;
   const prediction = runner.jumpTissue;
@@ -72,7 +75,7 @@ export const FROZEN_RANK_TOOLTIPS = {
 } as const;
 type FrozenRankKind = keyof typeof FROZEN_RANK_TOOLTIPS;
 const rankLabels = { tissueRank: "Tissue", valueRank: "Value", marketRank: "Mkt" } as const;
-type FrozenRankRunner = { tissueValue?: Partial<NonNullable<TodayRunner["tissueValue"]>>; activeTissue?: TodayRunner["activeTissue"]; tissueGenerationActive?: boolean };
+type FrozenRankRunner = { resultStatus?: string | null; tissueValue?: Partial<NonNullable<TodayRunner["tissueValue"]>>; activeTissue?: TodayRunner["activeTissue"]; tissueGenerationActive?: boolean };
 const positiveRank = (value: number | null | undefined): value is number => typeof value === "number" && Number.isInteger(value) && value > 0;
 
 /** Stored fields only. Missing ranks never fall back to current odds or other model generations. */
@@ -82,6 +85,11 @@ export function FrozenValueRankCell({ runner, kind }: { runner: FrozenRankRunner
     tissueRank: runner.activeTissue?.rank, probability: runner.activeTissue?.probability,
     modelVersion: runner.activeTissue?.modelVersion, capturedAt: runner.activeTissue?.capturedAt,
     family: runner.activeTissue?.family } : runner.tissueValue;
+  if (!isLiveRunnerEligible(runner)) return <div className="text-xs text-slate-500" data-rank-kind={kind}
+    title="Non-runner: historical frozen rank only; ineligible for active selections.">
+    Frozen {rankLabels[kind]} {positiveRank(row?.[kind]) ? row[kind] : "—"}
+    {kind === "tissueRank" && typeof row?.probability === "number" ? <div className="text-[10px]">{(row.probability * 100).toFixed(2)}% frozen</div> : null}
+  </div>;
   const marketPrice = row?.marketPrice, probability = row?.probability, ratio = row?.modelMarketRatio;
   const hasMarket = typeof marketPrice === "number" && Number.isFinite(marketPrice) && marketPrice > 1;
   const hasScore = typeof probability === "number" && Number.isFinite(probability) && probability > 0 && probability <= 1;
@@ -94,7 +102,7 @@ export function FrozenValueRankCell({ runner, kind }: { runner: FrozenRankRunner
   const watch = !generation && available && kind === "tissueRank" && isTissueTop2SpeedRankWatch({ tissueRank: row?.tissueRank, bestL3SpeedRank: row?.bestL3SpeedRank });
   const longerPrice = available && kind === "tissueRank" && isLongerPriceTissueTop2({ tissueRank: row?.tissueRank, capturedPrice: row?.marketPrice });
   const caution = !generation && available && kind === "tissueRank" && (row?.tissueRank === 1 || row?.tissueRank === 2) && row.inputReliability?.level === "CAUTION";
-  const agreement = available && kind === "tissueRank" && hasMarket && isTissue1Value1Agreement({ ...runner.tissueValue, activeTissueRank: generation ? runner.activeTissue?.rank ?? null : undefined });
+  const agreement = available && kind === "tissueRank" && hasMarket && isTissue1Value1Agreement({ ...runner.tissueValue, resultStatus: runner.resultStatus, activeTissueRank: generation ? runner.activeTissue?.rank ?? null : undefined });
   const prominent = available && kind === "tissueRank" && !watch && (row?.tissueRank === 1 || row?.tissueRank === 2);
   const badgeStyle = watch ? "border-red-200 bg-red-50"
     : prominent ? row?.tissueRank === 1 ? "border-slate-900 bg-slate-900 text-white" : "border-blue-800 bg-blue-800 text-white"
@@ -118,7 +126,7 @@ export function FrozenRacecardRanks({ runner, shadowRank }: { runner: FrozenRank
     <FrozenValueRankCell runner={runner} kind="tissueRank" />
     <FrozenValueRankCell runner={runner} kind="valueRank" />
     <FrozenValueRankCell runner={runner} kind="marketRank" />
-    {!runner.tissueGenerationActive && !runner.activeTissue && (shadowRank === 1 || shadowRank === 2) ? <span
+    {isLiveRunnerEligible(runner) && !runner.tissueGenerationActive && !runner.activeTissue && (shadowRank === 1 || shadowRank === 2) ? <span
       className="inline-flex items-center rounded-sm border border-violet-300 px-1.5 py-0.5 text-xs whitespace-nowrap text-violet-800"
       title={`CHASE_SHADOW_V1 research rank ${shadowRank}. Shadow model only; not used for the current Tissue ranking.`}
     >Shadow {shadowRank}</span> : null}

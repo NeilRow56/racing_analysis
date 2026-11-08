@@ -1,5 +1,56 @@
 # Today racecard refresh
 
+## Live status only
+
+```sh
+bun run today:status-refresh
+# Optional date: must be today's Europe/London date.
+bun run today:status-refresh YYYY-MM-DD
+```
+
+This command fetches current Sporting Life racecards for locally stored UK/Ireland
+races and changes **only `race_runners.result_status`** for existing runners with
+an explicit `RUNNER` or recognised NR/withdrawn status. `RUNNER` can restore a
+pre-off NR to active. Unknown statuses, missing rides and new runners are left
+unchanged. An omitted runner is never automatically declared NR.
+
+It does not run a card import, update prices, run models, append captures, write
+source payloads or modify any research ledger. It is separate from the full
+`today:refresh` command below, which can append new pre-off captures.
+
+Only today’s future races with recognised pre-race stages are eligible. The
+detail payload is checked again after fetching. Canonical completed/resulted
+races, runners with a finishing position, and legitimate result statuses are
+protected. Already-off/unknown stages are reported as deferred; use the existing
+`research:live` results workflow for settlement, not historical status backfills.
+Request failures stop reconciliation; prior successfully committed status updates
+remain, and the command can be rerun idempotently.
+
+Current-day morning, late and live workflows invoke this command once after
+their import stage. It adds no Tissue/Value capture step or force-refresh flag.
+Morning’s existing acquisition-failure fallback skips this extra network step
+and warns that live statuses may be stale.
+
+Today retains NR rows with the existing label/strike-through. Their ranks remain
+visible as muted **Frozen Tissue / Frozen Value / Frozen Mkt** text, without
+active Top2, agreement, Value or watch-list emphasis. NR eligibility never changes
+the frozen rank or promotes another runner. Both current and legacy daily watch
+lists exclude canonical NRs. Historical research summaries and settlement retain
+their underlying observations.
+
+Today shows the canonical non-NR runner count separately from the declared count
+at the last full import. Neither figure rewrites a captured field size; the
+imported count is not labelled “originally declared”, because Sporting Life may
+already have reduced it for withdrawals.
+
+Offline regression coverage includes the six 7 November audit examples,
+explicit RUNNER/NR transitions, unknown/absent rides, completion guards,
+capture/ledger immutability, UI eligibility and workflow routing. The SQL guard
+tests use an isolated SQLite database (without PostgreSQL row-lock syntax);
+they do not access or update the production database.
+
+## Full racecard and prospective capture refresh
+
 Diagnosis before this change:
 
 - `sl:import-racecards` already re-fetched existing detail pages by default. Only the explicit `--skip-existing-racecards` resume option (used at night) skipped a recorded source import. Completed full results also skipped detail acquisition.

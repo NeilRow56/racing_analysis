@@ -8,6 +8,13 @@ import { attachTissueGeneration, emptyTissueGeneration, type GenerationRace } fr
 import type { TodayMeeting, TodayRunner } from "@/lib/racing/todays-racing";
 import { TissueDailyWatchList } from "./non-red-tissue-daily-list";
 import { FrozenRacecardRanks } from "./tissue-cells";
+import { AwTissueCell, JumpTissueCell } from "./tissue-cells";
+import { RunnerResultRow, RunnerNonRunnerBadge } from "./runner-result-display";
+import { isActiveValueOne } from "@/lib/racing/value-rank-v2";
+import { isTissue1Value1Agreement } from "@/lib/racing/tissue-value-agreement";
+import { isLongerPriceTissueTop2 } from "@/lib/racing/longer-price-tissue-watch";
+import { isTissueTop2SpeedRankWatch } from "@/lib/racing/tissue-speed-rank-watch";
+import { isLiveRunnerEligible } from "@/lib/racing/live-runner-eligibility";
 
 function runner(id = "horse", rank = 1, price: number | null = 4.5): TodayRunner {
   return { runnerId: id, horseId: id, horseName: id, finishingPosition: null, resultStatus: null, oddsDecimal: "100",
@@ -97,18 +104,17 @@ test("chronological sorting, course tie break, BST display and copy text remain 
   assert.equal(buildTissueDailyWatchList(input)[0].time, "13:50");
 });
 
-test("result updates decorate the same frozen membership: pending, WIN, PU and NR", () => {
+test("result updates decorate frozen qualifiers; canonical NRs leave active membership", () => {
   const input = [meeting("Test", "14:00", [agree(runner("Winner")), runner("PU", 2, 8), runner("NR", 2, 8)])];
   const before = buildTissueDailyWatchList(input); assert.ok(before.every(r => r.result === null));
   const race = input[0].races[0];
   race.runners[0].finishingPosition = 1; race.runners[0].resultStatus = "finished";
   race.runners[1].resultStatus = "pulled_up"; race.runners[2].resultStatus = "non_runner";
-  const partial = buildTissueDailyWatchList(input); assert.equal(partial[0].result, null); assert.equal(partial[2].result!.label, "NR");
+  const partial = buildTissueDailyWatchList(input); assert.equal(partial[0].result, null); assert.equal(partial.length, 2);
   race.winningTime = "1m 40s";
   const ended = buildTissueDailyWatchList(input);
-  assert.deepEqual(ended.map(r => [r.runnerId, r.tissueRank, r.agreement]), before.map(r => [r.runnerId, r.tissueRank, r.agreement]));
-  assert.deepEqual(ended.map(r => r.result!.label), ["WIN", "PU", "NR"]);
-  assert.equal(ended[2].result!.settled, false);
+  assert.deepEqual(ended.map(r => [r.runnerId, r.tissueRank, r.agreement]), before.slice(0, 2).map(r => [r.runnerId, r.tissueRank, r.agreement]));
+  assert.deepEqual(ended.map(r => r.result!.label), ["WIN", "PU"]);
   assert.ok(formatTissueDailyWatchList(ended).includes("Winner — T1 — T1=V1 — WIN"));
 });
 
@@ -140,4 +146,48 @@ test("projection reads generation/rank/price from a frozen ledger without recrea
   assert.equal(attached.generation, TISSUE_GENERATION); assert.equal(attached.rank, book.runners[0].rank);
   assert.equal(attached.capturedPrice, book.runners[0].capturedPrice); assert.equal(attached.capturedAt, book.capturedAt);
   assert.deepEqual(data, before);
+  card.races[0].runners[0].resultStatus = "non_runner";
+  const projected = attachTissueGeneration([card], data);
+  assert.deepEqual(buildTissueDailyWatchList(projected), []);
+  assert.equal(projected[0].races[0].runners[0].activeTissue!.rank, book.runners[0].rank);
+  assert.deepEqual(data, before, "NR projection cannot rewrite a generation capture");
+});
+
+for (const name of ["Wal Buck's", "Cavalry Call", "Bethpage Theatre", "They're Chancers", "Baron Du Brizais", "Off The Jury"]) {
+  test(`${name}: NR keeps frozen observations but loses all live selection emphasis`, () => {
+    // Exercise both top ranks even where the actual horse had a lower captured rank.
+    for (const rank of [1, 2]) {
+      const r = agree(runner(name, rank, rank === 1 ? 4.5 : 8));
+      r.tissueValue!.tissueRank = rank;
+      const observations = structuredClone({ tissue: r.activeTissue, value: r.tissueValue });
+      assert.equal(buildTissueDailyWatchList([meeting("Test", "14:00", [r])]).length, 1);
+      r.resultStatus = "non_runner";
+      assert.deepEqual(buildTissueDailyWatchList([meeting("Test", "14:00", [r])]), []);
+      const html = renderToStaticMarkup(<table><tbody><RunnerResultRow runner={r} hasConclusiveResult={false}>
+        <td>{name}<RunnerNonRunnerBadge runner={r} /><FrozenRacecardRanks runner={r} shadowRank={1} />
+          <AwTissueCell runner={r} /><JumpTissueCell runner={r} /></td>
+      </RunnerResultRow></tbody></table>);
+      assert.match(html, /line-through/); assert.match(html, />NR<\/span>/);
+      assert.match(html, new RegExp(`Frozen Tissue ${rank}`)); assert.match(html, /Frozen Value 1/);
+      assert.doesNotMatch(html, /bg-slate-900|bg-blue-800|T1=V1|Longer-price Tissue watch|border-red-200|Shadow 1/);
+      assert.deepEqual({ tissue: r.activeTissue, value: r.tissueValue }, observations);
+    }
+  });
+}
+
+test("live helper guards cannot qualify a canonical NR and do not promote a replacement", () => {
+  const candidate = { resultStatus: "non_runner", generation: TISSUE_GENERATION, tissueRank: 1, activeTissueRank: 1,
+    valueRank: 1, activeValue1: true, valueSelectionVersion: VALUE_RANK_VERSION, capturedPrice: 8, bestL3SpeedRank: 2 };
+  assert.equal(isLiveRunnerEligible(candidate), false);
+  assert.equal(isActiveTissueWatchCandidate(candidate), false);
+  assert.equal(isActiveValueOne(candidate), false);
+  assert.equal(isTissue1Value1Agreement(candidate), false);
+  assert.equal(isLongerPriceTissueTop2(candidate), false);
+  assert.equal(isTissueTop2SpeedRankWatch(candidate), false);
+  const nr = agree(runner("Original T1")); nr.resultStatus = "non_runner";
+  const second = runner("Original T2", 2, 8), before = structuredClone(second);
+  assert.equal(isLiveRunnerEligible(second), true);
+  const rows = buildTissueDailyWatchList([meeting("Test", "14:00", [nr, second])]);
+  assert.deepEqual(rows.map(r => [r.runnerId, r.tissueRank]), [["Original T2", 2]]);
+  assert.deepEqual(second, before);
 });

@@ -1,5 +1,7 @@
 import { refreshedSourceAllowed } from "./frozen-capture-selection";
 import { contextShadowAfterProduction, pendingContextWeightShadowRaceIds, syncContextWeightShadow } from "./context-weight-shadow-sync";
+import { pendingHurdleV3ShadowRaceIds, prepareHurdleV3Shadow, syncHurdleV3Shadow } from "./hurdle-v3-shadow-sync";
+import type { HurdleV3ShadowInput } from "./hurdle-v3-shadow-inputs";
 import type { createDbConnection } from "@/db";
 import { loadValueCaptureInputs } from "./tissue-value-sync";
 import { loadTissueGenerationContexts } from "./tissue-generation-context";
@@ -63,15 +65,22 @@ export async function syncTissueGeneration(connection: ReturnType<typeof createD
   const known = new Set(before.races.map(r => r.raceId));
   const eligible = meetings.map(m => ({ ...m, races: m.races.filter(r => (forceRefresh || !known.has(r.raceId)) && refreshedSourceAllowed(r.sourceId) && r.raceDateTime && r.raceDateTime > cutoff && valueFamilyForRace(r) !== null) }));
   let additions: GenerationRace[] = [];
+  let hurdleV3Inputs = new Map<string, HurdleV3ShadowInput>();
   if (capture && tissueGenerationActive(cutoff) && date === getLocalRacingDate(cutoff) && eligible.some(m => m.races.length)) {
     const [inputs, generationModels] = await Promise.all([loadValueCaptureInputs(connection, eligible, date, cutoff), loadTissueGenerationModels()]);
-    const contexts = await loadTissueGenerationContexts(connection, inputs.meetings, cutoff);
+    const [contexts, shadowInputs] = await Promise.all([
+      loadTissueGenerationContexts(connection, inputs.meetings, cutoff),
+      prepareHurdleV3Shadow(connection, inputs.meetings, cutoff),
+    ]);
+    hurdleV3Inputs = shadowInputs;
     additions = buildTissueGenerationRaces({ ...inputs, contexts, generationModels, raceDate: date, capturedAt: new Date(), historyCutoffAt: cutoff.toISOString() });
   }
-  const pending = [...new Set([...before.races.filter(r => r.runners.some(x => x.outcome === null)).map(r => r.raceId), ...await pendingContextWeightShadowRaceIds()])];
+  const pending = [...new Set([...before.races.filter(r => r.runners.some(x => x.outcome === null)).map(r => r.raceId), ...await pendingContextWeightShadowRaceIds(), ...await pendingHurdleV3ShadowRaceIds()])];
   const results = new Map(groupTodaysRacingRows(pending.length ? await getRacecardRowsForRaceIds(connection.db, pending) : []).flatMap(m => m.races.map(r => [r.raceId, r] as const)));
   const production = await mutateTissueGeneration(data => settleTissueGeneration(appendTissueGeneration(data, additions, new Date(), forceRefresh), results));
   // Only books actually accepted by the production writer can be paired. Never backfill from before.races.
   const accepted = production.races.slice(before.races.length).filter(r => additions.some(a => a.raceId === r.raceId && a.capturedAt === r.capturedAt));
+  await contextShadowAfterProduction(production, () => syncHurdleV3Shadow(accepted, hurdleV3Inputs, results),
+    error => console.error("Hurdle V3 shadow unavailable; production unchanged", error));
   return contextShadowAfterProduction(production, () => syncContextWeightShadow(accepted, results));
 }

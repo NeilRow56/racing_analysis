@@ -1,9 +1,12 @@
 # Hurdle V3 challenger
 
 `HURDLE_TISSUE_V3_CHALLENGER` is a separately fitted, frozen research challenger.
-It is **not registered in production**, has no Today integration, and has no
-prospective observation ledger. V2 remains unchanged and active. Historical and
-November diagnostic reconstructions are never prospective V3 evidence.
+It is **not registered in production**. V2 remains unchanged and active. A separate
+[prospective shadow ledger](hurdle-v3-prospective-shadow.md) now pairs new genuine
+pre-off V2 captures with the unchanged sealed V3 scorer. There is no V3 Today
+selection display. Historical and November diagnostic reconstructions are never
+prospective V3 evidence. The artifact's original `prospectiveStatus` is sealed
+development metadata; activation lives in the separate shadow ledger.
 
 Artifact: `data/research/hurdle-tissue-v3-challenger.json`.
 Schema: `hurdle_only_canonical_starters_mean_imputed_v1`.
@@ -48,15 +51,27 @@ and November V3 evaluations occur only after sealing. Earlier Atlas/V2 work
 already saw 2026, so this is later chronological evaluation rather than a fully
 blind design holdout. Historical publication times are not certified.
 
-Run sequentially, with NumPy available to Python:
+Use the established `scraper/.venv/bin/python` interpreter. Install the optional
+diagnostic dependency with `scraper/.venv/bin/python -m pip install -r scraper/requirements-hurdle-v3.txt`.
+Run sequentially:
 
 ```sh
 # Preserve the V2 ledger snapshot in a new temporary working directory first.
 bun --env-file=.env.local scripts/build-hurdle-v3-dataset.ts /tmp/hurdle-v3-rebuild
-OPENBLAS_NUM_THREADS=1 VECLIB_MAXIMUM_THREADS=1 OMP_NUM_THREADS=1 python3 scripts/train-hurdle-v3-challenger.py
+OPENBLAS_NUM_THREADS=1 VECLIB_MAXIMUM_THREADS=1 OMP_NUM_THREADS=1 scraper/.venv/bin/python scripts/train-hurdle-v3-challenger.py
 bun scripts/seal-hurdle-v3-challenger.ts
-OPENBLAS_NUM_THREADS=1 VECLIB_MAXIMUM_THREADS=1 OMP_NUM_THREADS=1 python3 scripts/evaluate-hurdle-v3-challenger.py
+OPENBLAS_NUM_THREADS=1 VECLIB_MAXIMUM_THREADS=1 OMP_NUM_THREADS=1 scraper/.venv/bin/python scripts/evaluate-hurdle-v3-challenger.py
 ```
+
+Before completing Python changes, run:
+
+```sh
+bun run typecheck:python scripts/evaluate-hurdle-v3-challenger.py scripts/test-hurdle-v3-training.py scripts/train-hurdle-v3-challenger.py
+scraper/.venv/bin/python scripts/test-hurdle-v3-training.py
+```
+
+The typecheck command uses the configured interpreter and fails on warnings as
+well as errors. Use `bun run typecheck:python` to check all project Python code.
 
 The extractor requires the existing `/tmp/winner-atlas` inputs and a
 `/tmp/hurdle-v3-rebuild/v2-forward.json` copied from the generation ledger. It
@@ -77,4 +92,4 @@ Brier, ECE and Top1, but worsens 2025 loss/Brier/Top1/Top2 and reduces Top2 in
 both years. Conditional negative Best-L3 Speed and positive jump-error comment
 coefficients remain questionable. Missing OR is not the dominant global driver
 but remains influential and needs subgroup monitoring. No production promotion
-or prospective shadow capture is activated.
+is made. Prospective shadow capture is separately armed without changing the model.

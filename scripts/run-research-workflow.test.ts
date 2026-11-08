@@ -68,7 +68,7 @@ describe("research workflow wrapper", () => {
     }, async (date) => { assert.equal(date, storedCards.date); return storedCards; });
     assert.equal(result.exitCode, 0);
     assert.deepEqual(result.existingCards, storedCards);
-    assert.deepEqual(calls, workflowSteps("morning", storedCards.date).map((step) => step.script));
+    assert.deepEqual(calls, workflowSteps("morning", storedCards.date).filter(step => step.script !== "today:status-refresh").map((step) => step.script));
     assert.equal(calls.filter((script) => script === "sl:import-racecards").length, 1);
     assert.match(logs.join("\n"), /RACECARD_REFRESH_FAILED_USING_EXISTING date=2026-10-09 races=7 meetings=1 runners=65/);
     assert.match(logs.join("\n"), /No new market snapshot/);
@@ -113,6 +113,7 @@ describe("research workflow wrapper", () => {
     assert.equal(result.exitCode, 0);
     assert.deepEqual(calls, [
       "sl:import-racecards 2026-10-09 --request-delay-seconds 2",
+      "today:status-refresh 2026-10-09",
       "or-speed:capture 2026-10-09",
       "rank-one:sync 2026-10-09",
       "tissue-value:sync 2026-10-09",
@@ -145,6 +146,23 @@ describe("research workflow wrapper", () => {
     assert.equal(scripts["disagreement:sync"], "bun run scripts/track-model-disagreement.ts sync");
   });
 
+  test("status-only command is separate and current-day integration never adds force captures", () => {
+    const now = new Date("2026-11-08T09:00:00Z");
+    const scripts = JSON.parse(readFileSync("package.json", "utf8")).scripts as Record<string, string>;
+    assert.equal(scripts["today:status-refresh"], "scraper/.venv/bin/python scraper/scripts/refresh_today_runner_status.py");
+    for (const mode of ["morning", "late", "live"] as const) {
+      const steps = currentWorkflowSteps(mode, "2026-11-08", now);
+      assert.equal(steps[1].script, "today:status-refresh");
+      assert.equal(steps.filter(s => s.script === "today:status-refresh").length, 1);
+      assert.ok(!steps.some(s => s.args?.includes("--force-refresh")));
+      if (mode === "live") assert.ok(!steps.some(s => s.script.endsWith(":sync")));
+    }
+    for (const mode of ["night", "after"] as const) {
+      assert.ok(!currentWorkflowSteps(mode, "2026-11-08", now).some(s => s.script === "today:status-refresh"));
+    }
+    assert.ok(!currentWorkflowSteps("morning", "2026-11-07", now).some(s => s.script === "today:status-refresh"));
+  });
+
   test("runs the after workflow as result import plus settlement only", async () => {
     const calls: string[] = [];
 
@@ -169,13 +187,14 @@ describe("research workflow wrapper", () => {
     assert.doesNotMatch(calls.join("\n"), /sl:import-racecards|:sync|disagreement:/);
   });
 
-  test("runs the live workflow as a result-only refresh for today", async () => {
+  test("runs live result settlement plus status-only reconciliation for today", async () => {
     assert.deepEqual(parseArgs(["--mode", "live"], new Date(2026, 9, 9, 15)), {
       mode: "live",
       date: "2026-10-09",
     });
     assert.deepEqual(commandLinesFor("live"), [
       "sl:import-day 2026-10-09 --request-delay-seconds 2",
+      "today:status-refresh 2026-10-09",
       "research:settle 2026-10-09",
       "rank-one:results 2026-10-09",
       "tissue-value:results 2026-10-09",
@@ -248,6 +267,7 @@ describe("research workflow wrapper", () => {
     });
     assert.deepEqual(commandLinesFor("late"), [
       "sl:import-racecards 2026-10-09 --request-delay-seconds 2",
+      "today:status-refresh 2026-10-09",
       "tissue-value:sync 2026-10-09",
       "disagreement:late 2026-10-09",
     ]);
@@ -312,6 +332,7 @@ describe("research workflow wrapper", () => {
     assert.equal(result.failed?.exitCode, 7);
     assert.deepEqual(calls, [
       "sl:import-racecards",
+      "today:status-refresh",
       "or-speed:capture",
       "rank-one:sync",
       "tissue-value:sync",

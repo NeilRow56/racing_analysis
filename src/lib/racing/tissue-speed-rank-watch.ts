@@ -3,11 +3,12 @@ import type { TissueValueFamily } from "./tissue-value-metrics";
 
 export const TISSUE_SPEED_RANK_WATCH_TOOLTIP = "Research watch: Tissue top-2 runner with Best L3 Speed rank 2–3. Early prospective results for this subgroup are weaker; no exclusion rule is applied.";
 
-export function isTissueTop2SpeedRankWatch({ tissueRank, bestL3SpeedRank }: {
+export function isTissueTop2SpeedRankWatch({ tissueRank, bestL3SpeedRank, resultStatus }: {
+  resultStatus?: string | null;
   tissueRank?: number | null;
   bestL3SpeedRank?: number | null;
 }): boolean {
-  return (tissueRank === 1 || tissueRank === 2) && (bestL3SpeedRank === 2 || bestL3SpeedRank === 3);
+  return resultStatus !== "non_runner" && (tissueRank === 1 || tissueRank === 2) && (bestL3SpeedRank === 2 || bestL3SpeedRank === 3);
 }
 
 /** Read the existing frozen Best L3 feature, using the established research rank routine.

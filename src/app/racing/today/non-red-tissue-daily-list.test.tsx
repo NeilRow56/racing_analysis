@@ -183,7 +183,7 @@ function renderList(card: TodayMeeting) {
 for (const [position, status, label] of [
   [1, "finished", "WIN"], [2, "finished", "2nd"], [3, "finished", "3rd"], [4, "finished", "4th"],
   [11, "finished", "11th"], [12, "finished", "12th"], [13, "finished", "13th"], [21, "finished", "21st"],
-  [null, "non_runner", "NR"], [null, "pulled_up", "PU"], [null, "fell", "F"],
+  [null, "pulled_up", "PU"], [null, "fell", "F"],
   [null, "unseated_rider", "UR"], [null, "brought_down", resultStatusLabel("brought_down")],
 ] as const) test(`watch list renders and copies canonical result ${label}`, () => {
   const { rows, text, html } = renderList(resultCard(position, status));
@@ -192,7 +192,7 @@ for (const [position, status, label] of [
   assert.equal(text, `Worcester 12:10 Horse 1 — T1 — ${label}`);
   assert.ok(html.includes(`aria-label="Result: ${label}"`));
   assert.equal(html.includes("bg-emerald-700"), position === 1);
-  assert.equal(rows[0].result?.settled, status !== "non_runner");
+  assert.equal(rows[0].result?.settled, true);
 });
 
 test("pending and partial results remain undecorated until Today's conclusive result gate passes", () => {
@@ -207,11 +207,11 @@ test("pending and partial results remain undecorated until Today's conclusive re
   assert.equal(renderList(partial).rows[0].result, null);
 });
 
-test("NR is visible before race completion, overrides a conflicting position and never counts as a settled loser", () => {
+test("NR leaves the active list even before completion or with a conflicting position", () => {
   const card = resultCard(1, "non_runner");
   card.races[0].winningTime = null;
   const { rows, html } = renderList(card);
-  assert.deepEqual(rows[0].result, { label: "NR", winner: false, settled: false });
+  assert.deepEqual(rows, []);
   assert.doesNotMatch(html, /\d winners?|bg-emerald-700/);
 });
 
@@ -236,7 +236,7 @@ test("settled non-winners show zero winners; every dead-heat winner is counted",
   assert.match(html, /2 selections · 1 race · 2 winners/);
 });
 
-test("settlement decorates the identical frozen cohort without result-driven inclusion, exclusion or mutation", () => {
+test("settlement preserves frozen fields while canonical NRs leave active membership", () => {
   const candidates = [runner(1), runner(2), runner(1, 2), runner(3), runner(1, 3, 1)];
   candidates.forEach((r, index) => { r.runnerId = `candidate-${index}`; r.resultStatus = null; r.finishingPosition = null; });
   const card = meeting("Test", "14:00", candidates);
@@ -249,7 +249,7 @@ test("settlement decorates the identical frozen cohort without result-driven inc
     Object.assign(candidates[3], { finishingPosition: 1, resultStatus: "finished" });
     card.races[0].winningTime = "4m";
     const input = JSON.stringify(card);
-    assert.deepEqual(cohort(), before);
+    assert.deepEqual(cohort(), status === "non_runner" ? [] : before);
     assert.equal(JSON.stringify(card), input);
     assert.equal(JSON.stringify(candidates.map(r => r.tissueValue)), frozenValues);
   }
