@@ -1,8 +1,10 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { mkdtemp, readFile, rm } from "node:fs/promises";
+import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { execFile } from "node:child_process";
+import { promisify } from "node:util";
 import { renderToStaticMarkup } from "react-dom/server";
 import { HurdleV3ShadowMonitor } from "../../app/racing/research/forward-value/hurdle-v3-shadow-monitor";
 import { buildHurdleV3Field, type HurdleV3Prior, type HurdleV3Target } from "./hurdle-v3-challenger-features";
@@ -48,6 +50,96 @@ async function withLedger(task: (data: HurdleV3ShadowData, path: string) => Prom
   try { await task(await initializeHurdleV3Shadow(path, new Date(now.getTime() - 1000)), path); }
   finally { await rm(dir, { recursive: true, force: true }); }
 }
+
+test("loader accepts armed empty state and rejects an invented epoch", async () => withLedger(async (data, path) => {
+  assert.equal(data.observations.length, 0);
+  assert.equal(data.epoch, null);
+  assert.deepEqual(await loadHurdleV3Shadow(path), data);
+  await writeFile(path, JSON.stringify({ ...data, epoch: data.armedAt }));
+  await assert.rejects(loadHurdleV3Shadow(path), /Invalid prospective Hurdle V3 ledger/);
+}));
+
+test("first genuine capture persists its own epoch and repeated page reads cannot replay it", async () => withLedger(async (data, path) => {
+  const { book, inputs } = await fixture();
+  const observation = (await buildHurdleV3Shadow(book, inputs, now))!;
+  assert.notEqual(data.armedAt, observation.capturedAt);
+  assert.equal((await loadHurdleV3Shadow(path))!.epoch, null);
+
+  await mutateHurdleV3Shadow(d => appendHurdleV3Shadows(d, [observation], now), path);
+  const captured = (await loadHurdleV3Shadow(path))!;
+  assert.equal(captured.armedAt, data.armedAt);
+  assert.equal(captured.epoch, observation.capturedAt);
+  assert.deepEqual(captured.observations, [observation]);
+  assert.ok(validHurdleV3Shadow(captured.observations[0], captured));
+  const bytes = await readFile(path, "utf8");
+  for (let i = 0; i < 3; i++) assert.deepEqual(await loadHurdleV3Shadow(path), captured);
+  await mutateHurdleV3Shadow(d => appendHurdleV3Shadows(d, [observation], now), path);
+  assert.equal(await readFile(path, "utf8"), bytes);
+
+  for (const epoch of [null, data.armedAt]) {
+    await writeFile(path, JSON.stringify({ ...captured, epoch }));
+    await assert.rejects(loadHurdleV3Shadow(path), /Invalid prospective Hurdle V3 ledger/);
+  }
+}));
+
+test("Bun-frozen features validate in the Node runtime used by Today", async () => withLedger(async (_data, path) => {
+  const { book, inputs } = await fixture();
+  // log1p(2) differs by one final bit between JavaScriptCore and V8.
+  inputs.get("a")!.history = [run(1), run(2)];
+  const observation = (await buildHurdleV3Shadow(book, inputs, now))!;
+  await mutateHurdleV3Shadow(d => appendHurdleV3Shadows(d, [observation], now), path);
+  const bundle = join(path, "..", "node-loader.mjs"), execute = promisify(execFile);
+  await execute("bun", ["build", "./src/lib/racing/hurdle-v3-shadow.ts", "--target=node", `--outfile=${bundle}`]);
+  await execute("node", ["--input-type=module", "-e", `
+    import assert from "node:assert/strict";
+    import { loadHurdleV3Shadow } from ${JSON.stringify(bundle)};
+    const data = await loadHurdleV3Shadow(process.argv[1]);
+    assert.equal(data.observations.length, 1);
+    assert.equal(data.epoch, data.observations[0].capturedAt);
+  `, path]);
+}));
+
+test("raw validation only permits machine rounding in derived transcendental features", async () => withLedger(async data => {
+  const { book, inputs } = await fixture();
+  inputs.get("a")!.history = [run(1), run(2)];
+  const observation = (await buildHurdleV3Shadow(book, inputs, now))!;
+  const rounded = structuredClone(observation);
+  rounded.runners[0].raw.log_prior_hurdle_starts = rounded.runners[0].raw.log_prior_hurdle_starts! + Number.EPSILON;
+  assert.ok(validHurdleV3Shadow(rounded, data));
+  for (const [feature, value] of [["log_prior_hurdle_starts", 1e-9], ["official_rating", Number.EPSILON * 100]] as const) {
+    const changed = structuredClone(observation);
+    changed.runners[0].raw[feature]! += value;
+    assert.equal(validHurdleV3Shadow(changed, data), false);
+  }
+  const missing = structuredClone(observation);
+  missing.runners[0].raw.log_prior_hurdle_starts = null;
+  assert.equal(validHurdleV3Shadow(missing, data), false);
+}));
+
+test("captures cannot append out of chronological order and loader rejects reordered metadata", async () => withLedger(async (data, path) => {
+  const { book, inputs } = await fixture();
+  const observation = (await buildHurdleV3Shadow(book, inputs, now))!;
+  const later = { ...structuredClone(observation), raceId: "later-race", capturedAt: new Date(now.getTime() + 1).toISOString(), frozenAt: new Date(now.getTime() + 1).toISOString() };
+  later.production.raceId = later.raceId;
+  later.production.capturedAt = later.capturedAt;
+  later.runners.forEach(r => { r.target.raceId = later.raceId; });
+  const latest = new Date(now.getTime() + 2);
+  const first = appendHurdleV3Shadows(data, [later], latest);
+  assert.equal(first.observations.length, 1);
+  assert.equal(appendHurdleV3Shadows(first, [observation], latest).observations.length, 1);
+  // Include a third valid race so an inversion after the first entry is detected.
+  const third = structuredClone(later);
+  third.raceId = "third-race"; third.production.raceId = third.raceId;
+  third.runners.forEach(r => { r.target.raceId = third.raceId; });
+  const ordered = appendHurdleV3Shadows(data, [observation, later, third], latest);
+  assert.equal(ordered.observations.length, 3);
+  await writeFile(path, JSON.stringify(ordered));
+  assert.ok(await loadHurdleV3Shadow(path));
+  ordered.observations = [observation, later, { ...third, capturedAt: observation.capturedAt,
+    production: { ...third.production, capturedAt: observation.capturedAt } }];
+  await writeFile(path, JSON.stringify(ordered));
+  await assert.rejects(loadHurdleV3Shadow(path), /Invalid prospective Hurdle V3 ledger/);
+}));
 
 test("frozen LED definition is Hurdle-only, fixed L3 starts, age-decayed, expiry-bounded and observation only", () => {
   assert.equal(HURDLE_V3_LED_SHADOW_LOGIT, .3512845775499634);

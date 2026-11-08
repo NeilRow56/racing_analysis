@@ -67,7 +67,7 @@ test("missing or mismatched shadows stay unavailable; other race codes show noth
     { ...shadow, production: { ...shadow.production, runners: shadow.production.runners.map(r => ({ ...r, horseId: "wrong-horse" })) } }]) {
     const html = renderToStaticMarkup(<HurdleModelComparison race={race} shadow={book} />);
     assert.match(html, /V2:/); assert.match(html, /V3 SHADOW:/);
-    assert.match(html, /T1 Unavailable/); assert.match(html, /No matching prospective shadow capture/);
+    assert.match(html, /T1 Unavailable/); assert.match(html, /T2 Unavailable/); assert.match(html, /No matching prospective shadow capture/);
   }
   for (const raceType of ["Chase", "Flat", "NH Flat"]) {
     assert.equal(renderToStaticMarkup(<HurdleModelComparison race={{ ...race, raceType, raceName: `${raceType} race` }} shadow={shadow} />), "");

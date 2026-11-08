@@ -14,9 +14,11 @@ observations, not missing historical evidence. See the ledger or run
 
 Setup completed and the ledger was armed at **2026-11-08T09:35:06.976Z**
 (09:35:06.976 Europe/London). The initial current-day sync found no Hurdle
-racecards for 8 November, so the prospective epoch is **pending** and the first
-prospective observation count is **0**. No timestamp has been invented for an
-observation that did not occur. The next normal eligible pre-off capture starts it.
+racecards for 8 November, leaving the epoch pending with zero observations.
+The first genuine capture subsequently set the epoch to
+**2026-11-08T09:58:39.727Z**. The ledger contained **14** genuine observations
+when inspected for the Today loader repair on 8 November. Arming never supplies
+an observation timestamp; an armed empty ledger must keep `epoch: null`.
 
 Frozen model content checksums:
 
@@ -29,6 +31,32 @@ The ledger additionally pins exact artifact file hashes and source hashes for
 V3 feature construction, input loading, canonical settlement, Speed, scoring and
 shadow tags. Hash drift blocks new shadow captures without changing production.
 Original artifacts are not edited, including their original development status.
+
+### 8 November loader repair
+
+The current ledger's epoch and captures were consistent. The loader failed in
+Next.js's Node runtime because it compared recomputed raw features with exact
+numeric equality. Bun's JavaScriptCore and Node's V8 produced final-bit differences
+in `log1p` and exponential decay (34 raw values, differences around `1e-16`).
+The same ledger passed the original Bun validator and failed the Node validator.
+
+Validation now allows only `2 * Number.EPSILON * max(1, |a|, |b|)` rounding for
+the seven derived logarithmic/comment-decay features. Direct inputs, flags,
+nulls, provenance, tags, ranks, timestamps, epoch and immutability checks remain
+exact. Probability consistency retains its existing tolerance. Chronological
+order is also enforced across all observations and new appends.
+
+Only the validator source pin was updated, under the ledger lock:
+
+- Previous `src/lib/racing/hurdle-v3-shadow.ts` SHA256:
+  `7c81bd60fe2c54da6519bb3fdca6f9368d5f450c292e7904a432e7990be4052b`
+- Repaired SHA256:
+  `123392a2c9c78e7a35ff90eab93ffcd72c528698043f5d237af2024ff681cadc`
+
+No model, scoring, feature construction, captured values or epoch were changed.
+Normal concurrent result settlement was preserved. Regression tests exercise
+armed empty loading, invalid invented epochs, first capture persistence, repeated
+loads, duplicate rejection, out-of-order rejection and Bun-to-Node validation.
 
 ## Capture and immutable pairing
 

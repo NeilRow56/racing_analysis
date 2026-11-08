@@ -7008,8 +7008,15 @@
         "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
         "bookmakerQuoteCount": 3
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "finishingPosition": 8,
+        "resultStatus": "finished",
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 67,
+        "profitLoss": -1
+      },
+      "settledAt": "2026-11-08T09:54:48.629Z"
     },
     {
       "raceId": "c329aa8d-73e2-4733-992b-5501a559eea5",
@@ -7061,8 +7068,15 @@
         "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
         "bookmakerQuoteCount": 3
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "finishingPosition": 3,
+        "resultStatus": "finished",
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 1.8,
+        "profitLoss": -1
+      },
+      "settledAt": "2026-11-08T09:54:48.629Z"
     },
     {
       "raceId": "038cc59c-d0da-41be-9679-53e7fb3ebcda",
@@ -7114,8 +7128,15 @@
         "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
         "bookmakerQuoteCount": 3
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "finishingPosition": 3,
+        "resultStatus": "finished",
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 4.333,
+        "profitLoss": -1
+      },
+      "settledAt": "2026-11-08T09:54:48.629Z"
     },
     {
       "raceId": "0238e109-7d6a-430c-a029-fed71fca4683",
@@ -7167,8 +7188,15 @@
         "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
         "bookmakerQuoteCount": 3
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "finishingPosition": 4,
+        "resultStatus": "finished",
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 5,
+        "profitLoss": -1
+      },
+      "settledAt": "2026-11-08T09:54:48.629Z"
     },
     {
       "raceId": "385d93be-c779-4865-bf3e-82514d3cb173",
@@ -7220,8 +7248,15 @@
         "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
         "bookmakerQuoteCount": 3
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "finishingPosition": 2,
+        "resultStatus": "finished",
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 9,
+        "profitLoss": -1
+      },
+      "settledAt": "2026-11-08T09:54:48.629Z"
     },
     {
       "raceId": "385d93be-c779-4865-bf3e-82514d3cb173",
@@ -7270,6 +7305,384 @@
         "impliedProbability": 0.10526315789473684,
         "marketRank": 5,
         "priceCapturedAt": "2026-11-07T04:40:25.099Z",
+        "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
+        "bookmakerQuoteCount": 3
+      },
+      "outcome": {
+        "finishingPosition": 5,
+        "resultStatus": "finished",
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 13,
+        "profitLoss": -1
+      },
+      "settledAt": "2026-11-08T09:54:48.629Z"
+    },
+    {
+      "raceId": "320d590e-eaf8-4b0b-997d-af2dcc2cbef9",
+      "sourceId": "947494",
+      "raceDate": "2026-11-08",
+      "scheduledOff": "2026-11-08T12:40:00.000Z",
+      "scheduledTime": "12:40",
+      "course": "Sandown",
+      "raceName": "Visit oddschecker.com Conditional Jockeys' Handicap Hurdle",
+      "subtype": "Hurdle",
+      "subtypeCode": "hurdle",
+      "handicapStatus": "handicap",
+      "fieldSize": 6,
+      "runnerId": "bf67ebda-5c26-4001-b011-2288bfc2938b",
+      "horseId": "7fa1daf7-6bc8-4736-afca-6dfb80a473cd",
+      "horseName": "Bowmore",
+      "recordedAt": "2026-11-08T09:58:09.003Z",
+      "recordedPreRace": true,
+      "components": {
+        "averageL3JumpSpeed": 103.97571138296149,
+        "averageL3JumpSpeedRank": 2,
+        "latestJumpSpeed": 115.57981486819271,
+        "previousJumpSpeed": 109.94034975030297,
+        "latestMinusPrevious": 5.639465117889742,
+        "previousClass": 2,
+        "currentClass": 3,
+        "classDropAmount": 1
+      },
+      "context": {
+        "officialRating": 129,
+        "officialRatingRank": 2,
+        "officialRatingTop3": true,
+        "officialRatingGapToBest": 1,
+        "officialRatingRelativeToFieldMean": 6.166666666666671,
+        "trainerPriorRate": 14.76510067114094,
+        "jockeyPriorRate": 10.869565217391305,
+        "daysSinceRun": 167,
+        "priorUsableJumpSpeedCount": 12,
+        "jprARank": 2,
+        "jprBRank": 1,
+        "jumpTissueRank": null,
+        "jumpTissueProbability": null
+      },
+      "market": {
+        "medianBookmakerDecimal": 3.5,
+        "impliedProbability": 0.2857142857142857,
+        "marketRank": 1,
+        "priceCapturedAt": "2026-11-08T09:58:09.003Z",
+        "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
+        "bookmakerQuoteCount": 3
+      },
+      "outcome": null,
+      "settledAt": null
+    },
+    {
+      "raceId": "7725e27f-08e3-4895-99c2-94b44f94da82",
+      "sourceId": "947497",
+      "raceDate": "2026-11-08",
+      "scheduledOff": "2026-11-08T14:15:00.000Z",
+      "scheduledTime": "14:15",
+      "course": "Sandown",
+      "raceName": "Oddschecker Free Bets Handicap Hurdle",
+      "subtype": "Hurdle",
+      "subtypeCode": "hurdle",
+      "handicapStatus": "handicap",
+      "fieldSize": 7,
+      "runnerId": "f0079255-35cf-4eb0-89f2-42726b52f286",
+      "horseId": "2896875d-aacb-472d-b7c2-a944fe9c725e",
+      "horseName": "Macktoad",
+      "recordedAt": "2026-11-08T09:58:09.003Z",
+      "recordedPreRace": true,
+      "components": {
+        "averageL3JumpSpeed": 105.51639712109056,
+        "averageL3JumpSpeedRank": 3,
+        "latestJumpSpeed": 94.93051193995437,
+        "previousJumpSpeed": 88.6085718224628,
+        "latestMinusPrevious": 6.321940117491565,
+        "previousClass": 1,
+        "currentClass": 3,
+        "classDropAmount": 2
+      },
+      "context": {
+        "officialRating": 124,
+        "officialRatingRank": 1,
+        "officialRatingTop3": true,
+        "officialRatingGapToBest": 0,
+        "officialRatingRelativeToFieldMean": 10.142857142857139,
+        "trainerPriorRate": 16.129032258064516,
+        "jockeyPriorRate": 16.696914700544465,
+        "daysSinceRun": 242,
+        "priorUsableJumpSpeedCount": 4,
+        "jprARank": 2,
+        "jprBRank": 2,
+        "jumpTissueRank": null,
+        "jumpTissueProbability": null
+      },
+      "market": {
+        "medianBookmakerDecimal": 4.33,
+        "impliedProbability": 0.23094688221709006,
+        "marketRank": 3,
+        "priceCapturedAt": "2026-11-08T09:58:09.003Z",
+        "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
+        "bookmakerQuoteCount": 3
+      },
+      "outcome": null,
+      "settledAt": null
+    },
+    {
+      "raceId": "7725e27f-08e3-4895-99c2-94b44f94da82",
+      "sourceId": "947497",
+      "raceDate": "2026-11-08",
+      "scheduledOff": "2026-11-08T14:15:00.000Z",
+      "scheduledTime": "14:15",
+      "course": "Sandown",
+      "raceName": "Oddschecker Free Bets Handicap Hurdle",
+      "subtype": "Hurdle",
+      "subtypeCode": "hurdle",
+      "handicapStatus": "handicap",
+      "fieldSize": 7,
+      "runnerId": "15620389-e57f-4d6f-a52c-ff26f47a1efe",
+      "horseId": "b21de09d-157e-4d65-ad6a-ba1b1f0dcd75",
+      "horseName": "St Pancras",
+      "recordedAt": "2026-11-08T09:58:09.003Z",
+      "recordedPreRace": true,
+      "components": {
+        "averageL3JumpSpeed": 107.44425099182212,
+        "averageL3JumpSpeedRank": 2,
+        "latestJumpSpeed": 154.51327108553647,
+        "previousJumpSpeed": 86.983844011142,
+        "latestMinusPrevious": 67.52942707439448,
+        "previousClass": 2,
+        "currentClass": 3,
+        "classDropAmount": 1
+      },
+      "context": {
+        "officialRating": 124,
+        "officialRatingRank": 1,
+        "officialRatingTop3": true,
+        "officialRatingGapToBest": 0,
+        "officialRatingRelativeToFieldMean": 10.142857142857139,
+        "trainerPriorRate": 16.129032258064516,
+        "jockeyPriorRate": 12.547528517110266,
+        "daysSinceRun": 561,
+        "priorUsableJumpSpeedCount": 5,
+        "jprARank": 1,
+        "jprBRank": 1,
+        "jumpTissueRank": null,
+        "jumpTissueProbability": null
+      },
+      "market": {
+        "medianBookmakerDecimal": 9,
+        "impliedProbability": 0.1111111111111111,
+        "marketRank": 5,
+        "priceCapturedAt": "2026-11-08T09:58:09.003Z",
+        "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
+        "bookmakerQuoteCount": 3
+      },
+      "outcome": null,
+      "settledAt": null
+    },
+    {
+      "raceId": "4d2416d2-6322-46a7-b400-5717e11c49a6",
+      "sourceId": "947498",
+      "raceDate": "2026-11-08",
+      "scheduledOff": "2026-11-08T14:50:00.000Z",
+      "scheduledTime": "14:50",
+      "course": "Sandown",
+      "raceName": "Best Odds At Oddschecker Novices' Hurdle (GBB Race)",
+      "subtype": "Hurdle",
+      "subtypeCode": "hurdle",
+      "handicapStatus": "non_handicap",
+      "fieldSize": 3,
+      "runnerId": "deb4cc57-44e0-4b60-8f37-65d9b32119ba",
+      "horseId": "2423292e-bd43-4212-a144-507d58ff6433",
+      "horseName": "Otie's Friend",
+      "recordedAt": "2026-11-08T09:58:09.003Z",
+      "recordedPreRace": true,
+      "components": {
+        "averageL3JumpSpeed": 99.51579794606234,
+        "averageL3JumpSpeedRank": 2,
+        "latestJumpSpeed": 96.59471369376512,
+        "previousJumpSpeed": 96.57851317472496,
+        "latestMinusPrevious": 0.016200519040154404,
+        "previousClass": 2,
+        "currentClass": 4,
+        "classDropAmount": 2
+      },
+      "context": {
+        "officialRating": null,
+        "officialRatingRank": null,
+        "officialRatingTop3": null,
+        "officialRatingGapToBest": null,
+        "officialRatingRelativeToFieldMean": null,
+        "trainerPriorRate": 14.937759336099585,
+        "jockeyPriorRate": 15.291262135922329,
+        "daysSinceRun": 15,
+        "priorUsableJumpSpeedCount": 4,
+        "jprARank": 2,
+        "jprBRank": null,
+        "jumpTissueRank": null,
+        "jumpTissueProbability": null
+      },
+      "market": {
+        "medianBookmakerDecimal": 2.2,
+        "impliedProbability": 0.45454545454545453,
+        "marketRank": 2,
+        "priceCapturedAt": "2026-11-08T09:58:09.003Z",
+        "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
+        "bookmakerQuoteCount": 3
+      },
+      "outcome": null,
+      "settledAt": null
+    },
+    {
+      "raceId": "d619245a-944a-43d6-aac3-93032dc097b2",
+      "sourceId": "947499",
+      "raceDate": "2026-11-08",
+      "scheduledOff": "2026-11-08T15:25:00.000Z",
+      "scheduledTime": "15:25",
+      "course": "Sandown",
+      "raceName": "Oddschecker Bet Builder Novices' Handicap Hurdle (GBB Race)",
+      "subtype": "Hurdle",
+      "subtypeCode": "hurdle",
+      "handicapStatus": "handicap",
+      "fieldSize": 8,
+      "runnerId": "18f0a859-157f-44ce-aad2-5ad61bde484e",
+      "horseId": "1f644b65-36ac-4336-84a0-591d23e8ce0a",
+      "horseName": "Kalif D'airy",
+      "recordedAt": "2026-11-08T09:58:09.003Z",
+      "recordedPreRace": true,
+      "components": {
+        "averageL3JumpSpeed": 118.39055620833817,
+        "averageL3JumpSpeedRank": 2,
+        "latestJumpSpeed": 125.47834516944701,
+        "previousJumpSpeed": 98.18260345556752,
+        "latestMinusPrevious": 27.295741713879494,
+        "previousClass": 3,
+        "currentClass": 4,
+        "classDropAmount": 1
+      },
+      "context": {
+        "officialRating": 108,
+        "officialRatingRank": 3,
+        "officialRatingTop3": true,
+        "officialRatingGapToBest": 3,
+        "officialRatingRelativeToFieldMean": 3.125,
+        "trainerPriorRate": 16.129032258064516,
+        "jockeyPriorRate": 16.696914700544465,
+        "daysSinceRun": 311,
+        "priorUsableJumpSpeedCount": 12,
+        "jprARank": 4,
+        "jprBRank": 1,
+        "jumpTissueRank": null,
+        "jumpTissueProbability": null
+      },
+      "market": {
+        "medianBookmakerDecimal": 13,
+        "impliedProbability": 0.07692307692307693,
+        "marketRank": 6,
+        "priceCapturedAt": "2026-11-08T09:58:09.003Z",
+        "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
+        "bookmakerQuoteCount": 3
+      },
+      "outcome": null,
+      "settledAt": null
+    },
+    {
+      "raceId": "2964161b-8722-49b4-bd51-f85d9502f56e",
+      "sourceId": "947502",
+      "raceDate": "2026-11-08",
+      "scheduledOff": "2026-11-08T13:20:00.000Z",
+      "scheduledTime": "13:20",
+      "course": "Ffos Las",
+      "raceName": "Bridge Maiden Hurdle (GBB Race)",
+      "subtype": "Hurdle",
+      "subtypeCode": "hurdle",
+      "handicapStatus": "non_handicap",
+      "fieldSize": 9,
+      "runnerId": "1485d738-6a33-45ec-b936-e240f2ff5ce6",
+      "horseId": "4a2f039c-fdd5-4f1a-aedb-2688d480bc21",
+      "horseName": "Genietoile",
+      "recordedAt": "2026-11-08T09:58:09.003Z",
+      "recordedPreRace": true,
+      "components": {
+        "averageL3JumpSpeed": 84.54320916012253,
+        "averageL3JumpSpeedRank": 3,
+        "latestJumpSpeed": 84.54320916012253,
+        "previousJumpSpeed": 83.06706831484249,
+        "latestMinusPrevious": 1.4761408452800424,
+        "previousClass": 3,
+        "currentClass": 4,
+        "classDropAmount": 1
+      },
+      "context": {
+        "officialRating": 110,
+        "officialRatingRank": 1,
+        "officialRatingTop3": true,
+        "officialRatingGapToBest": 0,
+        "officialRatingRelativeToFieldMean": 0,
+        "trainerPriorRate": 19.291338582677163,
+        "jockeyPriorRate": 19.444444444444446,
+        "daysSinceRun": 236,
+        "priorUsableJumpSpeedCount": 3,
+        "jprARank": 2,
+        "jprBRank": 1,
+        "jumpTissueRank": null,
+        "jumpTissueProbability": null
+      },
+      "market": {
+        "medianBookmakerDecimal": 6.5,
+        "impliedProbability": 0.15384615384615385,
+        "marketRank": 3,
+        "priceCapturedAt": "2026-11-08T09:58:09.003Z",
+        "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
+        "bookmakerQuoteCount": 3
+      },
+      "outcome": null,
+      "settledAt": null
+    },
+    {
+      "raceId": "a8abdaa4-1937-4d43-9dba-625d50bbb976",
+      "sourceId": "947506",
+      "raceDate": "2026-11-08",
+      "scheduledOff": "2026-11-08T15:37:00.000Z",
+      "scheduledTime": "15:37",
+      "course": "Ffos Las",
+      "raceName": "RHN Travel Norton's Coin Handicap Chase (GBB Race)",
+      "subtype": "Chase",
+      "subtypeCode": "chase",
+      "handicapStatus": "handicap",
+      "fieldSize": 7,
+      "runnerId": "40137c78-9d0d-438a-8a3f-3a412ffb63a6",
+      "horseId": "80026d58-17f4-4edd-95ec-1cc69709e604",
+      "horseName": "Solar System",
+      "recordedAt": "2026-11-08T09:58:09.003Z",
+      "recordedPreRace": true,
+      "components": {
+        "averageL3JumpSpeed": 98.01275929509727,
+        "averageL3JumpSpeedRank": 3,
+        "latestJumpSpeed": 108.98251948638813,
+        "previousJumpSpeed": 92.53742922979237,
+        "latestMinusPrevious": 16.445090256595762,
+        "previousClass": 3,
+        "currentClass": 4,
+        "classDropAmount": 1
+      },
+      "context": {
+        "officialRating": 114,
+        "officialRatingRank": 3,
+        "officialRatingTop3": true,
+        "officialRatingGapToBest": 3,
+        "officialRatingRelativeToFieldMean": 7.428571428571431,
+        "trainerPriorRate": 17.391304347826086,
+        "jockeyPriorRate": 26.619273301737756,
+        "daysSinceRun": 217,
+        "priorUsableJumpSpeedCount": 15,
+        "jprARank": 3,
+        "jprBRank": 3,
+        "jumpTissueRank": null,
+        "jumpTissueProbability": null
+      },
+      "market": {
+        "medianBookmakerDecimal": 3,
+        "impliedProbability": 0.3333333333333333,
+        "marketRank": 2,
+        "priceCapturedAt": "2026-11-08T09:58:09.003Z",
         "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
         "bookmakerQuoteCount": 3
       },

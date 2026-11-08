@@ -43,6 +43,14 @@ const schema = z.object({ version: z.literal(HURDLE_V3_SHADOW_VERSION), armedAt:
   sourceHashes: z.record(z.string(), hash), observations: z.array(observation) }).strict();
 export type HurdleV3ShadowData = z.infer<typeof schema>;
 export type HurdleV3ShadowObservation = z.infer<typeof observation>;
+// Bun captures and Node page reads can differ by a final bit in log/exp results.
+// Keep direct inputs, flags, nulls and all lifecycle metadata exact.
+const transcendentalFeatures = new Set<string>(["log_trainer_starters", "log_jockey_starters", "log_days_since_hurdle", "log_prior_hurdle_starts",
+  "hurdle_comment_jump_error_recent", "hurdle_comment_finish_recent", "hurdle_comment_weakened_recent"]);
+function sameRawFeature(name: string, actual: number | null, frozen: number | null) {
+  return actual === frozen || transcendentalFeatures.has(name) && actual !== null && frozen !== null &&
+    Math.abs(actual - frozen) <= 2 * Number.EPSILON * Math.max(1, Math.abs(actual), Math.abs(frozen));
+}
 export async function hurdleV3SourceHashes() {
   return Object.fromEntries(await Promise.all(HURDLE_V3_SHADOW_PIN_PATHS.map(async p => [p, createHash("sha256").update(await readFile(p)).digest("hex")])));
 }
@@ -73,7 +81,7 @@ export function validHurdleV3Shadow(o: HurdleV3ShadowObservation, data: HurdleV3
   for (const r of o.runners) {
     if (!p.runners.some(x => x.runnerId === r.target.runnerId) || r.target.raceId !== p.raceId || r.target.cutoff !== p.featureCutoffAt || r.target.scheduledOff !== p.scheduledOff ||
       r.official.runnerId !== r.target.runnerId || r.ledCounterfactual.runnerId !== r.target.runnerId ||
-      HURDLE_V3_ALL_FEATURES.some(n => fields.find(f => f.runnerId === r.target.runnerId)!.raw[n] !== r.raw[n]) ||
+      HURDLE_V3_ALL_FEATURES.some(n => !sameRawFeature(n, fields.find(f => f.runnerId === r.target.runnerId)!.raw[n], r.raw[n])) ||
       JSON.stringify(fields.find(f => f.runnerId === r.target.runnerId)!.provenance.priorRunnerIds) !== JSON.stringify(r.history.map(h => h.runnerId)) ||
       JSON.stringify(hurdleV3ShadowTags(r.target, r.history)) !== JSON.stringify(r.tags)) return false;
     for (const key of ["trainer", "jockey"] as const) {
@@ -93,7 +101,7 @@ export async function loadHurdleV3Shadow(path = HURDLE_V3_SHADOW_PATH): Promise<
     const data = schema.parse(JSON.parse(await readFile(path, "utf8")));
     if (data.v2Hash !== GENERATION_MODEL_HASHES.HURDLE || (data.epoch === null) !== (data.observations.length === 0) ||
       data.epoch !== (data.observations[0]?.capturedAt ?? null) || new Set(data.observations.map(o => o.raceId)).size !== data.observations.length ||
-      data.observations.some(o => o.capturedAt < data.epoch! || !validHurdleV3Shadow(o, data))) throw new Error("Invalid prospective Hurdle V3 ledger");
+      data.observations.some((o, i) => o.capturedAt < (data.observations[i - 1]?.capturedAt ?? data.epoch!) || !validHurdleV3Shadow(o, data))) throw new Error("Invalid prospective Hurdle V3 ledger");
     return data;
   } catch (e) { if ((e as NodeJS.ErrnoException).code === "ENOENT") return null; throw e; }
 }
@@ -117,7 +125,7 @@ export function appendHurdleV3Shadows(data: HurdleV3ShadowData, additions: Hurdl
     if (known.has(o.raceId) || !validHurdleV3Shadow(o, data) || o.production.runners.some(r => r.outcome !== null) ||
       Date.parse(o.frozenAt) > now.getTime() || now.getTime() >= Date.parse(o.production.scheduledOff) ||
       now.getTime() - Date.parse(o.capturedAt) > 60000 || getLocalRacingDate(now) !== o.production.raceDate ||
-      data.epoch !== null && o.capturedAt < data.epoch) continue;
+      o.capturedAt < (accepted.at(-1)?.capturedAt ?? data.observations.at(-1)?.capturedAt ?? data.armedAt)) continue;
     known.add(o.raceId); accepted.push(structuredClone(o));
   }
   return accepted.length ? { ...data, epoch: data.epoch ?? accepted[0].capturedAt, observations: [...data.observations, ...accepted] } : data;
@@ -133,7 +141,7 @@ export async function mutateHurdleV3Shadow(mutate: (data: HurdleV3ShadowData) =>
     const frozen = (o: HurdleV3ShadowObservation) => ({ ...o, production: { ...o.production, runners: o.production.runners.map(r => ({ ...r, outcome: null })) } });
     for (const [i, old] of before.observations.entries()) if (JSON.stringify(frozen(old)) !== JSON.stringify(frozen(after.observations[i])) ||
       old.production.runners.some((r, j) => r.outcome && JSON.stringify(r.outcome) !== JSON.stringify(after.observations[i].production.runners[j].outcome))) throw new Error("Cannot rewrite a frozen Hurdle shadow");
-    if (after.observations.some(o => !validHurdleV3Shadow(o, after)) || new Set(after.observations.map(o => o.raceId)).size !== after.observations.length ||
+    if (after.observations.some((o, i) => o.capturedAt < (after.observations[i - 1]?.capturedAt ?? after.armedAt) || !validHurdleV3Shadow(o, after)) || new Set(after.observations.map(o => o.raceId)).size !== after.observations.length ||
       after.observations.slice(before.observations.length).some(o => o.production.runners.some(r => r.outcome !== null) || Date.now() >= Date.parse(o.production.scheduledOff))) throw new Error("Invalid shadow additions");
   }, mutate);
 }
