@@ -1,3 +1,5 @@
+import { syncLowForm } from "./hurdle-low-form";
+import { loadHurdleV3Shadow } from "./hurdle-v3-shadow";
 import { refreshedSourceAllowed } from "./frozen-capture-selection";
 import { contextShadowAfterProduction, pendingContextWeightShadowRaceIds, syncContextWeightShadow } from "./context-weight-shadow-sync";
 import { pendingHurdleV3ShadowRaceIds, prepareHurdleV3Shadow, syncHurdleV3Shadow } from "./hurdle-v3-shadow-sync";
@@ -80,7 +82,13 @@ export async function syncTissueGeneration(connection: ReturnType<typeof createD
   const production = await mutateTissueGeneration(data => settleTissueGeneration(appendTissueGeneration(data, additions, new Date(), forceRefresh), results));
   // Only books actually accepted by the production writer can be paired. Never backfill from before.races.
   const accepted = production.races.slice(before.races.length).filter(r => additions.some(a => a.raceId === r.raceId && a.capturedAt === r.capturedAt));
-  await contextShadowAfterProduction(production, () => syncHurdleV3Shadow(accepted, hurdleV3Inputs, results),
+  await contextShadowAfterProduction(production, async () => {
+    const prior = await loadHurdleV3Shadow();
+    const next = await syncHurdleV3Shadow(accepted, hurdleV3Inputs, results);
+    const known = new Set(prior?.observations.map(o => o.raceId));
+    await contextShadowAfterProduction(next, () => syncLowForm(next?.observations.filter(o => !known.has(o.raceId) && accepted.some(r => r.raceId === o.raceId && r.capturedAt === o.capturedAt)) ?? []),
+      error => console.error("Low-form Hurdle monitor unavailable; production and V3 unchanged", error));
+  },
     error => console.error("Hurdle V3 shadow unavailable; production unchanged", error));
   return contextShadowAfterProduction(production, () => syncContextWeightShadow(accepted, results));
 }

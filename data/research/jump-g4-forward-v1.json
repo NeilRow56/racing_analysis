@@ -7368,8 +7368,15 @@
         "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
         "bookmakerQuoteCount": 3
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "finishingPosition": 3,
+        "resultStatus": "finished",
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 3.75,
+        "profitLoss": -1
+      },
+      "settledAt": "2026-11-09T04:14:03.897Z"
     },
     {
       "raceId": "7725e27f-08e3-4895-99c2-94b44f94da82",
@@ -7421,8 +7428,15 @@
         "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
         "bookmakerQuoteCount": 3
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "finishingPosition": 1,
+        "resultStatus": "finished",
+        "won": true,
+        "deadHeatDivisor": 1,
+        "finalSp": 5,
+        "profitLoss": 4
+      },
+      "settledAt": "2026-11-09T04:14:03.897Z"
     },
     {
       "raceId": "7725e27f-08e3-4895-99c2-94b44f94da82",
@@ -7474,8 +7488,15 @@
         "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
         "bookmakerQuoteCount": 3
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "finishingPosition": 6,
+        "resultStatus": "finished",
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 12,
+        "profitLoss": -1
+      },
+      "settledAt": "2026-11-09T04:14:03.897Z"
     },
     {
       "raceId": "4d2416d2-6322-46a7-b400-5717e11c49a6",
@@ -7527,8 +7548,15 @@
         "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
         "bookmakerQuoteCount": 3
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "finishingPosition": 3,
+        "resultStatus": "finished",
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 2.5,
+        "profitLoss": -1
+      },
+      "settledAt": "2026-11-09T04:14:03.897Z"
     },
     {
       "raceId": "d619245a-944a-43d6-aac3-93032dc097b2",
@@ -7580,8 +7608,15 @@
         "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
         "bookmakerQuoteCount": 3
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "finishingPosition": 6,
+        "resultStatus": "finished",
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 9.5,
+        "profitLoss": -1
+      },
+      "settledAt": "2026-11-09T04:14:03.897Z"
     },
     {
       "raceId": "2964161b-8722-49b4-bd51-f85d9502f56e",
@@ -7633,8 +7668,15 @@
         "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
         "bookmakerQuoteCount": 3
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "finishingPosition": 1,
+        "resultStatus": "finished",
+        "won": true,
+        "deadHeatDivisor": 1,
+        "finalSp": 6,
+        "profitLoss": 5
+      },
+      "settledAt": "2026-11-09T04:14:03.897Z"
     },
     {
       "raceId": "a8abdaa4-1937-4d43-9dba-625d50bbb976",
@@ -7686,8 +7728,315 @@
         "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
         "bookmakerQuoteCount": 3
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "finishingPosition": null,
+        "resultStatus": "non_runner",
+        "won": null,
+        "deadHeatDivisor": 1,
+        "finalSp": null,
+        "profitLoss": null
+      },
+      "settledAt": "2026-11-09T04:14:03.897Z"
+    },
+    {
+      "raceId": "e85953fd-3dd5-4909-9cff-f700729eaf5e",
+      "sourceId": "947675",
+      "raceDate": "2026-11-09",
+      "scheduledOff": "2026-11-09T12:20:00.000Z",
+      "scheduledTime": "12:20",
+      "course": "Carlisle",
+      "raceName": "Racing TV Maiden Hurdle (GBB Race)",
+      "subtype": "Hurdle",
+      "subtypeCode": "hurdle",
+      "handicapStatus": "non_handicap",
+      "fieldSize": 15,
+      "runnerId": "ef43946e-468c-47bd-bebc-f456720de7a2",
+      "horseId": "a8a72242-848f-4b5e-b9b3-23c6a09e3966",
+      "horseName": "Teeshan",
+      "recordedAt": "2026-11-09T04:17:46.840Z",
+      "recordedPreRace": true,
+      "components": {
+        "averageL3JumpSpeed": 104.39195510130068,
+        "averageL3JumpSpeedRank": 3,
+        "latestJumpSpeed": 105.1956331039869,
+        "previousJumpSpeed": 103.58827709861445,
+        "latestMinusPrevious": 1.607356005372452,
+        "previousClass": 1,
+        "currentClass": 4,
+        "classDropAmount": 3
+      },
+      "context": {
+        "officialRating": null,
+        "officialRatingRank": null,
+        "officialRatingTop3": null,
+        "officialRatingGapToBest": null,
+        "officialRatingRelativeToFieldMean": null,
+        "trainerPriorRate": 21.636983705949223,
+        "jockeyPriorRate": 13.671875,
+        "daysSinceRun": 970,
+        "priorUsableJumpSpeedCount": 2,
+        "jprARank": 2,
+        "jprBRank": null,
+        "jumpTissueRank": null,
+        "jumpTissueProbability": null
+      },
+      "market": {
+        "medianBookmakerDecimal": 2.63,
+        "impliedProbability": 0.3802281368821293,
+        "marketRank": 2,
+        "priceCapturedAt": "2026-11-09T04:17:46.840Z",
+        "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
+        "bookmakerQuoteCount": 3
+      },
+      "outcome": {
+        "finishingPosition": 4,
+        "resultStatus": "finished",
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 2.2,
+        "profitLoss": -1
+      },
+      "settledAt": "2026-11-09T17:12:27.931Z"
+    },
+    {
+      "raceId": "08c4c64f-8d0d-4e37-b255-bf324328cc1d",
+      "sourceId": "947677",
+      "raceDate": "2026-11-09",
+      "scheduledOff": "2026-11-09T13:20:00.000Z",
+      "scheduledTime": "13:20",
+      "course": "Carlisle",
+      "raceName": "Fatty Renshaw Memorial Novices' Handicap Hurdle",
+      "subtype": "Hurdle",
+      "subtypeCode": "hurdle",
+      "handicapStatus": "handicap",
+      "fieldSize": 10,
+      "runnerId": "cc5c1fde-2052-4056-9733-e119254f2b70",
+      "horseId": "6d7df115-3c1d-49c9-8aa3-3240dc147107",
+      "horseName": "Matching Energy",
+      "recordedAt": "2026-11-09T04:17:46.840Z",
+      "recordedPreRace": true,
+      "components": {
+        "averageL3JumpSpeed": 98.81268974424256,
+        "averageL3JumpSpeedRank": 3,
+        "latestJumpSpeed": 114.32621594353989,
+        "previousJumpSpeed": 90.89072664558913,
+        "latestMinusPrevious": 23.435489297950767,
+        "previousClass": 4,
+        "currentClass": 5,
+        "classDropAmount": 1
+      },
+      "context": {
+        "officialRating": 102,
+        "officialRatingRank": 4,
+        "officialRatingTop3": false,
+        "officialRatingGapToBest": 3,
+        "officialRatingRelativeToFieldMean": 4.799999999999997,
+        "trainerPriorRate": 9.06344410876133,
+        "jockeyPriorRate": 8.011049723756907,
+        "daysSinceRun": 218,
+        "priorUsableJumpSpeedCount": 4,
+        "jprARank": 4,
+        "jprBRank": 3,
+        "jumpTissueRank": null,
+        "jumpTissueProbability": null
+      },
+      "market": {
+        "medianBookmakerDecimal": 4.33,
+        "impliedProbability": 0.23094688221709006,
+        "marketRank": 2,
+        "priceCapturedAt": "2026-11-09T04:17:46.840Z",
+        "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
+        "bookmakerQuoteCount": 3
+      },
+      "outcome": {
+        "finishingPosition": null,
+        "resultStatus": "fell",
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 4.5,
+        "profitLoss": -1
+      },
+      "settledAt": "2026-11-09T17:12:27.931Z"
+    },
+    {
+      "raceId": "08c4c64f-8d0d-4e37-b255-bf324328cc1d",
+      "sourceId": "947677",
+      "raceDate": "2026-11-09",
+      "scheduledOff": "2026-11-09T13:20:00.000Z",
+      "scheduledTime": "13:20",
+      "course": "Carlisle",
+      "raceName": "Fatty Renshaw Memorial Novices' Handicap Hurdle",
+      "subtype": "Hurdle",
+      "subtypeCode": "hurdle",
+      "handicapStatus": "handicap",
+      "fieldSize": 10,
+      "runnerId": "85b891eb-5b9e-4dd8-8d95-1f96a7579791",
+      "horseId": "061a2b0a-e828-4c50-8690-d33a7eb8e1ae",
+      "horseName": "Espoir Des Forges",
+      "recordedAt": "2026-11-09T04:17:46.840Z",
+      "recordedPreRace": true,
+      "components": {
+        "averageL3JumpSpeed": 128.84945298279328,
+        "averageL3JumpSpeedRank": 1,
+        "latestJumpSpeed": 128.84945298279328,
+        "previousJumpSpeed": 114.20118321833284,
+        "latestMinusPrevious": 14.648269764460437,
+        "previousClass": 4,
+        "currentClass": 5,
+        "classDropAmount": 1
+      },
+      "context": {
+        "officialRating": 103,
+        "officialRatingRank": 3,
+        "officialRatingTop3": true,
+        "officialRatingGapToBest": 2,
+        "officialRatingRelativeToFieldMean": 5.799999999999997,
+        "trainerPriorRate": 12.569832402234638,
+        "jockeyPriorRate": 13.153961136023916,
+        "daysSinceRun": 585,
+        "priorUsableJumpSpeedCount": 3,
+        "jprARank": 1,
+        "jprBRank": 1,
+        "jumpTissueRank": null,
+        "jumpTissueProbability": null
+      },
+      "market": {
+        "medianBookmakerDecimal": 13,
+        "impliedProbability": 0.07692307692307693,
+        "marketRank": 6,
+        "priceCapturedAt": "2026-11-09T04:17:46.840Z",
+        "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
+        "bookmakerQuoteCount": 3
+      },
+      "outcome": {
+        "finishingPosition": 8,
+        "resultStatus": "finished",
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 12,
+        "profitLoss": -1
+      },
+      "settledAt": "2026-11-09T17:12:27.931Z"
+    },
+    {
+      "raceId": "926c88f6-2060-4a41-9646-6f5d6b32e5bc",
+      "sourceId": "947668",
+      "raceDate": "2026-11-09",
+      "scheduledOff": "2026-11-09T12:40:00.000Z",
+      "scheduledTime": "12:40",
+      "course": "Stratford",
+      "raceName": "racingtv.com/freetrial 'Chasing Excellence' Beginners' Chase (GBB Race)",
+      "subtype": "Chase",
+      "subtypeCode": "chase",
+      "handicapStatus": "non_handicap",
+      "fieldSize": 2,
+      "runnerId": "d2d1e8f9-2c4c-4451-9650-4c8ba0f9a575",
+      "horseId": "c17c9306-d37e-41c2-a3ce-69c1ff55ead3",
+      "horseName": "Act Of Authority",
+      "recordedAt": "2026-11-09T04:17:46.840Z",
+      "recordedPreRace": true,
+      "components": {
+        "averageL3JumpSpeed": 99.90044054789725,
+        "averageL3JumpSpeedRank": 2,
+        "latestJumpSpeed": 110.35754053818185,
+        "previousJumpSpeed": 87.3666236672264,
+        "latestMinusPrevious": 22.990916870955445,
+        "previousClass": 1,
+        "currentClass": 3,
+        "classDropAmount": 2
+      },
+      "context": {
+        "officialRating": 135,
+        "officialRatingRank": 1,
+        "officialRatingTop3": true,
+        "officialRatingGapToBest": 0,
+        "officialRatingRelativeToFieldMean": 1,
+        "trainerPriorRate": 23.626373626373624,
+        "jockeyPriorRate": 24.43956043956044,
+        "daysSinceRun": 212,
+        "priorUsableJumpSpeedCount": 16,
+        "jprARank": 1,
+        "jprBRank": 1,
+        "jumpTissueRank": null,
+        "jumpTissueProbability": null
+      },
+      "market": {
+        "medianBookmakerDecimal": 2.1,
+        "impliedProbability": 0.47619047619047616,
+        "marketRank": 2,
+        "priceCapturedAt": "2026-11-09T04:17:46.840Z",
+        "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
+        "bookmakerQuoteCount": 3
+      },
+      "outcome": {
+        "finishingPosition": 2,
+        "resultStatus": "finished",
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 2.375,
+        "profitLoss": -1
+      },
+      "settledAt": "2026-11-09T17:12:27.931Z"
+    },
+    {
+      "raceId": "506637c3-7050-48f6-ae43-41061ed26013",
+      "sourceId": "947671",
+      "raceDate": "2026-11-09",
+      "scheduledOff": "2026-11-09T14:15:00.000Z",
+      "scheduledTime": "14:15",
+      "course": "Stratford",
+      "raceName": "Trailertrek Towbars Novices' Hurdle (GBB Race)",
+      "subtype": "Hurdle",
+      "subtypeCode": "hurdle",
+      "handicapStatus": "non_handicap",
+      "fieldSize": 7,
+      "runnerId": "9e5db062-df65-41fa-9b91-392b38ea60c0",
+      "horseId": "0eecac2e-16a0-43cf-b0f3-4105220d652c",
+      "horseName": "Padre Arthur",
+      "recordedAt": "2026-11-09T04:17:46.840Z",
+      "recordedPreRace": true,
+      "components": {
+        "averageL3JumpSpeed": 91.7901064912388,
+        "averageL3JumpSpeedRank": 3,
+        "latestJumpSpeed": 102.04837976618106,
+        "previousJumpSpeed": 77.49769433106572,
+        "latestMinusPrevious": 24.55068543511534,
+        "previousClass": 2,
+        "currentClass": 4,
+        "classDropAmount": 2
+      },
+      "context": {
+        "officialRating": 117,
+        "officialRatingRank": 1,
+        "officialRatingTop3": true,
+        "officialRatingGapToBest": 0,
+        "officialRatingRelativeToFieldMean": 17.5,
+        "trainerPriorRate": 23.942093541202674,
+        "jockeyPriorRate": 25.363825363825367,
+        "daysSinceRun": 208,
+        "priorUsableJumpSpeedCount": 4,
+        "jprARank": 1,
+        "jprBRank": 2,
+        "jumpTissueRank": null,
+        "jumpTissueProbability": null
+      },
+      "market": {
+        "medianBookmakerDecimal": 3.75,
+        "impliedProbability": 0.26666666666666666,
+        "marketRank": 3,
+        "priceCapturedAt": "2026-11-09T04:17:46.840Z",
+        "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
+        "bookmakerQuoteCount": 3
+      },
+      "outcome": {
+        "finishingPosition": 2,
+        "resultStatus": "finished",
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 4.333,
+        "profitLoss": -1
+      },
+      "settledAt": "2026-11-09T17:12:27.931Z"
     }
   ]
 }

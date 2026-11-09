@@ -1,3 +1,4 @@
+import { LowFormHurdleResearch } from "./hurdle-low-form-monitor";
 import { createResearchCache, researchFileIdentity } from "@/lib/racing/research-cache";
 import { researchDatabaseIdentity, getResearchCanonicalResultRaceIds } from "@/lib/racing/research-result-status";
 import { researchStage } from "@/lib/racing/research-profile";
@@ -162,7 +163,7 @@ export default async function ForwardValuePage({ searchParams }: PageProps) {
     <ResearchPageLayout
       date={raceDate}
       archiveLoaded={scalar(params?.archive) === "1"}
-      active={<><ActiveValuePerformance datasets={valueCohorts.map(c => c.data)} generation={generation} date={raceDate} /><TissueGenerationMonitor data={generation} /><HurdleV3ShadowResearch /><TissueValueMonitoring cohorts={valueCohorts} date={raceDate} includeArchive={scalar(params?.archive) === "1"} /></>}
+      active={<><ActiveValuePerformance datasets={valueCohorts.map(c => c.data)} generation={generation} date={raceDate} /><TissueGenerationMonitor data={generation} /><HurdleV3ShadowResearch /><LowFormHurdleResearch /><TissueValueMonitoring cohorts={valueCohorts} date={raceDate} includeArchive={scalar(params?.archive) === "1"} /></>}
       secondary={<SecondaryResearchMonitoring dashboard={dashboard} />}
     >
       {scalar(params?.archive) === "1" ? <>

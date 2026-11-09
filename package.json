@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "hurdle-low-form:init": "bun run scripts/track-hurdle-low-form.ts init",
+    "hurdle-low-form:summary": "bun run scripts/track-hurdle-low-form.ts summary",
     "hurdle-v3-shadow:init": "bun run scripts/track-hurdle-v3-shadow.ts init",
     "hurdle-v3-shadow:sync": "bun --env-file=.env.local run scripts/track-hurdle-v3-shadow.ts sync",
     "hurdle-v3-shadow:results": "bun --env-file=.env.local run scripts/track-hurdle-v3-shadow.ts results",
