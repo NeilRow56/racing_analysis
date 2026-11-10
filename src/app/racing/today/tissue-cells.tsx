@@ -5,6 +5,7 @@ import { isLongerPriceTissueTop2, LONGER_PRICE_TISSUE_WATCH_TOOLTIP } from "@/li
 import { isTissue1Value1Agreement } from "@/lib/racing/tissue-value-agreement";
 import { TissueValueAgreementBadge } from "./tissue-value-agreement-badge";
 import { isLiveRunnerEligible } from "@/lib/racing/live-runner-eligibility";
+import { tissueMarketBadge } from "./tissue-market-badge";
 
 export function AwTissueCell({ runner }: { runner: TodayRunner }) {
   if (!isLiveRunnerEligible(runner)) return <FrozenValueRankCell runner={runner} kind="tissueRank" />;
@@ -85,6 +86,12 @@ export function FrozenValueRankCell({ runner, kind }: { runner: FrozenRankRunner
     tissueRank: runner.activeTissue?.rank, probability: runner.activeTissue?.probability,
     modelVersion: runner.activeTissue?.modelVersion, capturedAt: runner.activeTissue?.capturedAt,
     family: runner.activeTissue?.family } : runner.tissueValue;
+  // Never pair a new production probability with a legacy/different capture's market.
+  const matchingCapture = !generation || (runner.activeTissue !== undefined && runner.tissueValue !== undefined &&
+    runner.activeTissue.capturedAt === runner.tissueValue.capturedAt &&
+    runner.activeTissue.modelVersion === runner.tissueValue.modelVersion &&
+    runner.activeTissue.family === runner.tissueValue.family &&
+    runner.activeTissue.probability === runner.tissueValue.probability);
   if (!isLiveRunnerEligible(runner)) return <div className="text-xs text-slate-500" data-rank-kind={kind}
     title="Non-runner: historical frozen rank only; ineligible for active selections.">
     Frozen {rankLabels[kind]} {positiveRank(row?.[kind]) ? row[kind] : "—"}
@@ -95,23 +102,39 @@ export function FrozenValueRankCell({ runner, kind }: { runner: FrozenRankRunner
   const hasScore = typeof probability === "number" && Number.isFinite(probability) && probability > 0 && probability <= 1;
   const rejectedValue1 = kind === "valueRank" && row?.valueRank === 1 && row.activeValue1 === false;
   const available = !rejectedValue1 && positiveRank(row?.[kind]) && (kind === "tissueRank" ? hasScore : hasMarket);
+  const active = runner.activeTissue;
+  // Production capture data is independent of Value. Legacy matching is only a compatibility path.
+  const marketProbability = generation
+    ? active?.completeMarket === true ? active.marketProbability
+      : active?.completeMarket === undefined && matchingCapture ? row?.marketProbability : null
+    : row?.marketProbability;
+  const comparison = available && kind === "tissueRank" ? tissueMarketBadge(probability, marketProbability) : null;
   const missing = rejectedValue1 ? "No active Value 1: the frozen experience gate rejected the original leader." : kind === "tissueRank" ? "No frozen Tissue score/rank available." : !hasMarket ? "No captured bookmaker market available." : kind === "valueRank" ? "No frozen Value rank available." : "No captured market rank available.";
-  const provenance = row ? `${row.family} / ${row.modelVersion} · captured ${row.capturedAt}${hasMarket ? ` · captured price ${marketPrice!.toFixed(2)}` : ""}${kind === "valueRank" && row.valueSelectionVersion ? ` · ${row.valueSelectionVersion}` : ""}${rejectedValue1 ? " · No active Value 1; experience gate rejected the legacy leader. No promotion." : ""}` : "No frozen prospective Tissue value observation.";
+  const auditPrice = kind === "tissueRank" && generation ? active?.capturedPrice : marketPrice;
+  const marketAudit = kind === "tissueRank" && generation && active?.completeMarket !== undefined
+    ? ` · complete market ${active.completeMarket ? "yes" : "no"} · book ${active.bookIdentity} · ${active.marketSource}` : "";
+  const provenance = row ? `${row.family} / ${row.modelVersion} · captured ${row.capturedAt}${typeof auditPrice === "number" ? ` · captured price ${auditPrice.toFixed(2)}` : ""}${marketAudit}${kind === "valueRank" && row.valueSelectionVersion ? ` · ${row.valueSelectionVersion}` : ""}${rejectedValue1 ? " · No active Value 1; experience gate rejected the legacy leader. No promotion." : ""}` : "No frozen prospective Tissue value observation.";
   const title = `${FROZEN_RANK_TOOLTIPS[kind]} ${available ? provenance : `${missing} ${provenance}`}`;
   const disagreement = available && kind === "valueRank" && typeof ratio === "number" && Number.isFinite(ratio) && ratio >= 1.5;
   const watch = !generation && available && kind === "tissueRank" && isTissueTop2SpeedRankWatch({ tissueRank: row?.tissueRank, bestL3SpeedRank: row?.bestL3SpeedRank });
   const longerPrice = available && kind === "tissueRank" && isLongerPriceTissueTop2({ tissueRank: row?.tissueRank, capturedPrice: row?.marketPrice });
   const caution = !generation && available && kind === "tissueRank" && (row?.tissueRank === 1 || row?.tissueRank === 2) && row.inputReliability?.level === "CAUTION";
   const agreement = available && kind === "tissueRank" && hasMarket && isTissue1Value1Agreement({ ...runner.tissueValue, resultStatus: runner.resultStatus, activeTissueRank: generation ? runner.activeTissue?.rank ?? null : undefined });
-  const prominent = available && kind === "tissueRank" && !watch && (row?.tissueRank === 1 || row?.tissueRank === 2);
-  const badgeStyle = watch ? "border-red-200 bg-red-50"
+  const prominent = available && kind === "tissueRank" && !watch && (!comparison || comparison.state === "positive") && (row?.tissueRank === 1 || row?.tissueRank === 2);
+  const badgeStyle = comparison?.state === "negative" ? "border-amber-300 bg-amber-50 text-amber-900"
+    : comparison?.state === "neutral" ? "border-slate-300 bg-slate-100 text-slate-700"
+    : watch ? "border-red-200 bg-red-50"
     : prominent ? row?.tissueRank === 1 ? "border-slate-900 bg-slate-900 text-white" : "border-blue-800 bg-blue-800 text-white"
     : "border-slate-200 bg-slate-50";
   return <div className="tabular-nums" data-rank-kind={kind} title={title}>
-    <span title={watch ? TISSUE_SPEED_RANK_WATCH_TOOLTIP : longerPrice ? LONGER_PRICE_TISSUE_WATCH_TOOLTIP : undefined} className={`inline-flex items-center gap-1 rounded-sm border ${badgeStyle} px-1.5 py-0.5 text-xs whitespace-nowrap`}>
+    <span data-tissue-market-state={comparison?.state} tabIndex={comparison ? 0 : undefined}
+      aria-label={comparison ? `Tissue ${row?.tissueRank}. ${comparison.tooltip}` : undefined}
+      title={[comparison?.tooltip, watch ? TISSUE_SPEED_RANK_WATCH_TOOLTIP : longerPrice ? LONGER_PRICE_TISSUE_WATCH_TOOLTIP : undefined].filter(Boolean).join("\n") || undefined}
+      className={`inline-flex items-center gap-1 rounded-sm border ${badgeStyle} px-1.5 py-0.5 text-xs whitespace-nowrap group relative focus-visible:outline-2 focus-visible:outline-offset-2${watch && comparison && comparison.state !== "positive" ? " underline decoration-red-300 decoration-dotted underline-offset-4" : ""}`}>
       <span className={prominent ? "text-white" : "text-slate-600"}>{rankLabels[kind]}</span>
       <span className="font-semibold">{available ? row![kind] : "—"}</span>
       {disagreement ? <span className="text-amber-700" role="img" aria-label="Large model/market disagreement" title="Large model/market disagreement">●</span> : null}
+      {comparison ? <span aria-hidden="true" className="pointer-events-none absolute left-0 top-full z-20 mt-1 hidden w-64 whitespace-normal rounded border border-slate-200 bg-white p-2 text-left text-xs font-normal text-slate-700 shadow-sm group-hover:block group-focus:block">{comparison.tooltip}</span> : null}
     </span>
     {longerPrice ? <span className="ml-1 inline-flex rounded-sm border border-blue-300 bg-blue-50 px-1 py-0.5 text-[10px] text-slate-900" aria-label="Longer-price Tissue watch" title={LONGER_PRICE_TISSUE_WATCH_TOOLTIP}>Price</span> : null}
     {caution ? <span className="ml-1 inline-flex rounded-sm border border-amber-300 px-1 py-0.5 text-[10px] text-amber-800" aria-label="Tissue input data caution"

@@ -7,7 +7,8 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { TISSUE_GENERATION_EPOCH, tissueGenerationActive, retiredTissueCaptureAllowed } from "./tissue-generation-config";
 import { GENERATION_FEATURES, generationCompletion, tissueGenerationFeatures, type TissueGenerationContext } from "./tissue-generation-features";
 import { loadTissueGenerationModels, GENERATION_MODEL_VERSIONS, predictTissueGeneration } from "./tissue-generation-model";
-import { appendTissueGeneration, emptyTissueGeneration, loadTissueGeneration, mutateTissueGeneration, settleTissueGeneration, summarizeTissueGeneration, type GenerationRace } from "./tissue-generation-forward";
+import { appendTissueGeneration, emptyTissueGeneration, loadTissueGeneration, mutateTissueGeneration, settleTissueGeneration, summarizeTissueGeneration, attachTissueGeneration, validGenerationCapture, type GenerationRace } from "./tissue-generation-forward";
+import { normalizeCompleteMarket } from "./tissue-value-metrics";
 import { buildTissueGenerationRaces } from "./tissue-generation-sync";
 import { TISSUE_V3_CONFIG, loadFrozenTissueModel, upsertTissueRaces, loadTissueForward } from "./tissue-forward";
 import { loadAwV2Model } from "./aw-tissue-v2";
@@ -219,6 +220,7 @@ test("forced refresh appends later changed pre-off books, keeps history immutabl
   const initial = capture(), laterAt = new Date(now.getTime() + 60000);
   const later = initial.map(book => ({ ...structuredClone(book), capturedAt: laterAt.toISOString(),
     runners: book.runners.map(row => ({ ...structuredClone(row), capturedPrice: row.capturedPrice! + 1,
+      marketProbability: normalizeCompleteMarket(book.runners.map(r => r.capturedPrice! + 1))!.probabilities[book.runners.indexOf(row)],
       quotes: row.quotes.map(q => ({ ...q, decimalOdds: q.decimalOdds + 1 })) })) }));
   const original = { ...emptyTissueGeneration(), races: initial }, frozen = JSON.stringify(original);
   assert.equal(appendTissueGeneration(original, later, laterAt).races.length, 4, "automated sync stays idempotent");
@@ -242,4 +244,55 @@ test("forced refresh appends later changed pre-off books, keeps history immutabl
     await mutateTissueGeneration(data => appendTissueGeneration(data, later, laterAt, true), path);
     assert.deepEqual((await loadTissueGeneration(path)).races, refreshed.races, "history reader retains every capture");
   } finally { await rm(directory, { recursive: true, force: true }); }
+});
+
+
+test("capture persists full-field normalization and rejects partial or inconsistent probabilities", () => {
+  for (const book of capture()) {
+    const market = normalizeCompleteMarket(book.runners.map(r => r.capturedPrice))!;
+    assert.equal(book.completeMarket, true);
+    assert.deepEqual(book.runners.map(r => r.marketProbability), market.probabilities);
+    assert.ok(Math.abs(book.runners.reduce((sum, r) => sum + r.marketProbability!, 0) - 1) < 1e-12);
+    assert.equal(validGenerationCapture(book), true);
+    const corrupt = structuredClone(book); corrupt.runners[0].marketProbability = .99;
+    assert.equal(validGenerationCapture(corrupt), false);
+    corrupt.runners[0].marketProbability = NaN; assert.equal(validGenerationCapture(corrupt), false);
+  }
+  for (const price of [null, undefined, NaN, Infinity, 1, 0, -2]) assert.equal(normalizeCompleteMarket([3, price]), null);
+  assert.equal(normalizeCompleteMarket([3]), null);
+  const input = inputs(); input.meetings[0].races[0].runners[0].bookmakerQuotes = [];
+  const book = buildTissueGenerationRaces(input)[0];
+  assert.equal(book.completeMarket, false);
+  assert.ok(book.runners.every(r => r.marketProbability === null));
+  const corrupt = structuredClone(book); corrupt.runners[0].marketProbability = .5;
+  assert.equal(validGenerationCapture(corrupt), false);
+});
+
+test("legacy frozen complete books project same-capture markets without mutation or live-price inference", () => {
+  const books = capture();
+  books.forEach(book => book.runners.forEach(row => { delete row.marketProbability; }));
+  const data = { ...emptyTissueGeneration(), races: books }, frozen = structuredClone(data);
+  const meetings = inputs().meetings;
+  meetings[0].races.forEach(r => r.runners.forEach(row => { row.bookmakerQuotes = []; row.oddsDecimal = "1.01"; }));
+  const projected = attachTissueGeneration(meetings, data);
+  for (const race of projected[0].races) {
+    const book = books.find(b => b.raceId === race.raceId)!;
+    const market = normalizeCompleteMarket(book.runners.map(r => r.capturedPrice))!;
+    for (const runner of race.runners) {
+      const i = book.runners.findIndex(r => r.runnerId === runner.runnerId), active = runner.activeTissue!;
+      assert.equal(active.marketProbability, market.probabilities[i]);
+      assert.equal(active.capturedPrice, book.runners[i].capturedPrice);
+      assert.equal(active.probability, book.runners[i].probability); assert.equal(active.rank, book.runners[i].rank);
+      assert.equal(active.completeMarket, true); assert.equal(active.bookIdentity, `${book.raceId}|${book.capturedAt}`);
+      const html = renderToStaticMarkup(<FrozenRacecardRanks runner={{ activeTissue: active, tissueGenerationActive: true }} />);
+      assert.ok(html.includes("data-tissue-market-state"));
+      assert.ok(html.includes('data-rank-kind="valueRank"'));
+    }
+  }
+  assert.deepEqual(data, frozen);
+  const input = inputs(); input.meetings[0].races[0].runners[0].bookmakerQuotes = [];
+  const incomplete = buildTissueGenerationRaces(input)[0];
+  const active = attachTissueGeneration(input.meetings, { ...emptyTissueGeneration(), races: [incomplete] })[0].races[0].runners[0].activeTissue!;
+  assert.equal(active.completeMarket, false); assert.equal(active.marketProbability, null);
+  assert.ok(!renderToStaticMarkup(<FrozenRacecardRanks runner={{ activeTissue: active, tissueGenerationActive: true }} />).includes("data-tissue-market-state"));
 });

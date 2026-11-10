@@ -1,3 +1,4 @@
+import { EarlyTurfResearch } from "./turf-early-season-monitor";
 import { LowFormHurdleResearch } from "./hurdle-low-form-monitor";
 import { createResearchCache, researchFileIdentity } from "@/lib/racing/research-cache";
 import { researchDatabaseIdentity, getResearchCanonicalResultRaceIds } from "@/lib/racing/research-result-status";
@@ -14,6 +15,8 @@ import { loadAllTissueValue } from "@/lib/racing/tissue-value-readers";
 import { TissueValueMonitoring } from "./tissue-value-monitoring";
 import { TissueGenerationMonitor } from "./tissue-generation-monitor";
 import { HurdleV3ShadowResearch } from "./hurdle-v3-shadow-monitor";
+import { HurdleV3MarketEdgeResearch } from "./hurdle-v3-market-edge-monitor";
+import { TissuePositiveNeutralResearch } from "./tissue-positive-neutral-monitor";
 import { loadTissueGeneration } from "@/lib/racing/tissue-generation-forward";
 import { loadRankOne } from "@/lib/racing/rank-one-forward";
 import { RankOneMonitoring } from "./rank-one-monitoring";
@@ -163,7 +166,7 @@ export default async function ForwardValuePage({ searchParams }: PageProps) {
     <ResearchPageLayout
       date={raceDate}
       archiveLoaded={scalar(params?.archive) === "1"}
-      active={<><ActiveValuePerformance datasets={valueCohorts.map(c => c.data)} generation={generation} date={raceDate} /><TissueGenerationMonitor data={generation} /><HurdleV3ShadowResearch /><LowFormHurdleResearch /><TissueValueMonitoring cohorts={valueCohorts} date={raceDate} includeArchive={scalar(params?.archive) === "1"} /></>}
+      active={<><ActiveValuePerformance datasets={valueCohorts.map(c => c.data)} generation={generation} date={raceDate} /><TissueGenerationMonitor data={generation} /><TissuePositiveNeutralResearch /><HurdleV3ShadowResearch /><HurdleV3MarketEdgeResearch /><LowFormHurdleResearch /><EarlyTurfResearch /><TissueValueMonitoring cohorts={valueCohorts} date={raceDate} includeArchive={scalar(params?.archive) === "1"} /></>}
       secondary={<SecondaryResearchMonitoring dashboard={dashboard} />}
     >
       {scalar(params?.archive) === "1" ? <>

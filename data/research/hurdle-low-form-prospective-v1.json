@@ -1,11 +1,2251 @@
 {
   "version": "HURDLE_LOW_FORM_PROSPECTIVE_V1",
   "armedAt": "2026-11-09T05:50:02.786Z",
-  "epoch": null,
+  "epoch": "2026-11-10T05:29:13.576Z",
   "sourceHashes": {
     "src/lib/racing/hurdle-low-form-method.ts": "d704c71fe51488b495e647c02649c6ba4e4b0cd683f0900f6103a0ed7f9c5ce8",
     "src/lib/racing/hurdle-low-form.ts": "496c2710abed499aff1f4444742ac298d7cc06b47c1ef99f955ee0346e4469e8",
     "src/lib/racing/hurdle-low-form-metrics.ts": "8e441cc20a969f2296e3a1a22f3c0b817512edfa91dbe6b539ed568a0e4d55eb"
   },
-  "observations": []
+  "observations": [
+    {
+      "raceId": "c4c3564d-0095-4991-9a38-a06e78d7c79a",
+      "capturedAt": "2026-11-10T05:29:13.576Z",
+      "frozenAt": "2026-11-10T05:29:14.692Z",
+      "scheduledOff": "2026-11-10T13:40:00.000Z",
+      "raceDate": "2026-11-10",
+      "shadowHash": "a1e9105fd50277671a15f3c56af691be5065929e5b48420001ea022231befb8e",
+      "classification": "ESTABLISHED FORM",
+      "market": {
+        "status": "COMPLETE",
+        "capturedAt": "2026-11-10T05:29:13.576Z",
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "favourite": "72814810-de2c-4f03-b32f-57755e8b3043",
+        "secondFavourite": "f11219b7-52cf-47a7-8145-efbc87a1ba85",
+        "runners": [
+          {
+            "runnerId": "72814810-de2c-4f03-b32f-57755e8b3043",
+            "price": 2.25,
+            "probability": 0.369356242557815,
+            "rank": 1
+          },
+          {
+            "runnerId": "f11219b7-52cf-47a7-8145-efbc87a1ba85",
+            "price": 4.33,
+            "probability": 0.19192876345382998,
+            "rank": 2
+          },
+          {
+            "runnerId": "54b8457d-ab3d-4b95-8575-938ee47861d5",
+            "price": 5,
+            "probability": 0.16621030915101678,
+            "rank": 3
+          },
+          {
+            "runnerId": "95be632c-5da8-47a2-a54b-d12c226eca2a",
+            "price": 7.5,
+            "probability": 0.11080687276734452,
+            "rank": 4
+          },
+          {
+            "runnerId": "8caeee81-391a-4814-a456-af4fc69403c3",
+            "price": 8.5,
+            "probability": 0.09777077008883339,
+            "rank": 5
+          },
+          {
+            "runnerId": "a86b16bc-abe6-4a7b-95d0-68d328a3fa25",
+            "price": 13,
+            "probability": 0.0639270419811603,
+            "rank": 6
+          }
+        ]
+      },
+      "evidence": [
+        {
+          "runnerId": "72814810-de2c-4f03-b32f-57755e8b3043",
+          "rank": 1,
+          "trainer": 0.45453084701760205,
+          "jockey": 0.22199828933467075,
+          "combined": 0.6765291363522727,
+          "positiveShare": 0.503939575637007,
+          "starts": 19,
+          "completed": 18,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "f11219b7-52cf-47a7-8145-efbc87a1ba85",
+          "rank": 5,
+          "trainer": -0.6040519957404789,
+          "jockey": -0.022954370825790306,
+          "combined": -0.6270063665662692,
+          "positiveShare": 0.006203463097668034,
+          "starts": 21,
+          "completed": 19,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "54b8457d-ab3d-4b95-8575-938ee47861d5",
+          "rank": 2,
+          "trainer": 0.1547005089806009,
+          "jockey": 0.12131113959537902,
+          "combined": 0.27601164857597993,
+          "positiveShare": 0.3121286601265133,
+          "starts": 9,
+          "completed": 9,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "95be632c-5da8-47a2-a54b-d12c226eca2a",
+          "rank": 3,
+          "trainer": -0.08919935447925882,
+          "jockey": 0.06479043288532388,
+          "combined": -0.024408921593934943,
+          "positiveShare": 0.12302553714606568,
+          "starts": 10,
+          "completed": 9,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "8caeee81-391a-4814-a456-af4fc69403c3",
+          "rank": 4,
+          "trainer": -0.16070712662317935,
+          "jockey": 0.10226891493810886,
+          "combined": -0.05843821168507049,
+          "positiveShare": 0.1723518344101673,
+          "starts": 10,
+          "completed": 10,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "a86b16bc-abe6-4a7b-95d0-68d328a3fa25",
+          "rank": 6,
+          "trainer": -0.23324895870792167,
+          "jockey": 0.07328321174543083,
+          "combined": -0.15996574696249083,
+          "positiveShare": 0.18132317990396166,
+          "starts": 4,
+          "completed": 3,
+          "established": true,
+          "evidence": "HIGH"
+        }
+      ]
+    },
+    {
+      "raceId": "ffaed1c0-19c0-473f-86ea-472670f7a3ee",
+      "capturedAt": "2026-11-10T05:29:13.576Z",
+      "frozenAt": "2026-11-10T05:29:14.692Z",
+      "scheduledOff": "2026-11-10T14:10:00.000Z",
+      "raceDate": "2026-11-10",
+      "shadowHash": "9f0aa5b358f3d9b0a06d711fab2aac0213a9d020c302a369bf18f82535e4e069",
+      "classification": "VERY LOW FORM",
+      "market": {
+        "status": "COMPLETE",
+        "capturedAt": "2026-11-10T05:29:13.576Z",
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "favourite": "46a77b38-96d9-4634-b1f7-286007b520ff",
+        "secondFavourite": "3e6ca2e8-a681-4504-a224-a7601d5ec9e1",
+        "runners": [
+          {
+            "runnerId": "46a77b38-96d9-4634-b1f7-286007b520ff",
+            "price": 1.44,
+            "probability": 0.5466458310936372,
+            "rank": 1
+          },
+          {
+            "runnerId": "3e6ca2e8-a681-4504-a224-a7601d5ec9e1",
+            "price": 4,
+            "probability": 0.1967924991937094,
+            "rank": 2
+          },
+          {
+            "runnerId": "915547ab-5526-47c1-961c-2e3ce787ef05",
+            "price": 6,
+            "probability": 0.1311949994624729,
+            "rank": 3
+          },
+          {
+            "runnerId": "461cd961-ee94-48b7-bbdd-ab8e10b10784",
+            "price": 10,
+            "probability": 0.07871699967748376,
+            "rank": 4
+          },
+          {
+            "runnerId": "69aaf937-5ada-4a8c-8387-930c5aff6f81",
+            "price": 34,
+            "probability": 0.023152058728671692,
+            "rank": 5
+          },
+          {
+            "runnerId": "98351eed-60e6-4be6-a231-c71da33dda13",
+            "price": 67,
+            "probability": 0.0117488059220125,
+            "rank": 6
+          },
+          {
+            "runnerId": "a78c95b5-4961-404f-8744-3e47da206170",
+            "price": 67,
+            "probability": 0.0117488059220125,
+            "rank": 7
+          }
+        ]
+      },
+      "evidence": [
+        {
+          "runnerId": "46a77b38-96d9-4634-b1f7-286007b520ff",
+          "rank": 3,
+          "trainer": 0.19808188158901896,
+          "jockey": 0.1547943490133242,
+          "combined": 0.3528762306023432,
+          "positiveShare": 0.8413904791899682,
+          "starts": 0,
+          "completed": 0,
+          "established": false,
+          "evidence": "LOW"
+        },
+        {
+          "runnerId": "3e6ca2e8-a681-4504-a224-a7601d5ec9e1",
+          "rank": 1,
+          "trainer": 0.45453084701760205,
+          "jockey": 0.24488958411655076,
+          "combined": 0.6994204311341528,
+          "positiveShare": 0.48240549750945955,
+          "starts": 7,
+          "completed": 6,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "915547ab-5526-47c1-961c-2e3ce787ef05",
+          "rank": 2,
+          "trainer": 0.6436204997858203,
+          "jockey": 0.2622860967672108,
+          "combined": 0.9059065965530311,
+          "positiveShare": 0.9315935407232058,
+          "starts": 0,
+          "completed": 0,
+          "established": false,
+          "evidence": "LOW"
+        },
+        {
+          "runnerId": "461cd961-ee94-48b7-bbdd-ab8e10b10784",
+          "rank": 6,
+          "trainer": -0.1468970753786154,
+          "jockey": -0.011066198788287414,
+          "combined": -0.1579632741669028,
+          "positiveShare": 0.41679056090596595,
+          "starts": 0,
+          "completed": 0,
+          "established": false,
+          "evidence": "LOW"
+        },
+        {
+          "runnerId": "69aaf937-5ada-4a8c-8387-930c5aff6f81",
+          "rank": 4,
+          "trainer": -0.12037811153076469,
+          "jockey": -0.11141741116072446,
+          "combined": -0.23179552269148915,
+          "positiveShare": 0.22222638990683422,
+          "starts": 2,
+          "completed": 2,
+          "established": false,
+          "evidence": "MEDIUM"
+        },
+        {
+          "runnerId": "98351eed-60e6-4be6-a231-c71da33dda13",
+          "rank": 5,
+          "trainer": -0.013137895267537468,
+          "jockey": -0.06177414607921823,
+          "combined": -0.07491204134675569,
+          "positiveShare": 0.28134819740835515,
+          "starts": 0,
+          "completed": 0,
+          "established": false,
+          "evidence": "LOW"
+        },
+        {
+          "runnerId": "a78c95b5-4961-404f-8744-3e47da206170",
+          "rank": 7,
+          "trainer": 0.26331283062384825,
+          "jockey": -0.09772099699024327,
+          "combined": 0.16559183363360497,
+          "positiveShare": 0.8136617077149927,
+          "starts": 1,
+          "completed": 0,
+          "established": false,
+          "evidence": "MEDIUM"
+        }
+      ]
+    },
+    {
+      "raceId": "07d9d0cf-fc44-4b15-8501-4214b537df3a",
+      "capturedAt": "2026-11-10T05:29:13.576Z",
+      "frozenAt": "2026-11-10T05:29:14.692Z",
+      "scheduledOff": "2026-11-10T15:10:00.000Z",
+      "raceDate": "2026-11-10",
+      "shadowHash": "4dc66924c4acd3f142ac81c5d2ac90b87360cc2df149450f190e9f05f0cb4e04",
+      "classification": "ESTABLISHED FORM",
+      "market": {
+        "status": "COMPLETE",
+        "capturedAt": "2026-11-10T05:29:13.576Z",
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "favourite": "e20fbf27-3d04-46b8-b7ea-18b4d9fc97cd",
+        "secondFavourite": "64553d5a-ab39-4632-b9a1-12f2efbc46b4",
+        "runners": [
+          {
+            "runnerId": "e20fbf27-3d04-46b8-b7ea-18b4d9fc97cd",
+            "price": 3.5,
+            "probability": 0.23311442612969163,
+            "rank": 1
+          },
+          {
+            "runnerId": "64553d5a-ab39-4632-b9a1-12f2efbc46b4",
+            "price": 3.75,
+            "probability": 0.21757346438771222,
+            "rank": 2
+          },
+          {
+            "runnerId": "6a41fa02-574d-4e9b-9dcf-518f29b7f87c",
+            "price": 3.75,
+            "probability": 0.21757346438771222,
+            "rank": 3
+          },
+          {
+            "runnerId": "1931eff8-550f-4f1e-a4f7-16b12085153d",
+            "price": 5,
+            "probability": 0.16318009829078417,
+            "rank": 4
+          },
+          {
+            "runnerId": "8dc08f43-2f67-4207-a0db-7c91fb24b0c0",
+            "price": 8,
+            "probability": 0.10198756143174009,
+            "rank": 5
+          },
+          {
+            "runnerId": "40d2716e-0abc-486f-939a-eb498a5c1bac",
+            "price": 15,
+            "probability": 0.054393366096928054,
+            "rank": 6
+          },
+          {
+            "runnerId": "cefd33bd-8c63-4959-b743-debcf4e476df",
+            "price": 67,
+            "probability": 0.012177619275431654,
+            "rank": 7
+          }
+        ]
+      },
+      "evidence": [
+        {
+          "runnerId": "e20fbf27-3d04-46b8-b7ea-18b4d9fc97cd",
+          "rank": 3,
+          "trainer": 0.26331283062384825,
+          "jockey": 0.004904199885938338,
+          "combined": 0.26821703050978657,
+          "positiveShare": 0.3904209029348939,
+          "starts": 6,
+          "completed": 6,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "64553d5a-ab39-4632-b9a1-12f2efbc46b4",
+          "rank": 4,
+          "trainer": 0.13456561399524655,
+          "jockey": -0.3895950773298732,
+          "combined": -0.2550294633346266,
+          "positiveShare": 0.1520586719247776,
+          "starts": 22,
+          "completed": 21,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "6a41fa02-574d-4e9b-9dcf-518f29b7f87c",
+          "rank": 2,
+          "trainer": 0.06468662657971025,
+          "jockey": -0.07125449344567614,
+          "combined": -0.006567866865965888,
+          "positiveShare": 0.15092862705943844,
+          "starts": 7,
+          "completed": 7,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "1931eff8-550f-4f1e-a4f7-16b12085153d",
+          "rank": 1,
+          "trainer": 0.08823144718190036,
+          "jockey": -0.011066198788287414,
+          "combined": 0.07716524839361294,
+          "positiveShare": 0.11925449151423345,
+          "starts": 15,
+          "completed": 15,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "8dc08f43-2f67-4207-a0db-7c91fb24b0c0",
+          "rank": 5,
+          "trainer": 0.28690456427562766,
+          "jockey": -0.0987054001808293,
+          "combined": 0.18819916409479837,
+          "positiveShare": 0.28418925385433114,
+          "starts": 8,
+          "completed": 7,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "40d2716e-0abc-486f-939a-eb498a5c1bac",
+          "rank": 7,
+          "trainer": -0.1917898370237,
+          "jockey": 0.07815430890753913,
+          "combined": -0.11363552811616087,
+          "positiveShare": 0.12685792930084636,
+          "starts": 9,
+          "completed": 8,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "cefd33bd-8c63-4959-b743-debcf4e476df",
+          "rank": 6,
+          "trainer": -0.19238599246374763,
+          "jockey": -0.16562242452008788,
+          "combined": -0.3580084169838355,
+          "positiveShare": 0.05485427114494722,
+          "starts": 9,
+          "completed": 6,
+          "established": false,
+          "evidence": "MEDIUM"
+        }
+      ]
+    },
+    {
+      "raceId": "4f6afca5-1b0b-4b31-a5e0-7e6b9980dd66",
+      "capturedAt": "2026-11-10T05:29:13.576Z",
+      "frozenAt": "2026-11-10T05:29:14.692Z",
+      "scheduledOff": "2026-11-10T15:40:00.000Z",
+      "raceDate": "2026-11-10",
+      "shadowHash": "96e846953dab6e809c40f49d0407cf5261859e50d685abe3e8b2a8d1cda07135",
+      "classification": "ESTABLISHED FORM",
+      "market": {
+        "status": "COMPLETE",
+        "capturedAt": "2026-11-10T05:29:13.576Z",
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "favourite": "7ec1c9c6-7b44-4f84-b78c-5a494f7099bf",
+        "secondFavourite": "b02bb838-a529-4c95-8e69-9e29583f46c3",
+        "runners": [
+          {
+            "runnerId": "7ec1c9c6-7b44-4f84-b78c-5a494f7099bf",
+            "price": 2.88,
+            "probability": 0.27237414270966764,
+            "rank": 1
+          },
+          {
+            "runnerId": "b02bb838-a529-4c95-8e69-9e29583f46c3",
+            "price": 3,
+            "probability": 0.2614791770012809,
+            "rank": 2
+          },
+          {
+            "runnerId": "1b0a3552-8178-4eab-b019-b375d9eeac57",
+            "price": 4.33,
+            "probability": 0.18116340207940942,
+            "rank": 3
+          },
+          {
+            "runnerId": "bf789f4c-9043-4263-9678-bd74a55715ab",
+            "price": 7.5,
+            "probability": 0.10459167080051239,
+            "rank": 4
+          },
+          {
+            "runnerId": "f49b11bf-df8e-4a88-9e45-122ef22c4542",
+            "price": 7.5,
+            "probability": 0.10459167080051239,
+            "rank": 5
+          },
+          {
+            "runnerId": "55a5d00d-1cf7-4404-8a8c-94cd72a488fb",
+            "price": 19,
+            "probability": 0.04128618584230752,
+            "rank": 6
+          },
+          {
+            "runnerId": "a66c49ab-14a5-4376-a066-c8bc13ea9181",
+            "price": 41,
+            "probability": 0.019132622707410802,
+            "rank": 7
+          },
+          {
+            "runnerId": "a2eb341d-45fb-48d7-9100-8707721176e5",
+            "price": 51,
+            "probability": 0.01538112805889888,
+            "rank": 8
+          }
+        ]
+      },
+      "evidence": [
+        {
+          "runnerId": "7ec1c9c6-7b44-4f84-b78c-5a494f7099bf",
+          "rank": 1,
+          "trainer": 0.503433895970828,
+          "jockey": 0.2904822804155404,
+          "combined": 0.7939161763863685,
+          "positiveShare": 0.5194803651368911,
+          "starts": 6,
+          "completed": 6,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "b02bb838-a529-4c95-8e69-9e29583f46c3",
+          "rank": 2,
+          "trainer": -0.29182379595289687,
+          "jockey": 0.24488958411655076,
+          "combined": -0.04693421183634611,
+          "positiveShare": 0.15028286706052524,
+          "starts": 6,
+          "completed": 6,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "1b0a3552-8178-4eab-b019-b375d9eeac57",
+          "rank": 4,
+          "trainer": 0.19808188158901896,
+          "jockey": 0.1547943490133242,
+          "combined": 0.3528762306023432,
+          "positiveShare": 0.34966217820236495,
+          "starts": 5,
+          "completed": 5,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "f49b11bf-df8e-4a88-9e45-122ef22c4542",
+          "rank": 3,
+          "trainer": 0.28690456427562766,
+          "jockey": 0.059690449976915305,
+          "combined": 0.34659501425254297,
+          "positiveShare": 0.35463110416719834,
+          "starts": 7,
+          "completed": 7,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "bf789f4c-9043-4263-9678-bd74a55715ab",
+          "rank": 6,
+          "trainer": 0.13593379203959882,
+          "jockey": -0.022954370825790306,
+          "combined": 0.11297942121380852,
+          "positiveShare": 0.29856770338145044,
+          "starts": 6,
+          "completed": 6,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "55a5d00d-1cf7-4404-8a8c-94cd72a488fb",
+          "rank": 5,
+          "trainer": 0.26331283062384825,
+          "jockey": 0.0658360204654676,
+          "combined": 0.32914885108931585,
+          "positiveShare": 0.33944129064499845,
+          "starts": 4,
+          "completed": 3,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "a66c49ab-14a5-4376-a066-c8bc13ea9181",
+          "rank": 8,
+          "trainer": -0.23324895870792167,
+          "jockey": 0.0020972187215995176,
+          "combined": -0.23115173998632216,
+          "positiveShare": 0.0791532249100495,
+          "starts": 3,
+          "completed": 3,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "a2eb341d-45fb-48d7-9100-8707721176e5",
+          "rank": 7,
+          "trainer": -0.1626428188035619,
+          "jockey": 0.09382111443587474,
+          "combined": -0.06882170436768717,
+          "positiveShare": 0.1439464284118863,
+          "starts": 14,
+          "completed": 12,
+          "established": true,
+          "evidence": "HIGH"
+        }
+      ]
+    },
+    {
+      "raceId": "f322649a-c708-42f6-862c-b698f70842e5",
+      "capturedAt": "2026-11-10T05:29:13.576Z",
+      "frozenAt": "2026-11-10T05:29:14.692Z",
+      "scheduledOff": "2026-11-10T13:50:00.000Z",
+      "raceDate": "2026-11-10",
+      "shadowHash": "6f69d4e47da87dfd0a90be689b7fb3fe20439989916ceaeda124ba5793b57276",
+      "classification": "VERY LOW FORM",
+      "market": {
+        "status": "COMPLETE",
+        "capturedAt": "2026-11-10T05:29:13.576Z",
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "favourite": "e64e08dd-be9d-4a37-b456-40ffcb44fb55",
+        "secondFavourite": "c069ce65-f5c8-485c-8b6c-c075dc8727a2",
+        "runners": [
+          {
+            "runnerId": "e64e08dd-be9d-4a37-b456-40ffcb44fb55",
+            "price": 1.2,
+            "probability": 0.7079411163964813,
+            "rank": 1
+          },
+          {
+            "runnerId": "c069ce65-f5c8-485c-8b6c-c075dc8727a2",
+            "price": 4.33,
+            "probability": 0.19619615235006407,
+            "rank": 2
+          },
+          {
+            "runnerId": "52d3c598-b81e-44d5-8c07-c66d3c3c225c",
+            "price": 12,
+            "probability": 0.07079411163964812,
+            "rank": 3
+          },
+          {
+            "runnerId": "49c3ba17-4f1c-4187-b898-2ae8c379e224",
+            "price": 51,
+            "probability": 0.016657438032858383,
+            "rank": 4
+          },
+          {
+            "runnerId": "9fa6f165-8044-4e7f-8405-67e4913ffc66",
+            "price": 101,
+            "probability": 0.008411181580948291,
+            "rank": 5
+          }
+        ]
+      },
+      "evidence": [
+        {
+          "runnerId": "e64e08dd-be9d-4a37-b456-40ffcb44fb55",
+          "rank": 1,
+          "trainer": 0.26995093096972067,
+          "jockey": 0.275892986000921,
+          "combined": 0.5458439169706417,
+          "positiveShare": 0.6232526033507818,
+          "starts": 1,
+          "completed": 1,
+          "established": false,
+          "evidence": "MEDIUM"
+        },
+        {
+          "runnerId": "c069ce65-f5c8-485c-8b6c-c075dc8727a2",
+          "rank": 2,
+          "trainer": 0.31480948671428544,
+          "jockey": 0.3589212322014289,
+          "combined": 0.6737307189157143,
+          "positiveShare": 0.9101382103653598,
+          "starts": 0,
+          "completed": 0,
+          "established": false,
+          "evidence": "LOW"
+        },
+        {
+          "runnerId": "52d3c598-b81e-44d5-8c07-c66d3c3c225c",
+          "rank": 3,
+          "trainer": -0.1669717691010631,
+          "jockey": 0.0684103364550725,
+          "combined": -0.0985614326459906,
+          "positiveShare": 0.5070038106090017,
+          "starts": 0,
+          "completed": 0,
+          "established": false,
+          "evidence": "LOW"
+        },
+        {
+          "runnerId": "49c3ba17-4f1c-4187-b898-2ae8c379e224",
+          "rank": 4,
+          "trainer": -0.29591598948215125,
+          "jockey": 0.03071367535938195,
+          "combined": -0.2652023141227693,
+          "positiveShare": 0.36198958754506355,
+          "starts": 0,
+          "completed": 0,
+          "established": false,
+          "evidence": "LOW"
+        },
+        {
+          "runnerId": "9fa6f165-8044-4e7f-8405-67e4913ffc66",
+          "rank": 5,
+          "trainer": -0.08604956046939423,
+          "jockey": 0.12060154052694592,
+          "combined": 0.034551980057551696,
+          "positiveShare": 0.6873944125016688,
+          "starts": 1,
+          "completed": 0,
+          "established": false,
+          "evidence": "MEDIUM"
+        }
+      ]
+    },
+    {
+      "raceId": "3562071a-3887-4d04-b257-6c77ab1f82e5",
+      "capturedAt": "2026-11-10T05:29:13.576Z",
+      "frozenAt": "2026-11-10T05:29:14.692Z",
+      "scheduledOff": "2026-11-10T14:20:00.000Z",
+      "raceDate": "2026-11-10",
+      "shadowHash": "95e01d7ee27bd2896972e4f70ec7c6f7c25ae402667f0b06c25e2d67d8e422af",
+      "classification": "ESTABLISHED FORM",
+      "market": {
+        "status": "COMPLETE",
+        "capturedAt": "2026-11-10T05:29:13.576Z",
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "favourite": "a9ce6df1-05e5-4c10-9e82-0aeb4a5f93f4",
+        "secondFavourite": "3b610feb-fd79-470e-abb2-1d88456d3217",
+        "runners": [
+          {
+            "runnerId": "a9ce6df1-05e5-4c10-9e82-0aeb4a5f93f4",
+            "price": 2.2,
+            "probability": 0.38381056397106544,
+            "rank": 1
+          },
+          {
+            "runnerId": "3b610feb-fd79-470e-abb2-1d88456d3217",
+            "price": 4.33,
+            "probability": 0.19500767684442125,
+            "rank": 2
+          },
+          {
+            "runnerId": "dd8a2798-49f2-4e86-a0a9-a5ebede53f4c",
+            "price": 4.33,
+            "probability": 0.19500767684442125,
+            "rank": 3
+          },
+          {
+            "runnerId": "0c3ef70a-ac1f-4a52-88c5-f9c0e7a7c734",
+            "price": 7,
+            "probability": 0.12062617724804914,
+            "rank": 4
+          },
+          {
+            "runnerId": "61069aec-63cc-4ed5-b8ac-e5fdfadb1365",
+            "price": 8,
+            "probability": 0.105547905092043,
+            "rank": 5
+          }
+        ]
+      },
+      "evidence": [
+        {
+          "runnerId": "a9ce6df1-05e5-4c10-9e82-0aeb4a5f93f4",
+          "rank": 2,
+          "trainer": 0.3270078227977288,
+          "jockey": 0.2729088374618679,
+          "combined": 0.5999166602595967,
+          "positiveShare": 0.5762372055179891,
+          "starts": 4,
+          "completed": 4,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "dd8a2798-49f2-4e86-a0a9-a5ebede53f4c",
+          "rank": 1,
+          "trainer": 0.6436204997858203,
+          "jockey": 0.40170174425046523,
+          "combined": 1.0453222440362855,
+          "positiveShare": 0.6364949209495768,
+          "starts": 8,
+          "completed": 8,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "3b610feb-fd79-470e-abb2-1d88456d3217",
+          "rank": 5,
+          "trainer": 0.20057133703789404,
+          "jockey": 0.017636322986602813,
+          "combined": 0.21820766002449685,
+          "positiveShare": 0.268451519601639,
+          "starts": 7,
+          "completed": 7,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "0c3ef70a-ac1f-4a52-88c5-f9c0e7a7c734",
+          "rank": 4,
+          "trainer": -0.13259523822422714,
+          "jockey": -0.1842938086879899,
+          "combined": -0.31688904691221703,
+          "positiveShare": 0.028633943734667093,
+          "starts": 17,
+          "completed": 17,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "61069aec-63cc-4ed5-b8ac-e5fdfadb1365",
+          "rank": 3,
+          "trainer": 0.31480948671428544,
+          "jockey": 0.3589212322014289,
+          "combined": 0.6737307189157143,
+          "positiveShare": 0.5149140184991434,
+          "starts": 12,
+          "completed": 11,
+          "established": true,
+          "evidence": "HIGH"
+        }
+      ]
+    },
+    {
+      "raceId": "4527f03c-4adf-4dd5-971a-7f93f5be7345",
+      "capturedAt": "2026-11-10T05:29:13.576Z",
+      "frozenAt": "2026-11-10T05:29:14.692Z",
+      "scheduledOff": "2026-11-10T14:50:00.000Z",
+      "raceDate": "2026-11-10",
+      "shadowHash": "09911c20b733dba154bc7401e482694b30efaa2d9efe10f6e0ccfe9b6bd22e7b",
+      "classification": "ESTABLISHED FORM",
+      "market": {
+        "status": "COMPLETE",
+        "capturedAt": "2026-11-10T05:29:13.576Z",
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "favourite": "b5bf3a19-1293-45fb-89a1-eb5e495fdc3e",
+        "secondFavourite": "635a69c5-38bc-46c8-b683-6a0dbfa30326",
+        "runners": [
+          {
+            "runnerId": "b5bf3a19-1293-45fb-89a1-eb5e495fdc3e",
+            "price": 4,
+            "probability": 0.19430054004796543,
+            "rank": 1
+          },
+          {
+            "runnerId": "635a69c5-38bc-46c8-b683-6a0dbfa30326",
+            "price": 4.5,
+            "probability": 0.17271159115374704,
+            "rank": 2
+          },
+          {
+            "runnerId": "7a6c8785-9a74-4339-bee4-b802b0052c05",
+            "price": 4.5,
+            "probability": 0.17271159115374704,
+            "rank": 3
+          },
+          {
+            "runnerId": "90c99d02-52ca-44af-a7bf-faf274698618",
+            "price": 6,
+            "probability": 0.12953369336531026,
+            "rank": 4
+          },
+          {
+            "runnerId": "3d17c646-26f1-4176-801e-a393245b1b14",
+            "price": 9,
+            "probability": 0.08635579557687352,
+            "rank": 5
+          },
+          {
+            "runnerId": "56a1ab6a-eefd-434d-9476-7540f8aef428",
+            "price": 9.5,
+            "probability": 0.08181075370440649,
+            "rank": 6
+          },
+          {
+            "runnerId": "2f0e1a7d-e5c9-4845-82c2-ebe8f6f3b2e1",
+            "price": 10,
+            "probability": 0.07772021601918618,
+            "rank": 7
+          },
+          {
+            "runnerId": "f3a0c4f1-61b7-401c-87b1-f03eb40286c6",
+            "price": 13,
+            "probability": 0.05978478155322013,
+            "rank": 8
+          },
+          {
+            "runnerId": "5ac212e9-acd0-438d-b7f1-573c291b940c",
+            "price": 31,
+            "probability": 0.025071037425543924,
+            "rank": 9
+          }
+        ]
+      },
+      "evidence": [
+        {
+          "runnerId": "b5bf3a19-1293-45fb-89a1-eb5e495fdc3e",
+          "rank": 5,
+          "trainer": -0.13259523822422714,
+          "jockey": 0.08308313255937025,
+          "combined": -0.04951210566485689,
+          "positiveShare": 0.16069503730260817,
+          "starts": 13,
+          "completed": 10,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "7a6c8785-9a74-4339-bee4-b802b0052c05",
+          "rank": 1,
+          "trainer": 0.45453084701760205,
+          "jockey": 0.4200724643232585,
+          "combined": 0.8746033113408606,
+          "positiveShare": 0.6167186089704573,
+          "starts": 4,
+          "completed": 4,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "635a69c5-38bc-46c8-b683-6a0dbfa30326",
+          "rank": 2,
+          "trainer": 0.20057133703789404,
+          "jockey": 0.12060154052694592,
+          "combined": 0.32117287756484,
+          "positiveShare": 0.32999666101043823,
+          "starts": 12,
+          "completed": 9,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "90c99d02-52ca-44af-a7bf-faf274698618",
+          "rank": 4,
+          "trainer": 0.31480948671428544,
+          "jockey": 0.3589212322014289,
+          "combined": 0.6737307189157143,
+          "positiveShare": 0.5569739961432336,
+          "starts": 7,
+          "completed": 4,
+          "established": true,
+          "evidence": "MEDIUM"
+        },
+        {
+          "runnerId": "3d17c646-26f1-4176-801e-a393245b1b14",
+          "rank": 6,
+          "trainer": 0.09950853731070909,
+          "jockey": -0.18395657262803583,
+          "combined": -0.08444803531732674,
+          "positiveShare": 0.12062194576728848,
+          "starts": 23,
+          "completed": 21,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "56a1ab6a-eefd-434d-9476-7540f8aef428",
+          "rank": 3,
+          "trainer": -0.08604956046939423,
+          "jockey": 0.5197898752959478,
+          "combined": 0.43374031482655356,
+          "positiveShare": 0.5184996723830106,
+          "starts": 4,
+          "completed": 4,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "2f0e1a7d-e5c9-4845-82c2-ebe8f6f3b2e1",
+          "rank": 9,
+          "trainer": -0.16056461991068868,
+          "jockey": -0.14446931926109982,
+          "combined": -0.3050339391717885,
+          "positiveShare": 0.07982045879303373,
+          "starts": 8,
+          "completed": 7,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "f3a0c4f1-61b7-401c-87b1-f03eb40286c6",
+          "rank": 7,
+          "trainer": -0.29435839738744257,
+          "jockey": 0.15886041219684885,
+          "combined": -0.13549798519059372,
+          "positiveShare": 0.21591124247845356,
+          "starts": 7,
+          "completed": 6,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "5ac212e9-acd0-438d-b7f1-573c291b940c",
+          "rank": 8,
+          "trainer": -0.23488774855762648,
+          "jockey": -0.11292504819557282,
+          "combined": -0.3478127967531993,
+          "positiveShare": 0.1563413399429529,
+          "starts": 5,
+          "completed": 4,
+          "established": true,
+          "evidence": "HIGH"
+        }
+      ]
+    },
+    {
+      "raceId": "2c446a08-6d4f-40f1-a51e-d8591b26bf8b",
+      "capturedAt": "2026-11-10T05:29:13.576Z",
+      "frozenAt": "2026-11-10T05:29:14.692Z",
+      "scheduledOff": "2026-11-10T15:20:00.000Z",
+      "raceDate": "2026-11-10",
+      "shadowHash": "c26d9c3f852778a618db5a25c8c9a8f5cf6f2703b65e6c64b2415639ebd63aa5",
+      "classification": "ESTABLISHED FORM",
+      "market": {
+        "status": "MARKET UNAVAILABLE / INCOMPLETE",
+        "capturedAt": "2026-11-10T05:29:13.576Z",
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "favourite": null,
+        "secondFavourite": null,
+        "runners": []
+      },
+      "evidence": [
+        {
+          "runnerId": "1826ce40-65c7-4018-899a-d3180530f3d4",
+          "rank": 4,
+          "trainer": 0.31480948671428544,
+          "jockey": 0.3589212322014289,
+          "combined": 0.6737307189157143,
+          "positiveShare": 0.6482987546674811,
+          "starts": 5,
+          "completed": 5,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "b5aec092-3f65-4831-8adc-951e13f0f07d",
+          "rank": 1,
+          "trainer": 0.6436204997858203,
+          "jockey": 0.40170174425046523,
+          "combined": 1.0453222440362855,
+          "positiveShare": 0.4997101327302737,
+          "starts": 10,
+          "completed": 9,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "e8ba5a35-2c88-46a5-a98b-824bf121cbee",
+          "rank": 2,
+          "trainer": 0.39805120450700016,
+          "jockey": 0.33987650421734805,
+          "combined": 0.7379277087243482,
+          "positiveShare": 0.43974916658327934,
+          "starts": 20,
+          "completed": 20,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "a907309e-9786-4609-86a2-0ee23ee5546c",
+          "rank": 3,
+          "trainer": 0.0230340590713567,
+          "jockey": -0.34100923119945314,
+          "combined": -0.31797517212809645,
+          "positiveShare": 0.08487120873318965,
+          "starts": 13,
+          "completed": 12,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "206eb1c7-142f-48b2-a2c2-ca01ab3e6a82",
+          "rank": 5,
+          "trainer": -0.06997304234550382,
+          "jockey": -0.08255596005571897,
+          "combined": -0.1525290024012228,
+          "positiveShare": 0.11250112362305281,
+          "starts": 4,
+          "completed": 4,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "6ef4dbb1-e6bd-4253-984d-0bfc37226325",
+          "rank": 6,
+          "trainer": -0.23488774855762648,
+          "jockey": -0.2672609258365198,
+          "combined": -0.5021486743941462,
+          "positiveShare": 0.01749984324861638,
+          "starts": 13,
+          "completed": 10,
+          "established": true,
+          "evidence": "HIGH"
+        }
+      ]
+    },
+    {
+      "raceId": "4abd830f-3701-4473-b69a-b0acc453eddf",
+      "capturedAt": "2026-11-10T05:29:13.576Z",
+      "frozenAt": "2026-11-10T05:29:14.692Z",
+      "scheduledOff": "2026-11-10T15:50:00.000Z",
+      "raceDate": "2026-11-10",
+      "shadowHash": "d75b00de3ffc7dcdfa1b9fb1ef56dfe5f66320e267c1975f0772c41fff97f474",
+      "classification": "ESTABLISHED FORM",
+      "market": {
+        "status": "COMPLETE",
+        "capturedAt": "2026-11-10T05:29:13.576Z",
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "favourite": "f807311f-9e90-4519-b660-ed5b17408133",
+        "secondFavourite": "7c5b7e0b-d612-433d-8181-c0657586c398",
+        "runners": [
+          {
+            "runnerId": "f807311f-9e90-4519-b660-ed5b17408133",
+            "price": 2.1,
+            "probability": 0.4014404628372395,
+            "rank": 1
+          },
+          {
+            "runnerId": "7c5b7e0b-d612-433d-8181-c0657586c398",
+            "price": 4,
+            "probability": 0.21075624298955073,
+            "rank": 2
+          },
+          {
+            "runnerId": "5c00c119-95af-439d-9398-82c685823c96",
+            "price": 7,
+            "probability": 0.12043213885117185,
+            "rank": 3
+          },
+          {
+            "runnerId": "e94bf88e-5e18-4450-8f06-4f7473d4af4b",
+            "price": 7.5,
+            "probability": 0.11240332959442706,
+            "rank": 4
+          },
+          {
+            "runnerId": "454ad94f-0d4f-444e-9c51-8366264ca6df",
+            "price": 8,
+            "probability": 0.10537812149477536,
+            "rank": 5
+          },
+          {
+            "runnerId": "aef64acc-b8db-4b7a-bc80-d44cd9e5f248",
+            "price": 17,
+            "probability": 0.049589704232835465,
+            "rank": 6
+          }
+        ]
+      },
+      "evidence": [
+        {
+          "runnerId": "f807311f-9e90-4519-b660-ed5b17408133",
+          "rank": 1,
+          "trainer": 0.6436204997858203,
+          "jockey": 0.40170174425046523,
+          "combined": 1.0453222440362855,
+          "positiveShare": 0.474091383012294,
+          "starts": 8,
+          "completed": 8,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "7c5b7e0b-d612-433d-8181-c0657586c398",
+          "rank": 3,
+          "trainer": -0.009731977157153768,
+          "jockey": -0.054948758935215655,
+          "combined": -0.06468073609236942,
+          "positiveShare": 0.02799010721488025,
+          "starts": 9,
+          "completed": 8,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "5c00c119-95af-439d-9398-82c685823c96",
+          "rank": 2,
+          "trainer": 0.6052684076538557,
+          "jockey": 0.1662540740428688,
+          "combined": 0.7715224816967245,
+          "positiveShare": 0.41681604591233895,
+          "starts": 19,
+          "completed": 18,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "e94bf88e-5e18-4450-8f06-4f7473d4af4b",
+          "rank": 5,
+          "trainer": -0.17173027788960948,
+          "jockey": -0.27564107921164704,
+          "combined": -0.44737135710125653,
+          "positiveShare": 0,
+          "starts": 19,
+          "completed": 18,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "454ad94f-0d4f-444e-9c51-8366264ca6df",
+          "rank": 4,
+          "trainer": -0.031575877371909006,
+          "jockey": 0.0684103364550725,
+          "combined": 0.03683445908316349,
+          "positiveShare": 0.18697412619343132,
+          "starts": 2,
+          "completed": 2,
+          "established": false,
+          "evidence": "MEDIUM"
+        },
+        {
+          "runnerId": "aef64acc-b8db-4b7a-bc80-d44cd9e5f248",
+          "rank": 6,
+          "trainer": 0.09950853731070909,
+          "jockey": -0.18395657262803583,
+          "combined": -0.08444803531732674,
+          "positiveShare": 0.1463383830071668,
+          "starts": 5,
+          "completed": 5,
+          "established": true,
+          "evidence": "HIGH"
+        }
+      ]
+    },
+    {
+      "raceId": "73762a4f-a3ee-4876-b17c-9132b64fd7d8",
+      "capturedAt": "2026-11-10T05:29:13.576Z",
+      "frozenAt": "2026-11-10T05:29:14.692Z",
+      "scheduledOff": "2026-11-10T12:30:00.000Z",
+      "raceDate": "2026-11-10",
+      "shadowHash": "a77079702522448218856f8f7f38541a07d2e3ca20e4fb0f32ac14055ae7954a",
+      "classification": "VERY LOW FORM",
+      "market": {
+        "status": "COMPLETE",
+        "capturedAt": "2026-11-10T05:29:13.576Z",
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "favourite": "24ad9ccd-bf8d-4aa8-9440-b937abf7847e",
+        "secondFavourite": "521091b7-b316-4bec-ad4b-9d3451a7ac8a",
+        "runners": [
+          {
+            "runnerId": "24ad9ccd-bf8d-4aa8-9440-b937abf7847e",
+            "price": 1.83,
+            "probability": 0.3693804264322535,
+            "rank": 1
+          },
+          {
+            "runnerId": "521091b7-b316-4bec-ad4b-9d3451a7ac8a",
+            "price": 5,
+            "probability": 0.1351932360742048,
+            "rank": 2
+          },
+          {
+            "runnerId": "90c8ef97-478a-45b6-b2b1-42d6d47868af",
+            "price": 5,
+            "probability": 0.1351932360742048,
+            "rank": 3
+          },
+          {
+            "runnerId": "ed87145f-1fb1-426a-ace4-1f6051cfb72a",
+            "price": 5.5,
+            "probability": 0.12290294188564072,
+            "rank": 4
+          },
+          {
+            "runnerId": "95f69ba8-2db1-48dc-905a-e87e51d18d8d",
+            "price": 17,
+            "probability": 0.03976271649241317,
+            "rank": 5
+          },
+          {
+            "runnerId": "48e102f6-7df0-476c-943d-d40d68f69cd8",
+            "price": 19,
+            "probability": 0.035577167387948624,
+            "rank": 6
+          },
+          {
+            "runnerId": "9cb18bd5-a101-4113-ac65-181e880b8089",
+            "price": 19,
+            "probability": 0.035577167387948624,
+            "rank": 7
+          },
+          {
+            "runnerId": "c8e6f552-ce6e-4ab4-ae62-95d2cd9d70fb",
+            "price": 21,
+            "probability": 0.032188865731953516,
+            "rank": 8
+          },
+          {
+            "runnerId": "a3faf1dc-ec11-4178-8fe0-943bec2407b1",
+            "price": 34,
+            "probability": 0.019881358246206585,
+            "rank": 9
+          },
+          {
+            "runnerId": "ed0e74f1-fa0d-4aa1-99f5-af866afbe1e3",
+            "price": 41,
+            "probability": 0.016486980009049364,
+            "rank": 10
+          },
+          {
+            "runnerId": "a8894ece-0333-416c-a2de-2e585c9688dc",
+            "price": 51,
+            "probability": 0.01325423883080439,
+            "rank": 11
+          },
+          {
+            "runnerId": "d72c9d9f-744d-4d51-8c21-3901b5c47287",
+            "price": 51,
+            "probability": 0.01325423883080439,
+            "rank": 12
+          },
+          {
+            "runnerId": "36f6a5b0-b58c-41f2-b98a-13efd22fdd7b",
+            "price": 67,
+            "probability": 0.010089047468224237,
+            "rank": 13
+          },
+          {
+            "runnerId": "cdebfb8d-ed4b-4064-b5a1-7fd2bf89d999",
+            "price": 67,
+            "probability": 0.010089047468224237,
+            "rank": 14
+          },
+          {
+            "runnerId": "ca6ce4d4-8fcd-4333-9259-eb562e43cf3c",
+            "price": 101,
+            "probability": 0.006692734459119049,
+            "rank": 15
+          },
+          {
+            "runnerId": "21a63aae-ecb8-43c3-92bf-faa318f9e5e5",
+            "price": 151,
+            "probability": 0.004476597221000159,
+            "rank": 16
+          }
+        ]
+      },
+      "evidence": [
+        {
+          "runnerId": "24ad9ccd-bf8d-4aa8-9440-b937abf7847e",
+          "rank": 1,
+          "trainer": 0.23222094782783564,
+          "jockey": 0.3321775554742862,
+          "combined": 0.5643985033021218,
+          "positiveShare": 0.8945660181472378,
+          "starts": 0,
+          "completed": 0,
+          "established": false,
+          "evidence": "LOW"
+        },
+        {
+          "runnerId": "90c8ef97-478a-45b6-b2b1-42d6d47868af",
+          "rank": 4,
+          "trainer": -0.11657982760846786,
+          "jockey": 0.0585161619857857,
+          "combined": -0.058063665622682156,
+          "positiveShare": 0.48731106758174303,
+          "starts": 0,
+          "completed": 0,
+          "established": false,
+          "evidence": "LOW"
+        },
+        {
+          "runnerId": "521091b7-b316-4bec-ad4b-9d3451a7ac8a",
+          "rank": 5,
+          "trainer": 0.0314554007518377,
+          "jockey": -0.18030923749762454,
+          "combined": -0.14885383674578684,
+          "positiveShare": 0.686151713076136,
+          "starts": 0,
+          "completed": 0,
+          "established": false,
+          "evidence": "LOW"
+        },
+        {
+          "runnerId": "ed87145f-1fb1-426a-ace4-1f6051cfb72a",
+          "rank": 3,
+          "trainer": 0.02881636457007745,
+          "jockey": -0.05782580185312495,
+          "combined": -0.029009437283047498,
+          "positiveShare": 0.6279701603727191,
+          "starts": 0,
+          "completed": 0,
+          "established": false,
+          "evidence": "LOW"
+        },
+        {
+          "runnerId": "95f69ba8-2db1-48dc-905a-e87e51d18d8d",
+          "rank": 7,
+          "trainer": -0.1553441731691341,
+          "jockey": -0.06303333238055386,
+          "combined": -0.21837750554968796,
+          "positiveShare": 0.44585394329587175,
+          "starts": 0,
+          "completed": 0,
+          "established": false,
+          "evidence": "LOW"
+        },
+        {
+          "runnerId": "48e102f6-7df0-476c-943d-d40d68f69cd8",
+          "rank": 6,
+          "trainer": -0.1553441731691341,
+          "jockey": -0.037120640297813444,
+          "combined": -0.19246481346694755,
+          "positiveShare": 0.4627138955709956,
+          "starts": 0,
+          "completed": 0,
+          "established": false,
+          "evidence": "LOW"
+        },
+        {
+          "runnerId": "9cb18bd5-a101-4113-ac65-181e880b8089",
+          "rank": 9,
+          "trainer": -0.14826149562475469,
+          "jockey": -0.15858547764357847,
+          "combined": -0.30684697326833316,
+          "positiveShare": 0.1678030686739041,
+          "starts": 0,
+          "completed": 0,
+          "established": false,
+          "evidence": "LOW"
+        },
+        {
+          "runnerId": "c8e6f552-ce6e-4ab4-ae62-95d2cd9d70fb",
+          "rank": 11,
+          "trainer": -0.366175217407555,
+          "jockey": -0.0772888267053348,
+          "combined": -0.44346404411288975,
+          "positiveShare": 0.34765204630901775,
+          "starts": 0,
+          "completed": 0,
+          "established": false,
+          "evidence": "LOW"
+        },
+        {
+          "runnerId": "a3faf1dc-ec11-4178-8fe0-943bec2407b1",
+          "rank": 8,
+          "trainer": -0.13158261295884682,
+          "jockey": -0.10452513420045584,
+          "combined": -0.23610774715930266,
+          "positiveShare": 0.5734361497014188,
+          "starts": 0,
+          "completed": 0,
+          "established": false,
+          "evidence": "LOW"
+        },
+        {
+          "runnerId": "ed0e74f1-fa0d-4aa1-99f5-af866afbe1e3",
+          "rank": 10,
+          "trainer": -0.24759413683675924,
+          "jockey": -0.1619059255994847,
+          "combined": -0.40950006243624393,
+          "positiveShare": 0.29763941904327224,
+          "starts": 0,
+          "completed": 0,
+          "established": false,
+          "evidence": "LOW"
+        },
+        {
+          "runnerId": "d72c9d9f-744d-4d51-8c21-3901b5c47287",
+          "rank": 2,
+          "trainer": -0.470680358982014,
+          "jockey": 0.1621066007649663,
+          "combined": -0.3085737582170477,
+          "positiveShare": 0.41071196569325563,
+          "starts": 1,
+          "completed": 1,
+          "established": false,
+          "evidence": "MEDIUM"
+        },
+        {
+          "runnerId": "a8894ece-0333-416c-a2de-2e585c9688dc",
+          "rank": 16,
+          "trainer": -0.27271220212933184,
+          "jockey": -0.2672609258365198,
+          "combined": -0.5399731279658516,
+          "positiveShare": 0,
+          "starts": 0,
+          "completed": 0,
+          "established": false,
+          "evidence": "LOW"
+        },
+        {
+          "runnerId": "cdebfb8d-ed4b-4064-b5a1-7fd2bf89d999",
+          "rank": 12,
+          "trainer": -0.49876814853818785,
+          "jockey": -0.014073489489190634,
+          "combined": -0.5128416380273785,
+          "positiveShare": 0.4747610171571146,
+          "starts": 0,
+          "completed": 0,
+          "established": false,
+          "evidence": "LOW"
+        },
+        {
+          "runnerId": "36f6a5b0-b58c-41f2-b98a-13efd22fdd7b",
+          "rank": 13,
+          "trainer": -0.7926661356413688,
+          "jockey": -0.015061162408177075,
+          "combined": -0.8077272980495459,
+          "positiveShare": 0.2666900916971117,
+          "starts": 0,
+          "completed": 0,
+          "established": false,
+          "evidence": "LOW"
+        },
+        {
+          "runnerId": "ca6ce4d4-8fcd-4333-9259-eb562e43cf3c",
+          "rank": 15,
+          "trainer": -0.30264477734740985,
+          "jockey": -0.2672609258365198,
+          "combined": -0.5699057031839296,
+          "positiveShare": 0,
+          "starts": 1,
+          "completed": 1,
+          "established": false,
+          "evidence": "MEDIUM"
+        },
+        {
+          "runnerId": "21a63aae-ecb8-43c3-92bf-faa318f9e5e5",
+          "rank": 14,
+          "trainer": -0.31766040328641165,
+          "jockey": -0.12234599777167204,
+          "combined": -0.4400064010580837,
+          "positiveShare": 0.10610038861026234,
+          "starts": 1,
+          "completed": 0,
+          "established": false,
+          "evidence": "MEDIUM"
+        }
+      ]
+    },
+    {
+      "raceId": "6d7cbd61-c443-480b-b47e-6e488b295d57",
+      "capturedAt": "2026-11-10T05:29:13.576Z",
+      "frozenAt": "2026-11-10T05:29:14.692Z",
+      "scheduledOff": "2026-11-10T13:00:00.000Z",
+      "raceDate": "2026-11-10",
+      "shadowHash": "a0c3a2cbb0c2b9a415ec6ee6fe5bec867781780c47dc2bc5d924511a0ce537b3",
+      "classification": "MIXED FORM",
+      "market": {
+        "status": "COMPLETE",
+        "capturedAt": "2026-11-10T05:29:13.576Z",
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "favourite": "98c42e00-f641-4610-ac22-bb6b0f574b54",
+        "secondFavourite": "c0ffb7c4-9d1e-49a1-95b0-561b54c18ff0",
+        "runners": [
+          {
+            "runnerId": "98c42e00-f641-4610-ac22-bb6b0f574b54",
+            "price": 1.4,
+            "probability": 0.5438778008202767,
+            "rank": 1
+          },
+          {
+            "runnerId": "c0ffb7c4-9d1e-49a1-95b0-561b54c18ff0",
+            "price": 3.75,
+            "probability": 0.2030477123062366,
+            "rank": 2
+          },
+          {
+            "runnerId": "2f73559b-4ecc-4eb2-8f7d-65610130607d",
+            "price": 13,
+            "probability": 0.05857145547295287,
+            "rank": 3
+          },
+          {
+            "runnerId": "3fe38acc-eb26-46e0-a81e-5cc2a4dfe199",
+            "price": 15,
+            "probability": 0.05076192807655915,
+            "rank": 4
+          },
+          {
+            "runnerId": "f1778717-7666-4717-9c6f-1ecd7881e089",
+            "price": 15,
+            "probability": 0.05076192807655915,
+            "rank": 5
+          },
+          {
+            "runnerId": "0fa92bb7-343f-4d6f-bd15-659cf90c9ebe",
+            "price": 26,
+            "probability": 0.029285727736476436,
+            "rank": 6
+          },
+          {
+            "runnerId": "2a9164a4-8d99-40c7-8d72-b530ad69e40e",
+            "price": 34,
+            "probability": 0.022394968269070215,
+            "rank": 7
+          },
+          {
+            "runnerId": "ee59faec-6fc9-4fcd-8d68-56b24b43d8de",
+            "price": 34,
+            "probability": 0.022394968269070215,
+            "rank": 8
+          },
+          {
+            "runnerId": "6ce0a3ea-f21d-4122-9054-a612ff27e712",
+            "price": 67,
+            "probability": 0.011364610763408766,
+            "rank": 9
+          },
+          {
+            "runnerId": "1ae110ea-f09f-44c3-8764-acb519214bbe",
+            "price": 101,
+            "probability": 0.0075389002093899735,
+            "rank": 10
+          }
+        ]
+      },
+      "evidence": [
+        {
+          "runnerId": "98c42e00-f641-4610-ac22-bb6b0f574b54",
+          "rank": 3,
+          "trainer": 0.6651610569753411,
+          "jockey": 0.020332981349737503,
+          "combined": 0.6854940383250786,
+          "positiveShare": 0.8299048603735819,
+          "starts": 2,
+          "completed": 2,
+          "established": false,
+          "evidence": "MEDIUM"
+        },
+        {
+          "runnerId": "c0ffb7c4-9d1e-49a1-95b0-561b54c18ff0",
+          "rank": 2,
+          "trainer": 0.23222094782783564,
+          "jockey": 0.3321775554742862,
+          "combined": 0.5643985033021218,
+          "positiveShare": 0.5808021345472312,
+          "starts": 5,
+          "completed": 5,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "2f73559b-4ecc-4eb2-8f7d-65610130607d",
+          "rank": 1,
+          "trainer": 0.23222094782783564,
+          "jockey": 0.024882319704829264,
+          "combined": 0.2571032675326649,
+          "positiveShare": 0.37893549740746596,
+          "starts": 3,
+          "completed": 3,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "3fe38acc-eb26-46e0-a81e-5cc2a4dfe199",
+          "rank": 8,
+          "trainer": -0.4924389849917744,
+          "jockey": 0.0872326071480705,
+          "combined": -0.4052063778437039,
+          "positiveShare": 0.3372210782079123,
+          "starts": 3,
+          "completed": 2,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "f1778717-7666-4717-9c6f-1ecd7881e089",
+          "rank": 10,
+          "trainer": -0.20011962556867835,
+          "jockey": 0.033612121458085856,
+          "combined": -0.1665075041105925,
+          "positiveShare": 0.1624615191277874,
+          "starts": 2,
+          "completed": 2,
+          "established": false,
+          "evidence": "MEDIUM"
+        },
+        {
+          "runnerId": "0fa92bb7-343f-4d6f-bd15-659cf90c9ebe",
+          "rank": 5,
+          "trainer": -0.18009833269292833,
+          "jockey": -0.12491372274675383,
+          "combined": -0.30501205543968213,
+          "positiveShare": 0.04200226318097443,
+          "starts": 5,
+          "completed": 3,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "2a9164a4-8d99-40c7-8d72-b530ad69e40e",
+          "rank": 7,
+          "trainer": -0.4924389849917744,
+          "jockey": -0.2754530268594636,
+          "combined": -0.767892011851238,
+          "positiveShare": 0,
+          "starts": 2,
+          "completed": 2,
+          "established": false,
+          "evidence": "MEDIUM"
+        },
+        {
+          "runnerId": "ee59faec-6fc9-4fcd-8d68-56b24b43d8de",
+          "rank": 9,
+          "trainer": -0.45469486804021425,
+          "jockey": -0.19054820509559,
+          "combined": -0.6452430731358043,
+          "positiveShare": 0.03171889965552069,
+          "starts": 2,
+          "completed": 2,
+          "established": false,
+          "evidence": "MEDIUM"
+        },
+        {
+          "runnerId": "6ce0a3ea-f21d-4122-9054-a612ff27e712",
+          "rank": 6,
+          "trainer": -0.32026825737709325,
+          "jockey": -0.014073489489190634,
+          "combined": -0.3343417468662839,
+          "positiveShare": 0.24951129238656442,
+          "starts": 2,
+          "completed": 2,
+          "established": false,
+          "evidence": "MEDIUM"
+        },
+        {
+          "runnerId": "1ae110ea-f09f-44c3-8764-acb519214bbe",
+          "rank": 4,
+          "trainer": 0.44558503420870177,
+          "jockey": -0.06303333238055386,
+          "combined": 0.3825517018281479,
+          "positiveShare": 0.8297766878173498,
+          "starts": 2,
+          "completed": 2,
+          "established": false,
+          "evidence": "MEDIUM"
+        }
+      ]
+    },
+    {
+      "raceId": "1f3c243b-b3d4-43e1-9e30-72cd98a175eb",
+      "capturedAt": "2026-11-10T05:29:13.576Z",
+      "frozenAt": "2026-11-10T05:29:14.692Z",
+      "scheduledOff": "2026-11-10T13:30:00.000Z",
+      "raceDate": "2026-11-10",
+      "shadowHash": "be6e665a1899cfe3096579de0caa5d8f3a9f66a201f651806c0e1124761db9c2",
+      "classification": "ESTABLISHED FORM",
+      "market": {
+        "status": "COMPLETE",
+        "capturedAt": "2026-11-10T05:29:13.576Z",
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "favourite": "867554b6-722d-499e-8dc8-ee5e16aca5df",
+        "secondFavourite": "541da8ac-241b-4b61-aa27-3c72af543b0d",
+        "runners": [
+          {
+            "runnerId": "867554b6-722d-499e-8dc8-ee5e16aca5df",
+            "price": 3,
+            "probability": 0.22833386632555164,
+            "rank": 1
+          },
+          {
+            "runnerId": "541da8ac-241b-4b61-aa27-3c72af543b0d",
+            "price": 4.5,
+            "probability": 0.15222257755036778,
+            "rank": 2
+          },
+          {
+            "runnerId": "db42f910-8bf0-4637-bcf3-b43c48f8deb0",
+            "price": 4.5,
+            "probability": 0.15222257755036778,
+            "rank": 3
+          },
+          {
+            "runnerId": "e781cecc-56c8-423f-acf1-ddd702395f9a",
+            "price": 7,
+            "probability": 0.09785737128237927,
+            "rank": 4
+          },
+          {
+            "runnerId": "4fb2c646-ae64-454d-83e2-ff61c60647e3",
+            "price": 8.5,
+            "probability": 0.08058842340901823,
+            "rank": 5
+          },
+          {
+            "runnerId": "a613c96a-404f-47bf-a64c-894d78d50c9a",
+            "price": 10,
+            "probability": 0.0685001598976655,
+            "rank": 6
+          },
+          {
+            "runnerId": "36fb4ed9-44bb-4eff-a9d4-b6fd568adc94",
+            "price": 15,
+            "probability": 0.04566677326511033,
+            "rank": 7
+          },
+          {
+            "runnerId": "035d5295-c5e3-4d03-9ecf-09b9f3d2e7d1",
+            "price": 17,
+            "probability": 0.040294211704509114,
+            "rank": 8
+          },
+          {
+            "runnerId": "03deab8f-e6b8-4832-a54a-dba6b9b5f140",
+            "price": 17,
+            "probability": 0.040294211704509114,
+            "rank": 9
+          },
+          {
+            "runnerId": "44b517a5-4f6a-4a67-8b55-d3247dc5fce9",
+            "price": 17,
+            "probability": 0.040294211704509114,
+            "rank": 10
+          },
+          {
+            "runnerId": "28a7c0ce-f2ff-421a-9e52-437a0ed7b742",
+            "price": 34,
+            "probability": 0.020147105852254557,
+            "rank": 11
+          },
+          {
+            "runnerId": "e47ffe64-4904-4752-a043-5299089695a1",
+            "price": 34,
+            "probability": 0.020147105852254557,
+            "rank": 12
+          },
+          {
+            "runnerId": "92fcd931-a51c-4763-a52d-dc8fb044b17f",
+            "price": 51,
+            "probability": 0.013431403901503039,
+            "rank": 13
+          }
+        ]
+      },
+      "evidence": [
+        {
+          "runnerId": "867554b6-722d-499e-8dc8-ee5e16aca5df",
+          "rank": 7,
+          "trainer": -0.18009833269292833,
+          "jockey": -0.12491372274675383,
+          "combined": -0.30501205543968213,
+          "positiveShare": 0.03389101393351319,
+          "starts": 11,
+          "completed": 10,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "db42f910-8bf0-4637-bcf3-b43c48f8deb0",
+          "rank": 5,
+          "trainer": -0.15868720219974344,
+          "jockey": -0.10683216037117144,
+          "combined": -0.2655193625709149,
+          "positiveShare": 0.09411884778215682,
+          "starts": 11,
+          "completed": 11,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "541da8ac-241b-4b61-aa27-3c72af543b0d",
+          "rank": 3,
+          "trainer": 0.23222094782783564,
+          "jockey": 0.024882319704829264,
+          "combined": 0.2571032675326649,
+          "positiveShare": 0.28172493104747576,
+          "starts": 3,
+          "completed": 2,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "e781cecc-56c8-423f-acf1-ddd702395f9a",
+          "rank": 9,
+          "trainer": -0.1462331051688499,
+          "jockey": -0.39708875200924204,
+          "combined": -0.543321857178092,
+          "positiveShare": 0.10020062235791312,
+          "starts": 7,
+          "completed": 7,
+          "established": false,
+          "evidence": "MEDIUM"
+        },
+        {
+          "runnerId": "4fb2c646-ae64-454d-83e2-ff61c60647e3",
+          "rank": 1,
+          "trainer": -0.20523994061143683,
+          "jockey": 0.3321775554742862,
+          "combined": 0.12693761486284935,
+          "positiveShare": 0.2997078677137489,
+          "starts": 2,
+          "completed": 2,
+          "established": false,
+          "evidence": "MEDIUM"
+        },
+        {
+          "runnerId": "a613c96a-404f-47bf-a64c-894d78d50c9a",
+          "rank": 6,
+          "trainer": -0.12949245190752093,
+          "jockey": -0.12234599777167204,
+          "combined": -0.251838449679193,
+          "positiveShare": 0,
+          "starts": 6,
+          "completed": 6,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "36fb4ed9-44bb-4eff-a9d4-b6fd568adc94",
+          "rank": 2,
+          "trainer": 0.19578683281948353,
+          "jockey": -0.06303333238055386,
+          "combined": 0.13275350043892967,
+          "positiveShare": 0.18453333518616744,
+          "starts": 11,
+          "completed": 11,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "44b517a5-4f6a-4a67-8b55-d3247dc5fce9",
+          "rank": 4,
+          "trainer": -0.13850465627528086,
+          "jockey": -0.13888340060495952,
+          "combined": -0.2773880568802404,
+          "positiveShare": 0.10407740151049265,
+          "starts": 10,
+          "completed": 10,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "03deab8f-e6b8-4832-a54a-dba6b9b5f140",
+          "rank": 8,
+          "trainer": -0.3758740296370675,
+          "jockey": -0.014073489489190634,
+          "combined": -0.38994751912625814,
+          "positiveShare": 0.09048616481420951,
+          "starts": 5,
+          "completed": 4,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "035d5295-c5e3-4d03-9ecf-09b9f3d2e7d1",
+          "rank": 11,
+          "trainer": -0.2574157788288241,
+          "jockey": -0.05782580185312495,
+          "combined": -0.3152415806819491,
+          "positiveShare": 0.09026692268175956,
+          "starts": 13,
+          "completed": 12,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "e47ffe64-4904-4752-a043-5299089695a1",
+          "rank": 13,
+          "trainer": -0.34821856767826315,
+          "jockey": -0.40403666308581626,
+          "combined": -0.7522552307640794,
+          "positiveShare": 0,
+          "starts": 9,
+          "completed": 7,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "28a7c0ce-f2ff-421a-9e52-437a0ed7b742",
+          "rank": 10,
+          "trainer": -0.1462331051688499,
+          "jockey": -0.059873040660176534,
+          "combined": -0.20610614582902645,
+          "positiveShare": 0.2610853332222196,
+          "starts": 3,
+          "completed": 3,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "92fcd931-a51c-4763-a52d-dc8fb044b17f",
+          "rank": 12,
+          "trainer": -0.6722190926053132,
+          "jockey": -0.10452513420045584,
+          "combined": -0.776744226805769,
+          "positiveShare": 0.07921625184710261,
+          "starts": 6,
+          "completed": 5,
+          "established": true,
+          "evidence": "HIGH"
+        }
+      ]
+    },
+    {
+      "raceId": "010eb3d1-3767-43bd-a625-56b1a7c62657",
+      "capturedAt": "2026-11-10T05:29:13.576Z",
+      "frozenAt": "2026-11-10T05:29:14.692Z",
+      "scheduledOff": "2026-11-10T15:30:00.000Z",
+      "raceDate": "2026-11-10",
+      "shadowHash": "fca560fee3fcf6f63f17b0edcd9559c72164e8263023c9a58e480aba30957c91",
+      "classification": "ESTABLISHED FORM",
+      "market": {
+        "status": "COMPLETE",
+        "capturedAt": "2026-11-10T05:29:13.576Z",
+        "source": "sporting_life_median_bookmaker_at_capture_v1",
+        "favourite": "d843692a-fcb2-4c5f-aa2e-daad58166348",
+        "secondFavourite": "567d8a80-301b-46d8-8ade-334ecc2c1eb1",
+        "runners": [
+          {
+            "runnerId": "d843692a-fcb2-4c5f-aa2e-daad58166348",
+            "price": 4,
+            "probability": 0.17422275025842815,
+            "rank": 1
+          },
+          {
+            "runnerId": "567d8a80-301b-46d8-8ade-334ecc2c1eb1",
+            "price": 5.5,
+            "probability": 0.1267074547334023,
+            "rank": 2
+          },
+          {
+            "runnerId": "ff52696c-7b82-4f5a-81c5-1aaa88ae0e16",
+            "price": 5.5,
+            "probability": 0.1267074547334023,
+            "rank": 3
+          },
+          {
+            "runnerId": "bdd6d8f8-fe41-4549-9abe-cdd249f6bd60",
+            "price": 7,
+            "probability": 0.09955585729053038,
+            "rank": 4
+          },
+          {
+            "runnerId": "8227058c-0dd2-4911-bab0-c17be0bf5a33",
+            "price": 8,
+            "probability": 0.08711137512921407,
+            "rank": 5
+          },
+          {
+            "runnerId": "2600eec3-8f21-4035-985b-b3aa9406d270",
+            "price": 9,
+            "probability": 0.07743233344819028,
+            "rank": 6
+          },
+          {
+            "runnerId": "71cd4695-14ae-49fb-b25e-4f57132a40b3",
+            "price": 13,
+            "probability": 0.05360700007951636,
+            "rank": 7
+          },
+          {
+            "runnerId": "d912ab6d-6dfa-4961-ae89-642d8d598326",
+            "price": 13,
+            "probability": 0.05360700007951636,
+            "rank": 8
+          },
+          {
+            "runnerId": "1ee2170b-c148-4518-bfd4-e63fd8542f5c",
+            "price": 15,
+            "probability": 0.04645940006891418,
+            "rank": 9
+          },
+          {
+            "runnerId": "6ab00400-1d0f-4f20-b9b6-52aba014e46b",
+            "price": 17,
+            "probability": 0.040993588296100746,
+            "rank": 10
+          },
+          {
+            "runnerId": "0f56a3ef-d195-41b4-aede-f06910c7dc39",
+            "price": 21,
+            "probability": 0.033185285763510125,
+            "rank": 11
+          },
+          {
+            "runnerId": "332d1f4e-a9a6-4f24-b1e5-81403f89d895",
+            "price": 26,
+            "probability": 0.02680350003975818,
+            "rank": 12
+          },
+          {
+            "runnerId": "485efaea-21a0-4cd3-87ec-24cec051618a",
+            "price": 26,
+            "probability": 0.02680350003975818,
+            "rank": 13
+          },
+          {
+            "runnerId": "faf35c4e-d071-447a-8d64-555495631cef",
+            "price": 26,
+            "probability": 0.02680350003975818,
+            "rank": 14
+          }
+        ]
+      },
+      "evidence": [
+        {
+          "runnerId": "d843692a-fcb2-4c5f-aa2e-daad58166348",
+          "rank": 10,
+          "trainer": -0.30264477734740985,
+          "jockey": -0.35169650157836463,
+          "combined": -0.6543412789257745,
+          "positiveShare": 0,
+          "starts": 2,
+          "completed": 2,
+          "established": false,
+          "evidence": "MEDIUM"
+        },
+        {
+          "runnerId": "567d8a80-301b-46d8-8ade-334ecc2c1eb1",
+          "rank": 9,
+          "trainer": -0.18009833269292833,
+          "jockey": -0.3835982627041623,
+          "combined": -0.5636965953970906,
+          "positiveShare": 0.0449210837694008,
+          "starts": 8,
+          "completed": 7,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "ff52696c-7b82-4f5a-81c5-1aaa88ae0e16",
+          "rank": 2,
+          "trainer": -0.2829900177520252,
+          "jockey": 0.13824747232018267,
+          "combined": -0.14474254543184253,
+          "positiveShare": 0.3164692061723491,
+          "starts": 11,
+          "completed": 10,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "bdd6d8f8-fe41-4549-9abe-cdd249f6bd60",
+          "rank": 7,
+          "trainer": -0.1553441731691341,
+          "jockey": -0.5793858986709829,
+          "combined": -0.734730071840117,
+          "positiveShare": 0.09250492560614441,
+          "starts": 5,
+          "completed": 4,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "8227058c-0dd2-4911-bab0-c17be0bf5a33",
+          "rank": 14,
+          "trainer": -0.2572535666250265,
+          "jockey": -0.2672609258365198,
+          "combined": -0.5245144924615464,
+          "positiveShare": 0,
+          "starts": 12,
+          "completed": 10,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "2600eec3-8f21-4035-985b-b3aa9406d270",
+          "rank": 4,
+          "trainer": -0.27271220212933184,
+          "jockey": -0.07553748565660079,
+          "combined": -0.3482496877859326,
+          "positiveShare": 0.08054867859419933,
+          "starts": 7,
+          "completed": 6,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "d912ab6d-6dfa-4961-ae89-642d8d598326",
+          "rank": 11,
+          "trainer": -0.3308165341302138,
+          "jockey": -0.5947693393933362,
+          "combined": -0.92558587352355,
+          "positiveShare": 0,
+          "starts": 5,
+          "completed": 3,
+          "established": true,
+          "evidence": "MEDIUM"
+        },
+        {
+          "runnerId": "71cd4695-14ae-49fb-b25e-4f57132a40b3",
+          "rank": 5,
+          "trainer": -0.014554147954985726,
+          "jockey": -0.07637529469272408,
+          "combined": -0.0909294426477098,
+          "positiveShare": 0.09403201970785086,
+          "starts": 3,
+          "completed": 3,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "1ee2170b-c148-4518-bfd4-e63fd8542f5c",
+          "rank": 6,
+          "trainer": -0.014554147954985726,
+          "jockey": -0.22957494372019224,
+          "combined": -0.24412909167517796,
+          "positiveShare": 0.06996767159100632,
+          "starts": 6,
+          "completed": 6,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "6ab00400-1d0f-4f20-b9b6-52aba014e46b",
+          "rank": 1,
+          "trainer": -0.3513174131300361,
+          "jockey": -0.00908988034843422,
+          "combined": -0.36040729347847034,
+          "positiveShare": 0.15062246456902756,
+          "starts": 16,
+          "completed": 10,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "0f56a3ef-d195-41b4-aede-f06910c7dc39",
+          "rank": 8,
+          "trainer": -0.445018968990854,
+          "jockey": -0.2299153293231207,
+          "combined": -0.6749342983139748,
+          "positiveShare": 0,
+          "starts": 5,
+          "completed": 5,
+          "established": false,
+          "evidence": "MEDIUM"
+        },
+        {
+          "runnerId": "faf35c4e-d071-447a-8d64-555495631cef",
+          "rank": 3,
+          "trainer": -0.2749806433523074,
+          "jockey": -0.40435699392086033,
+          "combined": -0.6793376372731676,
+          "positiveShare": 0.03449932337648956,
+          "starts": 14,
+          "completed": 13,
+          "established": true,
+          "evidence": "HIGH"
+        },
+        {
+          "runnerId": "485efaea-21a0-4cd3-87ec-24cec051618a",
+          "rank": 13,
+          "trainer": -0.470680358982014,
+          "jockey": -0.5880046442078637,
+          "combined": -1.0586850031898778,
+          "positiveShare": 0,
+          "starts": 3,
+          "completed": 3,
+          "established": false,
+          "evidence": "MEDIUM"
+        },
+        {
+          "runnerId": "332d1f4e-a9a6-4f24-b1e5-81403f89d895",
+          "rank": 12,
+          "trainer": -0.23560138438692282,
+          "jockey": -0.5568406369364931,
+          "combined": -0.7924420213234159,
+          "positiveShare": 0,
+          "starts": 14,
+          "completed": 14,
+          "established": true,
+          "evidence": "HIGH"
+        }
+      ]
+    }
+  ]
 }

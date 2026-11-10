@@ -13,6 +13,14 @@ export function valueMarketRankBand(rank: number): typeof VALUE_MARKET_RANK_BAND
   return VALUE_MARKET_RANK_BANDS[rank === 1 ? 0 : rank === 2 ? 1 : rank === 3 ? 2 : rank <= 5 ? 3 : rank <= 10 ? 4 : 5];
 }
 
+/** Canonical full-book normalization. A partial or invalid book has no market probabilities. */
+export function normalizeCompleteMarket(prices: readonly (number | null | undefined)[]) {
+  if (prices.length < 2 || prices.some(price => typeof price !== "number" || !Number.isFinite(price) || price <= 1)) return null;
+  const total = prices.reduce<number>((sum, price) => sum + 1 / price!, 0);
+  if (!Number.isFinite(total) || total <= 0) return null;
+  return { total, probabilities: prices.map(price => 1 / price! / total) };
+}
+
 export function calculateValueMetrics(probability: number, price: number, marketProbability: number) {
   if (![probability, price, marketProbability].every(Number.isFinite) || probability <= 0 || probability > 1 || price <= 1 || marketProbability <= 0 || marketProbability > 1)
     throw new Error("Invalid prospective value inputs");

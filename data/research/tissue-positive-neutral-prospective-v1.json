@@ -1,0 +1,50 @@
+{
+  "version": "TISSUE_POSITIVE_NEUTRAL_PROSPECTIVE_V1",
+  "armedAt": "2026-11-10T15:20:25.079Z",
+  "epoch": null,
+  "rules": {
+    "tolerancePP": 0.5,
+    "edgeCutoffsPP": [
+      0.5,
+      2,
+      5,
+      10
+    ],
+    "priceCutoffs": [
+      3,
+      5,
+      11
+    ],
+    "capture": "first_genuine_post_arm_capture_per_race_no_replacement",
+    "badges": "reuse_Today_tissueMarketBadge_including_boundary_roundoff_tolerance",
+    "scores": "selection_Bernoulli_log_loss_and_Brier_frozen_probability_fractional_dead_heat_target",
+    "settlement": "read_exact_production_capture_canonical_outcomes_no_independent_settlement"
+  },
+  "modelHashes": {
+    "TURF": "e106fadd07263b1fcc4ece821a4bfcad645faeae873db026433a4902eabbe3fe",
+    "AW": "c8f75faa0aeacc88ba76f100e7d154a872bc9b2ee31a5a42d18e611e3e64f9a5",
+    "HURDLE": "53defc50d717aba63c80c9f3c01c4df4360b709f6f4a21509a514179e23cce90",
+    "CHASE": "be65702490403f6a287d11ecb19307a67b58ca975ee7bd9ece71b4e0d759aa81"
+  },
+  "modelVersions": {
+    "TURF": "TURF_TISSUE_V4",
+    "AW": "AW_TISSUE_V3",
+    "HURDLE": "HURDLE_TISSUE_V2",
+    "CHASE": "CHASE_TISSUE_V2"
+  },
+  "sourceHashes": {
+    "src/lib/racing/tissue-positive-neutral-method.ts": "9989b64c3bf40bc2faf54d7f62022cc2abc4b9715ffea87fd475868af92fefe1",
+    "src/lib/racing/tissue-positive-neutral.ts": "6cd0b7869886a927ec583b666c8386618e5117779cd6bdab9ab58abcb5ab8e66",
+    "src/lib/racing/tissue-positive-neutral-metrics.ts": "99eed0c0297ca1fcfc5a45b8512e73f09dc115e574e9583d2f768f9ab6649bf0",
+    "src/app/racing/today/tissue-market-badge.ts": "ecd2a5a2a033b72dcf5aef2eeccb4275c6d0473a25c49f32f0fbd8c2d74135e7",
+    "src/lib/racing/tissue-generation-forward.ts": "aaa05107464bb76c6bc8b275005917792b411db15bf80d722aef428a8c087c36",
+    "src/lib/racing/tissue-value-metrics.ts": "1a315b3478dbba7c50f64b96c80aaade5fd4d13bd261ae77ff9cb0cc0a73cae9",
+    "src/lib/racing/tissue-generation-config.ts": "5beceb5f4be3933dc7725003a0d7aef8637c055d183a4e76c107e2acd499f87d",
+    "src/lib/racing/tissue-generation-model.ts": "85ce056b96a1827689234fff87881a4697eee724d92460e44824db2f0c68bbd8",
+    "data/research/tissue-generation-2026-11-turf.json": "dcbe9fac4f7f3b56c5d9297e77b82357ace92d4d5c34f2152afd02cfb9bf9b8a",
+    "data/research/tissue-generation-2026-11-aw.json": "d9c44881e2ea13ee1ed637122e2eb49028866aba8668086718d757c0e94a7f8c",
+    "data/research/tissue-generation-2026-11-hurdle.json": "2b6495fceb4079da756e52a00c7b45f9d8051ea6d63305dd96ae5c7f8ab6499e",
+    "data/research/tissue-generation-2026-11-chase.json": "35208f1c097ede47b2637e535b4a186c4fc79ee34dd4cb0e5b8852342f5e854d"
+  },
+  "observations": []
+}

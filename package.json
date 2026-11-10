@@ -3,6 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "tissue-positive-neutral:init": "bun run scripts/track-tissue-positive-neutral.ts init",
+    "tissue-positive-neutral:summary": "bun run scripts/track-tissue-positive-neutral.ts summary",
+    "hurdle-v3-market-edge:init": "bun run scripts/track-hurdle-v3-market-edge.ts init",
+    "hurdle-v3-market-edge:summary": "bun run scripts/track-hurdle-v3-market-edge.ts summary",
+    "turf-early-season:init": "bun run scripts/track-turf-early-season.ts init",
+    "turf-early-season:summary": "bun run scripts/track-turf-early-season.ts summary",
     "hurdle-low-form:init": "bun run scripts/track-hurdle-low-form.ts init",
     "hurdle-low-form:summary": "bun run scripts/track-hurdle-low-form.ts summary",
     "hurdle-v3-shadow:init": "bun run scripts/track-hurdle-v3-shadow.ts init",

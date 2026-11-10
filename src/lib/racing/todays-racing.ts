@@ -70,7 +70,7 @@ const DEFAULT_RACING_DISPLAY_TIME_ZONE = "Europe/London";
 export const SPORTING_LIFE_CURRENT_CARD_VERSION = "reconciled_v1" as const;
 
 export type TodayRunner = {
-  activeTissue?: { rank: number; probability: number; modelVersion: string; capturedAt: string; family: string; generation?: string; capturedPrice?: number | null };
+  activeTissue?: { rank: number; probability: number; modelVersion: string; capturedAt: string; family: string; generation?: string; capturedPrice?: number | null; marketProbability?: number | null; completeMarket?: boolean; bookIdentity?: string; marketSource?: string };
   tissueGenerationActive?: boolean;
   tissueValue?: FrozenValueDisplay;
   tprConfidence?: TprConfidenceContext;

@@ -1,3 +1,4 @@
+import { TurfEarlySeasonLabel } from "./turf-early-season-label";
 import { HurdleLowFormLabel } from "./hurdle-low-form-label";
 import { loadHurdleV3Shadow, type HurdleV3ShadowObservation } from "@/lib/racing/hurdle-v3-shadow";
 import { HurdleModelComparison } from "./hurdle-model-comparison";
@@ -469,6 +470,7 @@ function RaceBlock({ race, chaseShadow, hurdleShadow, contextShadows }: {
         </p>
       ) : null}
 
+      <TurfEarlySeasonLabel race={race} />
       <HurdleModelComparison race={race} shadow={hurdleShadow} />
       <HurdleLowFormLabel race={race} shadow={hurdleShadow} />
 

@@ -6,7 +6,7 @@ import { GENERATION_MODEL_HASHES, TISSUE_GENERATION, TISSUE_GENERATION_EPOCH, ti
 import { GENERATION_MODEL_VERSIONS } from "./tissue-generation-model";
 import { getLocalRacingDate, type TodayRace, type TodayMeeting } from "./todays-racing";
 import { isVoidBetResultStatus, settleSelection } from "./backtest";
-import { TISSUE_VALUE_FAMILIES, type ValueOutcome } from "./tissue-value-metrics";
+import { normalizeCompleteMarket, TISSUE_VALUE_FAMILIES, type ValueOutcome } from "./tissue-value-metrics";
 import { summarizeProspectiveTissue } from "./tissue-prospective-summary";
 import { summarizeBookmakerMarket } from "./forward-value";
 
@@ -20,7 +20,7 @@ const raceSchema = z.object({ family: z.enum(TISSUE_VALUE_FAMILIES), modelVersio
   featureNames: z.array(z.string()), adjustmentFeatureNames: z.array(z.string()), completeMarket: z.boolean(),
   marketSource: z.literal("sporting_life_median_bookmaker_at_capture_v1"),
   runners: z.array(z.object({ runnerId: z.string(), horseId: z.string(), horseName: z.string(), probability: finite.positive().max(1), rank: z.number().int().positive(),
-    modelInputs: z.array(finite), adjustmentInputs: z.array(finite), capturedPrice: finite.gt(1).nullable(),
+    modelInputs: z.array(finite), adjustmentInputs: z.array(finite), capturedPrice: finite.gt(1).nullable(), marketProbability: finite.positive().max(1).nullable().optional(),
     quotes: z.array(z.object({ bookmakerId: z.number().nullable(), bookmakerName: z.string().nullable(), fractionalOdds: z.string().nullable(), decimalOdds: finite.gt(1) }).strict()),
     outcome: outcome.nullable() }).strict()).min(2),
 }).strict();
@@ -38,6 +38,9 @@ export function validGenerationCapture(r: GenerationRace) {
     r.completeMarket !== r.runners.every(x => summarizeBookmakerMarket(x.quotes).decimalPrice !== null) ||
     r.runners.some(x => x.modelInputs.length !== r.featureNames.length || x.adjustmentInputs.length !== r.adjustmentFeatureNames.length ||
       (r.completeMarket ? x.capturedPrice !== summarizeBookmakerMarket(x.quotes).decimalPrice : x.capturedPrice !== null))) return false;
+  const market = r.completeMarket ? normalizeCompleteMarket(r.runners.map(x => x.capturedPrice)) : null;
+  if (r.runners.some((x, i) => x.marketProbability !== undefined &&
+    (market ? x.marketProbability === null || !Number.isFinite(x.marketProbability) || Math.abs(x.marketProbability - market.probabilities[i]) > 1e-12 : x.marketProbability !== null))) return false;
   const order = [...r.runners].sort((a, b) => b.probability - a.probability || a.runnerId.localeCompare(b.runnerId));
   return r.runners.every(x => x.rank === (r.family === "TURF" ? 1 + r.runners.filter(y => y.probability > x.probability).length : order.findIndex(y => y.runnerId === x.runnerId) + 1));
 }
@@ -100,7 +103,14 @@ export function summarizeTissueGeneration(data: GenerationData) {
     capturedPrice: x.capturedPrice, outcome: x.outcome as ValueOutcome | null }))));
 }
 export function attachTissueGeneration(meetings: TodayMeeting[], data: GenerationData): TodayMeeting[] {
-  const index = new Map(latestPreOffCaptures(data.races.filter(validGenerationCapture)).flatMap(r => r.runners.map(x => [`${r.raceId}|${x.runnerId}`, { rank: x.rank, probability: x.probability, modelVersion: r.modelVersion, capturedAt: r.capturedAt, family: r.family, generation: data.version, capturedPrice: x.capturedPrice }] as const)));
+  const index = new Map(latestPreOffCaptures(data.races.filter(validGenerationCapture)).flatMap(r => {
+    // Legacy books are projected from their own frozen prices only; never rewrite the ledger.
+    const market = r.completeMarket ? normalizeCompleteMarket(r.runners.map(x => x.capturedPrice)) : null;
+    return r.runners.map((x, i) => [`${r.raceId}|${x.runnerId}`, { rank: x.rank, probability: x.probability,
+      modelVersion: r.modelVersion, capturedAt: r.capturedAt, family: r.family, generation: data.version,
+      capturedPrice: x.capturedPrice, marketProbability: market ? x.marketProbability ?? market.probabilities[i] : null,
+      completeMarket: r.completeMarket, bookIdentity: captureIdentity(r), marketSource: r.marketSource }] as const);
+  }));
   return meetings.map(m => ({ ...m, races: m.races.map(r => ({ ...r, runners: r.runners.map(row => ({ ...row,
     activeTissue: index.get(`${r.raceId}|${row.runnerId}`), tissueGenerationActive: tissueGenerationActive() && r.raceDateTime !== null && r.raceDateTime >= new Date(TISSUE_GENERATION_EPOCH) })) })) }));
 }

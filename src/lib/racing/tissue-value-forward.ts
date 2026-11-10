@@ -8,7 +8,7 @@ import { getLocalRacingDate, type TodayRace } from "./todays-racing";
 import { isVoidBetResultStatus, settleSelection } from "./backtest";
 import { hasCompleteProspectiveField } from "./current-day-sync";
 import { CANONICAL_SETTLEMENT_VERSION } from "./research-settlement-version";
-import { calculateValueMetrics, valueCompetitionRanks, TISSUE_VALUE_FAMILIES } from "./tissue-value-metrics";
+import { normalizeCompleteMarket, calculateValueMetrics, valueCompetitionRanks, TISSUE_VALUE_FAMILIES } from "./tissue-value-metrics";
 import { VALUE_MARKET_SOURCE } from "./turf-value-definition";
 import { valueFamilyForRace } from "./tissue-value-family";
 import type { ValueCohortConfig } from "./tissue-value-config";
@@ -195,9 +195,11 @@ export function buildValueRace(input: {
     Math.abs(book.runners.reduce((sum, r) => sum + r.probability!, 0) - 1) > 1e-10) return null;
   const markets = active.map(r => summarizeBookmakerMarket(r.bookmakerQuotes));
   if (markets.some(m => m.decimalPrice === null || !Number.isFinite(m.decimalPrice))) return null;
-  const total = markets.reduce((sum, m) => sum + 1 / m.decimalPrice!, 0);
+  const normalized = normalizeCompleteMarket(markets.map(m => m.decimalPrice));
+  if (!normalized) return null;
+  const total = normalized.total;
   const runners = active.map((runner, i) => {
-    const model = byId.get(runner.runnerId)!, market = markets[i], price = market.decimalPrice!, q = 1 / price / total;
+    const model = byId.get(runner.runnerId)!, market = markets[i], price = market.decimalPrice!, q = normalized.probabilities[i];
     return { runnerId: runner.runnerId, horseId: runner.horseId, horseName: runner.horseName, modelInputs: [...model.modelInputs!],
       probability: model.probability!, tissueRank: model.tissueRank!, marketPrice: price, rawMarketProbability: 1 / price, marketProbability: q,
       marketRank: 1 + markets.filter(m => m.decimalPrice! < price).length, quotes: market.quotes,
