@@ -95,11 +95,11 @@ describe("research filters page", () => {
     const legacy = renderToStaticMarkup(SettlementVersionBadge({}));
     const warning = renderToStaticMarkup(LegacySettlementWarning());
 
-    assert.match(canonical, /Settlement: Canonical v2/);
-    assert.match(legacy, /Settlement: Legacy/);
+    assert.match(canonical, /Settlement: Corrected v3/);
+    assert.match(legacy, /Settlement: Original \/ unversioned/);
     assert.match(warning, /Settlement: Legacy/);
-    assert.match(warning, /Historical P\/L, ROI, strike and settled counts may exclude started non-finishers/);
-    assert.match(warning, /Re-run Research for current settlement results/);
+    assert.match(warning, /Original reported figures are preserved/);
+    assert.match(warning, /A new analysis uses corrected v3/);
   });
 
   test("renders current and legacy price-filter versions independently", () => {

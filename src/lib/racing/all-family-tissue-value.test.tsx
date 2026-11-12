@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { mkdtemp, readFile, rm } from "node:fs/promises";
+import { mkdtemp, readFile, writeFile, rm } from "node:fs/promises";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -47,6 +47,47 @@ function inputs() {
   return { meetings, raceDate: date, capturedAt: now, historyCutoffAt: now.toISOString(), models, commentsByHorse: new Map(), awContext };
 }
 function captured() { return buildAllFamilyValueRaces(inputs()); }
+
+test("v3 void settlement is terminal in every family without changing captured books or prices", () => {
+  for (const saved of captured()) {
+    const { data } = dataFor(saved), result = race(saved.family);
+    result.raceStage = "RACEVOID";
+    // Even a stale first position must not become a winner in a void race.
+    result.runners[0].finishingPosition = 1;
+    result.runners[0].resultStatus = "finished";
+    result.runners[1].resultStatus = "non_runner";
+    const original = JSON.stringify(data), source = JSON.stringify(result);
+    const next = settleValueForward(data, new Map([[result.raceId, result]]), after);
+    assert.deepEqual(next.races[0].runners.map(r => r.outcome?.status), ["void", "NR"]);
+    assert.ok(next.races[0].runners.every(r => r.outcome?.settlementVersion === "canonical_settlement_v3" && r.outcome.profitLoss === null));
+    assert.equal(summarizeValueRunners(next.races[0].runners).runners, 0);
+    assert.equal(JSON.stringify(data), original);
+    assert.equal(JSON.stringify(result), source);
+    assert.deepEqual(next.races[0].runners.map(r => ({ ...r, outcome: null })), saved.runners);
+    assert.equal(settleValueForward(next, new Map([[result.raceId, result]]), after), next);
+  }
+});
+
+test("original v2 outcomes remain byte-for-byte unchanged alongside new v3 results", async () => {
+  const saved = captured()[0], { config, data } = dataFor(saved), result = race(saved.family);
+  result.raceStage = "WEIGHEDIN";
+  result.actualRunnerCount = 2;
+  result.runners[0].finishingPosition = 1; result.runners[0].resultStatus = "finished";
+  result.runners[1].finishingPosition = 1; result.runners[1].resultStatus = "finished";
+  data.races[0].runners[0].outcome = { settlementVersion: "canonical_settlement_v2", status: "settled",
+    finishPosition: 1, resultStatus: "finished", winner: true, deadHeatDivisor: 2,
+    grossReturn: 3, profitLoss: 2, settledAt: after.toISOString() };
+  const original = JSON.stringify(data.races[0].runners[0]);
+  const next = settleValueForward(data, new Map([[result.raceId, result]]), after);
+  assert.equal(JSON.stringify(next.races[0].runners[0]), original);
+  assert.equal(next.races[0].runners[1].outcome?.settlementVersion, "canonical_settlement_v3");
+  close(next.races[0].runners[1].outcome!.grossReturn!, saved.runners[1].marketPrice / 2);
+  const dir = await mkdtemp(join(tmpdir(), "mixed-settlement-")), path = join(dir, "forward.json");
+  try {
+    await writeFile(path, JSON.stringify(next));
+    assert.deepEqual(await loadValueForward(config, path), next);
+  } finally { await rm(dir, { recursive: true, force: true }); }
+});
 
 test("Jump Speed reliability metadata never changes model scores, Tissue/Value ranks or captured inputs", () => {
   const input = inputs();

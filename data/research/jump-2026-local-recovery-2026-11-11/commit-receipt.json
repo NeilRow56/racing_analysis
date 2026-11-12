@@ -1,0 +1,26 @@
+{
+  "committed": true,
+  "transaction": {
+    "database": "racing_analysis",
+    "host": "127.0.0.1",
+    "port": 5432,
+    "timestamp": "2026-11-11 13:47:41.875892+00:00",
+    "txid": 52216
+  },
+  "raceRowsUpdated": 11,
+  "runnerRowsUpdated": 111,
+  "newSourceImports": 11,
+  "resultFieldCounts": {
+    "off_time": 11,
+    "actual_runner_count": 11,
+    "winning_time": 11,
+    "finishing_position": 91,
+    "finishing_status": 111,
+    "outcome_code": 111,
+    "beaten_distance": 80,
+    "beaten_distance_to_winner": 80,
+    "result_status": 106,
+    "runner_comment": 97
+  },
+  "metadataRowsUpdated": 122
+}

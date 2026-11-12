@@ -143,7 +143,7 @@ test("partial or inconsistent results remain pending, without SP dependency", ()
 });
 test("canonical dead-heat division, non-runner exclusion, voids and nonfinishers", () => {
   const data = captured(), dh = result(); dh.runners[1].finishingPosition = 1;
-  assert.deepEqual(settleTurfValue(data, new Map([["race", dh]]), after).races[0].runners.map(r => r.outcome!.profitLoss), [.5, 1.5, -1]);
+  assert.deepEqual(settleTurfValue(data, new Map([["race", dh]]), after).races[0].runners.map(r => r.outcome!.profitLoss), [0, 1, -1]);
   const nr = result(); nr.runners[2].resultStatus = "non_runner"; nr.runners[2].finishingPosition = null;
   const settled = settleTurfValue(data, new Map([["race", nr]]), after); assert.equal(settled.races[0].runners[2].outcome!.status, "NR");
   const metrics = summarizeValueRunners(settled.races[0].runners); assert.equal(metrics.runners, 2); close(metrics.modelExpected, 2/3); assert.equal(metrics.nonRunners, 1);
@@ -202,7 +202,7 @@ test("workflow adds independent fresh capture and settlement without changing Ra
 test("Research section labels both ranks, exposes sorting and calibration, retains losing disagreements", () => {
   const data = settleTurfValue(captured(), new Map([["race", result()]]), after);
   const html = renderToStaticMarkup(<TissueValueMonitoring data={data} date={date} />);
-  for (const label of ["Tissue Value Monitoring", "Tissue rank", "Value rank", "Market rank", "Large model/market disagreement", "Horse a", "Horse b", "Horse c", "Finished 3", "Actual/model expected", "All capture dates", "Probability edge", "Expected return"]) assert.ok(html.includes(label), label);
+  for (const label of ["Complete-market Value research cohort", "Tissue rank", "Value rank", "Market rank", "Large model/market disagreement", "Horse a", "Horse b", "Horse c", "Finished 3", "Actual/model expected", "All capture dates", "Probability edge", "Expected return"]) assert.ok(html.includes(label), label);
   assert.ok(!html.includes("Strong bet")); assert.ok(!html.includes("Recommended bet")); assert.ok(!html.includes("modelInputs"));
   const empty = renderToStaticMarkup(<TissueValueMonitoring data={emptyTurfValue()} date={date} />); assert.ok(empty.includes("No prospective Tissue value captures"));
 });

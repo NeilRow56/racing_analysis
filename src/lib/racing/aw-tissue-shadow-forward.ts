@@ -3,8 +3,8 @@ import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { AW_TISSUE_ARTIFACT_HASH, awTissueModelInputs, awTissueProbabilities, awTissueRawInputs, type AwTissueModel } from "./aw-tissue-model";
 import { cleanAwTissueRace, type AwTissueRace } from "./aw-tissue-forward";
-import { settleSelection } from "./backtest";
-import { FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION, FORWARD_VALUE_SETTLEMENT_VERSION, forwardValuePriceSnapshot, isCleanPhase2Observation, type ForwardValuePriceSnapshot, type ForwardValueRecord } from "./forward-value";
+import { settleRecordedSelection } from "./backtest";
+import { FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION, forwardValuePriceSnapshot, isCleanPhase2Observation, type ForwardValuePriceSnapshot, type ForwardValueRecord } from "./forward-value";
 import { AW_SHADOW_CHECKSUM, AW_SHADOW_IMPLEMENTED_AT, AW_SHADOW_VERSION, shadowInputs, shadowProbabilities, type AwShadowExtras, type AwShadowModel } from "./aw-tissue-shadow-model";
 import type { TodayRace } from "./todays-racing";
 
@@ -131,13 +131,13 @@ export function cleanShadowValue(race: ShadowRace, runner: ShadowRunner, stage: 
       Math.abs(snapshot.impliedProbability - 1 / snapshot.decimalPrice) > 1e-12 || !Number.isFinite(Date.parse(snapshot.capturedAt)) ||
       snapshot.capturedAt < race.capturedAt || snapshot.capturedAt >= race.scheduledOffAt) return null;
   const outcome = runner.outcome;
-  const settlement = outcome ? settleSelection({ targetRaceId: race.raceId, targetRunnerId: runner.runnerId,
+  const settlement = outcome ? settleRecordedSelection({ targetRaceId: race.raceId, targetRunnerId: runner.runnerId,
     resultStatus: outcome.resultStatus, finishingPosition: outcome.finishingPosition, won: outcome.won, placed: null,
-    startingPrice: null, startingPriceDecimal: String(snapshot.decimalPrice), deadHeatDivisor: outcome.deadHeatDivisor }) : null;
+    startingPrice: null, startingPriceDecimal: String(snapshot.decimalPrice), deadHeatDivisor: outcome.deadHeatDivisor }, outcome.settlementVersion) : null;
   const observation = {
     recordedPreRace: true, captureMode: "live_sync", raceDateTime: race.scheduledOffAt, recordedAt: race.capturedAt,
     priceCapturedAt: snapshot.capturedAt, calibratedProbability: probability, capturedDecimalOdds: snapshot.decimalPrice,
-    settlementVersion: FORWARD_VALUE_SETTLEMENT_VERSION, leaderResultStatus: outcome?.resultStatus ?? null,
+    settlementVersion: outcome?.settlementVersion ?? "canonical_settlement_v2", leaderResultStatus: outcome?.resultStatus ?? null,
     leaderWon: outcome?.won ?? null, settledAt: race.settledAt, capturedPriceProfitLoss: settlement?.profitLoss ?? null,
   } as ForwardValueRecord;
   if (!isCleanPhase2Observation(observation)) return null;

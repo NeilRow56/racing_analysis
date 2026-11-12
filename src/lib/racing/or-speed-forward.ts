@@ -3,7 +3,8 @@ import { dirname, resolve } from "node:path";
 import { isVoidBetResultStatus, settledWinValue } from "./backtest";
 import { hasCompleteProspectiveField } from "./current-day-sync";
 import { classifyHandicapStatus } from "./research-rule";
-import { CANONICAL_SETTLEMENT_VERSION } from "./research-settlement-version";
+import { CANONICAL_SETTLEMENT_VERSION, type ResearchSettlementVersion } from "./research-settlement-version";
+import { raceForSettlement } from "./settlement-outcome";
 import { AW_SPEED_RATING_CALCULATION_VERSION } from "./aw-speed-rating";
 import { TURF_SPEED_RATING_CALCULATION_VERSION } from "./turf-speed-rating";
 import { finite, formatSpeedEdge, officialRatingRanks, sameOrAwSpeedEdges, sameOrSpeedEdges } from "./or-speed-comparison";
@@ -27,7 +28,7 @@ export type OrSpeedObservation = {
     finishPosition: number | null; resultStatus: string | null; finishRank: number | null;
     winner: boolean | null; winnerCredit: number | null; deadHeatDivisor: number | null;
     normalizedFinish: number | null; top3: boolean | null; settledFieldSize: number | null;
-    settledAt: string; settlementVersion: typeof CANONICAL_SETTLEMENT_VERSION;
+    settledAt: string; settlementVersion: ResearchSettlementVersion;
   };
 };
 export type OrSpeedData = { version: typeof OR_SPEED_VERSION; epoch: typeof OR_SPEED_EPOCH; observations: OrSpeedObservation[] };
@@ -82,7 +83,7 @@ export function pendingOrSpeedRaceIds(data: OrSpeedData): string[] {
 export function settleOrSpeed(data: OrSpeedData, races: ReadonlyMap<string, TodayRace>, now = new Date()): OrSpeedData {
   const observations = data.observations.map(row => {
     if (row.outcome) return row;
-    const race = races.get(row.raceId), runner = race?.runners.find(r => r.runnerId === row.runnerId);
+    const sourceRace = races.get(row.raceId), race = sourceRace && raceForSettlement(sourceRace), runner = race?.runners.find(r => r.runnerId === row.runnerId);
     if (!race || !runner) return row;
     const base = { finishPosition: runner.finishingPosition, resultStatus: runner.resultStatus,
       settledAt: now.toISOString(), settlementVersion: CANONICAL_SETTLEMENT_VERSION };

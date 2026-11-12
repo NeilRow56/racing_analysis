@@ -1,3 +1,5 @@
+import { resolve } from "node:path";
+import { pathToFileURL } from "node:url";
 import { writeFile } from "node:fs/promises";
 import {
   settleSelection,
@@ -53,7 +55,7 @@ type Scorecard = Record<string, "yes" | "no" | "too sparse / incomplete">;
 const YEARS: Year[] = ["2025", "2026"];
 const SP_BANDS: SpBand[] = ["<3.0", "3.0-5.99", "6.0-9.99", "10.0-19.99", "20.0+"];
 const FIELD_SIZE_BANDS: FieldSizeBand[] = ["<=5", "6-8", "9-12", "13+"];
-const OUTPUT_PATH = "/tmp/turf-tpr-candidate-robustness.md";
+const OUTPUT_PATH = "/tmp/turf-tpr-candidate-robustness-settlement-v3.md";
 const MIN_HALF_SAMPLE = 30;
 
 const REFERENCE: Record<Year, { selections: number; strike: number; roi: number }> = {
@@ -80,7 +82,7 @@ const RULE: ResearchRuleV1 = {
 
 async function main() {
   const contexts = await Promise.all(YEARS.map(loadContext));
-  const lines: string[] = [];
+  const lines: string[] = ["Settlement: canonical_settlement_v3; corrected V3 recalculation. Original historical reports retained.", ""];
   writeReport(lines, contexts);
   await writeFile(OUTPUT_PATH, `${lines.join("\n")}\n`, "utf8");
 
@@ -557,17 +559,16 @@ function winnerProfitAtOrAbove(selections: ResearchSelection[], minSp: number): 
   }, 0);
 }
 
-function adjustedProfit(selections: ResearchSelection[], slippage: number) {
+export function adjustedProfit(selections: ResearchSelection[], slippage: number) {
   const settled = selections
     .map((selection) => ({ selection, settlement: settleSelection(selection.outcome) }))
     .filter((entry): entry is { selection: ResearchSelection; settlement: NonNullable<ReturnType<typeof settleSelection>> } =>
       entry.settlement !== null
     );
   const profitLoss = settled.reduce((total, entry) => {
-    const grossReturn = entry.selection.outcome.won
-      ? entry.settlement.settlementOddsDecimal * (1 - slippage)
-      : 0;
-    return total + grossReturn - 1;
+    // Apply the existing slippage convention to canonical gross returns,
+    // including the dead-heat stake division and the effective settled stake.
+    return total + entry.settlement.grossReturn * (1 - slippage) - entry.settlement.stake;
   }, 0);
   return {
     profitLoss,
@@ -827,7 +828,7 @@ function printable(value: unknown): string {
   return String(value).replace(/\|/g, "\\|");
 }
 
-main().catch((error) => {
+if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) main().catch((error) => {
   console.error(error);
   process.exit(1);
 });

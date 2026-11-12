@@ -1,0 +1,12 @@
+bun test v1.3.5 (1e86cebd)
+
+src/lib/racing/capture-pin-compatibility.test.ts:
+(pass) all four original dependencies are verified against retained pinned bytes [6.74ms]
+(pass) two feature adapter differences are exactly legacy classifier renames [1.74ms]
+(pass) Market Edge and armed Early Turf accept only reviewed adapters and preserve original pins/captures [75.07ms]
+(pass) Shadow and Positive/Neutral capture pins fail closed; Shadow settlement remains available [596.00ms]
+(pass) research evidence remains byte-exact except verified outcome-only live updates [12953.90ms]
+
+ 5 pass
+ 0 fail
+Ran 5 tests across 1 file. [13.91s]

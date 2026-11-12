@@ -240,14 +240,14 @@ describe("frozen AW Tissue and prospective tracking", () => {
     const settled = settleAwTissueRace(captured(), result);
     assert.deepEqual(settled.winners, ["a", "b"]);
     assert.equal(settled.runners[0]!.outcome!.deadHeatDivisor, 2);
-    assert.equal(settled.runners[0]!.outcome!.finalSpProfitLoss, 2);
+    assert.equal(settled.runners[0]!.outcome!.finalSpProfitLoss, 1.5);
     const summary = summarizeAwTissueForward({ ...emptyAwTissueForward(), races: [settled] });
     assert.ok(Number.isFinite(summary.logLoss)); assert.ok(Number.isFinite(summary.brier));
     const priced = enrichAwTissuePrices(captured(), race(), now);
     const pricedSettled = settleAwTissueRace(priced, result);
     const leader = pricedSettled.runners.find((r) => r.runnerId === pricedSettled.top1)!;
-    assert.equal(pricedSettled.selectedPriceProfitLoss.early, leader.outcome!.won ? 2 : -1);
-    assert.equal(pricedSettled.selectedPriceProfitLoss.bestEarly, leader.outcome!.won ? 4 : -1);
+    assert.equal(pricedSettled.selectedPriceProfitLoss.early, leader.outcome!.won ? 1.5 : -1);
+    assert.equal(pricedSettled.selectedPriceProfitLoss.bestEarly, leader.outcome!.won ? 3.5 : -1);
   });
 
   test("summary and AW-D comparison use only common clean settled races", () => {

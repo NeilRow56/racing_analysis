@@ -134,5 +134,5 @@ test("exclusive arming, immutable captures/epoch/rules and source-pin drift dete
 test("no operational backfill commands and fail-open fresh-capture integration", async () => {
   for (const args of [["sync"], ["backfill"], ["init", "2025-01-01"], ["summary", "--refresh"]]) await assert.rejects(main(args), /no replay, backfill or refresh/);
   const value = { production: true }; assert.equal(await contextShadowAfterProduction(value, async () => { throw Error("diagnostic failure"); }, () => {}), value);
-  const source = await readFile("src/lib/racing/tissue-generation-sync.ts", "utf8"); assert.match(source, /syncPositiveNeutral\(accepted\)/); assert.ok(source.indexOf("syncPositiveNeutral(accepted)") > source.indexOf("const production = await mutateTissueGeneration"));
+  const source = await readFile("src/lib/racing/tissue-generation-sync.ts", "utf8"); assert.match(source, /collectEpochPositiveNeutral\(accepted\)/); assert.ok(source.indexOf("collectEpochPositiveNeutral(accepted)") > source.indexOf("const production = await mutateTissueGeneration"));
 });

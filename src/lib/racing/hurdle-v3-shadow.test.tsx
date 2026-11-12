@@ -214,7 +214,7 @@ test("shadow errors fail open and research display is labelled, separate and emp
   assert.strictEqual(await contextShadowAfterProduction(book, async () => { throw new Error("shadow failed"); }, () => {}), book); assert.equal(JSON.stringify(book), bytes);
   const html = renderToStaticMarkup(<HurdleV3ShadowMonitor data={null} />); assert.match(html, /V3 SHADOW/); assert.match(html, /pending first genuine pre-off capture/); assert.match(html, /No historical backfill/);
   assert.equal(summarizeHurdleV3Shadow(null).rows[0].logLoss, null);
-  const sync = await readFile(new URL("./tissue-generation-sync.ts", import.meta.url), "utf8"); assert.ok(sync.indexOf("prepareHurdleV3Shadow(connection") < sync.indexOf("additions = buildTissueGenerationRaces")); assert.ok(sync.indexOf("syncHurdleV3Shadow(accepted") > sync.indexOf("const production = await mutateTissueGeneration"));
+  const sync = await readFile(new URL("./tissue-generation-sync.ts", import.meta.url), "utf8"); assert.ok(sync.indexOf("prepareEpochShadow(connection") < sync.indexOf("additions = buildTissueGenerationRaces")); assert.ok(sync.indexOf("collectEpochShadow(accepted") > sync.indexOf("const production = await mutateTissueGeneration"));
 });
 test("head-to-head uses shared winner ranks and exposes LED counterfactual without changing official order", async () => withLedger(async data => {
   const { book, inputs } = await fixture(), o = (await buildHurdleV3Shadow(book, inputs, now))!, first = appendHurdleV3Shadows(data, [o], now);

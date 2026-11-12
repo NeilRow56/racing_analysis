@@ -1,3 +1,4 @@
+import { pendingEpochShadowRaceIds, settleEpochShadow } from "./prospective-epoch-collection";
 import type { createDbConnection } from "@/db";
 import type { TodayMeeting, TodayRace } from "./todays-racing";
 import type { GenerationRace } from "./tissue-generation-forward";
@@ -29,10 +30,16 @@ export async function syncHurdleV3Shadow(accepted: GenerationRace[], inputs: Rea
   return mutateHurdleV3Shadow(latest => settleHurdleV3Shadows(appendHurdleV3Shadows(latest, candidates), results));
 }
 export async function settleHurdleV3ShadowResults(results: ReadonlyMap<string, TodayRace>, now = new Date()) {
+  try { await settleEpochShadow(results, now); }
+  catch (error) { console.error("New Shadow epoch settlement unavailable; original route retained", error); }
   if (!await loadHurdleV3Shadow()) return;
   return mutateHurdleV3Shadow(data => settleHurdleV3Shadows(data, results, now));
 }
 export async function pendingHurdleV3ShadowRaceIds() {
-  try { return (await loadHurdleV3Shadow())?.observations.filter(o => o.production.runners.some(r => r.outcome === null)).map(o => o.raceId) ?? []; }
-  catch (e) { console.error("Cannot read pending Hurdle V3 shadows; production unchanged", e); return []; }
+  const original = loadHurdleV3Shadow().then(data => data?.observations
+    .filter(o => o.production.runners.some(r => r.outcome === null)).map(o => o.raceId) ?? [])
+    .catch(error => { console.error("Original Shadow pending lookup unavailable", error); return []; });
+  const current = pendingEpochShadowRaceIds()
+    .catch(error => { console.error("New Shadow epoch pending lookup unavailable", error); return []; });
+  return [...new Set((await Promise.all([original, current])).flat())];
 }

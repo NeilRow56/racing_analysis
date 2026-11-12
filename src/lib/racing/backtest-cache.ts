@@ -20,6 +20,8 @@ import { TURF_SPEED_RATING_CALCULATION_VERSION } from "./turf-speed-rating";
 import { TODAYS_RATING_CALCULATION_VERSION } from "./todays-rating";
 import { WEIGHT_PERFORMANCE_CALCULATION_VERSION } from "./weight-performance";
 import type { BacktestRaceSegment } from "./backtest";
+import { resolveHistoricalSettlementEvidence } from "./historical-settlement-evidence";
+import { CANONICAL_SETTLEMENT_VERSION, type ResearchSettlementVersion } from "./research-settlement-version";
 
 type Db = ReturnType<typeof createDbConnection>["db"];
 
@@ -30,6 +32,7 @@ export const DEFAULT_CACHE_BUILD_BATCH_SIZE = 5_000;
 export type BacktestCacheFamily = BacktestRaceSegment | "all";
 
 export type BacktestFeatureCacheManifest = {
+  settlementVersion?: ResearchSettlementVersion;
   jumpWinningTimeGuardVersion?: string;
   invalidatedBySourceCorrection?: { sourceId: string; reason: string; invalidatedAt: string; affectedRows: number };
   featureSchemaVersion: typeof BACKTEST_FEATURE_CACHE_VERSION;
@@ -75,6 +78,8 @@ export type BacktestCacheBuildCounts = {
 };
 
 export type LoadedBacktestFeatureCache = {
+  /** Version of this analysis, not a relabel of the original manifest. */
+  settlementVersion?: ResearchSettlementVersion;
   manifest: BacktestFeatureCacheManifest;
   rows: HistoricalTargetRunnerMetricsRow[];
   directory: string;
@@ -175,6 +180,7 @@ export async function buildBacktestFeatureCache(input: {
   );
 
   const manifest: BacktestFeatureCacheManifest = {
+    settlementVersion: CANONICAL_SETTLEMENT_VERSION,
     ...((input.family === "jump" || input.family === "all") ? { jumpWinningTimeGuardVersion: JUMP_WINNING_TIME_GUARD_VERSION } : {}),
     featureSchemaVersion: BACKTEST_FEATURE_CACHE_VERSION,
     sourceFeatureVersion: BACKTEST_FEATURE_SOURCE_VERSION,
@@ -233,11 +239,12 @@ export async function loadBacktestFeatureCache(input: {
     return null;
   }
 
-  const rows = rowsFromCachedParts({ features, outcomes });
+  const rows = await resolveHistoricalSettlementEvidence(rowsFromCachedParts({ features, outcomes }));
 
   return {
     manifest,
     rows,
+    settlementVersion: CANONICAL_SETTLEMENT_VERSION,
     directory,
     actualCoverage: actualCoverageForRows(rows),
   };

@@ -39,6 +39,10 @@ describe("Today Timewise forward context", () => {
       timewiseRank2: "Alpha",
     });
     assert.deepEqual(input, {
+      settlementVersion: "canonical_settlement_v3",
+      activeRunnerCount: undefined, ratedRunnerCount: undefined, ratingCoverage: undefined, ratingCoverageStatus: undefined,
+      ratingCoverageGuardVersion: "tpr_rating_coverage_guard_v1", ratingCoverageGuardImplementedAt: "2026-09-30T00:00:00.000Z",
+      ratingCoverageExclusionReason: null, tprRankEligible: true,
       family: "turf", raceId: "race-1", raceDateTime: "2026-09-17T13:20:00.000Z",
       raceName: "Novice Stakes", raceDate: "2026-09-17", course: "Sandown", raceTime: "14:20",
       winner: "Bravo", winnerSp: 6.5, winners: [{ horseName: "Bravo", decimalOdds: 6.5 }],
@@ -228,8 +232,12 @@ describe("Today Timewise forward context", () => {
       { horseName: "Alpha", decimalOdds: 5 },
       { horseName: "Bravo", decimalOdds: 7 },
     ]);
-    assert.equal(summarize([record]).tprLevelStakeReturn, 2);
-    assert.equal(summarize([record]).timewiseLevelStakeReturn, 3);
+    assert.equal(record.settlementVersion, "canonical_settlement_v3");
+    assert.equal(summarize([record]).tprLevelStakeReturn, 1.5);
+    assert.equal(summarize([record]).timewiseLevelStakeReturn, 2.5);
+    const original = { ...record, settlementVersion: "canonical_settlement_v2" as const };
+    assert.equal(summarize([original]).tprLevelStakeReturn, 2);
+    assert.equal(summarize([original]).timewiseLevelStakeReturn, 3);
   });
 
   test("settles an AW record idempotently without changing selections or timing", () => {

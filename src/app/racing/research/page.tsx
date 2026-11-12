@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { ModelPerformanceWorkspace } from "./model-performance-workspace";
+import { isJumpExploratorySource } from "@/lib/racing/jump-exploratory-research";
 import { createDbConnection } from "@/db";
 import { loadBacktestFeatureCache, type LoadedBacktestFeatureCache } from "@/lib/racing/backtest-cache";
 import {
@@ -90,12 +92,13 @@ export default async function ResearchPage({
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const params = await normalizedSearchParams(searchParams);
+  const exploratory = isJumpExploratorySource(params);
   const rule = ruleFromSearchParams(params);
   const settlementMode = parseDevelopmentSettlementMode(params.get("settlementMode"));
-  const data = await loadResearchData(rule, settlementMode);
+  const data = exploratory ? null : await loadResearchData(rule, settlementMode);
   const displayRule = data?.rule ?? rule;
   const filterOptions = data?.filterOptions ?? emptyFilterOptions();
-  const savedRules = await loadSavedRules();
+  const savedRules = exploratory ? [] : await loadSavedRules();
 
   return (
     <main className="min-h-screen bg-stone-50 px-5 py-6 text-slate-950">
@@ -109,7 +112,7 @@ export default async function ResearchPage({
               Research Filters
             </h1>
             <p className="mt-2 text-sm text-slate-600">
-              Development dataset: 2025. Holdout validation is intentionally not exposed here.
+              {exploratory ? "Controlled reconstructed Jump evidence · read-only exploratory analysis." : "Historical model comparison: 2025 development and 2026 exploratory / previously used evidence."}
             </p>
           </div>
           <nav aria-label="Racing Research" className="flex flex-wrap gap-2">
@@ -121,12 +124,6 @@ export default async function ResearchPage({
             </Link>
             <Link
               className="border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:border-emerald-400 hover:text-emerald-800"
-              href="/racing/research/or-speed"
-            >
-              OR + Speed Research
-            </Link>
-            <Link
-              className="border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:border-emerald-400 hover:text-emerald-800"
               href="/racing/today"
             >
               Today&apos;s Racing
@@ -134,48 +131,55 @@ export default async function ResearchPage({
           </nav>
         </header>
 
-        <ResearchWorkspace
-          executedRule={displayRule}
-          familyOptions={FAMILY_OPTIONS}
-          filterOptions={filterOptions}
-          handicapStatusOptions={HANDICAP_STATUS_OPTIONS}
-          hasResults={data?.result !== undefined}
-          key={`${researchRuleKey(displayRule)}:${data?.settlementMode ?? settlementMode}`}
-          rankMetricOptions={RANK_METRIC_OPTIONS}
-          ratingMetricOptions={RATING_METRIC_OPTIONS}
-          returnBucketOptions={RETURN_BUCKET_OPTIONS}
-          relativeMetricOptions={CREATABLE_RELATIVE_METRIC_OPTIONS}
-          runAfterBreakOptions={RUN_AFTER_BREAK_OPTIONS}
-          settlementMode={data?.settlementMode ?? settlementMode}
-          saveRulePanel={data?.result ? (
-            <SaveExecutedRulePanel
-              developmentSummary={data.developmentSummary}
-              result={data.result}
-              settlementMode={data.settlementMode}
-            />
-          ) : null}
-          staleSaveRulePanel={<StaleSaveRulePanel />}
-        >
-          {data?.result ? (
-            <ResearchResults
-              developmentSummary={data.developmentSummary}
-              priceSensitivity={data.priceSensitivity}
-              result={data.result}
-              settlementMode={data.settlementMode}
-              stability={data.stability}
-              timeSlice={data.timeSlice}
-              trainerCohort={data.trainerCohort}
-              trainerCohortDiagnostics={data.trainerCohortDiagnostics}
-            />
-          ) : (
-            <section className="mt-6 border border-amber-200 bg-amber-50 p-5 text-sm text-amber-900">
-              Compatible 2025 cache not found for {familyLabel(rule.family)}.
-              Build it with <code>bun run racing:build-backtest-cache --from 2025-01-01 --to 2025-12-31 --family {rule.family}</code>.
-            </section>
-          )}
-        </ResearchWorkspace>
+        <ModelPerformanceWorkspace params={params} rule={displayRule} />
 
-        <SavedRulesSection savedRules={savedRules} />
+        {!exploratory ? <details className="mt-6" open={params.has("rule") || params.has("family")}>
+          <summary className="cursor-pointer border border-slate-200 bg-white p-5 text-xl font-semibold">
+            Advanced Filters · existing rules, diagnostics and frozen snapshots
+          </summary>
+          <ResearchWorkspace
+            executedRule={displayRule}
+            familyOptions={FAMILY_OPTIONS}
+            filterOptions={filterOptions}
+            handicapStatusOptions={HANDICAP_STATUS_OPTIONS}
+            hasResults={data?.result !== undefined}
+            key={`${researchRuleKey(displayRule)}:${data?.settlementMode ?? settlementMode}`}
+            rankMetricOptions={RANK_METRIC_OPTIONS}
+            ratingMetricOptions={RATING_METRIC_OPTIONS}
+            returnBucketOptions={RETURN_BUCKET_OPTIONS}
+            relativeMetricOptions={CREATABLE_RELATIVE_METRIC_OPTIONS}
+            runAfterBreakOptions={RUN_AFTER_BREAK_OPTIONS}
+            settlementMode={data?.settlementMode ?? settlementMode}
+            saveRulePanel={data?.result ? (
+              <SaveExecutedRulePanel
+                developmentSummary={data.developmentSummary}
+                result={data.result}
+                settlementMode={data.settlementMode}
+              />
+            ) : null}
+            staleSaveRulePanel={<StaleSaveRulePanel />}
+          >
+            {data?.result ? (
+              <ResearchResults
+                developmentSummary={data.developmentSummary}
+                priceSensitivity={data.priceSensitivity}
+                result={data.result}
+                settlementMode={data.settlementMode}
+                stability={data.stability}
+                timeSlice={data.timeSlice}
+                trainerCohort={data.trainerCohort}
+                trainerCohortDiagnostics={data.trainerCohortDiagnostics}
+              />
+            ) : (
+              <section className="mt-6 border border-amber-200 bg-amber-50 p-5 text-sm text-amber-900">
+                Compatible 2025 cache not found for {familyLabel(rule.family)}.
+                Build it with <code>bun run racing:build-backtest-cache --from 2025-01-01 --to 2025-12-31 --family {rule.family}</code>.
+              </section>
+            )}
+          </ResearchWorkspace>
+
+          <SavedRulesSection savedRules={savedRules} />
+        </details> : null}
       </div>
     </main>
   );

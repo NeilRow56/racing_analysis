@@ -1,0 +1,92 @@
+{
+  "rows": 32901,
+  "races": 3353,
+  "counts": {
+    "candidate": 32901,
+    "settleable": 29856,
+    "completeThreeBestL3": 27789,
+    "settleableCompleteThreeBestL3": 25251,
+    "strictExploratoryUsable": 10661,
+    "ratingsL3Usable": 12772,
+    "void": 9,
+    "NR": 3036,
+    "unresolved": 0,
+    "nonFinisherLosses": 4784,
+    "deadHeatWinners": 6,
+    "anyRatingChanged": 333,
+    "guardV2ExposedChanged": 43,
+    "recoveryExposedChanged": 5,
+    "oldReferenceEligible": 25166,
+    "newReferenceEligible": 25251,
+    "gainedReferenceEligibility": 90,
+    "lostReferenceEligibility": 5,
+    "firstPassUnattributedChanged": 285,
+    "guardDependencyPathChanged": 328,
+    "recoveryDependencyPathChanged": 5,
+    "unexplainedAfterContextTrace": 0
+  },
+  "aggregationMismatches": 0,
+  "sourceIssues": 0,
+  "priceBands": {
+    "(1,3]": {
+      "records": 2779,
+      "settleable": 2630,
+      "winners": 1094,
+      "completeL3Settleable": 2375,
+      "completeL3Winners": 983,
+      "strictUsable": 742,
+      "strictWinners": 316,
+      "excludedStrict": 2037
+    },
+    "(3,6]": {
+      "records": 6928,
+      "settleable": 6401,
+      "winners": 1256,
+      "completeL3Settleable": 5878,
+      "completeL3Winners": 1172,
+      "strictUsable": 1972,
+      "strictWinners": 370,
+      "excludedStrict": 4956
+    },
+    "(6,11]": {
+      "records": 7201,
+      "settleable": 6486,
+      "winners": 612,
+      "completeL3Settleable": 5863,
+      "completeL3Winners": 552,
+      "strictUsable": 2401,
+      "strictWinners": 218,
+      "excludedStrict": 4800
+    },
+    "(11,21]": {
+      "records": 6420,
+      "settleable": 5634,
+      "winners": 275,
+      "completeL3Settleable": 4925,
+      "completeL3Winners": 247,
+      "strictUsable": 2302,
+      "strictWinners": 121,
+      "excludedStrict": 4118
+    },
+    ">21": {
+      "records": 9518,
+      "settleable": 8705,
+      "winners": 118,
+      "completeL3Settleable": 6210,
+      "completeL3Winners": 90,
+      "strictUsable": 3244,
+      "strictWinners": 36,
+      "excludedStrict": 6274
+    },
+    "unknown/invalid": {
+      "records": 55,
+      "settleable": 0,
+      "winners": 0,
+      "completeL3Settleable": 0,
+      "completeL3Winners": 0,
+      "strictUsable": 0,
+      "strictWinners": 0,
+      "excludedStrict": 55
+    }
+  }
+}

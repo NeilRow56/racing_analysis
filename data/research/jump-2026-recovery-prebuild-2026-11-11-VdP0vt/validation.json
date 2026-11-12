@@ -1,0 +1,413 @@
+{
+  "status": "BLOCKED_PREBUILD",
+  "asOf": "2026-11-11",
+  "candidateLocation": null,
+  "oldLocation": "data/research/backtest-cache/backtest_features_v4-sporting_life-jump-2026-01-01-2026-12-31",
+  "manifest": {
+    "jumpWinningTimeGuardVersion": "jump_winning_time_guard_v1",
+    "featureSchemaVersion": "backtest_features_v4",
+    "sourceFeatureVersion": "historical_target_metrics_v4",
+    "source": "sporting_life",
+    "from": "2026-01-01",
+    "to": "2026-12-31",
+    "family": "jump",
+    "generatedAt": "2026-10-15T02:55:51.034Z",
+    "rowCount": 33004,
+    "featuresFile": "features.ndjson",
+    "outcomesFile": "outcomes.ndjson",
+    "calculationVersions": {
+      "jumpSpeed": "jump_speed_v1",
+      "awSpeed": "aw_speed_v1",
+      "turfSpeed": "turf_speed_v2",
+      "weightPerformance": "weight_performance_v1",
+      "todaysRating": "todays_rating_v1"
+    }
+  },
+  "connection": {
+    "initial": "accessible",
+    "host": "127.0.0.1",
+    "port": 5432,
+    "database": "racing_analysis",
+    "role": "neilrowland",
+    "transactionReadOnly": true,
+    "finalAttempt": "ECONNREFUSED 127.0.0.1:5432",
+    "configurationChanged": false,
+    "serverStarted": false
+  },
+  "baseline": {
+    "rows": 33004,
+    "outcomes": 33004,
+    "races": 3368,
+    "from": "2026-01-01",
+    "to": "2026-10-15",
+    "duplicateRunnerIds": 0,
+    "duplicateRaceHorseIds": 0,
+    "duplicateOutcomeRunnerIds": 0,
+    "alignmentErrors": 0,
+    "coarseLatestPriorDateNotEarlier": 0,
+    "largestCachedWinningDecimalSP": 301
+  },
+  "sourceAudit": {
+    "matchedOldTargets": 33004,
+    "missingFullResultRows": 209,
+    "missingFullResultRaces": 25,
+    "missingPayloadNullResultStatusRows": 204,
+    "missingPayloadNonRunnerRows": 5,
+    "oldTargetMissingWinningTimeRows": 231,
+    "globalSportingLifeRunnerRows": 388339,
+    "missingForeignReferences": 0,
+    "missingDatetimeOrSourceIdentity": 0,
+    "earlierTimedInputsForOldTargetHorses": {
+      "runners": 102790,
+      "races": 20137,
+      "missingFullResultPayload": 0,
+      "inconsistentSourceNamespaces": 0
+    },
+    "missingRaces": [
+      {
+        "date": "2026-10-09",
+        "sourceId": "942540",
+        "rows": 7
+      },
+      {
+        "date": "2026-10-09",
+        "sourceId": "942545",
+        "rows": 11
+      },
+      {
+        "date": "2026-10-09",
+        "sourceId": "942765",
+        "rows": 6
+      },
+      {
+        "date": "2026-10-09",
+        "sourceId": "943053",
+        "rows": 10
+      },
+      {
+        "date": "2026-10-09",
+        "sourceId": "942539",
+        "rows": 10
+      },
+      {
+        "date": "2026-10-09",
+        "sourceId": "942762",
+        "rows": 9
+      },
+      {
+        "date": "2026-10-09",
+        "sourceId": "942544",
+        "rows": 15
+      },
+      {
+        "date": "2026-10-09",
+        "sourceId": "942542",
+        "rows": 11
+      },
+      {
+        "date": "2026-10-09",
+        "sourceId": "942768",
+        "rows": 14
+      },
+      {
+        "date": "2026-10-09",
+        "sourceId": "942767",
+        "rows": 9
+      },
+      {
+        "date": "2026-10-09",
+        "sourceId": "942764",
+        "rows": 9
+      },
+      {
+        "date": "2026-10-15",
+        "sourceId": "943578",
+        "rows": 4
+      },
+      {
+        "date": "2026-10-15",
+        "sourceId": "943575",
+        "rows": 9
+      },
+      {
+        "date": "2026-10-15",
+        "sourceId": "944162",
+        "rows": 8
+      },
+      {
+        "date": "2026-10-15",
+        "sourceId": "943572",
+        "rows": 4
+      },
+      {
+        "date": "2026-10-15",
+        "sourceId": "943577",
+        "rows": 9
+      },
+      {
+        "date": "2026-10-15",
+        "sourceId": "943573",
+        "rows": 10
+      },
+      {
+        "date": "2026-10-15",
+        "sourceId": "943570",
+        "rows": 9
+      },
+      {
+        "date": "2026-10-15",
+        "sourceId": "943571",
+        "rows": 6
+      },
+      {
+        "date": "2026-10-15",
+        "sourceId": "943569",
+        "rows": 7
+      },
+      {
+        "date": "2026-10-15",
+        "sourceId": "943574",
+        "rows": 6
+      },
+      {
+        "date": "2026-10-15",
+        "sourceId": "943568",
+        "rows": 6
+      },
+      {
+        "date": "2026-10-15",
+        "sourceId": "943567",
+        "rows": 7
+      },
+      {
+        "date": "2026-10-15",
+        "sourceId": "943576",
+        "rows": 9
+      },
+      {
+        "date": "2026-10-15",
+        "sourceId": "943566",
+        "rows": 4
+      }
+    ]
+  },
+  "corrections": {
+    "version": "jump_winning_time_corrections_v1",
+    "allTenDatabaseValuesAndDatesMatched": true,
+    "registryRecords": [
+      {
+        "source": "sporting_life",
+        "sourceId": "856826",
+        "raceDate": "2025-05-11",
+        "course": "Plumpton",
+        "raceName": "Aine Mellett 40th Birthday Handicap Hurdle",
+        "original": "5m 52.54s",
+        "corrected": "3m 53.09s",
+        "independentSource": "https://www.racingpost.com/results/44/plumpton/2025-05-11/892946",
+        "reason": "Slow-time anomaly found by two-sided guard, not upper-rating threshold.",
+        "correctionVersion": "jump_winning_time_corrections_v1",
+        "recordedAt": "2026-10-15T02:50:25.766883+00:00"
+      },
+      {
+        "source": "sporting_life",
+        "sourceId": "891843",
+        "raceDate": "2025-11-29",
+        "course": "Doncaster",
+        "raceName": "Easyfix Equine Fillies' 'Junior' NH Flat Race (GBB Race)",
+        "original": "3m 14.02s",
+        "corrected": "4m 14.02s",
+        "independentSource": "https://www.racingpost.com/results/15/doncaster/2025-11-29/906592/",
+        "reason": "Same race/winner; one-minute SL omission.",
+        "correctionVersion": "jump_winning_time_corrections_v1",
+        "recordedAt": "2026-10-15T02:50:25.767220+00:00"
+      },
+      {
+        "source": "sporting_life",
+        "sourceId": "904023",
+        "raceDate": "2026-02-21",
+        "course": "Newcastle",
+        "raceName": "Virgin Bet Handicap Chase (GBB Race)",
+        "original": "4m 13.53s",
+        "corrected": "5m 14.41s",
+        "independentSource": "https://www.racingpost.com/results/37/newcastle/2026-02-21/911617",
+        "reason": "Exact race, winner and distance match; independent time and standard support repair.",
+        "correctionVersion": "jump_winning_time_corrections_v1",
+        "recordedAt": "2026-10-15T02:50:25.767228+00:00"
+      },
+      {
+        "source": "sporting_life",
+        "sourceId": "925595",
+        "raceDate": "2026-07-02",
+        "course": "Perth",
+        "raceName": "PWA Architecture Handicap Hurdle",
+        "original": "4m 10.79s",
+        "corrected": "5m 10.79s",
+        "independentSource": "https://www.racingpost.com/results/41/perth/2026-07-02/922109/",
+        "reason": "Same race/winner; one-minute SL omission.",
+        "correctionVersion": "jump_winning_time_corrections_v1",
+        "recordedAt": "2026-10-15T02:50:25.767231+00:00"
+      },
+      {
+        "source": "sporting_life",
+        "sourceId": "843938",
+        "raceDate": "2025-02-15",
+        "course": "Gowran Park",
+        "raceName": "QuinnBet Beginners Chase",
+        "original": "4m 31.08s",
+        "corrected": "5m 31.08s",
+        "independentSource": "https://www.racingpost.com/results/184/gowran-park/2025-02-15/888135",
+        "reason": "Same race/winner and soft going; one-minute SL omission. Conservative diagnostic does not catch every independently confirmed error.",
+        "correctionVersion": "jump_winning_time_corrections_v1",
+        "recordedAt": "2026-10-15T02:50:25.767234+00:00"
+      },
+      {
+        "source": "sporting_life",
+        "sourceId": "857170",
+        "raceDate": "2025-05-12",
+        "course": "Killarney",
+        "raceName": "BoyleSports An Riocht Chase (Grade 3)",
+        "original": "4m 4.90s",
+        "corrected": "5m 5.00s",
+        "independentSource": "https://www.racingpost.com/results/185/killarney/2025-05-12/895416",
+        "reason": "Same race/winner; large discrepancy independently supports source error.",
+        "correctionVersion": "jump_winning_time_corrections_v1",
+        "recordedAt": "2026-10-15T02:50:25.767236+00:00"
+      },
+      {
+        "source": "sporting_life",
+        "sourceId": "890110",
+        "raceDate": "2025-11-20",
+        "course": "Thurles",
+        "raceName": "Irish Stallion Farms EBF Mares Maiden Hurdle",
+        "original": "4m 48.40s",
+        "corrected": "5m 48.40s",
+        "independentSource": "https://www.racingpost.com/results/198/thurles/2025-11-20/908331/",
+        "reason": "Same race/winner; one-minute SL omission.",
+        "correctionVersion": "jump_winning_time_corrections_v1",
+        "recordedAt": "2026-10-15T02:50:25.767239+00:00"
+      },
+      {
+        "source": "sporting_life",
+        "sourceId": "908530",
+        "raceDate": "2026-03-21",
+        "course": "Navan",
+        "raceName": "Irish Stallion Farms EBF Novice Hurdle",
+        "original": "5m 16.50s",
+        "corrected": "6m 16.50s",
+        "independentSource": "https://www.racingpost.com/results/193/navan/2026-03-21/915876/",
+        "reason": "No usable production rating/standard for winner; diagnostic identifies one-minute discrepancy.",
+        "correctionVersion": "jump_winning_time_corrections_v1",
+        "recordedAt": "2026-10-15T02:50:25.767241+00:00"
+      },
+      {
+        "source": "sporting_life",
+        "sourceId": "929076",
+        "raceDate": "2026-07-21",
+        "course": "Ballinrobe",
+        "raceName": "West 'Howya' Maiden Hurdle",
+        "original": "3m 19.60s",
+        "corrected": "4m 19.60s",
+        "independentSource": "https://www.racingpost.com/results/175/ballinrobe/2026-07-21/925226/",
+        "reason": "Same race, winner and runners. Racing and Sports also reports 4:19.60.",
+        "correctionVersion": "jump_winning_time_corrections_v1",
+        "recordedAt": "2026-10-15T02:50:25.767244+00:00"
+      },
+      {
+        "source": "sporting_life",
+        "sourceId": "941317",
+        "raceDate": "2026-10-02",
+        "course": "Hexham",
+        "raceName": "El Tel's 61 Racecourse's & Done Handicap Hurdle",
+        "original": "4m 9.18s",
+        "corrected": "5m 9.69s",
+        "independentSource": "https://www.racingpost.com/results/25/hexham/2026-10-02/927456/",
+        "reason": "Racing Post contradicts Sporting Life; same winner, order and margins. Racing TV repeats SL 4m9.18s, so agreement of feeds is not proof of correctness.",
+        "correctionVersion": "jump_winning_time_corrections_v1",
+        "recordedAt": "2026-10-15T02:50:25.767246+00:00"
+      }
+    ]
+  },
+  "priceBands": [
+    {
+      "band": "(1,3]",
+      "oldRows": 2794,
+      "finiteOldBestL3Speed": 2528,
+      "finiteOldBestL3Performance": 2528,
+      "finiteOldBestL3Todays": 2528,
+      "allThreeOldBestL3": 2528,
+      "cachedWinners": 1090
+    },
+    {
+      "band": "(3,6]",
+      "oldRows": 6956,
+      "finiteOldBestL3Speed": 6378,
+      "finiteOldBestL3Performance": 6378,
+      "finiteOldBestL3Todays": 6378,
+      "allThreeOldBestL3": 6378,
+      "cachedWinners": 1253
+    },
+    {
+      "band": "(6,11]",
+      "oldRows": 7225,
+      "finiteOldBestL3Speed": 6518,
+      "finiteOldBestL3Performance": 6518,
+      "finiteOldBestL3Todays": 6518,
+      "allThreeOldBestL3": 6518,
+      "cachedWinners": 609
+    },
+    {
+      "band": "(11,21]",
+      "oldRows": 6439,
+      "finiteOldBestL3Speed": 5621,
+      "finiteOldBestL3Performance": 5621,
+      "finiteOldBestL3Todays": 5621,
+      "allThreeOldBestL3": 5621,
+      "cachedWinners": 274
+    },
+    {
+      "band": ">21",
+      "oldRows": 9535,
+      "finiteOldBestL3Speed": 6800,
+      "finiteOldBestL3Performance": 6800,
+      "finiteOldBestL3Todays": 6800,
+      "allThreeOldBestL3": 6800,
+      "cachedWinners": 118
+    },
+    {
+      "band": "Unknown/invalid",
+      "oldRows": 55,
+      "finiteOldBestL3Speed": 40,
+      "finiteOldBestL3Performance": 40,
+      "finiteOldBestL3Todays": 40,
+      "allThreeOldBestL3": 40,
+      "cachedWinners": 0
+    }
+  ],
+  "tests": {
+    "passed": 85,
+    "failed": 0,
+    "files": 10,
+    "filesTested": [
+      "backtest-cache",
+      "research-cache",
+      "research-holdout",
+      "historical-target-metrics",
+      "jump-winning-time-integrity",
+      "jump-missing-minute-integrity",
+      "jump-winning-time-production",
+      "jump-speed-rating",
+      "jump-performance-rating",
+      "todays-rating"
+    ]
+  },
+  "hashesBeforeReport": {
+    "features.ndjson": "d9cefb6020f1e1b4a98e541b62d3abf2be8a702ee4b34b155aae4eef2b404c80",
+    "manifest.json": "f8e63dd344f1ff5bdeccd2befb26f6962c106749eabda46a7b7d971435935031",
+    "outcomes.ndjson": "0e35edf22ba8e971639c872e59301ab18bc8441f4a2ea1cc9ecfd30bd8600bc2"
+  },
+  "hashesAfterReport": {
+    "features.ndjson": "d9cefb6020f1e1b4a98e541b62d3abf2be8a702ee4b34b155aae4eef2b404c80",
+    "manifest.json": "f8e63dd344f1ff5bdeccd2befb26f6962c106749eabda46a7b7d971435935031",
+    "outcomes.ndjson": "0e35edf22ba8e971639c872e59301ab18bc8441f4a2ea1cc9ecfd30bd8600bc2"
+  }
+}

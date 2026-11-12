@@ -144,6 +144,8 @@ export type HistoricalPreRaceFeatureRow = {
 };
 
 export type HistoricalPostRaceOutcome = {
+  raceStage?: string | null;
+  outcomeCode?: string | null;
   targetRaceId: string;
   targetRunnerId: string;
   finishingPosition: number | null;
@@ -161,6 +163,8 @@ export type HistoricalTargetRunnerMetricsRow = {
 };
 
 export type HistoricalTargetRow = {
+  raceStage?: string | null;
+  outcomeCode?: string | null;
   targetRaceId: string;
   targetRunnerId: string;
   source: string | null;
@@ -414,6 +418,8 @@ export function buildHistoricalTargetRunnerMetricRows({
         speedCalculationVersion: latestSpeedMeta.calculationVersion,
       },
       outcome: {
+        raceStage: target.raceStage,
+        outcomeCode: target.outcomeCode,
         targetRaceId: target.targetRaceId,
         targetRunnerId: target.targetRunnerId,
         finishingPosition: target.finishingPosition,
@@ -469,6 +475,8 @@ async function loadTargets(
     await db
       .select({
         targetRaceId: races.id,
+        raceStage: sql<string | null>`${sourceImports.payload} #>> '{props,pageProps,race,race_summary,race_stage}'`,
+        outcomeCode: raceRunners.outcomeCode,
         targetRunnerId: raceRunners.id,
         source: raceRunners.source,
         horseId: raceRunners.horseId,

@@ -1,0 +1,571 @@
+bun test v1.3.5 (1e86cebd)
+
+scripts/settlement-diagnostics.test.ts:
+(pass) both robustness diagnostics use V3 dead heats, settled stakes and uncapped winners [4.83ms]
+(pass) transfer monetary diagnostics exclude NR/void/pending and divide full SP [0.96ms]
+
+scripts/report-forward-value.test.ts:
+(pass) Forward Value Jump/AW terminal report > default output keeps only Jump and AW aggregate agreement summaries [0.90ms]
+(pass) Forward Value Jump/AW terminal report > verbose output retains the full race-by-race detail
+(pass) Forward Value Jump/AW terminal report > details flags and report path are stable
+
+scripts/diagnose-tpr-vs-timewise-forward.test.ts:
+(pass) TPR vs Timewise forward tracker > derives agreement and mutually exclusive top-two outcomes [1.49ms]
+(pass) TPR vs Timewise forward tracker > summarizes strike, capture, disagreement and priced level-stake returns [1.24ms]
+(pass) TPR vs Timewise forward tracker > prevents accidental duplicate races and permits explicit correction [1.26ms]
+(pass) TPR vs Timewise forward tracker > supports pending Today entries without counting them as settled outcomes
+(pass) TPR vs Timewise forward tracker > handles partial and missing W100 context without inventing losses [0.33ms]
+(pass) TPR vs Timewise forward tracker > reports timing coverage and excludes known post-race backfills from clean comparisons [3.20ms]
+(pass) TPR vs Timewise forward tracker > handles Timewise non-runners without promotion or losing-selection penalties [2.33ms]
+(pass) TPR vs Timewise forward tracker > derives OR agreement and summarizes W100 and W50 splits [0.79ms]
+(pass) TPR vs Timewise forward tracker > splits TPR versus Timewise disagreements by TPR and OR agreement [0.54ms]
+(pass) TPR vs Timewise forward tracker > keeps missing OR and W50 context unavailable [0.43ms]
+(pass) TPR vs Timewise forward tracker > loads old v1 JSON records without manual migration [0.04ms]
+(pass) TPR vs Timewise forward tracker > loads v2 records as Turf and keeps explicit AW family [0.82ms]
+(pass) TPR vs Timewise forward tracker > renders Turf and All Weather metrics in separate summary sections [1.02ms]
+(pass) TPR vs Timewise forward tracker > renders cumulative metrics and every requested race flag [0.92ms]
+(pass) TPR vs Timewise forward tracker > renders the compact summary with all forward comparison aggregates [1.42ms]
+(pass) TPR vs Timewise forward tracker > renders a Timewise-independent TPR summary with corrected denominators and snapshot counts [5.83ms]
+(pass) TPR vs Timewise forward tracker > extends the TPR summary with clean-era cohorts, daily snapshot diagnostics and robustness [4.71ms]
+(pass) TPR vs Timewise forward tracker > renders compact clean date coverage and only reports a real gap [7.04ms]
+(pass) TPR vs Timewise forward tracker > includes parsed TPR rows whose Timewise selection fields are absent [0.49ms]
+(pass) TPR vs Timewise forward tracker > tpr-summary command reads without mutating its tracker [51.17ms]
+
+src/lib/racing/backtest.test.ts:
+(pass) backtest filters > derives relative speed values without inventing missing values as zero
+(pass) backtest filters > applies deterministic race, runner, speed and relative-speed predicates [0.84ms]
+(pass) backtest filters > applies weight-adjusted performance filters independently of raw speed [0.09ms]
+(pass) backtest filters > applies today's rating filters independently of raw speed and historical performance [0.12ms]
+(pass) backtest filters > result SP cannot satisfy pre-race odds filters [1.30ms]
+(pass) backtest filters > Jump, AW and Turf segment filters remain isolated [0.73ms]
+(pass) backtest filters > date cutoff excludes rows outside the requested range [0.27ms]
+(pass) backtest scoring > corrected denominators exclude refunds and pending rows while keeping started losses [0.53ms]
+(pass) backtest scoring > settles £1 win stakes from post-race settlement SP only [0.14ms]
+(pass) backtest scoring > settles dead-heat winners by splitting the original stake [0.09ms]
+(pass) backtest scoring > excludes non-runners and missing settlement prices from settled selections
+(pass) backtest scoring > settles Jump non-finishers that started as losing bets
+(pass) backtest scoring > keeps void and abandoned races out of betting denominators
+(pass) backtest scoring > max losing run is zero with no settled selections [0.44ms]
+(pass) backtest scoring > max losing run is zero when every settled selection wins [0.11ms]
+(pass) backtest scoring > one losing selection gives max losing run one [0.05ms]
+(pass) backtest scoring > three losing selections then a winner gives max losing run three [0.14ms]
+(pass) backtest scoring > unsettled selections are skipped and do not reset a losing run [0.04ms]
+(pass) backtest scoring > winning selection resets max losing run even within the same race
+(pass) backtest scoring > max losing run uses deterministic chronological selection ordering [0.09ms]
+(pass) backtest scoring > large mixed fixture returns non-zero max losing run when losses are present [1.24ms]
+(pass) backtest scoring > assigns fixed odds bands [0.17ms]
+(pass) backtest leakage separation > changing outcomes does not change selected runner IDs [0.49ms]
+(pass) backtest leakage separation > future OR and form are absent unless present in precomputed features [0.23ms]
+(pass) backtest leakage separation > repeated evaluation is reproducible for selection IDs and summary [0.42ms]
+
+src/lib/racing/aw-rating-forward.test.ts:
+(pass) AW Rating forward tracker > captures a clean pre-race snapshot and rejects pre-epoch backfill [1.40ms]
+(pass) AW Rating forward tracker > does not treat insufficient AW-D coverage as a rank-1 analytical selection [1.30ms]
+(pass) AW Rating forward tracker > records AW-D/A disagreement without changing either ranking [0.41ms]
+(pass) AW Rating forward tracker > voids a non-runner and settles a started non-finisher as a loss [1.43ms]
+(pass) AW Rating forward tracker > upsert and repeated settlement are idempotent [0.05ms]
+
+src/lib/racing/settlement-v3.test.ts:
+(pass) corrected settlement v3 > void and abandoned source stages override provisional winners without a losing stake [2.23ms]
+(pass) corrected settlement v3 > genuine non-runners are distinct from non-finishers, including in a void race [0.27ms]
+(pass) corrected settlement v3 > explicit legacy non-finisher codes settle; a generic other/zero status does not [0.24ms]
+(pass) corrected settlement v3 > non-final and unknown source stages remain unresolved even with a price or stale position [0.12ms]
+(pass) corrected settlement v3 > SP includes stake: ordinary uncapped SP 301 winner returns £301 on £1 [0.11ms]
+(pass) corrected settlement v3 > dead heats split stake rather than profit; a winning selection can have negative net return [0.13ms]
+(pass) corrected settlement v3 > an explicit original-v2 view preserves previous arithmetic without relabelling it
+(pass) corrected settlement v3 > settlement-only projection preserves captured race and runner fields
+
+src/lib/racing/turf-early-season.test.tsx:
+(pass) armed with zero observations and pending epoch; exclusive initialization [8.79ms]
+(pass) first genuine 2027 capture sets exact epoch; no history, stale, post-off, future or duplicate additions [40.87ms]
+(pass) exact historical form-depth boundaries; both completed count and seasonal speed required [0.90ms]
+(pass) eight seasonal flags, latest available vs last-three window, prior partition, frozen attribution and same-OR gap [7.24ms]
+(pass) market complete/incomplete, normalization, deterministic ties and no price replacement [0.32ms]
+(pass) canonical settlement, NR excluded without replacement, dead heats, void and pending [8.87ms]
+(pass) monthly summaries, paired coverage, missing-market V4 retained, unavailable references and UI labels [33.31ms]
+(pass) atomic ledger refuses rewritten metadata/observations; changed methodology and retrospective additions rejected [34.25ms]
+(pass) outside-window history adapter performs no database reads [3.84ms]
+
+src/lib/racing/all-family-tissue-value.test.tsx:
+(pass) v3 void settlement is terminal in every family without changing captured books or prices [23.05ms]
+(pass) original v2 outcomes remain byte-for-byte unchanged alongside new v3 results [14.89ms]
+(pass) Jump Speed reliability metadata never changes model scores, Tissue/Value ranks or captured inputs [28.51ms]
+(pass) all four current model families produce normalized all-runner books and separate identities [8.16ms]
+(pass) AW and Jump probabilities and native Tissue ranks exactly match their existing live scorers [7.35ms]
+(pass) one shared value calculation and deterministic value ranks apply to all families [8.47ms]
+(pass) probability gate refuses missing, partial, nonfinite, score-only or unnormalized probabilities [51.46ms]
+(pass) a missing Jump history vector blocks the whole race rather than inventing a probability [13.81ms]
+(pass) wrong model generations, schemas, family and tracker versions cannot enter a cohort [16.94ms]
+(pass) new family epochs are independent while the Turf cohort and epoch are preserved [16.23ms]
+(pass) every family rejects SP/forecast fallback and incomplete median markets [23.60ms]
+(pass) family filters preserve model cohorts and fixed bands for pooled and individual views [8.04ms]
+(pass) captured prices, vectors, ranks and probabilities stay immutable in every family [52.70ms]
+(pass) canonical settlement and captured-price accounting are shared across families [10.00ms]
+(pass) Today's Racing and Research consume identical frozen authoritative ranks with no live fallback [14.02ms]
+(pass) Research displays all family summaries, pooled labels and explicit blocked probability state [39.84ms]
+(pass) weekly inventory includes every active value tracker and existing current model ledgers [0.24ms]
+(pass) all-family value capture does not alter any Rank 1 capture [55.89ms]
+(pass) Speed watch reaches both Value monitoring and daily badges from the same immutable family capture [42.31ms]
+(pass) manual Value refresh preserves 05:36 Legacy V1, freezes V2 with its V1 shadow, and Today selects newest [78.29ms]
+
+src/lib/racing/research-settlement-mode.test.ts:
+(pass) development settlement mode > caps winning result SP for development analysis without changing outcome counts
+(pass) development settlement mode > settlement mode parsing is separate from canonical rule identity [0.70ms]
+(pass) development settlement mode > applies the winner cap before the dead-heat divisor
+
+src/lib/racing/settlement-reporting.test.ts:
+(pass) recorded V2, V3, unversioned and unknown outcomes remain separate without relabelling [0.29ms]
+(pass) AW mixed summary fails closed and CLI exposes separate original/V3 tables [2.08ms]
+(pass) all TPR/Timewise text entrypoints split mixed versions and keep legacy arithmetic [2.52ms]
+(pass) Rating CLI summaries disclose the recorded settlement basis [419.61ms]
+(pass) Forward Value prints distinct retained monetary totals for V2 and V3 [34.64ms]
+
+src/lib/racing/tpr-timewise-forward-context.test.ts:
+(pass) Today Timewise forward context > keeps Timewise tracker eligibility for Turf and AW but not Jump races
+(pass) Today Timewise forward context > captures W100, W50, OR and settled winner context [0.62ms]
+(pass) Today Timewise forward context > captures an observational AW record without Turf selections
+(pass) Today Timewise forward context > derives W100 top two by score for normal competition ranks
+(pass) Today Timewise forward context > keeps two tied rank-1 runners as the W100 top two when rank 2 is skipped
+(pass) Today Timewise forward context > allows one valid W100 runner and leaves second choice unavailable
+(pass) Today Timewise forward context > allows Timewise entry with no valid W100 runners
+(pass) Today Timewise forward context > uses the second-highest score when no literal competition rank 2 exists [0.10ms]
+(pass) Today Timewise forward context > keeps result fields empty before settlement
+(pass) Today Timewise forward context > normalizes Today race times for tracker identity
+(pass) Today Timewise forward context > classifies first saves and preserves the original timing on edits [0.35ms]
+(pass) Today Timewise forward context > enriches a pending pre-race record without changing selections or audit metadata [0.98ms]
+(pass) Today Timewise forward context > records every dead-heat winner and adjusts the selected return [0.75ms]
+(pass) Today Timewise forward context > settles an AW record idempotently without changing selections or timing [0.30ms]
+(pass) Today Timewise forward context > voids later W100, W50 and Timewise non-runners without changing recorded selections [0.85ms]
+(pass) Today Timewise forward context > stores versioned canonical inputs only on newly built Turf records
+
+src/lib/racing/jump-rating-forward.test.ts:
+(pass) Jump Rating forward tracker > captures only clean pre-race Jump snapshots after the forward epoch [1.23ms]
+(pass) Jump Rating forward tracker > settles a started non-finisher as a losing rank-1 runner [2.44ms]
+(pass) Jump Rating forward tracker > voids a non-runner and preserves canonical dead-heat returns [0.48ms]
+(pass) Jump Rating forward tracker > reports rank-1 denominator diagnostics for voided and tied selections [0.51ms]
+(pass) Jump Rating forward tracker > retains insufficient JPR-A coverage diagnostically without analytical rank-1 selection [1.24ms]
+(pass) Jump Rating forward tracker > JPR-A0 shadow does not make insufficient JPR-A coverage eligible [0.46ms]
+(pass) Jump Rating forward tracker > upsert and repeated settlement are idempotent [0.21ms]
+(pass) Jump Rating forward tracker > captures JPR-A0 only prospectively from its implementation epoch [0.40ms]
+(pass) Jump Rating forward tracker > does not enrich a race first captured before the JPR-A0 epoch [0.45ms]
+(pass) Jump Rating forward tracker > shows JPR-A0 compactly without replacing the visible JPR-A line [0.63ms]
+(pass) Jump Rating forward tracker > settles fallback evidence canonically without changing frozen ratings [0.89ms]
+
+src/lib/racing/tissue-positive-neutral.test.tsx:
+(pass) T1/T2 Positive and Neutral inclusion uses the exact Today badge function [15.78ms]
+(pass) badge half-pp boundaries and fixed price/edge bands are stable
+(pass) negative and fallback are excluded from headlines but retained as clearly separate references [11.10ms]
+(pass) same-capture market identity, full-book normalization and immutable reference join [8.62ms]
+(pass) family splits, combined selections and production Hurdle V2 never mix with V3 shadow [42.46ms]
+(pass) canonical winner/loss results, £1 P/L and selection proper scores [41.50ms]
+(pass) dead heats split Actual/Model and canonical price returns without counting NR/void as losses [61.59ms]
+(pass) all-Tissue comparison uses the same prospective race period and reports signed differences [28.06ms]
+(pass) Turf competition-rank ties are preserved without inventing a T2 [12.04ms]
+(pass) no backfill, late/future/settled capture, duplicate or later quote replacement [21.14ms]
+(pass) exclusive arming, immutable captures/epoch/rules and source-pin drift detection [83.39ms]
+(pass) no operational backfill commands and fail-open fresh-capture integration [1.08ms]
+
+src/lib/racing/chase-shadow.test.tsx:
+(pass) exact report artifact loads; missing, changed and rechecksummed coefficients fail [1.97ms]
+(pass) prospective capture scores frozen inputs; Current coexists unchanged and prices cannot affect scoring [1.96ms]
+(pass) no historical capture/backfill, stale capture, after-off, result-present or wrong subtype [4.24ms]
+(pass) canonical settlement counts PU as loss and uses frozen prices without revising probabilities [5.52ms]
+(pass) NR excludes stakes and expectations; dead heats split canonical captured-price returns [2.96ms]
+(pass) disagreement and agreement use identical settled races and distinct rank-one selections [1.53ms]
+(pass) pending and changed fields cannot enter the settled comparison [0.60ms]
+(pass) fixed Chase experience and pre-capture completion groups exclude future results and NR [1.19ms]
+(pass) unavailable features retain coverage records and never enter paired metrics [1.11ms]
+(pass) fixed calibration bands retain exact boundaries without fitting
+(pass) checkpoint membership freezes at threshold and cannot be displaced by late results [50.45ms]
+(pass) atomic ledger persists first capture and settlement side-by-side [41.33ms]
+(pass) dashboard renders shadow-only labels, weakness views, price counts and empty states [60.07ms]
+(pass) shadow integration supplies display-only badges to Today and never changes Value [2.28ms]
+
+src/lib/racing/hurdle-tissue-challenger-forward.test.tsx:
+(pass) fresh Hurdle freezes both full-field books, versions, identities and positive-edge VALUE [4.30ms]
+(pass) excuse adjustment exactly halves only standardized family contributions before softmax [2.73ms]
+(pass) Chase, NH Flat, unknown jumps and non-jumps are ignored; production Chase remains available [5.32ms]
+(pass) agreement and disagreement retain both leaders [3.29ms]
+(pass) rerun freezes inputs, probabilities, ranks, leader price and VALUE despite changed card [5.07ms]
+(pass) missing first price can be captured later once; forecasts and settlement-only runs cannot qualify [6.85ms]
+(pass) no past dates or pre-epoch observations can be captured [6.26ms]
+(pass) post-off, stale card dates, partial inputs and existing results are rejected [22.12ms]
+(pass) canonical settlement includes non-finisher losses, frozen-price returns and repeat safety [8.25ms]
+(pass) canonical void and dead heat outcomes remain paired and separate [13.90ms]
+(pass) atomic persisted reruns preserve first capture and version, and historical tracker is not a source [15.84ms]
+(pass) field changes preserve the captured books but are excluded from paired performance [3.52ms]
+(pass) 14/1 boundary is reporting context only, with no VALUE or capture filter [5.43ms]
+(pass) morning captures after Jump sync; live and after only report or settle [1.90ms]
+(pass) secondary UI renders agreement compactly, disagreement horses and settled results [18.77ms]
+
+src/lib/racing/rank-one-forward.test.tsx:
+(pass) all four explicitly supplied model sources match their Tissue predictions [13.26ms]
+(pass) Turf exact rank-1 ties select one stable ID [1.33ms]
+(pass) loaded racecards capture the authoritative rank one before actual starters are known [43.57ms]
+(pass) first valid median, normalized full-field probability and market rank frozen [3.43ms]
+(pass) one race/family/version per batch and repeated sync idempotent [1.34ms]
+(pass) incomplete markets retain genuine selected prices without forecast fallback [71.55ms]
+(pass) no retrospective, post-off, result-bearing, duplicate or incomplete field capture [12.44ms]
+(pass) 21 and 26 boundaries inclusive; above-cap raw observation retained [4.63ms]
+(pass) morning captures; live/after never invoke capture even with completed historic results [12.65ms]
+(pass) canonical frozen-price winner settlement ignores missing SP and freezes outcome [3.53ms]
+(pass) non-finisher loss, NR and void handling; incomplete results remain pending [47.92ms]
+(pass) dead heats follow canonical settlement divisor [7.01ms]
+(pass) family summaries separate settled, pending, void and returns [35.90ms]
+(pass) atomic persistence freezes first capture across concurrent writers [25.17ms]
+(pass) secondary hierarchy preserved; four compact cards and no VALUE edge [13.13ms]
+(pass) historical fixed-cutoff metrics retain boundaries and removed-cohort outcomes [0.88ms]
+(pass) Turf monitor separates legacy and corrected cohorts without rewriting frozen observations [4.50ms]
+(pass) v3, repaired v2 and legacy Turf summaries never pool outcomes [1.95ms]
+(pass) nullable market settles winners, losers, non-finishers and NR with separate samples [49.13ms]
+(pass) old non-null and new nullable contracts load without rewriting bytes [37.43ms]
+(pass) activation forbids capturing the named missed Newmarket races or earlier races [0.86ms]
+(pass) incomplete model scoring remains ineligible even when the bookmaker market is complete [5.50ms]
+
+src/lib/racing/win-settlement.test.ts:
+(pass) winGrossReturn > settles ordinary winners and losers [0.16ms]
+(pass) winGrossReturn > divides the entire winning stake for two-way and three-way dead heats [0.08ms]
+(pass) winGrossReturn > caps fractional odds before applying the dead-heat divisor
+
+src/lib/racing/hurdle-v3-shadow.test.tsx:
+(pass) shadow CLI refuses historical dates and refresh/backfill commands before opening a connection [0.67ms]
+(pass) loader accepts armed empty state and rejects an invented epoch [62.76ms]
+(pass) first genuine capture persists its own epoch and repeated page reads cannot replay it [63.55ms]
+(pass) Bun-frozen features validate in the Node runtime used by Today [309.25ms]
+(pass) raw validation only permits machine rounding in derived transcendental features [13.88ms]
+(pass) captures cannot append out of chronological order and loader rejects reordered metadata [26.75ms]
+(pass) frozen LED definition is Hurdle-only, fixed L3 starts, age-decayed, expiry-bounded and observation only [0.42ms]
+(pass) participant denominators include PU/fall/unseated and exclude NR/void/unresolved, future and same-time [0.34ms]
+(pass) prospective pair keeps production bytes and official V3 predictions unchanged; LED remains separate [11.35ms]
+(pass) epoch starts only on first accepted pre-off pair, no duplicates, backfill, future or post-off capture [18.61ms]
+(pass) canonical shared settlement supports dead heats, PU/fall/unseated, genuine NR and pending results [14.31ms]
+(pass) ledger atomically freezes epoch, features, predictions and outcomes; initialization cannot restart it [42.81ms]
+(pass) shadow errors fail open and research display is labelled, separate and empty-safe [5.18ms]
+(pass) head-to-head uses shared winner ranks and exposes LED counterfactual without changing official order [9.60ms]
+
+src/lib/racing/aw-forward-comparisons.test.ts:
+(pass) AW forward comparisons > freezes the seven requested definitions [0.25ms]
+(pass) AW forward comparisons > uses competition speed ranks and exact draw qualification [0.42ms]
+(pass) AW forward comparisons > captures only forward pre-race runners and does not duplicate them [0.66ms]
+(pass) AW forward comparisons > settlement is idempotent and preserves qualification fields
+(pass) AW forward comparisons > settles dead-heat profits after applying the 20/1 cap
+(pass) AW forward comparisons > settles a priced non-finisher as a losing forward bet
+(pass) AW forward comparisons > keeps pending records and excludes post-race records from clean summaries [1.12ms]
+
+src/lib/racing/tissue-prospective-summary.test.tsx:
+(pass) membership uses Tissue rank alone, including when Value rank disagrees
+(pass) pending, NR and void count as captured but do not enter settled metrics
+(pass) captured-price returns use stored canonical dead-heat settlement
+(pass) missing, invalid and unsettled prices never become losing stakes
+(pass) family and pooled totals sum frozen probabilities and P/L [1.78ms]
+(pass) sample labels follow existing settled-count thresholds [1.04ms]
+(pass) compact panel renders all three tables, families, price sample and pooled caveat [3.12ms]
+
+src/lib/racing/tissue-value-price-cap-rule.test.tsx:
+(pass) AW and Turf exact 21.0 / 21.01 / 26.0 boundaries preserve model probabilities and markers [5.17ms]
+(pass) missing qualifying prices never use forecasts, SP or latest prices [5.98ms]
+(pass) first qualification and classification remain frozen across stage changes and reruns [1.30ms]
+(pass) main UI, Today totals and headline returns exclude shadows; separate grouped UI includes them [12.34ms]
+(pass) today and morning terminal output classify using frozen prices despite later market moves [3.06ms]
+(pass) shadow canonical settlement independently handles non-finishers, NR and dead heats [1.19ms]
+(pass) pre-cap observations remain unversioned and cannot be reclassified on refresh [0.01ms]
+(pass) a nonpositive first price can qualify at a later stored stage without changing the edge threshold [1.49ms]
+
+src/lib/racing/capture-pin-compatibility.test.ts:
+(pass) all four original dependencies are verified against retained pinned bytes [2.37ms]
+(pass) two feature adapter differences are exactly legacy classifier renames [0.98ms]
+(pass) Market Edge and armed Early Turf accept only reviewed adapters and preserve original pins/captures [66.47ms]
+(pass) Shadow and Positive/Neutral capture pins fail closed; Shadow settlement remains available [718.00ms]
+(pass) research evidence remains byte-exact except verified outcome-only live updates [13402.94ms]
+
+src/lib/racing/turf-value-forward.test.tsx:
+(pass) captures all eligible runners with exact canonical v3 probabilities and feature lineage [15.17ms]
+(pass) first complete bookmaker medians normalize the whole frozen market [0.21ms]
+(pass) freezes fair odds, edge, ratio, expected return and all three alternative ranks [3.24ms]
+(pass) value ordering need not agree with most likely winner ordering
+(pass) ties use exact competition ranks with stable runner-ID display order [2.33ms]
+(pass) ratio band boundaries are fixed and half-open
+(pass) market-rank groups use the fixed requested boundaries
+(pass) no SP or forecast fallback and no partially priced normalized field [3.90ms]
+(pass) missing quotes can later form the first valid complete capture, then price is frozen [4.64ms]
+(pass) no pre-epoch, post-off, historical-date, unbounded-history or incomplete capture
+(pass) rejects duplicate runners, target results, AW, jumps and legacy models [2.58ms]
+(pass) known pre-capture non-runners are not eligible, later NRs stay frozen [1.33ms]
+(pass) append clones vectors and quotes, prevents repeated capture and rank/price rewrites [6.16ms]
+(pass) canonical captured-price settlement appends only outcomes and is idempotent
+(pass) partial or inconsistent results remain pending, without SP dependency [6.33ms]
+(pass) canonical dead-heat division, non-runner exclusion, voids and nonfinishers [4.24ms]
+(pass) fixed band summaries include losers and all runners without selecting any threshold [5.37ms]
+(pass) atomic persistence refuses capture edits, removals and outcome rewrites [28.57ms]
+(pass) concurrent writes retain all new race books and deduplicate repeated races [30.15ms]
+(pass) existing Rank 1 capture remains identical before and after all-runner capture [7.49ms]
+(pass) workflow adds independent fresh capture and settlement without changing Rank 1 stages [2.35ms]
+(pass) Research section labels both ranks, exposes sorting and calibration, retains losing disagreements [14.43ms]
+
+src/lib/racing/tissue-generation.test.tsx:
+(pass) family-specific frozen identities and exact Chase Shadow promotion [0.37ms]
+(pass) activation and capture are epoch-bound, current-day, pre-off, with no backfill [17.46ms]
+(pass) Turf/AW Speed ranks, missingness and same-OR gap are genuinely field-relative [0.24ms]
+(pass) Hurdle completion/PU features exclude target/future/NR/void and preserve canonical semantics [0.22ms]
+(pass) new probabilities produce frozen T1/T2 without altering old base vectors or Value outputs [15.49ms]
+(pass) clean tracker starts at zero and keeps monetary subset separate with no SP fallback [6.69ms]
+(pass) canonical captured-price settlement is idempotent, handles dead heats/NR/void and ignores later odds [4.35ms]
+(pass) new T1 drives agreement while Value 1 and original probabilities remain unchanged; absorbed badges disappear [0.85ms]
+(pass) retired ledgers reject post-epoch additions but allow old pending results to settle [145.23ms]
+(pass) atomic storage preserves capture fields, original versions and settled outcomes without reranking history [946.41ms]
+Research live - 2026-11-05
+
+[1/10] Importing in-progress results...
+complete
+
+[2/10] Reconciling live runner status...
+complete
+
+[3/10] Settling existing prospective trackers...
+complete
+
+[4/10] Rank 1 monitoring settlement...
+complete
+
+[5/10] All-family Tissue value settlement...
+complete
+
+[6/10] Hurdle recency research settlement...
+complete
+
+[7/10] Tissue VALUE live summary...
+complete
+
+[8/10] Jump G4 shadow status...
+complete
+
+[9/10] Today's Rating weight shadow status...
+complete
+
+[10/10] Clean Tissue generation...
+complete
+
+Research live complete.
+(pass) morning/live/after use one clean Tissue monitor and keep independent Value workflows [8.44ms]
+(pass) forced refresh appends later changed pre-off books, keeps history immutable and selects newest whole book [64.15ms]
+(pass) capture persists full-field normalization and rejects partial or inconsistent probabilities [13.43ms]
+(pass) legacy frozen complete books project same-capture markets without mutation or live-price inference [12.55ms]
+
+src/lib/racing/forward-value.test.ts:
+(pass) forward value capture > confidence metadata preserves all financial fields and existing frozen records [2.50ms]
+(pass) forward value capture > captures pre-race price and freezes the selected leader
+(pass) forward value capture > refuses post-start capture
+(pass) forward value capture > does not create an AW-D Forward Value leader when rating coverage is insufficient
+(pass) forward value capture > does not create TPR or JPR-A Forward Value leaders when rating coverage is insufficient
+(pass) forward value capture > upsert is idempotent [1.11ms]
+(pass) forward value capture > repeated morning imports and captures preserve one observation and later stages
+(pass) forward value capture > an earlier frozen price cannot be overwritten
+(pass) forward value capture > captures the first T-180 quote at 210 minutes before off
+(pass) forward value capture > captures the first T-180 quote at 180 minutes before off
+(pass) forward value capture > captures the first T-180 quote at 150 minutes before off [0.89ms]
+(pass) forward value capture > does not capture T-180 outside its inclusive window [0.17ms]
+(pass) forward value capture > captures the first T-60 quote at 90 minutes before off [0.13ms]
+(pass) forward value capture > captures the first T-60 quote at 60 minutes before off
+(pass) forward value capture > captures the first T-60 quote at 30 minutes before off
+(pass) forward value capture > does not overwrite Early, T-180, or T-60 after the first valid quote [0.25ms]
+(pass) forward value capture > freezes the full bookmaker set, best provider, and forecast at each snapshot [0.25ms]
+(pass) forward value capture > leaves missed new-schedule windows null and does not populate T-15 [0.23ms]
+(pass) forward value capture > leaves an existing legacy T-15 record byte-for-byte unchanged [0.22ms]
+(pass) forward value capture > continues to capture legacy T-60 and T-15 windows only for unversioned records [0.02ms]
+(pass) forward value capture > fills the first valid early price without changing the frozen rating [0.03ms]
+(pass) forward value capture > settles with canonical winner SP without recomputing capture
+(pass) forward value capture > persists median, best-bookmaker, and final-SP returns separately
+(pass) forward value capture > genuine non-runner is void while a started non-finisher is a loser
+(pass) forward value capture > attaches only genuine pre-race Tissue snapshots
+(pass) forward value capture > late Tissue attachment freezes its own bookmaker median
+(pass) forward value capture > uses fixed edge bands
+(pass) forward value capture > calculates negative edge and excludes a missing price
+(pass) forward value capture > classifies post-off and retrospective observations as excluded
+(pass) forward value capture > settles a dead heat at the captured price [0.10ms]
+(pass) forward value capture > labels sparse samples without changing eligibility
+(pass) forward value capture > captures Tissue price and compares value signs
+(pass) forward value capture > uses the deterministic median for odd and even bookmaker quote counts [0.27ms]
+(pass) forward value capture > Cross Of Stars uses the bookmaker median instead of the 20/1 forecast [0.07ms]
+(pass) forward value capture > does not fall back to a forecast when bookmaker quotes are missing
+(pass) forward value capture > uses each model-selected horse's own bookmaker median [0.31ms]
+(pass) forward value capture > renders a read-only today row [0.33ms]
+(pass) forward value capture > renders legacy T-15 without reinterpreting it as T-180 [1.89ms]
+(pass) forward value capture > formats Forward Value race times with canonical UK BST and GMT rules
+(pass) forward value capture > pure Phase 2 analysis does not mutate frozen artifacts [12.47ms]
+(pass) new Turf value captures retain v3 identity and cannot enrich older model records [1.80ms]
+
+src/lib/racing/aw-tissue-shadow.test.ts:
+(pass) isolated frozen AW shadow > pins the exact 39-column AW-R2 artifact and rejects tampering [2.33ms]
+(pass) isolated frozen AW shadow > uses exactly the latest three nonempty prior comments and frozen missingness [5.52ms]
+(pass) isolated frozen AW shadow > market changes cannot affect either probability and shadow never mutates V1 [3.53ms]
+(pass) isolated frozen AW shadow > rejects post-off, result evidence, changed fields, unavailable extras and mismatched base inputs [0.56ms]
+(pass) isolated frozen AW shadow > copies existing frozen prices only after prediction, never captures new prices or overwrites snapshots [0.47ms]
+(pass) isolated frozen AW shadow > only clean prospective Forward Value snapshots can price a different candidate leader
+(pass) isolated frozen AW shadow > canonical nonfinishers lose, non-runners void/exclude and dead heats use the divisor [3.86ms]
+(pass) isolated frozen AW shadow > separates retrospective rows, reports leader changes and cumulative fixed edge bands [2.60ms]
+(pass) isolated frozen AW shadow > independent tracker writes are atomic and preserve captured observations under concurrency [15.89ms]
+
+src/lib/racing/jump-tissue-forward.test.ts:
+(pass) Jump Tissue forward tracking > produces deterministic full-field probabilities and ranks [1.68ms]
+(pass) Jump Tissue forward tracking > stores chronology-safe comment provenance only from prior comments [0.24ms]
+(pass) Jump Tissue forward tracking > captures Hurdle Chase and NH Flat subtypes before race time only [0.65ms]
+(pass) Jump Tissue forward tracking > idempotent capture prevents post-race backfill [0.52ms]
+(pass) Jump Tissue forward tracking > settles started non-finishers as losses, non-runners as void, and dead heats with divisor [0.52ms]
+(pass) Jump Tissue forward tracking > positive-edge shortlist uses median bookmaker price and LARGE threshold [0.55ms]
+(pass) Jump Tissue forward tracking > current card price alone cannot create Jump Tissue value without a frozen bookmaker snapshot
+
+src/lib/racing/hurdle-v3-market-edge.test.tsx:
+(pass) fixed edge bands and market-rank boundaries include exact endpoints [0.23ms]
+(pass) only exact same-capture full-field market is used; probabilities and PP reconcile [12.90ms]
+(pass) incomplete market retains context without a fabricated edge or headline membership [12.87ms]
+(pass) Speed depth counts actual canonical last three starts, without backfill or code transfer [8.71ms]
+(pass) all twelve contribution groups and top positives preserve frozen V3 logits [8.23ms]
+(pass) no replay, historical backfill, future capture, duplicate, post-off or replacement quotes [10.90ms]
+(pass) canonical settlement, dead heats, proper scores, V2 reference and T2 separation [22.44ms]
+(pass) NR selected horses are never losses or replaced; other-book probabilities renormalize [10.16ms]
+(pass) void race and nonfinishers use existing settlement, and source mismatch stays unavailable [15.06ms]
+(pass) established depth split and pending empty Research summary remain distinct [15.35ms]
+(pass) exclusive initialization, metadata/epoch/observation immutability and persisted corruption rejection [31.07ms]
+(pass) CLI cannot replay/refresh/capture, and diagnostic failure leaves production reference untouched [0.92ms]
+
+src/lib/racing/research-rule.test.ts:
+(pass) research rule ranking > assigns clear ranks, preserves ties and resets per race [0.83ms]
+(pass) research rule ranking > excludes missing ratings and non-runners from ranking [0.36ms]
+(pass) research rule ranking > ranks official ratings highest first with competition ties [0.26ms]
+(pass) research rule evaluation > blank filters do not filter and missing values are not treated as zero [2.32ms]
+(pass) research rule evaluation > applies OR-relative, rank and combined conditions [0.30ms]
+(pass) research rule evaluation > keeps legacy Speed-vs-OR rules evaluable and their summaries intelligible [0.39ms]
+(pass) research rule evaluation > continues to resolve legacy Speed-vs-OR query parameters [1.65ms]
+(pass) research rule evaluation > applies official rating rank independently of generic rating rank [0.47ms]
+(pass) research rule evaluation > applies frozen Turf Performance Rating score, rank and rank-1 lead filters [2.40ms]
+(pass) research rule evaluation > excludes missing TPR and ignores TPR filters outside Turf [0.74ms]
+(pass) research rule evaluation > filters generic TPR rank ranges using the existing production TPR rank [0.96ms]
+(pass) research rule evaluation > keeps legacy generic and dedicated TPR rank filters with AND semantics [0.40ms]
+(pass) research rule evaluation > ranks diagnostic W50 with the shared TPR implementation and combines it with OR rank [0.54ms]
+(pass) research rule evaluation > gives W50 ties the same competition rank and excludes missing and non-runners [0.23ms]
+(pass) research rule evaluation > combines Latest Performance rank 2-5 with dedicated TPR rank 1 [0.24ms]
+(pass) research rule evaluation > keeps Jump, AW and Turf isolated [0.13ms]
+(pass) research rule evaluation > filters courses by stable course ID while preserving old course-name rules [0.53ms]
+(pass) research rule evaluation > filters manual trainers by stable IDs with OR semantics and suppresses cohort intersection [0.54ms]
+(pass) research rule evaluation > matches trainer and course selections beyond six selected IDs [0.56ms]
+(pass) research rule evaluation > filters by resolved trainer cohort membership and changes canonical identity by cohort size [0.68ms]
+(pass) research rule evaluation > filters distance buckets using racing-distance tolerance [0.46ms]
+(pass) research rule evaluation > filters distance bucket ranges in either selected order [0.31ms]
+(pass) research rule evaluation > filters multiple race classes with OR semantics [0.56ms]
+(pass) research rule evaluation > outcome changes do not alter ranks or selected runner IDs [0.55ms]
+(pass) research rule evaluation > serializes and parses ResearchRuleV1 [0.28ms]
+(pass) research rule evaluation > parses old single trainer, jockey and course values into arrays
+(pass) research rule evaluation > parses old single-class rules as multi-class rules
+(pass) research rule evaluation > parses repeated race class URL params [0.40ms]
+(pass) research rule evaluation > parses repeated trainer, jockey and course URL params and sorts canonical identity [0.38ms]
+(pass) research rule evaluation > parses official rating rank alongside the generic rank filter [0.34ms]
+(pass) research rule evaluation > parses and preserves a distinct W50 diagnostic rank identity [0.31ms]
+(pass) research rule evaluation > parses and summarizes frozen TPR filters for Turf URLs [0.19ms]
+(pass) research rule evaluation > maps legacy generic TPR rank URL params to the dedicated TPR condition
+(pass) research latest speed filters > does not filter when Latest Speed has no min or max [0.43ms]
+(pass) research latest speed filters > applies Latest Speed minimum inclusively and excludes missing values [0.26ms]
+(pass) research latest speed filters > applies Latest Speed maximum inclusively and excludes missing values [0.30ms]
+(pass) research latest speed filters > treats zero as a valid Latest Speed threshold [0.12ms]
+(pass) research latest speed filters > changing Latest Speed min or max changes the rule key and effective result [0.35ms]
+(pass) research latest speed filters > composes Latest Speed with trainer, family, date and ranking filters
+(pass) research Starting Price filters > does not filter when no price filter is active [1.00ms]
+(pass) research Starting Price filters > applies under-evens, minimum, range and 20/1+ boundaries [1.46ms]
+(pass) research Starting Price filters > rejects missing SP when an active price filter is present
+(pass) research Starting Price filters > uses recorded SP independently of finish status [0.01ms]
+(pass) research Starting Price filters > passes priced started non-finishers to canonical settlement as losses [0.62ms]
+(pass) research Starting Price filters > treats invalid min-greater-than-max filters as matching no runners [0.47ms]
+(pass) research Starting Price filters > parses URLs, round-trips saved JSON and changes canonical identity [0.53ms]
+(pass) research Draw filters > supports inclusive ranges, one-sided ranges, missing values and an inactive criterion [1.02ms]
+(pass) research Draw filters > round-trips flat URL and JSON rules, summarizes ranges and changes identity [0.42ms]
+(pass) research Draw filters > legacy and Jump rules ignore Draw while Turf retains it
+(pass) research filter options > derives course, class and distance dropdown options from cached rows [0.92ms]
+(pass) research filter options > derives trainer options from stable IDs and hydrates trainer display names
+(pass) research filter options > derives jockey options from stable IDs and hydrates jockey display names
+(pass) research filter options > keeps duplicate trainer names as separate stable ID options in alphabetical order
+(pass) research filter options > derives trainer and course options from the current family rows only
+(pass) research filter options > hydrates display metadata for stable-ID and old course-name rules [1.21ms]
+(pass) research filter options > formats exact runner distances without raw yard-only display [0.05ms]
+(pass) research weight filters > formats and parses racing weights [0.09ms]
+(pass) research weight filters > generates supported dropdown range in ascending pounds [0.06ms]
+(pass) research weight filters > filters by exact pound bounds and summarizes in stone-pounds [0.13ms]
+(pass) research handicap filters > classifies clear handicap and non-handicap race metadata
+(pass) research handicap filters > covers representative Jump, AW, Turf and Irish-style examples [0.56ms]
+(pass) research handicap filters > filters handicap, non-handicap and unknown without forcing unknown into either side [0.31ms]
+(pass) research handicap filters > old URL params default to all race types [0.29ms]
+(pass) research calendar period filters > includes boundary months for Jan-Mar and Apr-Jun
+(pass) research calendar period filters > supports an inclusive Oct-Mar wrap-around range
+(pass) research calendar period filters > uses identical month semantics for Turf, All Weather and Jump [1.36ms]
+(pass) research calendar period filters > round-trips complete periods, ignores incomplete periods and preserves legacy identity [0.47ms]
+(pass) research Jump subtype filters > defaults legacy and explicit All rules to every Jump subtype [0.23ms]
+(pass) research Jump subtype filters > filters hurdles and chases into disjoint subsets while excluding NH Flat and unknown [0.34ms]
+(pass) research Jump subtype filters > round-trips URL and saved JSON and omits the All default from summaries [0.66ms]
+(pass) research Jump subtype filters > ignores Jump subtype outside the Jump family
+(pass) research Jump subtype filters > applies the frozen Chase 31-60 days definition with inclusive boundaries [0.34ms]
+(pass) research trainer and return filters > filters by stable trainer ID and shows trainer name in summary
+(pass) research trainer and return filters > filters by stable jockey ID and jockey prior metrics [1.06ms]
+(pass) research trainer and return filters > return bucket boundaries and first career run remain distinct [0.67ms]
+(pass) research trainer and return filters > return bucket and exact days filters are combined with AND semantics [0.03ms]
+(pass) research trainer and return filters > filters run number after a 90-day break [0.61ms]
+(pass) research trainer and return filters > filters career prior runs inclusively and treats zero as a real value [0.55ms]
+
+src/lib/racing/historical-target-metrics.test.ts:
+(pass) legacy cache evidence is identity-bound and cannot refresh frozen outcomes or features
+(pass) buildHistoricalTargetRunnerMetricRows > keeps target outcome and starting price out of pre-race features
+(pass) buildHistoricalTargetRunnerMetricRows > uses only same-horse same-source completed prior history before the target [4.16ms]
+(pass) buildHistoricalTargetRunnerMetricRows > calculates jockey prior metrics as of the target race time [0.91ms]
+(pass) buildHistoricalTargetRunnerMetricRows > 2026 targets can use legitimate December 2025 horse history [0.12ms]
+(pass) buildHistoricalTargetRunnerMetricRows > counts career prior runs before each target as zero, one or multiple without future leakage [0.57ms]
+(pass) buildHistoricalTargetRunnerMetricRows > derives performance from the historical run weight, not target weight [0.30ms]
+(pass) buildHistoricalTargetRunnerMetricRows > keeps performance missing when the historical run weight is missing [0.21ms]
+(pass) buildHistoricalTargetRunnerMetricRows > derives today's rating from prior performance and target race weight only [0.40ms]
+(pass) buildHistoricalTargetRunnerMetricRows > excludes non-runners, unfinished rows, and withheld speed ratings [0.27ms]
+(pass) buildHistoricalTargetRunnerMetricRows > uses race-family-specific generic speed fields [0.39ms]
+(pass) buildHistoricalTargetRunnerMetricRows > classifies confirmed missing-type Irish Gold Cup examples as jump, not turf [0.29ms]
+(pass) buildHistoricalTargetRunnerMetricRows > preserves ordinary flat turf classification for Group, Listed, maiden and handicap races [0.37ms]
+(pass) buildHistoricalTargetRunnerMetricRows > derives run number after 90-day break from prior completed runs only [0.59ms]
+(pass) buildHistoricalTargetRunnerMetricRows > keeps first career run separate from run after break [0.13ms]
+(pass) buildHistoricalTargetRunnerMetricRows > keeps live and historical Turf TPR inputs and ranks identical across mixed histories [2.31ms]
+(pass) buildHistoricalTargetRunnerMetricRows > keeps canonical AW and Jump live inputs identical to historical rows [2.53ms]
+
+src/lib/racing/aw-tissue-forward.test.ts:
+(pass) frozen AW Tissue and prospective tracking > loads the exact frozen Stage 1 artifact and reproduces its feature vector and probabilities [1.64ms]
+(pass) frozen AW Tissue and prospective tracking > is deterministic, independent of prices and ranks an exact tied field by UUID [0.35ms]
+(pass) frozen AW Tissue and prospective tracking > zero history uses recorded nulls and the frozen imputation; unknown counts do not become zero [0.35ms]
+(pass) frozen AW Tissue and prospective tracking > AW-D coverage failure does not block the Tissue field [0.25ms]
+(pass) frozen AW Tissue and prospective tracking > captures only after epoch and strictly before off; historical/result cards cannot be backfilled [0.55ms]
+(pass) frozen AW Tissue and prospective tracking > median bookmaker snapshots keep forecast/best separate and cannot fill retrospectively [0.44ms]
+(pass) frozen AW Tissue and prospective tracking > today shortlist includes positive AW Tissue rank-1 edge with correct pp calculation [0.49ms]
+(pass) frozen AW Tissue and prospective tracking > today shortlist displays bookmaker quote count from the median market row [1.74ms]
+(pass) frozen AW Tissue and prospective tracking > today shortlist flags large positive edges at ten percentage points [0.80ms]
+(pass) frozen AW Tissue and prospective tracking > today shortlist does not flag positive edges below ten percentage points
+(pass) frozen AW Tissue and prospective tracking > today shortlist excludes zero and negative AW Tissue rank-1 edges [0.88ms]
+(pass) frozen AW Tissue and prospective tracking > today shortlist excludes missing bookmaker median and never uses forecast price [0.66ms]
+(pass) frozen AW Tissue and prospective tracking > today shortlist uses frozen median bookmaker price rather than forecast or later current price [0.90ms]
+(pass) frozen AW Tissue and prospective tracking > incomplete result fields remain pending; non-finishers lose and non-runners void
+(pass) frozen AW Tissue and prospective tracking > canonical dead heats settle both winners with the canonical divisor [1.50ms]
+(pass) frozen AW Tissue and prospective tracking > summary and AW-D comparison use only common clean settled races [0.62ms]
+(pass) frozen AW Tissue and prospective tracking > Forward Value agreement cannot attach legacy observations or mix forecast rows
+(pass) frozen AW Tissue and prospective tracking > repeated sync is idempotent and concurrent mutations preserve captured races [17.13ms]
+
+src/app/racing/research/forward-value/research-page-layout.test.tsx:
+(pass) active research stays outside disclosures and is the first research section [14.49ms]
+(pass) secondary and legacy disclosures are closed by default with clear research-status wording [12.31ms]
+(pass) date and utility navigation remain above active research and outside archive [16.50ms]
+(pass) opening native archive retains Tissue VALUE, historical monitors, all shadows and challengers [17.65ms]
+(pass) lighter-weight monitor and every overlapping weight signal move only to secondary monitoring [4.86ms]
+(pass) presentational separation preserves every supplied observation, monitor and numeric result unchanged [31.17ms]
+(pass) removing duplicate Today Tissue tables keeps generation T1/T2/Top2 monitoring and the archive [13.33ms]
+(pass) normal page defers server archive content until explicitly requested [1.92ms]
+
+src/app/racing/research/forward-value/active-tissue-captures.test.tsx:
+(pass) A: Clonmel selects the existing later HURDLE_TISSUE_V2 whole book instead of 05:36 JUMP_TISSUE_V1 [35.49ms]
+(pass) B: archive still renders the original 05:36 observation without rewriting inputs or ledgers [551.88ms]
+(pass) C/D: newest valid pre-off wins independent of order, including after the race; post-off and future clocks are excluded [195.57ms]
+(pass) E: all families select their later new-generation model, including CHASE_TISSUE_V2 [139.41ms]
+(pass) legacy pre-off fallback is retained when no valid new book exists; other dates are excluded [26.38ms]
+(pass) incomplete-market capture keeps current Tissue without borrowing old prices, ranks or withdrawn runners [29.91ms]
+(pass) Research route retains Value cohort monitoring without duplicate Today Tissue tables [6.80ms]
+
+ 467 pass
+ 0 fail
+Ran 467 tests across 33 files. [21.37s]

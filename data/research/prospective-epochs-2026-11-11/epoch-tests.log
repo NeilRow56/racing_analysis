@@ -1,0 +1,13 @@
+bun test v1.3.5 (1e86cebd)
+
+src/lib/racing/prospective-epochs.test.ts:
+(pass) complete graph includes transitive Hurdle and AW classifiers, workflow and frozen artifacts; drift fails closed [5450.47ms]
+(pass) legacy Hurdle classification is preserved while current canonical AW void classification differs explicitly [2.01ms]
+(pass) isolated activation, concurrent new-epoch collection, pairing, stale rejection, routing and version-separated reports [2261.98ms]
+(pass) all original research files remain byte-exact against this task's starting state [571.64ms]
+{"fixtureEffects":{"hurdle":{"oldCompletion":[1,0,0.5,0],"currentCompletion":[0,0,1,0],"oldProbabilities":[0.41275506368895576,0.5872449363110444],"currentProbabilities":[0.5,0.5],"oldRanks":[2,1],"currentRanks":[1,2]},"aw":{"oldHistory":["nr","finish"],"currentHistory":["finish"],"oldProbabilities":[0.5062875443452084,0.4937124556547916],"currentProbabilities":[0.5,0.5],"oldRanks":[1,2],"currentRanks":[1,1]}}}
+(pass) current Hurdle completion and AW history differences propagate through unchanged frozen scores and ranks [8.56ms]
+
+ 5 pass
+ 0 fail
+Ran 5 tests across 1 file. [9.24s]

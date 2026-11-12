@@ -1,0 +1,91 @@
+;
+; Archive created at 2026-11-10 18:19:20 GMT
+;     dbname: racing_analysis
+;     TOC Entries: 80
+;     Compression: gzip
+;     Dump Version: 1.16-0
+;     Format: CUSTOM
+;     Integer: 4 bytes
+;     Offset: 8 bytes
+;     Dumped from database version: 17.11 (Postgres.app)
+;     Dumped by pg_dump version: 17.11 (Postgres.app)
+;
+;
+; Selected TOC Entries:
+;
+6; 2615 16550 SCHEMA - drizzle neilrowland
+225; 1259 16552 TABLE drizzle __drizzle_migrations neilrowland
+224; 1259 16551 SEQUENCE drizzle __drizzle_migrations_id_seq neilrowland
+3822; 0 0 SEQUENCE OWNED BY drizzle __drizzle_migrations_id_seq neilrowland
+218; 1259 16450 TABLE public courses neilrowland
+219; 1259 16461 TABLE public horses neilrowland
+220; 1259 16471 TABLE public jockeys neilrowland
+221; 1259 16481 TABLE public race_runners neilrowland
+222; 1259 16491 TABLE public races neilrowland
+227; 1259 54257 TABLE public saved_research_rules neilrowland
+226; 1259 16783 TABLE public source_imports neilrowland
+223; 1259 16501 TABLE public trainers neilrowland
+229; 1259 69667 TABLE public turf_performance_rating_shadow_snapshots neilrowland
+228; 1259 69514 TABLE public turf_performance_rating_snapshots neilrowland
+3578; 2604 16555 DEFAULT drizzle __drizzle_migrations id neilrowland
+3811; 0 16552 TABLE DATA drizzle __drizzle_migrations neilrowland
+3804; 0 16450 TABLE DATA public courses neilrowland
+3805; 0 16461 TABLE DATA public horses neilrowland
+3806; 0 16471 TABLE DATA public jockeys neilrowland
+3807; 0 16481 TABLE DATA public race_runners neilrowland
+3808; 0 16491 TABLE DATA public races neilrowland
+3813; 0 54257 TABLE DATA public saved_research_rules neilrowland
+3812; 0 16783 TABLE DATA public source_imports neilrowland
+3809; 0 16501 TABLE DATA public trainers neilrowland
+3815; 0 69667 TABLE DATA public turf_performance_rating_shadow_snapshots neilrowland
+3814; 0 69514 TABLE DATA public turf_performance_rating_snapshots neilrowland
+3823; 0 0 SEQUENCE SET drizzle __drizzle_migrations_id_seq neilrowland
+3628; 2606 16559 CONSTRAINT drizzle __drizzle_migrations __drizzle_migrations_pkey neilrowland
+3601; 2606 16460 CONSTRAINT public courses courses_pkey neilrowland
+3605; 2606 16470 CONSTRAINT public horses horses_pkey neilrowland
+3609; 2606 16480 CONSTRAINT public jockeys jockeys_pkey neilrowland
+3613; 2606 16490 CONSTRAINT public race_runners race_runners_pkey neilrowland
+3621; 2606 16500 CONSTRAINT public races races_pkey neilrowland
+3635; 2606 54267 CONSTRAINT public saved_research_rules saved_research_rules_pkey neilrowland
+3630; 2606 16793 CONSTRAINT public source_imports source_imports_pkey neilrowland
+3625; 2606 16510 CONSTRAINT public trainers trainers_pkey neilrowland
+3647; 2606 69680 CONSTRAINT public turf_performance_rating_shadow_snapshots turf_performance_rating_shadow_snapshots_pkey neilrowland
+3642; 2606 69523 CONSTRAINT public turf_performance_rating_snapshots turf_performance_rating_snapshots_pkey neilrowland
+3599; 1259 16537 INDEX public courses_normalized_name_idx neilrowland
+3602; 1259 16536 INDEX public courses_source_source_id_idx neilrowland
+3603; 1259 16539 INDEX public horses_normalized_name_idx neilrowland
+3606; 1259 16538 INDEX public horses_source_source_id_idx neilrowland
+3607; 1259 16541 INDEX public jockeys_normalized_name_idx neilrowland
+3610; 1259 16540 INDEX public jockeys_source_source_id_idx neilrowland
+3611; 1259 16545 INDEX public race_runners_jockey_idx neilrowland
+3614; 1259 16543 INDEX public race_runners_race_horse_idx neilrowland
+3615; 1259 16542 INDEX public race_runners_source_source_id_idx neilrowland
+3616; 1259 16544 INDEX public race_runners_trainer_idx neilrowland
+3617; 1259 70102 INDEX public races_completed_context_day_idx neilrowland
+3618; 1259 70101 INDEX public races_completed_context_distance_idx neilrowland
+3619; 1259 16547 INDEX public races_course_date_idx neilrowland
+3622; 1259 16546 INDEX public races_source_source_id_idx neilrowland
+3633; 1259 54269 INDEX public saved_research_rules_family_idx neilrowland
+3636; 1259 54270 INDEX public saved_research_rules_rule_identity_idx neilrowland
+3637; 1259 54268 INDEX public saved_research_rules_status_idx neilrowland
+3631; 1259 16794 INDEX public source_imports_source_type_id_idx neilrowland
+3632; 1259 70103 INDEX public source_imports_surface_lookup_idx neilrowland
+3643; 1259 69697 INDEX public tpr_shadow_snapshots_race_date_idx neilrowland
+3644; 1259 69698 INDEX public tpr_shadow_snapshots_race_idx neilrowland
+3645; 1259 69696 INDEX public tpr_shadow_snapshots_runner_version_idx neilrowland
+3638; 1259 69540 INDEX public tpr_snapshots_race_date_idx neilrowland
+3639; 1259 69541 INDEX public tpr_snapshots_race_idx neilrowland
+3640; 1259 69539 INDEX public tpr_snapshots_runner_version_idx neilrowland
+3623; 1259 16549 INDEX public trainers_normalized_name_idx neilrowland
+3626; 1259 16548 INDEX public trainers_source_source_id_idx neilrowland
+3648; 2606 16516 FK CONSTRAINT public race_runners race_runners_horse_id_horses_id_fk neilrowland
+3649; 2606 16526 FK CONSTRAINT public race_runners race_runners_jockey_id_jockeys_id_fk neilrowland
+3650; 2606 16511 FK CONSTRAINT public race_runners race_runners_race_id_races_id_fk neilrowland
+3651; 2606 16521 FK CONSTRAINT public race_runners race_runners_trainer_id_trainers_id_fk neilrowland
+3652; 2606 16531 FK CONSTRAINT public races races_course_id_courses_id_fk neilrowland
+3656; 2606 69691 FK CONSTRAINT public turf_performance_rating_shadow_snapshots turf_performance_rating_shadow_snapshots_horse_id_horses_id_fk neilrowland
+3657; 2606 69681 FK CONSTRAINT public turf_performance_rating_shadow_snapshots turf_performance_rating_shadow_snapshots_race_id_races_id_fk neilrowland
+3658; 2606 69686 FK CONSTRAINT public turf_performance_rating_shadow_snapshots turf_performance_rating_shadow_snapshots_runner_id_race_runners neilrowland
+3653; 2606 69534 FK CONSTRAINT public turf_performance_rating_snapshots turf_performance_rating_snapshots_horse_id_horses_id_fk neilrowland
+3654; 2606 69524 FK CONSTRAINT public turf_performance_rating_snapshots turf_performance_rating_snapshots_race_id_races_id_fk neilrowland
+3655; 2606 69529 FK CONSTRAINT public turf_performance_rating_snapshots turf_performance_rating_snapshots_runner_id_race_runners_id_fk neilrowland

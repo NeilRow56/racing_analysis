@@ -8,6 +8,7 @@ import {
   cacheDirectory,
   type BacktestFeatureCacheManifest,
 } from "./backtest-cache";
+import { JUMP_WINNING_TIME_GUARD_VERSION } from "./jump-winning-time-integrity";
 import { BACKTEST_FEATURE_SOURCE_VERSION } from "./historical-target-metrics";
 import type {
   HistoricalPostRaceOutcome,
@@ -113,8 +114,8 @@ describe("research holdout validation", () => {
     assert.equal(snapshot.settledSelections, 2);
     assert.equal(snapshot.winners, 1);
     assert.equal(snapshot.places, 1);
-    assert.equal(snapshot.profitLoss, 0);
-    assert.equal(snapshot.roiPercentage, 0);
+    assert.equal(snapshot.profitLoss, -0.5);
+    assert.equal(snapshot.roiPercentage, -25);
     assert.equal(snapshot.maxConsecutiveLosers, 1);
     assert.equal(snapshot.status, "insufficient_holdout_sample");
   });
@@ -540,6 +541,7 @@ function resolvedCohort(rule: ResearchRuleV1, trainerIds: string[], cohortYear: 
 
 function manifestFor(overrides: Partial<BacktestFeatureCacheManifest> = {}): BacktestFeatureCacheManifest {
   return {
+    jumpWinningTimeGuardVersion: JUMP_WINNING_TIME_GUARD_VERSION,
     featureSchemaVersion: BACKTEST_FEATURE_CACHE_VERSION,
     sourceFeatureVersion: BACKTEST_FEATURE_SOURCE_VERSION,
     source: "sporting_life",

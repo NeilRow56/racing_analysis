@@ -1,3 +1,5 @@
+import { CANONICAL_SETTLEMENT_VERSION, type ResearchSettlementVersion } from "./research-settlement-version";
+import { raceForSettlement, settlementOutcomeState } from "./settlement-outcome";
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import { dirname } from "node:path";
 import { isVoidBetResultStatus, settleSelection } from "./backtest";
@@ -24,6 +26,7 @@ export const AW_RATING_COVERAGE_EXCLUSION_REASON = "insufficient_rating_coverage
 export type AwDistanceGroup = "sprint" | "intermediate" | "staying" | "unknown";
 
 export type AwRatingForwardSettlement = {
+  settlementVersion?: ResearchSettlementVersion;
   stake: number;
   grossReturn: number;
   profitLoss: number;
@@ -48,6 +51,7 @@ export type AwRatingForwardRunner = {
 };
 
 export type AwRatingForwardRace = {
+  settlementVersion?: ResearchSettlementVersion;
   raceDate: string;
   raceDateTime: string;
   course: string;
@@ -218,7 +222,7 @@ export function upsertAwRatingForwardRaces(
 
 export function pendingAwRatingRaceIds(data: AwRatingForwardData): string[] {
   return data.races
-    .filter((race) => race.recordedPreRace && race.winnerRunnerIds.length === 0 && isAwDForwardRaceRankEligible(race))
+    .filter((race) => race.recordedPreRace && race.settledAt === null && race.winnerRunnerIds.length === 0 && isAwDForwardRaceRankEligible(race))
     .map((race) => race.raceId);
 }
 
@@ -244,9 +248,16 @@ export function enrichAwRatingForwardRace(
   race: TodayRace,
   settledAt = new Date(),
 ): AwRatingForwardRace {
+  if (record.settledAt !== null) return record;
+  race = raceForSettlement(race);
+  const voidRace = race.runners.length > 0 && race.runners.every(r => isVoidBetResultStatus(r.resultStatus));
+  if (voidRace) return { ...record, settlementVersion: CANONICAL_SETTLEMENT_VERSION,
+    runners: record.runners.map(r => ({ ...r, finishingPosition: null, resultStatus: race.runners.find(x => x.runnerId === r.runnerId)?.resultStatus ?? null, finalSp: null, settlement: null })),
+    winnerRunnerIds: [], settledAt: settledAt.toISOString() };
   const winners = race.runners.filter((runner) => runner.finishingPosition === 1);
   if (winners.length === 0) return record;
   const byId = new Map(race.runners.map((runner) => [runner.runnerId, runner]));
+  if (record.runners.some(row => !byId.has(row.runnerId) || settlementOutcomeState(byId.get(row.runnerId)!) === "unresolved")) return record;
   const deadHeatDivisor = winners.length;
   const runners = record.runners.map((snapshot) => {
     const result = byId.get(snapshot.runnerId);
@@ -268,6 +279,7 @@ export function enrichAwRatingForwardRace(
       resultStatus: result.resultStatus,
       finalSp: decimal(result.oddsDecimal),
       settlement: settlement && {
+        settlementVersion: CANONICAL_SETTLEMENT_VERSION,
         stake: settlement.stake,
         grossReturn: settlement.grossReturn,
         profitLoss: settlement.profitLoss,
@@ -277,6 +289,7 @@ export function enrichAwRatingForwardRace(
   });
   return {
     ...record,
+    settlementVersion: CANONICAL_SETTLEMENT_VERSION,
     runners,
     winnerRunnerIds: winners.map((winner) => winner.runnerId),
     settledAt: record.settledAt ?? settledAt.toISOString(),
@@ -291,7 +304,7 @@ export function summarizeAwRatingForward(data: AwRatingForwardData): AwRatingFor
   const zeroHistoryRunners = clean.flatMap((race) => race.runners.filter((runner) => runner.zeroHistory));
   return {
     cleanRaces: clean.length,
-    pending: analytical.filter((race) => race.winnerRunnerIds.length === 0).length,
+    pending: analytical.filter((race) => race.winnerRunnerIds.length === 0 && race.settledAt === null).length,
     settled: settled.length,
     awD: rankSummary(settled, (runner) => runner.awDRank, isAwDForwardRaceRankEligible),
     awA: rankSummary(clean.filter((race) => race.winnerRunnerIds.length > 0), (runner) => runner.awARank),

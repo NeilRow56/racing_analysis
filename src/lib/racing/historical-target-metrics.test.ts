@@ -6,6 +6,8 @@ import {
   type HistoricalTargetRow,
 } from "./historical-target-metrics";
 import { canonicalFamilyFormMetrics, calculateHorseMetricsAsOf } from "./horse-metrics";
+import { withHistoricalSettlementEvidence, type HistoricalSettlementEvidence } from "./historical-settlement-evidence";
+import { settleSelection } from "./backtest";
 import {
   buildCanonicalTurfPerformanceRatingInput,
   calculateTurfPerformanceRating,
@@ -13,6 +15,29 @@ import {
 } from "./turf-performance-rating";
 
 const targetTime = new Date("2026-09-10T14:00:00.000Z");
+
+test("legacy cache evidence is identity-bound and cannot refresh frozen outcomes or features", () => {
+  const original = buildHistoricalTargetRunnerMetricRows({ targets: [target({ finishingPosition: null, resultStatus: "other" })], candidateRuns: [] });
+  const saved = JSON.stringify(original);
+  const evidence: HistoricalSettlementEvidence = {
+    runnerId: original[0].features.targetRunnerId, raceId: original[0].features.targetRaceId,
+    horseId: original[0].features.horseId, source: original[0].features.source, raceDate: original[0].features.raceDate,
+    raceStage: "RACEVOID", outcomeCode: "0", finishingPosition: null, resultStatus: "other",
+  };
+  const projected = withHistoricalSettlementEvidence(original, [evidence]);
+  assert.equal(projected[0].outcome.raceStage, "RACEVOID");
+  assert.equal(settleSelection(projected[0].outcome), null);
+  assert.equal(projected[0].features, original[0].features);
+  assert.equal(JSON.stringify(original), saved);
+  assert.equal(withHistoricalSettlementEvidence(original, [{ ...evidence, horseId: "wrong-horse" }])[0].outcome.raceStage, undefined);
+  const changedResult = withHistoricalSettlementEvidence(original, [{ ...evidence, raceStage: "WEIGHEDIN", finishingPosition: 1, resultStatus: "finished", outcomeCode: "1" }]);
+  assert.equal(changedResult[0].outcome.finishingPosition, null);
+  assert.equal(changedResult[0].outcome.resultStatus, "other");
+  assert.equal(changedResult[0].outcome.outcomeCode, undefined);
+  assert.equal(settleSelection(changedResult[0].outcome), null);
+  const nonFinisher = withHistoricalSettlementEvidence(original, [{ ...evidence, raceStage: "WEIGHEDIN", outcomeCode: "BroughtDown" }]);
+  assert.equal(settleSelection(nonFinisher[0].outcome)?.profitLoss, -1);
+});
 
 function target(overrides: Partial<HistoricalTargetRow> = {}): HistoricalTargetRow {
   return {

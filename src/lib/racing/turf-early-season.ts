@@ -1,3 +1,4 @@
+import { assertCompatibleCapturePins } from "./capture-pin-compatibility";
 import { createHash } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname } from "node:path";
@@ -99,7 +100,7 @@ export async function mutateEarlyTurf(mutate: (data: EarlyTurfData) => EarlyTurf
     validate(after);
     if (after.observations.slice(before.observations.length).some(o => Date.now() >= Date.parse(o.scheduledOff) || Date.now() < Date.parse(o.capturedAt) || Date.now() - Date.parse(o.capturedAt) > 60000)) throw new Error("No retrospective early Turf additions");
   }, async data => {
-    if (JSON.stringify(data.sourceHashes) !== JSON.stringify(await earlyTurfSourceHashes())) throw new Error("Early Turf methodology changed; create a new version");
+    await assertCompatibleCapturePins(data.sourceHashes, await earlyTurfSourceHashes(), "turf-early-season");
     return mutate(data);
   });
 }

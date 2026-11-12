@@ -10,7 +10,8 @@ import { AW_TISSUE_V2_VERSION } from "./aw-tissue-v2";
 import type { JumpTissueForwardData } from "./jump-tissue-forward";
 import { JUMP_TISSUE_IMPLEMENTED_AT, JUMP_TISSUE_VERSION } from "./jump-tissue-model";
 import type { ValueCohortSnapshot } from "./tissue-value-readers";
-import { isVoidBetResultStatus, settledWinValue } from "./backtest";
+import { isVoidBetResultStatus, settledWinValue, legacyRecordedWinValue } from "./backtest";
+import type { ResearchSettlementVersion } from "./research-settlement-version";
 import type { ValueOutcome } from "./tissue-value-metrics";
 import { TISSUE_PROSPECTIVE_START, type ProspectiveTissueObservation } from "./tissue-prospective-summary";
 
@@ -22,11 +23,12 @@ export const TISSUE_PENDING_IDENTITY_QUARANTINE = [
   { family: "CHASE", date: "2026-10-22", sourceId: "944784", reason: "Ffos Las: pending field contains all nine horses in settled source 945340; retain 945340" },
 ] as const;
 
-type Result = { finishPosition: number | null; resultStatus: string | null; winner: boolean | null; deadHeatDivisor: number };
+type Result = { settlementVersion?: ResearchSettlementVersion; finishPosition: number | null; resultStatus: string | null; winner: boolean | null; deadHeatDivisor: number };
 /** Project stored result evidence only. No price settlement or model reconstruction. */
 function modelOutcome(result: Result, settledAt: string): ValueOutcome | null {
   const voided = isVoidBetResultStatus(result.resultStatus);
-  if (!voided && settledWinValue({ finishingPosition: result.finishPosition, resultStatus: result.resultStatus, won: result.winner }) === null) return null;
+  const classify = result.settlementVersion === "canonical_settlement_v3" ? settledWinValue : legacyRecordedWinValue;
+  if (!voided && classify({ finishingPosition: result.finishPosition, resultStatus: result.resultStatus, won: result.winner }) === null) return null;
   return { ...result, status: voided ? result.resultStatus?.trim().toLowerCase() === "non_runner" ? "NR" : "void" : "settled",
     grossReturn: null, profitLoss: null, settledAt };
 }
@@ -86,8 +88,8 @@ export function buildProspectiveTissueSources(input: {
           if (stored.finishPosition !== runner.finishingPosition) throw new Error("Turf prospective result evidence disagrees with family book");
           // Join result status only: retain the primary book's own ranks/probabilities.
           outcome = modelOutcome(stored, race.settledAt);
-        } else if (runner.finishingPosition !== null && Number.isInteger(runner.finishingPosition) && runner.finishingPosition > 0) {
-          outcome = modelOutcome({ finishPosition: runner.finishingPosition, resultStatus: "finished", winner: runner.finishingPosition === 1,
+        } else if (race.settlementVersion === "canonical_settlement_v3" || runner.finishingPosition !== null && Number.isInteger(runner.finishingPosition) && runner.finishingPosition > 0) {
+          outcome = modelOutcome({ settlementVersion: race.settlementVersion, finishPosition: runner.finishingPosition, resultStatus: runner.resultStatus ?? "finished", winner: runner.finishingPosition === 1,
             deadHeatDivisor: runner.finishingPosition === 1 ? Math.max(1, race.winners.length) : 1 }, race.settledAt);
         }
         if (!outcome) unresolvedResults.push(`${race.raceId}|${runner.runnerId}`);
@@ -106,7 +108,7 @@ export function buildProspectiveTissueSources(input: {
     const speedRanks = frozenBestL3SpeedRanks(family, isAw ? AW_VALUE_CONFIG.featureNames : HURDLE_VALUE_CONFIG.featureNames, race.runners);
     for (const runner of race.runners) {
       const result = runner.outcome;
-      const outcome = race.settledAt && result ? modelOutcome({ finishPosition: result.finishingPosition, resultStatus: result.resultStatus,
+      const outcome = race.settledAt && result ? modelOutcome({ settlementVersion: result.settlementVersion, finishPosition: result.finishingPosition, resultStatus: result.resultStatus,
         winner: result.won, deadHeatDivisor: result.deadHeatDivisor }, race.settledAt) : null;
       add(family, race.raceId, runner.runnerId, runner.rank, runner.probability, outcome, speedRanks.get(runner.runnerId) ?? null, race, race.recordedAt,
         getTissueInputReliability({ family, featureNames: isAw ? AW_VALUE_CONFIG.featureNames : HURDLE_VALUE_CONFIG.featureNames, modelInputs: runner.modelInputs }));

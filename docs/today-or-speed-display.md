@@ -90,8 +90,12 @@ are excluded from performance denominators. Dead-heat winners each count as
 winners; divisor and fractional winner credit are retained. Settlement is final
 once recorded, following the existing tracker pattern.
 
-Read-only results are at `/racing/research/or-speed`, linked from Research, and
-`bun run or-speed:summary`. No new daily command is required. Turf and AW each
+Read-only results are in Forward Research → Secondary Monitoring →
+**OR + Best L3 Speed — Prospective Monitoring**, and `bun run or-speed:summary`.
+The old `/racing/research/or-speed` route redirects to
+`/racing/research/forward-value?monitor=or-speed#or-speed-monitoring`, opening
+Secondary Monitoring. Results remain independent of Value filters, settlement
+summaries and headline totals. No new daily command is required. Turf and AW each
 report all edges, Top-3 OR, rank 4+, >=10, and Top-3 OR plus >=10 cohorts. Each
 reports observations, settled starters, winners, win %, Top-3 %, mean normalized
 finish and sample size labels based on settled starters: <50 TOO EARLY, 50–149

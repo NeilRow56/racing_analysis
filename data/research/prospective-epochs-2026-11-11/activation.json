@@ -1,0 +1,1093 @@
+{
+  "version": 2,
+  "activatedAt": "2026-11-11T16:39:41.798Z",
+  "collectionSemantics": "production_capture_dependencies_2026_11_11_v2",
+  "settlementVersion": "canonical_settlement_v3",
+  "epochs": {
+    "positiveNeutral": {
+      "id": "TISSUE_POSITIVE_NEUTRAL_COLLECTION_V2_2026_11_11",
+      "ledger": "data/research/prospective-epochs-2026-11-11/positive-neutral-v2.json"
+    },
+    "shadow": {
+      "id": "HURDLE_V3_SHADOW_COLLECTION_V2_2026_11_11",
+      "ledger": "data/research/prospective-epochs-2026-11-11/hurdle-v3-shadow-v2.json"
+    },
+    "marketEdge": {
+      "id": "HURDLE_V3_MARKET_EDGE_COLLECTION_V2_2026_11_11",
+      "ledger": "data/research/prospective-epochs-2026-11-11/hurdle-v3-market-edge-v2.json"
+    }
+  },
+  "shadowEpoch": "HURDLE_V3_SHADOW_COLLECTION_V2_2026_11_11",
+  "historicalBackfill": false,
+  "models": {
+    "TURF": {
+      "version": "TURF_TISSUE_V4",
+      "checksum": "e106fadd07263b1fcc4ece821a4bfcad645faeae873db026433a4902eabbe3fe"
+    },
+    "AW": {
+      "version": "AW_TISSUE_V3",
+      "checksum": "c8f75faa0aeacc88ba76f100e7d154a872bc9b2ee31a5a42d18e611e3e64f9a5"
+    },
+    "HURDLE": {
+      "version": "HURDLE_TISSUE_V2",
+      "checksum": "53defc50d717aba63c80c9f3c01c4df4360b709f6f4a21509a514179e23cce90"
+    },
+    "CHASE": {
+      "version": "CHASE_TISSUE_V2",
+      "checksum": "be65702490403f6a287d11ecb19307a67b58ca975ee7bd9ece71b4e0d759aa81"
+    },
+    "challenger": {
+      "version": "HURDLE_TISSUE_V3_CHALLENGER",
+      "checksum": "50f6e1842ca1cb0c4ed4c068a91adbc934755b7018c07f4e6f77e3b56fa80bf4"
+    },
+    "awBase": {
+      "version": "AW_TISSUE_V2",
+      "checksum": "ba7d2ea42a87d4ce432288d57a02cee8528217fafa04efa37723446924bdab82"
+    },
+    "jumpBase": {
+      "version": "JUMP_TISSUE_V1",
+      "checksum": "863b966423f05773083c3c208dd11cd49680df7a7414b855d613ee5c8ad9ebe4"
+    },
+    "turfBase": {
+      "version": "tissue_model_v3",
+      "checksum": "2c1e6d071f00396d92e9e80f351b1ba273b8b3316b5a6b2e483818cd60002db4"
+    }
+  },
+  "rules": {
+    "positiveNeutral": {
+      "tolerancePP": 0.5,
+      "edgeCutoffsPP": [
+        0.5,
+        2,
+        5,
+        10
+      ],
+      "priceCutoffs": [
+        3,
+        5,
+        11
+      ],
+      "capture": "first_genuine_post_arm_capture_per_race_no_replacement",
+      "badges": "reuse_Today_tissueMarketBadge_including_boundary_roundoff_tolerance",
+      "scores": "selection_Bernoulli_log_loss_and_Brier_frozen_probability_fractional_dead_heat_target",
+      "settlement": "read_exact_production_capture_canonical_outcomes_no_independent_settlement"
+    },
+    "marketEdge": {
+      "edgeCutoffsPP": [
+        0,
+        5,
+        10
+      ],
+      "speedWindowStarts": 3,
+      "lowSpeedMaximum": 1,
+      "marketRankUpperBounds": [
+        2,
+        5,
+        8
+      ],
+      "market": "exact_same_capture_full_book",
+      "speed": "finite_ratings_in_actual_last_three_canonical_hurdle_starts_no_backfill_no_age_cutoff",
+      "calibration": "runner_weighted_ECE_ten_fixed_probability_bins",
+      "settlement": "read_exact_canonical_shadow_renormalize_actual_starters"
+    },
+    "shadow": {
+      "v2Version": "HURDLE_TISSUE_V2",
+      "v3Version": "HURDLE_TISSUE_V3_CHALLENGER",
+      "tagVersion": "hurdle_last3_starts_led_max_decay90_expiry180_latest_pu30_v1",
+      "ledCoefficient": 0.3512845775499634,
+      "comparison": "Frozen T1/T2; unchanged official/LED comparisons; first eligible production capture only"
+    }
+  },
+  "sourceHashes": {
+    "bun.lock": "074d40051423a95cc476090637d43483c4dabcb74485bbeb4799e0b7cb9368a4",
+    "data/research/aw-tissue-model-v2.json": "6a2694fbd975db2ce4937a57087cc8f34c2ba690026b12ce72aa0778e371ad23",
+    "data/research/hurdle-tissue-v3-challenger.json": "2f90a1eb454920631452967ba3bbd76dd657f18a14145d241ac908486b788023",
+    "data/research/jump-tissue-model-v1.json": "bfc152a49d029e57dcd0d40e06a2b5e097d00aa90cc53cb6de0fe1f2c4c661c7",
+    "data/research/tissue-generation-2026-11-aw.json": "d9c44881e2ea13ee1ed637122e2eb49028866aba8668086718d757c0e94a7f8c",
+    "data/research/tissue-generation-2026-11-chase.json": "35208f1c097ede47b2637e535b4a186c4fc79ee34dd4cb0e5b8852342f5e854d",
+    "data/research/tissue-generation-2026-11-hurdle.json": "2b6495fceb4079da756e52a00c7b45f9d8051ea6d63305dd96ae5c7f8ab6499e",
+    "data/research/tissue-generation-2026-11-turf.json": "dcbe9fac4f7f3b56c5d9297e77b82357ace92d4d5c34f2152afd02cfb9bf9b8a",
+    "data/research/tissue-model-v3.json": "cc3db9e2a52c0c8d57c1c4dbd0ce7dbe82b27962ad60e193f9f2dc176f64f57a",
+    "package.json": "12805cf1eeec2b7b40de62c43352d3b520447f139f9086a1848f87c2fa1e3135",
+    "scripts/activate-prospective-epochs.ts": "55e8946c38a4d9d92bd144c6426876e13faeab9b1a8c1e64943c23d52a7139e3",
+    "scripts/diagnose-independent-tissue-feasibility.ts": "7343bd3a59574d17f271f75d08dc7795af06a0d2ac447c1a07b8014e2536d4a8",
+    "scripts/diagnose-tpr-vs-timewise-forward.ts": "fb7741a22c39792ce91778adcabf81bb0127cd3029c9e192285833fd404780ba",
+    "scripts/research-racecard-fallback.ts": "f6e27fa2bf6dafb80cae97a724098c9c4297de1114d292c00838e1d850585ad7",
+    "scripts/run-research-workflow.ts": "b010c0c3f72af220889473a67ba301c033445d9569f9f10724c87a2250be164e",
+    "scripts/settle-research-results.ts": "270ae22de14e52580e0b3788a7aa31093a2699912023b543352dab7c124d1240",
+    "scripts/track-tissue-generation.ts": "00d63c197f6647dcb904ed3a78f0e1f0aff7e3fe3727641e988b47016f2cad17",
+    "src/app/racing/research/forward-value/prospective-epoch-monitor.tsx": "d2721d5700861149772e74b010cad95e498bc37c6c02178b32adec0e5f573ff8",
+    "src/app/racing/today/tissue-market-badge.ts": "ecd2a5a2a033b72dcf5aef2eeccb4275c6d0473a25c49f32f0fbd8c2d74135e7",
+    "src/db/index.ts": "59437df2c0ce8fbe3f8c4a67561bec5c926089769f4c2ae9df5a8e0051d34704",
+    "src/db/schema.ts": "1e9d7f9af6dc753f6ad19384b5aadd7d335202c415c72bf02d0f62b90bdbff68",
+    "src/lib/env.ts": "b232fbefad7071286cdc599340fc540e83eaac35cc98b8e6e12f097511f383ae",
+    "src/lib/racing/aw-performance-rating.ts": "816500055f6c8825c423d15edff3f6cfa8a80c9d590aeb2a2b35b5f0c4424b84",
+    "src/lib/racing/aw-speed-rating.ts": "004aa9b1264e4259e99e98fa4b72d4f2dd18b52deb70ac4e2de8422c30f0b1e6",
+    "src/lib/racing/aw-speed-ratings.ts": "e3b319581c502a80d61338b1da577a441db2864e82dd8c41ca60a56daf474e66",
+    "src/lib/racing/aw-surface-material.ts": "60b2df6c03c8601c489ad0479068cf82af205841b8258ad3355543f3748ca38b",
+    "src/lib/racing/aw-tissue-forward.ts": "6bc8787a742bb68e4fe3b3ec4421981142d84bc8c67526c03127b2f8b3680ea1",
+    "src/lib/racing/aw-tissue-model.ts": "1022edcd4f8f2ccee75c81293b93315960c6a4b9be30446a315d0945b1fc73be",
+    "src/lib/racing/aw-tissue-paired-forward.ts": "d1856e137d9c19df33043c20d0ccc77e425b28144c725e2efde11be6705acb2f",
+    "src/lib/racing/aw-tissue-v2-activation.ts": "7e6c0f878532a6115dd0952849839835447045212e7c4d82ff92dd67e32785b6",
+    "src/lib/racing/aw-tissue-v2-features.ts": "9883452207f9cf06f55b9b603df2812d7281c772bdeae73d4c3da955f837008d",
+    "src/lib/racing/aw-tissue-v2-sync.ts": "bc8a34d2d449fcbd31f2f57d41a63c8a625c89c5e0fd3324b1b58cdbb5e3105a",
+    "src/lib/racing/aw-tissue-v2.ts": "226f80ac9b32ae5abc246df9a26e67e9a115d64ee63c392b297e8b8c0dc50e8d",
+    "src/lib/racing/backtest-cache.ts": "21edafde1a1b16cc0c53a4b72a5d4e8f476626a1aeff49c36ad26aa9dc142fd3",
+    "src/lib/racing/backtest.ts": "b078ee2c1473903facb2fc9ed6c81424c0bfbc56742091d7f1e25d1c968839f8",
+    "src/lib/racing/calendar-period.ts": "13d76933c5af1ae48f34d3447863a2aeff68f8b7ff3fc804163944ef3c218526",
+    "src/lib/racing/capture-pin-compatibility.ts": "e8e97d875c8a33ea7c5f91ea53128d80a569e3e46bf05ca564e78d931e3d3492",
+    "src/lib/racing/chase-shadow-context.ts": "b039aeac540979821bea0d15e6d31fd53eaf10d9c1ceff957679b7db07410800",
+    "src/lib/racing/chase-shadow-forward.ts": "561af5249fc80f22e4fc1e322708e4275d15a716c1369b73458bf68700709329",
+    "src/lib/racing/chase-shadow-model.ts": "5fa46cc64b04beca1e5d7151550f37322a6356ec4d73d8219de9b6923bb26b5a",
+    "src/lib/racing/chase-speed-reliability-capture.ts": "1000e2feb0dced72e987ee9644fc49e84f22e68417895545597028eb0cac71b7",
+    "src/lib/racing/chase-speed-reliability-shadow.ts": "e8daa7c949c80bebf8f91f9eb8fe01a6aa1a0a9ec9aa291f5303aa113b95cf39",
+    "src/lib/racing/chase-tissue-challenger-forward.ts": "42abea44ff4923ca6321478e4331689d6cad0e5f2b949bdfaa62126e02f4185f",
+    "src/lib/racing/context-weight-shadow-config.ts": "ebdee34ef05147a354ad06090e4ba08522ccdeae88d83c3ae4c4714e4ff15fc5",
+    "src/lib/racing/context-weight-shadow-forward.ts": "9f358623041c3fa84baa7b1cbc315e99b846189de7aade1c1e5781c2b292d7dc",
+    "src/lib/racing/context-weight-shadow-model.ts": "be278c2d947c9594cb62ff378dee3648b674e102f119619237a1fdf937948624",
+    "src/lib/racing/context-weight-shadow-sync.ts": "4039530e7e6036df77e3859afc71e1aa39d7cb77322d78601c4ff1352eb2ad6b",
+    "src/lib/racing/current-day-sync.ts": "14cd76a3d981034d2bb1f14371801605fc4fb80df8cffc7f255492143e8193ea",
+    "src/lib/racing/current-race-classification.ts": "58eb1437a56bb5a46d2901d700d816b1b1382b29ca286328179feae3abace6de",
+    "src/lib/racing/descending-ranks.ts": "b9c103ff0356825c91878e49c63510e5fa4efc04e5c87de7e69e18f1eb0cd2ea",
+    "src/lib/racing/forward-value.ts": "44990bc6485817af8aeb70f02d65b3f87f95f413c1afe2b7d2378c0af037aeb4",
+    "src/lib/racing/frozen-capture-selection.ts": "0871579f9c3af0074a305957c4c5de422e70bf9080f790509387a6c016ee8f80",
+    "src/lib/racing/frozen-json-store.ts": "fe791c44aabc67deec1dad25934b839d906369953f2699456223889241592b5a",
+    "src/lib/racing/going-form.ts": "45491ca2b6b4eee804144944a7e9e5f07f1e4195215b13bad7b2cd9ebd8a0d36",
+    "src/lib/racing/historical-form-flags.ts": "9a3ba954131508e4d66a622c5900bebd9f46b58910d176cf306cde7dce27d7a5",
+    "src/lib/racing/historical-settlement-evidence.ts": "78a220d1a062b58975685b51ccadd96199d94e2bd200bcde448066700741486c",
+    "src/lib/racing/historical-target-metrics.ts": "7e984a19a6fb5f9cfef5b91847e97ee4dd537002d35e7de918fea8b6b1a7d7e2",
+    "src/lib/racing/horse-metrics.ts": "dc98669b838d6b7d13d82a03dbfadd6bee84ff885d0225cc77732d344c09a92e",
+    "src/lib/racing/hurdle-low-form-method.ts": "d704c71fe51488b495e647c02649c6ba4e4b0cd683f0900f6103a0ed7f9c5ce8",
+    "src/lib/racing/hurdle-low-form.ts": "496c2710abed499aff1f4444742ac298d7cc06b47c1ef99f955ee0346e4469e8",
+    "src/lib/racing/hurdle-recency-forward.ts": "87685389d338492c176e15f6e7752e4cec9075cd44c84cd47d9304908db51b23",
+    "src/lib/racing/hurdle-tissue-challenger-forward.ts": "822505abaa61aabd625f700406eeafdf539aa01c5141c10af369333d6d744113",
+    "src/lib/racing/hurdle-v3-challenger-features.ts": "d8285c3f117813b41b191ba06e08f10dfabe99ccffc66884c5a46d074814a858",
+    "src/lib/racing/hurdle-v3-challenger-model.ts": "47e01e7f9fb63ef0f7cb30dc5c37ec2ce052bddcb3a6cf673fcc1d00bc5bc964",
+    "src/lib/racing/hurdle-v3-market-edge-method.ts": "799387679af0f74dcd1d759675e4534df08c707137b71c30f17dc6a63e3fcbb3",
+    "src/lib/racing/hurdle-v3-market-edge.ts": "004fc189541d6459c43e421cc5a9eacc555b0d2260a8176878fb928f5ac95dc9",
+    "src/lib/racing/hurdle-v3-shadow-inputs.ts": "ba10c1cbbd64a4f0870cba7a68647e560af8c3340214dd0b61174cb8859452cb",
+    "src/lib/racing/hurdle-v3-shadow-sync.ts": "cea47bb18e7e371ca94fa57cd4082c2a3d42e7845ada87fb794c4211015fc93e",
+    "src/lib/racing/hurdle-v3-shadow-tags.ts": "cd4cc813d6e1166ca3e6e5622ee5f296623dc498a1aa1a524f06e29b17d5b8a9",
+    "src/lib/racing/hurdle-v3-shadow.ts": "123392a2c9c78e7a35ff90eab93ffcd72c528698043f5d237af2024ff681cadc",
+    "src/lib/racing/hurdle-value-rule.ts": "660ae08db812e83cf152ff6836708cedfaf798f7a96f9fc51cdacb3157e639ae",
+    "src/lib/racing/jump-g4-forward.ts": "3f536a7d562cef8b94eba69128841931a162f07d977f5b37324379f23e9de191",
+    "src/lib/racing/jump-performance-rating.ts": "2969b0a47bed6915dfed96740d9e2c0d14911a4515c2c5319b69d21d49ac5650",
+    "src/lib/racing/jump-speed-rating.ts": "ee571b63acd6869abc1255f362da9982b9b2626f388f24b003479367c68c71b4",
+    "src/lib/racing/jump-speed-ratings.ts": "cf1df1c7540901d9afa12c4288fb0dc511ca52b6e314241abdb2465a3ea890e3",
+    "src/lib/racing/jump-speed-reliability.ts": "1ccf0584b9b563d9ca906a6c9519588dff02fdb6a8eb233b240edc68b64cf2d6",
+    "src/lib/racing/jump-tissue-forward.ts": "a49961b29e5b1eab8139671619a30a571380207d5f575e6fe553902e011447a6",
+    "src/lib/racing/jump-tissue-model.ts": "0b79c064c5088d8c2ff0e7eb6582e2e9d83892a46078bf250b38780946674835",
+    "src/lib/racing/jump-tissue-sync.ts": "8ac4c9745c3a633c57b9586a500367955cca0a4828a64c10f00fb8643450ed37",
+    "src/lib/racing/jump-winning-time-integrity.ts": "6e183e483865872e50273103629873e8f23080f07318e2c13b2289a6baf3a37e",
+    "src/lib/racing/jump-winning-time-references.ts": "efbc9773835c1cd6a3d3e7acdbc9987e7ed22f3487a3a2c7b3b2d4ba8f26b1ff",
+    "src/lib/racing/model-disagreement-forward.ts": "bc34242695bb047d22fe0fad490789992181ac085e956b622ed4e42f568d1d13",
+    "src/lib/racing/or-speed-comparison.ts": "9429826211b9dffd51bd850bd12de3f83e037027918f42d9d948b7b3195f90ff",
+    "src/lib/racing/or-speed-forward.ts": "c5bd6406d74838e46f2da505dacc56d390d4edac501da18536a9b79e941d627a",
+    "src/lib/racing/prospective-epoch-collection.ts": "975c533b06b3e742bde00aaa5a98cdfefc953573fc02c65cb2dee7c194c7a83f",
+    "src/lib/racing/prospective-epoch-config.ts": "71771c674d39843c24ba127a23c27c8eaed0699586eaddd68781c44972e692b1",
+    "src/lib/racing/prospective-epoch-integrity.ts": "7f444ee9a436375a547ad7297d32f8e307a6e96989301e113aad9a00ef5d475e",
+    "src/lib/racing/prospective-epoch-report.ts": "f12c65f359e5d594a4311508930147439be01ace4a9eb6428ebc9d9078f69a13",
+    "src/lib/racing/prospective-going.ts": "48032ee2d111930c8f0aa8496b4b9fe5c25573e9f753941d80b07bb6cdb62224",
+    "src/lib/racing/race-result-surface.ts": "6e289a5058e9104849464d67c7a8aed792b40f596f443ad2ba123e74b5739c43",
+    "src/lib/racing/rating-coverage.ts": "5adbc1d811cb7dd053ec77d092ec3f248c2ba12a6d15d35b4b893d020dd5033c",
+    "src/lib/racing/research-or-relative-metrics.ts": "a5245d1909011eccd2ebe6f8670394f2a2dcce544bff196cf857a37ad469a3b9",
+    "src/lib/racing/research-rank-metrics.ts": "e54238e268040db349d5466f67261cee9d32a6b8e15f862296ff78d34ad34783",
+    "src/lib/racing/research-rule-classes.ts": "0e1afcb1314381d082aa8982a348d41f773bf24434e4c728cd9d1d05f25f421e",
+    "src/lib/racing/research-rule.ts": "13b4008be472ebe840180e82a0fee1a7562423a5105b66401709c6ec9d284402",
+    "src/lib/racing/research-settlement-version.ts": "96d0ca33a5292b01029d8ea918fa73b67835db3014e22018270c63e336fe3884",
+    "src/lib/racing/settlement-outcome.ts": "aca2c3db9856b76f7b9be637a80eae5ece36aa9f15a6c8c0c914036bc7982886",
+    "src/lib/racing/settlement-reporting.ts": "7f10243accf764a43051247185fb4023c70b8c1f2e47e5f1d8bc406457f35fb5",
+    "src/lib/racing/speed-research.ts": "d57b5f8df039e72eba971fb9d773201ff1f4c724119b12f8e9bf373d0817685d",
+    "src/lib/racing/starting-price-filter.ts": "ef9ba2948200cc48c81d4e31243bceec166995380c34948ccac557ae56cad108",
+    "src/lib/racing/tissue-forward.ts": "374c8b10207f6797be1da34e02969e2f013c58475f44d54e91dd630765bf266d",
+    "src/lib/racing/tissue-generation-config.ts": "5beceb5f4be3933dc7725003a0d7aef8637c055d183a4e76c107e2acd499f87d",
+    "src/lib/racing/tissue-generation-context.ts": "b85460290771fa695b853e1753eb45fa28c22211f863946a628bf367694277aa",
+    "src/lib/racing/tissue-generation-features.ts": "f07bc6dbf0ff73e33c05a74bb847cf5efe03a091272f4de7d002e63518e73aa5",
+    "src/lib/racing/tissue-generation-forward.ts": "a3848acc043e85d2cea8af10e9c64e927720fae0634d91692ea34f7578aa3782",
+    "src/lib/racing/tissue-generation-model.ts": "85ce056b96a1827689234fff87881a4697eee724d92460e44824db2f0c68bbd8",
+    "src/lib/racing/tissue-generation-sync.ts": "34ee91f8075b16ff1c731f7830d0628c4abd1e1401e907ddad63ec839a2849b1",
+    "src/lib/racing/tissue-input-reliability.ts": "4c174eee5f203c9243c2bfe25185f21e6601af2d769050f7883fe5e6fc14f15d",
+    "src/lib/racing/tissue-positive-neutral-method.ts": "9989b64c3bf40bc2faf54d7f62022cc2abc4b9715ffea87fd475868af92fefe1",
+    "src/lib/racing/tissue-positive-neutral.ts": "6cd0b7869886a927ec583b666c8386618e5117779cd6bdab9ab58abcb5ab8e66",
+    "src/lib/racing/tissue-prospective-summary.ts": "2287263341e0350197609978419ef8642a9d7aa6cbf8d1d1b0e40502e23cb680",
+    "src/lib/racing/tissue-rank-one-edge.ts": "9a26b4e398f0ef4bf484a0e63167cec2b0b470ea40e997d00bcb0660e1ffb21b",
+    "src/lib/racing/tissue-speed-rank-watch.ts": "ef5ffa49c6a1705463fe901c73fddf844dff51c69db3f886e17042b762d34ea9",
+    "src/lib/racing/tissue-value-config.ts": "1ade7c2910318453fb22d011934ca54fa2599af2fb407f265c18cbe6bbd4199b",
+    "src/lib/racing/tissue-value-family.ts": "0600733d1537fee6d3b6b81b211c36e004a724b97cb246bcf81e622e99e8ac4b",
+    "src/lib/racing/tissue-value-forward.ts": "db0ab546b73c4f2c7073af5f27d44871da666a5fbb662dbf3c7fe94882f971b7",
+    "src/lib/racing/tissue-value-metrics.ts": "1a315b3478dbba7c50f64b96c80aaade5fd4d13bd261ae77ff9cb0cc0a73cae9",
+    "src/lib/racing/tissue-value-price-cap-rule.ts": "529ea1efe8d2b9c9cc257156e98453c1b38bd963f1623e6d3605c49238a28f43",
+    "src/lib/racing/tissue-value-readers.ts": "91382d9b262fcb58a2e2068022995e2b5cdb021d74087cdef17181783424effc",
+    "src/lib/racing/tissue-value-sync.ts": "78114ee863a086efc60cf5b3d924d33456988752ca0b394075633ea27bd1d838",
+    "src/lib/racing/tissue-value-view.ts": "fcf1a42f20a6a8683d67bcf0b21f1daeb26033e90d7acc48fa752d4bf261e0cb",
+    "src/lib/racing/todays-racing.ts": "5fbb1a05d82d92d8bed818808d8632ffc527db09818425d5a579935da7776be1",
+    "src/lib/racing/todays-rating-weight-forward.ts": "5c349cc197a715a12537e6ff1c496ffe211638d8fc20a2caf6076278f4efdd9a",
+    "src/lib/racing/todays-rating.ts": "98d6a0705e84227e83de8427b4c33da9da8a9d4332d0bcd68812d3bc7138df1b",
+    "src/lib/racing/tpr-confidence-context.ts": "e98295a3af2aeecf572c5f4e64bb376afd0ae1d303146fccf7ec49ebcb7fef47",
+    "src/lib/racing/tpr-forward-workflow.ts": "d64d3470bb08ef4f668adc940c288104efae515ea2493e2e19b4e60ad5a0c630",
+    "src/lib/racing/tpr-timewise-forward-context.ts": "f9ed9ec2972a8700bb24c2299d563cafda17d2b8b3df8a751df1da4149f08353",
+    "src/lib/racing/trainer-cohort-mode.ts": "ef270961783a0c4f1eeab98d221609e97fdaea30ae29adada98d59d309b7b13b",
+    "src/lib/racing/trainer-quality.ts": "576dc66d1cf0d1b6287fa6b563e9adc33470c82df2c289989809dc7d1664c542",
+    "src/lib/racing/turf-early-season-inputs.ts": "0f87d766700d6175a25727b30fef651292f3f5e6eca47b04ef6884f617b0117a",
+    "src/lib/racing/turf-early-season-method.ts": "07d63c5a04aa729068e83620e5de61c6dc82c55b15c8be04fdc97d4abf607a08",
+    "src/lib/racing/turf-early-season.ts": "d58c93f61614e2906d66c8f8cf2bfc1dfff759ec19ba8fbd3736bb9d40a215d1",
+    "src/lib/racing/turf-performance-rating.ts": "c1bba98731a11711053c99461abbdc1c561972b2ad0be7d67e169f0319b61e6c",
+    "src/lib/racing/turf-speed-rating.ts": "2c26e473ba76ba07f09d5bc82516487b8f5d990ed9d39f4f8542a4ac3eee41bc",
+    "src/lib/racing/turf-speed-ratings.ts": "a85d63b6fbff955f4177ae5cdbcc42a4b705048fdd72f66f15516bc9e1f049a1",
+    "src/lib/racing/turf-tissue-training-semantics.ts": "667e2a118a2f1a2aed12b082bac0e42ac4a694f073339754ffc8e420b9b5a2b0",
+    "src/lib/racing/turf-value-definition.ts": "de667571c73baafd79d31313d20747bd3bf78f6bca1536abd9b6da93907bc2ba",
+    "src/lib/racing/value-rank-v2.ts": "788eaac40d597df2638743a3f9a0d3826536d5d84fdb8cddf5cdd34834e18d5b",
+    "src/lib/racing/weight-performance.ts": "e7969fb61c638664b021bd7f962ebd3bab58b204d0e10a7bb70e012452dabf19",
+    "src/lib/racing/win-settlement.ts": "5f8b606430ecc6c4e88379e2709e41a313593c6b2b9b52c31453a38ac3936cb2",
+    "tsconfig.json": "5c51df4c59f4510d8c7dadf07a5c32132228826a3b331da5e286207b4df7ef9c"
+  },
+  "dependencyGraph": {
+    "bun.lock": [],
+    "data/research/aw-tissue-model-v2.json": [],
+    "data/research/hurdle-tissue-v3-challenger.json": [],
+    "data/research/jump-tissue-model-v1.json": [],
+    "data/research/tissue-generation-2026-11-aw.json": [],
+    "data/research/tissue-generation-2026-11-chase.json": [],
+    "data/research/tissue-generation-2026-11-hurdle.json": [],
+    "data/research/tissue-generation-2026-11-turf.json": [],
+    "data/research/tissue-model-v3.json": [],
+    "package.json": [],
+    "scripts/activate-prospective-epochs.ts": [
+      "src/lib/racing/aw-tissue-v2.ts",
+      "src/lib/racing/hurdle-v3-challenger-model.ts",
+      "src/lib/racing/hurdle-v3-market-edge.ts",
+      "src/lib/racing/hurdle-v3-shadow.ts",
+      "src/lib/racing/jump-tissue-model.ts",
+      "src/lib/racing/prospective-epoch-config.ts",
+      "src/lib/racing/prospective-epoch-integrity.ts",
+      "src/lib/racing/research-settlement-version.ts",
+      "src/lib/racing/tissue-forward.ts",
+      "src/lib/racing/tissue-generation-model.ts",
+      "src/lib/racing/tissue-positive-neutral.ts",
+      "src/lib/racing/tissue-value-metrics.ts"
+    ],
+    "scripts/diagnose-independent-tissue-feasibility.ts": [
+      "src/db/index.ts",
+      "src/lib/racing/backtest-cache.ts",
+      "src/lib/racing/historical-target-metrics.ts"
+    ],
+    "scripts/diagnose-tpr-vs-timewise-forward.ts": [
+      "src/lib/racing/research-settlement-version.ts",
+      "src/lib/racing/settlement-reporting.ts",
+      "src/lib/racing/turf-performance-rating.ts",
+      "src/lib/racing/win-settlement.ts"
+    ],
+    "scripts/research-racecard-fallback.ts": [
+      "src/db/index.ts"
+    ],
+    "scripts/run-research-workflow.ts": [
+      "scripts/research-racecard-fallback.ts",
+      "src/lib/racing/tissue-generation-config.ts",
+      "src/lib/racing/todays-racing.ts"
+    ],
+    "scripts/settle-research-results.ts": [
+      "scripts/diagnose-tpr-vs-timewise-forward.ts",
+      "src/db/index.ts",
+      "src/lib/racing/aw-tissue-forward.ts",
+      "src/lib/racing/aw-tissue-paired-forward.ts",
+      "src/lib/racing/aw-tissue-v2-activation.ts",
+      "src/lib/racing/aw-tissue-v2.ts",
+      "src/lib/racing/chase-shadow-forward.ts",
+      "src/lib/racing/chase-tissue-challenger-forward.ts",
+      "src/lib/racing/context-weight-shadow-forward.ts",
+      "src/lib/racing/context-weight-shadow-sync.ts",
+      "src/lib/racing/forward-value.ts",
+      "src/lib/racing/hurdle-tissue-challenger-forward.ts",
+      "src/lib/racing/hurdle-v3-shadow-sync.ts",
+      "src/lib/racing/jump-g4-forward.ts",
+      "src/lib/racing/jump-tissue-forward.ts",
+      "src/lib/racing/model-disagreement-forward.ts",
+      "src/lib/racing/or-speed-forward.ts",
+      "src/lib/racing/tissue-forward.ts",
+      "src/lib/racing/tissue-generation-forward.ts",
+      "src/lib/racing/tissue-value-forward.ts",
+      "src/lib/racing/tissue-value-readers.ts",
+      "src/lib/racing/todays-racing.ts",
+      "src/lib/racing/todays-rating-weight-forward.ts",
+      "src/lib/racing/tpr-forward-workflow.ts"
+    ],
+    "scripts/track-tissue-generation.ts": [
+      "src/db/index.ts",
+      "src/lib/racing/tissue-generation-config.ts",
+      "src/lib/racing/tissue-generation-forward.ts",
+      "src/lib/racing/tissue-generation-sync.ts",
+      "src/lib/racing/todays-racing.ts"
+    ],
+    "src/app/racing/research/forward-value/prospective-epoch-monitor.tsx": [
+      "src/lib/racing/prospective-epoch-report.ts"
+    ],
+    "src/app/racing/today/tissue-market-badge.ts": [],
+    "src/db/index.ts": [
+      "src/db/schema.ts",
+      "src/lib/env.ts"
+    ],
+    "src/db/schema.ts": [],
+    "src/lib/env.ts": [],
+    "src/lib/racing/aw-performance-rating.ts": [
+      "src/lib/racing/current-race-classification.ts",
+      "src/lib/racing/todays-racing.ts"
+    ],
+    "src/lib/racing/aw-speed-rating.ts": [
+      "src/lib/racing/speed-research.ts"
+    ],
+    "src/lib/racing/aw-speed-ratings.ts": [
+      "src/db/index.ts",
+      "src/db/schema.ts",
+      "src/lib/racing/aw-speed-rating.ts",
+      "src/lib/racing/speed-research.ts"
+    ],
+    "src/lib/racing/aw-surface-material.ts": [],
+    "src/lib/racing/aw-tissue-forward.ts": [
+      "src/db/index.ts",
+      "src/lib/racing/aw-performance-rating.ts",
+      "src/lib/racing/aw-speed-rating.ts",
+      "src/lib/racing/aw-tissue-model.ts",
+      "src/lib/racing/aw-tissue-v2-features.ts",
+      "src/lib/racing/backtest.ts",
+      "src/lib/racing/forward-value.ts",
+      "src/lib/racing/prospective-going.ts",
+      "src/lib/racing/research-settlement-version.ts",
+      "src/lib/racing/settlement-outcome.ts",
+      "src/lib/racing/tissue-generation-config.ts",
+      "src/lib/racing/tissue-rank-one-edge.ts",
+      "src/lib/racing/tissue-value-price-cap-rule.ts",
+      "src/lib/racing/todays-racing.ts"
+    ],
+    "src/lib/racing/aw-tissue-model.ts": [
+      "src/lib/racing/aw-speed-rating.ts",
+      "src/lib/racing/current-race-classification.ts",
+      "src/lib/racing/research-rule.ts",
+      "src/lib/racing/todays-racing.ts",
+      "src/lib/racing/weight-performance.ts"
+    ],
+    "src/lib/racing/aw-tissue-paired-forward.ts": [
+      "src/lib/racing/aw-speed-rating.ts",
+      "src/lib/racing/aw-tissue-model.ts",
+      "src/lib/racing/backtest.ts",
+      "src/lib/racing/forward-value.ts",
+      "src/lib/racing/research-settlement-version.ts",
+      "src/lib/racing/settlement-outcome.ts",
+      "src/lib/racing/tissue-generation-config.ts",
+      "src/lib/racing/todays-racing.ts"
+    ],
+    "src/lib/racing/aw-tissue-v2-activation.ts": [],
+    "src/lib/racing/aw-tissue-v2-features.ts": [
+      "scripts/diagnose-independent-tissue-feasibility.ts",
+      "src/lib/racing/aw-surface-material.ts",
+      "src/lib/racing/historical-target-metrics.ts",
+      "src/lib/racing/weight-performance.ts"
+    ],
+    "src/lib/racing/aw-tissue-v2-sync.ts": [
+      "src/db/index.ts",
+      "src/lib/racing/aw-speed-rating.ts",
+      "src/lib/racing/aw-speed-ratings.ts",
+      "src/lib/racing/aw-tissue-forward.ts",
+      "src/lib/racing/aw-tissue-v2-activation.ts",
+      "src/lib/racing/aw-tissue-v2-features.ts",
+      "src/lib/racing/aw-tissue-v2.ts",
+      "src/lib/racing/backtest.ts",
+      "src/lib/racing/horse-metrics.ts",
+      "src/lib/racing/jump-tissue-sync.ts",
+      "src/lib/racing/todays-racing.ts",
+      "src/lib/racing/trainer-quality.ts"
+    ],
+    "src/lib/racing/aw-tissue-v2.ts": [
+      "scripts/diagnose-independent-tissue-feasibility.ts",
+      "src/lib/racing/aw-performance-rating.ts",
+      "src/lib/racing/aw-surface-material.ts",
+      "src/lib/racing/aw-tissue-forward.ts",
+      "src/lib/racing/aw-tissue-v2-activation.ts",
+      "src/lib/racing/aw-tissue-v2-features.ts",
+      "src/lib/racing/current-day-sync.ts",
+      "src/lib/racing/current-race-classification.ts",
+      "src/lib/racing/forward-value.ts",
+      "src/lib/racing/tissue-forward.ts",
+      "src/lib/racing/todays-racing.ts"
+    ],
+    "src/lib/racing/backtest-cache.ts": [
+      "src/db/index.ts",
+      "src/db/schema.ts",
+      "src/lib/racing/aw-speed-rating.ts",
+      "src/lib/racing/backtest.ts",
+      "src/lib/racing/historical-settlement-evidence.ts",
+      "src/lib/racing/historical-target-metrics.ts",
+      "src/lib/racing/jump-speed-rating.ts",
+      "src/lib/racing/jump-winning-time-integrity.ts",
+      "src/lib/racing/research-settlement-version.ts",
+      "src/lib/racing/todays-rating.ts",
+      "src/lib/racing/turf-speed-rating.ts",
+      "src/lib/racing/weight-performance.ts"
+    ],
+    "src/lib/racing/backtest.ts": [
+      "src/db/index.ts",
+      "src/db/schema.ts",
+      "src/lib/racing/backtest-cache.ts",
+      "src/lib/racing/historical-target-metrics.ts",
+      "src/lib/racing/research-settlement-version.ts",
+      "src/lib/racing/settlement-outcome.ts",
+      "src/lib/racing/win-settlement.ts"
+    ],
+    "src/lib/racing/calendar-period.ts": [],
+    "src/lib/racing/capture-pin-compatibility.ts": [],
+    "src/lib/racing/chase-shadow-context.ts": [
+      "src/db/index.ts",
+      "src/lib/racing/backtest.ts",
+      "src/lib/racing/chase-shadow-forward.ts",
+      "src/lib/racing/jump-speed-rating.ts",
+      "src/lib/racing/todays-racing.ts"
+    ],
+    "src/lib/racing/chase-shadow-forward.ts": [
+      "scripts/diagnose-independent-tissue-feasibility.ts",
+      "src/lib/racing/chase-shadow-model.ts",
+      "src/lib/racing/forward-value.ts",
+      "src/lib/racing/jump-speed-reliability.ts",
+      "src/lib/racing/jump-tissue-forward.ts",
+      "src/lib/racing/jump-tissue-model.ts",
+      "src/lib/racing/research-rule.ts",
+      "src/lib/racing/tissue-generation-config.ts",
+      "src/lib/racing/todays-racing.ts"
+    ],
+    "src/lib/racing/chase-shadow-model.ts": [
+      "scripts/diagnose-independent-tissue-feasibility.ts",
+      "src/lib/racing/jump-tissue-model.ts"
+    ],
+    "src/lib/racing/chase-speed-reliability-capture.ts": [
+      "src/lib/racing/chase-speed-reliability-shadow.ts",
+      "src/lib/racing/descending-ranks.ts",
+      "src/lib/racing/jump-speed-rating.ts",
+      "src/lib/racing/research-rule.ts",
+      "src/lib/racing/tissue-generation-config.ts",
+      "src/lib/racing/tissue-prospective-summary.ts",
+      "src/lib/racing/todays-racing.ts"
+    ],
+    "src/lib/racing/chase-speed-reliability-shadow.ts": [
+      "src/lib/racing/jump-speed-reliability.ts",
+      "src/lib/racing/tissue-prospective-summary.ts",
+      "src/lib/racing/tissue-speed-rank-watch.ts",
+      "src/lib/racing/tissue-value-metrics.ts"
+    ],
+    "src/lib/racing/chase-tissue-challenger-forward.ts": [
+      "scripts/diagnose-independent-tissue-feasibility.ts",
+      "src/lib/racing/backtest.ts",
+      "src/lib/racing/jump-tissue-forward.ts",
+      "src/lib/racing/jump-tissue-model.ts",
+      "src/lib/racing/tissue-generation-config.ts",
+      "src/lib/racing/tissue-rank-one-edge.ts",
+      "src/lib/racing/todays-racing.ts"
+    ],
+    "src/lib/racing/context-weight-shadow-config.ts": [],
+    "src/lib/racing/context-weight-shadow-forward.ts": [
+      "scripts/diagnose-independent-tissue-feasibility.ts",
+      "src/lib/racing/context-weight-shadow-config.ts",
+      "src/lib/racing/context-weight-shadow-model.ts",
+      "src/lib/racing/frozen-capture-selection.ts",
+      "src/lib/racing/frozen-json-store.ts",
+      "src/lib/racing/tissue-generation-forward.ts",
+      "src/lib/racing/tissue-generation-model.ts",
+      "src/lib/racing/todays-racing.ts"
+    ],
+    "src/lib/racing/context-weight-shadow-model.ts": [
+      "scripts/diagnose-independent-tissue-feasibility.ts",
+      "src/lib/racing/context-weight-shadow-config.ts",
+      "src/lib/racing/tissue-generation-forward.ts",
+      "src/lib/racing/tissue-generation-model.ts"
+    ],
+    "src/lib/racing/context-weight-shadow-sync.ts": [
+      "src/lib/racing/context-weight-shadow-forward.ts",
+      "src/lib/racing/tissue-generation-forward.ts",
+      "src/lib/racing/tissue-generation-model.ts",
+      "src/lib/racing/todays-racing.ts"
+    ],
+    "src/lib/racing/current-day-sync.ts": [
+      "src/lib/racing/todays-racing.ts"
+    ],
+    "src/lib/racing/current-race-classification.ts": [
+      "src/lib/racing/aw-speed-rating.ts",
+      "src/lib/racing/jump-speed-rating.ts",
+      "src/lib/racing/turf-speed-rating.ts"
+    ],
+    "src/lib/racing/descending-ranks.ts": [],
+    "src/lib/racing/forward-value.ts": [
+      "src/lib/racing/aw-performance-rating.ts",
+      "src/lib/racing/backtest.ts",
+      "src/lib/racing/rating-coverage.ts",
+      "src/lib/racing/research-settlement-version.ts",
+      "src/lib/racing/settlement-outcome.ts",
+      "src/lib/racing/tissue-forward.ts",
+      "src/lib/racing/tissue-value-price-cap-rule.ts",
+      "src/lib/racing/todays-racing.ts",
+      "src/lib/racing/tpr-confidence-context.ts"
+    ],
+    "src/lib/racing/frozen-capture-selection.ts": [],
+    "src/lib/racing/frozen-json-store.ts": [],
+    "src/lib/racing/going-form.ts": [
+      "src/db/index.ts",
+      "src/db/schema.ts",
+      "src/lib/racing/current-race-classification.ts"
+    ],
+    "src/lib/racing/historical-form-flags.ts": [
+      "src/db/index.ts",
+      "src/db/schema.ts",
+      "src/lib/racing/backtest.ts",
+      "src/lib/racing/current-race-classification.ts",
+      "src/lib/racing/jump-speed-rating.ts"
+    ],
+    "src/lib/racing/historical-settlement-evidence.ts": [
+      "src/db/index.ts",
+      "src/db/schema.ts",
+      "src/lib/racing/historical-target-metrics.ts"
+    ],
+    "src/lib/racing/historical-target-metrics.ts": [
+      "src/db/index.ts",
+      "src/db/schema.ts",
+      "src/lib/racing/aw-speed-rating.ts",
+      "src/lib/racing/aw-speed-ratings.ts",
+      "src/lib/racing/horse-metrics.ts",
+      "src/lib/racing/jump-speed-rating.ts",
+      "src/lib/racing/jump-speed-ratings.ts",
+      "src/lib/racing/todays-rating.ts",
+      "src/lib/racing/tpr-confidence-context.ts",
+      "src/lib/racing/trainer-quality.ts",
+      "src/lib/racing/turf-speed-rating.ts",
+      "src/lib/racing/turf-speed-ratings.ts",
+      "src/lib/racing/weight-performance.ts"
+    ],
+    "src/lib/racing/horse-metrics.ts": [
+      "src/db/index.ts",
+      "src/db/schema.ts",
+      "src/lib/racing/aw-speed-rating.ts",
+      "src/lib/racing/aw-speed-ratings.ts",
+      "src/lib/racing/jump-speed-rating.ts",
+      "src/lib/racing/jump-speed-ratings.ts",
+      "src/lib/racing/jump-speed-reliability.ts",
+      "src/lib/racing/todays-rating.ts",
+      "src/lib/racing/tpr-confidence-context.ts",
+      "src/lib/racing/turf-speed-rating.ts",
+      "src/lib/racing/turf-speed-ratings.ts",
+      "src/lib/racing/weight-performance.ts"
+    ],
+    "src/lib/racing/hurdle-low-form-method.ts": [
+      "src/lib/racing/hurdle-v3-challenger-features.ts",
+      "src/lib/racing/hurdle-v3-challenger-model.ts",
+      "src/lib/racing/hurdle-v3-shadow.ts"
+    ],
+    "src/lib/racing/hurdle-low-form.ts": [
+      "src/lib/racing/frozen-json-store.ts",
+      "src/lib/racing/hurdle-low-form-method.ts",
+      "src/lib/racing/hurdle-v3-challenger-model.ts",
+      "src/lib/racing/hurdle-v3-shadow.ts",
+      "src/lib/racing/todays-racing.ts"
+    ],
+    "src/lib/racing/hurdle-recency-forward.ts": [
+      "src/lib/racing/backtest.ts",
+      "src/lib/racing/current-day-sync.ts",
+      "src/lib/racing/forward-value.ts",
+      "src/lib/racing/jump-speed-rating.ts",
+      "src/lib/racing/research-rule.ts",
+      "src/lib/racing/research-settlement-version.ts",
+      "src/lib/racing/settlement-outcome.ts",
+      "src/lib/racing/tissue-generation-config.ts",
+      "src/lib/racing/todays-racing.ts"
+    ],
+    "src/lib/racing/hurdle-tissue-challenger-forward.ts": [
+      "scripts/diagnose-independent-tissue-feasibility.ts",
+      "src/lib/racing/backtest.ts",
+      "src/lib/racing/jump-tissue-forward.ts",
+      "src/lib/racing/jump-tissue-model.ts",
+      "src/lib/racing/tissue-generation-config.ts",
+      "src/lib/racing/tissue-rank-one-edge.ts",
+      "src/lib/racing/todays-racing.ts"
+    ],
+    "src/lib/racing/hurdle-v3-challenger-features.ts": [
+      "src/lib/racing/backtest.ts"
+    ],
+    "src/lib/racing/hurdle-v3-challenger-model.ts": [
+      "scripts/diagnose-independent-tissue-feasibility.ts",
+      "src/lib/racing/hurdle-v3-challenger-features.ts"
+    ],
+    "src/lib/racing/hurdle-v3-market-edge-method.ts": [
+      "src/lib/racing/hurdle-v3-challenger-features.ts",
+      "src/lib/racing/hurdle-v3-challenger-model.ts",
+      "src/lib/racing/hurdle-v3-shadow.ts",
+      "src/lib/racing/tissue-value-metrics.ts"
+    ],
+    "src/lib/racing/hurdle-v3-market-edge.ts": [
+      "src/lib/racing/capture-pin-compatibility.ts",
+      "src/lib/racing/frozen-json-store.ts",
+      "src/lib/racing/hurdle-low-form-method.ts",
+      "src/lib/racing/hurdle-low-form.ts",
+      "src/lib/racing/hurdle-v3-challenger-model.ts",
+      "src/lib/racing/hurdle-v3-market-edge-method.ts",
+      "src/lib/racing/hurdle-v3-shadow.ts",
+      "src/lib/racing/todays-racing.ts"
+    ],
+    "src/lib/racing/hurdle-v3-shadow-inputs.ts": [
+      "src/db/index.ts",
+      "src/lib/racing/hurdle-v3-challenger-features.ts",
+      "src/lib/racing/jump-speed-rating.ts",
+      "src/lib/racing/jump-speed-ratings.ts",
+      "src/lib/racing/todays-racing.ts"
+    ],
+    "src/lib/racing/hurdle-v3-shadow-sync.ts": [
+      "src/db/index.ts",
+      "src/lib/racing/hurdle-v3-shadow-inputs.ts",
+      "src/lib/racing/hurdle-v3-shadow.ts",
+      "src/lib/racing/prospective-epoch-collection.ts",
+      "src/lib/racing/tissue-generation-forward.ts",
+      "src/lib/racing/todays-racing.ts"
+    ],
+    "src/lib/racing/hurdle-v3-shadow-tags.ts": [
+      "src/lib/racing/hurdle-v3-challenger-features.ts"
+    ],
+    "src/lib/racing/hurdle-v3-shadow.ts": [
+      "src/lib/racing/frozen-json-store.ts",
+      "src/lib/racing/hurdle-v3-challenger-features.ts",
+      "src/lib/racing/hurdle-v3-challenger-model.ts",
+      "src/lib/racing/hurdle-v3-shadow-inputs.ts",
+      "src/lib/racing/hurdle-v3-shadow-tags.ts",
+      "src/lib/racing/tissue-generation-config.ts",
+      "src/lib/racing/tissue-generation-forward.ts",
+      "src/lib/racing/tissue-generation-model.ts",
+      "src/lib/racing/todays-racing.ts"
+    ],
+    "src/lib/racing/hurdle-value-rule.ts": [
+      "src/lib/racing/forward-value.ts",
+      "src/lib/racing/jump-tissue-forward.ts",
+      "src/lib/racing/jump-tissue-model.ts",
+      "src/lib/racing/tissue-rank-one-edge.ts"
+    ],
+    "src/lib/racing/jump-g4-forward.ts": [
+      "src/lib/racing/backtest.ts",
+      "src/lib/racing/forward-value.ts",
+      "src/lib/racing/jump-performance-rating.ts",
+      "src/lib/racing/jump-speed-rating.ts",
+      "src/lib/racing/research-rule-classes.ts",
+      "src/lib/racing/research-rule.ts",
+      "src/lib/racing/research-settlement-version.ts",
+      "src/lib/racing/settlement-outcome.ts",
+      "src/lib/racing/todays-racing.ts"
+    ],
+    "src/lib/racing/jump-performance-rating.ts": [
+      "src/lib/racing/jump-speed-rating.ts",
+      "src/lib/racing/rating-coverage.ts",
+      "src/lib/racing/todays-racing.ts"
+    ],
+    "src/lib/racing/jump-speed-rating.ts": [
+      "src/lib/racing/jump-winning-time-integrity.ts",
+      "src/lib/racing/speed-research.ts"
+    ],
+    "src/lib/racing/jump-speed-ratings.ts": [
+      "src/db/index.ts",
+      "src/db/schema.ts",
+      "src/lib/racing/jump-speed-rating.ts",
+      "src/lib/racing/jump-winning-time-references.ts",
+      "src/lib/racing/speed-research.ts"
+    ],
+    "src/lib/racing/jump-speed-reliability.ts": [
+      "src/lib/racing/horse-metrics.ts",
+      "src/lib/racing/jump-speed-rating.ts"
+    ],
+    "src/lib/racing/jump-tissue-forward.ts": [
+      "scripts/diagnose-independent-tissue-feasibility.ts",
+      "src/lib/racing/backtest.ts",
+      "src/lib/racing/forward-value.ts",
+      "src/lib/racing/hurdle-value-rule.ts",
+      "src/lib/racing/jump-performance-rating.ts",
+      "src/lib/racing/jump-tissue-model.ts",
+      "src/lib/racing/prospective-going.ts",
+      "src/lib/racing/research-settlement-version.ts",
+      "src/lib/racing/settlement-outcome.ts",
+      "src/lib/racing/tissue-generation-config.ts",
+      "src/lib/racing/tissue-rank-one-edge.ts",
+      "src/lib/racing/todays-racing.ts"
+    ],
+    "src/lib/racing/jump-tissue-model.ts": [
+      "scripts/diagnose-independent-tissue-feasibility.ts",
+      "src/lib/racing/jump-speed-rating.ts",
+      "src/lib/racing/research-rule.ts",
+      "src/lib/racing/todays-racing.ts"
+    ],
+    "src/lib/racing/jump-tissue-sync.ts": [
+      "scripts/diagnose-independent-tissue-feasibility.ts",
+      "src/db/index.ts",
+      "src/lib/racing/chase-shadow-context.ts",
+      "src/lib/racing/chase-shadow-forward.ts",
+      "src/lib/racing/chase-shadow-model.ts",
+      "src/lib/racing/chase-speed-reliability-capture.ts",
+      "src/lib/racing/jump-tissue-forward.ts",
+      "src/lib/racing/jump-tissue-model.ts",
+      "src/lib/racing/todays-racing.ts"
+    ],
+    "src/lib/racing/jump-winning-time-integrity.ts": [
+      "src/lib/racing/speed-research.ts"
+    ],
+    "src/lib/racing/jump-winning-time-references.ts": [
+      "src/lib/racing/jump-speed-rating.ts",
+      "src/lib/racing/jump-winning-time-integrity.ts",
+      "src/lib/racing/speed-research.ts"
+    ],
+    "src/lib/racing/model-disagreement-forward.ts": [
+      "src/lib/racing/backtest.ts",
+      "src/lib/racing/current-race-classification.ts",
+      "src/lib/racing/descending-ranks.ts",
+      "src/lib/racing/forward-value.ts",
+      "src/lib/racing/horse-metrics.ts",
+      "src/lib/racing/jump-speed-rating.ts",
+      "src/lib/racing/research-settlement-version.ts",
+      "src/lib/racing/settlement-outcome.ts",
+      "src/lib/racing/todays-racing.ts"
+    ],
+    "src/lib/racing/or-speed-comparison.ts": [
+      "src/lib/racing/todays-racing.ts"
+    ],
+    "src/lib/racing/or-speed-forward.ts": [
+      "src/lib/racing/aw-speed-rating.ts",
+      "src/lib/racing/backtest.ts",
+      "src/lib/racing/current-day-sync.ts",
+      "src/lib/racing/or-speed-comparison.ts",
+      "src/lib/racing/research-rule.ts",
+      "src/lib/racing/research-settlement-version.ts",
+      "src/lib/racing/settlement-outcome.ts",
+      "src/lib/racing/todays-racing.ts",
+      "src/lib/racing/turf-speed-rating.ts"
+    ],
+    "src/lib/racing/prospective-epoch-collection.ts": [
+      "src/db/index.ts",
+      "src/lib/racing/hurdle-v3-challenger-model.ts",
+      "src/lib/racing/hurdle-v3-market-edge.ts",
+      "src/lib/racing/hurdle-v3-shadow-inputs.ts",
+      "src/lib/racing/hurdle-v3-shadow.ts",
+      "src/lib/racing/prospective-epoch-config.ts",
+      "src/lib/racing/prospective-epoch-integrity.ts",
+      "src/lib/racing/tissue-generation-forward.ts",
+      "src/lib/racing/tissue-positive-neutral.ts",
+      "src/lib/racing/todays-racing.ts"
+    ],
+    "src/lib/racing/prospective-epoch-config.ts": [],
+    "src/lib/racing/prospective-epoch-integrity.ts": [
+      "src/lib/racing/prospective-epoch-config.ts",
+      "src/lib/racing/research-settlement-version.ts"
+    ],
+    "src/lib/racing/prospective-epoch-report.ts": [
+      "src/lib/racing/hurdle-v3-market-edge.ts",
+      "src/lib/racing/hurdle-v3-shadow.ts",
+      "src/lib/racing/prospective-epoch-config.ts",
+      "src/lib/racing/prospective-epoch-integrity.ts",
+      "src/lib/racing/research-settlement-version.ts",
+      "src/lib/racing/settlement-reporting.ts",
+      "src/lib/racing/tissue-generation-forward.ts",
+      "src/lib/racing/tissue-positive-neutral.ts",
+      "src/lib/racing/tissue-value-metrics.ts"
+    ],
+    "src/lib/racing/prospective-going.ts": [],
+    "src/lib/racing/race-result-surface.ts": [
+      "src/db/schema.ts"
+    ],
+    "src/lib/racing/rating-coverage.ts": [],
+    "src/lib/racing/research-or-relative-metrics.ts": [],
+    "src/lib/racing/research-rank-metrics.ts": [],
+    "src/lib/racing/research-rule-classes.ts": [],
+    "src/lib/racing/research-rule.ts": [
+      "src/lib/racing/backtest-cache.ts",
+      "src/lib/racing/backtest.ts",
+      "src/lib/racing/calendar-period.ts",
+      "src/lib/racing/historical-target-metrics.ts",
+      "src/lib/racing/jump-speed-rating.ts",
+      "src/lib/racing/research-or-relative-metrics.ts",
+      "src/lib/racing/research-rank-metrics.ts",
+      "src/lib/racing/research-rule-classes.ts",
+      "src/lib/racing/research-settlement-version.ts",
+      "src/lib/racing/settlement-outcome.ts",
+      "src/lib/racing/starting-price-filter.ts",
+      "src/lib/racing/trainer-cohort-mode.ts",
+      "src/lib/racing/turf-performance-rating.ts"
+    ],
+    "src/lib/racing/research-settlement-version.ts": [],
+    "src/lib/racing/settlement-outcome.ts": [],
+    "src/lib/racing/settlement-reporting.ts": [
+      "src/lib/racing/research-settlement-version.ts"
+    ],
+    "src/lib/racing/speed-research.ts": [],
+    "src/lib/racing/starting-price-filter.ts": [],
+    "src/lib/racing/tissue-forward.ts": [
+      "scripts/diagnose-independent-tissue-feasibility.ts",
+      "src/lib/racing/backtest.ts",
+      "src/lib/racing/current-day-sync.ts",
+      "src/lib/racing/historical-target-metrics.ts",
+      "src/lib/racing/prospective-going.ts",
+      "src/lib/racing/research-settlement-version.ts",
+      "src/lib/racing/settlement-outcome.ts",
+      "src/lib/racing/tissue-generation-config.ts",
+      "src/lib/racing/tissue-rank-one-edge.ts",
+      "src/lib/racing/todays-racing.ts",
+      "src/lib/racing/turf-tissue-training-semantics.ts"
+    ],
+    "src/lib/racing/tissue-generation-config.ts": [],
+    "src/lib/racing/tissue-generation-context.ts": [
+      "src/db/index.ts",
+      "src/lib/racing/tissue-generation-features.ts",
+      "src/lib/racing/todays-racing.ts"
+    ],
+    "src/lib/racing/tissue-generation-features.ts": [
+      "src/lib/racing/backtest.ts",
+      "src/lib/racing/descending-ranks.ts",
+      "src/lib/racing/hurdle-recency-forward.ts",
+      "src/lib/racing/tissue-value-metrics.ts"
+    ],
+    "src/lib/racing/tissue-generation-forward.ts": [
+      "src/lib/racing/backtest.ts",
+      "src/lib/racing/forward-value.ts",
+      "src/lib/racing/frozen-capture-selection.ts",
+      "src/lib/racing/frozen-json-store.ts",
+      "src/lib/racing/research-settlement-version.ts",
+      "src/lib/racing/settlement-outcome.ts",
+      "src/lib/racing/tissue-generation-config.ts",
+      "src/lib/racing/tissue-generation-model.ts",
+      "src/lib/racing/tissue-prospective-summary.ts",
+      "src/lib/racing/tissue-value-metrics.ts",
+      "src/lib/racing/todays-racing.ts"
+    ],
+    "src/lib/racing/tissue-generation-model.ts": [
+      "scripts/diagnose-independent-tissue-feasibility.ts",
+      "src/lib/racing/tissue-generation-config.ts",
+      "src/lib/racing/tissue-generation-features.ts",
+      "src/lib/racing/tissue-value-metrics.ts"
+    ],
+    "src/lib/racing/tissue-generation-sync.ts": [
+      "src/db/index.ts",
+      "src/lib/racing/aw-tissue-v2.ts",
+      "src/lib/racing/context-weight-shadow-sync.ts",
+      "src/lib/racing/current-day-sync.ts",
+      "src/lib/racing/forward-value.ts",
+      "src/lib/racing/frozen-capture-selection.ts",
+      "src/lib/racing/hurdle-v3-shadow-inputs.ts",
+      "src/lib/racing/hurdle-v3-shadow-sync.ts",
+      "src/lib/racing/jump-tissue-model.ts",
+      "src/lib/racing/prospective-epoch-collection.ts",
+      "src/lib/racing/tissue-forward.ts",
+      "src/lib/racing/tissue-generation-config.ts",
+      "src/lib/racing/tissue-generation-context.ts",
+      "src/lib/racing/tissue-generation-features.ts",
+      "src/lib/racing/tissue-generation-forward.ts",
+      "src/lib/racing/tissue-generation-model.ts",
+      "src/lib/racing/tissue-value-family.ts",
+      "src/lib/racing/tissue-value-metrics.ts",
+      "src/lib/racing/tissue-value-sync.ts",
+      "src/lib/racing/todays-racing.ts",
+      "src/lib/racing/turf-early-season-inputs.ts",
+      "src/lib/racing/turf-early-season-method.ts",
+      "src/lib/racing/turf-early-season.ts"
+    ],
+    "src/lib/racing/tissue-input-reliability.ts": [
+      "src/lib/racing/tissue-value-metrics.ts"
+    ],
+    "src/lib/racing/tissue-positive-neutral-method.ts": [
+      "src/app/racing/today/tissue-market-badge.ts",
+      "src/lib/racing/frozen-capture-selection.ts",
+      "src/lib/racing/tissue-generation-forward.ts",
+      "src/lib/racing/tissue-value-metrics.ts"
+    ],
+    "src/lib/racing/tissue-positive-neutral.ts": [
+      "src/lib/racing/frozen-json-store.ts",
+      "src/lib/racing/tissue-generation-config.ts",
+      "src/lib/racing/tissue-generation-forward.ts",
+      "src/lib/racing/tissue-generation-model.ts",
+      "src/lib/racing/tissue-positive-neutral-method.ts",
+      "src/lib/racing/tissue-value-metrics.ts",
+      "src/lib/racing/todays-racing.ts"
+    ],
+    "src/lib/racing/tissue-prospective-summary.ts": [
+      "src/lib/racing/prospective-going.ts",
+      "src/lib/racing/tissue-input-reliability.ts",
+      "src/lib/racing/tissue-value-metrics.ts"
+    ],
+    "src/lib/racing/tissue-rank-one-edge.ts": [
+      "src/lib/racing/forward-value.ts",
+      "src/lib/racing/todays-racing.ts"
+    ],
+    "src/lib/racing/tissue-speed-rank-watch.ts": [
+      "src/lib/racing/descending-ranks.ts",
+      "src/lib/racing/tissue-value-metrics.ts"
+    ],
+    "src/lib/racing/tissue-value-config.ts": [
+      "src/lib/racing/aw-tissue-v2-features.ts",
+      "src/lib/racing/aw-tissue-v2.ts",
+      "src/lib/racing/jump-tissue-model.ts",
+      "src/lib/racing/tissue-forward.ts",
+      "src/lib/racing/tissue-value-metrics.ts",
+      "src/lib/racing/turf-value-definition.ts"
+    ],
+    "src/lib/racing/tissue-value-family.ts": [
+      "src/lib/racing/jump-speed-rating.ts",
+      "src/lib/racing/tissue-value-metrics.ts",
+      "src/lib/racing/todays-racing.ts"
+    ],
+    "src/lib/racing/tissue-value-forward.ts": [
+      "src/lib/racing/backtest.ts",
+      "src/lib/racing/current-day-sync.ts",
+      "src/lib/racing/forward-value.ts",
+      "src/lib/racing/frozen-capture-selection.ts",
+      "src/lib/racing/prospective-going.ts",
+      "src/lib/racing/research-settlement-version.ts",
+      "src/lib/racing/settlement-outcome.ts",
+      "src/lib/racing/tissue-value-config.ts",
+      "src/lib/racing/tissue-value-family.ts",
+      "src/lib/racing/tissue-value-metrics.ts",
+      "src/lib/racing/todays-racing.ts",
+      "src/lib/racing/turf-value-definition.ts",
+      "src/lib/racing/value-rank-v2.ts"
+    ],
+    "src/lib/racing/tissue-value-metrics.ts": [],
+    "src/lib/racing/tissue-value-price-cap-rule.ts": [
+      "src/lib/racing/forward-value.ts"
+    ],
+    "src/lib/racing/tissue-value-readers.ts": [
+      "src/lib/racing/tissue-value-config.ts",
+      "src/lib/racing/tissue-value-forward.ts"
+    ],
+    "src/lib/racing/tissue-value-sync.ts": [
+      "src/db/index.ts",
+      "src/lib/racing/aw-tissue-v2-sync.ts",
+      "src/lib/racing/aw-tissue-v2.ts",
+      "src/lib/racing/horse-metrics.ts",
+      "src/lib/racing/jump-tissue-model.ts",
+      "src/lib/racing/jump-tissue-sync.ts",
+      "src/lib/racing/tissue-forward.ts",
+      "src/lib/racing/tissue-value-family.ts",
+      "src/lib/racing/todays-racing.ts",
+      "src/lib/racing/trainer-quality.ts"
+    ],
+    "src/lib/racing/tissue-value-view.ts": [
+      "src/lib/racing/frozen-capture-selection.ts",
+      "src/lib/racing/tissue-input-reliability.ts",
+      "src/lib/racing/tissue-speed-rank-watch.ts",
+      "src/lib/racing/tissue-value-forward.ts",
+      "src/lib/racing/tissue-value-metrics.ts",
+      "src/lib/racing/todays-racing.ts",
+      "src/lib/racing/value-rank-v2.ts"
+    ],
+    "src/lib/racing/todays-racing.ts": [
+      "src/db/index.ts",
+      "src/db/schema.ts",
+      "src/lib/racing/aw-performance-rating.ts",
+      "src/lib/racing/aw-tissue-model.ts",
+      "src/lib/racing/current-day-sync.ts",
+      "src/lib/racing/current-race-classification.ts",
+      "src/lib/racing/going-form.ts",
+      "src/lib/racing/historical-form-flags.ts",
+      "src/lib/racing/horse-metrics.ts",
+      "src/lib/racing/jump-performance-rating.ts",
+      "src/lib/racing/jump-tissue-model.ts",
+      "src/lib/racing/rating-coverage.ts",
+      "src/lib/racing/tissue-value-view.ts",
+      "src/lib/racing/tpr-confidence-context.ts",
+      "src/lib/racing/trainer-quality.ts",
+      "src/lib/racing/turf-performance-rating.ts"
+    ],
+    "src/lib/racing/todays-rating-weight-forward.ts": [
+      "src/lib/racing/backtest.ts",
+      "src/lib/racing/forward-value.ts",
+      "src/lib/racing/horse-metrics.ts",
+      "src/lib/racing/research-settlement-version.ts",
+      "src/lib/racing/settlement-outcome.ts",
+      "src/lib/racing/todays-racing.ts",
+      "src/lib/racing/todays-rating.ts",
+      "src/lib/racing/weight-performance.ts"
+    ],
+    "src/lib/racing/todays-rating.ts": [
+      "src/lib/racing/weight-performance.ts"
+    ],
+    "src/lib/racing/tpr-confidence-context.ts": [
+      "src/lib/racing/weight-performance.ts"
+    ],
+    "src/lib/racing/tpr-forward-workflow.ts": [
+      "scripts/diagnose-tpr-vs-timewise-forward.ts",
+      "src/lib/racing/todays-racing.ts",
+      "src/lib/racing/tpr-timewise-forward-context.ts"
+    ],
+    "src/lib/racing/tpr-timewise-forward-context.ts": [
+      "scripts/diagnose-tpr-vs-timewise-forward.ts",
+      "src/lib/racing/rating-coverage.ts",
+      "src/lib/racing/settlement-outcome.ts",
+      "src/lib/racing/todays-racing.ts",
+      "src/lib/racing/turf-performance-rating.ts"
+    ],
+    "src/lib/racing/trainer-cohort-mode.ts": [],
+    "src/lib/racing/trainer-quality.ts": [
+      "src/db/index.ts",
+      "src/db/schema.ts"
+    ],
+    "src/lib/racing/turf-early-season-inputs.ts": [
+      "src/db/index.ts",
+      "src/lib/racing/backtest.ts",
+      "src/lib/racing/todays-racing.ts",
+      "src/lib/racing/turf-early-season-method.ts",
+      "src/lib/racing/turf-speed-rating.ts",
+      "src/lib/racing/turf-speed-ratings.ts",
+      "src/lib/racing/weight-performance.ts"
+    ],
+    "src/lib/racing/turf-early-season-method.ts": [
+      "src/lib/racing/tissue-generation-forward.ts",
+      "src/lib/racing/tissue-generation-model.ts"
+    ],
+    "src/lib/racing/turf-early-season.ts": [
+      "src/lib/racing/capture-pin-compatibility.ts",
+      "src/lib/racing/frozen-json-store.ts",
+      "src/lib/racing/tissue-generation-config.ts",
+      "src/lib/racing/tissue-generation-forward.ts",
+      "src/lib/racing/tissue-generation-model.ts",
+      "src/lib/racing/todays-racing.ts",
+      "src/lib/racing/turf-early-season-method.ts"
+    ],
+    "src/lib/racing/turf-performance-rating.ts": [
+      "src/lib/racing/research-rule-classes.ts",
+      "src/lib/racing/turf-speed-rating.ts",
+      "src/lib/racing/weight-performance.ts"
+    ],
+    "src/lib/racing/turf-speed-rating.ts": [
+      "src/lib/racing/speed-research.ts"
+    ],
+    "src/lib/racing/turf-speed-ratings.ts": [
+      "src/db/index.ts",
+      "src/db/schema.ts",
+      "src/lib/racing/race-result-surface.ts",
+      "src/lib/racing/speed-research.ts",
+      "src/lib/racing/turf-speed-rating.ts"
+    ],
+    "src/lib/racing/turf-tissue-training-semantics.ts": [
+      "src/lib/racing/historical-target-metrics.ts"
+    ],
+    "src/lib/racing/turf-value-definition.ts": [
+      "scripts/diagnose-independent-tissue-feasibility.ts"
+    ],
+    "src/lib/racing/value-rank-v2.ts": [
+      "src/lib/racing/tissue-value-metrics.ts"
+    ],
+    "src/lib/racing/weight-performance.ts": [],
+    "src/lib/racing/win-settlement.ts": [],
+    "tsconfig.json": []
+  },
+  "roots": [
+    "scripts/track-tissue-generation.ts",
+    "scripts/run-research-workflow.ts",
+    "src/lib/racing/tissue-generation-sync.ts",
+    "src/lib/racing/prospective-epoch-collection.ts",
+    "src/lib/racing/hurdle-v3-shadow-sync.ts",
+    "scripts/settle-research-results.ts",
+    "scripts/activate-prospective-epochs.ts",
+    "src/app/racing/today/tissue-market-badge.ts",
+    "src/app/racing/research/forward-value/prospective-epoch-monitor.tsx"
+  ],
+  "originalEvidenceHashes": {
+    "data/research/tissue-positive-neutral-prospective-v1.json": "d103abec5d7092685cc2646dc7e39d357ffa27e04a3dedf0f96b761b882de4b3",
+    "data/research/hurdle-v3-prospective-shadow-v1.json": "77f58bc6e86421e4349a5dc2ff5cc88ff83fabffe79da594877cc4af2349b53b",
+    "data/research/hurdle-v3-market-edge-prospective-v1.json": "2cc981ff2dd6e27664f15d9a854a023b9d16b026e4583dd820b9a21d4d24a42e",
+    "data/research/hurdle-low-form-prospective-v1.json": "6463b902ac9e8539d2fb7dc72ea810fee339b26f6d74e6273c0f201707a805a6",
+    "data/research/tissue-generation-2026-11-manifest.json": "0b688caf76a575fb874a582d40a98016182d014c02f1a91b62c4a242a368e89a"
+  }
+}

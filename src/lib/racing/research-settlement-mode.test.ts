@@ -56,15 +56,15 @@ describe("development settlement mode", () => {
     deadHeatWinner.outcome.deadHeatDivisor = 2;
     deadHeatWinner.settlement = {
       ...deadHeatWinner.settlement!,
-      grossReturn: 13.5,
-      profitLoss: 12.5,
+      grossReturn: 13,
+      profitLoss: 12,
     };
 
     const actual = summarizeSelectionsForDevelopmentSettlementMode([deadHeatWinner], "actual");
     const capped = summarizeSelectionsForDevelopmentSettlementMode([deadHeatWinner], "cap_20_1");
-    assert.equal(actual.profitLoss, 12.5);
-    assert.equal(capped.grossReturn, 11);
-    assert.equal(capped.profitLoss, 10);
+    assert.equal(actual.profitLoss, 12);
+    assert.equal(capped.grossReturn, 10.5);
+    assert.equal(capped.profitLoss, 9.5);
     assert.equal(capped.wins, 1);
   });
 });

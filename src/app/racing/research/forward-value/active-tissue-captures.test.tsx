@@ -90,8 +90,8 @@ test("incomplete-market capture keeps current Tissue without borrowing old price
   assert.ok(selected.runners.every(r => r.marketPrice === null && r.marketRank === null));
 });
 
-test("Research route wires active selection separately from the unchanged Value-cohort monitor", async () => {
+test("Research route retains Value cohort monitoring without duplicate Today Tissue tables", async () => {
   const source = await readFile("src/app/racing/research/forward-value/forward-value-page.tsx", "utf8");
-  assert.ok(source.includes("<ActiveTissueRaceTables races={selectActiveResearchCaptures(valueCohorts, generation, raceDate)}"));
+  assert.ok(!source.includes("<ActiveTissueRaceTables"));
   assert.ok(source.includes("<TissueValueMonitoring cohorts={valueCohorts} date={raceDate}"));
 });

@@ -1,4 +1,4 @@
-import { settleSelection } from "./backtest";
+import { settleRecordedSelection } from "./backtest";
 import { cleanJumpTissueRace } from "./jump-tissue-forward";
 import { chaseExperienceGroup } from "./chase-shadow-context";
 import type { ChaseShadowData, ChaseShadowRace, ShadowRunner } from "./chase-shadow-forward";
@@ -17,10 +17,10 @@ function rows(races: ChaseShadowRace[], model: ModelKey): Row[] {
     const prediction = model === "current" ? current : r;
     if (prediction.probability === null || prediction.rank === null) return [];
     const outcome = race.current.settledAt !== null && race.current.excludedReason === null ? current.outcome : null;
-    const profit = outcome && outcome.won !== null && r.price ? settleSelection({
+    const profit = outcome && outcome.won !== null && r.price ? settleRecordedSelection({
       targetRaceId: race.raceId, targetRunnerId: r.runnerId, ...outcome, placed: null,
       startingPrice: null, startingPriceDecimal: String(r.price.decimal),
-    })?.profitLoss ?? null : null;
+    }, outcome.settlementVersion)?.profitLoss ?? null : null;
     return [{ ...r, race, probability: prediction.probability, rank: prediction.rank, won: outcome?.won ?? null, profit }];
   }));
 }

@@ -7,7 +7,8 @@ import { summarizeBookmakerMarket } from "./forward-value";
 import { getLocalRacingDate, type TodayRace } from "./todays-racing";
 import { isVoidBetResultStatus, settleSelection } from "./backtest";
 import { hasCompleteProspectiveField } from "./current-day-sync";
-import { CANONICAL_SETTLEMENT_VERSION } from "./research-settlement-version";
+import { CANONICAL_SETTLEMENT_VERSION, LEGACY_SETTLEMENT_VERSION } from "./research-settlement-version";
+import { raceForSettlement } from "./settlement-outcome";
 import { normalizeCompleteMarket, calculateValueMetrics, valueCompetitionRanks, TISSUE_VALUE_FAMILIES } from "./tissue-value-metrics";
 import { VALUE_MARKET_SOURCE } from "./turf-value-definition";
 import { valueFamilyForRace } from "./tissue-value-family";
@@ -19,7 +20,7 @@ const probability = finite.positive().max(1);
 const rank = z.number().int().positive();
 const timestamp = z.iso.datetime();
 const outcomeSchema = z.object({
-  settlementVersion: z.literal(CANONICAL_SETTLEMENT_VERSION), status: z.enum(["settled", "NR", "void"]), finishPosition: rank.nullable(), resultStatus: z.string().nullable(),
+  settlementVersion: z.enum([LEGACY_SETTLEMENT_VERSION, CANONICAL_SETTLEMENT_VERSION]), status: z.enum(["settled", "NR", "void"]), finishPosition: rank.nullable(), resultStatus: z.string().nullable(),
   winner: z.boolean().nullable(), deadHeatDivisor: rank, grossReturn: finite.nonnegative().nullable(), profitLoss: finite.nullable(), settledAt: timestamp,
 }).strict();
 const runnerSchema = z.object({
@@ -89,7 +90,8 @@ export function validValueCapture(row: TissueValueRace, config: ValueCohortConfi
 export function settleValueForward(data: TissueValueData, results: ReadonlyMap<string, TodayRace>, now = new Date()): TissueValueData {
   if (!Number.isFinite(now.getTime())) return data;
   const races = data.races.map(book => {
-    const race = results.get(book.raceId);
+    const sourceRace = results.get(book.raceId);
+    const race = sourceRace && raceForSettlement(sourceRace);
     if (!race || now < new Date(book.scheduledOff)) return book;
     const ids = new Set(race.runners.map(r => r.runnerId));
     if (ids.size !== race.runners.length || book.runners.some(r => !ids.has(r.runnerId))) return book;

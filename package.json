@@ -144,7 +144,9 @@
     "tissue-value:sync": "bun --env-file=.env.local run scripts/track-tissue-value-forward.ts sync",
     "tissue-value:results": "bun --env-file=.env.local run scripts/track-tissue-value-forward.ts results",
     "tissue-value:summary": "bun run scripts/track-tissue-value-forward.ts summary",
-    "report-context-weight-shadow": "bun run scripts/report-context-weight-shadow.ts"
+    "report-context-weight-shadow": "bun run scripts/report-context-weight-shadow.ts",
+    "research:epochs:activate": "bun run scripts/activate-prospective-epochs.ts activate",
+    "research:epochs:summary": "bun run scripts/report-prospective-epochs.ts"
   },
   "dependencies": {
     "drizzle-orm": "^0.45.2",

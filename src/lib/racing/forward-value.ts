@@ -1,3 +1,4 @@
+import { raceForSettlement, settlementOutcomeState } from "./settlement-outcome";
 import { TISSUE_V3_EPOCH, TISSUE_V3_MODEL_VERSION } from "./tissue-forward";
 import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
@@ -30,7 +31,7 @@ export const FORWARD_VALUE_PATH = "data/research/forward-value-v1.json";
 export const FORWARD_VALUE_CALIBRATION_PATH = "data/research/forward-value-calibration-v1.json";
 export const EDGE_BANDS = ["<=0pp", ">0-2pp", ">2-5pp", ">5-10pp", ">10pp"] as const;
 export const FORWARD_VALUE_PRICE_SOURCE = "sporting_life_imported_racecard" as const;
-export const FORWARD_VALUE_SETTLEMENT_VERSION = "canonical_settlement_v2" as const;
+export const FORWARD_VALUE_SETTLEMENT_VERSION = "canonical_settlement_v3" as const;
 export const FORWARD_VALUE_PRICE_SNAPSHOT_SCHEDULE_VERSION = "early_t180_t60_v1" as const;
 export const FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION = "median_bookmaker_v1" as const;
 export const FORWARD_VALUE_MARKET_PRICE_BASIS_IMPLEMENTED_AT = "2026-09-29T05:58:30.000Z" as const;
@@ -113,7 +114,7 @@ export type ForwardValueCalibration = {
   createdAt: string;
   developmentYear: "2025";
   validationYear: "2026";
-  settlementVersion: "canonical_settlement_v2";
+  settlementVersion: import("./research-settlement-version").ResearchSettlementVersion;
   priceVersion: "actual_sp_v2";
   families: Record<ValueFamily, FamilyCalibration>;
   diagnostics: unknown;
@@ -132,7 +133,7 @@ export type ForwardValueRecord = {
   recordedAt: string;
   recordedPreRace: boolean;
   captureMode?: "live_sync" | "retrospective_or_imported";
-  settlementVersion?: typeof FORWARD_VALUE_SETTLEMENT_VERSION;
+  settlementVersion?: import("./research-settlement-version").ResearchSettlementVersion;
   phase2ExclusionReason?: ValueExclusionReason | null;
   leaderRunnerId: string;
   leaderHorseId?: string;
@@ -422,7 +423,7 @@ export function buildForwardValueRecord(input: {
     recordedAt: recordedAt.toISOString(),
     recordedPreRace: true,
     captureMode: "live_sync",
-    settlementVersion: FORWARD_VALUE_SETTLEMENT_VERSION,
+    settlementVersion: "canonical_settlement_v2",
     phase2ExclusionReason: capturedDecimalOdds === null ? "missing_price" : null,
     leaderRunnerId: leader.runner.runnerId,
     leaderHorseId: leader.runner.horseId,
@@ -835,12 +836,31 @@ export function settleForwardValueRecords(data: ForwardValueData, racesById: Map
   let settled = 0;
   const races = data.races.map((record): ForwardValueRecord => {
     if (record.settledAt !== null) return record;
-    const race = racesById.get(record.raceId);
+    const sourceRace = racesById.get(record.raceId);
+    const race = sourceRace && raceForSettlement(sourceRace);
     if (!race) return record;
     const winners = race.runners.filter((runner) => runner.finishingPosition === 1);
+    const terminal = race.runners.find(r => r.runnerId === record.leaderRunnerId);
+    if (terminal && race.runners.length > 0 && race.runners.every(r => isVoidBetResultStatus(r.resultStatus))) {
+      settled++;
+      return { ...record, settlementVersion: FORWARD_VALUE_SETTLEMENT_VERSION,
+        winnerRunnerIds: [], leaderResultStatus: terminal.resultStatus, leaderFinishingPosition: null,
+        leaderWon: null, finalSp: null, grossReturn: 1, profitLoss: 0,
+        capturedPriceGrossReturn: record.capturedDecimalOdds === null ? null : 1,
+        capturedPriceProfitLoss: record.capturedDecimalOdds === null ? null : 0,
+        medianMarketPriceGrossReturn: record.capturedDecimalOdds === null ? null : 1,
+        medianMarketPriceProfitLoss: record.capturedDecimalOdds === null ? null : 0,
+        bestBookmakerPriceGrossReturn: record.bestBookmakerPriceDecimal == null ? null : 1,
+        bestBookmakerPriceProfitLoss: record.bestBookmakerPriceDecimal == null ? null : 0,
+        ...(record.tissueValuePriceCapRule ? { tissueValuePriceCapRule: { ...record.tissueValuePriceCapRule,
+          qualifyingOutcome: record.tissueValuePriceCapRule.qualification ? "VOID" as const : null,
+          qualifyingPriceProfitLoss: record.tissueValuePriceCapRule.qualification ? 0 : null,
+          qualifyingFinishingPosition: null, qualifyingResultStatus: terminal.resultStatus } } : {}),
+        settledAt: settledAt.toISOString() };
+    }
     if (winners.length === 0) return record;
     const result = race.runners.find((runner) => runner.runnerId === record.leaderRunnerId);
-    if (!result) return record;
+    if (!result || settlementOutcomeState(result) === "unresolved") return record;
     const settlement = settleSelection({
       targetRaceId: record.raceId,
       targetRunnerId: result.runnerId,
@@ -903,9 +923,10 @@ export function settleForwardValueRecords(data: ForwardValueData, racesById: Map
         qualifyingFinishingPosition: tissueResult?.finishingPosition ?? null,
         qualifyingResultStatus: tissueResult?.resultStatus ?? null } } : {}),
       winnerRunnerIds: winners.map((winner) => winner.runnerId),
+      settlementVersion: FORWARD_VALUE_SETTLEMENT_VERSION,
       leaderResultStatus: result.resultStatus,
       leaderFinishingPosition: result.finishingPosition,
-      leaderWon: result.finishingPosition === 1,
+      leaderWon: isVoidBetResultStatus(result.resultStatus) ? null : result.finishingPosition === 1,
       finalSp: decimal(result.oddsDecimal),
       grossReturn: settlement?.grossReturn ?? null,
       profitLoss: settlement?.profitLoss ?? null,
@@ -962,7 +983,7 @@ export function valueExclusionReason(record: ForwardValueRecord): ValueExclusion
   if (record.capturedDecimalOdds === null || !Number.isFinite(record.capturedDecimalOdds) || record.capturedDecimalOdds <= 1) {
     return "missing_price";
   }
-  if (record.settlementVersion !== undefined && record.settlementVersion !== FORWARD_VALUE_SETTLEMENT_VERSION) {
+  if (record.settlementVersion !== undefined && record.settlementVersion !== "canonical_settlement_v2" && record.settlementVersion !== FORWARD_VALUE_SETTLEMENT_VERSION) {
     return "invalid_or_unknown_settlement";
   }
   if (isNonRunnerStatus(record.leaderResultStatus)) return "non_runner";

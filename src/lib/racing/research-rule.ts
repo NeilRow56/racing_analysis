@@ -23,6 +23,7 @@ import {
   CANONICAL_SETTLEMENT_VERSION,
   type ResearchSettlementVersion,
 } from "./research-settlement-version";
+import { isVoidRaceOutcome, isVoidSettlementOutcome } from "./settlement-outcome";
 import { RELATIVE_METRIC_OPTIONS, type RelativeMetric } from "./research-or-relative-metrics";
 import {
   isTrainerCohortTop,
@@ -385,7 +386,7 @@ export function evaluateResearchRule(input: {
   elapsedMs?: number;
   trainerCohort?: ResolvedTrainerCohort | null;
 }): ResearchResult {
-  const rows = input.rows.filter((row) => row.features.raceCode === raceCodeForFamily(input.rule.family));
+  const rows = input.rows.filter((row) => row.features.raceCode === raceCodeForFamily(input.rule.family) && !isVoidRaceOutcome(row.outcome));
   const rankedRows = rankRows(rows);
   const baseline = rankedRows
     .filter((row) => row.features.raceDate >= input.rule.dateRange.from)
@@ -405,7 +406,7 @@ export function evaluateResearchRule(input: {
   const baselineSettled = baseline
     .map((row) => ({ row, settlement: settleSelection(row.outcome) }))
     .filter((row) => row.settlement !== null);
-  const baselineWins = baselineSettled.filter(({ row }) => row.outcome.won).length;
+  const baselineWins = baselineSettled.filter(({ row }) => row.outcome.finishingPosition === 1).length;
 
   return {
     settlementVersion: CANONICAL_SETTLEMENT_VERSION,
@@ -443,7 +444,7 @@ export function rankRows(rows: HistoricalTargetRunnerMetricsRow[]): RankedResear
     .filter((metric) => metric !== "turfPerformanceW50Rating")) {
     for (const raceRows of rowsByRace.values()) {
       const rankable = raceRows
-        .filter((row) => row.outcome.resultStatus !== "non_runner")
+        .filter((row) => !isVoidSettlementOutcome(row.outcome))
         .filter((row) => metricValue(row.features, metric) !== null)
         .sort(
           (left, right) =>

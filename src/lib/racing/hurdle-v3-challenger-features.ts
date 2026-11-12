@@ -1,4 +1,4 @@
-import { isVoidBetResultStatus, settledWinValue } from "./backtest";
+import { legacyVoidBetResultStatus, legacyRecordedWinValue } from "./backtest";
 
 export const HURDLE_V3_SCHEMA = "hurdle_only_canonical_starters_mean_imputed_v1" as const;
 export const HURDLE_V3_COMMENT_HALF_LIFE_DAYS = 90;
@@ -32,7 +32,7 @@ export type HurdleV3Raw = Record<HurdleV3Feature, number | null>;
 
 /** A recorded outcome is required; NR/void are excluded before resolving a winner. */
 export function canonicalHurdleV3Starter(run: Pick<HurdleV3Prior, "finishingPosition" | "resultStatus">): boolean {
-  return !isVoidBetResultStatus(run.resultStatus) && settledWinValue({ ...run, won: null }) !== null;
+  return !legacyVoidBetResultStatus(run.resultStatus) && legacyRecordedWinValue({ ...run, won: null }) !== null;
 }
 export function hurdleV3PriorHistory(target: HurdleV3Target, history: readonly HurdleV3Prior[]): HurdleV3Prior[] {
   const cutoff = Date.parse(target.cutoff), off = Date.parse(target.scheduledOff);

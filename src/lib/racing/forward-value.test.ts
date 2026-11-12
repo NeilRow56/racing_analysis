@@ -389,8 +389,8 @@ describe("forward value capture", () => {
     result.runners[0] = { ...result.runners[0]!, finishingPosition: 1, resultStatus: "finished" };
     result.runners[1] = { ...result.runners[1]!, finishingPosition: 1, resultStatus: "finished" };
     const settled = settleForwardValueRecords({ ...emptyForwardValueData(), races: [record] }, new Map([[result.raceId, result]])).data.races[0]!;
-    assert.equal(settled.capturedPriceGrossReturn, 3);
-    assert.equal(settled.capturedPriceProfitLoss, 2);
+    assert.equal(settled.capturedPriceGrossReturn, 2.5);
+    assert.equal(settled.capturedPriceProfitLoss, 1.5);
   });
 
   test("labels sparse samples without changing eligibility", () => {

@@ -42,8 +42,8 @@ test("pending, NR and void count as captured but do not enter settled metrics", 
 test("captured-price returns use stored canonical dead-heat settlement", () => {
   const summary = tissueProspectiveMetrics([winner(6, 2), row()]);
   assert.equal(summary.winners, 1);
-  assert.equal(summary.profitLoss, 1.5); // Canonical profit deduction: (6 - 1) / 2, then a losing stake
-  assert.equal(summary.roi, .75);
+  assert.equal(summary.profitLoss, 1); // Split-stake gross 6/2, less both original stakes
+  assert.equal(summary.roi, .5);
 });
 
 test("missing, invalid and unsettled prices never become losing stakes", () => {

@@ -11,7 +11,8 @@ export function winGrossReturn(input: {
   const decimalOdds = input.maxFractionalOdds === undefined
     ? input.decimalOdds
     : Math.min(input.decimalOdds, input.maxFractionalOdds + 1);
-  return 1 + (decimalOdds - 1) / divisor;
+  // Decimal SP includes stake. The entire winning stake is divided in a dead heat.
+  return decimalOdds / divisor;
 }
 
 export function validDeadHeatDivisor(value: number | undefined): number {

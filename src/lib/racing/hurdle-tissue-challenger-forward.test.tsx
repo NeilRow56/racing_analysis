@@ -164,7 +164,7 @@ test("canonical void and dead heat outcomes remain paired and separate", () => {
   const deadHeat = race({ actualRunnerCount: 2, runners: [runner("a", 100, { finishingPosition: 1, oddsDecimal: "21" }), runner("b", 175, { finishingPosition: 1, oddsDecimal: "5" })] });
   const tied = updateHurdlePairs(data, new Map([["race", deadHeat]]), new Date(`${date}T14:00:00Z`), true);
   assert.equal(summarizeHurdlePairs(tied).disagreement.bothWin, 1);
-  assert.equal(tied.races[0]!.challenger.selectedPriceProfitLoss.early, 9.5);
+  assert.equal(tied.races[0]!.challenger.selectedPriceProfitLoss.early, 9);
   const abandoned = race({ runners: [runner("a", 100, { resultStatus: "abandoned" }), runner("b", 175, { resultStatus: "abandoned" })] });
   const cancelled = updateHurdlePairs(data, new Map([["race", abandoned]]), new Date(`${date}T14:00:00Z`), true);
   assert.ok(cancelled.races[0]!.settledAt);

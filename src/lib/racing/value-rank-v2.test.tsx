@@ -168,7 +168,7 @@ test("NR/void do not enter stakes; dead-heat returns use the existing canonical 
   const result = { ...race, actualRunnerCount: 2, runners: race.runners.map(r => ({ ...r, resultStatus: "finished", finishingPosition: 1 })) };
   const settled = settleValueForward({ ...emptyValueForward(TURF_VALUE_CONFIG), races: [book] }, new Map([[book.raceId, result]]), new Date(`${date}T18:00:00Z`));
   const summary = summarizeValueRankV2(settled.races);
-  assert.equal(summary.active.winners, 1); assert.equal(summary.active.profitLoss, 17);
+  assert.equal(summary.active.winners, 1); assert.equal(summary.active.profitLoss, 16.5);
   assert.equal(summary.active.profitLoss, summary.legacyShadow.profitLoss);
 });
 

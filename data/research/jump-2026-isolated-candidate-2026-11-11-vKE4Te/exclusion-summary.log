@@ -1,0 +1,38 @@
+{
+  "exclusions": {
+    "allRows": 32901,
+    "noCompleteThreeL3": 5112,
+    "sourceOrOutcomeExclusions": 3045,
+    "targetUntimed": 22,
+    "anyDefiniteUntimedPrior": 110,
+    "anyUncertainPriorEvidence": 886,
+    "hiddenActualL3": 76,
+    "potentialL3Context": 13824,
+    "potentialAnyContext": 16167,
+    "referenceEligibleButDependencyScreened": 14590,
+    "strictUsable": 10661,
+    "overlappingReasons": true
+  },
+  "definiteMissingRunRecords": 22,
+  "definiteMissingRaces": 8,
+  "uncertainHistoricalRecords": 252,
+  "uncertainRaces": 43,
+  "hiddenActualL3Runs": 46,
+  "preliminaryMetadataOnly": [
+    {
+      "sourceId": "900894",
+      "name": "Coolmore N.H. Sires Los Angeles Irish EBF Mares I.N.H. Flat Race (Grade 2)",
+      "date": "2026-02-01"
+    },
+    {
+      "sourceId": "901516",
+      "name": "Paddy Power Cheltenham Countdown Podcast (C & G) I.N.H. Flat Race (Grade 2)",
+      "date": "2026-02-02"
+    },
+    {
+      "sourceId": "912708",
+      "name": "Race & Stay At Punchestown Champion I.N.H. Flat Race (Grade 1)",
+      "date": "2026-04-29"
+    }
+  ]
+}

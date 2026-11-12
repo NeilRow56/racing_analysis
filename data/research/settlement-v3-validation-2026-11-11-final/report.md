@@ -1,0 +1,32 @@
+# Versioned settlement correction — 11 November 2026
+
+Implemented **`canonical_settlement_v3`** for new research and fresh prospective settlements. Original v2/unversioned figures remain labelled and preserved. No database changes, settlement workflow, backfill, cache generation, model fitting or collection run was performed.
+
+**Settlement semantics.** Decimal SP includes stake. A £1 dead-heat winner returns `SP / divisor`, with profit equal to that return minus the original £1. Valid non-finishers lose £1. Void/abandoned races and NRs refund/exclude stakes; unresolved outcomes remain pending. Race-level void evidence overrides stale positions. Actual SP and uncapped long-priced returns are retained. Existing explicit diagnostic/frozen price caps retain their eligibility definitions.
+
+**Audited population checked.** All eight confirmed void races (Sporting Life IDs **842876, 850035, 854299, 874166, 928280, 929549, 938099, 947824**) / **80 rows** now produce no losing stakes, including the 75 previously exposed rows and five NRs. All **68 winners in 34 two-way dead heats** return `SP/2`. The separate **189 non-final AW rows** remain unresolved. Exact identities remain in the original [void](../void-settlement-audit-2026-11-11-sEoXNC/void-runner-records.csv), [dead-heat](../void-settlement-audit-2026-11-11-sEoXNC/dead-heat-winning-records.csv) and [non-final](../void-settlement-audit-2026-11-11-sEoXNC/nonfinal-loss-records.csv) evidence. These populations are potential exposure, not proof those bets were placed.
+
+**Fixed snapshot replay.** Corrected code reproduces all six audited counterfactuals from the exact retained pinned caches and reconstructed trainer cohorts. No strategy or parameter search was performed.
+
+| Original saved rule / period | Original reported P/L | v3 settled £1 stakes | v3 P/L | v3 ROI |
+| --- | ---: | ---: | ---: | ---: |
+| Jump Handicap / 2025 | −166.871 | 1,883 | −166.871 | −8.862% |
+| Chases - 2026 non summer / development 2025 | +32.510 | 450 | +32.510 | +7.224% |
+| Trainer 30 1-50 days / 2025 | +133.660 | 515 | +130.160 | +25.274% |
+| Trainer 30 1-50 days / recorded 2026 holdout | +146.873 | 413 | +146.873 | +35.562% |
+| Jump - handicap 2 / 2025 | +129.458 | 1,380 | **−60.542** | **−4.387%** |
+| Jump - handicap 2 / recorded 2026 holdout | +37.476 | 1,141 | **−154.524** | **−13.543%** |
+
+The Jump differences restore 190 and 192 omitted non-finisher losses. Trainer development restores three losses and removes £0.50 dead-heat overpayment. None of these fixed definitions selects a confirmed void. These are separately labelled recalculations, not replacement frozen results or fresh validation evidence. [validation.json](validation.json) includes full summaries and reproduced selection identities.
+
+**Consumers and files.** Core policy lives in `research-settlement-version.ts`, `settlement-outcome.ts`, `win-settlement.ts` and `backtest.ts`. Historical result types/readers, cache reading, Research Filters and model comparison adapters carry source evidence without rewriting stored features. UI badges distinguish corrected calculations from original snapshots. Prospective result writers and recorded-money adapters cover Value, Rating, Tissue, paired/shadow monitors, Rank One, Hurdle Recency, Jump G4, OR/Speed, Weight and TPR/Timewise. Existing frozen feature classifiers are retained explicitly. The [implementation file inventory](implementation-files.txt) lists touched files; existing unrelated workspace changes were retained. [Policy documentation](../../../docs/settlement-v3.md) describes version dispatch and consumers.
+
+**Preservation.** A host-access, read-only PostgreSQL transaction verified all **four frozen rules and six original summaries** still match the audit ([database proof](database-preservation.json)). **142 hash checks** passed for inspected caches, evidence, snapshots and 42 original local source files ([file proof](preservation.json)); no Jump guard or raw-source changes were made. Two mutable prospective files already differ from the earlier audit: `hurdle-v3-prospective-shadow-v1.json` and `tissue-generation-forward-2026-11.json`. Their current bytes remained unchanged during the validation replay; audit/current hashes are recorded rather than attributing or reversing those changes.
+
+**Testing.** TypeScript typecheck and targeted ESLint pass. Core/evidence/research/prospective regressions passed (219 tests); the final affected prospective group passed another 94 tests, and the final Forward Value check passed 41. Broad tests were executed in separate Bun processes because the combined runner hits its `node:test` nesting limitation. Across 132 files, 1,559 tests passed; the separate host-access read-only surface test also passed. Two unrelated UI assertions remain: the older `Tissue Value Monitoring` heading expectation and an exact `ActiveTissueRaceTables` source-wiring expectation. Their current UI implementation was outside this settlement repair. Compatibility tests continue to reject incompatible Jump caches. No Python files were edited.
+
+**Remaining work and release recommendation.** Affected historical Research Filters/backtest outputs require a new v3 analysis. The three legacy summaries above must not support profitability claims from their original positive returns. Existing AW Rating/Tissue v1 money for Grow Old With Me and Charlie's Cannon on race 941778 remains original: a separately authorized recalculation would reduce each affected £1 winner by £0.50 in each duplicate ledger, not overwrite it. Mixed prospective totals are labelled as recorded versions; they are not retroactively pure v3.
+
+The final [host-access reader check](reader-verification.json) exercised the actual corrected loader: all 22 AW-2025 void rows were excluded from stakes, the original manifest was not relabelled, and incompatible Jump-2026 remained rejected. The final TPR/Timewise/core group passed 44 tests, including original-versus-corrected return dispatch. Final typecheck, targeted lint and whitespace checks passed.
+
+The identified settlement defect is corrected and the audited Jump figures reproduce. The **98 unresolved rows across 14 Jump races** and missing-minute guard remain separate constraints. This task does not approve a rebuild or profitability research: keep the Jump rebuild blocked until this correction/report is reviewed, then consider only a separately approved isolated partial candidate through 14 October with explicit exclusions. Recovered 2026 evidence remains exploratory.

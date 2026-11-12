@@ -1,0 +1,56 @@
+{
+  "before": {
+    "unrelated_races": {
+      "count": 38632,
+      "checksum": "acccc89434242f537baf6723ff4ab376"
+    },
+    "unrelated_runners": {
+      "count": 392458,
+      "checksum": "f9ffd875e7e488b0e418c6721f04b67c"
+    },
+    "horses": {
+      "count": 52852,
+      "checksum": "4f360a8f2a76328cace2b685ceef7d56"
+    },
+    "courses": {
+      "count": 133,
+      "checksum": "1d4e024e28870fa5fa1182c9baa7051a"
+    },
+    "trainers": {
+      "count": 2314,
+      "checksum": "b4302afa07a8ff6dac19efed4637edee"
+    },
+    "jockeys": {
+      "count": 2586,
+      "checksum": "f44ad22dd9514720f4ca84615bf795ff"
+    }
+  },
+  "after": {
+    "unrelated_races": {
+      "count": 38632,
+      "checksum": "acccc89434242f537baf6723ff4ab376"
+    },
+    "unrelated_runners": {
+      "count": 392458,
+      "checksum": "f9ffd875e7e488b0e418c6721f04b67c"
+    },
+    "horses": {
+      "count": 52852,
+      "checksum": "4f360a8f2a76328cace2b685ceef7d56"
+    },
+    "courses": {
+      "count": 133,
+      "checksum": "1d4e024e28870fa5fa1182c9baa7051a"
+    },
+    "trainers": {
+      "count": 2314,
+      "checksum": "b4302afa07a8ff6dac19efed4637edee"
+    },
+    "jockeys": {
+      "count": 2586,
+      "checksum": "f44ad22dd9514720f4ca84615bf795ff"
+    }
+  },
+  "checksPassed": true,
+  "scope": "Entire logical rows for every unrelated race and runner; all horses, courses, trainers and jockeys. Original 11 racecard records compared in full, including payloads; no existing source record overwritten."
+}

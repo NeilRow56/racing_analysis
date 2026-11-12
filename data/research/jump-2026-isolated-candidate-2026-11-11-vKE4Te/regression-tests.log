@@ -1,0 +1,153 @@
+bun test v1.3.5 (1e86cebd)
+
+src/lib/racing/backtest.test.ts:
+(pass) backtest filters > derives relative speed values without inventing missing values as zero [1.11ms]
+(pass) backtest filters > applies deterministic race, runner, speed and relative-speed predicates [1.31ms]
+(pass) backtest filters > applies weight-adjusted performance filters independently of raw speed [0.05ms]
+(pass) backtest filters > applies today's rating filters independently of raw speed and historical performance
+(pass) backtest filters > result SP cannot satisfy pre-race odds filters [1.43ms]
+(pass) backtest filters > Jump, AW and Turf segment filters remain isolated [0.69ms]
+(pass) backtest filters > date cutoff excludes rows outside the requested range [0.22ms]
+(pass) backtest scoring > corrected denominators exclude refunds and pending rows while keeping started losses [1.21ms]
+(pass) backtest scoring > settles £1 win stakes from post-race settlement SP only
+(pass) backtest scoring > settles dead-heat winners by splitting the original stake
+(pass) backtest scoring > excludes non-runners and missing settlement prices from settled selections
+(pass) backtest scoring > settles Jump non-finishers that started as losing bets
+(pass) backtest scoring > keeps void and abandoned races out of betting denominators
+(pass) backtest scoring > max losing run is zero with no settled selections
+(pass) backtest scoring > max losing run is zero when every settled selection wins [1.23ms]
+(pass) backtest scoring > one losing selection gives max losing run one [0.03ms]
+(pass) backtest scoring > three losing selections then a winner gives max losing run three [0.16ms]
+(pass) backtest scoring > unsettled selections are skipped and do not reset a losing run
+(pass) backtest scoring > winning selection resets max losing run even within the same race [0.20ms]
+(pass) backtest scoring > max losing run uses deterministic chronological selection ordering [0.08ms]
+(pass) backtest scoring > large mixed fixture returns non-zero max losing run when losses are present [1.29ms]
+(pass) backtest scoring > assigns fixed odds bands
+(pass) backtest leakage separation > changing outcomes does not change selected runner IDs
+(pass) backtest leakage separation > future OR and form are absent unless present in precomputed features
+(pass) backtest leakage separation > repeated evaluation is reproducible for selection IDs and summary [1.27ms]
+
+src/lib/racing/settlement-v3.test.ts:
+(pass) corrected settlement v3 > void and abandoned source stages override provisional winners without a losing stake
+(pass) corrected settlement v3 > genuine non-runners are distinct from non-finishers, including in a void race [0.79ms]
+(pass) corrected settlement v3 > explicit legacy non-finisher codes settle; a generic other/zero status does not
+(pass) corrected settlement v3 > non-final and unknown source stages remain unresolved even with a price or stale position
+(pass) corrected settlement v3 > SP includes stake: ordinary uncapped SP 301 winner returns £301 on £1
+(pass) corrected settlement v3 > dead heats split stake rather than profit; a winning selection can have negative net return [0.04ms]
+(pass) corrected settlement v3 > an explicit original-v2 view preserves previous arithmetic without relabelling it
+(pass) corrected settlement v3 > settlement-only projection preserves captured race and runner fields
+
+src/lib/racing/jump-missing-minute-integrity.test.ts:
+(pass) targeted missing-minute winning-time guard > confirmed Newcastle omission is caught with explicit diagnostics [0.63ms]
+(pass) targeted missing-minute winning-time guard > ordinary fast, corrected, slow and invalid times are not missing-minute errors [0.19ms]
+(pass) targeted missing-minute winning-time guard > tolerates observed +60.88s and +60.51s differences, without exact equality [0.10ms]
+(pass) targeted missing-minute winning-time guard > two exact peers can add coverage; one cannot; a poor +60 hypothesis is rejected [0.14ms]
+(pass) targeted missing-minute winning-time guard > withholds every computed figure with an explicit reason and never corrects input [0.13ms]
+(pass) targeted missing-minute winning-time guard > exact references exclude target, other courses, distances, subtypes and AWT bumpers [2.57ms]
+
+src/lib/racing/backtest-cache.test.ts:
+(pass) backtest feature cache > guard metadata invalidates only Jump-dependent caches and accepts a rebuilt manifest
+(pass) backtest feature cache > rejects a source-correction invalidated cache without altering its feature or outcome data
+(pass) backtest feature cache > reconstructs dead-heat divisors from cached finishing positions
+(pass) backtest feature cache > validates cache feature and calculation versions [0.05ms]
+(pass) backtest feature cache > validates only speed versions used by a family cache
+(pass) backtest feature cache > round-trips cached rows and preserves null feature/outcome separation [4.09ms]
+(pass) backtest feature cache > derives actual race-date coverage from cache rows when requested range is wider
+(pass) backtest feature cache > cached feature parity gives identical selections to live rows [1.05ms]
+(pass) backtest feature cache > chunk aggregation preserves chronological max losing run
+(pass) backtest feature cache > splits feature targets into bounded batches without losing or duplicating IDs [2.63ms]
+(pass) backtest feature cache > stale cache is rejected before feature files are used [3.48ms]
+(pass) backtest feature cache > incomplete cache without a manifest is not treated as valid [1.71ms]
+
+src/lib/racing/research-cache.test.ts:
+(pass) source identity detects new files, same-size edits, atomic replacement, deletion and chase snapshots [8.82ms]
+(pass) cache coalesces reads, keys database changes, bounds freshness, and retries failures [0.89ms]
+(pass) real Value and Tissue summaries match uncached results and invalidate on capture, settlement and NR updates; archive retained [1076.90ms]
+(pass) settlement projection matches Today conclusive-result semantics for pending, winners, incomplete, NR and void
+(pass) active cohort ships identical precomputed family summaries without historical runner payloads; archive still available [1031.11ms]
+
+src/lib/racing/win-settlement.test.ts:
+(pass) winGrossReturn > settles ordinary winners and losers
+(pass) winGrossReturn > divides the entire winning stake for two-way and three-way dead heats
+(pass) winGrossReturn > caps fractional odds before applying the dead-heat divisor
+
+src/lib/racing/jump-winning-time-integrity.test.ts:
+(pass) winning-time integrity > flags the Newcastle error, accepts the correction and an ordinary fast race
+(pass) winning-time integrity > sparse standards require review; legitimate slow going is not an automatic source error
+(pass) winning-time integrity > correction validation leaves raw provenance and prospective input intact
+(pass) winning-time integrity > authoritative corrected time is used in the real rating formula [1.83ms]
+
+src/lib/racing/todays-rating.test.ts:
+(pass) calculateTodaysRating > lighter current weight increases rating [0.10ms]
+(pass) calculateTodaysRating > heavier current weight decreases rating
+(pass) calculateTodaysRating > dead-heat sanity example translates both to the same current weight
+(pass) calculateTodaysRating > identical performance and current weight stays identical [0.01ms]
+(pass) calculateTodaysRating > missing or invalid current weight returns null
+(pass) calculateTodaysRating > exposes calculation version
+
+src/lib/racing/jump-winning-time-production.test.ts:
+(pass) audited corrections and production guard > all ten corrections preserve raw values, are idempotent and reject unreviewed disagreement [0.97ms]
+(pass) audited corrections and production guard > original Newcastle time is withheld in the production calculator; corrected and ordinary fast races remain usable [0.54ms]
+(pass) audited corrections and production guard > a single peer cannot withhold; unrelated types/courses/distances are excluded [0.46ms]
+
+src/lib/racing/research-holdout.test.ts:
+(pass) research holdout validation > rejects missing or incompatible 2026 holdout cache before evaluating [6.87ms]
+(pass) research holdout validation > evaluates the frozen rule against the 2026 range without mutating the stored canonical rule [6.45ms]
+(pass) research holdout validation > applies a frozen calendar period to holdout using the canonical race date [4.82ms]
+(pass) research holdout validation > records no-settled status and uses the latest compatible 2026 cache range [8.18ms]
+(pass) research holdout validation > resolves frozen trainer cohort concept against the supplied 2026 holdout cohort [5.22ms]
+(pass) research holdout validation > evaluates frozen trainer and course arrays against the 2026 holdout cache [4.70ms]
+(pass) research holdout validation > evaluates a frozen AW Draw range against stored stalls [8.22ms]
+(pass) research holdout validation > evaluates frozen Jump subtype against the 2026 holdout cache [3.71ms]
+(pass) research holdout validation > evaluates frozen jockey filters against the 2026 holdout cache [5.71ms]
+(pass) research holdout validation > evaluates frozen Starting Price filters against the 2026 holdout cache [3.78ms]
+(pass) research holdout validation > evaluates official rating rank alongside a generic rank in holdout [133.18ms]
+(pass) research holdout validation > evaluates frozen TPR version filters against the 2026 holdout cache [3.86ms]
+(pass) research holdout validation > evaluates generic TPR rank against the production TPR field in the 2026 holdout [3.25ms]
+(pass) research holdout validation > evaluates W50 rank and OR rank together in the 2026 holdout [2.77ms]
+(pass) research holdout validation > uses actual result SP for holdout even when development snapshot was capped [2.47ms]
+
+src/lib/racing/jump-performance-rating.test.ts:
+(pass) Jump Performance Rating prototypes > uses equal complete-case component-rank averages [0.32ms]
+(pass) Jump Performance Rating prototypes > preserves component and composite competition ties
+(pass) Jump Performance Rating prototypes > leaves incomplete candidates unrated without imputation [0.72ms]
+(pass) Jump Performance Rating prototypes > excludes non-runners before ranking [0.03ms]
+(pass) Jump Performance Rating prototypes > uses identical calculation semantics for Chase and Hurdle inputs [0.22ms]
+
+src/lib/racing/historical-target-metrics.test.ts:
+(pass) legacy cache evidence is identity-bound and cannot refresh frozen outcomes or features [2.64ms]
+(pass) buildHistoricalTargetRunnerMetricRows > keeps target outcome and starting price out of pre-race features [1.24ms]
+(pass) buildHistoricalTargetRunnerMetricRows > uses only same-horse same-source completed prior history before the target [0.74ms]
+(pass) buildHistoricalTargetRunnerMetricRows > calculates jockey prior metrics as of the target race time [0.98ms]
+(pass) buildHistoricalTargetRunnerMetricRows > 2026 targets can use legitimate December 2025 horse history [0.27ms]
+(pass) buildHistoricalTargetRunnerMetricRows > counts career prior runs before each target as zero, one or multiple without future leakage [0.56ms]
+(pass) buildHistoricalTargetRunnerMetricRows > derives performance from the historical run weight, not target weight [0.44ms]
+(pass) buildHistoricalTargetRunnerMetricRows > keeps performance missing when the historical run weight is missing
+(pass) buildHistoricalTargetRunnerMetricRows > derives today's rating from prior performance and target race weight only [1.08ms]
+(pass) buildHistoricalTargetRunnerMetricRows > excludes non-runners, unfinished rows, and withheld speed ratings [0.67ms]
+(pass) buildHistoricalTargetRunnerMetricRows > uses race-family-specific generic speed fields [0.63ms]
+(pass) buildHistoricalTargetRunnerMetricRows > classifies confirmed missing-type Irish Gold Cup examples as jump, not turf [0.43ms]
+(pass) buildHistoricalTargetRunnerMetricRows > preserves ordinary flat turf classification for Group, Listed, maiden and handicap races [0.62ms]
+(pass) buildHistoricalTargetRunnerMetricRows > derives run number after 90-day break from prior completed runs only [2.43ms]
+(pass) buildHistoricalTargetRunnerMetricRows > keeps first career run separate from run after break [0.36ms]
+(pass) buildHistoricalTargetRunnerMetricRows > keeps live and historical Turf TPR inputs and ranks identical across mixed histories [4.66ms]
+(pass) buildHistoricalTargetRunnerMetricRows > keeps canonical AW and Jump live inputs identical to historical rows [3.76ms]
+
+src/lib/racing/jump-speed-rating.test.ts:
+(pass) calculateJumpSpeedRating > uses the conservative same-day path when eligible [0.45ms]
+(pass) calculateJumpSpeedRating > falls back to base when same-day is not conservatively eligible [0.06ms]
+(pass) calculateJumpSpeedRating > withholds ratings above 75 cumulative beaten lengths
+(pass) calculateJumpSpeedRating > keeps exactly 75 lengths eligible
+(pass) calculateJumpSpeedRating > assigns medium confidence for valid base fallback with moderate sample [0.30ms]
+(pass) calculateJumpSpeedRating > assigns low confidence for weak samples [0.02ms]
+(pass) calculateJumpSpeedRating > returns unavailable for missing timing [0.03ms]
+(pass) calculateJumpSpeedRating > exposes the centralized calculation version [0.06ms]
+(pass) calculateJumpSpeedRating > does not rate non-jump races [0.09ms]
+(pass) isJumpRace > recognizes obvious jump titles when source type metadata is missing [0.05ms]
+(pass) isJumpRace > keeps confirmed Irish Grade 1 chase titles out of turf-flat when metadata is missing [0.06ms]
+(pass) isJumpRace > does not treat ordinary flat Group, Listed or handicap races as jumps [0.08ms]
+(pass) isJumpRace > explicit flat metadata prevents known-title fallback [0.02ms]
+
+ 122 pass
+ 0 fail
+Ran 122 tests across 13 files. [2.76s]

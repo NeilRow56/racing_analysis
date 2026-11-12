@@ -1,0 +1,244 @@
+[
+  {
+    "ledger": "data/research/hurdle-v3-prospective-shadow-v1.json",
+    "pins": [
+      {
+        "path": "data/research/hurdle-tissue-v3-challenger.json",
+        "originalPin": "2f90a1eb454920631452967ba3bbd76dd657f18a14145d241ac908486b788023",
+        "current": "2f90a1eb454920631452967ba3bbd76dd657f18a14145d241ac908486b788023",
+        "exactMatch": true
+      },
+      {
+        "path": "data/research/tissue-generation-2026-11-hurdle.json",
+        "originalPin": "2b6495fceb4079da756e52a00c7b45f9d8051ea6d63305dd96ae5c7f8ab6499e",
+        "current": "2b6495fceb4079da756e52a00c7b45f9d8051ea6d63305dd96ae5c7f8ab6499e",
+        "exactMatch": true
+      },
+      {
+        "path": "src/lib/racing/hurdle-v3-challenger-model.ts",
+        "originalPin": "47e01e7f9fb63ef0f7cb30dc5c37ec2ce052bddcb3a6cf673fcc1d00bc5bc964",
+        "current": "47e01e7f9fb63ef0f7cb30dc5c37ec2ce052bddcb3a6cf673fcc1d00bc5bc964",
+        "exactMatch": true
+      },
+      {
+        "path": "src/lib/racing/hurdle-v3-challenger-features.ts",
+        "originalPin": "acfc91b8ccab7991868ef1fa3128c5fbd5320b04936c34bd65ddc039ab46b86f",
+        "current": "d8285c3f117813b41b191ba06e08f10dfabe99ccffc66884c5a46d074814a858",
+        "exactMatch": false
+      },
+      {
+        "path": "src/lib/racing/hurdle-v3-shadow-tags.ts",
+        "originalPin": "cd4cc813d6e1166ca3e6e5622ee5f296623dc498a1aa1a524f06e29b17d5b8a9",
+        "current": "cd4cc813d6e1166ca3e6e5622ee5f296623dc498a1aa1a524f06e29b17d5b8a9",
+        "exactMatch": true
+      },
+      {
+        "path": "src/lib/racing/hurdle-v3-shadow-inputs.ts",
+        "originalPin": "ba10c1cbbd64a4f0870cba7a68647e560af8c3340214dd0b61174cb8859452cb",
+        "current": "ba10c1cbbd64a4f0870cba7a68647e560af8c3340214dd0b61174cb8859452cb",
+        "exactMatch": true
+      },
+      {
+        "path": "src/lib/racing/hurdle-v3-shadow.ts",
+        "originalPin": "123392a2c9c78e7a35ff90eab93ffcd72c528698043f5d237af2024ff681cadc",
+        "current": "123392a2c9c78e7a35ff90eab93ffcd72c528698043f5d237af2024ff681cadc",
+        "exactMatch": true
+      },
+      {
+        "path": "src/lib/racing/hurdle-v3-shadow-sync.ts",
+        "originalPin": "8e2947d0e0525614c408e23528f4733a23e272f353e1d1ea52eec180de3803dc",
+        "current": "8e2947d0e0525614c408e23528f4733a23e272f353e1d1ea52eec180de3803dc",
+        "exactMatch": true
+      },
+      {
+        "path": "src/lib/racing/jump-speed-ratings.ts",
+        "originalPin": "cf1df1c7540901d9afa12c4288fb0dc511ca52b6e314241abdb2465a3ea890e3",
+        "current": "cf1df1c7540901d9afa12c4288fb0dc511ca52b6e314241abdb2465a3ea890e3",
+        "exactMatch": true
+      },
+      {
+        "path": "src/lib/racing/jump-speed-rating.ts",
+        "originalPin": "ee571b63acd6869abc1255f362da9982b9b2626f388f24b003479367c68c71b4",
+        "current": "ee571b63acd6869abc1255f362da9982b9b2626f388f24b003479367c68c71b4",
+        "exactMatch": true
+      },
+      {
+        "path": "src/lib/racing/backtest.ts",
+        "originalPin": "706244d81205ca3d87aa31619c2e7b5f44ff97a32780f8fbc9543524115bbef4",
+        "current": "b078ee2c1473903facb2fc9ed6c81424c0bfbc56742091d7f1e25d1c968839f8",
+        "exactMatch": false
+      },
+      {
+        "path": "scripts/diagnose-independent-tissue-feasibility.ts",
+        "originalPin": "7343bd3a59574d17f271f75d08dc7795af06a0d2ac447c1a07b8014e2536d4a8",
+        "current": "7343bd3a59574d17f271f75d08dc7795af06a0d2ac447c1a07b8014e2536d4a8",
+        "exactMatch": true
+      }
+    ]
+  },
+  {
+    "ledger": "data/research/hurdle-v3-market-edge-prospective-v1.json",
+    "pins": [
+      {
+        "path": "src/lib/racing/hurdle-v3-market-edge-method.ts",
+        "originalPin": "799387679af0f74dcd1d759675e4534df08c707137b71c30f17dc6a63e3fcbb3",
+        "current": "799387679af0f74dcd1d759675e4534df08c707137b71c30f17dc6a63e3fcbb3",
+        "exactMatch": true
+      },
+      {
+        "path": "src/lib/racing/hurdle-v3-market-edge.ts",
+        "originalPin": "2b9a8681f36f469f6d29b350132a37b26ca26efbae2602e1359ac1f66237dbb3",
+        "current": "004fc189541d6459c43e421cc5a9eacc555b0d2260a8176878fb928f5ac95dc9",
+        "exactMatch": false
+      },
+      {
+        "path": "src/lib/racing/hurdle-v3-market-edge-metrics.ts",
+        "originalPin": "ff057ed72572cab73fe222f8fa732bd29e65d81198ce73e6908e85f8b6bfcc65",
+        "current": "ff057ed72572cab73fe222f8fa732bd29e65d81198ce73e6908e85f8b6bfcc65",
+        "exactMatch": true
+      },
+      {
+        "path": "src/lib/racing/hurdle-v3-challenger-features.ts",
+        "originalPin": "acfc91b8ccab7991868ef1fa3128c5fbd5320b04936c34bd65ddc039ab46b86f",
+        "current": "d8285c3f117813b41b191ba06e08f10dfabe99ccffc66884c5a46d074814a858",
+        "exactMatch": false
+      },
+      {
+        "path": "src/lib/racing/hurdle-v3-challenger-model.ts",
+        "originalPin": "47e01e7f9fb63ef0f7cb30dc5c37ec2ce052bddcb3a6cf673fcc1d00bc5bc964",
+        "current": "47e01e7f9fb63ef0f7cb30dc5c37ec2ce052bddcb3a6cf673fcc1d00bc5bc964",
+        "exactMatch": true
+      },
+      {
+        "path": "src/lib/racing/hurdle-low-form-method.ts",
+        "originalPin": "d704c71fe51488b495e647c02649c6ba4e4b0cd683f0900f6103a0ed7f9c5ce8",
+        "current": "d704c71fe51488b495e647c02649c6ba4e4b0cd683f0900f6103a0ed7f9c5ce8",
+        "exactMatch": true
+      },
+      {
+        "path": "src/lib/racing/hurdle-low-form.ts",
+        "originalPin": "496c2710abed499aff1f4444742ac298d7cc06b47c1ef99f955ee0346e4469e8",
+        "current": "496c2710abed499aff1f4444742ac298d7cc06b47c1ef99f955ee0346e4469e8",
+        "exactMatch": true
+      },
+      {
+        "path": "src/lib/racing/hurdle-v3-shadow-metrics.ts",
+        "originalPin": "4bbcf3afab1ac0510d7584ec61c9ad073c9f5ba4b377f595cbb55a59a2b3030a",
+        "current": "4bbcf3afab1ac0510d7584ec61c9ad073c9f5ba4b377f595cbb55a59a2b3030a",
+        "exactMatch": true
+      },
+      {
+        "path": "src/lib/racing/tissue-value-metrics.ts",
+        "originalPin": "1a315b3478dbba7c50f64b96c80aaade5fd4d13bd261ae77ff9cb0cc0a73cae9",
+        "current": "1a315b3478dbba7c50f64b96c80aaade5fd4d13bd261ae77ff9cb0cc0a73cae9",
+        "exactMatch": true
+      }
+    ]
+  },
+  {
+    "ledger": "data/research/tissue-positive-neutral-prospective-v1.json",
+    "pins": [
+      {
+        "path": "src/lib/racing/tissue-positive-neutral-method.ts",
+        "originalPin": "9989b64c3bf40bc2faf54d7f62022cc2abc4b9715ffea87fd475868af92fefe1",
+        "current": "9989b64c3bf40bc2faf54d7f62022cc2abc4b9715ffea87fd475868af92fefe1",
+        "exactMatch": true
+      },
+      {
+        "path": "src/lib/racing/tissue-positive-neutral.ts",
+        "originalPin": "6cd0b7869886a927ec583b666c8386618e5117779cd6bdab9ab58abcb5ab8e66",
+        "current": "6cd0b7869886a927ec583b666c8386618e5117779cd6bdab9ab58abcb5ab8e66",
+        "exactMatch": true
+      },
+      {
+        "path": "src/lib/racing/tissue-positive-neutral-metrics.ts",
+        "originalPin": "99eed0c0297ca1fcfc5a45b8512e73f09dc115e574e9583d2f768f9ab6649bf0",
+        "current": "99eed0c0297ca1fcfc5a45b8512e73f09dc115e574e9583d2f768f9ab6649bf0",
+        "exactMatch": true
+      },
+      {
+        "path": "src/app/racing/today/tissue-market-badge.ts",
+        "originalPin": "ecd2a5a2a033b72dcf5aef2eeccb4275c6d0473a25c49f32f0fbd8c2d74135e7",
+        "current": "ecd2a5a2a033b72dcf5aef2eeccb4275c6d0473a25c49f32f0fbd8c2d74135e7",
+        "exactMatch": true
+      },
+      {
+        "path": "src/lib/racing/tissue-generation-forward.ts",
+        "originalPin": "aaa05107464bb76c6bc8b275005917792b411db15bf80d722aef428a8c087c36",
+        "current": "a3848acc043e85d2cea8af10e9c64e927720fae0634d91692ea34f7578aa3782",
+        "exactMatch": false
+      },
+      {
+        "path": "src/lib/racing/tissue-value-metrics.ts",
+        "originalPin": "1a315b3478dbba7c50f64b96c80aaade5fd4d13bd261ae77ff9cb0cc0a73cae9",
+        "current": "1a315b3478dbba7c50f64b96c80aaade5fd4d13bd261ae77ff9cb0cc0a73cae9",
+        "exactMatch": true
+      },
+      {
+        "path": "src/lib/racing/tissue-generation-config.ts",
+        "originalPin": "5beceb5f4be3933dc7725003a0d7aef8637c055d183a4e76c107e2acd499f87d",
+        "current": "5beceb5f4be3933dc7725003a0d7aef8637c055d183a4e76c107e2acd499f87d",
+        "exactMatch": true
+      },
+      {
+        "path": "src/lib/racing/tissue-generation-model.ts",
+        "originalPin": "85ce056b96a1827689234fff87881a4697eee724d92460e44824db2f0c68bbd8",
+        "current": "85ce056b96a1827689234fff87881a4697eee724d92460e44824db2f0c68bbd8",
+        "exactMatch": true
+      },
+      {
+        "path": "data/research/tissue-generation-2026-11-turf.json",
+        "originalPin": "dcbe9fac4f7f3b56c5d9297e77b82357ace92d4d5c34f2152afd02cfb9bf9b8a",
+        "current": "dcbe9fac4f7f3b56c5d9297e77b82357ace92d4d5c34f2152afd02cfb9bf9b8a",
+        "exactMatch": true
+      },
+      {
+        "path": "data/research/tissue-generation-2026-11-aw.json",
+        "originalPin": "d9c44881e2ea13ee1ed637122e2eb49028866aba8668086718d757c0e94a7f8c",
+        "current": "d9c44881e2ea13ee1ed637122e2eb49028866aba8668086718d757c0e94a7f8c",
+        "exactMatch": true
+      },
+      {
+        "path": "data/research/tissue-generation-2026-11-hurdle.json",
+        "originalPin": "2b6495fceb4079da756e52a00c7b45f9d8051ea6d63305dd96ae5c7f8ab6499e",
+        "current": "2b6495fceb4079da756e52a00c7b45f9d8051ea6d63305dd96ae5c7f8ab6499e",
+        "exactMatch": true
+      },
+      {
+        "path": "data/research/tissue-generation-2026-11-chase.json",
+        "originalPin": "35208f1c097ede47b2637e535b4a186c4fc79ee34dd4cb0e5b8852342f5e854d",
+        "current": "35208f1c097ede47b2637e535b4a186c4fc79ee34dd4cb0e5b8852342f5e854d",
+        "exactMatch": true
+      }
+    ]
+  },
+  {
+    "ledger": "data/research/turf-2027-early-season-v1.json",
+    "pins": [
+      {
+        "path": "src/lib/racing/turf-early-season.ts",
+        "originalPin": "b804276dda20baa62ef14cd4599ce1f2343937c82d9de86eca03e5cdbfdc47c0",
+        "current": "d58c93f61614e2906d66c8f8cf2bfc1dfff759ec19ba8fbd3736bb9d40a215d1",
+        "exactMatch": false
+      },
+      {
+        "path": "src/lib/racing/turf-early-season-method.ts",
+        "originalPin": "07d63c5a04aa729068e83620e5de61c6dc82c55b15c8be04fdc97d4abf607a08",
+        "current": "07d63c5a04aa729068e83620e5de61c6dc82c55b15c8be04fdc97d4abf607a08",
+        "exactMatch": true
+      },
+      {
+        "path": "src/lib/racing/turf-early-season-inputs.ts",
+        "originalPin": "8084678fd3b79d000f4ef16bb5c0f5ef692e8cc7861b5e35ea1e15f8c008daff",
+        "current": "0f87d766700d6175a25727b30fef651292f3f5e6eca47b04ef6884f617b0117a",
+        "exactMatch": false
+      },
+      {
+        "path": "src/lib/racing/turf-early-season-metrics.ts",
+        "originalPin": "f96b1faf377d170b2b4ada98325ad1e65a0c0811dc12df422d4f2bd0395275a1",
+        "current": "f96b1faf377d170b2b4ada98325ad1e65a0c0811dc12df422d4f2bd0395275a1",
+        "exactMatch": true
+      }
+    ]
+  }
+]

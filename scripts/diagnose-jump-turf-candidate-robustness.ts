@@ -1,3 +1,5 @@
+import { resolve } from "node:path";
+import { pathToFileURL } from "node:url";
 import {
   deriveBacktestFeatureValues,
   settleSelection,
@@ -57,13 +59,13 @@ const SPARSE_FLOOR = 50;
 const VERY_SPARSE_FLOOR = 25;
 
 async function main() {
-  console.log("# Jump/Turf Candidate Robustness Audit");
+  console.log("# Jump/Turf Candidate Robustness Audit — corrected V3 recalculation (canonical_settlement_v3)");
   console.log("");
   console.log("Diagnostic only. Fixed named candidates only; no new predictive filters, threshold search, production Research changes, cache changes, or holdout changes.");
   console.log("");
   console.log("Candidates: Jump = trainer prior strike >=15%, field size <=5, Best L3 rank >=3, official-rating position third+. Turf = trainer prior strike >=15%, Best L3 rank >=3, exact field size 5.");
   console.log("");
-  console.log("Slippage stress formula: for winning selections only, adjusted gross return = decimal SP * (1 - slippage); losing selections remain -1. This is a generic adverse-return stress test, not an exchange commission model.");
+  console.log("Slippage stress formula: for winning selections only, adjusted gross return = canonical V3 gross return (decimal SP / dead-heat divisor) * (1 - slippage); losing selections remain -1. This is a generic adverse-return stress test, not an exchange commission model.");
   console.log("");
 
   const contexts = await loadContexts();
@@ -519,15 +521,14 @@ function monthlyCumulativeRows(rows: RankedResearchRow[]) {
   }));
 }
 
-function adjustedProfit(rows: RankedResearchRow[], slippage: number) {
+export function adjustedProfit(rows: RankedResearchRow[], slippage: number) {
   const settled = rows
     .map((row) => ({ row, settlement: settleSelection(row.outcome) }))
     .filter((entry): entry is { row: RankedResearchRow; settlement: NonNullable<ReturnType<typeof settleSelection>> } => entry.settlement !== null);
   const profitLoss = settled.reduce((total, entry) => {
-    const grossReturn = entry.row.outcome.won
-      ? entry.settlement.settlementOddsDecimal * (1 - slippage)
-      : 0;
-    return total + grossReturn - 1;
+    // Apply the existing slippage convention to canonical gross returns,
+    // including the dead-heat stake division and the effective settled stake.
+    return total + entry.settlement.grossReturn * (1 - slippage) - entry.settlement.stake;
   }, 0);
   return {
     profitLoss,
@@ -879,7 +880,7 @@ function printable(value: unknown) {
   return String(value).replace(/\|/g, "\\|");
 }
 
-main().catch((error) => {
+if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) main().catch((error) => {
   console.error(error);
   process.exit(1);
 });

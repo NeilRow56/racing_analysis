@@ -1,3 +1,4 @@
+import { assertCompatibleCapturePins } from "./capture-pin-compatibility";
 import { createHash } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname } from "node:path";
@@ -108,7 +109,7 @@ export async function mutateHurdleMarketEdge(mutate: (data: HurdleMarketEdgeData
     validate(after);
     if (after.observations.slice(before.observations.length).some(o => Date.now() >= Date.parse(o.scheduledOff) || Date.parse(o.frozenAt) > Date.now() || Date.now() - Date.parse(o.capturedAt) > 60000 || getLocalRacingDate() !== o.raceDate)) throw new Error("No retrospective market-edge additions");
   }, async data => {
-    if (JSON.stringify(data.sourceHashes) !== JSON.stringify(await hurdleMarketEdgeSourceHashes())) throw new Error("Market-edge methodology changed; create a new version");
+    await assertCompatibleCapturePins(data.sourceHashes, await hurdleMarketEdgeSourceHashes(), "hurdle-v3-market-edge");
     return mutate(data);
   });
 }

@@ -1,0 +1,655 @@
+[
+  {
+    "file": "data/research/aw-rating-forward-v1.json",
+    "path": "/races/86",
+    "raceId": "fb1c80ed-7b90-41fc-8d37-b2d5efbbecb5",
+    "sourceId": "941778",
+    "date": "2026-10-05",
+    "type": "dead_heat",
+    "money": {
+      "handicapStatus": "handicap",
+      "ratingCoverageStatus": "eligible",
+      "settledAt": "2026-10-06T00:48:41.048Z"
+    },
+    "runners": [
+      {
+        "runnerId": "1c50ef47-7d40-4bbc-be7f-69dc13b51dc6",
+        "position": 3,
+        "outcome": null,
+        "money": {
+          "resultStatus": "finished"
+        }
+      },
+      {
+        "runnerId": "56dbe1e0-d5a9-4114-ae36-c7874d5ff4b3",
+        "position": 11,
+        "outcome": null,
+        "money": {
+          "resultStatus": "finished"
+        }
+      },
+      {
+        "runnerId": "8079554c-3058-4b78-a170-80723058d551",
+        "position": 1,
+        "outcome": null,
+        "money": {
+          "resultStatus": "finished"
+        }
+      },
+      {
+        "runnerId": "352940ed-3032-45d6-b6ba-bf7b5af51a45",
+        "position": 4,
+        "outcome": null,
+        "money": {
+          "resultStatus": "finished"
+        }
+      },
+      {
+        "runnerId": "c2fce9a6-e575-414a-ba26-caad75019bfb",
+        "position": 8,
+        "outcome": null,
+        "money": {
+          "resultStatus": "finished"
+        }
+      },
+      {
+        "runnerId": "9b13e565-35fb-4d8f-a724-18ef3ff7d061",
+        "position": 7,
+        "outcome": null,
+        "money": {
+          "resultStatus": "finished"
+        }
+      },
+      {
+        "runnerId": "3f88148c-0297-44bd-9ac0-96147c5212ff",
+        "position": 9,
+        "outcome": null,
+        "money": {
+          "resultStatus": "finished"
+        }
+      },
+      {
+        "runnerId": "8e880f18-2413-47a6-9c68-fbefeb6c598c",
+        "position": 5,
+        "outcome": null,
+        "money": {
+          "resultStatus": "finished"
+        }
+      },
+      {
+        "runnerId": "bba70b0f-a3f1-4318-9635-b344cac2ca9f",
+        "position": 1,
+        "outcome": null,
+        "money": {
+          "resultStatus": "finished"
+        }
+      },
+      {
+        "runnerId": "9e5f8a3c-b606-45e5-8e34-43180d4d28b8",
+        "position": 10,
+        "outcome": null,
+        "money": {
+          "resultStatus": "finished"
+        }
+      },
+      {
+        "runnerId": "1a0fc99f-551b-42df-9498-2f5849f37571",
+        "position": null,
+        "outcome": null,
+        "money": {
+          "resultStatus": "non_runner"
+        }
+      },
+      {
+        "runnerId": "2883ce6f-6fe0-448b-8d86-51967c6c8f2a",
+        "position": 6,
+        "outcome": null,
+        "money": {
+          "resultStatus": "finished"
+        }
+      }
+    ]
+  },
+  {
+    "file": "data/research/hurdle-jump-tissue-v1-value-forward-v1.json",
+    "path": "/races/226",
+    "raceId": "4f6afca5-1b0b-4b31-a5e0-7e6b9980dd66",
+    "sourceId": "947824",
+    "date": "2026-11-10",
+    "type": "void",
+    "money": {},
+    "runners": [
+      {
+        "runnerId": "7ec1c9c6-7b44-4f84-b78c-5a494f7099bf",
+        "position": null,
+        "outcome": null,
+        "money": {
+          "marketPrice": 2.88,
+          "fairOdds": 6.598420784164695,
+          "expectedReturn": -0.56353192768312
+        }
+      },
+      {
+        "runnerId": "b02bb838-a529-4c95-8e69-9e29583f46c3",
+        "position": null,
+        "outcome": null,
+        "money": {
+          "marketPrice": 3,
+          "fairOdds": 3.198758730805812,
+          "expectedReturn": -0.06213620580122403
+        }
+      },
+      {
+        "runnerId": "1b0a3552-8178-4eab-b019-b375d9eeac57",
+        "position": null,
+        "outcome": {
+          "settlementVersion": "canonical_settlement_v2",
+          "status": "NR",
+          "finishPosition": null,
+          "resultStatus": "non_runner",
+          "winner": null,
+          "deadHeatDivisor": 1,
+          "grossReturn": null,
+          "profitLoss": null,
+          "settledAt": "2026-11-11T05:02:35.200Z"
+        },
+        "money": {
+          "marketPrice": 4.33,
+          "fairOdds": 5.900676993896013,
+          "expectedReturn": -0.2661858962150968
+        }
+      },
+      {
+        "runnerId": "f49b11bf-df8e-4a88-9e45-122ef22c4542",
+        "position": null,
+        "outcome": null,
+        "money": {
+          "marketPrice": 7.5,
+          "fairOdds": 10.66493956330156,
+          "expectedReturn": -0.296761134417698
+        }
+      },
+      {
+        "runnerId": "bf789f4c-9043-4263-9678-bd74a55715ab",
+        "position": null,
+        "outcome": null,
+        "money": {
+          "marketPrice": 7.5,
+          "fairOdds": 8.970142301185012,
+          "expectedReturn": -0.1638928627688323
+        }
+      },
+      {
+        "runnerId": "55a5d00d-1cf7-4404-8a8c-94cd72a488fb",
+        "position": null,
+        "outcome": null,
+        "money": {
+          "marketPrice": 19,
+          "fairOdds": 20.024576218910678,
+          "expectedReturn": -0.051165937681272644
+        }
+      },
+      {
+        "runnerId": "a66c49ab-14a5-4376-a066-c8bc13ea9181",
+        "position": null,
+        "outcome": null,
+        "money": {
+          "marketPrice": 41,
+          "fairOdds": 22.923148856640854,
+          "expectedReturn": 0.788584991373132
+        }
+      },
+      {
+        "runnerId": "a2eb341d-45fb-48d7-9100-8707721176e5",
+        "position": null,
+        "outcome": null,
+        "money": {
+          "marketPrice": 51,
+          "fairOdds": 14.80462722992949,
+          "expectedReturn": 2.444868905371479
+        }
+      }
+    ]
+  },
+  {
+    "file": "data/research/jump-g4-forward-v1.json",
+    "path": "/observations/138",
+    "raceId": "4f6afca5-1b0b-4b31-a5e0-7e6b9980dd66",
+    "sourceId": "947824",
+    "date": "2026-11-10",
+    "type": "void",
+    "money": {
+      "handicapStatus": "handicap",
+      "outcome": null,
+      "settledAt": null
+    },
+    "runners": []
+  },
+  {
+    "file": "data/research/jump-rating-forward-v1.json",
+    "path": "/races/735",
+    "raceId": "4f6afca5-1b0b-4b31-a5e0-7e6b9980dd66",
+    "sourceId": "947824",
+    "date": "2026-11-10",
+    "type": "void",
+    "money": {
+      "ratingCoverageStatus": "eligible",
+      "settledAt": null
+    },
+    "runners": [
+      {
+        "runnerId": "7ec1c9c6-7b44-4f84-b78c-5a494f7099bf",
+        "position": null,
+        "outcome": null,
+        "money": {}
+      },
+      {
+        "runnerId": "b02bb838-a529-4c95-8e69-9e29583f46c3",
+        "position": null,
+        "outcome": null,
+        "money": {}
+      },
+      {
+        "runnerId": "1b0a3552-8178-4eab-b019-b375d9eeac57",
+        "position": null,
+        "outcome": null,
+        "money": {}
+      },
+      {
+        "runnerId": "f49b11bf-df8e-4a88-9e45-122ef22c4542",
+        "position": null,
+        "outcome": null,
+        "money": {}
+      },
+      {
+        "runnerId": "bf789f4c-9043-4263-9678-bd74a55715ab",
+        "position": null,
+        "outcome": null,
+        "money": {}
+      },
+      {
+        "runnerId": "55a5d00d-1cf7-4404-8a8c-94cd72a488fb",
+        "position": null,
+        "outcome": null,
+        "money": {}
+      },
+      {
+        "runnerId": "a66c49ab-14a5-4376-a066-c8bc13ea9181",
+        "position": null,
+        "outcome": null,
+        "money": {}
+      },
+      {
+        "runnerId": "a2eb341d-45fb-48d7-9100-8707721176e5",
+        "position": null,
+        "outcome": null,
+        "money": {}
+      }
+    ]
+  },
+  {
+    "file": "data/research/hurdle-v3-prospective-shadow-v1.json",
+    "path": "/observations/29",
+    "raceId": "4f6afca5-1b0b-4b31-a5e0-7e6b9980dd66",
+    "sourceId": null,
+    "date": null,
+    "type": "void",
+    "money": {},
+    "runners": [
+      {
+        "position": null,
+        "outcome": null,
+        "money": {}
+      },
+      {
+        "position": null,
+        "outcome": null,
+        "money": {}
+      },
+      {
+        "position": null,
+        "outcome": null,
+        "money": {}
+      },
+      {
+        "position": null,
+        "outcome": null,
+        "money": {}
+      },
+      {
+        "position": null,
+        "outcome": null,
+        "money": {}
+      },
+      {
+        "position": null,
+        "outcome": null,
+        "money": {}
+      },
+      {
+        "position": null,
+        "outcome": null,
+        "money": {}
+      },
+      {
+        "position": null,
+        "outcome": null,
+        "money": {}
+      }
+    ]
+  },
+  {
+    "file": "data/research/forward-value-v1.json",
+    "path": "/races/360",
+    "raceId": "fb1c80ed-7b90-41fc-8d37-b2d5efbbecb5",
+    "sourceId": null,
+    "date": "2026-10-05",
+    "type": "dead_heat",
+    "money": {
+      "settlementVersion": "canonical_settlement_v2",
+      "leaderResultStatus": "finished",
+      "grossReturn": 0,
+      "profitLoss": -1,
+      "capturedPriceGrossReturn": 0,
+      "capturedPriceProfitLoss": -1,
+      "medianMarketPriceGrossReturn": 0,
+      "medianMarketPriceProfitLoss": -1,
+      "bestBookmakerPriceGrossReturn": 0,
+      "bestBookmakerPriceProfitLoss": -1,
+      "settledAt": "2026-10-06T00:48:41.048Z"
+    },
+    "runners": []
+  },
+  {
+    "file": "data/research/forward-value-v1.json",
+    "path": "/races/1667",
+    "raceId": "4f6afca5-1b0b-4b31-a5e0-7e6b9980dd66",
+    "sourceId": null,
+    "date": "2026-11-10",
+    "type": "void",
+    "money": {
+      "settlementVersion": "canonical_settlement_v2",
+      "leaderResultStatus": null,
+      "grossReturn": null,
+      "profitLoss": null,
+      "capturedPriceGrossReturn": null,
+      "capturedPriceProfitLoss": null,
+      "medianMarketPriceGrossReturn": null,
+      "medianMarketPriceProfitLoss": null,
+      "bestBookmakerPriceGrossReturn": null,
+      "bestBookmakerPriceProfitLoss": null,
+      "settledAt": null
+    },
+    "runners": []
+  },
+  {
+    "file": "data/research/tissue-generation-forward-2026-11.json",
+    "path": "/races/167",
+    "raceId": "4f6afca5-1b0b-4b31-a5e0-7e6b9980dd66",
+    "sourceId": null,
+    "date": "2026-11-10",
+    "type": "void",
+    "money": {},
+    "runners": [
+      {
+        "runnerId": "7ec1c9c6-7b44-4f84-b78c-5a494f7099bf",
+        "position": null,
+        "outcome": null,
+        "money": {
+          "capturedPrice": 2.88
+        }
+      },
+      {
+        "runnerId": "b02bb838-a529-4c95-8e69-9e29583f46c3",
+        "position": null,
+        "outcome": null,
+        "money": {
+          "capturedPrice": 3
+        }
+      },
+      {
+        "runnerId": "1b0a3552-8178-4eab-b019-b375d9eeac57",
+        "position": null,
+        "outcome": {
+          "status": "NR",
+          "winner": null,
+          "finishPosition": null,
+          "resultStatus": "non_runner",
+          "deadHeatDivisor": 1,
+          "grossReturn": null,
+          "profitLoss": null,
+          "settledAt": "2026-11-11T05:02:35.200Z"
+        },
+        "money": {
+          "capturedPrice": 4.33
+        }
+      },
+      {
+        "runnerId": "f49b11bf-df8e-4a88-9e45-122ef22c4542",
+        "position": null,
+        "outcome": null,
+        "money": {
+          "capturedPrice": 7.5
+        }
+      },
+      {
+        "runnerId": "bf789f4c-9043-4263-9678-bd74a55715ab",
+        "position": null,
+        "outcome": null,
+        "money": {
+          "capturedPrice": 7.5
+        }
+      },
+      {
+        "runnerId": "55a5d00d-1cf7-4404-8a8c-94cd72a488fb",
+        "position": null,
+        "outcome": null,
+        "money": {
+          "capturedPrice": 19
+        }
+      },
+      {
+        "runnerId": "a66c49ab-14a5-4376-a066-c8bc13ea9181",
+        "position": null,
+        "outcome": null,
+        "money": {
+          "capturedPrice": 41
+        }
+      },
+      {
+        "runnerId": "a2eb341d-45fb-48d7-9100-8707721176e5",
+        "position": null,
+        "outcome": null,
+        "money": {
+          "capturedPrice": 51
+        }
+      }
+    ]
+  },
+  {
+    "file": "data/research/aw-tissue-forward-v1.json",
+    "path": "/races/51",
+    "raceId": "fb1c80ed-7b90-41fc-8d37-b2d5efbbecb5",
+    "sourceId": "941778",
+    "date": "2026-10-05",
+    "type": "dead_heat",
+    "money": {
+      "settledAt": "2026-10-06T00:48:41.728Z",
+      "selectedPriceProfitLoss": {
+        "early": -1,
+        "t180": -1,
+        "t60": -1,
+        "bestEarly": -1,
+        "finalSp": -1
+      }
+    },
+    "runners": [
+      {
+        "runnerId": "1c50ef47-7d40-4bbc-be7f-69dc13b51dc6",
+        "position": 3,
+        "outcome": {
+          "finishingPosition": 3,
+          "resultStatus": "finished",
+          "won": false,
+          "finalSp": 3,
+          "deadHeatDivisor": 1,
+          "finalSpProfitLoss": -1
+        },
+        "money": {}
+      },
+      {
+        "runnerId": "56dbe1e0-d5a9-4114-ae36-c7874d5ff4b3",
+        "position": 11,
+        "outcome": {
+          "finishingPosition": 11,
+          "resultStatus": "finished",
+          "won": false,
+          "finalSp": 11,
+          "deadHeatDivisor": 1,
+          "finalSpProfitLoss": -1
+        },
+        "money": {}
+      },
+      {
+        "runnerId": "8079554c-3058-4b78-a170-80723058d551",
+        "position": 1,
+        "outcome": {
+          "finishingPosition": 1,
+          "resultStatus": "finished",
+          "won": true,
+          "finalSp": 9,
+          "deadHeatDivisor": 2,
+          "finalSpProfitLoss": 4
+        },
+        "money": {}
+      },
+      {
+        "runnerId": "352940ed-3032-45d6-b6ba-bf7b5af51a45",
+        "position": 4,
+        "outcome": {
+          "finishingPosition": 4,
+          "resultStatus": "finished",
+          "won": false,
+          "finalSp": 13,
+          "deadHeatDivisor": 1,
+          "finalSpProfitLoss": -1
+        },
+        "money": {}
+      },
+      {
+        "runnerId": "c2fce9a6-e575-414a-ba26-caad75019bfb",
+        "position": 8,
+        "outcome": {
+          "finishingPosition": 8,
+          "resultStatus": "finished",
+          "won": false,
+          "finalSp": 8,
+          "deadHeatDivisor": 1,
+          "finalSpProfitLoss": -1
+        },
+        "money": {}
+      },
+      {
+        "runnerId": "9b13e565-35fb-4d8f-a724-18ef3ff7d061",
+        "position": 7,
+        "outcome": {
+          "finishingPosition": 7,
+          "resultStatus": "finished",
+          "won": false,
+          "finalSp": 6.5,
+          "deadHeatDivisor": 1,
+          "finalSpProfitLoss": -1
+        },
+        "money": {}
+      },
+      {
+        "runnerId": "3f88148c-0297-44bd-9ac0-96147c5212ff",
+        "position": 9,
+        "outcome": {
+          "finishingPosition": 9,
+          "resultStatus": "finished",
+          "won": false,
+          "finalSp": 8.5,
+          "deadHeatDivisor": 1,
+          "finalSpProfitLoss": -1
+        },
+        "money": {}
+      },
+      {
+        "runnerId": "8e880f18-2413-47a6-9c68-fbefeb6c598c",
+        "position": 5,
+        "outcome": {
+          "finishingPosition": 5,
+          "resultStatus": "finished",
+          "won": false,
+          "finalSp": 17,
+          "deadHeatDivisor": 1,
+          "finalSpProfitLoss": -1
+        },
+        "money": {}
+      },
+      {
+        "runnerId": "bba70b0f-a3f1-4318-9635-b344cac2ca9f",
+        "position": 1,
+        "outcome": {
+          "finishingPosition": 1,
+          "resultStatus": "finished",
+          "won": true,
+          "finalSp": 23,
+          "deadHeatDivisor": 2,
+          "finalSpProfitLoss": 11
+        },
+        "money": {}
+      },
+      {
+        "runnerId": "9e5f8a3c-b606-45e5-8e34-43180d4d28b8",
+        "position": 10,
+        "outcome": {
+          "finishingPosition": 10,
+          "resultStatus": "finished",
+          "won": false,
+          "finalSp": 12,
+          "deadHeatDivisor": 1,
+          "finalSpProfitLoss": -1
+        },
+        "money": {}
+      },
+      {
+        "runnerId": "1a0fc99f-551b-42df-9498-2f5849f37571",
+        "position": null,
+        "outcome": {
+          "finishingPosition": null,
+          "resultStatus": "non_runner",
+          "won": null,
+          "finalSp": null,
+          "deadHeatDivisor": 1,
+          "finalSpProfitLoss": null
+        },
+        "money": {}
+      },
+      {
+        "runnerId": "2883ce6f-6fe0-448b-8d86-51967c6c8f2a",
+        "position": 6,
+        "outcome": {
+          "finishingPosition": 6,
+          "resultStatus": "finished",
+          "won": false,
+          "finalSp": 41,
+          "deadHeatDivisor": 1,
+          "finalSpProfitLoss": -1
+        },
+        "money": {}
+      }
+    ]
+  },
+  {
+    "file": "data/research/hurdle-low-form-prospective-v1.json",
+    "path": "/observations/3",
+    "raceId": "4f6afca5-1b0b-4b31-a5e0-7e6b9980dd66",
+    "sourceId": null,
+    "date": "2026-11-10",
+    "type": "void",
+    "money": {},
+    "runners": []
+  }
+]

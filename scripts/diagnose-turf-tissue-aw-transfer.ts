@@ -1,3 +1,6 @@
+import { settleSelection } from "@/lib/racing/backtest";
+import { resolve } from "node:path";
+import { pathToFileURL } from "node:url";
 import { readFile, writeFile } from "node:fs/promises";
 import { createDbConnection } from "@/db";
 import { loadBacktestFeatureCache } from "@/lib/racing/backtest-cache";
@@ -15,8 +18,8 @@ import {
   type HistoricalComment,
 } from "./diagnose-independent-tissue-feasibility";
 
-const MD_PATH = "/tmp/turf-tissue-on-aw-diagnostic.md";
-const JSON_PATH = "/tmp/turf-tissue-on-aw-diagnostic.json";
+const MD_PATH = "/tmp/turf-tissue-on-aw-diagnostic-settlement-v3.md";
+const JSON_PATH = "/tmp/turf-tissue-on-aw-diagnostic-settlement-v3.json";
 const YEARS = ["2025", "2026"] as const;
 const PERIODS = ["2025", "2026", "combined"] as const;
 const EPSILON = 1e-12;
@@ -76,6 +79,7 @@ type PositiveEdgeMetrics = ReturnType<typeof positiveEdgeMetrics>;
 type PriceProfile = ReturnType<typeof priceProfile>;
 type RobustnessMetrics = ReturnType<typeof robustness>[Period];
 export type DiagnosticResult = {
+  settlementVersion: "canonical_settlement_v3";
   generatedAt: string;
   modelDefinitions: {
     turf: {
@@ -178,6 +182,7 @@ async function main() {
   };
 
   const result: DiagnosticResult = {
+    settlementVersion: "canonical_settlement_v3",
     generatedAt: new Date().toISOString(),
     modelDefinitions: {
       turf: {
@@ -219,7 +224,7 @@ async function main() {
 
   await Promise.all([
     writeFile(JSON_PATH, `${JSON.stringify(result, null, 2)}\n`, "utf8"),
-    writeFile(MD_PATH, renderMarkdown(result, evaluations), "utf8"),
+    writeFile(MD_PATH, "Settlement: canonical_settlement_v3; corrected V3 historical monetary recalculation. Prospective sections retain recorded versions.\n\n" + renderMarkdown(result, evaluations), "utf8"),
   ]);
   printTerminal(result, evaluations);
 }
@@ -413,11 +418,11 @@ function periodMarket(evaluation: Evaluation) {
   return periodRecord((period) => marketMetrics(rankOnes(periodRows(evaluation, period))));
 }
 
-function marketMetrics(selections: ScoredRunner[]): MarketMetrics {
-  const priced = selections.filter((runner) => sp(runner) !== null);
+export function marketMetrics(selections: ScoredRunner[]): MarketMetrics {
+  const priced = selections.filter((runner) => settleSelection(runner.row.outcome) !== null);
   const winners = priced.filter((runner) => runner.row.outcome.won === true);
   const expectedWinners = sum(priced.map((runner) => 1 / sp(runner)!));
-  const profitLoss = sum(priced.map((runner) => runner.row.outcome.won === true ? (sp(runner)! - 1) / (runner.row.outcome.deadHeatDivisor ?? 1) : -1));
+  const profitLoss = sum(priced.map((runner) => settleSelection(runner.row.outcome)!.profitLoss));
   return {
     selections: priced.length,
     winners: winners.length,
@@ -435,15 +440,15 @@ function periodPositiveEdge(evaluation: Evaluation) {
   return periodRecord((period) => positiveEdgeMetrics(rankOnes(periodRows(evaluation, period))));
 }
 
-function positiveEdgeMetrics(selections: ScoredRunner[]) {
+export function positiveEdgeMetrics(selections: ScoredRunner[]) {
   const qualifying = selections.filter((runner) => {
     const price = sp(runner);
-    return price !== null && runner.probability - 1 / price > 0;
+    return price !== null && settleSelection(runner.row.outcome) !== null && runner.probability - 1 / price > 0;
   });
   const winners = qualifying.filter((runner) => runner.row.outcome.won === true).length;
   const qualifyingExpectedWinners = sum(qualifying.map((runner) => runner.probability));
   const marketExpectedWinners = sum(qualifying.map((runner) => 1 / sp(runner)!));
-  const profitLoss = sum(qualifying.map((runner) => runner.row.outcome.won === true ? (sp(runner)! - 1) / (runner.row.outcome.deadHeatDivisor ?? 1) : -1));
+  const profitLoss = sum(qualifying.map((runner) => settleSelection(runner.row.outcome)!.profitLoss));
   return {
     selections: qualifying.length,
     winners,
@@ -806,7 +811,7 @@ function money(value: number | null) {
   return value === null || !Number.isFinite(value) ? "-" : `${value >= 0 ? "+" : "-"}£${Math.abs(value).toFixed(2)}`;
 }
 
-main().catch((error) => {
+if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) main().catch((error) => {
   console.error(error);
   process.exitCode = 1;
 });

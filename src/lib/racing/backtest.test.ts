@@ -332,8 +332,31 @@ describe("backtest filters", () => {
 });
 
 describe("backtest scoring", () => {
+  test("corrected denominators exclude refunds and pending rows while keeping started losses", () => {
+    const result = evaluateBacktestRows({
+      startDate: "2025-01-01", endDate: "2025-12-31", definition: { id: "all", name: "All" },
+      rows: [
+        row({ targetRunnerId: "winner", targetRaceId: "completed" }),
+        row({ targetRunnerId: "faller", targetRaceId: "completed" }, { finishingPosition: null, resultStatus: "fell", won: null }),
+        row({ targetRunnerId: "NR", targetRaceId: "completed" }, { finishingPosition: null, resultStatus: "non_runner", won: null }),
+        row({ targetRunnerId: "void", targetRaceId: "void" }, { raceStage: "RACEVOID" }),
+        row({ targetRunnerId: "pending", targetRaceId: "pending" }, { finishingPosition: null, resultStatus: "other", won: null, raceStage: "PARADING" }),
+      ],
+    });
+    assert.equal(result.settlementVersion, "canonical_settlement_v3");
+    assert.equal(result.summary.settledSelections, 2);
+    assert.equal(result.summary.totalStakes, 2);
+    assert.equal(result.summary.grossReturn, 6);
+    assert.equal(result.summary.profitLoss, 4);
+    assert.equal(result.summary.roiPercentage, 200);
+    assert.equal(result.summary.wins, 1);
+    assert.ok(!result.selectedRunners.some(r => r.id === "void"));
+    assert.equal(result.selectedRunners.find(r => r.id === "NR")?.settlement, null);
+  });
+
   test("settles £1 win stakes from post-race settlement SP only", () => {
     assert.deepEqual(settleSelection(outcome()), {
+      settlementVersion: "canonical_settlement_v3",
       settled: true,
       settlementOddsDecimal: 6,
       stake: 1,
@@ -346,9 +369,9 @@ describe("backtest scoring", () => {
     );
   });
 
-  test("settles dead-heat winners by dividing profit rather than returned stake", () => {
-    assert.equal(settleSelection(outcome({ deadHeatDivisor: 2 }))?.grossReturn, 3.5);
-    assert.equal(settleSelection(outcome({ startingPriceDecimal: "7", deadHeatDivisor: 3 }))?.grossReturn, 3);
+  test("settles dead-heat winners by splitting the original stake", () => {
+    assert.equal(settleSelection(outcome({ deadHeatDivisor: 2 }))?.grossReturn, 3);
+    assert.equal(settleSelection(outcome({ startingPriceDecimal: "7", deadHeatDivisor: 3 }))?.grossReturn, 7 / 3);
   });
 
   test("excludes non-runners and missing settlement prices from settled selections", () => {
@@ -376,6 +399,7 @@ describe("backtest scoring", () => {
           placed: null,
         })),
         {
+          settlementVersion: "canonical_settlement_v3",
           settled: true,
           settlementOddsDecimal: 6,
           stake: 1,

@@ -1,13 +1,10 @@
 import type { TurfEvidenceInput } from "./turf-early-season-method";
 import { loadEarlyTurfInputs } from "./turf-early-season-inputs";
 import { syncEarlyTurf } from "./turf-early-season";
-import { syncLowForm } from "./hurdle-low-form";
-import { syncHurdleMarketEdge } from "./hurdle-v3-market-edge";
-import { syncPositiveNeutral } from "./tissue-positive-neutral";
-import { loadHurdleV3Shadow } from "./hurdle-v3-shadow";
+import { collectEpochPositiveNeutral, collectEpochShadow, prepareEpochShadow } from "./prospective-epoch-collection";
 import { refreshedSourceAllowed } from "./frozen-capture-selection";
 import { contextShadowAfterProduction, pendingContextWeightShadowRaceIds, syncContextWeightShadow } from "./context-weight-shadow-sync";
-import { pendingHurdleV3ShadowRaceIds, prepareHurdleV3Shadow, syncHurdleV3Shadow } from "./hurdle-v3-shadow-sync";
+import { pendingHurdleV3ShadowRaceIds, settleHurdleV3ShadowResults } from "./hurdle-v3-shadow-sync";
 import type { HurdleV3ShadowInput } from "./hurdle-v3-shadow-inputs";
 import type { createDbConnection } from "@/db";
 import { loadValueCaptureInputs } from "./tissue-value-sync";
@@ -80,7 +77,7 @@ export async function syncTissueGeneration(connection: ReturnType<typeof createD
     const [inputs, generationModels] = await Promise.all([loadValueCaptureInputs(connection, eligible, date, cutoff), loadTissueGenerationModels()]);
     const [contexts, shadowInputs, turfInputs] = await Promise.all([
       loadTissueGenerationContexts(connection, inputs.meetings, cutoff),
-      prepareHurdleV3Shadow(connection, inputs.meetings, cutoff),
+      prepareEpochShadow(connection, inputs.meetings, cutoff),
       // Diagnostic failure must not prevent production capture.
       loadEarlyTurfInputs(connection, inputs.meetings, cutoff).catch(error => {
         console.error("Early Turf evidence unavailable; production unchanged", error);
@@ -96,20 +93,14 @@ export async function syncTissueGeneration(connection: ReturnType<typeof createD
   const production = await mutateTissueGeneration(data => settleTissueGeneration(appendTissueGeneration(data, additions, new Date(), forceRefresh), results));
   // Only books actually accepted by the production writer can be paired. Never backfill from before.races.
   const accepted = production.races.slice(before.races.length).filter(r => additions.some(a => a.raceId === r.raceId && a.capturedAt === r.capturedAt));
-  await contextShadowAfterProduction(production, () => syncPositiveNeutral(accepted),
+  await contextShadowAfterProduction(production, () => collectEpochPositiveNeutral(accepted),
     error => console.error("Tissue positive/neutral monitor unavailable; production unchanged", error));
   await contextShadowAfterProduction(production, () => syncEarlyTurf(accepted, earlyTurfInputs),
     error => console.error("Early Turf monitor unavailable; production unchanged", error));
-  await contextShadowAfterProduction(production, async () => {
-    const prior = await loadHurdleV3Shadow();
-    const next = await syncHurdleV3Shadow(accepted, hurdleV3Inputs, results);
-    const known = new Set(prior?.observations.map(o => o.raceId));
-    const fresh = next?.observations.filter(o => !known.has(o.raceId) && accepted.some(r => r.raceId === o.raceId && r.capturedAt === o.capturedAt)) ?? [];
-    await contextShadowAfterProduction(next, () => syncHurdleMarketEdge(fresh),
-      error => console.error("Hurdle V3 market-edge monitor unavailable; production and V3 unchanged", error));
-    await contextShadowAfterProduction(next, () => syncLowForm(fresh),
-      error => console.error("Low-form Hurdle monitor unavailable; production and V3 unchanged", error));
-  },
-    error => console.error("Hurdle V3 shadow unavailable; production unchanged", error));
+  await contextShadowAfterProduction(production, () => settleHurdleV3ShadowResults(results),
+    error => console.error("Hurdle Shadow results unavailable; production unchanged", error));
+  await contextShadowAfterProduction(production, () => collectEpochShadow(accepted, hurdleV3Inputs),
+    error => console.error("New Hurdle research epoch unavailable; production unchanged", error));
+  // Low Form retains its original Shadow settlement source. No new-epoch captures are routed into it.
   return contextShadowAfterProduction(production, () => syncContextWeightShadow(accepted, results));
 }

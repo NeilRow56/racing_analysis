@@ -1,6 +1,7 @@
-export const CANONICAL_SETTLEMENT_VERSION = "canonical_settlement_v2" as const;
+export const LEGACY_SETTLEMENT_VERSION = "canonical_settlement_v2" as const;
+export const CANONICAL_SETTLEMENT_VERSION = "canonical_settlement_v3" as const;
 
-export type ResearchSettlementVersion = typeof CANONICAL_SETTLEMENT_VERSION;
+export type ResearchSettlementVersion = typeof CANONICAL_SETTLEMENT_VERSION | typeof LEGACY_SETTLEMENT_VERSION;
 
 export type SettlementVersionedSnapshot = {
   settlementVersion?: ResearchSettlementVersion;
@@ -11,5 +12,7 @@ export function isLegacySettlementSnapshot(snapshot: SettlementVersionedSnapshot
 }
 
 export function settlementVersionLabel(snapshot: SettlementVersionedSnapshot): string {
-  return isLegacySettlementSnapshot(snapshot) ? "Legacy" : "Canonical v2";
+  return snapshot.settlementVersion === CANONICAL_SETTLEMENT_VERSION
+    ? "Corrected v3"
+    : snapshot.settlementVersion === LEGACY_SETTLEMENT_VERSION ? "Original v2 (superseded)" : "Original / unversioned";
 }

@@ -1,0 +1,187 @@
+{
+  "independentImplementation": "Bun/Postgres read-only verification using original local payloads, separate from the Python recovery transaction",
+  "errors": [],
+  "rowsChecked": 111,
+  "racesChecked": 11,
+  "winners": 11,
+  "finishers": 91,
+  "nonFinishers": 15,
+  "nonRunners": 5,
+  "newFullResultRecords": 11,
+  "oldTargetRows": 33004,
+  "remainingMissingFullResultRows": 98,
+  "remainingMissingFullResultRaces": [
+    {
+      "raceSourceId": "944162",
+      "date": "2026-10-15",
+      "name": "Join Racing TV Now Maiden Hurdle (GBB Race)",
+      "rows": 8,
+      "statuses": {
+        "null": 8
+      }
+    },
+    {
+      "raceSourceId": "943568",
+      "date": "2026-10-15",
+      "name": "Betting.Bet Free Bets Mares' Maiden Hurdle (GBB Race)",
+      "rows": 6,
+      "statuses": {
+        "null": 6
+      }
+    },
+    {
+      "raceSourceId": "943569",
+      "date": "2026-10-15",
+      "name": "tigerbet.co.uk Download Our App Handicap Chase (GBB Race)",
+      "rows": 7,
+      "statuses": {
+        "null": 7
+      }
+    },
+    {
+      "raceSourceId": "943572",
+      "date": "2026-10-15",
+      "name": "Download The Free Racing TV App Now Beginners' Chase (GBB Race)",
+      "rows": 4,
+      "statuses": {
+        "null": 4
+      }
+    },
+    {
+      "raceSourceId": "943573",
+      "date": "2026-10-15",
+      "name": "Racing TV Profits Returned To Racing Maiden Hurdle (GBB Race)",
+      "rows": 10,
+      "statuses": {
+        "null": 10
+      }
+    },
+    {
+      "raceSourceId": "943574",
+      "date": "2026-10-15",
+      "name": "Follow racingtv On Instagram Handicap Chase (GBB Race)",
+      "rows": 6,
+      "statuses": {
+        "null": 6
+      }
+    },
+    {
+      "raceSourceId": "943575",
+      "date": "2026-10-15",
+      "name": "Every Irish Race Live On RacingTV Handicap Hurdle",
+      "rows": 9,
+      "statuses": {
+        "null": 9
+      }
+    },
+    {
+      "raceSourceId": "943576",
+      "date": "2026-10-15",
+      "name": "RacingTV, Home Of Live Racing Handicap Chase (GBB Race) (Div 1)",
+      "rows": 9,
+      "statuses": {
+        "null": 9
+      }
+    },
+    {
+      "raceSourceId": "943577",
+      "date": "2026-10-15",
+      "name": "RacingTV, Home Of Live Racing Handicap Chase (GBB Race) (Div 2)",
+      "rows": 9,
+      "statuses": {
+        "null": 9
+      }
+    },
+    {
+      "raceSourceId": "943578",
+      "date": "2026-10-15",
+      "name": "Racing TV Open NH Flat Race (GBB Race)",
+      "rows": 4,
+      "statuses": {
+        "null": 4
+      }
+    },
+    {
+      "raceSourceId": "943566",
+      "date": "2026-10-15",
+      "name": "Betting.Bet New Betting Sites Novices' Limited Handicap Chase (GBB Race)",
+      "rows": 4,
+      "statuses": {
+        "null": 4
+      }
+    },
+    {
+      "raceSourceId": "943567",
+      "date": "2026-10-15",
+      "name": "Betting.Bet Play Champion Tipster Novices' Hurdle (GBB Race)",
+      "rows": 7,
+      "statuses": {
+        "null": 7
+      }
+    },
+    {
+      "raceSourceId": "943570",
+      "date": "2026-10-15",
+      "name": "tigerbet.co.uk Extra Place Races Handicap Hurdle",
+      "rows": 9,
+      "statuses": {
+        "null": 9
+      }
+    },
+    {
+      "raceSourceId": "943571",
+      "date": "2026-10-15",
+      "name": "tigerbet.co.uk Lucky Odds Boost Handicap Hurdle",
+      "rows": 6,
+      "statuses": {
+        "null": 6
+      }
+    }
+  ],
+  "remainingMissingWinningTimeRows": 120,
+  "otherUntimedRacesWithFullResults": [
+    {
+      "raceSourceId": "913485",
+      "date": "2026-04-23",
+      "name": "Sporting Agenda Challenger Series Mares' Chase Final Handicap Chase (GBB Race)",
+      "rows": 11,
+      "statuses": {
+        "non_runner": 5,
+        "finished": 6
+      }
+    },
+    {
+      "raceSourceId": "916506",
+      "date": "2026-05-12",
+      "name": "Worcester Racecourse Ladies Day 6th June Novices' Limited Handicap Chase (GBB Race)",
+      "rows": 2,
+      "statuses": {
+        "finished": 1,
+        "non_runner": 1
+      }
+    },
+    {
+      "raceSourceId": "929549",
+      "date": "2026-07-24",
+      "name": "Eleven Eleven Handicap Chase (GBB Race)",
+      "rows": 9,
+      "statuses": {
+        "other": 9
+      }
+    }
+  ],
+  "earlierTimedInputAvailability": [
+    {
+      "runners": "102901",
+      "races": "20148",
+      "missing_payload": "0",
+      "inconsistent_source": "0"
+    }
+  ],
+  "authoritativeCorrections": {
+    "count": 10,
+    "allMatch": true
+  },
+  "all25LocalSourceHashesUnchanged": true,
+  "oldCacheHashesUnchanged": true
+}

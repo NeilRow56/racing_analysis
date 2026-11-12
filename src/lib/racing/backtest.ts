@@ -9,6 +9,8 @@ import {
   type HistoricalTargetRunnerMetricsRow,
 } from "./historical-target-metrics";
 import { winGrossReturn } from "./win-settlement";
+import { CANONICAL_SETTLEMENT_VERSION, LEGACY_SETTLEMENT_VERSION, type ResearchSettlementVersion } from "./research-settlement-version";
+import { isVoidBetStatus, isVoidRaceOutcome, settlementOutcomeState } from "./settlement-outcome";
 import {
   loadBacktestFeatureCache,
   type BacktestCacheFamily,
@@ -105,6 +107,7 @@ export type BacktestSelection = {
 };
 
 export type BacktestSettlement = {
+  settlementVersion?: ResearchSettlementVersion;
   settled: boolean;
   settlementOddsDecimal: number;
   stake: number;
@@ -150,6 +153,7 @@ export type BacktestSummary = {
 };
 
 export type BacktestResult = {
+  settlementVersion: ResearchSettlementVersion;
   definition: BacktestDefinition;
   startDate: string;
   endDate: string;
@@ -415,6 +419,7 @@ export function evaluateBacktestRows(input: {
     "Dead heats use the number of runners stored with finishing_position = 1 as the payout divisor.",
   ];
   const basePopulation = input.rows
+    .filter((row) => !isVoidRaceOutcome(row.outcome))
     .filter((row) => row.features.raceDate >= input.startDate)
     .filter((row) => row.features.raceDate <= input.endDate)
     .filter((row) => matchesRaceFilters(row.features, input.definition));
@@ -427,6 +432,7 @@ export function evaluateBacktestRows(input: {
 
   return {
     definition: input.definition,
+    settlementVersion: CANONICAL_SETTLEMENT_VERSION,
     startDate: input.startDate,
     endDate: input.endDate,
     calculationVersions: calculationVersions(input.rows),
@@ -501,11 +507,12 @@ export function settleSelection(
   outcome: HistoricalPostRaceOutcome,
   options: { maxFractionalOdds?: number } = {},
 ): BacktestSettlement | null {
-  if (isVoidBetResultStatus(outcome.resultStatus)) {
+  const state = settlementOutcomeState(outcome);
+  if (state === "void" || state === "NR" || state === "unresolved") {
     return null;
   }
   const settlementOddsDecimal = parseDecimal(outcome.startingPriceDecimal);
-  if (settlementOddsDecimal === null) {
+  if (settlementOddsDecimal === null || settlementOddsDecimal <= 1) {
     return null;
   }
   const won = settledWinValue(outcome);
@@ -521,6 +528,7 @@ export function settleSelection(
     ? settlementOddsDecimal
     : Math.min(settlementOddsDecimal, options.maxFractionalOdds + 1);
   return {
+    settlementVersion: CANONICAL_SETTLEMENT_VERSION,
     settled: true,
     settlementOddsDecimal: effectiveOddsDecimal,
     stake,
@@ -529,40 +537,43 @@ export function settleSelection(
   };
 }
 
-const VOID_BET_RESULT_STATUSES = new Set([
-  "non_runner",
-  "abandoned",
-  "cancelled",
-  "canceled",
-  "no_race",
-  "race_void",
-  "void",
-  "void_race",
-]);
-
 export function isVoidBetResultStatus(resultStatus: string | null): boolean {
-  return resultStatus !== null && VOID_BET_RESULT_STATUSES.has(resultStatus.trim().toLowerCase());
+  return isVoidBetStatus(resultStatus);
 }
 
-export function settledWinValue(outcome: Pick<HistoricalPostRaceOutcome, "finishingPosition" | "resultStatus" | "won">): boolean | null {
-  if (outcome.finishingPosition !== null) {
-    return outcome.won ?? outcome.finishingPosition === 1;
-  }
-  if (outcome.resultStatus === null || outcome.resultStatus.trim() === "") {
-    return null;
-  }
-  const status = outcome.resultStatus.trim().toLowerCase();
-  if (status === "finished" || isVoidBetResultStatus(status)) {
-    return null;
-  }
-  return false;
+/** Original v2 classification retained only for frozen feature contracts/recorded views. */
+export function legacyVoidBetResultStatus(status: string | null): boolean {
+  return status !== null && ["non_runner", "abandoned", "cancelled", "canceled", "no_race", "race_void", "void", "void_race"].includes(status.trim().toLowerCase());
+}
+
+export function legacyRecordedWinValue(outcome: Pick<HistoricalPostRaceOutcome, "finishingPosition" | "resultStatus" | "won">): boolean | null {
+  if (outcome.finishingPosition !== null) return outcome.won ?? outcome.finishingPosition === 1;
+  const status = outcome.resultStatus?.trim().toLowerCase();
+  return !status || status === "finished" || legacyVoidBetResultStatus(status) ? null : false;
+}
+
+export function settledWinValue(outcome: Pick<HistoricalPostRaceOutcome, "finishingPosition" | "resultStatus" | "won" | "raceStage" | "outcomeCode">): boolean | null {
+  const state = settlementOutcomeState(outcome);
+  return state === "win" ? true : state === "loss" ? false : null;
+}
+
+/** Original monetary views only. New analysis and new outcomes use settleSelection. */
+export function settleRecordedSelection(outcome: HistoricalPostRaceOutcome, version?: ResearchSettlementVersion): BacktestSettlement | null {
+  if (version === CANONICAL_SETTLEMENT_VERSION) return settleSelection(outcome);
+  if (legacyVoidBetResultStatus(outcome.resultStatus)) return null;
+  const odds = parseDecimal(outcome.startingPriceDecimal);
+  if (odds === null || outcome.finishingPosition === null && (!outcome.resultStatus?.trim() || outcome.resultStatus === "finished")) return null;
+  const won = outcome.finishingPosition !== null ? (outcome.won ?? outcome.finishingPosition === 1) : false;
+  const divisor = Number.isInteger(outcome.deadHeatDivisor) && outcome.deadHeatDivisor! > 0 ? outcome.deadHeatDivisor! : 1;
+  const grossReturn = won ? 1 + (odds - 1) / divisor : 0;
+  return { settlementVersion: LEGACY_SETTLEMENT_VERSION, settled: true, settlementOddsDecimal: odds, stake: 1, grossReturn, profitLoss: grossReturn - 1 };
 }
 
 export function summarizeSelections(
   selections: BacktestSelection[],
 ): BacktestSummary {
   const settled = selections.filter((selection) => selection.settlement !== null);
-  const wins = settled.filter((selection) => selection.outcome.won).length;
+  const wins = settled.filter((selection) => settledWinValue(selection.outcome) === true).length;
   const places = settled.filter((selection) => selection.outcome.placed).length;
   const totalStakes = settled.reduce(
     (total, selection) => total + (selection.settlement?.stake ?? 0),

@@ -1,0 +1,21 @@
+{
+  "settlementVersion": "canonical_settlement_v3",
+  "jumpWinningTimeGuardVersion": "jump_winning_time_guard_v2_missing_minute",
+  "featureSchemaVersion": "backtest_features_v4",
+  "sourceFeatureVersion": "historical_target_metrics_v4",
+  "source": "sporting_life",
+  "from": "2026-01-01",
+  "to": "2026-10-14",
+  "family": "jump",
+  "generatedAt": "2026-11-11T16:56:04.829Z",
+  "rowCount": 32901,
+  "featuresFile": "features.ndjson",
+  "outcomesFile": "outcomes.ndjson",
+  "calculationVersions": {
+    "jumpSpeed": "jump_speed_v1",
+    "awSpeed": "aw_speed_v1",
+    "turfSpeed": "turf_speed_v2",
+    "weightPerformance": "weight_performance_v1",
+    "todaysRating": "todays_rating_v1"
+  }
+}

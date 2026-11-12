@@ -1,3 +1,4 @@
+import { ProspectiveEpochResearch } from "./prospective-epoch-monitor";
 import { EarlyTurfResearch } from "./turf-early-season-monitor";
 import { LowFormHurdleResearch } from "./hurdle-low-form-monitor";
 import { createResearchCache, researchFileIdentity } from "@/lib/racing/research-cache";
@@ -77,6 +78,7 @@ import { ChaseTissueChallengerSection } from "./chase-tissue-challenger";
 import { loadHurdleRecency } from "@/lib/racing/hurdle-recency-forward";
 import { HurdleRecencyResearchSection } from "./hurdle-recency-research";
 import { ResearchPageLayout } from "./research-page-layout";
+import { OrSpeedMonitoring } from "./or-speed-monitoring";
 
 type PageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
@@ -166,8 +168,9 @@ export default async function ForwardValuePage({ searchParams }: PageProps) {
     <ResearchPageLayout
       date={raceDate}
       archiveLoaded={scalar(params?.archive) === "1"}
-      active={<><ActiveValuePerformance datasets={valueCohorts.map(c => c.data)} generation={generation} date={raceDate} /><TissueGenerationMonitor data={generation} /><TissuePositiveNeutralResearch /><HurdleV3ShadowResearch /><HurdleV3MarketEdgeResearch /><LowFormHurdleResearch /><EarlyTurfResearch /><TissueValueMonitoring cohorts={valueCohorts} date={raceDate} includeArchive={scalar(params?.archive) === "1"} /></>}
-      secondary={<SecondaryResearchMonitoring dashboard={dashboard} />}
+      active={<><ActiveValuePerformance datasets={valueCohorts.map(c => c.data)} generation={generation} date={raceDate} /><TissueGenerationMonitor data={generation} /><ProspectiveEpochResearch /><TissuePositiveNeutralResearch /><HurdleV3ShadowResearch /><HurdleV3MarketEdgeResearch /><LowFormHurdleResearch /><EarlyTurfResearch /><TissueValueMonitoring cohorts={valueCohorts} date={raceDate} includeArchive={scalar(params?.archive) === "1"} /></>}
+      secondaryOpen={scalar(params?.monitor) === "or-speed"}
+      secondary={<><SecondaryResearchMonitoring dashboard={dashboard} /><OrSpeedMonitoring /></>}
     >
       {scalar(params?.archive) === "1" ? <>
       <p className="mt-3 text-sm font-semibold">Retired Tissue generation and absorbed research · historical reference only</p>

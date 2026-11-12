@@ -1,5 +1,7 @@
 import { awTissueValueCategory, cleanAwTissueRace, currentPositiveAwTissueRankOneEdges, isMainAwTissueValue, type AwTissueForwardData } from "./aw-tissue-forward";
-import { settleSelection } from "./backtest";
+import { settleRecordedSelection } from "./backtest";
+import { CANONICAL_SETTLEMENT_VERSION } from "./research-settlement-version";
+import { settlementOutcomeState } from "./settlement-outcome";
 import { cleanJumpTissueRace, currentPositiveJumpTissueRankOneEdges, type JumpTissueForwardData } from "./jump-tissue-forward";
 import { FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION, turfValueRecordsForModel, type ForwardValuePriceSnapshot, type ForwardValueRecord } from "./forward-value";
 import { summarizeJumpG4Forward, type JumpG4ForwardData } from "./jump-g4-forward";
@@ -123,10 +125,10 @@ export function buildResearchDashboard(input: {
         marketProbability: 1 / price.marketDecimalOdds!,
         qualifyingPrice: price.marketDecimalOdds,
         latestPrice: displayedPrice,
-        result: settlement?.outcome === "VOID" ? "void" : settlement ? "settled" : "pending",
+        result: settlement?.outcome === "VOID" ? "void" : settlement && settlement.outcome !== "Pending" ? "settled" : "pending",
         finishingPosition: settlement?.finishingPosition ?? null,
         resultStatus: settlement?.resultStatus ?? null,
-        outcome: settlement?.outcome ?? null,
+        outcome: settlement?.outcome === "Pending" ? null : settlement?.outcome ?? null,
         profitLoss: settlement?.profitLoss ?? null,
       }],
     });
@@ -230,7 +232,7 @@ function medianSnapshot(snapshot: ForwardValuePriceSnapshot | null | undefined) 
 type TissueSettlementDisplay = {
   finishingPosition: number | null;
   resultStatus: string | null;
-  outcome: "WIN" | "LOSS" | "VOID";
+  outcome: "WIN" | "LOSS" | "VOID" | "Pending";
   profitLoss: number | null;
 };
 
@@ -305,21 +307,26 @@ function buildLongPriceShadows(input: {
 }
 
 function turfTissueSettlement(race: TissueForwardData["races"][number], runner: TissueForwardData["races"][number]["runners"][number], qualifyingPrice: number): TissueSettlementDisplay {
+  if (race.settlementVersion === CANONICAL_SETTLEMENT_VERSION) {
+    const state = settlementOutcomeState({ finishingPosition: runner.finishingPosition, resultStatus: runner.resultStatus ?? null });
+    if (state === "unresolved") return { finishingPosition: runner.finishingPosition, resultStatus: runner.resultStatus ?? null, outcome: "Pending", profitLoss: null };
+    if (state === "NR" || state === "void") return { finishingPosition: null, resultStatus: runner.resultStatus ?? null, outcome: "VOID", profitLoss: 0 };
+  }
   const deadHeatDivisor = Math.max(1, race.winners.length);
   const won = race.winners.some((winner) => sameHorseName(winner, runner.horseName));
   const voided = runner.finishingPosition === null && runner.finalSp === null;
   if (voided) return { finishingPosition: null, resultStatus: "non_runner", outcome: "VOID", profitLoss: 0 };
-  const settlement = settleSelection({
+  const settlement = settleRecordedSelection({
     targetRaceId: race.raceId,
     targetRunnerId: runner.runnerId,
     finishingPosition: runner.finishingPosition,
-    resultStatus: "finished",
+    resultStatus: runner.resultStatus ?? "finished",
     won,
     placed: null,
     startingPrice: null,
     startingPriceDecimal: String(qualifyingPrice),
     deadHeatDivisor,
-  });
+  }, race.settlementVersion);
   return { finishingPosition: runner.finishingPosition, resultStatus: "finished", outcome: won ? "WIN" : "LOSS", profitLoss: settlement?.profitLoss ?? null };
 }
 

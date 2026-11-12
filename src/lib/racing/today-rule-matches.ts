@@ -392,6 +392,8 @@ function todayRunnerSettlementOutcome(
   return {
     targetRaceId: race.raceId,
     targetRunnerId: runner.runnerId,
+    raceStage: race.raceStage,
+    outcomeCode: runner.outcomeCode,
     finishingPosition: runner.finishingPosition,
     resultStatus: runner.resultStatus,
     won: runner.finishingPosition === null ? null : runner.finishingPosition === 1,
@@ -408,6 +410,7 @@ function todayRunnerSettlementOutcomeForRunner(runner: TodayRunner): HistoricalP
   return {
     targetRaceId: "",
     targetRunnerId: runner.runnerId,
+    outcomeCode: runner.outcomeCode,
     finishingPosition: runner.finishingPosition,
     resultStatus: runner.resultStatus,
     won: runner.finishingPosition === null ? null : runner.finishingPosition === 1,

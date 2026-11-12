@@ -1,0 +1,26 @@
+{
+  "version": "HURDLE_V2_V3_PROSPECTIVE_SHADOW_V1",
+  "armedAt": "2026-11-11T16:39:41.798Z",
+  "epoch": null,
+  "v2Version": "HURDLE_TISSUE_V2",
+  "v2Hash": "53defc50d717aba63c80c9f3c01c4df4360b709f6f4a21509a514179e23cce90",
+  "v3Version": "HURDLE_TISSUE_V3_CHALLENGER",
+  "v3Hash": "50f6e1842ca1cb0c4ed4c068a91adbc934755b7018c07f4e6f77e3b56fa80bf4",
+  "tagVersion": "hurdle_last3_starts_led_max_decay90_expiry180_latest_pu30_v1",
+  "ledCoefficient": 0.3512845775499634,
+  "sourceHashes": {
+    "data/research/hurdle-tissue-v3-challenger.json": "2f90a1eb454920631452967ba3bbd76dd657f18a14145d241ac908486b788023",
+    "data/research/tissue-generation-2026-11-hurdle.json": "2b6495fceb4079da756e52a00c7b45f9d8051ea6d63305dd96ae5c7f8ab6499e",
+    "src/lib/racing/hurdle-v3-challenger-model.ts": "47e01e7f9fb63ef0f7cb30dc5c37ec2ce052bddcb3a6cf673fcc1d00bc5bc964",
+    "src/lib/racing/hurdle-v3-challenger-features.ts": "d8285c3f117813b41b191ba06e08f10dfabe99ccffc66884c5a46d074814a858",
+    "src/lib/racing/hurdle-v3-shadow-tags.ts": "cd4cc813d6e1166ca3e6e5622ee5f296623dc498a1aa1a524f06e29b17d5b8a9",
+    "src/lib/racing/hurdle-v3-shadow-inputs.ts": "ba10c1cbbd64a4f0870cba7a68647e560af8c3340214dd0b61174cb8859452cb",
+    "src/lib/racing/hurdle-v3-shadow.ts": "123392a2c9c78e7a35ff90eab93ffcd72c528698043f5d237af2024ff681cadc",
+    "src/lib/racing/hurdle-v3-shadow-sync.ts": "cea47bb18e7e371ca94fa57cd4082c2a3d42e7845ada87fb794c4211015fc93e",
+    "src/lib/racing/jump-speed-ratings.ts": "cf1df1c7540901d9afa12c4288fb0dc511ca52b6e314241abdb2465a3ea890e3",
+    "src/lib/racing/jump-speed-rating.ts": "ee571b63acd6869abc1255f362da9982b9b2626f388f24b003479367c68c71b4",
+    "src/lib/racing/backtest.ts": "b078ee2c1473903facb2fc9ed6c81424c0bfbc56742091d7f1e25d1c968839f8",
+    "scripts/diagnose-independent-tissue-feasibility.ts": "7343bd3a59574d17f271f75d08dc7795af06a0d2ac447c1a07b8014e2536d4a8"
+  },
+  "observations": []
+}

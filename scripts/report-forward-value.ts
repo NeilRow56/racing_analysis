@@ -1,3 +1,4 @@
+import { settlementReportGroups, settlementReportDisclosure } from "@/lib/racing/settlement-reporting";
 import { turfValueRecordsForModel } from "@/lib/racing/forward-value";
 import { writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
@@ -37,6 +38,18 @@ import {
   type ForwardValuePriceDiagnostics,
 } from "@/lib/racing/forward-value-summary";
 
+/** Retained recorded money only; corrected recalculations belong in separate artifacts. */
+export function renderForwardValueRecordedVersions(records: ForwardValueRecord[]): string {
+  return [settlementReportDisclosure(records), ...settlementReportGroups(records.filter(isCleanSettledPhase2Observation)).map(group => {
+    const metrics = summarizeForwardValueRecords(group.rows);
+    return `${group.label}: settled stakes=${metrics.observations}; captured-price P/L=${metrics.profitLoss}; ROI=${metrics.roi}`;
+  })].join("\n");
+}
+function tissueSettlementDisclosure(jump: Awaited<ReturnType<typeof loadJumpTissueForward>>, aw: Awaited<ReturnType<typeof loadAwTissueForward>>): string {
+  return ["Jump Tissue recorded outcomes", settlementReportDisclosure(jump.races.flatMap(r => r.runners.flatMap(row => row.outcome ? [row.outcome] : []))),
+    "AW Tissue recorded outcomes", settlementReportDisclosure(aw.races.flatMap(r => r.runners.flatMap(row => row.outcome ? [row.outcome] : [])))].join("\n");
+}
+
 export type ForwardValueSummaryOptions = {
   details: boolean;
 };
@@ -66,6 +79,9 @@ async function summary(options: ForwardValueSummaryOptions = { details: false })
   const sharedSummary = summarizeForwardValue(data, reportingScope);
   const excluded = analyticalRecords.filter((race) => valueExclusionReason(race) !== null);
 
+  console.log(renderForwardValueRecordedVersions(analyticalRecords));
+  console.log(tissueSettlementDisclosure(dailyReport.jumpTissue, dailyReport.awTissue));
+  console.log("Legacy combined recorded views below retain historical money; version-specific family tables follow.");
   console.log(dailyReport.output);
   console.log("");
   console.log("# Forward Value Framework - Phase 2");
@@ -92,14 +108,18 @@ async function summary(options: ForwardValueSummaryOptions = { details: false })
     const familyCalibration = calibration.families[family];
     console.log(`\n## ${familyName(family)}`);
     console.log(`Model: ${familyCalibration.ratingVersion} / ${familyCalibration.calibrationVersion}`);
-    printAllClean(cleanSettled);
     printPriceDiagnostics(sharedSummary.families.find((entry) => entry.family === family)!.priceDiagnostics);
-    printEdgeBuckets(cleanSettled);
-    printGapEdgeCrossTab(cleanSettled, familyCalibration);
-    printFavouriteComparison(cleanSettled);
-    if (family === "turf") printTissueComparison(cleanSettled);
+    for (const group of settlementReportGroups(cleanSettled)) {
+      console.log(`\n### ${group.label}`);
+      const cleanSettled = group.rows;
+      printAllClean(cleanSettled);
+      printEdgeBuckets(cleanSettled);
+      printGapEdgeCrossTab(cleanSettled, familyCalibration);
+      printFavouriteComparison(cleanSettled);
+      if (family === "turf") printTissueComparison(cleanSettled);
+    }
   }
-  const jumpAwReport = renderJumpAwDetailReport({
+  const jumpAwReport = tissueSettlementDisclosure(dailyReport.jumpTissue, dailyReport.awTissue) + "\n\n" + renderJumpAwDetailReport({
     date: today,
     jump: renderJumpTissueValue(dailyReport.jumpTissue, analyticalRecords),
     aw: renderAwTissueValue(dailyReport.awTissue, analyticalRecords),
@@ -196,6 +216,8 @@ async function results(date: string) {
     loadAwTissueForward(),
     loadCleanTissueValuePerformanceReport(),
   ]);
+  console.log(renderForwardValueRecordedVersions(data.races));
+  console.log(tissueSettlementDisclosure(jumpTissue, awTissue));
   console.log(renderTissueValueResultsSummary({
     date,
     records: turfValueRecordsForModel(data.races, ACTIVE_TURF_TISSUE_CONFIG.modelVersion),
@@ -219,7 +241,7 @@ async function loadDailyPositiveTissueRankOneReport(date: string) {
     jumpTissue,
     awTissue,
     currentPrices,
-    output: renderDailyPositiveTissueRankOneSummary({
+    output: renderForwardValueRecordedVersions(valueData.races) + "\n\n" + tissueSettlementDisclosure(jumpTissue, awTissue) + "\n\n" + renderDailyPositiveTissueRankOneSummary({
       date,
       turf: turfTissue,
       jump: jumpTissue,
@@ -251,7 +273,7 @@ async function loadCleanTissueValuePerformanceReport() {
     loadAwTissueForward(),
   ]);
   const reportingScope = await loadReportingScope(data);
-  return `Turf cohort: ${ACTIVE_TURF_TISSUE_CONFIG.modelVersion}\n` + renderTissuePositiveEdgeRankOnePerformance(turfValueRecordsForModel(reportingScope.analyticalRecords, ACTIVE_TURF_TISSUE_CONFIG.modelVersion), { jump, aw });
+  return renderForwardValueRecordedVersions(reportingScope.analyticalRecords) + "\n\n" + tissueSettlementDisclosure(jump, aw) + "\n\n" + `Turf cohort: ${ACTIVE_TURF_TISSUE_CONFIG.modelVersion}\n` + renderTissuePositiveEdgeRankOnePerformance(turfValueRecordsForModel(reportingScope.analyticalRecords, ACTIVE_TURF_TISSUE_CONFIG.modelVersion), { jump, aw });
 }
 
 function printExclusions(records: ForwardValueRecord[]) {

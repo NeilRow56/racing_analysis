@@ -1,0 +1,147 @@
+{
+  "manifest": {
+    "settlementVersion": "canonical_settlement_v3",
+    "jumpWinningTimeGuardVersion": "jump_winning_time_guard_v2_missing_minute",
+    "featureSchemaVersion": "backtest_features_v4",
+    "sourceFeatureVersion": "historical_target_metrics_v4",
+    "source": "sporting_life",
+    "from": "2026-01-01",
+    "to": "2026-10-14",
+    "family": "jump",
+    "generatedAt": "2026-11-11T16:56:04.829Z",
+    "rowCount": 32901,
+    "featuresFile": "features.ndjson",
+    "outcomesFile": "outcomes.ndjson",
+    "calculationVersions": {
+      "jumpSpeed": "jump_speed_v1",
+      "awSpeed": "aw_speed_v1",
+      "turfSpeed": "turf_speed_v2",
+      "weightPerformance": "weight_performance_v1",
+      "todaysRating": "todays_rating_v1"
+    }
+  },
+  "directory": "data/research/jump-2026-isolated-candidate-2026-11-11-vKE4Te/cache/backtest_features_v4-sporting_life-jump-2026-01-01-2026-10-14",
+  "elapsedMs": 149521.371323,
+  "sizeBytes": 108206387,
+  "timings": {
+    "loadTargetRunnerIdsMs": 438.800797,
+    "buildFeatureRowsMs": 148497.216871,
+    "sortAndFilterRowsMs": 34.232611000014,
+    "writeCacheMs": 550.6678130000073
+  },
+  "counts": {
+    "targetRunnerIds": 32901,
+    "featureRows": 32901,
+    "featureBatches": 7
+  },
+  "heapUsedMb": 73.7,
+  "featureTimings": [
+    {
+      "name": "historical_target_runner_load",
+      "elapsedMs": 3901.6415750000006,
+      "rows": 5000
+    },
+    {
+      "name": "historical_run_load",
+      "elapsedMs": 4900.467815999999,
+      "rows": 33697
+    },
+    {
+      "name": "historical_feature_calculation",
+      "elapsedMs": 375.81587899999795,
+      "rows": 5000
+    },
+    {
+      "name": "historical_target_runner_load",
+      "elapsedMs": 3114.4097649999967,
+      "rows": 5000
+    },
+    {
+      "name": "historical_run_load",
+      "elapsedMs": 4350.802307000002,
+      "rows": 34368
+    },
+    {
+      "name": "historical_feature_calculation",
+      "elapsedMs": 284.80960099999356,
+      "rows": 5000
+    },
+    {
+      "name": "historical_target_runner_load",
+      "elapsedMs": 3113.3404389999996,
+      "rows": 5000
+    },
+    {
+      "name": "historical_run_load",
+      "elapsedMs": 13751.438919,
+      "rows": 38090
+    },
+    {
+      "name": "historical_feature_calculation",
+      "elapsedMs": 368.8141370000012,
+      "rows": 5000
+    },
+    {
+      "name": "historical_target_runner_load",
+      "elapsedMs": 3652.323586999999,
+      "rows": 5000
+    },
+    {
+      "name": "historical_run_load",
+      "elapsedMs": 16105.208334000003,
+      "rows": 39849
+    },
+    {
+      "name": "historical_feature_calculation",
+      "elapsedMs": 346.54023500000767,
+      "rows": 5000
+    },
+    {
+      "name": "historical_target_runner_load",
+      "elapsedMs": 3794.49601599999,
+      "rows": 5000
+    },
+    {
+      "name": "historical_run_load",
+      "elapsedMs": 5249.024866000007,
+      "rows": 34244
+    },
+    {
+      "name": "historical_feature_calculation",
+      "elapsedMs": 321.16105300000345,
+      "rows": 5000
+    },
+    {
+      "name": "historical_target_runner_load",
+      "elapsedMs": 3562.9285769999988,
+      "rows": 5000
+    },
+    {
+      "name": "historical_run_load",
+      "elapsedMs": 4289.427951999998,
+      "rows": 31353
+    },
+    {
+      "name": "historical_feature_calculation",
+      "elapsedMs": 315.60089999999036,
+      "rows": 5000
+    },
+    {
+      "name": "historical_target_runner_load",
+      "elapsedMs": 1959.3261990000028,
+      "rows": 2901
+    },
+    {
+      "name": "historical_run_load",
+      "elapsedMs": 3529.6225710000144,
+      "rows": 27869
+    },
+    {
+      "name": "historical_feature_calculation",
+      "elapsedMs": 187.42169300001115,
+      "rows": 2901
+    }
+  ],
+  "exploratoryOnly": true,
+  "activated": false
+}

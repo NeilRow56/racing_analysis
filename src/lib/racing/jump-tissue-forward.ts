@@ -1,3 +1,5 @@
+import { CANONICAL_SETTLEMENT_VERSION, type ResearchSettlementVersion } from "./research-settlement-version";
+import { raceForSettlement } from "./settlement-outcome";
 import { retiredTissueCaptureAllowed } from "./tissue-generation-config";
 import { captureProspectiveGoing, type ProspectiveGoing } from "./prospective-going";
 import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
@@ -31,7 +33,7 @@ import { captureHurdleValueQualification, HURDLE_VALUE_RULE_EPOCH, jumpTissueQua
 export const JUMP_TISSUE_FORWARD_VERSION = "jump_tissue_forward_v1" as const;
 export const JUMP_TISSUE_FORWARD_PATH = "data/research/jump-tissue-forward-v1.json" as const;
 
-type Outcome = { resultStatus: string | null; finishingPosition: number | null; won: boolean | null; finalSp: number | null; deadHeatDivisor: number; finalSpProfitLoss: number | null };
+type Outcome = { settlementVersion?: ResearchSettlementVersion; resultStatus: string | null; finishingPosition: number | null; won: boolean | null; finalSp: number | null; deadHeatDivisor: number; finalSpProfitLoss: number | null };
 
 export type JumpTissueRunner = JumpTissuePrediction & {
   horseId: string;
@@ -227,20 +229,22 @@ export function enrichJumpTissuePrices(record: JumpTissueRace, race: TodayRace, 
 }
 
 export function settleJumpTissueRace(record: JumpTissueRace, race: TodayRace, settledAt = new Date()): JumpTissueRace {
+  race = raceForSettlement(race);
   if (record.settledAt !== null || !record.recordedPreRace) return record;
   const byId = new Map(race.runners.map((runner) => [runner.runnerId, runner]));
   if (record.runners.some((runner) => !byId.has(runner.runnerId))) return record;
   const started = race.runners.filter((runner) => !isVoidBetResultStatus(runner.resultStatus));
-  if (race.actualRunnerCount === null || (race.actualRunnerCount !== started.length && race.actualRunnerCount !== race.runners.length)) return record;
+  const voidRace = started.length === 0 && race.runners.length > 0;
+  if (!voidRace && (race.actualRunnerCount === null || (race.actualRunnerCount !== started.length && race.actualRunnerCount !== race.runners.length))) return record;
   const winners = started.filter((runner) => runner.finishingPosition === 1);
-  if (!winners.length || started.some((runner) => settleSelection({ targetRaceId: race.raceId, targetRunnerId: runner.runnerId, finishingPosition: runner.finishingPosition, resultStatus: runner.resultStatus, won: runner.finishingPosition === 1 ? true : null, placed: null, startingPrice: null, startingPriceDecimal: "2" }) === null)) return record;
+  if ((!voidRace && !winners.length) || started.some((runner) => settleSelection({ targetRaceId: race.raceId, targetRunnerId: runner.runnerId, finishingPosition: runner.finishingPosition, resultStatus: runner.resultStatus, won: runner.finishingPosition === 1 ? true : null, placed: null, startingPrice: null, startingPriceDecimal: "2" }) === null)) return record;
   const changedField = started.some((runner) => !record.runners.some((snapshot) => snapshot.runnerId === runner.runnerId));
   const runners = record.runners.map((runner): JumpTissueRunner => {
     const result = byId.get(runner.runnerId)!;
     const voided = isVoidBetResultStatus(result.resultStatus);
     const won = voided ? null : result.finishingPosition === 1;
     const settlement = settleSelection({ targetRaceId: race.raceId, targetRunnerId: runner.runnerId, finishingPosition: result.finishingPosition, resultStatus: result.resultStatus, won, placed: null, startingPrice: result.odds, startingPriceDecimal: result.oddsDecimal, deadHeatDivisor: won ? winners.length : 1 });
-    return { ...runner, outcome: { finishingPosition: result.finishingPosition, resultStatus: result.resultStatus, won, finalSp: settlement?.settlementOddsDecimal ?? null, deadHeatDivisor: won ? winners.length : 1, finalSpProfitLoss: settlement?.profitLoss ?? null } };
+    return { ...runner, outcome: { settlementVersion: CANONICAL_SETTLEMENT_VERSION, finishingPosition: result.finishingPosition, resultStatus: result.resultStatus, won, finalSp: settlement?.settlementOddsDecimal ?? null, deadHeatDivisor: won ? winners.length : 1, finalSpProfitLoss: settlement?.profitLoss ?? null } };
   });
   const leader = runners.find((runner) => runner.runnerId === record.top1);
   const pricedProfit = (price: number | null | undefined) => {
@@ -256,7 +260,7 @@ export function settleJumpTissueRace(record: JumpTissueRace, race: TodayRace, se
     runners,
     winners: winners.map((runner) => runner.runnerId),
     settledAt: settledAt.toISOString(),
-    excludedReason: changedField ? "field_changed_after_capture" : record.excludedReason,
+    excludedReason: voidRace ? "void_race" : changedField ? "field_changed_after_capture" : record.excludedReason,
     selectedPriceProfitLoss: { early: pricedProfit(record.prices.early?.decimalPrice), t180: pricedProfit(record.prices.t180?.decimalPrice), t60: pricedProfit(record.prices.t60?.decimalPrice), bestEarly: pricedProfit(record.prices.early?.bestBookmakerPriceDecimal), finalSp: leader?.outcome?.finalSpProfitLoss ?? null },
   };
 }

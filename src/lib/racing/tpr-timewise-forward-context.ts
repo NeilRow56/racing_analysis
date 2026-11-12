@@ -1,3 +1,4 @@
+import { raceForSettlement } from "./settlement-outcome";
 import {
   createRecord,
   type ForwardRaceInput,
@@ -80,7 +81,7 @@ export function buildTodayForwardInput({
   const tprRankEligible = tprCoverage?.ratingCoverageStatus !== "insufficient_coverage";
   const [tprRank1, tprRank2] = family === "turf" && tprRankEligible ? orderedTprRunners(race.runners) : [];
 
-  const winners = race.runners.filter((runner) => runner.finishingPosition === 1);
+  const winners = raceForSettlement(race).runners.filter((runner) => runner.finishingPosition === 1);
   const winner = winners[0] ?? null;
   const orRanks = competitionRanks(race.runners, (runner) => runner.officialRating);
   const awSpeedRanks = competitionRanks(race.runners, (runner) => runner.metrics?.bestAwSpeedLast3 ?? null);
@@ -99,6 +100,7 @@ export function buildTodayForwardInput({
     raceDate,
     course,
     raceTime,
+    ...(winner ? { settlementVersion: "canonical_settlement_v3" as const } : {}),
     winner: winner?.horseName ?? null,
     winnerSp: parseDecimalOdds(winner?.oddsDecimal ?? null),
     winners: winners.map((runner) => ({ horseName: runner.horseName, decimalOdds: parseDecimalOdds(runner.oddsDecimal) })),
@@ -148,12 +150,14 @@ export function enrichForwardRecordResult(
   record: ForwardRaceRecord,
   race: TodayRace,
 ): ForwardRaceRecord {
+  if (record.winners.length > 0) return record;
+  race = raceForSettlement(race);
   const tprRank1NonRunner = selectionIsNonRunner(record.tprRank1, race.runners);
   const tprRank2NonRunner = selectionIsNonRunner(record.tprRank2, race.runners);
   const w50Rank1NonRunner = selectionIsNonRunner(record.w50Rank1, race.runners);
   const timewiseRank1NonRunner = record.timewiseRank1NonRunner || selectionIsNonRunner(record.timewiseRank1, race.runners);
   const timewiseRank2NonRunner = record.timewiseRank2NonRunner || selectionIsNonRunner(record.timewiseRank2, race.runners);
-  const winners = race.runners.filter((runner) => runner.finishingPosition === 1);
+  const winners = raceForSettlement(race).runners.filter((runner) => runner.finishingPosition === 1);
   const winner = winners[0];
   if (!winner) {
     if (Boolean(record.tprRank1NonRunner) === tprRank1NonRunner &&
@@ -172,6 +176,7 @@ export function enrichForwardRecordResult(
   }
   return createRecord({
     ...record,
+    settlementVersion: "canonical_settlement_v3",
     winner: winner.horseName,
     winnerSp,
     winners: winnerEntries,

@@ -138,7 +138,7 @@ test("canonical captured-price settlement is idempotent, handles dead heats/NR/v
   assert.equal(settled.races[0].runners[0].outcome!.profitLoss, 2);
   assert.deepEqual(settleTissueGeneration(settled, new Map([[book.raceId, result(book)]]), after), settled); assert.deepEqual(data, before);
   const dead = settleTissueGeneration(data, new Map([[book.raceId, result(book, 2)]]), after);
-  assert.equal(dead.races[0].runners[0].outcome!.deadHeatDivisor, 2); assert.equal(dead.races[0].runners[0].outcome!.profitLoss, 1);
+  assert.equal(dead.races[0].runners[0].outcome!.deadHeatDivisor, 2); assert.equal(dead.races[0].runners[0].outcome!.profitLoss, 0.5);
   for (const status of ["non_runner", "void"]) {
     const race = result(book); race.runners[0].resultStatus = status; race.runners[0].finishingPosition = null; race.runners[1].finishingPosition = 1; race.actualRunnerCount = 1;
     const ended = settleTissueGeneration(data, new Map([[book.raceId, race]]), after);

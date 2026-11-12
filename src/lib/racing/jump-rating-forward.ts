@@ -1,3 +1,5 @@
+import { CANONICAL_SETTLEMENT_VERSION, type ResearchSettlementVersion } from "./research-settlement-version";
+import { raceForSettlement, settlementOutcomeState } from "./settlement-outcome";
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import { dirname } from "node:path";
 import { isVoidBetResultStatus, settleSelection } from "./backtest";
@@ -30,6 +32,7 @@ export const JUMP_RATING_FORWARD_PATH = "data/research/jump-rating-forward-v1.js
 export const JUMP_RATING_FORWARD_START_AT = "2026-09-26T11:03:43.000Z";
 
 export type JumpRatingForwardSettlement = {
+  settlementVersion?: ResearchSettlementVersion;
   stake: number;
   grossReturn: number;
   profitLoss: number;
@@ -58,6 +61,7 @@ export type JumpRatingForwardRunner = {
 };
 
 export type JumpRatingForwardRace = {
+  settlementVersion?: ResearchSettlementVersion;
   raceDate: string;
   raceDateTime: string;
   course: string;
@@ -273,7 +277,7 @@ export function upsertJumpRatingForwardRaces(
 
 export function pendingJumpRatingRaceIds(data: JumpRatingForwardData): string[] {
   return data.races
-    .filter((race) => race.recordedPreRace && race.winnerRunnerIds.length === 0 && isJprAForwardRaceRankEligible(race))
+    .filter((race) => race.recordedPreRace && race.settledAt === null && race.winnerRunnerIds.length === 0 && isJprAForwardRaceRankEligible(race))
     .map((race) => race.raceId);
 }
 
@@ -299,9 +303,16 @@ export function enrichJumpRatingForwardRace(
   race: TodayRace,
   settledAt = new Date(),
 ): JumpRatingForwardRace {
+  if (record.settledAt !== null) return record;
+  race = raceForSettlement(race);
+  const voidRace = race.runners.length > 0 && race.runners.every(r => isVoidBetResultStatus(r.resultStatus));
+  if (voidRace) return { ...record, settlementVersion: CANONICAL_SETTLEMENT_VERSION,
+    runners: record.runners.map(r => ({ ...r, finishingPosition: null, resultStatus: race.runners.find(x => x.runnerId === r.runnerId)?.resultStatus ?? null, finalSp: null, settlement: null })),
+    winnerRunnerIds: [], settledAt: settledAt.toISOString() };
   const winners = race.runners.filter((runner) => runner.finishingPosition === 1);
   if (winners.length === 0) return record;
   const byId = new Map(race.runners.map((runner) => [runner.runnerId, runner]));
+  if (record.runners.some(row => !byId.has(row.runnerId) || settlementOutcomeState(byId.get(row.runnerId)!) === "unresolved")) return record;
   const deadHeatDivisor = winners.length;
   const runners = record.runners.map((snapshot) => {
     const result = byId.get(snapshot.runnerId);
@@ -324,6 +335,7 @@ export function enrichJumpRatingForwardRace(
       resultStatus: result.resultStatus,
       finalSp,
       settlement: settlement && {
+        settlementVersion: CANONICAL_SETTLEMENT_VERSION,
         stake: settlement.stake,
         grossReturn: settlement.grossReturn,
         profitLoss: settlement.profitLoss,
@@ -333,6 +345,7 @@ export function enrichJumpRatingForwardRace(
   });
   return {
     ...record,
+    settlementVersion: CANONICAL_SETTLEMENT_VERSION,
     runners,
     winnerRunnerIds: winners.map((winner) => winner.runnerId),
     settledAt: record.settledAt ?? settledAt.toISOString(),

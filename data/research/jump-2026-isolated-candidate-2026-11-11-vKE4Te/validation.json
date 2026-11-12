@@ -1,0 +1,235 @@
+{
+  "candidate": "data/research/jump-2026-isolated-candidate-2026-11-11-vKE4Te/cache/backtest_features_v4-sporting_life-jump-2026-01-01-2026-10-14",
+  "manifest": {
+    "settlementVersion": "canonical_settlement_v3",
+    "jumpWinningTimeGuardVersion": "jump_winning_time_guard_v2_missing_minute",
+    "featureSchemaVersion": "backtest_features_v4",
+    "sourceFeatureVersion": "historical_target_metrics_v4",
+    "source": "sporting_life",
+    "from": "2026-01-01",
+    "to": "2026-10-14",
+    "family": "jump",
+    "generatedAt": "2026-11-11T16:56:04.829Z",
+    "rowCount": 32901,
+    "featuresFile": "features.ndjson",
+    "outcomesFile": "outcomes.ndjson",
+    "calculationVersions": {
+      "jumpSpeed": "jump_speed_v1",
+      "awSpeed": "aw_speed_v1",
+      "turfSpeed": "turf_speed_v2",
+      "weightPerformance": "weight_performance_v1",
+      "todaysRating": "todays_rating_v1"
+    }
+  },
+  "compatible": true,
+  "settlementVersion": "canonical_settlement_v3",
+  "coverage": {
+    "rows": 32901,
+    "races": 3353,
+    "from": "2026-01-01",
+    "to": "2026-10-14",
+    "firstTargetAt": "2026-01-01T11:49:00.000Z",
+    "lastTargetAt": "2026-10-14T16:13:00.000Z"
+  },
+  "original": {
+    "rows": 33004,
+    "races": 3368,
+    "scopedRows": 32901
+  },
+  "counts": {
+    "candidate": 32901,
+    "settleable": 29856,
+    "completeThreeBestL3": 27789,
+    "settleableCompleteThreeBestL3": 25251,
+    "strictExploratoryUsable": 10661,
+    "ratingsL3Usable": 12772,
+    "void": 9,
+    "NR": 3036,
+    "unresolved": 0,
+    "nonFinisherLosses": 4784,
+    "deadHeatWinners": 6,
+    "anyRatingChanged": 333,
+    "guardV2ExposedChanged": 43,
+    "recoveryExposedChanged": 5,
+    "oldReferenceEligible": 25166,
+    "newReferenceEligible": 25251,
+    "gainedReferenceEligibility": 90,
+    "lostReferenceEligibility": 5,
+    "firstPassUnattributedChanged": 285,
+    "guardDependencyPathChanged": 328,
+    "recoveryDependencyPathChanged": 5,
+    "unexplainedAfterContextTrace": 0
+  },
+  "missingFeatures": {
+    "latestSpeedRating": 3957,
+    "previousSpeedRating": 7481,
+    "bestSpeedLast3": 5112,
+    "averageSpeedLast3": 5112,
+    "bestSpeedLast5": 4276,
+    "latestPerformanceRating": 3957,
+    "previousPerformanceRating": 7481,
+    "bestPerformanceLast3": 5112,
+    "averagePerformanceLast3": 5112,
+    "bestPerformanceLast5": 4276,
+    "latestTodaysRating": 3957,
+    "previousTodaysRating": 7481,
+    "bestTodaysRatingLast3": 5112,
+    "averageTodaysRatingLast3": 5112,
+    "bestTodaysRatingLast5": 4276
+  },
+  "priceBands": {
+    "(1,3]": {
+      "records": 2779,
+      "settleable": 2630,
+      "winners": 1094,
+      "completeL3Settleable": 2375,
+      "completeL3Winners": 983,
+      "strictUsable": 742,
+      "strictWinners": 316,
+      "excludedStrict": 2037
+    },
+    "(3,6]": {
+      "records": 6928,
+      "settleable": 6401,
+      "winners": 1256,
+      "completeL3Settleable": 5878,
+      "completeL3Winners": 1172,
+      "strictUsable": 1972,
+      "strictWinners": 370,
+      "excludedStrict": 4956
+    },
+    "(6,11]": {
+      "records": 7201,
+      "settleable": 6486,
+      "winners": 612,
+      "completeL3Settleable": 5863,
+      "completeL3Winners": 552,
+      "strictUsable": 2401,
+      "strictWinners": 218,
+      "excludedStrict": 4800
+    },
+    "(11,21]": {
+      "records": 6420,
+      "settleable": 5634,
+      "winners": 275,
+      "completeL3Settleable": 4925,
+      "completeL3Winners": 247,
+      "strictUsable": 2302,
+      "strictWinners": 121,
+      "excludedStrict": 4118
+    },
+    ">21": {
+      "records": 9518,
+      "settleable": 8705,
+      "winners": 118,
+      "completeL3Settleable": 6210,
+      "completeL3Winners": 90,
+      "strictUsable": 3244,
+      "strictWinners": 36,
+      "excludedStrict": 6274
+    },
+    "unknown/invalid": {
+      "records": 55,
+      "settleable": 0,
+      "winners": 0,
+      "completeL3Settleable": 0,
+      "completeL3Winners": 0,
+      "strictUsable": 0,
+      "strictWinners": 0,
+      "excludedStrict": 55
+    }
+  },
+  "duplicateRunnerIdentities": 0,
+  "duplicateRaceHorseIdentities": 0,
+  "identityMismatches": 0,
+  "chronologyViolations": [],
+  "aggregationMismatches": [],
+  "missingTargetSource": [],
+  "newlyIncluded": [],
+  "missingOldScoped": [],
+  "maxWinnerSP": 301,
+  "longWinnerExamples": [
+    {
+      "runnerId": "fd573f4d-7fd9-499c-9dc7-31ef72513e71",
+      "horse": "Crokes Cross",
+      "sp": 301,
+      "divisor": 1,
+      "grossReturn": 301
+    },
+    {
+      "runnerId": "8e511739-2caa-4bde-ab0a-ad7cd2284ca3",
+      "horse": "Galeforcechopper",
+      "sp": 151,
+      "divisor": 1,
+      "grossReturn": 151
+    },
+    {
+      "runnerId": "8cede5f4-c1e2-4bd2-9a96-cf751f9a452b",
+      "horse": "Local News",
+      "sp": 101,
+      "divisor": 1,
+      "grossReturn": 101
+    },
+    {
+      "runnerId": "d67c5e56-b84e-4e5e-81e7-39023545a671",
+      "horse": "Sept Etoiles",
+      "sp": 81,
+      "divisor": 1,
+      "grossReturn": 81
+    },
+    {
+      "runnerId": "ccfb5bd3-0732-4cd2-8dd6-dc8a63fb8c4e",
+      "horse": "Cadillac Ranch",
+      "sp": 81,
+      "divisor": 1,
+      "grossReturn": 81
+    },
+    {
+      "runnerId": "f6102080-a206-49ed-9851-fbc70b25ab23",
+      "horse": "Moon Reign",
+      "sp": 81,
+      "divisor": 1,
+      "grossReturn": 81
+    },
+    {
+      "runnerId": "24f92514-4ad1-452b-aa8f-1b4cc1986696",
+      "horse": "Martator",
+      "sp": 67,
+      "divisor": 1,
+      "grossReturn": 67
+    },
+    {
+      "runnerId": "4e4ed063-8ff4-4a89-90da-58372a24b1ce",
+      "horse": "Prince Nino",
+      "sp": 67,
+      "divisor": 1,
+      "grossReturn": 67
+    },
+    {
+      "runnerId": "c195ca44-755d-4dab-9703-4c3f19a7661d",
+      "horse": "Begger",
+      "sp": 67,
+      "divisor": 1,
+      "grossReturn": 67
+    },
+    {
+      "runnerId": "fa89dcf7-7ba6-444f-ba64-30925285463a",
+      "horse": "Gooloogong",
+      "sp": 51,
+      "divisor": 1,
+      "grossReturn": 51
+    }
+  ],
+  "files": {
+    "manifest.json": "9e32f91f75b3ec6b198ede2ffe568f069697fc1303bdd2b6f0adcdee3b912260",
+    "features.ndjson": "23b50dbb51cb1b19943d9e453d96ea79cdb74aafa1ffe94ceda51c1b4922de93",
+    "outcomes.ndjson": "cf63d22701e9f80f74b245ec7142ef1031223d6e7833eaead7fd20b82ad69997"
+  },
+  "prospectiveEpochPinsValid": true,
+  "exploratoryOnly": true,
+  "activated": false,
+  "dependencyIntegrity": "Qualified only: identified historical source gaps and original publication/context lineage limitations remain",
+  "releaseRecommendation": "Withhold unfiltered Research Filters release; separately review the strict exploratory subset and required sidecar integration",
+  "eligibilityDefinition": "Old outcome evidence is annotated in memory by the existing identity-bound adapter; original positions, SPs and features are retained. Reference coverage = Canonical V3 settleable + finite Best L3 Speed/Performance/Today's Rating, without strategy thresholds. Strict usable further excludes all identified direct/uncertain/context dependencies. These are validation subsets, not modifications to research rules.",
+  "ratingFeatureDefinitions": "Historical-target-metrics diff is outcome-evidence annotations only; unchanged existing Horse Metrics, Jump Speed, Performance and Today's Rating functions are used. Independent history aggregation rechecks all 15 comparison fields for every row."
+}

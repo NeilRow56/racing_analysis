@@ -6,10 +6,13 @@ import { homedir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { CHASE_SPEED_SNAPSHOT_DIRECTORY } from "../src/lib/racing/chase-speed-reliability-capture";
+import { BACKUP_ARTIFACTS, BACKUP_RECOVERY_SOURCES } from "./backup-artifact-inventory";
 import { BACKUP_TRACKERS } from "./backup-tracker-inventory";
 
 const PROJECT_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 export type Tracker = { filename: string; source: string; bytes: number; sha256: string; identifiers: Record<string, string | number> };
+export type Artifact = Tracker & { role: typeof BACKUP_ARTIFACTS[number][1] };
+export type RecoverySource = { filename: string; bytes: number; sha256: string };
 type Command = (command: string, args: string[], env?: NodeJS.ProcessEnv) => Promise<string>;
 
 export function backupName(date: Date) {
@@ -67,19 +70,76 @@ export async function inspectTracker(root: string, filename: string, source: str
   let data: unknown;
   try { data = JSON.parse(buffer.toString("utf8")); } catch { throw new Error(`Invalid tracker JSON: ${filename}`); }
   if (!data || typeof data !== "object" || Array.isArray(data)) throw new Error(`Tracker must be a JSON object: ${filename}`);
-  const identifiers = Object.fromEntries(Object.entries(data).filter(([key, value]) => /version|tracker|schema/i.test(key) && (typeof value === "string" || typeof value === "number"))) as Tracker["identifiers"];
+  const identifiers = Object.fromEntries(Object.entries(data).filter(([key, value]) => /version|tracker|schema|generation|checksum|epoch|frozenAt|developmentCutoff/i.test(key) && (typeof value === "string" || typeof value === "number"))) as Tracker["identifiers"];
   return { filename, source, bytes: buffer.length, sha256: createHash("sha256").update(buffer).digest("hex"), identifiers };
 }
 
-export function buildManifest(input: { createdAt: string; name: string; database: string; dump: { bytes: number; sha256: string }; trackers: Tracker[]; commit: string; branch: string; pgDumpVersion: string }) {
+export async function inspectArtifact(root: string, filename: string, role: Artifact["role"], source: string): Promise<Artifact> {
+  try { return { ...await inspectTracker(root, filename, source), role }; }
+  catch (error) { throw new Error(`Required research artifact ${filename}: ${(error as Error).message}`); }
+}
+
+function safeRelativePath(filename: string) {
+  if (!filename || filename.includes("\\") || filename.split("/").some(part => !part || part === "." || part === "..")) {
+    throw new Error(`Unsafe backup path: ${filename}`);
+  }
+  return filename;
+}
+
+// Hashes embedded in frozen provenance may describe an older implementation.
+// Keep those references verbatim; require current ledger methodology pins to match.
+async function researchDependencies(files: Tracker[], read: (filename: string) => Promise<Buffer>) {
+  const sources = new Set<string>([...BACKUP_RECOVERY_SOURCES, ...files.map(file => file.source)]);
+  const pins: { owner: string; filename: string; sha256: string; requiredMatch: boolean }[] = [];
+  for (const file of files) {
+    const data = JSON.parse((await read(file.filename)).toString("utf8")) as Record<string, unknown>;
+    for (const key of ["sourceHashes", "codeHashes", "scoringCodeHashes"]) {
+      const hashes = data[key];
+      if (hashes === undefined) continue;
+      if (!hashes || typeof hashes !== "object" || Array.isArray(hashes)) throw new Error(`Invalid ${key}: ${file.filename}`);
+      for (const [filename, hash] of Object.entries(hashes)) {
+        safeRelativePath(filename);
+        if (typeof hash !== "string" || !/^[a-f0-9]{64}$/.test(hash)) throw new Error(`Invalid dependency hash: ${file.filename}/${filename}`);
+        if (filename.startsWith("src/") || filename.startsWith("scripts/")) sources.add(filename);
+        else if (!files.some(item => `data/research/${item.filename}` === filename)) throw new Error(`Required research dependency not inventoried: ${filename} (${file.filename})`);
+        pins.push({ owner: file.filename, filename, sha256: hash, requiredMatch: !("role" in file) });
+      }
+    }
+  }
+  return { sources: [...sources].sort(), pins };
+}
+
+export async function inspectRecoverySources(root: string, files: Tracker[]) {
+  const dependencies = await researchDependencies(files, filename => readFile(join(root, "data/research", filename)));
+  const recoverySources = await Promise.all(dependencies.sources.map(async filename => {
+    let buffer: Buffer;
+    try { buffer = await readFile(join(root, safeRelativePath(filename))); }
+    catch { throw new Error(`Required recovery source missing or unreadable: ${filename}`); }
+    return { filename, bytes: buffer.length, sha256: createHash("sha256").update(buffer).digest("hex") };
+  }));
+  const references = dependencies.pins.map(pin => {
+    const actual = pin.filename.startsWith("data/research/")
+      ? files.find(file => `data/research/${file.filename}` === pin.filename)!.sha256
+      : recoverySources.find(file => file.filename === pin.filename)!.sha256;
+    if (pin.requiredMatch && actual !== pin.sha256) throw new Error(`Required ledger dependency checksum mismatch: ${pin.owner} -> ${pin.filename}`);
+    return { ...pin, actualSha256: actual, matches: actual === pin.sha256 };
+  });
+  return { recoverySources, references };
+}
+
+export function buildManifest(input: { createdAt: string; name: string; database: string; dump: { bytes: number; sha256: string }; trackers: Tracker[]; artifacts?: Artifact[]; recoverySources?: RecoverySource[]; references?: Awaited<ReturnType<typeof inspectRecoverySources>>["references"]; commit: string; branch: string; pgDumpVersion: string }) {
   return {
-    backupVersion: 2, project: "racing-analysis", createdAt: input.createdAt,
+    backupVersion: 3, project: "racing-analysis", createdAt: input.createdAt,
     gitCommitSha: input.commit, gitBranch: input.branch,
     database: { name: input.database, filename: "postgres.dump", ...input.dump, format: "postgres-custom", verification: "PASS" },
     trackers: input.trackers.map((tracker) => ({ ...tracker, path: `research/${tracker.filename}` })),
+    artifacts: (input.artifacts ?? []).map(artifact => ({ ...artifact, path: `research/${artifact.filename}` })),
+    recoverySources: (input.recoverySources ?? []).map(source => ({ ...source, path: `recovery/${source.filename}` })),
+    dependencyReferences: input.references ?? [],
+    totalArtifactCount: input.artifacts?.length ?? 0, totalRecoverySourceCount: input.recoverySources?.length ?? 0,
     totalTrackerCount: input.trackers.length, archiveFilename: `${input.name}.tar.gz`,
     runtime: { node: process.version, bun: process.versions.bun ?? null, pgDump: input.pgDumpVersion },
-    notes: ["Dump verified using pg_restore --list. No restore performed.", "UTC filename timestamp. Research files are byte-for-byte copies; no capture or settlement code invoked.", "Database snapshot and individual tracker copies are not a globally atomic snapshot. Pause research writers for a coordinated backup.", "Archive is published only after tar listing and extracted-file checksum verification. Offsite status is printed separately.", "Turf v1 included because tissue:v1:sync remains available. Frozen models/calibration artifacts excluded; retain the repository separately."],
+    notes: ["Dump verified using pg_restore --list. No restore performed.", "UTC filename timestamp. Research files are byte-for-byte copies; no capture or settlement code invoked.", "Database snapshot and individual tracker copies are not a globally atomic snapshot. Pause research writers for a coordinated backup.", "Archive is published only after tar listing and extracted-file checksum verification. Offsite status is printed separately.", "Turf v1 and all required frozen models/calibration/provenance included. recovery/ preserves current methodology and pinned source bytes; dependencyReferences distinguishes historical provenance hashes from current source hashes. Full repository/raw training history remain separate archival responsibilities."],
   };
 }
 
@@ -116,10 +176,44 @@ async function writableAncestor(path: string) {
   }
 }
 
-export async function verifyExtracted(directory: string, manifest: ReturnType<typeof buildManifest>) {
-  for (const item of [{ path: "postgres.dump", ...manifest.database }, ...manifest.trackers]) {
+type WeeklyManifest = ReturnType<typeof buildManifest>;
+// v2 archives retain their original tracker-only coverage; do not invent v3 payloads.
+export type VerifiableManifest = Omit<WeeklyManifest, "artifacts" | "recoverySources" | "dependencyReferences" | "totalArtifactCount" | "totalRecoverySourceCount"> & Partial<Pick<WeeklyManifest, "artifacts" | "recoverySources" | "dependencyReferences" | "totalArtifactCount" | "totalRecoverySourceCount">>;
+
+export async function verifyExtracted(directory: string, manifest: VerifiableManifest) {
+  if (![2, 3].includes(manifest.backupVersion)) throw new Error(`Unsupported backup version: ${manifest.backupVersion}`);
+  if (manifest.backupVersion === 3) {
+    if (!Array.isArray(manifest.artifacts) || !Array.isArray(manifest.recoverySources) || !Array.isArray(manifest.dependencyReferences)) throw new Error("Incomplete v3 research manifest");
+    if (manifest.totalTrackerCount !== manifest.trackers.length || manifest.totalArtifactCount !== manifest.artifacts.length || manifest.totalRecoverySourceCount !== manifest.recoverySources.length) throw new Error("Manifest payload count mismatch");
+    for (const [filename] of BACKUP_TRACKERS) if (!manifest.trackers.some(file => file.filename === filename)) throw new Error(`Manifest missing required tracker: ${filename}`);
+    for (const [filename, role, source] of BACKUP_ARTIFACTS) if (!manifest.artifacts.some(file => file.filename === filename && file.role === role && file.source === source)) throw new Error(`Manifest missing required artifact: ${filename}`);
+  }
+  const payloads = [{ path: "postgres.dump", ...manifest.database }, ...manifest.trackers, ...(manifest.artifacts ?? []), ...(manifest.recoverySources ?? [])];
+  const paths = new Set<string>();
+  for (const item of payloads) {
+    safeRelativePath(item.path);
+    if (paths.has(item.path)) throw new Error(`Duplicate manifest path: ${item.path}`);
+    paths.add(item.path);
     const path = join(directory, item.path);
-    if ((await stat(path)).size !== item.bytes || await sha256(path) !== item.sha256) throw new Error(`Backup checksum mismatch: ${item.path}`);
+    let details;
+    try { details = await stat(path); } catch { throw new Error(`Required backup payload missing: ${item.path}`); }
+    if (!details.isFile() || details.size !== item.bytes || await sha256(path) !== item.sha256) throw new Error(`Backup checksum mismatch: ${item.path}`);
+  }
+  if (manifest.database.filename !== "postgres.dump") throw new Error("Invalid database dump path");
+  if (manifest.backupVersion === 3) {
+    const research = [...manifest.trackers, ...manifest.artifacts!];
+    for (const file of research) if (file.path !== `research/${safeRelativePath(file.filename)}`) throw new Error(`Invalid research payload path: ${file.path}`);
+    for (const file of manifest.recoverySources!) if (file.path !== `recovery/${safeRelativePath(file.filename)}`) throw new Error(`Invalid recovery payload path: ${file.path}`);
+    const dependencies = await researchDependencies(research, filename => readFile(join(directory, "research", filename)));
+    for (const filename of dependencies.sources) if (!manifest.recoverySources!.some(file => file.filename === filename)) throw new Error(`Manifest missing required recovery source: ${filename}`);
+    const references = dependencies.pins.map(pin => {
+      const actual = pin.filename.startsWith("data/research/")
+        ? research.find(file => `data/research/${file.filename}` === pin.filename)!.sha256
+        : manifest.recoverySources!.find(file => file.filename === pin.filename)!.sha256;
+      if (pin.requiredMatch && actual !== pin.sha256) throw new Error(`Required ledger dependency checksum mismatch: ${pin.owner} -> ${pin.filename}`);
+      return { ...pin, actualSha256: actual, matches: actual === pin.sha256 };
+    });
+    if (JSON.stringify(references) !== JSON.stringify(manifest.dependencyReferences)) throw new Error("Manifest dependency references mismatch");
   }
   if (JSON.stringify(JSON.parse(await readFile(join(directory, "manifest.json"), "utf8"))) !== JSON.stringify(manifest)) throw new Error("Archived manifest mismatch");
 }
@@ -139,9 +233,13 @@ export async function createWeeklyBackup(options: { dryRun?: boolean; root?: str
   const shadowDirectory = join(root, CHASE_SPEED_SNAPSHOT_DIRECTORY);
   let shadowFiles: string[] = [];
   try { shadowFiles = (await readdir(shadowDirectory)).filter(f => f.endsWith(".json")).sort(); }
-  catch (error) { if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error; }
+  catch { throw new Error(`Required research snapshot directory missing or unreadable: ${CHASE_SPEED_SNAPSHOT_DIRECTORY}`); }
   const shadowTrackers = shadowFiles.map(f => [`chase-speed-reliability-shadow-v1/${f}`, "src/lib/racing/chase-speed-reliability-capture.ts"] as const);
   const trackers = await Promise.all([...BACKUP_TRACKERS, ...shadowTrackers].map(([filename, source]) => inspectTracker(root, filename, source)));
+  const artifacts = await Promise.all(BACKUP_ARTIFACTS.map(([filename, role, source]) => inspectArtifact(root, filename, role, source)));
+  const { recoverySources, references } = await inspectRecoverySources(root, [...trackers, ...artifacts]);
+  for (const reference of references.filter(pin => !pin.matches)) console.warn(`Historical provenance reference differs from current bytes: ${reference.owner} -> ${reference.filename}; both hashes retained in manifest.`);
+  console.log(`Required artifacts: ${artifacts.length}\nRecovery sources: ${recoverySources.length}`);
   console.log(`Database: ${config.database}\nLocal destination: ${destination.local}\nOffsite destination: ${destination.offsite ?? "NOT CONFIGURED"}\nTrackers (${trackers.length}):\n${trackers.map((t) => t.filename).join("\n")}`);
   if (destination.offsite) {
     try { await access(destination.offsite, constants.W_OK | constants.X_OK); if (!(await stat(destination.offsite)).isDirectory()) throw new Error(); }
@@ -167,19 +265,25 @@ export async function createWeeklyBackup(options: { dryRun?: boolean; root?: str
     if (!(await stat(dumpPath)).size) throw new Error("PostgreSQL dump is empty");
     await run("pg_restore", ["--list", dumpPath]);
     console.log("PostgreSQL dump verification: PASS. Copying required trackers...");
-    for (const tracker of trackers) {
+    for (const tracker of [...trackers, ...artifacts]) {
       const target = join(directory, "research", tracker.filename);
       await mkdir(dirname(target), { recursive: true });
       await copyFile(join(root, "data/research", tracker.filename), target, constants.COPYFILE_EXCL);
       if (await sha256(target) !== tracker.sha256) throw new Error(`Tracker changed during backup: ${tracker.filename}; retry while writers are idle.`);
     }
-    manifest = buildManifest({ createdAt: now.toISOString(), name, database: config.database, dump: { bytes: (await stat(dumpPath)).size, sha256: await sha256(dumpPath) }, trackers, commit, branch, pgDumpVersion });
+    for (const source of recoverySources) {
+      const target = join(directory, "recovery", source.filename);
+      await mkdir(dirname(target), { recursive: true });
+      await copyFile(join(root, source.filename), target, constants.COPYFILE_EXCL);
+      if (await sha256(target) !== source.sha256) throw new Error(`Recovery source changed during backup: ${source.filename}`);
+    }
+    manifest = buildManifest({ createdAt: now.toISOString(), name, database: config.database, dump: { bytes: (await stat(dumpPath)).size, sha256: await sha256(dumpPath) }, trackers, artifacts, recoverySources, references, commit, branch, pgDumpVersion });
     await writeFile(join(directory, "manifest.json"), `${JSON.stringify(manifest, null, 2)}\n`, { flag: "wx", mode: 0o600 });
     const partial = join(staging, archiveFilename);
     console.log("Creating archive and verifying extracted checksums...");
     await run("tar", ["-czf", partial, "-C", staging, name]);
     const listing = (await run("tar", ["-tzf", partial])).split("\n");
-    for (const file of ["postgres.dump", "manifest.json", ...trackers.map((t) => `research/${t.filename}`)]) {
+    for (const file of ["postgres.dump", "manifest.json", ...[...trackers, ...artifacts].map((t) => `research/${t.filename}`), ...recoverySources.map(s => `recovery/${s.filename}`)]) {
       if (!listing.includes(`${name}/${file}`)) throw new Error(`Archive missing ${file}`);
     }
     const verification = join(staging, "verify");
@@ -215,7 +319,7 @@ export async function createWeeklyBackup(options: { dryRun?: boolean; root?: str
       if (offsiteStaging) await rm(offsiteStaging, { recursive: true, force: true }).catch(() => console.warn("Could not clean offsite temporary directory."));
     }
   }
-  console.log(`BACKUP COMPLETE\n\nDatabase:\n${config.database}\n\nPostgres dump:\n${archiveFilename}/${name}/postgres.dump (inside archive)\n${manifest.database.bytes} bytes\nverification: PASS\n\nResearch trackers:\n${trackers.length}\nvalidation: PASS\n\nArchive:\n${archivePath}\n${archiveBytes} bytes\nSHA-256: ${archiveHash}\nverification: PASS\n\nOff-device copy:\n${offsiteStatus}\n\nGit commit:\n${commit}`);
+  console.log(`BACKUP COMPLETE\n\nDatabase:\n${config.database}\n\nPostgres dump:\n${archiveFilename}/${name}/postgres.dump (inside archive)\n${manifest.database.bytes} bytes\nverification: PASS\n\nResearch trackers:\n${trackers.length}\nvalidation: PASS\n\nResearch artifacts:\n${artifacts.length}\nRecovery sources:\n${recoverySources.length}\nvalidation: PASS\n\nArchive:\n${archivePath}\n${archiveBytes} bytes\nSHA-256: ${archiveHash}\nverification: PASS\n\nOff-device copy:\n${offsiteStatus}\n\nGit commit:\n${commit}`);
   if (offsiteStatus !== "COPIED") console.log("Backup complete locally; copy/upload this archive to Google Drive.");
   return { archivePath, archiveHash, manifest, offsiteStatus };
 }

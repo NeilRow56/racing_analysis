@@ -173,7 +173,7 @@ test("non-finisher loss, NR and void handling; incomplete results remain pending
   incomplete.runners[1]!.finishingPosition = null;
   assert.equal(settle(r, incomplete).observations[0]!.outcome, null);
 });
-test("dead heats follow canonical settlement divisor", () => { const r = race(); const res = result(r); res.runners.forEach(x => { x.finishingPosition = 1; }); const row = settle(r, res).observations[0]!; assert.equal(row.outcome?.deadHeatDivisor, 3); assert.equal(row.outcome?.grossReturn, 1 + (row.market.medianBookmakerDecimal! - 1) / 3); });
+test("dead heats follow canonical settlement divisor", () => { const r = race(); const res = result(r); res.runners.forEach(x => { x.finishingPosition = 1; }); const row = settle(r, res).observations[0]!; assert.equal(row.outcome?.deadHeatDivisor, 3); assert.equal(row.outcome?.grossReturn, row.market.medianBookmakerDecimal! / 3); });
 test("family summaries separate settled, pending, void and returns", () => {
   const all = ["TURF", "HURDLE", "CHASE", "AW"] as const;
   const data = appendRankOne(emptyRankOne(), all.flatMap(f => observations(race(f))));

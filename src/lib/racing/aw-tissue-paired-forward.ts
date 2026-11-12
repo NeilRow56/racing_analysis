@@ -1,7 +1,9 @@
+import { CANONICAL_SETTLEMENT_VERSION, type ResearchSettlementVersion } from "./research-settlement-version";
+import { raceForSettlement } from "./settlement-outcome";
 import { retiredTissueCaptureAllowed } from "./tissue-generation-config";
 import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
-import { settleSelection, isVoidBetResultStatus } from "./backtest";
+import { settleSelection, settleRecordedSelection, isVoidBetResultStatus } from "./backtest";
 import {
   FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION,
   priceSnapshotStage,
@@ -35,7 +37,7 @@ export type PairedRunner = {
   rank: number;
   firstCapturedPriceDecimal: number | null;
   longshotTrainerJockeyAdjusted: boolean;
-  outcome: { resultStatus: string | null; finishingPosition: number | null; won: boolean | null; finalSp: number | null; deadHeatDivisor: number; finalSpProfitLoss: number | null } | null;
+  outcome: { settlementVersion?: ResearchSettlementVersion; resultStatus: string | null; finishingPosition: number | null; won: boolean | null; finalSp: number | null; deadHeatDivisor: number; finalSpProfitLoss: number | null } | null;
 };
 export type PairedModelSnapshot = {
   modelVersion: string;
@@ -249,20 +251,22 @@ export function enrichAwTissuePairedPrices(record: AwTissuePairedRace, race: Tod
 }
 
 export function settleAwTissuePairedRace(record: AwTissuePairedRace, race: TodayRace, settledAt = new Date()): AwTissuePairedRace {
+  race = raceForSettlement(race);
   if (record.settledAt !== null) return record;
   const byId = new Map(race.runners.map((runner) => [runner.runnerId, runner]));
   if (record.runners.some((runner) => !byId.has(runner.runnerId))) return record;
   const started = race.runners.filter((runner) => !isVoidBetResultStatus(runner.resultStatus));
-  if (race.actualRunnerCount === null || (race.actualRunnerCount !== started.length && race.actualRunnerCount !== race.runners.length)) return record;
+  const voidRace = started.length === 0 && race.runners.length > 0;
+  if (!voidRace && (race.actualRunnerCount === null || (race.actualRunnerCount !== started.length && race.actualRunnerCount !== race.runners.length))) return record;
   const winners = started.filter((runner) => runner.finishingPosition === 1);
-  if (!winners.length) return record;
+  if (!voidRace && !winners.length) return record;
   const updateModel = (model: PairedModelSnapshot): PairedModelSnapshot => {
     const runners = model.probabilities.map((runner): PairedRunner => {
       const result = byId.get(runner.runnerId)!;
       const voided = isVoidBetResultStatus(result.resultStatus);
       const won = voided ? null : result.finishingPosition === 1;
       const settlement = settleSelection({ targetRaceId: race.raceId, targetRunnerId: runner.runnerId, finishingPosition: result.finishingPosition, resultStatus: result.resultStatus, won, placed: null, startingPrice: result.odds, startingPriceDecimal: result.oddsDecimal, deadHeatDivisor: won ? winners.length : 1 });
-      return { ...runner, outcome: { resultStatus: result.resultStatus, finishingPosition: result.finishingPosition, won, finalSp: settlement?.settlementOddsDecimal ?? null, deadHeatDivisor: won ? winners.length : 1, finalSpProfitLoss: settlement?.profitLoss ?? null } };
+      return { ...runner, outcome: { settlementVersion: CANONICAL_SETTLEMENT_VERSION, resultStatus: result.resultStatus, finishingPosition: result.finishingPosition, won, finalSp: settlement?.settlementOddsDecimal ?? null, deadHeatDivisor: won ? winners.length : 1, finalSpProfitLoss: settlement?.profitLoss ?? null } };
     });
     const profitLoss = selectedPriceProfit(record, model, runners);
     return { ...model, probabilities: runners, selectedPriceProfitLoss: profitLoss };
@@ -271,7 +275,7 @@ export function settleAwTissuePairedRace(record: AwTissuePairedRace, race: Today
   prices.sp.awTissue = byId.get(record.awTissue.rank1RunnerId)?.oddsDecimal ? Number(byId.get(record.awTissue.rank1RunnerId)!.oddsDecimal) : null;
   prices.sp.longshotTjZero = byId.get(record.longshotTjZero.rank1RunnerId)?.oddsDecimal ? Number(byId.get(record.longshotTjZero.rank1RunnerId)!.oddsDecimal) : null;
   const changedField = started.some((runner) => !record.runners.some((frozen) => frozen.runnerId === runner.runnerId));
-  return applyValueFlags({ ...record, prices, awTissue: updateModel(record.awTissue), longshotTjZero: updateModel(record.longshotTjZero), winners: winners.map((runner) => runner.runnerId), settledAt: settledAt.toISOString(), excludedReason: changedField ? "field_changed_after_capture" : record.excludedReason });
+  return applyValueFlags({ ...record, prices, awTissue: updateModel(record.awTissue), longshotTjZero: updateModel(record.longshotTjZero), winners: winners.map((runner) => runner.runnerId), settledAt: settledAt.toISOString(), excludedReason: voidRace ? "void_race" : changedField ? "field_changed_after_capture" : record.excludedReason });
 }
 
 export function updateAwTissuePairedForward(data: AwTissuePairedForwardData, currentById: ReadonlyMap<string, TodayRace>, capturedAt = new Date()): AwTissuePairedForwardData {
@@ -456,7 +460,7 @@ function selectedPriceProfit(record: AwTissuePairedRace, model: PairedModelSnaps
   const price = qualificationPrice(record, model.rank1RunnerId === record.awTissue.rank1RunnerId && model.modelVersion === record.awTissue.modelVersion ? "awTissue" : "longshotTjZero");
   const leader = runners.find((runner) => runner.runnerId === model.rank1RunnerId);
   if (!price?.medianDecimalPrice || !leader?.outcome) return null;
-  return settleSelection({ targetRaceId: record.raceId, targetRunnerId: leader.runnerId, finishingPosition: leader.outcome.finishingPosition, resultStatus: leader.outcome.resultStatus, won: leader.outcome.won, placed: null, startingPrice: null, startingPriceDecimal: String(price.medianDecimalPrice), deadHeatDivisor: leader.outcome.deadHeatDivisor })?.profitLoss ?? null;
+  return settleRecordedSelection({ targetRaceId: record.raceId, targetRunnerId: leader.runnerId, finishingPosition: leader.outcome.finishingPosition, resultStatus: leader.outcome.resultStatus, won: leader.outcome.won, placed: null, startingPrice: null, startingPriceDecimal: String(price.medianDecimalPrice), deadHeatDivisor: leader.outcome.deadHeatDivisor }, leader.outcome.settlementVersion)?.profitLoss ?? null;
 }
 
 function probabilitySummary(races: AwTissuePairedRace[], key: PairedModelKey) {

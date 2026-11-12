@@ -1,7 +1,9 @@
+import { CANONICAL_SETTLEMENT_VERSION, type ResearchSettlementVersion } from "./research-settlement-version";
+import { raceForSettlement } from "./settlement-outcome";
 import { descendingRanks } from "./descending-ranks";
 import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
-import { isVoidBetResultStatus, settleSelection } from "./backtest";
+import { isVoidBetResultStatus, settleSelection, settledWinValue } from "./backtest";
 import { isCurrentAllWeatherRace } from "./current-race-classification";
 import { FORWARD_VALUE_MARKET_PRICE_BASIS_VERSION, summarizeBookmakerMarket } from "./forward-value";
 import { canonicalFamilyFormMetrics } from "./horse-metrics";
@@ -77,6 +79,7 @@ export type DisagreementSignals = {
 };
 
 export type DisagreementOutcome = {
+  settlementVersion?: ResearchSettlementVersion;
   status: "settled" | "void";
   resultStatus: string | null;
   finishingPosition: number | null;
@@ -286,7 +289,8 @@ export function settleModelDisagreementObservations(
   let settled = 0;
   const observations = data.observations.map((row) => {
     if (row.settledAt !== null) return row;
-    const race = races.get(row.raceId);
+    const sourceRace = races.get(row.raceId);
+    const race = sourceRace && raceForSettlement(sourceRace);
     const runner = race?.runners.find((candidate) => candidate.runnerId === row.runnerId);
     if (!race || !runner) return row;
     const outcome = canonicalOutcome(race, runner, row.frozen.firstQualifyingSnapshot?.medianBookmakerDecimal ?? null);
@@ -505,18 +509,18 @@ function g4Like(runner: TodayRunner) {
 }
 
 function canonicalOutcome(race: TodayRace, runner: TodayRunner, qualifyingPrice: number | null): DisagreementOutcome | null {
-  if (isVoidBetResultStatus(runner.resultStatus)) return { status: "void", resultStatus: runner.resultStatus, finishingPosition: runner.finishingPosition,
+  if (isVoidBetResultStatus(runner.resultStatus)) return { settlementVersion: CANONICAL_SETTLEMENT_VERSION, status: "void", resultStatus: runner.resultStatus, finishingPosition: runner.finishingPosition,
     won: null, deadHeatDivisor: 1, finalSp: null, qualifyingPriceProfitLoss: 0, finalSpProfitLoss: 0 };
   const active = race.runners.filter((candidate) => !isVoidBetResultStatus(candidate.resultStatus));
   const winners = active.filter((candidate) => candidate.finishingPosition === 1);
-  if (!winners.length || active.some((candidate) => candidate.finishingPosition === null)) return null;
+  if (!winners.length || active.some((candidate) => settledWinValue({ ...candidate, won: null }) === null)) return null;
   const outcome = { targetRaceId: race.raceId, targetRunnerId: runner.runnerId, finishingPosition: runner.finishingPosition,
     resultStatus: runner.resultStatus, won: runner.finishingPosition === 1, placed: null, startingPrice: runner.odds,
     startingPriceDecimal: runner.oddsDecimal, deadHeatDivisor: runner.finishingPosition === 1 ? winners.length : 1 };
   const final = settleSelection(outcome);
   if (!final) return null;
   const qualifying = qualifyingPrice === null ? null : settleSelection({ ...outcome, startingPriceDecimal: String(qualifyingPrice) });
-  return { status: "settled", resultStatus: runner.resultStatus, finishingPosition: runner.finishingPosition,
+  return { settlementVersion: CANONICAL_SETTLEMENT_VERSION, status: "settled", resultStatus: runner.resultStatus, finishingPosition: runner.finishingPosition,
     won: runner.finishingPosition === 1, deadHeatDivisor: outcome.deadHeatDivisor, finalSp: final.settlementOddsDecimal,
     qualifyingPriceProfitLoss: qualifying?.profitLoss ?? null, finalSpProfitLoss: final.profitLoss };
 }

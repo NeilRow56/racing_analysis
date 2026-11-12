@@ -443,8 +443,8 @@ describe("Today result refresh selection settlement integration", () => {
         runner({ runnerId: "winner-b", horseName: "Winner B", finishingPosition: 1, oddsDecimal: "7", resultStatus: "finished" }),
       ]),
     ]);
-    assert.deepEqual(selections.rows.map((row) => row.settlement?.grossReturn), [3, 4]);
-    assert.equal(selections.summary.profitLoss, 5);
+    assert.deepEqual(selections.rows.map((row) => row.settlement?.grossReturn), [2.5, 3.5]);
+    assert.equal(selections.summary.profitLoss, 4);
   });
 
   test("refreshed winner, loser and non-runner update the daily P/L table from stored results", () => {

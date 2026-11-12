@@ -1,3 +1,4 @@
+import { settlementReportGroups, settlementReportDisclosure } from "@/lib/racing/settlement-reporting";
 import { createDbConnection } from "@/db";
 import {
   AW_RATING_FORWARD_PATH,
@@ -163,7 +164,10 @@ async function today(date: string) {
 
 async function summary() {
   const data = await loadAwRatingForward();
-  const value = summarizeAwRatingForward(data);
+  console.log(settlementReportDisclosure(data.races));
+  for (const group of settlementReportGroups(data.races)) {
+  console.log(`\n## ${group.label}`);
+  const value = summarizeAwRatingForward({ ...data, races: group.rows });
   console.log("# AW Rating Forward Summary\n");
   console.log(`Data: ${AW_RATING_FORWARD_PATH}`);
   console.log(`Forward start timestamp: ${data.forwardStartAt}`);
@@ -180,6 +184,7 @@ async function summary() {
   printContexts("Handicap status", value.handicap);
   printContexts("Distance", value.distance);
   console.log("\nDescriptive forward validation only. No inference is supported without a meaningful settled sample.");
+  }
 }
 
 async function settlePendingFromDb(

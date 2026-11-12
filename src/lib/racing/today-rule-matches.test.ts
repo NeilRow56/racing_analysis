@@ -686,7 +686,7 @@ describe("Today rule selections", () => {
     assert.equal(selections.rows[0]?.settlement, null);
   });
 
-  test("settles a priced terminal OTHER result as a losing bet", () => {
+  test("keeps a priced OTHER result unresolved without explicit non-finisher evidence", () => {
     const selections = buildTodayRuleSelections([
       meetingWithRace(race({ winningTime: "1m 12.00s" }), [
         runner("runner-other", {}, {
@@ -703,13 +703,7 @@ describe("Today rule selections", () => {
     ]);
 
     assert.equal(selections.rows[0]?.result, "OTHER");
-    assert.deepEqual(selections.rows[0]?.settlement, {
-      settled: true,
-      settlementOddsDecimal: 6,
-      stake: 1,
-      grossReturn: 0,
-      profitLoss: -1,
-    });
+    assert.equal(selections.rows[0]?.settlement, null);
   });
 
   test("settles a winning selection at 5/1 as plus five pounds", () => {

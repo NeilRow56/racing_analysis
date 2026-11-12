@@ -153,5 +153,8 @@ test("CLI cannot replay/refresh/capture, and diagnostic failure leaves productio
   for (const args of [["backfill"], ["sync"], ["init", "2026-01-01"], ["summary", "--force-refresh"]]) await assert.rejects(main(args), /no replay, backfill or refresh/);
   const production = { original: true }; assert.equal(await contextShadowAfterProduction(production, async () => { throw new Error("monitor failure"); }, () => {}), production);
   const source = await readFile("src/lib/racing/tissue-generation-sync.ts", "utf8");
-  assert.match(source, /syncHurdleMarketEdge\(fresh\)/); assert.match(source, /!known.has\(o.raceId\) && accepted.some/);
+  assert.match(source, /collectEpochShadow\(accepted, hurdleV3Inputs\)/);
+  const epochs = await readFile("src/lib/racing/prospective-epoch-collection.ts", "utf8");
+  assert.match(epochs, /after.observations.slice\(data.observations.length\)/);
+  assert.match(epochs, /appendHurdleMarketEdges\(data, fresh, model\)/);
 });

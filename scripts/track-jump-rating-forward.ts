@@ -1,3 +1,4 @@
+import { settlementReportGroups, settlementReportDisclosure } from "@/lib/racing/settlement-reporting";
 import { createDbConnection } from "@/db";
 import {
   buildJumpRatingForwardRace,
@@ -159,7 +160,10 @@ async function today(date: string) {
 
 async function summary() {
   const data = await loadJumpRatingForward();
-  const value = summarizeJumpRatingForward(data);
+  console.log(settlementReportDisclosure(data.races));
+  for (const group of settlementReportGroups(data.races)) {
+  console.log(`\n## ${group.label}`);
+  const value = summarizeJumpRatingForward({ ...data, races: group.rows });
   console.log("# Jump Rating Forward Summary\n");
   console.log(`Data: ${JUMP_RATING_FORWARD_PATH}`);
   console.log(`Forward start timestamp: ${data.forwardStartAt}`);
@@ -178,6 +182,7 @@ async function summary() {
   }
   printA0Summary(value.jprA0);
   console.log("\nDescriptive forward validation only. No profitability claim is supported without a meaningful settled sample.");
+  }
 }
 
 function printA0Summary(value: ReturnType<typeof summarizeJumpRatingForward>["jprA0"]) {

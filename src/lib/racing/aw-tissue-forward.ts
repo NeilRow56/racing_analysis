@@ -1,3 +1,5 @@
+import { CANONICAL_SETTLEMENT_VERSION, type ResearchSettlementVersion } from "./research-settlement-version";
+import { raceForSettlement } from "./settlement-outcome";
 import { retiredTissueCaptureAllowed } from "./tissue-generation-config";
 import type { ProspectiveGoing } from "./prospective-going";
 import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
@@ -27,7 +29,7 @@ import { formatTissueEdge, formatTissueProbability, frozenTissueRankOneEdge, isL
 
 export const AW_TISSUE_FORWARD_VERSION = "aw_tissue_forward_v1";
 export const AW_TISSUE_FORWARD_PATH = "data/research/aw-tissue-forward-v1.json";
-type Outcome = { resultStatus: string | null; finishingPosition: number | null; won: boolean | null; finalSp: number | null; deadHeatDivisor: number; finalSpProfitLoss: number | null };
+type Outcome = { settlementVersion?: ResearchSettlementVersion; resultStatus: string | null; finishingPosition: number | null; won: boolean | null; finalSp: number | null; deadHeatDivisor: number; finalSpProfitLoss: number | null };
 export type AwTissueRunner = AwTissuePrediction & { horseId: string; horseName: string; outcome: Outcome | null };
 export type AwTissueRace = Omit<AwTissueBook, "runners"> & ProspectiveGoing & {
   featureCutoffAt?: string;
@@ -179,13 +181,15 @@ export function enrichAwTissuePrices(record: AwTissueRace, race: TodayRace, capt
 }
 
 export function settleAwTissueRace(record: AwTissueRace, race: TodayRace, settledAt = new Date()): AwTissueRace {
+  race = raceForSettlement(race);
   if (record.settledAt !== null || !record.recordedPreRace) return record;
   const byId = new Map(race.runners.map((r) => [r.runnerId, r]));
   if (record.runners.some((r) => !byId.has(r.runnerId))) return record;
   const started = race.runners.filter((r) => !isVoidBetResultStatus(r.resultStatus));
-  if (race.actualRunnerCount === null || (race.actualRunnerCount !== started.length && race.actualRunnerCount !== race.runners.length)) return record;
+  const voidRace = started.length === 0 && race.runners.length > 0;
+  if (!voidRace && (race.actualRunnerCount === null || (race.actualRunnerCount !== started.length && race.actualRunnerCount !== race.runners.length))) return record;
   const winners = started.filter((r) => r.finishingPosition === 1);
-  if (!winners.length || started.some((r) => settleSelection({ targetRaceId: race.raceId, targetRunnerId: r.runnerId, finishingPosition: r.finishingPosition, resultStatus: r.resultStatus, won: r.finishingPosition === 1 ? true : null, placed: null, startingPrice: null, startingPriceDecimal: "2" }) === null)) return record;
+  if ((!voidRace && !winners.length) || started.some((r) => settleSelection({ targetRaceId: race.raceId, targetRunnerId: r.runnerId, finishingPosition: r.finishingPosition, resultStatus: r.resultStatus, won: r.finishingPosition === 1 ? true : null, placed: null, startingPrice: null, startingPriceDecimal: "2" }) === null)) return record;
   const changedField = started.some((r) => !record.runners.some((frozen) => frozen.runnerId === r.runnerId));
   const runners = record.runners.map((runner): AwTissueRunner => {
     const result = byId.get(runner.runnerId)!;
@@ -194,7 +198,7 @@ export function settleAwTissueRace(record: AwTissueRace, race: TodayRace, settle
     const outcome = { targetRaceId: race.raceId, targetRunnerId: runner.runnerId, finishingPosition: result.finishingPosition, resultStatus: result.resultStatus, won, placed: null, startingPrice: result.odds, startingPriceDecimal: result.oddsDecimal, deadHeatDivisor: won ? winners.length : 1 };
     const settlement = settleSelection(outcome);
     const finalSp = settlement?.settlementOddsDecimal ?? null;
-    return { ...runner, outcome: { finishingPosition: result.finishingPosition, resultStatus: result.resultStatus, won, finalSp, deadHeatDivisor: won ? winners.length : 1, finalSpProfitLoss: settlement?.profitLoss ?? null } };
+    return { ...runner, outcome: { settlementVersion: CANONICAL_SETTLEMENT_VERSION, finishingPosition: result.finishingPosition, resultStatus: result.resultStatus, won, finalSp, deadHeatDivisor: won ? winners.length : 1, finalSpProfitLoss: settlement?.profitLoss ?? null } };
   });
   const leader = runners.find((r) => r.runnerId === record.top1);
   const pricedProfit = (price: number | null | undefined) => {
@@ -203,7 +207,7 @@ export function settleAwTissueRace(record: AwTissueRace, race: TodayRace, settle
     return settleSelection({ targetRaceId: race.raceId, targetRunnerId: leader.runnerId, finishingPosition: outcome.finishingPosition,
       resultStatus: outcome.resultStatus, won: outcome.won, placed: null, startingPrice: null, startingPriceDecimal: String(price), deadHeatDivisor: outcome.deadHeatDivisor })?.profitLoss ?? null;
   };
-  return { ...record, runners, winners: winners.map((r) => r.runnerId), settledAt: settledAt.toISOString(), excludedReason: changedField ? "field_changed_after_capture" : record.excludedReason,
+  return { ...record, runners, winners: winners.map((r) => r.runnerId), settledAt: settledAt.toISOString(), excludedReason: voidRace ? "void_race" : changedField ? "field_changed_after_capture" : record.excludedReason,
     ...(record.tissueValuePriceCapRule ? { tissueValuePriceCapRule: { ...record.tissueValuePriceCapRule,
       qualifyingPriceProfitLoss: record.tissueValuePriceCapRule.qualification && leader?.outcome?.won === null
         ? 0 : pricedProfit(record.tissueValuePriceCapRule.qualification?.qualifyingPrice),

@@ -1,3 +1,4 @@
+import { settlementReportGroups, settlementReportDisclosure } from "@/lib/racing/settlement-reporting";
 import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
@@ -10,6 +11,7 @@ export const DEFAULT_REPORT_PATH = "/tmp/tpr-vs-timewise-forward.md";
 export const TPR_CLEAN_COVERAGE_START = "2026-09-18";
 
 export type ForwardRaceInput = {
+  settlementVersion?: import("../src/lib/racing/research-settlement-version").ResearchSettlementVersion;
   family?: "turf" | "all_weather";
   raceId?: string | null;
   raceDateTime?: string | null;
@@ -217,6 +219,11 @@ export function disagreementByOrContext(races: ForwardRaceRecord[]) {
 }
 
 export function renderReport(data: TrackerData, dataPath = DEFAULT_DATA_PATH): string {
+  const groups = settlementReportGroups(data.races);
+  if (groups.length > 1) return settlementReportDisclosure(data.races) + "\n\n" + groups.map(g => `## ${g.label}\n${renderReport({ ...data, races: g.rows }, dataPath)}`).join("\n\n");
+  return settlementReportDisclosure(data.races) + "\n\n" + renderReportSingle(data, dataPath);
+}
+function renderReportSingle(data: TrackerData, dataPath = DEFAULT_DATA_PATH): string {
   const summary = summarize(data.races);
   const lines = [
     "# TPR vs Timewise Forward Tracker", "",
@@ -313,6 +320,11 @@ export function renderReport(data: TrackerData, dataPath = DEFAULT_DATA_PATH): s
 }
 
 export function renderSummary(data: TrackerData): string {
+  const groups = settlementReportGroups(data.races);
+  if (groups.length > 1) return settlementReportDisclosure(data.races) + "\n\n" + groups.map(g => `## ${g.label}\n${renderSummary({ ...data, races: g.rows })}`).join("\n\n");
+  return settlementReportDisclosure(data.races) + "\n\n" + renderSummarySingle(data);
+}
+function renderSummarySingle(data: TrackerData): string {
   const turf = renderFamilySummary(data.races.filter((race) => race.family === "turf"), "turf");
   const allWeather = renderFamilySummary(data.races.filter((race) => race.family === "all_weather"), "all_weather");
   return ["## Turf", "", turf, "", "## All Weather", "", allWeather].join("\n");
@@ -504,6 +516,11 @@ function profitAdvantage(cohort: ReturnType<typeof cleanEraCohort>) {
 }
 
 export function renderTprSummary(data: TrackerData): string {
+  const groups = settlementReportGroups(data.races);
+  if (groups.length > 1) return settlementReportDisclosure(data.races) + "\n\n" + groups.map(g => `## ${g.label}\n${renderTprSummary({ ...data, races: g.rows })}`).join("\n\n");
+  return settlementReportDisclosure(data.races) + "\n\n" + renderTprSummarySingle(data);
+}
+function renderTprSummarySingle(data: TrackerData): string {
   const summary = summarizeTprForward(data.races);
   const cleanEra = summarizeTprCleanEraComparison(data.races);
   const coverage = summarizeTprDateCoverage(data.races);
@@ -625,7 +642,7 @@ export function renderTprSummary(data: TrackerData): string {
     `  4. ${cleanEra.conclusion.robustness}`,
     "  5. W100 should remain production; W50 remains shadow/prospective monitoring until the snapshot-backed sample is materially larger and less return-sensitive.",
     "",
-    "Settlement basis: non-runners are void; voids and post-race/backfilled records are excluded from runnable, strike and ROI denominators. Dead heats use canonical win settlement. Winning-price averages are shown because losing selections' SPs are not persisted.",
+    "Settlement basis: non-runners are void; voids and post-race/backfilled records are excluded from runnable, strike and ROI denominators. Dead heats use the recorded settlement version. Winning-price averages are shown because losing selections' SPs are not persisted.",
   ].join("\n");
 }
 
@@ -752,6 +769,7 @@ async function main() {
         : undefined;
       const currentRecord = createRecord({
         ...input,
+        ...(input.winner || input.winners?.length ? { settlementVersion: "canonical_settlement_v3" as const } : {}),
         timewiseRecordedAt: existing?.timewiseRecordedAt ?? input.timewiseRecordedAt,
         timewiseRecordedPreRace: existing?.timewiseRecordedPreRace ?? input.timewiseRecordedPreRace,
         timewiseUpdatedAt: existing ? new Date().toISOString() : input.timewiseUpdatedAt,
@@ -979,7 +997,14 @@ function winnerEntries(input: ForwardRaceInput): ForwardWinner[] { return input.
 function hasWinner(winners: ForwardWinner[], horse: string | null) { return horse !== null && winners.some((winner) => sameHorse(winner.horseName, horse)); }
 function winningPriceFor(race: ForwardRaceRecord, horse: string | null) { return horse === null ? null : race.winners.find((winner) => sameHorse(winner.horseName, horse))?.decimalOdds ?? null; }
 function hasPricedResult(race: ForwardRaceRecord) { return race.winners.length > 0 && race.winners.every((winner) => winner.decimalOdds !== null); }
-function selectionReturn(race: ForwardRaceRecord, horse: string | null) { const decimalOdds = winningPriceFor(race, horse); return decimalOdds === null ? 0 : winGrossReturn({ won: true, decimalOdds, deadHeatDivisor: race.winners.length }); }
+function selectionReturn(race: ForwardRaceRecord, horse: string | null) {
+  const decimalOdds = winningPriceFor(race, horse);
+  if (decimalOdds === null) return 0;
+  // Original ledgers retain their recorded arithmetic; only new v3 results split the stake.
+  return race.settlementVersion === "canonical_settlement_v3"
+    ? winGrossReturn({ won: true, decimalOdds, deadHeatDivisor: race.winners.length })
+    : 1 + (decimalOdds - 1) / Math.max(1, race.winners.length);
+}
 function table(lines: string[], rows: Array<Record<string, unknown>>) { if (rows.length === 0) { lines.push("No races tracked.", ""); return; } const headers = Object.keys(rows[0]!); lines.push(`| ${headers.join(" | ")} |`, `| ${headers.map(() => "---").join(" | ")} |`, ...rows.map((row) => `| ${headers.map((header) => String(row[header] ?? "-").replace(/\|/g, "\\|")).join(" | ")} |`), ""); }
 
 const isMain = process.argv[1] !== undefined && import.meta.url === pathToFileURL(resolve(process.argv[1])).href;

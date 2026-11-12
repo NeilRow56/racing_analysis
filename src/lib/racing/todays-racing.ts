@@ -70,6 +70,7 @@ const DEFAULT_RACING_DISPLAY_TIME_ZONE = "Europe/London";
 export const SPORTING_LIFE_CURRENT_CARD_VERSION = "reconciled_v1" as const;
 
 export type TodayRunner = {
+  outcomeCode?: string | null;
   activeTissue?: { rank: number; probability: number; modelVersion: string; capturedAt: string; family: string; generation?: string; capturedPrice?: number | null; marketProbability?: number | null; completeMarket?: boolean; bookIdentity?: string; marketSource?: string };
   tissueGenerationActive?: boolean;
   tissueValue?: FrozenValueDisplay;
@@ -144,6 +145,7 @@ export type TodaySavedRuleMatch = {
 };
 
 export type TodayRace = {
+  raceStage?: string | null;
   /** Turf v3 history/participant metrics were loaded strictly before this cutoff. */
   turfTissueHistoryAsOf?: string;
   raceId: string;
@@ -223,6 +225,8 @@ type RacecardIndexPayload = {
 };
 
 export type TodayRacecardRow = {
+  raceStage?: string | null;
+  outcomeCode?: string | null;
   raceId: string;
   raceSourceId: string | null;
   raceDate: string;
@@ -756,6 +760,7 @@ export function groupTodaysRacingRows(
         declaredRunnerCount: row.declaredRunnerCount,
         actualRunnerCount: row.actualRunnerCount,
         winningTime: row.winningTime,
+        raceStage: row.raceStage,
         runners: [],
       };
       racesById.set(row.raceId, race);
@@ -784,6 +789,7 @@ export function groupTodaysRacingRows(
       forecastDecimalOdds: decimalPrice(row.oddsDecimal),
       bookmakerQuotes: parseSportingLifeBookmakerQuotes(row.bookmakerQuotes),
       resultStatus: row.resultStatus,
+      outcomeCode: row.outcomeCode,
       finishingPosition: row.finishingPosition,
       metrics: metricsByRunnerId.get(row.runnerId) ?? null,
       trainerMetrics: trainerMetricsByRunnerId.get(row.runnerId),
@@ -1379,6 +1385,11 @@ function getRacecardRowsWhere(
       declaredRunnerCount: races.declaredRunnerCount,
       actualRunnerCount: races.actualRunnerCount,
       winningTime: races.winningTime,
+      raceStage: sql<string | null>`(select si.payload #>> '{props,pageProps,race,race_summary,race_stage}'
+        from source_imports si where si.source = ${SPORTING_LIFE_SOURCE} and si.source_id = ${races.sourceId}
+        and si.source_type in ('full-result-next-data', 'racecard-next-data')
+        order by case when si.source_type = 'full-result-next-data' then 0 else 1 end limit 1)`,
+      outcomeCode: raceRunners.outcomeCode,
       courseId: courses.id,
       courseSourceId: courses.sourceId,
       courseName: courses.displayName,

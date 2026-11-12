@@ -172,7 +172,7 @@ test("shadow canonical settlement independently handles non-finishers, NR and de
   const t = turf(26), race = result(3, "turf", t.raceId, t.tissueRunnerId!);
   race.runners.forEach((r) => { r.finishingPosition = 1; });
   const settled = settleForwardValueRecords({ ...emptyForwardValueData(), races: [t] }, new Map([[t.raceId, race]])).data.races[0]!;
-  assert.equal(settled.tissueValuePriceCapRule!.qualifyingPriceProfitLoss, 12.5);
+  assert.equal(settled.tissueValuePriceCapRule!.qualifyingPriceProfitLoss, 12);
 });
 
 test("pre-cap observations remain unversioned and cannot be reclassified on refresh", () => {

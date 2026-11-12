@@ -1,3 +1,5 @@
+import { CANONICAL_SETTLEMENT_VERSION, LEGACY_SETTLEMENT_VERSION } from "./research-settlement-version";
+import { raceForSettlement } from "./settlement-outcome";
 import { captureIdentity, captureState, latestPreOffCaptures } from "./frozen-capture-selection";
 import { readFile } from "node:fs/promises";
 import { mutateFrozenJson } from "./frozen-json-store";
@@ -12,7 +14,7 @@ import { summarizeBookmakerMarket } from "./forward-value";
 
 export const TISSUE_GENERATION_FORWARD_PATH = "data/research/tissue-generation-forward-2026-11.json";
 const finite = z.number().finite(), timestamp = z.iso.datetime();
-const outcome = z.object({ status: z.enum(["settled", "NR", "void"]), winner: z.boolean().nullable(),
+const outcome = z.object({ settlementVersion: z.enum([LEGACY_SETTLEMENT_VERSION, CANONICAL_SETTLEMENT_VERSION]).optional(), status: z.enum(["settled", "NR", "void"]), winner: z.boolean().nullable(),
   finishPosition: z.number().int().positive().nullable(), resultStatus: z.string().nullable(), deadHeatDivisor: z.number().int().positive(),
   grossReturn: finite.nullable(), profitLoss: finite.nullable(), settledAt: timestamp }).strict();
 const raceSchema = z.object({ family: z.enum(TISSUE_VALUE_FAMILIES), modelVersion: z.string(), modelHash: z.string().regex(/^[a-f0-9]{64}$/),
@@ -65,7 +67,8 @@ export function appendTissueGeneration(data: GenerationData, additions: Generati
 }
 export function settleTissueGeneration(data: GenerationData, results: ReadonlyMap<string, TodayRace>, now = new Date()): GenerationData {
   return { ...data, races: data.races.map(book => {
-    const race = results.get(book.raceId);
+    const sourceRace = results.get(book.raceId);
+    const race = sourceRace && raceForSettlement(sourceRace);
     if (!race || now < new Date(book.scheduledOff)) return book;
     const ids = new Set(race.runners.map(r => r.runnerId));
     if (ids.size !== race.runners.length || book.runners.some(r => !ids.has(r.runnerId))) return book;
@@ -77,7 +80,7 @@ export function settleTissueGeneration(data: GenerationData, results: ReadonlyMa
     return { ...book, runners: book.runners.map(row => {
       if (row.outcome) return row;
       const runner = race.runners.find(r => r.runnerId === row.runnerId)!;
-      const base = { finishPosition: runner.finishingPosition, resultStatus: runner.resultStatus, settledAt: now.toISOString() };
+      const base = { settlementVersion: CANONICAL_SETTLEMENT_VERSION, finishPosition: runner.finishingPosition, resultStatus: runner.resultStatus, settledAt: now.toISOString() };
       if (isVoidBetResultStatus(runner.resultStatus)) return { ...row, outcome: { ...base, status: runner.resultStatus?.trim().toLowerCase() === "non_runner" ? "NR" as const : "void" as const, winner: null, deadHeatDivisor: 1, grossReturn: null, profitLoss: null } };
       if (!complete) return row;
       const winner = runner.finishingPosition === 1, deadHeatDivisor = winner ? winners.length : 1;

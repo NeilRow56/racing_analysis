@@ -1,0 +1,36 @@
+{
+  "version": "HURDLE_V3_MARKET_EDGE_PROSPECTIVE_V1",
+  "armedAt": "2026-11-11T16:39:41.798Z",
+  "epoch": null,
+  "v3Hash": "50f6e1842ca1cb0c4ed4c068a91adbc934755b7018c07f4e6f77e3b56fa80bf4",
+  "rules": {
+    "edgeCutoffsPP": [
+      0,
+      5,
+      10
+    ],
+    "speedWindowStarts": 3,
+    "lowSpeedMaximum": 1,
+    "marketRankUpperBounds": [
+      2,
+      5,
+      8
+    ],
+    "market": "exact_same_capture_full_book",
+    "speed": "finite_ratings_in_actual_last_three_canonical_hurdle_starts_no_backfill_no_age_cutoff",
+    "calibration": "runner_weighted_ECE_ten_fixed_probability_bins",
+    "settlement": "read_exact_canonical_shadow_renormalize_actual_starters"
+  },
+  "sourceHashes": {
+    "src/lib/racing/hurdle-v3-market-edge-method.ts": "799387679af0f74dcd1d759675e4534df08c707137b71c30f17dc6a63e3fcbb3",
+    "src/lib/racing/hurdle-v3-market-edge.ts": "004fc189541d6459c43e421cc5a9eacc555b0d2260a8176878fb928f5ac95dc9",
+    "src/lib/racing/hurdle-v3-market-edge-metrics.ts": "ff057ed72572cab73fe222f8fa732bd29e65d81198ce73e6908e85f8b6bfcc65",
+    "src/lib/racing/hurdle-v3-challenger-features.ts": "d8285c3f117813b41b191ba06e08f10dfabe99ccffc66884c5a46d074814a858",
+    "src/lib/racing/hurdle-v3-challenger-model.ts": "47e01e7f9fb63ef0f7cb30dc5c37ec2ce052bddcb3a6cf673fcc1d00bc5bc964",
+    "src/lib/racing/hurdle-low-form-method.ts": "d704c71fe51488b495e647c02649c6ba4e4b0cd683f0900f6103a0ed7f9c5ce8",
+    "src/lib/racing/hurdle-low-form.ts": "496c2710abed499aff1f4444742ac298d7cc06b47c1ef99f955ee0346e4469e8",
+    "src/lib/racing/hurdle-v3-shadow-metrics.ts": "4bbcf3afab1ac0510d7584ec61c9ad073c9f5ba4b377f595cbb55a59a2b3030a",
+    "src/lib/racing/tissue-value-metrics.ts": "1a315b3478dbba7c50f64b96c80aaade5fd4d13bd261ae77ff9cb0cc0a73cae9"
+  },
+  "observations": []
+}

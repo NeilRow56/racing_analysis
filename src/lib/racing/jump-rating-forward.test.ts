@@ -98,8 +98,8 @@ describe("Jump Rating forward tracker", () => {
       ],
     });
     const deadHeat = enrichJumpRatingForwardRace(record, deadHeatResult);
-    assert.equal(deadHeat.runners[0]?.settlement?.grossReturn, 2);
-    assert.equal(deadHeat.runners[1]?.settlement?.grossReturn, 3);
+    assert.equal(deadHeat.runners[0]?.settlement?.grossReturn, 1.5);
+    assert.equal(deadHeat.runners[1]?.settlement?.grossReturn, 2.5);
   });
 
   test("reports rank-1 denominator diagnostics for voided and tied selections", () => {

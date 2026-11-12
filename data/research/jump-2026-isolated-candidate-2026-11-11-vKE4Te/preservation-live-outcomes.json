@@ -1,0 +1,28 @@
+{
+  "baselineSnapshot": "2026-11-11 16:49:43.877536+00",
+  "filesChecked": 42802,
+  "byteExact": 42800,
+  "changed": [
+    {
+      "path": "data/research/context-weight-shadow-v1.json",
+      "expected": "25cd55e4f788e46fe33c36ebb95465c5fc04dc4334fc545836c4b96df832f3fb",
+      "actual": "a8d44629d7b49fc60d487cf1146b2c3294174bb571718b578896ac29612b1f7e",
+      "observedCurrentDigest": "a8d44629d7b49fc60d487cf1146b2c3294174bb571718b578896ac29612b1f7e",
+      "newOutcomes": 17,
+      "originalDigest": "25cd55e4f788e46fe33c36ebb95465c5fc04dc4334fc545836c4b96df832f3fb",
+      "verifiedOutcomeOnly": true,
+      "originalEvidence": "data/research/jump-2026-isolated-candidate-2026-11-11-vKE4Te/context-weight-shadow-v1.json.original.txt"
+    },
+    {
+      "path": "data/research/tissue-generation-forward-2026-11.json",
+      "expected": "7c5f08513e81998925379c6c895131515c3eef02bbfa7d9e9db34070f1077b80",
+      "actual": "8f06aed183dcb6ae0047efb24a2d5d13cc4de2386e111b6cd6e09cac335cd222",
+      "observedCurrentDigest": "8f06aed183dcb6ae0047efb24a2d5d13cc4de2386e111b6cd6e09cac335cd222",
+      "newOutcomes": 17,
+      "originalDigest": "7c5f08513e81998925379c6c895131515c3eef02bbfa7d9e9db34070f1077b80",
+      "verifiedOutcomeOnly": true,
+      "originalEvidence": "data/research/jump-2026-isolated-candidate-2026-11-11-vKE4Te/tissue-generation-forward-2026-11.json.original.txt"
+    }
+  ],
+  "explanation": "Task connections were read-only and no collection/settlement workflow was invoked. Concurrent external outcomes are retained in live files. Removing only their newly timed outcomes in memory exactly reconstructs each starting SHA-256, proving unchanged captures, prior outcomes, prices, inputs, identities and record counts. Original digests were not replaced."
+}

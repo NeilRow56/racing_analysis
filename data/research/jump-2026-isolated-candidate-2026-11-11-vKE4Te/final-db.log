@@ -1,0 +1,24 @@
+Verified all 98 unresolved runner identities and 14 races; all remain genuinely unresolved, not losing outcomes.
+16 |     union all select 'runners',count(*)::int,md5(string_agg(md5(row_to_json(t)::text),'' order by id)) from race_runners t
+17 |     union all select 'sources',count(*)::int,md5(string_agg(md5(row_to_json(t)::text),'' order by id)) from source_imports t
+18 |     union all select 'rules',count(*)::int,md5(string_agg(md5(row_to_json(t)::text),'' order by id)) from saved_research_rules t`;
+19 |   const before=JSON.stringify(prebuild.databaseFingerprint),after=JSON.stringify(fingerprint);
+20 |   await save("database-preservation.json",{before:prebuild.databaseFingerprint,after:fingerprint,unchanged:before===after,readOnly:true,checkedAt:new Date().toISOString()});
+21 |   assert.equal(after,before,"Database records changed since prebuild; preserve starting evidence and investigate external activity");
+              ^
+AssertionError: Database records changed since prebuild; preserve starting evidence and investigate external activity
++ actual - expected
+
++ '[{"relation":"rules","n":4,"digest":"d49d0749e1bebf1ab89840b26189da53"},{"relation":"sources","n":42205,"digest":"22292757d7544e89b551b206853f07af"},{"relation":"races","n":38643,"digest":"4c09a7992875fe8f906861d86cd3cf44"},{"relation":"runners","n":392569,"digest":"844c17a3c961937a9df6708f4d915658"}]'
+- '[{"relation":"rules","n":4,"digest":"d49d0749e1bebf1ab89840b26189da53"},{"relation":"sources","n":42204,"digest":"cd26bcd7e2c5c194db58c6ee6bef7da5"},{"relation":"runners","n":392569,"digest":"b72855cdd66751415e005a9afa538515"},{"relation":"races","n":38643,"digest":"d6ff2453e64b76263f1a8fa991a63e28"}]'
+
+ generatedMessage: false,
+     actual: "[{\"relation\":\"rules\",\"n\":4,\"digest\":\"d49d0749e1bebf1ab89840b26189da53\"},{\"relation\":\"sources\",\"n\":42205,\"digest\":\"22292757d7544e89b551b206853f07af\"},{\"relation\":\"races\",\"n\":38643,\"digest\":\"4c09a7992875fe8f906861d86cd3cf44\"},{\"relation\":\"runners\",\"n\":392569,\"digest\":\"844c17a3c961937a9df6708f4d915658\"}]",
+   expected: "[{\"relation\":\"rules\",\"n\":4,\"digest\":\"d49d0749e1bebf1ab89840b26189da53\"},{\"relation\":\"sources\",\"n\":42204,\"digest\":\"cd26bcd7e2c5c194db58c6ee6bef7da5\"},{\"relation\":\"runners\",\"n\":392569,\"digest\":\"b72855cdd66751415e005a9afa538515\"},{\"relation\":\"races\",\"n\":38643,\"digest\":\"d6ff2453e64b76263f1a8fa991a63e28\"}]",
+   operator: "strictEqual",
+       code: "ERR_ASSERTION"
+
+      at /Users/neilrowland/racing-analysis/data/research/jump-2026-isolated-candidate-2026-11-11-vKE4Te/final-db.ts:21:10
+      at processTicksAndRejections (native:7:39)
+
+Bun v1.3.5 (macOS x64)

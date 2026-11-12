@@ -1,3 +1,5 @@
+import { CANONICAL_SETTLEMENT_VERSION, type ResearchSettlementVersion } from "./research-settlement-version";
+import { raceForSettlement } from "./settlement-outcome";
 import { retiredTissueCaptureAllowed } from "./tissue-generation-config";
 import { captureProspectiveGoing, type ProspectiveGoing } from "./prospective-going";
 import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
@@ -67,6 +69,7 @@ export type RankOneObservation = ProspectiveGoing & {
   cap: 21 | 26 | null;
   withinCap: boolean;
   outcome: null | {
+    settlementVersion?: ResearchSettlementVersion;
     status: "settled" | "NR" | "void";
     winner: boolean | null;
     finishPosition: number | null;
@@ -227,11 +230,12 @@ export function settleRankOne(data: RankOneData, races: ReadonlyMap<string, Toda
   const observations = data.observations.map(row => {
     if (row.outcome)
       return row;
-    const race = races.get(row.raceId);
+    const sourceRace = races.get(row.raceId);
+    const race = sourceRace && raceForSettlement(sourceRace);
     const runner = race?.runners.find(r => r.runnerId === row.runnerId);
     if (!race || !runner)
       return row;
-    const base = { finishPosition: runner.finishingPosition, resultStatus: runner.resultStatus, settledAt: now.toISOString() };
+    const base = { settlementVersion: CANONICAL_SETTLEMENT_VERSION, finishPosition: runner.finishingPosition, resultStatus: runner.resultStatus, settledAt: now.toISOString() };
     if (isVoidBetResultStatus(runner.resultStatus))
       return { ...row, outcome: { ...base, status: runner.resultStatus?.trim().toLowerCase() === "non_runner" ? "NR" as const : "void" as const, winner: null, deadHeatDivisor: 1, grossReturn: null, profitLoss: null, roi: null } };
     if (now < new Date(row.scheduledOff) || !row.capturedFieldRunnerIds.every(id => race.runners.some(r => r.runnerId === id)) || new Set(race.runners.map(r => r.runnerId)).size !== race.runners.length)

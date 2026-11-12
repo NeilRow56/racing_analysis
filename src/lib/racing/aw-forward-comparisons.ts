@@ -1,5 +1,7 @@
+import { settlementReportGroups, settlementReportDisclosure } from "./settlement-reporting";
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
+import { raceForSettlement } from "./settlement-outcome";
 import { settleSelection } from "./backtest";
 import type { TodayMeeting, TodayRace, TodayRunner } from "./todays-racing";
 import { isAllWeatherRaceForDisplay } from "./todays-racing";
@@ -22,6 +24,7 @@ export const AW_COMPARISONS = [
 export type AwComparisonId = (typeof AW_COMPARISONS)[number]["id"];
 
 export type AwForwardRecord = {
+  settlementVersion?: import("./research-settlement-version").ResearchSettlementVersion;
   key: string;
   raceKey: string;
   runnerKey: string;
@@ -149,7 +152,7 @@ export function upsertAwForwardRecords(data: AwForwardData, incoming: AwForwardR
 
 export function settleAwForwardRecords(data: AwForwardData, meetings: TodayMeeting[], settledAt = new Date()): AwForwardData {
   const runners = new Map<string, TodayRunner>();
-  for (const meeting of meetings) for (const race of meeting.races) for (const runner of race.runners) runners.set(`${race.raceId}|${runner.runnerId}`, runner);
+  for (const meeting of meetings) for (const race of meeting.races) for (const runner of raceForSettlement(race).runners) runners.set(`${race.raceId}|${runner.runnerId}`, runner);
   const deadHeatDivisors = new Map<string, number>();
   for (const meeting of meetings) for (const race of meeting.races) {
     deadHeatDivisors.set(race.raceId, race.runners.filter((runner) => runner.finishingPosition === 1).length || 1);
@@ -157,6 +160,7 @@ export function settleAwForwardRecords(data: AwForwardData, meetings: TodayMeeti
   return {
     version: AW_FORWARD_VERSION,
     records: data.records.map((record) => {
+      if (record.settledAt !== null) return record;
       const runner = runners.get(record.key);
       if (!runner) return record;
       const outcome = {
@@ -178,13 +182,14 @@ export function settleAwForwardRecords(data: AwForwardData, meetings: TodayMeeti
       const capped20Return = cappedSettlement.grossReturn;
       const uncappedReturn = uncappedSettlement.grossReturn;
       if (record.finishingPosition === runner.finishingPosition && record.won === won && record.finalSp === finalSp && record.capped20Return === capped20Return && record.uncappedReturn === uncappedReturn) return record;
-      return { ...record, finishingPosition: runner.finishingPosition, won, finalSp, capped20Return, uncappedReturn, settledAt: settledAt.toISOString() };
+      return { ...record, settlementVersion: "canonical_settlement_v3", finishingPosition: runner.finishingPosition, won, finalSp, capped20Return, uncappedReturn, settledAt: settledAt.toISOString() };
     }),
   };
 }
 
 export function summarizeAwForward(data: AwForwardData, clean = true): AwComparisonSummary[] {
   const source = data.records.filter((record) => record.recordedPreRace === clean);
+  if (settlementReportGroups(source.filter(r => r.settledAt !== null)).length > 1) throw new Error("Mixed settlement versions: summarize each recorded version separately");
   return AW_COMPARISONS.map((definition) => {
     const records = source.filter((record) => record.comparisonIds.includes(definition.id));
     const settled = records.filter((record) => record.finalSp !== null && record.won !== null);
@@ -207,10 +212,12 @@ export function summarizeAwForward(data: AwForwardData, clean = true): AwCompari
   });
 }
 
-export function renderAwForwardReport(data: AwForwardData) {
+export function renderAwForwardReport(data: AwForwardData): string {
+  const groups = settlementReportGroups(data.records);
+  if (groups.length > 1) return settlementReportDisclosure(data.records) + "\n\n" + groups.map(g => `## ${g.label}\n${renderAwForwardReport({ ...data, records: g.rows })}`).join("\n\n");
   const clean = summarizeAwForward(data, true);
   const backfilled = summarizeAwForward(data, false);
-  const lines = ["# AW Forward Comparisons", "", `Forward start: ${AW_FORWARD_START_DATE}. Best L3 Speed uses the AW family field \`bestAwSpeedLast3\`; ranks use race-local competition ranking, higher first.`, "", "## Clean pre-race sample", "", table(clean)];
+  const lines = ["# AW Forward Comparisons", "", settlementReportDisclosure(data.records), "", `Forward start: ${AW_FORWARD_START_DATE}. Best L3 Speed uses the AW family field \`bestAwSpeedLast3\`; ranks use race-local competition ranking, higher first.`, "", "## Clean pre-race sample", "", table(clean)];
   if (data.records.some((record) => !record.recordedPreRace)) lines.push("", "## Post-race/backfilled (excluded)", "", table(backfilled));
   const byId = new Map(clean.map((item) => [item.id, item]));
   const baseline = byId.get("wolverhampton_sprint_draw_1_3")!;

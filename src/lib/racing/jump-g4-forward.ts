@@ -1,3 +1,5 @@
+import { CANONICAL_SETTLEMENT_VERSION, type ResearchSettlementVersion } from "./research-settlement-version";
+import { raceForSettlement } from "./settlement-outcome";
 import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { isVoidBetResultStatus, settleSelection } from "./backtest";
@@ -15,6 +17,7 @@ export const JUMP_G4_MARKET_PRICE_SOURCE = "sporting_life_median_bookmaker_at_ca
 
 export type JumpG4Subtype = "Hurdle" | "Chase" | "NH Flat" | "Other Jump";
 export type JumpG4Outcome = {
+  settlementVersion?: ResearchSettlementVersion;
   finishingPosition: number | null;
   resultStatus: string | null;
   won: boolean | null;
@@ -313,9 +316,13 @@ export function updateJumpG4Settlements(
 }
 
 export function settleJumpG4Observation(observation: JumpG4Observation, race: TodayRace, settledAt = new Date()): JumpG4Observation {
+  race = raceForSettlement(race);
   if (observation.settledAt !== null) return observation;
   const runner = race.runners.find((candidate) => candidate.runnerId === observation.runnerId);
   if (!runner) return observation;
+  if (isVoidBetResultStatus(runner.resultStatus)) return { ...observation, settledAt: settledAt.toISOString(),
+    outcome: { settlementVersion: CANONICAL_SETTLEMENT_VERSION, finishingPosition: null, resultStatus: runner.resultStatus,
+      won: null, deadHeatDivisor: 1, finalSp: null, profitLoss: null } };
   const started = race.runners.filter((candidate) => !isVoidBetResultStatus(candidate.resultStatus));
   const winners = started.filter((candidate) => candidate.finishingPosition === 1);
   if (!winners.length) return observation;
@@ -345,6 +352,7 @@ export function settleJumpG4Observation(observation: JumpG4Observation, race: To
   return {
     ...observation,
     outcome: {
+      settlementVersion: CANONICAL_SETTLEMENT_VERSION,
       finishingPosition: runner.finishingPosition,
       resultStatus: runner.resultStatus,
       won,

@@ -100,7 +100,7 @@ test("NR excludes stakes and expectations; dead heats split canonical captured-p
   const nr = summarizeChaseShadow(settleChaseShadow(data, new Map([["race", result([[1, "finished"], [null, "non_runner"], [2, "finished"]])]])));
   assert.equal(nr.shadow.settled, 2); assert.equal(nr.shadow.priceN, 2); assert.equal(nr.shadow.profit, 5);
   const dh = summarizeChaseShadow(settleChaseShadow(data, new Map([["race", result([[1, "finished"], [1, "finished"], [null, "fell"]])]])));
-  assert.equal(dh.shadow.winners, 2); assert.equal(dh.shadow.profit, 5);
+  assert.equal(dh.shadow.winners, 2); assert.equal(dh.shadow.profit, 4);
   assert.equal(dh.shadow.logLoss, -(Math.log(capture().shadow.runners[0]!.probability!) + Math.log(capture().shadow.runners[1]!.probability!)) / 2);
 });
 test("disagreement and agreement use identical settled races and distinct rank-one selections", () => {

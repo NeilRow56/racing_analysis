@@ -140,7 +140,7 @@ describe("isolated frozen AW shadow", () => {
     assert.equal(summarizeAwShadow({ ...emptyAwShadow(), races: [updated] }).metrics[0]!.races, 0);
     b.outcome = { ...a.outcome!, won: true, deadHeatDivisor: 2 }; a.outcome!.deadHeatDivisor = 2;
     updated.winners = ["a", "b"];
-    assert.equal(cleanShadowValue(updated, a, "early", a.candidateProbability)!.profit, 4.5);
+    assert.equal(cleanShadowValue(updated, a, "early", a.candidateProbability)!.profit, 4);
     assert.equal(summarizeAwShadow({ ...emptyAwShadow(), races: [updated] }).metrics[0]!.logLoss, 0);
   });
   test("separates retrospective rows, reports leader changes and cumulative fixed edge bands", () => {

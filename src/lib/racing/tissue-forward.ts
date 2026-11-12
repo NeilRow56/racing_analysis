@@ -1,4 +1,7 @@
 import { retiredTissueCaptureAllowed } from "./tissue-generation-config";
+import { isVoidBetResultStatus } from "./backtest";
+import { CANONICAL_SETTLEMENT_VERSION } from "./research-settlement-version";
+import { raceForSettlement, settlementOutcomeState } from "./settlement-outcome";
 import { captureProspectiveGoing, type ProspectiveGoing } from "./prospective-going";
 import { readFile, writeFile, mkdir, rename } from "node:fs/promises";
 import { dirname } from "node:path";
@@ -87,6 +90,7 @@ export type FrozenTissueModel = {
 };
 
 export type TissueForwardRunner = {
+  resultStatus?: string | null;
   runnerId: string;
   horseId: string;
   horseName: string;
@@ -102,6 +106,7 @@ export type TissueForwardRunner = {
 };
 
 export type TissueForwardRace = ProspectiveGoing & {
+  settlementVersion?: import("./research-settlement-version").ResearchSettlementVersion;
   raceDate: string;
   course: string;
   raceTime: string;
@@ -214,15 +219,19 @@ export function upsertTissueRaces(data: TissueForwardData, races: TissueForwardR
 }
 
 export function enrichTissueForwardRace(record: TissueForwardRace, race: TodayRace, settledAt = new Date()): TissueForwardRace {
+  if (record.settledAt !== null) return record;
+  race = raceForSettlement(race);
+  if (race.runners.some(runner => settlementOutcomeState(runner) === "unresolved")) return record;
   const byId = new Map(race.runners.map((runner) => [runner.runnerId, runner]));
   const marketRanks = marketCompetitionRanks(race.runners);
   const winners = race.runners.filter((runner) => runner.finishingPosition === 1);
-  if (winners.length === 0) return record;
+  if (winners.length === 0 && !race.runners.every(runner => isVoidBetResultStatus(runner.resultStatus))) return record;
   const runners = record.runners.map((runner) => {
     const result = byId.get(runner.runnerId);
     const finalSp = decimal(result?.oddsDecimal ?? null);
     return {
       ...runner,
+      resultStatus: result?.resultStatus ?? null,
       finishingPosition: result?.finishingPosition ?? null,
       finalSp,
       marketImpliedProbability: finalSp === null ? null : 1 / finalSp,
@@ -231,7 +240,7 @@ export function enrichTissueForwardRace(record: TissueForwardRace, race: TodayRa
   });
   const winnerNames = winners.map((winner) => winner.horseName);
   if (JSON.stringify(runners) === JSON.stringify(record.runners) && JSON.stringify(winnerNames) === JSON.stringify(record.winners)) return record;
-  return { ...record, runners, winners: winnerNames, settledAt: record.settledAt ?? settledAt.toISOString() };
+  return { ...record, settlementVersion: CANONICAL_SETTLEMENT_VERSION, runners, winners: winnerNames, settledAt: settledAt.toISOString() };
 }
 
 export function pendingCleanPreRaceTissueRaceIds(data: TissueForwardData): string[] {

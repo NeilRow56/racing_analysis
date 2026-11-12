@@ -74,9 +74,9 @@ describe("AW forward comparisons", () => {
       runner("b", 2, 90, 1, "5.00"),
       runner("c", 7, 80, 3, "10.00"),
     ])]);
-    assert.equal(settled.records.find((record) => record.runnerKey === "a")?.uncappedReturn, 13.5);
-    assert.equal(settled.records.find((record) => record.runnerKey === "a")?.capped20Return, 11);
-    assert.equal(settled.records.find((record) => record.runnerKey === "b")?.uncappedReturn, 3);
+    assert.equal(settled.records.find((record) => record.runnerKey === "a")?.uncappedReturn, 13);
+    assert.equal(settled.records.find((record) => record.runnerKey === "a")?.capped20Return, 10.5);
+    assert.equal(settled.records.find((record) => record.runnerKey === "b")?.uncappedReturn, 2.5);
   });
 
   test("settles a priced non-finisher as a losing forward bet", () => {

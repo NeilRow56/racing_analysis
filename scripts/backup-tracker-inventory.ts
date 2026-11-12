@@ -1,8 +1,8 @@
 /** Required mutable ledgers, audited against the capture/settlement scripts.
  * Keep this list in sync when introducing or retiring a prospective writer.
  * V1 Turf remains included because tissue:v1:sync is still supported.
- * Frozen models, calibration exports, diagnostics and the superseded
- * aw-tissue-paired-forward-v1.json are deliberately excluded.
+ * Immutable artifacts are listed separately in backup-artifact-inventory.ts.
+ * Diagnostics and superseded aw-tissue-paired-forward-v1.json remain excluded.
  */
 export const BACKUP_TRACKERS = [
   ["tpr-vs-timewise-forward.json", "scripts/diagnose-tpr-vs-timewise-forward.ts"],
@@ -31,4 +31,9 @@ export const BACKUP_TRACKERS = [
   ["aw-tissue-v2-value-forward-v1.json", "src/lib/racing/tissue-value-config.ts"],
   ["hurdle-jump-tissue-v1-value-forward-v1.json", "src/lib/racing/tissue-value-config.ts"],
   ["chase-jump-tissue-v1-value-forward-v1.json", "src/lib/racing/tissue-value-config.ts"],
+  ["hurdle-v3-prospective-shadow-v1.json", "src/lib/racing/hurdle-v3-shadow.ts"],
+  ["hurdle-low-form-prospective-v1.json", "src/lib/racing/hurdle-low-form.ts"],
+  ["hurdle-v3-market-edge-prospective-v1.json", "src/lib/racing/hurdle-v3-market-edge.ts"],
+  ["tissue-positive-neutral-prospective-v1.json", "src/lib/racing/tissue-positive-neutral.ts"],
+  ["turf-2027-early-season-v1.json", "src/lib/racing/turf-early-season.ts"],
 ] as const;

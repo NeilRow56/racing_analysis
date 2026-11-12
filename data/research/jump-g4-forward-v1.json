@@ -65,8 +65,16 @@
         "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
         "bookmakerQuoteCount": 3
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "settlementVersion": "canonical_settlement_v3",
+        "finishingPosition": 2,
+        "resultStatus": "finished",
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 2.75,
+        "profitLoss": -1
+      },
+      "settledAt": "2026-11-12T03:54:16.763Z"
     },
     {
       "raceId": "dd35c772-f506-4af0-aa09-f580e0bf9249",
@@ -8208,8 +8216,15 @@
         "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
         "bookmakerQuoteCount": 3
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "finishingPosition": 3,
+        "resultStatus": "finished",
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 4.5,
+        "profitLoss": -1
+      },
+      "settledAt": "2026-11-11T05:02:35.200Z"
     },
     {
       "raceId": "4f6afca5-1b0b-4b31-a5e0-7e6b9980dd66",
@@ -8261,8 +8276,16 @@
         "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
         "bookmakerQuoteCount": 3
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "settlementVersion": "canonical_settlement_v3",
+        "finishingPosition": null,
+        "resultStatus": "void_race",
+        "won": null,
+        "deadHeatDivisor": 1,
+        "finalSp": null,
+        "profitLoss": null
+      },
+      "settledAt": "2026-11-12T03:54:16.763Z"
     },
     {
       "raceId": "2c446a08-6d4f-40f1-a51e-d8591b26bf8b",
@@ -8314,8 +8337,15 @@
         "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
         "bookmakerQuoteCount": 3
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "finishingPosition": 1,
+        "resultStatus": "finished",
+        "won": true,
+        "deadHeatDivisor": 1,
+        "finalSp": 4.5,
+        "profitLoss": 3.5
+      },
+      "settledAt": "2026-11-11T05:02:35.200Z"
     },
     {
       "raceId": "4abd830f-3701-4473-b69a-b0acc453eddf",
@@ -8367,8 +8397,76 @@
         "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
         "bookmakerQuoteCount": 3
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "finishingPosition": 2,
+        "resultStatus": "finished",
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 1.727,
+        "profitLoss": -1
+      },
+      "settledAt": "2026-11-11T05:02:35.200Z"
+    },
+    {
+      "raceId": "32c72e8a-e551-4757-9a47-4fc29c780308",
+      "sourceId": "948015",
+      "raceDate": "2026-11-11",
+      "scheduledOff": "2026-11-11T13:50:00.000Z",
+      "scheduledTime": "13:50",
+      "course": "Warwick",
+      "raceName": "Arnold Thomson Novices' Handicap Chase (GBB Race)",
+      "subtype": "Chase",
+      "subtypeCode": "chase",
+      "handicapStatus": "handicap",
+      "fieldSize": 4,
+      "runnerId": "37d3c453-6249-4af5-a518-30554f9b9ac3",
+      "horseId": "8070d12b-5a99-4b69-b5ec-24ff1b9409e8",
+      "horseName": "Fresh Perspective",
+      "recordedAt": "2026-11-11T05:16:35.701Z",
+      "recordedPreRace": true,
+      "components": {
+        "averageL3JumpSpeed": 84.91784400516859,
+        "averageL3JumpSpeedRank": 3,
+        "latestJumpSpeed": 87.33166022026117,
+        "previousJumpSpeed": 56.13813863931147,
+        "latestMinusPrevious": 31.1935215809497,
+        "previousClass": 3,
+        "currentClass": 4,
+        "classDropAmount": 1
+      },
+      "context": {
+        "officialRating": 120,
+        "officialRatingRank": 1,
+        "officialRatingTop3": true,
+        "officialRatingGapToBest": 0,
+        "officialRatingRelativeToFieldMean": 7.25,
+        "trainerPriorRate": 25.513905683192263,
+        "jockeyPriorRate": 21.18081180811808,
+        "daysSinceRun": 235,
+        "priorUsableJumpSpeedCount": 7,
+        "jprARank": 1,
+        "jprBRank": 1,
+        "jumpTissueRank": null,
+        "jumpTissueProbability": null
+      },
+      "market": {
+        "medianBookmakerDecimal": 2.25,
+        "impliedProbability": 0.4444444444444444,
+        "marketRank": 1,
+        "priceCapturedAt": "2026-11-11T05:16:35.701Z",
+        "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
+        "bookmakerQuoteCount": 3
+      },
+      "outcome": {
+        "settlementVersion": "canonical_settlement_v3",
+        "finishingPosition": 1,
+        "resultStatus": "finished",
+        "won": true,
+        "deadHeatDivisor": 1,
+        "finalSp": 2.375,
+        "profitLoss": 1.375
+      },
+      "settledAt": "2026-11-12T03:54:16.763Z"
     }
   ]
 }

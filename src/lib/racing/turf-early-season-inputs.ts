@@ -3,7 +3,7 @@ import type { TodayMeeting } from "./todays-racing";
 import { isOrdinaryFlatTurfRace } from "./turf-speed-rating";
 import { getTurfSpeedRatingsAsOfRuns, getTurfSpeedRatingsForRunners } from "./turf-speed-ratings";
 import { calculateWeightAdjustedPerformance } from "./weight-performance";
-import { isVoidBetResultStatus, settledWinValue } from "./backtest";
+import { legacyVoidBetResultStatus, legacyRecordedWinValue } from "./backtest";
 import { earlyTurfDate, type TurfEvidenceInput } from "./turf-early-season-method";
 
 /** Separate read-only adapter; never changes production inputs. Empty outside the 2027 window. */
@@ -25,7 +25,7 @@ export async function loadEarlyTurfInputs(connection: ReturnType<typeof createDb
     left join source_imports si on si.source=r.source and si.source_id=r.source_id and si.source_type='full-result-next-data'
     where rr.horse_id in ${connection.client(horses)} and rr.source='sporting_life' and r.source='sporting_life'
       and r.race_datetime < ${cutoff.toISOString()}::timestamptz order by r.race_datetime desc, rr.id`;
-  const valid = rows.filter(r => !isVoidBetResultStatus(r.status) && settledWinValue({ finishingPosition: r.finish, resultStatus: r.status, won: null }) !== null);
+  const valid = rows.filter(r => !legacyVoidBetResultStatus(r.status) && legacyRecordedWinValue({ finishingPosition: r.finish, resultStatus: r.status, won: null }) !== null);
   if (new Set(valid.map(r => r.runnerId)).size !== valid.length) throw new Error("Duplicate Turf history source");
   const ids = valid.filter(isOrdinaryFlatTurfRace).map(r => r.runnerId);
   const [seasonal, production] = await Promise.all([

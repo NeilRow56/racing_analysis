@@ -1,3 +1,5 @@
+import { CANONICAL_SETTLEMENT_VERSION, type ResearchSettlementVersion } from "./research-settlement-version";
+import { raceForSettlement } from "./settlement-outcome";
 import { retiredTissueCaptureAllowed } from "./tissue-generation-config";
 import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
@@ -47,6 +49,7 @@ export type HurdleRecencyFeatures = {
   recentRuns: { runnerId: string; raceId: string; raceDateTime: string; finishingPosition: number | null; resultStatus: string | null; completionStatus: CompletionStatus }[];
 };
 export type HurdleRecencyOutcome = {
+  settlementVersion?: ResearchSettlementVersion;
   status: "settled" | "NR" | "void";
   resultStatus: string | null;
   finishPosition: number | null;
@@ -236,10 +239,11 @@ export function pendingHurdleRecencyRaceIds(data: HurdleRecencyData) {
 export function settleHurdleRecency(data: HurdleRecencyData, races: ReadonlyMap<string, TodayRace>, now = new Date()): HurdleRecencyData {
   const observations = data.observations.map((row) => {
     if (row.outcome) return row;
-    const race = races.get(row.raceId);
+    const sourceRace = races.get(row.raceId);
+    const race = sourceRace && raceForSettlement(sourceRace);
     const runner = race?.runners.find((r) => r.runnerId === row.runnerId);
     if (!race || !runner) return row;
-    const base = { resultStatus: runner.resultStatus, finishPosition: runner.finishingPosition, settledAt: now.toISOString() };
+    const base = { settlementVersion: CANONICAL_SETTLEMENT_VERSION, resultStatus: runner.resultStatus, finishPosition: runner.finishingPosition, settledAt: now.toISOString() };
     if (isVoidBetResultStatus(runner.resultStatus)) {
       return { ...row, outcome: { ...base, status: runner.resultStatus?.trim().toLowerCase() === "non_runner" ? "NR" : "void", finishRank: null,
         normalizedFinish: null, top3: null, topHalf: null, winner: null, winnerCredit: null, nonFinisherCategory: null,

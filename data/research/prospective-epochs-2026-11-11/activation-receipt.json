@@ -1,0 +1,19 @@
+{
+  "activatedAt": "2026-11-11T16:39:41.798Z",
+  "epochs": {
+    "positiveNeutral": {
+      "id": "TISSUE_POSITIVE_NEUTRAL_COLLECTION_V2_2026_11_11",
+      "ledger": "data/research/prospective-epochs-2026-11-11/positive-neutral-v2.json"
+    },
+    "shadow": {
+      "id": "HURDLE_V3_SHADOW_COLLECTION_V2_2026_11_11",
+      "ledger": "data/research/prospective-epochs-2026-11-11/hurdle-v3-shadow-v2.json"
+    },
+    "marketEdge": {
+      "id": "HURDLE_V3_MARKET_EDGE_COLLECTION_V2_2026_11_11",
+      "ledger": "data/research/prospective-epochs-2026-11-11/hurdle-v3-market-edge-v2.json"
+    }
+  },
+  "sources": 141,
+  "historicalBackfill": false
+}

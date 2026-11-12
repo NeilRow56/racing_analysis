@@ -1,0 +1,34 @@
+2026-11-11T16:53:35.311Z loading target runners
+2026-11-11T16:53:35.750Z loaded 32901 target runners
+2026-11-11T16:53:35.750Z building backtest-safe feature rows
+historical_target_runner_load: 3902ms; 5000 rows
+historical_run_load: 4900ms; 33697 rows
+historical_feature_calculation: 376ms; 5000 rows
+2026-11-11T16:53:53.056Z built features for 5000/32901 targets (1/7 batches)
+historical_target_runner_load: 3114ms; 5000 rows
+historical_run_load: 4351ms; 34368 rows
+historical_feature_calculation: 285ms; 5000 rows
+2026-11-11T16:54:09.353Z built features for 10000/32901 targets (2/7 batches)
+historical_target_runner_load: 3113ms; 5000 rows
+historical_run_load: 13751ms; 38090 rows
+historical_feature_calculation: 369ms; 5000 rows
+2026-11-11T16:54:36.744Z built features for 15000/32901 targets (3/7 batches)
+historical_target_runner_load: 3652ms; 5000 rows
+historical_run_load: 16105ms; 39849 rows
+historical_feature_calculation: 347ms; 5000 rows
+2026-11-11T16:55:08.721Z built features for 20000/32901 targets (4/7 batches)
+historical_target_runner_load: 3794ms; 5000 rows
+historical_run_load: 5249ms; 34244 rows
+historical_feature_calculation: 321ms; 5000 rows
+2026-11-11T16:55:29.242Z built features for 25000/32901 targets (5/7 batches)
+historical_target_runner_load: 3563ms; 5000 rows
+historical_run_load: 4289ms; 31353 rows
+historical_feature_calculation: 316ms; 5000 rows
+2026-11-11T16:55:48.007Z built features for 30000/32901 targets (6/7 batches)
+historical_target_runner_load: 1959ms; 2901 rows
+historical_run_load: 3530ms; 27869 rows
+historical_feature_calculation: 187ms; 2901 rows
+2026-11-11T16:56:04.245Z built features for 32901/32901 targets (7/7 batches)
+2026-11-11T16:56:04.279Z writing 32901 feature rows
+2026-11-11T16:56:04.830Z cache write complete
+{"directory":"data/research/jump-2026-isolated-candidate-2026-11-11-vKE4Te/cache/backtest_features_v4-sporting_life-jump-2026-01-01-2026-10-14","rows":32901,"seconds":149.521371323}

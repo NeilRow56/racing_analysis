@@ -1,6 +1,7 @@
-import { loadOrSpeed } from "@/lib/racing/or-speed-forward";
-import { OrSpeedSummary } from "./or-speed-summary";
+import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
-export default async function OrSpeedPage() { return <OrSpeedSummary data={await loadOrSpeed()} />; }
+export default function OrSpeedPage() {
+  redirect("/racing/research/forward-value?monitor=or-speed#or-speed-monitoring");
+}

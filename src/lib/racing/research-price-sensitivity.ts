@@ -89,8 +89,8 @@ function isWinningSelectionAbove(selection: ResearchSelection, thresholdDecimal:
   );
 }
 
-function winnerContributionDiagnostics(
-  selections: ResearchSelection[],
+export function winnerContributionDiagnostics(
+  selections: Pick<ResearchSelection, "outcome" | "settlement">[],
 ): ResearchPriceSensitivityResult["diagnostics"] {
   const winningProfits = selections
     .filter((selection) => selection.outcome.won && selection.settlement !== null)
