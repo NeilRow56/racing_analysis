@@ -151,7 +151,7 @@ describe("Today request orchestration", () => {
 
   test("synchronizes AW forward comparisons once per page request", () => {
     const source = readFileSync(new URL("./page.tsx", import.meta.url), "utf8");
-    const calls = source.match(/\bsyncAwForwardComparisons\(/g) ?? [];
+    const calls = source.match(/profileCall\("syncAwForwardComparisons", syncAwForwardComparisons,/g) ?? [];
     assert.equal(calls.length, 1);
   });
 
@@ -216,8 +216,8 @@ describe("Today request orchestration", () => {
   test("keeps existing Timewise settlement support without exposing a save path", () => {
     const source = readFileSync(new URL("./page.tsx", import.meta.url), "utf8");
 
-    assert.match(source, /loadTrackerData\(\)/);
-    assert.match(source, /enrichTodayForwardTrackerResults\(/);
+    assert.match(source, /profileCall\("loadTrackerData", loadTrackerData\)/);
+    assert.match(source, /profileCall\("enrichTodayForwardTrackerResults", enrichTodayForwardTrackerResults,/);
     assert.doesNotMatch(source, /saveTrackerRace\(/);
   });
 });

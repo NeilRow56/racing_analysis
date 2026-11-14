@@ -1,4 +1,5 @@
-import { loadEarlyTurfContext, type EarlyTurfData } from "@/lib/racing/turf-early-season";
+import type { EarlyTurfData } from "@/lib/racing/turf-early-season";
+import { loadEarlyTurfContext } from "@/lib/racing/profiled-monitor-readers";
 import { summarizeEarlyTurf } from "@/lib/racing/turf-early-season-metrics";
 import type { GenerationData } from "@/lib/racing/tissue-generation-forward";
 const num = (n: number | null) => n === null ? "—" : n.toFixed(4);

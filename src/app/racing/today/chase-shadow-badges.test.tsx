@@ -91,9 +91,9 @@ test("canonical reader fails safely to an empty ledger when file is missing", as
 });
 test("Today reads once after existing capture and only passes Shadow to display", async () => {
   const page = await readFile("src/app/racing/today/page.tsx", "utf8");
-  assert.equal((page.match(/loadChaseShadow\(\)/g) ?? []).length, 1);
-  assert.ok(page.indexOf("const chaseShadow =") > page.indexOf("syncJumpTissueMeetings(connection"));
-  assert.match(page, /newTissueForDate \? Promise.resolve\(\{ races: \[\] as ChaseShadowRace\[\] \}\) : loadChaseShadow\(\)/);
+  assert.equal((page.match(/profileCall\("loadChaseShadow", loadChaseShadow\)/g) ?? []).length, 1);
+  assert.ok(page.indexOf("const chaseShadow =") > page.indexOf('profileCall("syncJumpTissueMeetings", syncJumpTissueMeetings, connection!'));
+  assert.match(page, /newTissueForDate \? Promise.resolve\(\{ races: \[\] as ChaseShadowRace\[\] \}\) : profileCall\("loadChaseShadow", loadChaseShadow\)/);
   assert.match(page, /shadowRanks=\{chaseShadowBadgeRanks\(race, chaseShadow\)\}/);
   assert.match(page, /shadowRank=\{shadowRanks.get\(runner.runnerId\)\}/);
   assert.match(page, /FrozenRacecardRanks runner=\{runner\} shadowRank=\{shadowRank\}/);

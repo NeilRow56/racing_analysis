@@ -50,7 +50,7 @@ test("monitor is independent of Value inputs and leaves other layout sections un
   assert.match(consolidated, /Existing secondary figures: 789/);
   assert.match(view(monitor, true), /<details open="" id="secondary-monitoring"/);
   const source = await readFile("src/app/racing/research/forward-value/forward-value-page.tsx", "utf8");
-  assert.match(source, /secondary=\{<><SecondaryResearchMonitoring dashboard=\{dashboard\} \/><OrSpeedMonitoring \/><\/>\}/);
+  assert.match(source, /secondary=\{<><SecondaryResearchMonitoring dashboard=\{dashboard\} \/>\{profiledServerWork\("monitor.OrSpeedMonitoring", \(\) => OrSpeedMonitoring\(\), <OrSpeedMonitoring \/>\)\}<\/>\}/);
   assert.match(source, /secondaryOpen=\{scalar\(params\?\.monitor\) === "or-speed"\}/);
   assert.doesNotMatch(source, /summarizeOrSpeed|loadOrSpeed/);
 });

@@ -96,8 +96,8 @@ test("Today summary consumes final attached racecard data and the shared watch h
   const page = readFileSync(new URL("./page.tsx", import.meta.url), "utf8");
   assert.ok(page.indexOf("const dailyList =") > page.indexOf("attachFrozenValueToMeetings(attachJump"));
   assert.match(page, /const watchMeetings = displayData.status === "ok" \? displayData.meetings : \[\]/);
-  assert.match(page, /const legacyDailyList = newTissueForDate \? \[\] : buildNonRedTissueDailyList\(watchMeetings\)/);
-  assert.match(page, /const dailyList = newTissueForDate \? buildTissueDailyWatchList\(watchMeetings\) : legacyDailyList/);
+  assert.match(page, /const legacyDailyList = newTissueForDate \? \[\] : profileSync\("today.final.buildNonRedTissueDailyList", \(\) => buildNonRedTissueDailyList\(watchMeetings\)\)/);
+  assert.match(page, /const dailyList = newTissueForDate \? profileSync\("today.final.buildTissueDailyWatchList", \(\) => buildTissueDailyWatchList\(watchMeetings\)\) : legacyDailyList/);
   const helper = readFileSync(new URL("../../../lib/racing/non-red-tissue-daily-list.ts", import.meta.url), "utf8");
   assert.match(helper, /isTissueTop2SpeedRankWatch\(candidate\)/);
   assert.match(helper, /capturedPrice: tissueValue\?\.marketPrice/);

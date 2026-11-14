@@ -1,4 +1,5 @@
-import { loadHurdleMarketEdgeContext, type HurdleMarketEdgeData } from "@/lib/racing/hurdle-v3-market-edge";
+import type { HurdleMarketEdgeData } from "@/lib/racing/hurdle-v3-market-edge";
+import { loadHurdleMarketEdgeContext } from "@/lib/racing/profiled-monitor-readers";
 import { summarizeHurdleMarketEdge } from "@/lib/racing/hurdle-v3-market-edge-metrics";
 import type { HurdleV3ShadowData } from "@/lib/racing/hurdle-v3-shadow";
 

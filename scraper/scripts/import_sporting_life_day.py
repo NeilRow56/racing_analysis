@@ -497,4 +497,7 @@ def distinct_meeting_links(links: list[ResultLink]) -> list[ResultLink]:
 
 
 if __name__ == "__main__":
+    from operational_lock import guard_cli
+
+    guard_cli("python:import_sporting_life_day")
     main()

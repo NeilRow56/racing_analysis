@@ -38,9 +38,9 @@ test("rank movement is explicit without a made-up probability threshold; product
 });
 test("Daily projection reads the persisted ledger after capture and keeps the production rank component intact", async () => {
   const page = await readFile("src/app/racing/today/page.tsx", "utf8");
-  assert.equal((page.match(/loadContextWeightShadow\(\)/g) ?? []).length, 1);
-  assert.ok(page.indexOf("const contextShadows =") > page.indexOf("syncTissueGeneration(connection"));
-  assert.ok(page.includes("loadContextWeightShadow().then(data => contextWeightShadowViews"));
+  assert.equal((page.match(/profileCall\("loadContextWeightShadow", loadContextWeightShadow\)/g) ?? []).length, 1);
+  assert.ok(page.indexOf("const contextShadows =") > page.indexOf('profileCall("syncTissueGeneration", syncTissueGeneration, connection!'));
+  assert.ok(page.includes('profileCall("loadContextWeightShadow", loadContextWeightShadow).then(data => contextWeightShadowViews'));
   assert.ok(page.includes("FrozenRacecardRanks runner={runner} shadowRank={shadowRank}"));
   assert.ok(page.includes("ContextWeightShadowBadge observation={contextShadow}"));
 });

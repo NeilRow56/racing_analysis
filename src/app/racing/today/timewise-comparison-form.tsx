@@ -23,7 +23,7 @@ export function TimewiseComparisonForm({
   rank2Default,
   runners,
 }: {
-  action: (formData: FormData) => Promise<TimewiseSaveResult>;
+  action: (formData: FormData) => Promise<TimewiseSaveResult | { status: "busy"; message: string }>;
   initialSummary: string;
   raceDate: string;
   raceId: string;
@@ -52,6 +52,10 @@ export function TimewiseComparisonForm({
           startTransition(async () => {
             try {
               const result = await action(formData);
+              if (result.status === "busy") {
+                setMessage(result.message);
+                return;
+              }
               setSummary(
                 `Timewise: 1 ${selectionLabel(result.timewiseRank1, result.timewiseRank1NonRunner)} · 2 ${selectionLabel(result.timewiseRank2, result.timewiseRank2NonRunner)}`,
               );

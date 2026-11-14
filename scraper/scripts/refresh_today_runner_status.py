@@ -127,4 +127,7 @@ def main() -> None:
 
 
 if __name__ == "__main__":
+    from operational_lock import guard_cli
+
+    guard_cli("python:refresh_today_runner_status")
     main()

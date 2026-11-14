@@ -113,4 +113,7 @@ def non_blank(value: Any) -> bool:
 
 
 if __name__ == "__main__":
+    from operational_lock import guard_cli
+
+    guard_cli("python:refresh_sporting_life_race_result")
     main()

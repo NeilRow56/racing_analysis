@@ -1,3 +1,5 @@
+import { profileCall, profileSync, recordTiming } from "./performance-profile";
+import { operationalEnvironment } from "./operational-lock";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { getLocalRacingDate, type TodayMeeting, type TodayRace } from "./todays-racing";
@@ -96,16 +98,17 @@ export async function refreshEligibleTodaySelectionResults(
     ? races.filter((race) => isPastRefreshBuffer(race, raceDate, now)).length
     : 0;
   const alreadySettled = races.filter(todayRaceHasConclusiveResult).length;
-  const eligible = getEligibleResultRefreshRaces(meetings, raceDate, {
+  const eligible = profileSync("results.refresh_checks", () => getEligibleResultRefreshRaces(meetings, raceDate, {
     now,
     forceRetry: options.forceRetry,
-  });
+  }));
   const outcomes: TodayResultRefreshOutcome[] = [];
 
   for (const race of eligible) {
     markChecked(race.race.sourceId!, now);
     try {
-      const outcome = await refreshRaceResult(race);
+      const outcome = await profileCall("results.import", refreshRaceResult, race);
+      recordTiming("results.import_outcome", 0, outcome.status);
       if (outcome.status === "failed") {
         logRefreshFailure(outcome.sourceId, outcome.message);
       }
@@ -160,7 +163,7 @@ export async function refreshSportingLifeRaceResult(
     ],
     {
       cwd: process.cwd(),
-      env: process.env,
+      env: operationalEnvironment(),
       timeout: 45_000,
       maxBuffer: 1024 * 1024,
     },

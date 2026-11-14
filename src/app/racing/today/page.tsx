@@ -1,7 +1,14 @@
+import { getTodaysRacingDataWithProfile } from "@/lib/racing/today-performance";
+import { isReadOnlyDiagnostic, profileRequest, profileCall, profileSync } from "@/lib/racing/performance-profile";
+import { finishOperationalTasks, withOperationalAccess } from "@/lib/racing/operational-lock";
+import { loadTissueGeneration } from "@/lib/racing/tissue-generation-forward";
+import { loadActiveAwTissueForward } from "@/lib/racing/aw-tissue-v2";
+import { loadJumpTissueForward } from "@/lib/racing/jump-tissue-forward";
 import { attachCurrentPriceOverlays } from "@/lib/racing/current-price-overlay";
 import { TurfEarlySeasonLabel } from "./turf-early-season-label";
 import { HurdleLowFormLabel } from "./hurdle-low-form-label";
-import { loadHurdleV3Shadow, type HurdleV3ShadowObservation } from "@/lib/racing/hurdle-v3-shadow";
+import type { HurdleV3ShadowObservation } from "@/lib/racing/hurdle-v3-shadow";
+import { loadHurdleComparisonShadows } from "./hurdle-shadow-display";
 import { HurdleModelComparison } from "./hurdle-model-comparison";
 import { loadContextWeightShadow } from "@/lib/racing/context-weight-shadow-forward";
 import { contextWeightShadowViews, type ContextShadowViews } from "@/lib/racing/context-weight-shadow-view";
@@ -51,7 +58,6 @@ import {
 } from "@/lib/racing/rating-coverage";
 import {
   formatRaceTimeForDisplay,
-  getTodaysRacingData,
   isAllWeatherRaceForDisplay,
   isJumpRaceForDisplay,
   isOrdinaryFlatTurfRaceForDisplay,
@@ -89,7 +95,13 @@ type PageProps = {
   }>;
 };
 
-export default async function TodaysRacingPage({ searchParams }: PageProps) {
+export default async function TodaysRacingPage(props: PageProps) {
+  return profileRequest("today.page", () => isReadOnlyDiagnostic()
+    ? renderTodaysRacingPage(props, false)
+    : withOperationalAccess("web:today", available => renderTodaysRacingPage(props, available)));
+}
+
+async function renderTodaysRacingPage({ searchParams }: PageProps, operationalAvailable: boolean) {
   const requestStartedAt = new Date();
   const params = await searchParams;
   const { raceDate, invalidDateParam } = resolveRacingDate({
@@ -100,7 +112,7 @@ export default async function TodaysRacingPage({ searchParams }: PageProps) {
 
   try {
     connection = createDbConnection();
-    const savedRulesPromise = listSavedResearchRulesWithDb(connection.db);
+    const savedRulesPromise = profileCall("listSavedResearchRulesWithDb", listSavedResearchRulesWithDb, connection.db);
     const trainerCohortsPromise = savedRulesPromise.then((rules) =>
       resolveTodayTrainerCohorts(
         connection!.db,
@@ -109,11 +121,11 @@ export default async function TodaysRacingPage({ searchParams }: PageProps) {
       ),
     );
     const [initialData, savedRules, initialTrackerData, trainerCohortsByRule, valueCohorts] = await Promise.all([
-      getTodaysRacingData(connection.db, raceDate),
+      profileCall("getTodaysRacingData", getTodaysRacingDataWithProfile, connection!.db, raceDate),
       savedRulesPromise,
-      loadTrackerData(),
+      profileCall("loadTrackerData", loadTrackerData),
       trainerCohortsPromise,
-      loadAllTissueValue(),
+      profileCall("loadAllTissueValue", loadAllTissueValue),
     ]);
     let data = initialData;
     let shadowSummary: TurfPerformanceShadowSummary | null = null;
@@ -124,37 +136,37 @@ export default async function TodaysRacingPage({ searchParams }: PageProps) {
         }
       : data;
     let displayData = attachMatches();
-    if (displayData.status === "ok") {
-      await Promise.all([
-        saveTurfPerformanceRatingSnapshots(connection.db, displayData.meetings, raceDate),
-        saveTurfPerformanceRatingShadowSnapshots(connection.db, displayData.meetings, raceDate),
+    if (displayData.status === "ok" && operationalAvailable) {
+      await finishOperationalTasks([
+        profileCall("saveTurfPerformanceRatingSnapshots", saveTurfPerformanceRatingSnapshots, connection!.db, displayData.meetings, raceDate),
+        profileCall("saveTurfPerformanceRatingShadowSnapshots", saveTurfPerformanceRatingShadowSnapshots, connection!.db, displayData.meetings, raceDate),
       ]);
-      const refreshSummary = await refreshEligibleTodaySelectionResults(
+      const refreshSummary = await profileCall("refreshEligibleTodaySelectionResults", refreshEligibleTodaySelectionResults,
         displayData.meetings,
         raceDate,
       );
       if (refreshSummary.imported > 0) {
-        data = await getTodaysRacingData(connection.db, raceDate);
+        data = await profileCall("getTodaysRacingData", getTodaysRacingDataWithProfile, connection!.db, raceDate);
         displayData = attachMatches();
       }
       if (displayData.status === "ok") {
-        shadowSummary = await summarizeTurfPerformanceShadowSnapshots(connection.db, raceDate);
+        shadowSummary = await profileCall("summarizeTurfPerformanceShadowSnapshots", summarizeTurfPerformanceShadowSnapshots, connection!.db, raceDate);
       }
     }
     if (displayData.status === "ok") {
       if (newTissueForDate) {
-        const generation = await syncTissueGeneration(connection, displayData.meetings, raceDate);
+        const generation = await (operationalAvailable ? profileCall("syncTissueGeneration", syncTissueGeneration, connection!, displayData.meetings, raceDate) : profileCall("loadTissueGeneration", loadTissueGeneration));
         displayData = { ...displayData, meetings: attachTissueGeneration(attachFrozenValueToMeetings(displayData.meetings, valueCohorts.map(c => c.data)), generation) };
       } else {
-        const [awTissue, jumpTissue] = await Promise.all([
-          syncAwTissueMeetings(connection, displayData.meetings, raceDate),
-          syncJumpTissueMeetings(connection, displayData.meetings, raceDate),
+        const [awTissue, jumpTissue] = await finishOperationalTasks([
+          operationalAvailable ? profileCall("syncAwTissueMeetings", syncAwTissueMeetings, connection!, displayData.meetings, raceDate) : profileCall("loadActiveAwTissueForward", loadActiveAwTissueForward),
+          operationalAvailable ? profileCall("syncJumpTissueMeetings", syncJumpTissueMeetings, connection!, displayData.meetings, raceDate) : profileCall("loadJumpTissueForward", loadJumpTissueForward),
         ]);
         displayData = { ...displayData, meetings: attachFrozenValueToMeetings(attachJumpTissueToMeetings(attachAwTissueToMeetings(displayData.meetings, awTissue), jumpTissue), valueCohorts.map(c => c.data)) };
       }
     }
     if (displayData.status === "ok") {
-      displayData = { ...displayData, meetings: await attachCurrentPriceOverlays(connection.db, displayData.meetings, raceDate) };
+      displayData = { ...displayData, meetings: await profileCall("attachCurrentPriceOverlays", attachCurrentPriceOverlays, connection!.db, displayData.meetings, raceDate) };
     }
     await connection.client.end();
     connection = null;
@@ -163,35 +175,34 @@ export default async function TodaysRacingPage({ searchParams }: PageProps) {
       displayData.status === "ok" ? displayData.meetings : [],
       frozenRulesChecked,
     );
-    if (displayData.status === "ok") {
-      await Promise.all([
-        syncAwForwardComparisons(displayData.meetings, raceDate, requestStartedAt),
-        enrichTodayForwardTrackerResults(displayData.meetings, raceDate, initialTrackerData),
+    if (displayData.status === "ok" && operationalAvailable) {
+      await finishOperationalTasks([
+        profileCall("syncAwForwardComparisons", syncAwForwardComparisons, displayData.meetings, raceDate, requestStartedAt),
+        profileCall("enrichTodayForwardTrackerResults", enrichTodayForwardTrackerResults, displayData.meetings, raceDate, initialTrackerData),
       ]);
     }
 
     // Read after the existing sync so newly captured prospective books can display immediately.
     // Display failure must not hide the racecard or substitute recalculated ranks.
-    const chaseShadow = await (newTissueForDate ? Promise.resolve({ races: [] as ChaseShadowRace[] }) : loadChaseShadow()).catch((error: unknown) => {
+    const chaseShadow = await (newTissueForDate ? Promise.resolve({ races: [] as ChaseShadowRace[] }) : profileCall("loadChaseShadow", loadChaseShadow)).catch((error: unknown) => {
       console.error("Unable to read prospective Chase Shadow badges", error);
       return { races: [] };
     });
     const chaseShadowByRace = new Map(chaseShadow.races.map(book => [book.raceId, book]));
-    const hurdleShadow = await loadHurdleV3Shadow().catch((error: unknown) => {
+    const hurdleShadowByRace = await profileCall("loadHurdleComparisonShadows", loadHurdleComparisonShadows).catch((error: unknown): Map<string, HurdleV3ShadowObservation> => {
       console.error("Unable to display Hurdle V3 shadow comparison; production unchanged", error);
-      return null;
+      return new Map();
     });
-    const hurdleShadowByRace = new Map(hurdleShadow?.observations.map(book => [book.raceId, book]) ?? []);
     const watchMeetings = displayData.status === "ok" ? displayData.meetings : [];
-    const contextShadows = await loadContextWeightShadow().then(data => contextWeightShadowViews(watchMeetings, data)).catch((error: unknown): ContextShadowViews => {
+    const contextShadows = await profileCall("loadContextWeightShadow", loadContextWeightShadow).then(data => contextWeightShadowViews(watchMeetings, data)).catch((error: unknown): ContextShadowViews => {
       console.error("Unable to display context-weight shadows; production unchanged", error);
       return new Map();
     });
-    const legacyDailyList = newTissueForDate ? [] : buildNonRedTissueDailyList(watchMeetings);
-    const dailyList = newTissueForDate ? buildTissueDailyWatchList(watchMeetings) : legacyDailyList;
+    const legacyDailyList = newTissueForDate ? [] : profileSync("today.final.buildNonRedTissueDailyList", () => buildNonRedTissueDailyList(watchMeetings));
+    const dailyList = newTissueForDate ? profileSync("today.final.buildTissueDailyWatchList", () => buildTissueDailyWatchList(watchMeetings)) : legacyDailyList;
     const WatchList = newTissueForDate ? TissueDailyWatchList : NonRedTissueDailyList;
 
-    return (
+    return profileSync("today.final_page_data", () => (
       <main className="min-h-full bg-stone-50 px-4 py-8 text-slate-950 sm:px-6 lg:px-8">
         <section className="mx-auto w-full max-w-7xl">
           <header className="border-b border-slate-200 pb-5">
@@ -221,6 +232,7 @@ export default async function TodaysRacingPage({ searchParams }: PageProps) {
               ) : null}
             </div>
           </header>
+          {!operationalAvailable ? <p role="status" className="mt-4 text-sm text-slate-600">Racing update busy or awaiting lock review. Showing the latest stored racecards and frozen selections; refresh deferred.</p> : null}
           <div className="mt-4 flex justify-end">
             <form action={refreshTodaySelectionResultsAction}>
               <input name="raceDate" type="hidden" value={raceDate} />
@@ -259,7 +271,7 @@ export default async function TodaysRacingPage({ searchParams }: PageProps) {
           </details>
         </section>
       </main>
-    );
+    ));
   } finally {
     if (connection) {
       await connection.client.end();
@@ -281,7 +293,7 @@ async function resolveTodayTrainerCohorts(
         if (!rule?.runner.trainerCohort) {
           return [savedRule.id, null] as const;
         }
-        return [savedRule.id, await getTrainerCohortForRule(db, rule, cohortYear)] as const;
+        return [savedRule.id, await profileCall("getTrainerCohortForRule", getTrainerCohortForRule, db, rule, cohortYear)] as const;
       }),
   );
   return new Map(entries);

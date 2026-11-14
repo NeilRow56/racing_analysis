@@ -300,4 +300,7 @@ def is_present_rating(value: Any) -> bool:
 
 
 if __name__ == "__main__":
+    from operational_lock import guard_cli
+
+    guard_cli("python:import_results_day")
     main()

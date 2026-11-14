@@ -1,5 +1,6 @@
 "use server";
 
+import { withOperationalAccess } from "@/lib/racing/operational-lock";
 import { revalidatePath } from "next/cache";
 import { createDbConnection } from "@/db";
 import { syncAwForwardComparisons } from "@/lib/racing/aw-forward-comparisons";
@@ -20,6 +21,17 @@ import { saveTimewiseComparison } from "@/lib/racing/timewise-save";
 import { enrichTodayForwardTrackerResults } from "@/lib/racing/tpr-timewise-forward-settlement";
 
 export async function refreshTodaySelectionResultsAction(formData: FormData) {
+  await withOperationalAccess("web:today-results-action", async available => {
+    if (!available) {
+      console.info("WORKFLOW_BUSY: Today result refresh deferred; stored data retained.");
+      return;
+    }
+    await refreshTodaySelectionResultsUnlocked(formData);
+  });
+  revalidatePath("/racing/today");
+}
+
+async function refreshTodaySelectionResultsUnlocked(formData: FormData) {
   const raceDateValue = formData.get("raceDate");
   const raceDate = typeof raceDateValue === "string" && isValidRacingDate(raceDateValue)
     ? raceDateValue
@@ -62,22 +74,23 @@ export async function refreshTodaySelectionResultsAction(formData: FormData) {
       await connection.client.end();
     }
   }
-
-  revalidatePath("/racing/today");
 }
 
 export async function saveTimewiseComparisonAction(
   context: TimewiseSaveContext,
   formData: FormData,
 ) {
-  return saveTimewiseComparison({
-    context,
-    formData,
-    onTiming: (timing) => console.info("TIMEWISE_SAVE_TIMING", {
-      raceDate: context.raceDate,
-      raceId: context.raceId,
-      ...roundedTiming(timing),
-    }),
+  return withOperationalAccess("web:timewise-save", async available => {
+    if (!available) return { status: "busy" as const, message: "Racing update busy or awaiting lock review; Timewise save deferred. Please retry after completion." };
+    return saveTimewiseComparison({
+      context,
+      formData,
+      onTiming: (timing) => console.info("TIMEWISE_SAVE_TIMING", {
+        raceDate: context.raceDate,
+        raceId: context.raceId,
+        ...roundedTiming(timing),
+      }),
+    });
   });
 }
 

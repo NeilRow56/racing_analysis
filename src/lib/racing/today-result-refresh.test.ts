@@ -318,7 +318,7 @@ describe("Today result refresh", () => {
 
   test("Today reloads uncached database state after imports; manual refresh revalidates the route", () => {
     const page = readFileSync("src/app/racing/today/page.tsx", "utf8");
-    assert.match(page, /if \(refreshSummary.imported > 0\) \{\s*data = await getTodaysRacingData\(connection.db, raceDate\);\s*displayData = attachMatches\(\);/);
+    assert.match(page, /if \(refreshSummary.imported > 0\) \{\s*data = await profileCall\("getTodaysRacingData", getTodaysRacingDataWithProfile, connection!.db, raceDate\);\s*displayData = attachMatches\(\);/);
     assert.match(page, /export const dynamic = "force-dynamic"/);
     const loader = readFileSync("src/lib/racing/todays-racing.ts", "utf8");
     assert.doesNotMatch(loader, /unstable_cache|use cache/);

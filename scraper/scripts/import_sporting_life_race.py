@@ -100,4 +100,7 @@ def observe_race(race: dict[str, Any]) -> str:
 
 
 if __name__ == "__main__":
+    from operational_lock import guard_cli
+
+    guard_cli("python:import_sporting_life_race")
     main()

@@ -11,6 +11,9 @@ import { hurdleV3ParticipantPrior, type HurdleV3ShadowInput } from "@/lib/racing
 import { buildTissueDailyWatchList } from "@/lib/racing/tissue-daily-watch-list";
 import { FrozenRacecardRanks } from "./tissue-cells";
 import { HurdleModelComparison } from "./hurdle-model-comparison";
+import { indexHurdleComparisonShadows, loadHurdleComparisonShadows } from "./hurdle-shadow-display";
+import { EPOCHS } from "@/lib/racing/prospective-epoch-config";
+import { loadHurdleV3Shadow } from "@/lib/racing/hurdle-v3-shadow";
 
 async function fixture() {
   const model = (await loadTissueGenerationModels()).HURDLE;
@@ -90,8 +93,47 @@ test("comparison preserves production display, watch membership and frozen NR po
 
 test("Today loads the shadow after production sync and passes it only to the comparison", async () => {
   const page = await readFile(new URL("./page.tsx", import.meta.url), "utf8");
-  assert.equal((page.match(/loadHurdleV3Shadow\(\)/g) ?? []).length, 1);
-  assert.ok(page.indexOf("const hurdleShadow =") > page.indexOf("syncTissueGeneration(connection"));
+  assert.equal((page.match(/profileCall\("loadHurdleComparisonShadows", loadHurdleComparisonShadows\)/g) ?? []).length, 1);
+  assert.ok(page.indexOf("const hurdleShadowByRace =") > page.indexOf('profileCall("syncTissueGeneration", syncTissueGeneration, connection!'));
   assert.match(page, /<HurdleModelComparison race=\{race\} shadow=\{hurdleShadow\} \/>/);
   assert.doesNotMatch(page.slice(page.indexOf("<RunnerTable")), /hurdleShadow/);
+});
+
+test("display lookup reads both ledgers and prefers existing Collection V2 without changing snapshots", async () => {
+  const { race, shadow } = await fixture();
+  const legacy = structuredClone(shadow); legacy.capturedAt = "2026-11-01T08:00:00.000Z";
+  const before = JSON.stringify([legacy, shadow]);
+  const indexed = indexHurdleComparisonShadows([legacy], [shadow]);
+  assert.equal(indexed.get(race.raceId), shadow);
+  assert.match(renderToStaticMarkup(<HurdleModelComparison race={race} shadow={indexed.get(race.raceId)} />), /Frozen at/);
+  assert.equal(indexHurdleComparisonShadows([legacy], []).get(race.raceId), legacy);
+  assert.equal(indexHurdleComparisonShadows([], []).get(race.raceId), undefined);
+  assert.equal(JSON.stringify([legacy, shadow]), before);
+});
+
+test("real read-only Uttoxeter evidence exists only in Collection V2 and resolves the display lookup", async () => {
+  const original = await loadHurdleV3Shadow();
+  const current = await loadHurdleV3Shadow(EPOCHS.shadow.ledger);
+  const books = await loadHurdleComparisonShadows();
+  for (const id of ["c2508a16-81c2-4cad-ba0d-d5a990b09262", "c9f2ae8f-9c16-4af6-8986-69312085c6d2"]) {
+    assert.equal(original?.observations.some(o => o.raceId === id), false);
+    const captured = current?.observations.find(o => o.raceId === id);
+    assert.ok(captured); assert.equal(books.get(id)?.capturedAt, "2026-11-14T04:46:49.027Z");
+    assert.equal(books.get(id)?.production.scheduledOff, captured.production.scheduledOff);
+    const race = shadowMeetings(captured.production)[0].races[0];
+    race.raceType = "Hurdle"; race.raceName = "Captured Hurdle";
+    race.runners.forEach(r => { r.horseName = captured.production.runners.find(p => p.runnerId === r.runnerId)!.horseName; });
+    const missing = renderToStaticMarkup(<HurdleModelComparison race={race} shadow={original?.observations.find(o => o.raceId === id)} />);
+    assert.match(missing, /No matching prospective shadow capture/);
+    const corrected = renderToStaticMarkup(<HurdleModelComparison race={race} shadow={books.get(id)} />);
+    assert.doesNotMatch(corrected, /Unavailable|No matching prospective shadow capture/);
+    assert.match(corrected, /Frozen at 2026-11-14T04:46:49.027Z/);
+    for (const name of id === "c2508a16-81c2-4cad-ba0d-d5a990b09262" ? ["Spanish Darling", "Rose Warrior"] : ["Getaway With You", "Spartan Times"]) assert.ok(corrected.includes(name));
+  }
+});
+
+test("display loader selects the explicit replacement path and never calls collection", async () => {
+  const paths: Array<string | undefined> = [];
+  const books = await loadHurdleComparisonShadows(async path => { paths.push(path); return null; });
+  assert.deepEqual(paths, [undefined, EPOCHS.shadow.ledger]); assert.equal(books.size, 0);
 });

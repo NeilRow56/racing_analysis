@@ -1,0 +1,35 @@
+{
+  "asOfUtc": "2026-11-14T13:43:50.174026+00:00",
+  "baselineFiles": 582,
+  "activeManifestSourcePins": 141,
+  "originalEvidencePins": 5,
+  "sourcePinStatus": "ACTIVE; exact matches verified",
+  "drift": [
+    {
+      "path": "data/research/tissue-generation-forward-2026-11.json",
+      "taskStartSha256": "35840486ae66f8c3e039f798e637cba7937c9f2d954428aaea64f512df760407",
+      "observedSha256": "5ca10b61afa42a6e92a9db5dea27b4c024670ea4b9b40e74d596d765ed8e0348",
+      "mtimeUtc": "2026-11-14T13:17:18.867627+00:00",
+      "rowCount": 260,
+      "semanticDifferencesFromHeadByField": {
+        "outcome": 89
+      },
+      "writer": "unestablished; file was already dirty at task entry",
+      "restored": false
+    },
+    {
+      "path": "data/research/prospective-epochs-2026-11-11/hurdle-v3-shadow-v2.json",
+      "taskStartSha256": "b1ebbb04b4353d41c5d4070c31aaaa4dbded4aea5cd6dfe9a596e002a972aed5",
+      "observedSha256": "b8613761083443c518c65938359d944716296b9d538cb114ada296103e2eaccb",
+      "mtimeUtc": "2026-11-14T13:17:19.128375+00:00",
+      "rowCount": 35,
+      "semanticDifferencesFromHeadByField": {
+        "outcome": 76
+      },
+      "writer": "unestablished; file was already dirty at task entry",
+      "restored": false
+    }
+  ],
+  "recommendation": "NO_GO_for_activation_pending_ledger_drift_and_runtime_review",
+  "automationActivated": false
+}

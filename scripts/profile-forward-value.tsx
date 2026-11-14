@@ -1,18 +1,11 @@
 import assert from "node:assert/strict";
-import { renderToStaticMarkup } from "react-dom/server";
-import ForwardValuePage from "../src/app/racing/research/forward-value/forward-value-page";
 
-process.env.RESEARCH_PROFILE = "1";
-for (const label of ["COLD", "WARM"]) {
-  const start = performance.now();
-  const page = await ForwardValuePage({ searchParams: Promise.resolve(process.argv.includes("--archive") ? { archive: "1" } : {}) });
-  const loaded = performance.now();
-  const html = renderToStaticMarkup(page);
-  console.info(`${label}: server data ${(loaded - start).toFixed(1)}ms; component render ${(performance.now() - loaded).toFixed(1)}ms; total ${(performance.now() - start).toFixed(1)}ms; HTML ${html.length} chars`);
-}
+// Retain the existing command while using the enforced read-only, correlated profiler.
+process.argv.splice(2, 0, "forward-value");
+await import("./profile-pages");
 
 // Optional read-only parity check against the original full Today racecard loader.
-if (process.argv.includes("--verify-results")) {
+if (!process.exitCode && process.argv.includes("--verify-results")) {
   const { createDbConnection } = await import("../src/db");
   const { loadForwardValueData } = await import("../src/lib/racing/forward-value");
   const { getRacecardRowsForRaceIds, groupTodaysRacingRows } = await import("../src/lib/racing/todays-racing");

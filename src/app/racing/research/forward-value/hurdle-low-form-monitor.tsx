@@ -1,4 +1,5 @@
-import { loadLowFormContext, type LowFormData } from "@/lib/racing/hurdle-low-form";
+import type { LowFormData } from "@/lib/racing/hurdle-low-form";
+import { loadLowFormContext } from "@/lib/racing/profiled-monitor-readers";
 import { summarizeLowForm } from "@/lib/racing/hurdle-low-form-metrics";
 import type { HurdleV3ShadowData } from "@/lib/racing/hurdle-v3-shadow";
 const num = (n: number | null) => n === null ? "—" : n.toFixed(4);

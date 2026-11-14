@@ -1,10 +1,11 @@
+import { profileCall } from "@/lib/racing/performance-profile";
 import { loadHurdleV3Shadow, type HurdleV3ShadowData } from "@/lib/racing/hurdle-v3-shadow";
 import { hurdleShadowComparison, hurdleShadowOutcome, summarizeHurdleV3Shadow } from "@/lib/racing/hurdle-v3-shadow-metrics";
 
 const pct = (x: number | null) => x === null ? "—" : `${(x * 100).toFixed(2)}%`;
 const num = (x: number | null) => x === null ? "—" : x.toFixed(4);
 export async function HurdleV3ShadowResearch() {
-  const result = await loadHurdleV3Shadow().then(data => ({ data, failed: false })).catch(() => ({ data: null, failed: true }));
+  const result = await profileCall("loadHurdleV3Shadow", loadHurdleV3Shadow).then(data => ({ data, failed: false })).catch(() => ({ data: null, failed: true }));
   if (result.failed) return <p className="mt-4 text-sm text-amber-800">Hurdle V3 shadow ledger unavailable. Production V2 is unchanged.</p>;
   return <HurdleV3ShadowMonitor data={result.data} />;
 }

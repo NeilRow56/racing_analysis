@@ -141,7 +141,7 @@ test("rank plumbing stays request-batched without database or file access in row
   const page = readFileSync(new URL("./page.tsx", import.meta.url), "utf8");
   const cells = readFileSync(new URL("./tissue-cells.tsx", import.meta.url), "utf8");
   const reader = readFileSync(new URL("../../../lib/racing/tissue-value-readers.ts", import.meta.url), "utf8");
-  assert.equal((page.match(/loadAllTissueValue\(\)/g) ?? []).length, 1);
+  assert.equal((page.match(/profileCall\("loadAllTissueValue", loadAllTissueValue\)/g) ?? []).length, 1);
   assert.ok(reader.includes("cache(async")); assert.ok(reader.includes("Promise.all(")); assert.ok(reader.includes("VALUE_COHORTS.map"));
   const rankCode = cells.slice(cells.indexOf("export const FROZEN_RANK_TOOLTIPS"));
   assert.ok(!/await |readFile|createDbConnection|loadAll|calculateValue|sort\(/.test(rankCode));

@@ -1,0 +1,2 @@
+# Execution guard outside the pinned source graph. Run project commands from this root.
+preload = ["./scripts/operational-preload.ts"]
