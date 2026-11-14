@@ -21,6 +21,11 @@ export const BACKUP_ARTIFACTS = [
   ["tissue-generation-2026-11-manifest.json", "provenance", "scripts/develop-tissue-generation.ts"],
   ["tissue-generation-development-2026-11.json", "provenance", "scripts/develop-tissue-generation.ts"],
   ["tissue-generation-chase-promotion-2026-11.json", "provenance", "scripts/develop-tissue-generation.ts"],
+  ["prospective-epochs-2026-11-11/activation.json", "provenance", "scripts/activate-prospective-epochs.ts"],
+  ["prospective-epochs-2026-11-11/activation-receipt.json", "provenance", "scripts/activate-prospective-epochs.ts"],
+  ["prospective-epochs-2026-11-11/activation-report.json", "provenance", "scripts/activate-prospective-epochs.ts"],
+  ["prospective-epochs-2026-11-11/preservation-before.json", "provenance", "scripts/activate-prospective-epochs.ts"],
+  ["prospective-epochs-2026-11-11/preservation-after.json", "provenance", "scripts/activate-prospective-epochs.ts"],
 ] as const;
 
 // Preserve actual methodology bytes, including uncommitted implementations.
@@ -29,4 +34,6 @@ export const BACKUP_RECOVERY_SOURCES = [
   "package.json", "bun.lock", "tsconfig.json",
   "scripts/backup-weekly.ts", "scripts/backup-tracker-inventory.ts", "scripts/backup-artifact-inventory.ts",
   "scripts/train-hurdle-v3-challenger.py",
+  "scripts/backup-historical-dependencies.ts",
+  "src/lib/racing/prospective-epoch-integrity.ts",
 ] as const;

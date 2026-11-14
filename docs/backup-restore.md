@@ -29,15 +29,38 @@ Git commit/branch, runtime/client versions, database name, dump verification,
 file sizes and SHA-256 hashes, tracker version identifiers, count and archive
 name. It contains no database credentials. No `.env` files are archived.
 
-The required inventory is in `scripts/backup-tracker-inventory.ts`, alongside each
-writer's source file. All 17 current monitors plus the still-runnable Turf Tissue
-v1 ledger are included (18 files). Models, frozen diagnostics, calibration exports,
-and the superseded `aw-tissue-paired-forward-v1.json` are excluded. Keep the
-inventory updated whenever a prospective writer is added or retired. Retain the
-Git repository separately for code, models and frozen analysis artifacts. The
-legacy `backup:daily`, `backup:verify`, and explicit `backup:cleanup` commands
-retain their older single-tracker directory format; use `backup:weekly` for full
-tracker coverage. Do not run cleanup as part of weekly backup.
+The required inventories are `scripts/backup-tracker-inventory.ts` (36 named
+ledgers plus the Chase speed snapshot collection) and
+`scripts/backup-artifact-inventory.ts` (23 frozen model, calibration,
+configuration and provenance files). They include historical V1 ledgers,
+three separate active V2 collection ledgers, their activation/preservation
+manifests, canonical outcome ledgers, Chase Shadow and OR/Speed. Original
+bookmaker quotes remain inside byte-exact ledger copies. No epoch is merged.
+
+Version 4 archives add `historical/<original-sha256>/<original-source-path>`.
+`scripts/backup-historical-dependencies.ts` records eight reviewed owner/path/
+original/current hash combinations referencing seven distinct original Git
+source versions. A differing historical ledger pin requires that exact reviewed
+combination and a Git object whose bytes match the original pin. Unknown drift
+or missing original objects fails before dumping. Current source bytes are
+preserved separately under `recovery/`. Extraction verification needs no Git
+repository because the original source bytes are inside the archive.
+
+Active collection pins have no historical exception. Both the activation graph
+and individual V2 ledger pins must match current source/artifact bytes; the
+three metrics files pinned only by the individual ledgers are also checked.
+Existing collection guards and original ledger hashes are never rewritten.
+Older frozen development-artifact references retain their existing informational
+status; these are not current collection permissions or a claim to reproduce
+all historical model development inputs. Full Git and raw training history
+remain separate archival responsibilities. Existing v2/v3 archives retain their
+original inventories and verification rules.
+
+See [the compatibility repair and ledger audit](backup-compatibility-repair-2026-11-12.md)
+for historical source verification, the twelve-ledger reconciliation, isolated
+validation and remaining activation conditions. The legacy `backup:daily`,
+`backup:verify`, and explicit `backup:cleanup` commands retain their older
+single-tracker directory format. Do not run cleanup as part of weekly backup.
 
 Database dumping is read only. No research workflow is invoked. The dump must
 pass `pg_restore --list`. Trackers must exist and parse as JSON objects. Their

@@ -1,4 +1,4 @@
-import { spawn } from "node:child_process";
+import { execFile, spawn } from "node:child_process";
 import { createHash } from "node:crypto";
 import { createReadStream, constants } from "node:fs";
 import { access, chmod, copyFile, link, mkdir, mkdtemp, readFile, readdir, rm, stat, writeFile } from "node:fs/promises";
@@ -7,12 +7,22 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { CHASE_SPEED_SNAPSHOT_DIRECTORY } from "../src/lib/racing/chase-speed-reliability-capture";
 import { BACKUP_ARTIFACTS, BACKUP_RECOVERY_SOURCES } from "./backup-artifact-inventory";
+import { promisify } from "node:util";
+import { HISTORICAL_DEPENDENCIES } from "./backup-historical-dependencies";
+import { EPOCH_MANIFEST, EPOCHS } from "../src/lib/racing/prospective-epoch-config";
+import { loadPositiveNeutral } from "../src/lib/racing/tissue-positive-neutral";
+import { loadHurdleV3Shadow } from "../src/lib/racing/hurdle-v3-shadow";
+import { loadHurdleMarketEdge } from "../src/lib/racing/hurdle-v3-market-edge";
+import { epochManifestSchema } from "../src/lib/racing/prospective-epoch-integrity";
 import { BACKUP_TRACKERS } from "./backup-tracker-inventory";
 
 const PROJECT_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 export type Tracker = { filename: string; source: string; bytes: number; sha256: string; identifiers: Record<string, string | number> };
 export type Artifact = Tracker & { role: typeof BACKUP_ARTIFACTS[number][1] };
 export type RecoverySource = { filename: string; bytes: number; sha256: string };
+export type HistoricalSource = RecoverySource & { originalFilename: string; revision: string };
+const gitFile = promisify(execFile);
+const digest = (bytes: Buffer) => createHash("sha256").update(bytes).digest("hex");
 type Command = (command: string, args: string[], env?: NodeJS.ProcessEnv) => Promise<string>;
 
 export function backupName(date: Date) {
@@ -63,6 +73,12 @@ export async function sha256(path: string) {
   return hash.digest("hex");
 }
 
+async function validateActiveLedger(path: string, filename: string) {
+  if (`data/research/${filename}` === EPOCHS.positiveNeutral.ledger) await loadPositiveNeutral(path);
+  if (`data/research/${filename}` === EPOCHS.shadow.ledger) await loadHurdleV3Shadow(path);
+  if (`data/research/${filename}` === EPOCHS.marketEdge.ledger) await loadHurdleMarketEdge(path);
+}
+
 export async function inspectTracker(root: string, filename: string, source: string): Promise<Tracker> {
   const path = join(root, "data/research", filename);
   let buffer: Buffer;
@@ -70,6 +86,7 @@ export async function inspectTracker(root: string, filename: string, source: str
   let data: unknown;
   try { data = JSON.parse(buffer.toString("utf8")); } catch { throw new Error(`Invalid tracker JSON: ${filename}`); }
   if (!data || typeof data !== "object" || Array.isArray(data)) throw new Error(`Tracker must be a JSON object: ${filename}`);
+  await validateActiveLedger(path, filename);
   const identifiers = Object.fromEntries(Object.entries(data).filter(([key, value]) => /version|tracker|schema|generation|checksum|epoch|frozenAt|developmentCutoff/i.test(key) && (typeof value === "string" || typeof value === "number"))) as Tracker["identifiers"];
   return { filename, source, bytes: buffer.length, sha256: createHash("sha256").update(buffer).digest("hex"), identifiers };
 }
@@ -87,12 +104,37 @@ function safeRelativePath(filename: string) {
 }
 
 // Hashes embedded in frozen provenance may describe an older implementation.
-// Keep those references verbatim; require current ledger methodology pins to match.
-async function researchDependencies(files: Tracker[], read: (filename: string) => Promise<Buffer>) {
-  const sources = new Set<string>([...BACKUP_RECOVERY_SOURCES, ...files.map(file => file.source)]);
+// Keep references verbatim. Active pins must match; reviewed historical ledger
+// differences additionally require original bytes. Artifact development references
+// retain their existing informational status (not collection authorisation).
+async function researchDependencies(files: Tracker[], read: (filename: string) => Promise<Buffer>, legacy = false) {
+  const sources = new Set<string>([...(legacy ? BACKUP_RECOVERY_SOURCES.slice(0, 7) : BACKUP_RECOVERY_SOURCES), ...files.map(file => file.source)]);
   const pins: { owner: string; filename: string; sha256: string; requiredMatch: boolean }[] = [];
   for (const file of files) {
     const data = JSON.parse((await read(file.filename)).toString("utf8")) as Record<string, unknown>;
+    if (!legacy && file.filename === EPOCH_MANIFEST.replace("data/research/", "")) {
+      const manifest = epochManifestSchema.parse(data);
+      const seen = new Set<string>();
+      const visit = (path: string) => {
+        if (seen.has(path)) return;
+        if (!manifest.sourceHashes[path] || !manifest.dependencyGraph[path]) throw new Error(`Incomplete epoch provenance: ${path}`);
+        seen.add(path); manifest.dependencyGraph[path].forEach(visit);
+      };
+      manifest.roots.forEach(visit);
+      const originalLedgers = ["tissue-positive-neutral-prospective-v1.json", "hurdle-v3-prospective-shadow-v1.json", "hurdle-v3-market-edge-prospective-v1.json"];
+      for (const [index, epoch] of Object.values(EPOCHS).entries()) {
+        const ledger = JSON.parse((await read(epoch.ledger.replace("data/research/", ""))).toString("utf8"));
+        const original = JSON.parse((await read(originalLedgers[index])).toString("utf8"));
+        if (JSON.stringify(Object.keys(ledger.sourceHashes ?? {}).sort()) !== JSON.stringify(Object.keys(original.sourceHashes ?? {}).sort())) throw new Error(`Epoch ledger pin set mismatch: ${epoch.ledger}`);
+        if (ledger.armedAt !== manifest.activatedAt) throw new Error(`Epoch activation boundary mismatch: ${epoch.ledger}`);
+        for (const [path, hash] of Object.entries(ledger.sourceHashes ?? {})) {
+          if (manifest.sourceHashes[path] !== undefined && manifest.sourceHashes[path] !== hash) throw new Error(`Epoch ledger pin mismatch: ${epoch.ledger} -> ${path}`);
+        }
+      }
+      for (const [path, hash] of Object.entries(manifest.originalEvidenceHashes)) {
+        if (files.find(f => `data/research/${f.filename}` === path)?.sha256 !== hash) throw new Error(`Original epoch evidence mismatch: ${path}`);
+      }
+    }
     for (const key of ["sourceHashes", "codeHashes", "scoringCodeHashes"]) {
       const hashes = data[key];
       if (hashes === undefined) continue;
@@ -100,9 +142,9 @@ async function researchDependencies(files: Tracker[], read: (filename: string) =
       for (const [filename, hash] of Object.entries(hashes)) {
         safeRelativePath(filename);
         if (typeof hash !== "string" || !/^[a-f0-9]{64}$/.test(hash)) throw new Error(`Invalid dependency hash: ${file.filename}/${filename}`);
-        if (filename.startsWith("src/") || filename.startsWith("scripts/")) sources.add(filename);
+        if (!filename.startsWith("data/research/")) sources.add(filename);
         else if (!files.some(item => `data/research/${item.filename}` === filename)) throw new Error(`Required research dependency not inventoried: ${filename} (${file.filename})`);
-        pins.push({ owner: file.filename, filename, sha256: hash, requiredMatch: !("role" in file) });
+        pins.push({ owner: file.filename, filename, sha256: hash, requiredMatch: !("role" in file) || (!legacy && file.filename === EPOCH_MANIFEST.replace("data/research/", "")) });
       }
     }
   }
@@ -117,29 +159,44 @@ export async function inspectRecoverySources(root: string, files: Tracker[]) {
     catch { throw new Error(`Required recovery source missing or unreadable: ${filename}`); }
     return { filename, bytes: buffer.length, sha256: createHash("sha256").update(buffer).digest("hex") };
   }));
-  const references = dependencies.pins.map(pin => {
+  const historicalSources: HistoricalSource[] = [];
+  const historicalBytes = new Map<string, Buffer>();
+  const references = await Promise.all(dependencies.pins.map(async pin => {
     const actual = pin.filename.startsWith("data/research/")
       ? files.find(file => `data/research/${file.filename}` === pin.filename)!.sha256
       : recoverySources.find(file => file.filename === pin.filename)!.sha256;
-    if (pin.requiredMatch && actual !== pin.sha256) throw new Error(`Required ledger dependency checksum mismatch: ${pin.owner} -> ${pin.filename}`);
-    return { ...pin, actualSha256: actual, matches: actual === pin.sha256 };
-  });
-  return { recoverySources, references };
+    let historicalPath: string | undefined;
+    if (pin.requiredMatch && actual !== pin.sha256) {
+      const known = HISTORICAL_DEPENDENCIES.find(item => item.owner === pin.owner && item.path === pin.filename && item.expected === pin.sha256 && item.current === actual);
+      if (!known) throw new Error(`Required ledger dependency checksum mismatch: ${pin.owner} -> ${pin.filename}`);
+      let bytes: Buffer;
+      try { bytes = (await gitFile("git", ["-C", root, "show", `${known.revision}:${known.path}`], { encoding: "buffer", maxBuffer: 16 * 1024 * 1024 })).stdout; }
+      catch { throw new Error(`Historical dependency unavailable: ${pin.owner} -> ${pin.filename} at ${known.revision}`); }
+      if (digest(bytes) !== pin.sha256) throw new Error(`Historical dependency checksum mismatch: ${pin.owner} -> ${pin.filename}`);
+      historicalPath = `historical/${pin.sha256}/${pin.filename}`;
+      historicalSources.push({ filename: historicalPath, originalFilename: pin.filename, revision: known.revision, bytes: bytes.length, sha256: pin.sha256 });
+      historicalBytes.set(historicalPath, bytes);
+    }
+    return { ...pin, actualSha256: actual, matches: actual === pin.sha256, ...(historicalPath ? { historicalPath } : {}) };
+  }));
+  historicalSources.sort((a, b) => a.filename.localeCompare(b.filename));
+  return { recoverySources, references, historicalSources: [...new Map(historicalSources.map(item => [item.filename, item])).values()], historicalBytes };
 }
 
-export function buildManifest(input: { createdAt: string; name: string; database: string; dump: { bytes: number; sha256: string }; trackers: Tracker[]; artifacts?: Artifact[]; recoverySources?: RecoverySource[]; references?: Awaited<ReturnType<typeof inspectRecoverySources>>["references"]; commit: string; branch: string; pgDumpVersion: string }) {
+export function buildManifest(input: { createdAt: string; name: string; database: string; dump: { bytes: number; sha256: string }; trackers: Tracker[]; artifacts?: Artifact[]; recoverySources?: RecoverySource[]; historicalSources?: HistoricalSource[]; references?: Awaited<ReturnType<typeof inspectRecoverySources>>["references"]; commit: string; branch: string; pgDumpVersion: string }) {
   return {
-    backupVersion: 3, project: "racing-analysis", createdAt: input.createdAt,
+    backupVersion: 4, project: "racing-analysis", createdAt: input.createdAt,
     gitCommitSha: input.commit, gitBranch: input.branch,
     database: { name: input.database, filename: "postgres.dump", ...input.dump, format: "postgres-custom", verification: "PASS" },
     trackers: input.trackers.map((tracker) => ({ ...tracker, path: `research/${tracker.filename}` })),
     artifacts: (input.artifacts ?? []).map(artifact => ({ ...artifact, path: `research/${artifact.filename}` })),
     recoverySources: (input.recoverySources ?? []).map(source => ({ ...source, path: `recovery/${source.filename}` })),
+    historicalSources: (input.historicalSources ?? []).map(source => ({ ...source, path: source.filename })),
     dependencyReferences: input.references ?? [],
     totalArtifactCount: input.artifacts?.length ?? 0, totalRecoverySourceCount: input.recoverySources?.length ?? 0,
     totalTrackerCount: input.trackers.length, archiveFilename: `${input.name}.tar.gz`,
     runtime: { node: process.version, bun: process.versions.bun ?? null, pgDump: input.pgDumpVersion },
-    notes: ["Dump verified using pg_restore --list. No restore performed.", "UTC filename timestamp. Research files are byte-for-byte copies; no capture or settlement code invoked.", "Database snapshot and individual tracker copies are not a globally atomic snapshot. Pause research writers for a coordinated backup.", "Archive is published only after tar listing and extracted-file checksum verification. Offsite status is printed separately.", "Turf v1 and all required frozen models/calibration/provenance included. recovery/ preserves current methodology and pinned source bytes; dependencyReferences distinguishes historical provenance hashes from current source hashes. Full repository/raw training history remain separate archival responsibilities."],
+    notes: ["Historical ledger pins are verified against reviewed original Git bytes; active epoch pins must match current bytes. Historical artifact development-input references remain informational.", "Dump verified using pg_restore --list. No restore performed.", "UTC filename timestamp. Research files are byte-for-byte copies; no capture or settlement code invoked.", "Database snapshot and individual tracker copies are not a globally atomic snapshot. Pause research writers for a coordinated backup.", "Archive is published only after tar listing and extracted-file checksum verification. Offsite status is printed separately.", "Turf v1 and all required frozen models/calibration/provenance included. recovery/ preserves current methodology and pinned source bytes; dependencyReferences distinguishes historical provenance hashes from current source hashes. Full repository/raw training history remain separate archival responsibilities."],
   };
 }
 
@@ -178,17 +235,18 @@ async function writableAncestor(path: string) {
 
 type WeeklyManifest = ReturnType<typeof buildManifest>;
 // v2 archives retain their original tracker-only coverage; do not invent v3 payloads.
-export type VerifiableManifest = Omit<WeeklyManifest, "artifacts" | "recoverySources" | "dependencyReferences" | "totalArtifactCount" | "totalRecoverySourceCount"> & Partial<Pick<WeeklyManifest, "artifacts" | "recoverySources" | "dependencyReferences" | "totalArtifactCount" | "totalRecoverySourceCount">>;
+export type VerifiableManifest = Omit<WeeklyManifest, "artifacts" | "recoverySources" | "dependencyReferences" | "totalArtifactCount" | "totalRecoverySourceCount" | "historicalSources"> & Partial<Pick<WeeklyManifest, "artifacts" | "recoverySources" | "dependencyReferences" | "totalArtifactCount" | "totalRecoverySourceCount" | "historicalSources">>;
 
 export async function verifyExtracted(directory: string, manifest: VerifiableManifest) {
-  if (![2, 3].includes(manifest.backupVersion)) throw new Error(`Unsupported backup version: ${manifest.backupVersion}`);
-  if (manifest.backupVersion === 3) {
+  if (![2, 3, 4].includes(manifest.backupVersion)) throw new Error(`Unsupported backup version: ${manifest.backupVersion}`);
+  if (manifest.backupVersion >= 3) {
     if (!Array.isArray(manifest.artifacts) || !Array.isArray(manifest.recoverySources) || !Array.isArray(manifest.dependencyReferences)) throw new Error("Incomplete v3 research manifest");
     if (manifest.totalTrackerCount !== manifest.trackers.length || manifest.totalArtifactCount !== manifest.artifacts.length || manifest.totalRecoverySourceCount !== manifest.recoverySources.length) throw new Error("Manifest payload count mismatch");
-    for (const [filename] of BACKUP_TRACKERS) if (!manifest.trackers.some(file => file.filename === filename)) throw new Error(`Manifest missing required tracker: ${filename}`);
-    for (const [filename, role, source] of BACKUP_ARTIFACTS) if (!manifest.artifacts.some(file => file.filename === filename && file.role === role && file.source === source)) throw new Error(`Manifest missing required artifact: ${filename}`);
+    for (const [filename] of (manifest.backupVersion === 3 ? BACKUP_TRACKERS.slice(0, 31) : BACKUP_TRACKERS)) if (!manifest.trackers.some(file => file.filename === filename)) throw new Error(`Manifest missing required tracker: ${filename}`);
+    for (const [filename, role, source] of (manifest.backupVersion === 3 ? BACKUP_ARTIFACTS.slice(0, 18) : BACKUP_ARTIFACTS)) if (!manifest.artifacts.some(file => file.filename === filename && file.role === role && file.source === source)) throw new Error(`Manifest missing required artifact: ${filename}`);
   }
-  const payloads = [{ path: "postgres.dump", ...manifest.database }, ...manifest.trackers, ...(manifest.artifacts ?? []), ...(manifest.recoverySources ?? [])];
+  if (manifest.backupVersion === 4 && !Array.isArray(manifest.historicalSources)) throw new Error("Incomplete v4 historical manifest");
+  const payloads = [{ path: "postgres.dump", ...manifest.database }, ...manifest.trackers, ...(manifest.artifacts ?? []), ...(manifest.recoverySources ?? []), ...(manifest.historicalSources ?? [])];
   const paths = new Set<string>();
   for (const item of payloads) {
     safeRelativePath(item.path);
@@ -200,18 +258,25 @@ export async function verifyExtracted(directory: string, manifest: VerifiableMan
     if (!details.isFile() || details.size !== item.bytes || await sha256(path) !== item.sha256) throw new Error(`Backup checksum mismatch: ${item.path}`);
   }
   if (manifest.database.filename !== "postgres.dump") throw new Error("Invalid database dump path");
-  if (manifest.backupVersion === 3) {
+  if (manifest.backupVersion >= 3) {
     const research = [...manifest.trackers, ...manifest.artifacts!];
     for (const file of research) if (file.path !== `research/${safeRelativePath(file.filename)}`) throw new Error(`Invalid research payload path: ${file.path}`);
     for (const file of manifest.recoverySources!) if (file.path !== `recovery/${safeRelativePath(file.filename)}`) throw new Error(`Invalid recovery payload path: ${file.path}`);
-    const dependencies = await researchDependencies(research, filename => readFile(join(directory, "research", filename)));
+    if (manifest.backupVersion >= 4) for (const file of research) await validateActiveLedger(join(directory, file.path), file.filename);
+    const dependencies = await researchDependencies(research, filename => readFile(join(directory, "research", filename)), manifest.backupVersion === 3);
     for (const filename of dependencies.sources) if (!manifest.recoverySources!.some(file => file.filename === filename)) throw new Error(`Manifest missing required recovery source: ${filename}`);
     const references = dependencies.pins.map(pin => {
       const actual = pin.filename.startsWith("data/research/")
         ? research.find(file => `data/research/${file.filename}` === pin.filename)!.sha256
         : manifest.recoverySources!.find(file => file.filename === pin.filename)!.sha256;
-      if (pin.requiredMatch && actual !== pin.sha256) throw new Error(`Required ledger dependency checksum mismatch: ${pin.owner} -> ${pin.filename}`);
-      return { ...pin, actualSha256: actual, matches: actual === pin.sha256 };
+      let historicalPath: string | undefined;
+      if (pin.requiredMatch && actual !== pin.sha256) {
+        const known = manifest.backupVersion >= 4 && HISTORICAL_DEPENDENCIES.find(item => item.owner === pin.owner && item.path === pin.filename && item.expected === pin.sha256 && item.current === actual);
+        const original = manifest.historicalSources?.find(item => item.originalFilename === pin.filename && item.sha256 === pin.sha256);
+        historicalPath = `historical/${pin.sha256}/${pin.filename}`;
+        if (!known || !original || original.revision !== known.revision || original.path !== historicalPath || original.filename !== historicalPath) throw new Error(`Required ledger dependency checksum mismatch: ${pin.owner} -> ${pin.filename}`);
+      }
+      return { ...pin, actualSha256: actual, matches: actual === pin.sha256, ...(historicalPath ? { historicalPath } : {}) };
     });
     if (JSON.stringify(references) !== JSON.stringify(manifest.dependencyReferences)) throw new Error("Manifest dependency references mismatch");
   }
@@ -237,8 +302,8 @@ export async function createWeeklyBackup(options: { dryRun?: boolean; root?: str
   const shadowTrackers = shadowFiles.map(f => [`chase-speed-reliability-shadow-v1/${f}`, "src/lib/racing/chase-speed-reliability-capture.ts"] as const);
   const trackers = await Promise.all([...BACKUP_TRACKERS, ...shadowTrackers].map(([filename, source]) => inspectTracker(root, filename, source)));
   const artifacts = await Promise.all(BACKUP_ARTIFACTS.map(([filename, role, source]) => inspectArtifact(root, filename, role, source)));
-  const { recoverySources, references } = await inspectRecoverySources(root, [...trackers, ...artifacts]);
-  for (const reference of references.filter(pin => !pin.matches)) console.warn(`Historical provenance reference differs from current bytes: ${reference.owner} -> ${reference.filename}; both hashes retained in manifest.`);
+  const { recoverySources, references, historicalSources, historicalBytes } = await inspectRecoverySources(root, [...trackers, ...artifacts]);
+  for (const reference of references.filter(pin => !pin.matches)) console.warn(`Historical provenance reference differs from current bytes: ${reference.owner} -> ${reference.filename}; both hashes retained in manifest; ledger originals additionally preserved under historical/.`);
   console.log(`Required artifacts: ${artifacts.length}\nRecovery sources: ${recoverySources.length}`);
   console.log(`Database: ${config.database}\nLocal destination: ${destination.local}\nOffsite destination: ${destination.offsite ?? "NOT CONFIGURED"}\nTrackers (${trackers.length}):\n${trackers.map((t) => t.filename).join("\n")}`);
   if (destination.offsite) {
@@ -277,13 +342,17 @@ export async function createWeeklyBackup(options: { dryRun?: boolean; root?: str
       await copyFile(join(root, source.filename), target, constants.COPYFILE_EXCL);
       if (await sha256(target) !== source.sha256) throw new Error(`Recovery source changed during backup: ${source.filename}`);
     }
-    manifest = buildManifest({ createdAt: now.toISOString(), name, database: config.database, dump: { bytes: (await stat(dumpPath)).size, sha256: await sha256(dumpPath) }, trackers, artifacts, recoverySources, references, commit, branch, pgDumpVersion });
+    for (const [path, bytes] of historicalBytes) {
+      await mkdir(dirname(join(directory, path)), { recursive: true });
+      await writeFile(join(directory, path), bytes, { flag: "wx" });
+    }
+    manifest = buildManifest({ createdAt: now.toISOString(), name, database: config.database, dump: { bytes: (await stat(dumpPath)).size, sha256: await sha256(dumpPath) }, trackers, artifacts, recoverySources, historicalSources, references, commit, branch, pgDumpVersion });
     await writeFile(join(directory, "manifest.json"), `${JSON.stringify(manifest, null, 2)}\n`, { flag: "wx", mode: 0o600 });
     const partial = join(staging, archiveFilename);
     console.log("Creating archive and verifying extracted checksums...");
     await run("tar", ["-czf", partial, "-C", staging, name]);
     const listing = (await run("tar", ["-tzf", partial])).split("\n");
-    for (const file of ["postgres.dump", "manifest.json", ...[...trackers, ...artifacts].map((t) => `research/${t.filename}`), ...recoverySources.map(s => `recovery/${s.filename}`)]) {
+    for (const file of ["postgres.dump", "manifest.json", ...[...trackers, ...artifacts].map((t) => `research/${t.filename}`), ...recoverySources.map(s => `recovery/${s.filename}`), ...historicalBytes.keys()]) {
       if (!listing.includes(`${name}/${file}`)) throw new Error(`Archive missing ${file}`);
     }
     const verification = join(staging, "verify");

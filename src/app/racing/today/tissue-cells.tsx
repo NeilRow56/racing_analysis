@@ -1,3 +1,4 @@
+import type { CurrentPriceRunner } from "@/lib/racing/current-price-overlay";
 import { summarizeTodayMarketPrice, type TodayRunner } from "@/lib/racing/todays-racing";
 import { isTissueTop2SpeedRankWatch, TISSUE_SPEED_RANK_WATCH_TOOLTIP } from "@/lib/racing/tissue-speed-rank-watch";
 import { TISSUE_INPUT_RELIABILITY_TOOLTIP } from "@/lib/racing/tissue-input-reliability";
@@ -36,14 +37,15 @@ export function JumpTissueCell({ runner }: { runner: TodayRunner }) {
   </div>;
 }
 
-export function TodayMarketOdds({ runner }: { runner: TodayRunner }) {
-  const market = summarizeTodayMarketPrice(runner);
+export function TodayMarketOdds({ runner }: { runner: CurrentPriceRunner }) {
+  const current = runner.currentBookmakerPrices;
+  const market = summarizeTodayMarketPrice(current ? { ...runner, bookmakerQuotes: current.quotes } : runner);
   const forecast = market.forecastOdds
     ? `${market.forecastOdds}${market.forecastDecimalOdds === null ? "" : ` (${market.forecastDecimalOdds.toFixed(2)})`}`
     : "-";
   if (market.medianDecimalOdds === null) {
     return (
-      <span className="text-slate-400" title={`No market quote. Forecast: ${forecast}`}>
+      <span className="text-slate-400" title={`${current ? `Current Sporting Life retrieval ${current.retrievedAt}; no bookmaker quotes. Display only; not frozen morning evidence.` : "No market quote."} Forecast: ${forecast}`}>
         -
       </span>
     );
@@ -55,6 +57,7 @@ export function TodayMarketOdds({ runner }: { runner: TodayRunner }) {
     `${quote.bookmakerName ?? quote.bookmakerId ?? "Unknown"}: ${quote.fractionalOdds ?? quote.decimalOdds.toFixed(2)} (${quote.decimalOdds.toFixed(2)})`
   ).join("\n");
   const title = [
+    current ? `Current Sporting Life bookmaker prices retrieved ${new Date(current.retrievedAt).toLocaleString("en-GB", { timeZone: "Europe/London" })} (London). Display only; not frozen morning evidence.` : "Original imported bookmaker evidence; no current price overlay.",
     `Median market: ${median} (${market.medianDecimalOdds.toFixed(2)}), ${market.quoteCount} quotes`,
     `Best: ${best}${providers}`,
     `Forecast: ${forecast}`,
@@ -64,6 +67,7 @@ export function TodayMarketOdds({ runner }: { runner: TodayRunner }) {
     <div className="leading-4" title={title}>
       <div className="font-semibold text-slate-900">{median}</div>
       <div className="truncate text-[10px] text-slate-500">Best {best}</div>
+      {current ? <div className="text-[10px] text-slate-500">Current · {new Date(current.retrievedAt).toLocaleTimeString("en-GB", { timeZone: "Europe/London" })}</div> : null}
     </div>
   );
 }

@@ -28927,6 +28927,63 @@
         "top3": false,
         "settledFieldSize": 14
       }
+    },
+    {
+      "raceId": "48acef2a-141d-4a8a-9ace-ba32cbf59e4f",
+      "runnerId": "b13078fd-8e9f-43f9-9637-e0e5369eb29c",
+      "horseId": "4923c767-c715-4b5c-90cd-3f2330cb275e",
+      "horseName": "Diamond Exchange",
+      "raceDate": "2026-11-13",
+      "scheduledOff": "2026-11-13T20:00:00.000Z",
+      "course": "Dundalk",
+      "raceName": "BAR 1 Betting 'Best Odds Guaranteed Overnight' Handicap",
+      "family": "AW",
+      "firstCapturedAt": "2026-11-13T19:19:30.458Z",
+      "capturedFieldRunnerIds": [
+        "cbf81210-9f69-41f5-a5d0-ce244360ca29",
+        "36de9bce-5128-45d2-8387-3c9e27268666",
+        "4d6ad3e5-0511-440b-bb26-7fb27406803c",
+        "ac5da672-ee16-4167-949e-1018147955af",
+        "8eb75079-0a35-4b2d-a76f-f83c93e2d032",
+        "b13078fd-8e9f-43f9-9637-e0e5369eb29c",
+        "a18b76d2-23bf-4c71-ba29-e7e548ccdef6",
+        "0114c147-375b-416f-8203-23fe85524c51",
+        "a43976ee-1a2c-49f7-8d50-56bf2b291c24",
+        "27732c74-1e5a-4dad-8ae3-65d61bd5d33c",
+        "17ffbcfc-3f25-4796-8bad-e2571492da7d"
+      ],
+      "declaredFieldSize": 10,
+      "starterFieldSize": null,
+      "handicap": "handicap",
+      "raceClass": "",
+      "officialRating": 80,
+      "orRank": 5,
+      "top3Or": false,
+      "sharesTopOr": false,
+      "bestL3Speed": 114.4173870526111,
+      "speedMetric": "bestAwSpeedLast3",
+      "speedVersion": "aw_speed_v1",
+      "sameOrGroupSize": 3,
+      "nextHighestBestL3": 106.80549939344922,
+      "speedEdge": 7.61188765916188,
+      "displayedSpeedEdge": "7.61",
+      "edgeAtLeast10": false,
+      "displayTier": "restrained",
+      "outcome": {
+        "finishPosition": 6,
+        "resultStatus": "finished",
+        "settledAt": "2026-11-14T04:41:10.898Z",
+        "settlementVersion": "canonical_settlement_v3",
+        "status": "settled",
+        "starter": true,
+        "finishRank": 6,
+        "winner": false,
+        "winnerCredit": 0,
+        "deadHeatDivisor": 1,
+        "normalizedFinish": 0.5555555555555556,
+        "top3": false,
+        "settledFieldSize": 10
+      }
     }
   ]
 }

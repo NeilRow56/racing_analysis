@@ -2,7 +2,7 @@ import { afterEach, test } from "node:test";
 import assert from "node:assert/strict";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
-import { mkdtemp, mkdir, readFile, readdir, rm, stat, writeFile } from "node:fs/promises";
+import { copyFile, mkdtemp, mkdir, readFile, readdir, rm, stat, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { tmpdir } from "node:os";
 import { BACKUP_ARTIFACTS, BACKUP_RECOVERY_SOURCES } from "./backup-artifact-inventory";
@@ -16,11 +16,20 @@ async function fixture() {
   directories.push(root);
   await mkdir(join(root, "data/research"), { recursive: true });
   await mkdir(join(root, "data/research/chase-speed-reliability-shadow-v1"));
-  for (const [filename] of BACKUP_TRACKERS) await writeFile(join(root, "data/research", filename), '{"version":"test_v1"}\n');
-  for (const [filename] of BACKUP_ARTIFACTS) await writeFile(join(root, "data/research", filename), '{"version":"frozen_fixture","checksum":"internal_model_hash"}\n');
+  for (const [filename] of BACKUP_TRACKERS) { await mkdir(dirname(join(root, "data/research", filename)), { recursive: true }); await writeFile(join(root, "data/research", filename), '{"version":"test_v1"}\n'); }
+  for (const [filename] of BACKUP_ARTIFACTS) { await mkdir(dirname(join(root, "data/research", filename)), { recursive: true }); await writeFile(join(root, "data/research", filename), '{"version":"frozen_fixture","checksum":"internal_model_hash"}\n'); }
   for (const filename of new Set([...BACKUP_RECOVERY_SOURCES, ...BACKUP_TRACKERS.map(t => t[1]), ...BACKUP_ARTIFACTS.map(t => t[2])])) {
     await mkdir(dirname(join(root, filename)), { recursive: true });
     await writeFile(join(root, filename), `fixture source: ${filename}\n`);
+  }
+  const activation = JSON.parse(await readFile("data/research/prospective-epochs-2026-11-11/activation.json", "utf8"));
+  activation.sourceHashes = { "package.json": await sha256(join(root, "package.json")) };
+  activation.roots = ["package.json"]; activation.dependencyGraph = { "package.json": [] }; activation.originalEvidenceHashes = {};
+  await writeFile(join(root, "data/research/prospective-epochs-2026-11-11/activation.json"), JSON.stringify(activation));
+  for (const epoch of Object.values(activation.epochs) as { ledger: string }[]) {
+    const ledger = JSON.parse(await readFile(epoch.ledger, "utf8"));
+    ledger.observations = []; ledger.epoch = null; ledger.sourceHashes = {};
+    await writeFile(join(root, epoch.ledger), JSON.stringify(ledger));
   }
   return root;
 }
@@ -39,10 +48,10 @@ const now = new Date("2026-10-18T05:30:00Z");
 const env = { NODE_ENV: "test" as const, DATABASE_URL: "postgresql://user:secret@localhost:5432/racing_analysis?sslmode=prefer" };
 
 test("inventory is unique, exists, and is tied to current writer path definitions", async () => {
-  assert.equal(BACKUP_TRACKERS.length, 31);
-  assert.equal(new Set(BACKUP_TRACKERS.map(([name]) => name)).size, 31);
+  assert.equal(BACKUP_TRACKERS.length, 36);
+  assert.equal(new Set(BACKUP_TRACKERS.map(([name]) => name)).size, 36);
   for (const [filename, source] of BACKUP_TRACKERS) {
-    assert.ok((await readFile(source, "utf8")).includes(filename), `${filename} moved; update inventory`);
+    assert.ok((await readFile(source, "utf8")).includes(filename.replace("prospective-epochs-2026-11-11/", "")), `${filename} moved; update inventory`);
     await inspectTracker(process.cwd(), filename, source);
   }
   assert.ok(!BACKUP_TRACKERS.some(([name]) => name === ("aw-tissue-paired-forward-v1.json" as string)));
@@ -112,8 +121,8 @@ test("complete archive, extracted checksums, offsite copy, and no overwrite", as
   await runner("tar", ["-xzf", result.archivePath, "-C", extracted]);
   const directory = join(extracted, backupName(now));
   await verifyExtracted(directory, result.manifest);
-  assert.equal(result.manifest.backupVersion, 3);
-  assert.equal(result.manifest.totalArtifactCount, 18);
+  assert.equal(result.manifest.backupVersion, 4);
+  assert.equal(result.manifest.totalArtifactCount, 23);
   assert.deepEqual(result.manifest.artifacts.map(a => a.filename).sort(), BACKUP_ARTIFACTS.map(a => a[0]).sort());
   for (const file of [...result.manifest.trackers, ...result.manifest.artifacts]) {
     assert.equal(await readFile(join(directory, file.path), "utf8"), await readFile(join(root, "data/research", file.filename), "utf8"));
@@ -176,7 +185,7 @@ test("explicit research coverage includes five ledgers, every frozen model, cali
   for (const filename of ["forward-value-calibration-v1.json", "aw-surface-material-v1.json", "tissue-generation-2026-11-manifest.json", "tissue-generation-development-2026-11.json", "tissue-generation-chase-promotion-2026-11.json"]) {
     assert.ok(BACKUP_ARTIFACTS.some(a => a[0] === filename));
   }
-  assert.equal(new Set(BACKUP_ARTIFACTS.map(a => a[0])).size, 18);
+  assert.equal(new Set(BACKUP_ARTIFACTS.map(a => a[0])).size, 23);
   const artifacts = await Promise.all(BACKUP_ARTIFACTS.map(([filename, role, source]) => inspectArtifact(process.cwd(), filename, role, source)));
   assert.ok(artifacts.every(a => a.bytes > 0 && a.identifiers));
 });
@@ -222,6 +231,9 @@ test("verification detects incomplete manifests, missing dump, and source/manife
   const root = await fixture();
   const [ledger, source] = BACKUP_TRACKERS[26];
   await writeFile(join(root, "data/research", ledger), JSON.stringify({ version: "pinned", sourceHashes: { [source]: await sha256(join(root, source)) } }));
+  const activePath = join(root, "data/research/prospective-epochs-2026-11-11/hurdle-v3-shadow-v2.json");
+  const active = JSON.parse(await readFile(activePath, "utf8")); active.sourceHashes = { [source]: await sha256(join(root, source)) };
+  await writeFile(activePath, JSON.stringify(active));
   const result = (await createWeeklyBackup({ root, env, now, run: runner }))!;
   const extracted = join(root, "extracted");
   await mkdir(extracted);
@@ -292,4 +304,53 @@ test("archive membership omission prevents publication", async () => {
     return command === "tar" && args.includes("-tzf") ? output.split("\n").filter(path => !path.endsWith(BACKUP_ARTIFACTS[0][0])).join("\n") : output;
   } }), /Archive missing research\/tissue-model-v1.json/);
   assert.deepEqual(await readdir(join(root, "backups")), []);
+});
+
+// Real evidence is copied into a disposable workspace. PostgreSQL is a stub;
+// only the existing Git object database is read to recover original sources.
+test("isolated full evidence archive preserves historical and active epochs and rejects corruption", { timeout: 60000 }, async () => {
+  const root = await fixture();
+  await writeFile(join(root, ".git"), `gitdir: ${join(process.cwd(), ".git")}\n`);
+  const research = [...await Promise.all(BACKUP_TRACKERS.map(([f, s]) => inspectTracker(process.cwd(), f, s))),
+    ...await Promise.all(BACKUP_ARTIFACTS.map(([f, r, s]) => inspectArtifact(process.cwd(), f, r, s)))];
+  const preflight = await inspectRecoverySources(process.cwd(), research);
+  for (const file of research) await copyFile(join(process.cwd(), "data/research", file.filename), join(root, "data/research", file.filename));
+  for (const file of preflight.recoverySources) {
+    await mkdir(dirname(join(root, file.filename)), { recursive: true });
+    await copyFile(join(process.cwd(), file.filename), join(root, file.filename));
+  }
+  const result = (await createWeeklyBackup({ root, env, now, run: runner }))!;
+  assert.equal(result.manifest.historicalSources.length, 7);
+  assert.equal(new Set(result.manifest.historicalSources.map(s => s.path)).size, 7);
+  for (const pin of result.manifest.dependencyReferences.filter(p => p.requiredMatch && !p.matches)) {
+    assert.ok(pin.historicalPath);
+    assert.ok(result.manifest.historicalSources.some(s => s.path === pin.historicalPath && s.sha256 === pin.sha256));
+  }
+  const extracted = join(root, "extracted"); await mkdir(extracted);
+  await runner("tar", ["-xzf", result.archivePath, "-C", extracted]);
+  const directory = join(extracted, backupName(now));
+  await verifyExtracted(directory, result.manifest);
+  for (const file of research) assert.equal(await sha256(join(directory, "research", file.filename)), file.sha256);
+  const original = result.manifest.historicalSources[0], path = join(directory, original.path);
+  const bytes = await readFile(path); await writeFile(path, Buffer.alloc(bytes.length));
+  await assert.rejects(verifyExtracted(directory, result.manifest), /checksum mismatch/);
+  await writeFile(path, bytes);
+  const missingHistory = structuredClone(result.manifest); missingHistory.historicalSources = [];
+  await assert.rejects(verifyExtracted(directory, missingHistory), /dependency checksum mismatch/);
+  for (const name of ["positive-neutral", "hurdle-v3-shadow", "hurdle-v3-market-edge"]) {
+    const missingEpoch = structuredClone(result.manifest);
+    missingEpoch.trackers = missingEpoch.trackers.filter(t => !t.filename.endsWith(`/${name}-v2.json`)); missingEpoch.totalTrackerCount--;
+    await assert.rejects(verifyExtracted(directory, missingEpoch), /missing required tracker/);
+  }
+  // Active manifest pins cannot use historical substitutions.
+  for (const filename of ["src/lib/racing/hurdle-v3-challenger-features.ts", "package.json"]) {
+    const source = join(root, filename), bytes = await readFile(source);
+    await writeFile(source, "deliberate unknown corruption");
+    await assert.rejects(inspectRecoverySources(root, research), /dependency checksum mismatch/);
+    await writeFile(source, bytes);
+  }
+  const historical = result.manifest.historicalSources[0];
+  await writeFile(join(root, ".git"), "gitdir: /nonexistent-backup-fixture\n");
+  await assert.rejects(inspectRecoverySources(root, research), /Historical dependency unavailable/);
+  assert.ok(historical.revision);
 });

@@ -36,4 +36,9 @@ export const BACKUP_TRACKERS = [
   ["hurdle-v3-market-edge-prospective-v1.json", "src/lib/racing/hurdle-v3-market-edge.ts"],
   ["tissue-positive-neutral-prospective-v1.json", "src/lib/racing/tissue-positive-neutral.ts"],
   ["turf-2027-early-season-v1.json", "src/lib/racing/turf-early-season.ts"],
+  ["prospective-epochs-2026-11-11/positive-neutral-v2.json", "src/lib/racing/prospective-epoch-config.ts"],
+  ["prospective-epochs-2026-11-11/hurdle-v3-shadow-v2.json", "src/lib/racing/prospective-epoch-config.ts"],
+  ["prospective-epochs-2026-11-11/hurdle-v3-market-edge-v2.json", "src/lib/racing/prospective-epoch-config.ts"],
+  ["chase-shadow-prospective-v1.json", "src/lib/racing/chase-shadow-forward.ts"],
+  ["or-best-l3-speed-forward-v1.json", "src/lib/racing/or-speed-forward.ts"],
 ] as const;

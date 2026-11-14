@@ -1,3 +1,4 @@
+import { attachCurrentPriceOverlays } from "@/lib/racing/current-price-overlay";
 import { TurfEarlySeasonLabel } from "./turf-early-season-label";
 import { HurdleLowFormLabel } from "./hurdle-low-form-label";
 import { loadHurdleV3Shadow, type HurdleV3ShadowObservation } from "@/lib/racing/hurdle-v3-shadow";
@@ -151,6 +152,9 @@ export default async function TodaysRacingPage({ searchParams }: PageProps) {
         ]);
         displayData = { ...displayData, meetings: attachFrozenValueToMeetings(attachJumpTissueToMeetings(attachAwTissueToMeetings(displayData.meetings, awTissue), jumpTissue), valueCohorts.map(c => c.data)) };
       }
+    }
+    if (displayData.status === "ok") {
+      displayData = { ...displayData, meetings: await attachCurrentPriceOverlays(connection.db, displayData.meetings, raceDate) };
     }
     await connection.client.end();
     connection = null;
