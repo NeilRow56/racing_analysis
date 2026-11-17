@@ -1,6 +1,6 @@
 import { profileRequest } from "@/lib/racing/performance-profile";
 import { profiledServerWork, profiledCalculation } from "./profiled-server-work";
-import { ProspectiveEpochResearch } from "./prospective-epoch-monitor";
+import { ProspectiveEpochDisclosure as ProspectiveEpochResearch } from "./prospective-epoch-disclosure";
 import { EarlyTurfResearch } from "./turf-early-season-monitor";
 import { LowFormHurdleResearch } from "./hurdle-low-form-monitor";
 import { createResearchCache, researchFileIdentity } from "@/lib/racing/research-cache";

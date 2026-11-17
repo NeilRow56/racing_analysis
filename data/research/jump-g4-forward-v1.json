@@ -8640,8 +8640,16 @@
         "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
         "bookmakerQuoteCount": 3
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "settlementVersion": "canonical_settlement_v3",
+        "finishingPosition": 3,
+        "resultStatus": "finished",
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 2.375,
+        "profitLoss": -1
+      },
+      "settledAt": "2026-11-15T10:31:23.158Z"
     },
     {
       "raceId": "8ac38a57-be61-4237-8bd1-63d956e0ecf2",
@@ -8693,8 +8701,16 @@
         "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
         "bookmakerQuoteCount": 3
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "settlementVersion": "canonical_settlement_v3",
+        "finishingPosition": 2,
+        "resultStatus": "finished",
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 2.75,
+        "profitLoss": -1
+      },
+      "settledAt": "2026-11-15T10:31:23.158Z"
     },
     {
       "raceId": "9b151132-5f60-4627-83d7-a8b9f12bd73c",
@@ -8746,8 +8762,16 @@
         "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
         "bookmakerQuoteCount": 3
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "settlementVersion": "canonical_settlement_v3",
+        "finishingPosition": null,
+        "resultStatus": "non_runner",
+        "won": null,
+        "deadHeatDivisor": 1,
+        "finalSp": null,
+        "profitLoss": null
+      },
+      "settledAt": "2026-11-15T10:31:23.158Z"
     },
     {
       "raceId": "06824508-25f2-4886-b292-e2b26d711148",
@@ -8799,8 +8823,16 @@
         "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
         "bookmakerQuoteCount": 3
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "settlementVersion": "canonical_settlement_v3",
+        "finishingPosition": 4,
+        "resultStatus": "finished",
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 3,
+        "profitLoss": -1
+      },
+      "settledAt": "2026-11-15T10:31:23.158Z"
     },
     {
       "raceId": "7a7af113-6350-4348-903e-9176fdbeb820",
@@ -8852,8 +8884,16 @@
         "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
         "bookmakerQuoteCount": 3
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "settlementVersion": "canonical_settlement_v3",
+        "finishingPosition": 4,
+        "resultStatus": "finished",
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 2.25,
+        "profitLoss": -1
+      },
+      "settledAt": "2026-11-15T10:31:23.158Z"
     },
     {
       "raceId": "6e516ab3-f437-457f-8434-c759fed79b79",
@@ -8905,8 +8945,16 @@
         "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
         "bookmakerQuoteCount": 3
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "settlementVersion": "canonical_settlement_v3",
+        "finishingPosition": 6,
+        "resultStatus": "finished",
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 11,
+        "profitLoss": -1
+      },
+      "settledAt": "2026-11-15T10:31:23.158Z"
     },
     {
       "raceId": "da782a62-8bda-4a32-8783-1152d278f340",
@@ -8958,8 +9006,138 @@
         "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
         "bookmakerQuoteCount": 3
       },
-      "outcome": null,
-      "settledAt": null
+      "outcome": {
+        "settlementVersion": "canonical_settlement_v3",
+        "finishingPosition": null,
+        "resultStatus": "non_runner",
+        "won": null,
+        "deadHeatDivisor": 1,
+        "finalSp": null,
+        "profitLoss": null
+      },
+      "settledAt": "2026-11-15T10:31:23.158Z"
+    },
+    {
+      "raceId": "11386ec3-50f1-43d2-81cc-ad76d328bf87",
+      "sourceId": "948700",
+      "raceDate": "2026-11-16",
+      "scheduledOff": "2026-11-16T14:45:00.000Z",
+      "scheduledTime": "14:45",
+      "course": "Plumpton",
+      "raceName": "More Radio Novices' Limited Handicap Hurdle",
+      "subtype": "Hurdle",
+      "subtypeCode": "hurdle",
+      "handicapStatus": "handicap",
+      "fieldSize": 8,
+      "runnerId": "bfc05cd8-f0d3-453d-bdc9-af20d43c7dc3",
+      "horseId": "be874df5-e6ea-4df3-bffe-bcf097fd9d84",
+      "horseName": "Alan Bresil",
+      "recordedAt": "2026-11-16T08:02:19.463Z",
+      "recordedPreRace": true,
+      "components": {
+        "averageL3JumpSpeed": 100.29712921744255,
+        "averageL3JumpSpeedRank": 3,
+        "latestJumpSpeed": 100.75858130814235,
+        "previousJumpSpeed": 99.83567712674272,
+        "latestMinusPrevious": 0.9229041813996304,
+        "previousClass": 4,
+        "currentClass": 5,
+        "classDropAmount": 1
+      },
+      "context": {
+        "officialRating": 94,
+        "officialRatingRank": 1,
+        "officialRatingTop3": true,
+        "officialRatingGapToBest": 0,
+        "officialRatingRelativeToFieldMean": 12.5,
+        "trainerPriorRate": 14.399999999999999,
+        "jockeyPriorRate": 10,
+        "daysSinceRun": 4,
+        "priorUsableJumpSpeedCount": 14,
+        "jprARank": 2,
+        "jprBRank": 2,
+        "jumpTissueRank": null,
+        "jumpTissueProbability": null
+      },
+      "market": {
+        "medianBookmakerDecimal": 12,
+        "impliedProbability": 0.08333333333333333,
+        "marketRank": 6,
+        "priceCapturedAt": "2026-11-16T08:02:19.463Z",
+        "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
+        "bookmakerQuoteCount": 3
+      },
+      "outcome": {
+        "settlementVersion": "canonical_settlement_v3",
+        "finishingPosition": null,
+        "resultStatus": "non_runner",
+        "won": null,
+        "deadHeatDivisor": 1,
+        "finalSp": null,
+        "profitLoss": null
+      },
+      "settledAt": "2026-11-16T13:01:14.290Z"
+    },
+    {
+      "raceId": "de1c7237-ee04-4950-8367-10a3d2b1e247",
+      "sourceId": "948701",
+      "raceDate": "2026-11-16",
+      "scheduledOff": "2026-11-16T15:15:00.000Z",
+      "scheduledTime": "15:15",
+      "course": "Plumpton",
+      "raceName": "Docker Hughes Memorial Race Handicap Chase",
+      "subtype": "Chase",
+      "subtypeCode": "chase",
+      "handicapStatus": "handicap",
+      "fieldSize": 5,
+      "runnerId": "86f6d148-102d-4c65-93d2-5a634c79af3f",
+      "horseId": "2bbfbcbf-4c5b-4c3f-b531-2645e31d01ee",
+      "horseName": "Back It Up",
+      "recordedAt": "2026-11-16T08:02:19.463Z",
+      "recordedPreRace": true,
+      "components": {
+        "averageL3JumpSpeed": 105.25033204686106,
+        "averageL3JumpSpeedRank": 1,
+        "latestJumpSpeed": 115.1324906354535,
+        "previousJumpSpeed": 62.72884614334572,
+        "latestMinusPrevious": 52.40364449210777,
+        "previousClass": 3,
+        "currentClass": 5,
+        "classDropAmount": 2
+      },
+      "context": {
+        "officialRating": 102,
+        "officialRatingRank": 2,
+        "officialRatingTop3": true,
+        "officialRatingGapToBest": 3,
+        "officialRatingRelativeToFieldMean": 7.400000000000006,
+        "trainerPriorRate": 18.29268292682927,
+        "jockeyPriorRate": 24.479166666666664,
+        "daysSinceRun": 15,
+        "priorUsableJumpSpeedCount": 5,
+        "jprARank": 1,
+        "jprBRank": 1,
+        "jumpTissueRank": null,
+        "jumpTissueProbability": null
+      },
+      "market": {
+        "medianBookmakerDecimal": 4.33,
+        "impliedProbability": 0.23094688221709006,
+        "marketRank": 3,
+        "priceCapturedAt": "2026-11-16T08:02:19.463Z",
+        "priceVersionSource": "sporting_life_median_bookmaker_at_capture_v1",
+        "bookmakerQuoteCount": 3
+      },
+      "outcome": {
+        "settlementVersion": "canonical_settlement_v3",
+        "finishingPosition": 3,
+        "resultStatus": "finished",
+        "won": false,
+        "deadHeatDivisor": 1,
+        "finalSp": 5.5,
+        "profitLoss": -1
+      },
+      "settledAt": "2026-11-16T16:01:10.497Z"
     }
   ]
 }

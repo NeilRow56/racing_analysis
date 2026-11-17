@@ -1,5 +1,18 @@
 # Local automation — pre-activation safety review
 
+**Current recommendation, 15 November 09:19 GMT: GO for future scheduled runs.**
+After the user approved Bun in Postgres.app, native LaunchAgent read-only database
+readiness passed. See the [database failure and resolution record](DATABASE-FAILURE-2026-11-15.md).
+Both agents remain enabled on their original schedules with `RunAtLoad=false`;
+no reload, manual workflow or missed-collection replay was performed.
+
+**Operational update, 15 November 2026:** both user agents were activated at
+06:05:32.985486 GMT with installed `RunAtLoad=false` copies. See the
+[activation record and first-run instructions](ACTIVATION-2026-11-15.md).
+The review below is historical; its NO-GO recommendation and the status command's
+hard-coded readiness banner predate this authorised activation. Templates remain
+disabled. Never install their `RunAtLoad=true` setting unchanged.
+
 **Nothing in this directory is installed or loaded. Both templates have `Disabled=true`.
 Do not activate them during this review. Activation recommendation: **NO-GO** until
 runtime acceptance and the Stage B ledger hash drift are reviewed. Shared exclusion is now implemented; see [Stage B](../concurrency/STAGE-B.md).** `RunAtLoad=true` means a later deliberate
@@ -273,6 +286,7 @@ chmod 700 "$HOME/Library/Logs/RacingAnalysis"
 for job in collection settlement; do
   cp "ops/launchd/uk.racing-analysis.$job.plist" "$HOME/Library/LaunchAgents/uk.racing-analysis.$job.plist"
   /usr/libexec/PlistBuddy -c 'Set :Disabled false' "$HOME/Library/LaunchAgents/uk.racing-analysis.$job.plist"
+  /usr/libexec/PlistBuddy -c 'Set :RunAtLoad false' "$HOME/Library/LaunchAgents/uk.racing-analysis.$job.plist"
   plutil -lint "$HOME/Library/LaunchAgents/uk.racing-analysis.$job.plist"
   launchctl enable "gui/$(id -u)/uk.racing-analysis.$job"
   launchctl bootstrap "gui/$(id -u)" "$HOME/Library/LaunchAgents/uk.racing-analysis.$job.plist"
@@ -280,8 +294,8 @@ for job in collection settlement; do
 done
 ```
 
-**Bootstrap may run work immediately because RunAtLoad is true. Do not use this
-as a validation test.** Do not use `kickstart` as a connectivity probe.
+**Validate installed `RunAtLoad=false` before bootstrap, preserving calendar triggers.**
+Do not use `kickstart` as a connectivity probe.
 
 Future rollback (prefer an idle interval after the current workflow finishes):
 
