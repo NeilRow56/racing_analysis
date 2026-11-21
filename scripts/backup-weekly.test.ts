@@ -6,8 +6,12 @@ import { copyFile, mkdtemp, mkdir, readFile, readdir, rm, stat, writeFile } from
 import { dirname, join } from "node:path";
 import { tmpdir } from "node:os";
 import { BACKUP_ARTIFACTS, BACKUP_RECOVERY_SOURCES } from "./backup-artifact-inventory";
-import { BACKUP_TRACKERS } from "./backup-tracker-inventory";
+import { AW_PROFIT_BACKUP_TRACKER, AW_PROFIT_RECOVERY_SOURCES, BACKUP_TRACKERS, BACKUP_TRACKERS_V4 } from "./backup-tracker-inventory";
 import { backupName, buildManifest, createWeeklyBackup, databaseConfig, destinations, inspectArtifact, inspectRecoverySources, inspectTracker, sha256, verifyExtracted, type VerifiableManifest } from "./backup-weekly";
+import { GENERATION_MODEL_HASHES } from "../src/lib/racing/tissue-generation-config";
+
+const [awProfitFilename, awProfitWriter] = AW_PROFIT_BACKUP_TRACKER;
+const emptyAwProfit = { version: "aw_profit_shadow_v1", armedAt: "2026-11-21T13:12:53.086Z", races: [] };
 
 const directories: string[] = [];
 afterEach(async () => { await Promise.all(directories.splice(0).map((path) => rm(path, { recursive: true, force: true }))); });
@@ -18,7 +22,8 @@ async function fixture() {
   await mkdir(join(root, "data/research/chase-speed-reliability-shadow-v1"));
   for (const [filename] of BACKUP_TRACKERS) { await mkdir(dirname(join(root, "data/research", filename)), { recursive: true }); await writeFile(join(root, "data/research", filename), '{"version":"test_v1"}\n'); }
   for (const [filename] of BACKUP_ARTIFACTS) { await mkdir(dirname(join(root, "data/research", filename)), { recursive: true }); await writeFile(join(root, "data/research", filename), '{"version":"frozen_fixture","checksum":"internal_model_hash"}\n'); }
-  for (const filename of new Set([...BACKUP_RECOVERY_SOURCES, ...BACKUP_TRACKERS.map(t => t[1]), ...BACKUP_ARTIFACTS.map(t => t[2])])) {
+  await writeFile(join(root, "data/research", awProfitFilename), JSON.stringify(emptyAwProfit));
+  for (const filename of new Set([...BACKUP_RECOVERY_SOURCES, ...AW_PROFIT_RECOVERY_SOURCES, ...BACKUP_TRACKERS.map(t => t[1]), ...BACKUP_ARTIFACTS.map(t => t[2])])) {
     await mkdir(dirname(join(root, filename)), { recursive: true });
     await writeFile(join(root, filename), `fixture source: ${filename}\n`);
   }
@@ -48,8 +53,9 @@ const now = new Date("2026-10-18T05:30:00Z");
 const env = { NODE_ENV: "test" as const, DATABASE_URL: "postgresql://user:secret@localhost:5432/racing_analysis?sslmode=prefer" };
 
 test("inventory is unique, exists, and is tied to current writer path definitions", async () => {
-  assert.equal(BACKUP_TRACKERS.length, 36);
-  assert.equal(new Set(BACKUP_TRACKERS.map(([name]) => name)).size, 36);
+  assert.equal(BACKUP_TRACKERS_V4.length, 36);
+  assert.deepEqual(BACKUP_TRACKERS, [...BACKUP_TRACKERS_V4, AW_PROFIT_BACKUP_TRACKER]);
+  assert.equal(new Set(BACKUP_TRACKERS.map(([name]) => name)).size, 37);
   for (const [filename, source] of BACKUP_TRACKERS) {
     assert.ok((await readFile(source, "utf8")).includes(filename.replace("prospective-epochs-2026-11-11/", "")), `${filename} moved; update inventory`);
     await inspectTracker(process.cwd(), filename, source);
@@ -107,9 +113,24 @@ test("complete archive, extracted checksums, offsite copy, and no overwrite", as
   await writeFile(join(shadowDirectory, "frozen.json"), '{"cohort":"primary","runners":[]}\n');
   await writeFile(join(shadowDirectory, "incomplete.tmp"), "incomplete");
   await writeFile(join(root, "src/lib/racing/chase-speed-reliability-capture.ts"), "snapshot writer");
+  const awPath = join(root, "data/research", awProfitFilename);
+  const initialTracker = await inspectTracker(root, awProfitFilename, awProfitWriter);
+  const observation = {
+    raceId: "fixture-aw-race", raceDate: "2026-11-22", course: "Chelmsford City", sourceId: "123",
+    scheduledOff: "2026-11-22T15:00:00.000Z", sourceCapturedAt: "2026-11-22T08:00:00.000Z",
+    featureCutoffAt: "2026-11-22T08:00:00.000Z", decidedAt: "2026-11-22T08:01:00.000Z", sourceStage: "DORMANT",
+    modelVersion: "AW_TISSUE_V3", modelHash: GENERATION_MODEL_HASHES.AW,
+    marketSource: "sporting_life_median_bookmaker_at_capture_v1", completeMarket: false,
+    runners: [1, 2].map(rank => ({ runnerId: `r${rank}`, horseId: `h${rank}`, horseName: `Horse ${rank}`,
+      rank, probability: 0.5, latestPerformance: null, performanceRank: null, bestL3Speed: null,
+      medianBookmakerDecimal: null, quotes: [] })),
+    picks: { AW_TISSUE_V3: "r1", AW_PROFIT_V1: null, AW_PROFIT_V3: null }, outcomes: {},
+  };
+  const populatedLedger = JSON.stringify({ ...emptyAwProfit, races: [observation] });
+  await writeFile(awPath, populatedLedger);
   const offsite = join(root, "offsite");
   await mkdir(offsite);
-  const options = { root, env: { ...env, RACING_BACKUP_OFFSITE_DIR: offsite }, now, run: runner };
+  const options = { root, env: { ...env, RACING_BACKUP_OFFSITE_DIR: offsite }, now: new Date("2026-11-22T16:00:00Z"), run: runner };
   const result = (await createWeeklyBackup(options))!;
   assert.equal(result.manifest.totalTrackerCount, BACKUP_TRACKERS.length + 1);
   assert.ok(result.manifest.trackers.some(t => t.filename === "chase-speed-reliability-shadow-v1/frozen.json"));
@@ -119,9 +140,29 @@ test("complete archive, extracted checksums, offsite copy, and no overwrite", as
   const extracted = join(root, "extracted");
   await mkdir(extracted);
   await runner("tar", ["-xzf", result.archivePath, "-C", extracted]);
-  const directory = join(extracted, backupName(now));
+  const directory = join(extracted, backupName(options.now));
   await verifyExtracted(directory, result.manifest);
-  assert.equal(result.manifest.backupVersion, 4);
+  assert.equal(result.manifest.backupVersion, 5);
+  const awTracker = result.manifest.trackers.find(t => t.filename === awProfitFilename);
+  assert.ok(awTracker);
+  assert.notEqual(awTracker.sha256, initialTracker.sha256);
+  assert.equal(await readFile(join(directory, awTracker.path), "utf8"), populatedLedger);
+  for (const filename of [awProfitWriter, ...AW_PROFIT_RECOVERY_SOURCES]) {
+    assert.ok(result.manifest.recoverySources.some(source => source.filename === filename));
+  }
+  const v4 = structuredClone(result.manifest);
+  v4.backupVersion = 4;
+  v4.trackers = v4.trackers.filter(t => t.filename !== awProfitFilename);
+  v4.totalTrackerCount--;
+  const awSources: readonly string[] = [awProfitWriter, ...AW_PROFIT_RECOVERY_SOURCES];
+  v4.recoverySources = v4.recoverySources.filter(source => !awSources.includes(source.filename));
+  v4.totalRecoverySourceCount = v4.recoverySources.length;
+  const manifestPath = join(directory, "manifest.json");
+  const manifestBytes = await readFile(manifestPath);
+  await writeFile(manifestPath, JSON.stringify(v4));
+  await verifyExtracted(directory, v4);
+  await assert.rejects(verifyExtracted(directory, { ...v4, backupVersion: 5 }), /Manifest missing required tracker: aw-profit-shadow-v1/);
+  await writeFile(manifestPath, manifestBytes);
   assert.equal(result.manifest.totalArtifactCount, 23);
   assert.deepEqual(result.manifest.artifacts.map(a => a.filename).sort(), BACKUP_ARTIFACTS.map(a => a[0]).sort());
   for (const file of [...result.manifest.trackers, ...result.manifest.artifacts]) {
@@ -140,6 +181,7 @@ test("complete archive, extracted checksums, offsite copy, and no overwrite", as
   await assert.rejects(verifyExtracted(directory, result.manifest), /checksum mismatch/);
   await assert.rejects(createWeeklyBackup(options), /EEXIST/);
   assert.equal(await sha256(result.archivePath), result.archiveHash);
+  assert.equal(await readFile(awPath, "utf8"), populatedLedger);
   assert.deepEqual(await readdir(join(root, "backups")), [result.manifest.archiveFilename]);
 });
 test("missing required tracker fails before a dump", async () => {
@@ -170,7 +212,7 @@ test("unavailable offsite does not fail local backup", async () => {
 const prospectiveLedgers = [
   "hurdle-v3-prospective-shadow-v1.json", "hurdle-low-form-prospective-v1.json",
   "hurdle-v3-market-edge-prospective-v1.json", "tissue-positive-neutral-prospective-v1.json",
-  "turf-2027-early-season-v1.json",
+  "turf-2027-early-season-v1.json", awProfitFilename,
 ];
 const frozenModels = [
   "tissue-model-v1.json", "tissue-model-v2.json", "tissue-model-v3.json",
@@ -179,7 +221,7 @@ const frozenModels = [
   "tissue-generation-2026-11-turf.json", "tissue-generation-2026-11-aw.json",
   "tissue-generation-2026-11-hurdle.json", "tissue-generation-2026-11-chase.json",
 ];
-test("explicit research coverage includes five ledgers, every frozen model, calibration and recovery metadata", async () => {
+test("explicit research coverage includes prospective ledgers, every frozen model, calibration and recovery metadata", async () => {
   for (const filename of prospectiveLedgers) assert.ok(BACKUP_TRACKERS.some(t => t[0] === filename));
   assert.deepEqual(BACKUP_ARTIFACTS.filter(a => a[1] === "model").map(a => a[0]).sort(), frozenModels.sort());
   for (const filename of ["forward-value-calibration-v1.json", "aw-surface-material-v1.json", "tissue-generation-2026-11-manifest.json", "tissue-generation-development-2026-11.json", "tissue-generation-chase-promotion-2026-11.json"]) {

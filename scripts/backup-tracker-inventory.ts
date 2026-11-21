@@ -4,7 +4,7 @@
  * Immutable artifacts are listed separately in backup-artifact-inventory.ts.
  * Diagnostics and superseded aw-tissue-paired-forward-v1.json remain excluded.
  */
-export const BACKUP_TRACKERS = [
+export const BACKUP_TRACKERS_V4 = [
   ["tpr-vs-timewise-forward.json", "scripts/diagnose-tpr-vs-timewise-forward.ts"],
   ["aw-forward-comparisons.json", "src/lib/racing/aw-forward-comparisons.ts"],
   ["tissue-forward.json", "src/lib/racing/tissue-forward.ts"],
@@ -42,3 +42,12 @@ export const BACKUP_TRACKERS = [
   ["chase-shadow-prospective-v1.json", "src/lib/racing/chase-shadow-forward.ts"],
   ["or-best-l3-speed-forward-v1.json", "src/lib/racing/or-speed-forward.ts"],
 ] as const;
+
+export const AW_PROFIT_BACKUP_TRACKER = ["aw-profit-shadow-v1.json", "src/lib/racing/aw-profit-shadow.ts"] as const;
+export const AW_PROFIT_RECOVERY_SOURCES = [
+  "src/lib/racing/aw-profit-policy.ts",
+  "scripts/track-aw-profit-shadow.ts",
+  "scripts/local-automation.ts",
+] as const;
+
+export const BACKUP_TRACKERS = [...BACKUP_TRACKERS_V4, AW_PROFIT_BACKUP_TRACKER] as const;

@@ -2,7 +2,7 @@ import { acquireOperationalLock } from "../src/lib/racing/operational-lock";
 /** External orchestration only. Never imported by production or frozen collectors. */
 import { spawn, spawnSync } from "node:child_process";
 import { randomUUID } from "node:crypto";
-import { appendFile, mkdir, readFile } from "node:fs/promises";
+import { appendFile, mkdir, readFile, stat } from "node:fs/promises";
 import { homedir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
@@ -31,6 +31,7 @@ export type Dependencies = {
   command: (command: Command) => Promise<CommandResult>;
   pause: (ms: number) => Promise<void>;
   audit?: () => Promise<string[]>;
+  awProfitArmed?: () => Promise<boolean>;
   logRoot: string;
 };
 
@@ -205,12 +206,26 @@ export async function runScheduled(role: Role, deps: Dependencies): Promise<numb
     }
     await record({ date: selected.date, mode: selected.mode, status: "started", reason: `caller=local_launchd_wrapper;london_minute=${londonClock(deps.now()).minute}` });
     try {
-      const result = await deps.command({ executable: BUN, args: ["--env-file=.env.local", "run", `research:${selected.mode}`, selected.date], cwd: ROOT, env: { ...workflowEnvironment(), ...release.environment }, timeoutMs: role === "collection" ? WORKFLOW_TIMEOUT_MS : SETTLEMENT_TIMEOUT_MS, logPrefix: join(deps.logRoot, id) });
+      const startedAt = deps.now().toISOString();
+      const env = { ...workflowEnvironment(), ...release.environment };
+      const result = await deps.command({ executable: BUN, args: ["--env-file=.env.local", "run", `research:${selected.mode}`, selected.date], cwd: ROOT, env, timeoutMs: role === "collection" ? WORKFLOW_TIMEOUT_MS : SETTLEMENT_TIMEOUT_MS, logPrefix: join(deps.logRoot, id) });
+      let shadowWarning = false;
+      if (result.code === 0 && !result.timedOut) {
+        try {
+          if (await deps.awProfitArmed?.()) {
+            const args = role === "collection" ? ["capture", startedAt] : ["settle"];
+            const shadow = await deps.command({ executable: BUN,
+              args: ["--env-file=.env.local", "run", "scripts/track-aw-profit-shadow.ts", ...args],
+              cwd: ROOT, env, timeoutMs: 60_000, logPrefix: join(deps.logRoot, id), streamBytes: 128 * 1024 });
+            shadowWarning = shadow.code !== 0 || shadow.timedOut || shadow.hookWarning;
+          }
+        } catch { shadowWarning = true; }
+      }
       let monitorWarning = false;
       try { monitorWarning = (await deps.audit?.() ?? []).some(gap => !gapsBefore.includes(gap)); } catch { monitorWarning = true; }
-      const status = result.code !== 0 ? "failed" : result.hookWarning || monitorWarning ? "partial" : "success";
+      const status = result.code !== 0 ? "failed" : result.hookWarning || monitorWarning || shadowWarning ? "partial" : "success";
       const code = status === "success" ? 0 : result.code || 70;
-      await record({ date: selected.date, mode: selected.mode, status, code, reason: result.timedOut ? "timeout_process_group_terminated_no_workflow_retry" : monitorWarning ? "new_capture_gap_or_monitor_failure_no_replay" : result.hookWarning ? "research_warning_review_logs_no_replay" : undefined });
+      await record({ date: selected.date, mode: selected.mode, status, code, reason: result.timedOut ? "timeout_process_group_terminated_no_workflow_retry" : monitorWarning ? "new_capture_gap_or_monitor_failure_no_replay" : shadowWarning ? "aw_profit_shadow_warning_review_logs_no_replay" : result.hookWarning ? "research_warning_review_logs_no_replay" : undefined });
       await maintainLogs(deps.logRoot, deps.now(), id);
       return code;
     } catch {
@@ -399,7 +414,15 @@ export async function main(args: string[]) {
   }
   if (args.length !== 2 || !["collection", "settlement"].includes(args[0]) || args[1] !== "--execute") throw new Error("Use status, or collection|settlement --execute (operational; not for Stage A validation)");
   if (resolve(process.cwd()) !== ROOT) throw new Error("Requires explicit project working directory");
-  process.exitCode = await runScheduled(args[0] as Role, { now: () => new Date(), ready: databaseReady, command: runCommand, audit: auditGaps, pause: ms => new Promise(done => setTimeout(done, ms)), logRoot: LOG_ROOT });
+  process.exitCode = await runScheduled(args[0] as Role, {
+    now: () => new Date(), ready: databaseReady, command: runCommand, audit: auditGaps,
+    awProfitArmed: async () => {
+      const { AW_PROFIT_SHADOW_PATH } = await import("../src/lib/racing/aw-profit-shadow");
+      try { return (await stat(AW_PROFIT_SHADOW_PATH)).isFile(); }
+      catch (error) { if ((error as NodeJS.ErrnoException).code === "ENOENT") return false; throw error; }
+    },
+    pause: ms => new Promise(done => setTimeout(done, ms)), logRoot: LOG_ROOT,
+  });
 }
 if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
   main(process.argv.slice(2)).catch(async () => {

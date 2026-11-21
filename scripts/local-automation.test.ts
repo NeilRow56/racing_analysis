@@ -39,6 +39,30 @@ describe("local scheduling without operational execution", () => {
     assert.equal(await runScheduled("collection", f.deps), 0); assert.equal((f.calls).length, 1);
     assert.equal(((await readEvents(f.deps.logRoot)).filter(e => e.status === "success")).length, 1);
   });
+  test("armed AW profit shadow follows current-run collection and later settlement", async () => {
+    const collection = await fixture({ awProfitArmed: async () => true });
+    assert.equal(await runScheduled("collection", collection.deps), 0);
+    assert.deepEqual(collection.calls.map(c => c.slice(2)), [
+      ["research:morning", "2026-11-14"], ["scripts/track-aw-profit-shadow.ts", "capture", "2026-11-14T08:00:00.000Z"],
+    ]);
+    const settlement = await fixture({ now: () => new Date("2026-11-14T09:00:00Z"), awProfitArmed: async () => true });
+    assert.equal(await runScheduled("settlement", settlement.deps), 0);
+    assert.deepEqual(settlement.calls.map(c => c.slice(2)), [
+      ["research:after", "2026-11-13"], ["scripts/track-aw-profit-shadow.ts", "settle"],
+    ]);
+  });
+  test("AW profit shadow does not run after a failed collector or retry a missed shadow write", async () => {
+    for (const failShadow of [false, true]) {
+      let calls = 0;
+      const f = await fixture({ awProfitArmed: async () => true, command: async () => ({
+        code: ++calls === (failShadow ? 2 : 1) ? 1 : 0, timedOut: false, hookWarning: false,
+      }) });
+      assert.equal(await runScheduled("collection", f.deps), failShadow ? 70 : 1);
+      assert.equal((await readEvents(f.deps.logRoot)).at(-1)?.status, failShadow ? "partial" : "failed");
+      assert.equal(await runScheduled("collection", f.deps), 0);
+      assert.equal(calls, failShadow ? 2 : 1);
+    }
+  });
   test("bounded readiness retries do not start workflows or claim server outage", async () => {
     let tries = 0; const pauses: number[] = [];
     const f = await fixture({ ready: async () => { tries++; throw new Error("ECONNREFUSED"); }, pause: async ms => { pauses.push(ms); } });

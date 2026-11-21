@@ -14,7 +14,8 @@ import { loadPositiveNeutral } from "../src/lib/racing/tissue-positive-neutral";
 import { loadHurdleV3Shadow } from "../src/lib/racing/hurdle-v3-shadow";
 import { loadHurdleMarketEdge } from "../src/lib/racing/hurdle-v3-market-edge";
 import { epochManifestSchema } from "../src/lib/racing/prospective-epoch-integrity";
-import { BACKUP_TRACKERS } from "./backup-tracker-inventory";
+import { loadAwProfitShadow } from "../src/lib/racing/aw-profit-shadow";
+import { AW_PROFIT_BACKUP_TRACKER, AW_PROFIT_RECOVERY_SOURCES, BACKUP_TRACKERS, BACKUP_TRACKERS_V4 } from "./backup-tracker-inventory";
 
 const PROJECT_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 export type Tracker = { filename: string; source: string; bytes: number; sha256: string; identifiers: Record<string, string | number> };
@@ -77,6 +78,9 @@ async function validateActiveLedger(path: string, filename: string) {
   if (`data/research/${filename}` === EPOCHS.positiveNeutral.ledger) await loadPositiveNeutral(path);
   if (`data/research/${filename}` === EPOCHS.shadow.ledger) await loadHurdleV3Shadow(path);
   if (`data/research/${filename}` === EPOCHS.marketEdge.ledger) await loadHurdleMarketEdge(path);
+  if (filename === AW_PROFIT_BACKUP_TRACKER[0] && !await loadAwProfitShadow(path)) {
+    throw new Error(`Required tracker missing or unreadable: ${filename}`);
+  }
 }
 
 export async function inspectTracker(root: string, filename: string, source: string): Promise<Tracker> {
@@ -111,6 +115,9 @@ async function researchDependencies(files: Tracker[], read: (filename: string) =
   const sources = new Set<string>([...(legacy ? BACKUP_RECOVERY_SOURCES.slice(0, 7) : BACKUP_RECOVERY_SOURCES), ...files.map(file => file.source)]);
   const pins: { owner: string; filename: string; sha256: string; requiredMatch: boolean }[] = [];
   for (const file of files) {
+    if (file.filename === AW_PROFIT_BACKUP_TRACKER[0]) {
+      AW_PROFIT_RECOVERY_SOURCES.forEach(source => sources.add(source));
+    }
     const data = JSON.parse((await read(file.filename)).toString("utf8")) as Record<string, unknown>;
     if (!legacy && file.filename === EPOCH_MANIFEST.replace("data/research/", "")) {
       const manifest = epochManifestSchema.parse(data);
@@ -185,7 +192,7 @@ export async function inspectRecoverySources(root: string, files: Tracker[]) {
 
 export function buildManifest(input: { createdAt: string; name: string; database: string; dump: { bytes: number; sha256: string }; trackers: Tracker[]; artifacts?: Artifact[]; recoverySources?: RecoverySource[]; historicalSources?: HistoricalSource[]; references?: Awaited<ReturnType<typeof inspectRecoverySources>>["references"]; commit: string; branch: string; pgDumpVersion: string }) {
   return {
-    backupVersion: 4, project: "racing-analysis", createdAt: input.createdAt,
+    backupVersion: 5, project: "racing-analysis", createdAt: input.createdAt,
     gitCommitSha: input.commit, gitBranch: input.branch,
     database: { name: input.database, filename: "postgres.dump", ...input.dump, format: "postgres-custom", verification: "PASS" },
     trackers: input.trackers.map((tracker) => ({ ...tracker, path: `research/${tracker.filename}` })),
@@ -238,14 +245,16 @@ type WeeklyManifest = ReturnType<typeof buildManifest>;
 export type VerifiableManifest = Omit<WeeklyManifest, "artifacts" | "recoverySources" | "dependencyReferences" | "totalArtifactCount" | "totalRecoverySourceCount" | "historicalSources"> & Partial<Pick<WeeklyManifest, "artifacts" | "recoverySources" | "dependencyReferences" | "totalArtifactCount" | "totalRecoverySourceCount" | "historicalSources">>;
 
 export async function verifyExtracted(directory: string, manifest: VerifiableManifest) {
-  if (![2, 3, 4].includes(manifest.backupVersion)) throw new Error(`Unsupported backup version: ${manifest.backupVersion}`);
+  if (![2, 3, 4, 5].includes(manifest.backupVersion)) throw new Error(`Unsupported backup version: ${manifest.backupVersion}`);
   if (manifest.backupVersion >= 3) {
     if (!Array.isArray(manifest.artifacts) || !Array.isArray(manifest.recoverySources) || !Array.isArray(manifest.dependencyReferences)) throw new Error("Incomplete v3 research manifest");
     if (manifest.totalTrackerCount !== manifest.trackers.length || manifest.totalArtifactCount !== manifest.artifacts.length || manifest.totalRecoverySourceCount !== manifest.recoverySources.length) throw new Error("Manifest payload count mismatch");
-    for (const [filename] of (manifest.backupVersion === 3 ? BACKUP_TRACKERS.slice(0, 31) : BACKUP_TRACKERS)) if (!manifest.trackers.some(file => file.filename === filename)) throw new Error(`Manifest missing required tracker: ${filename}`);
+    const requiredTrackers = manifest.backupVersion === 3 ? BACKUP_TRACKERS_V4.slice(0, 31)
+      : manifest.backupVersion === 4 ? BACKUP_TRACKERS_V4 : BACKUP_TRACKERS;
+    for (const [filename] of requiredTrackers) if (!manifest.trackers.some(file => file.filename === filename)) throw new Error(`Manifest missing required tracker: ${filename}`);
     for (const [filename, role, source] of (manifest.backupVersion === 3 ? BACKUP_ARTIFACTS.slice(0, 18) : BACKUP_ARTIFACTS)) if (!manifest.artifacts.some(file => file.filename === filename && file.role === role && file.source === source)) throw new Error(`Manifest missing required artifact: ${filename}`);
   }
-  if (manifest.backupVersion === 4 && !Array.isArray(manifest.historicalSources)) throw new Error("Incomplete v4 historical manifest");
+  if (manifest.backupVersion >= 4 && !Array.isArray(manifest.historicalSources)) throw new Error("Incomplete historical manifest");
   const payloads = [{ path: "postgres.dump", ...manifest.database }, ...manifest.trackers, ...(manifest.artifacts ?? []), ...(manifest.recoverySources ?? []), ...(manifest.historicalSources ?? [])];
   const paths = new Set<string>();
   for (const item of payloads) {
