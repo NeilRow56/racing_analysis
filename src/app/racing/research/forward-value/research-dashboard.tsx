@@ -2,6 +2,8 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { SavedRuleResearchNote } from "../saved-rule-research-note";
 import { RESEARCH_SIGNALS, RESEARCH_STATUS, type DailyResearchHorse, type ProspectiveMonitor, type ResearchDashboard, type ResearchSignal } from "@/lib/racing/research-monitor";
+import type { TodaysRatingWeightForwardData } from "@/lib/racing/todays-rating-weight-forward";
+import { LighterWeightSummary } from "./lighter-weight-summary";
 import { HurdleLongPriceShadowSection } from "./hurdle-long-price-shadow";
 
 export function DailyResearchDashboard({ dashboard: originalDashboard, children, excludeSecondaryMonitoring = false }: {
@@ -113,13 +115,11 @@ export function DailyResearchDashboard({ dashboard: originalDashboard, children,
   </>;
 }
 
-export function SecondaryResearchMonitoring({ dashboard }: { dashboard: ResearchDashboard }) {
+export function SecondaryResearchMonitoring({ dashboard, weight }: { dashboard: ResearchDashboard; weight: TodaysRatingWeightForwardData }) {
   const horses = dashboard.horses.map((horse) => ({ ...horse, signals: horse.signals.filter((signal) => signal.kind === "todays_rating_weight") }))
     .filter((horse) => horse.signals.length > 0);
-  const monitors = dashboard.monitors.filter((monitor) => monitor.name === RESEARCH_SIGNALS.todays_rating_weight.name);
   return <div className="pt-3">
-    <p className="text-xs text-slate-500">Today&apos;s Rating - Lighter Weight observations retained for secondary monitoring.</p>
-    <ResearchMonitorCards monitors={monitors} />
+    <LighterWeightSummary data={weight} />
     <ResearchShadowRows horses={horses} />
   </div>;
 }

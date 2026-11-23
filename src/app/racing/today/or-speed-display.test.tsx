@@ -45,11 +45,11 @@ describe("Today's Racing OR + Speed", () => {
           const html = renderToStaticMarkup(<OrSpeedCell runner={runners[0]} speedEdge={edges.get("leader")} orRank={ranks.get("leader")} family={family} />);
           assert.equal(ranks.get("leader"), higher + 1);
           assert.match(html, /OR 73 · Best L3 99.16/);
-          assert.match(html, new RegExp(`Speed edge \\+${gap}`));
+          assert.match(html, new RegExp(`Speed vs same OR <span[^>]*>\\+${gap}`));
           assert.equal(html.includes("bg-emerald-50"), higher < 3);
           assert.equal(html.includes("top three by Official Rating"), higher < 3);
           if (higher >= 3) assert.match(html, /border-slate-200/);
-          if (higher === 0) assert.match(html, /shares the highest OR/);
+          if (higher === 0) assert.match(html, /OR rank 1 in this field/);
           assert.doesNotMatch(html, /at least 10|winning|betting/);
         });
       }
@@ -65,11 +65,11 @@ describe("Today's Racing OR + Speed", () => {
       assert.deepEqual([...edges], [["top", 15]]);
       for (const r of [make("missing-or", null, 100), make("missing-speed", 86, null)]) {
         const html = renderToStaticMarkup(<OrSpeedCell runner={r} speedEdge={12} orRank={1} family={family} />);
-        assert.doesNotMatch(html, /Speed edge|bg-emerald-50|top three/);
+        assert.doesNotMatch(html, /Speed vs same OR|bg-emerald-50|top three/);
       }
       for (const orRank of [undefined, NaN, Infinity, 0, -1, 1.5]) {
         const html = renderToStaticMarkup(<OrSpeedCell runner={runners[0]} speedEdge={15} orRank={orRank} family={family} />);
-        assert.match(html, /Speed edge \+15/);
+        assert.match(html, /Speed vs same OR <span[^>]*>\+15/);
         assert.doesNotMatch(html, /bg-emerald-50|top three/);
       }
     });
@@ -78,11 +78,11 @@ describe("Today's Racing OR + Speed", () => {
   test("shows independent Turf OR and Best L3, with no Today's Rating", () => {
     const [html] = render([runner("a")]);
     assert.match(html, /OR 86 · Best L3 36/);
-    assert.match(html, /last three eligible Turf runs/);
-    assert.doesNotMatch(html, /Today.*Rating|Speed edge/);
+    assert.match(html, /highest Turf Speed figure available/);
+    assert.doesNotMatch(html, /Today.*Rating|Speed vs same OR/);
     const page = readFileSync(new URL("./page.tsx", import.meta.url), "utf8");
     assert.doesNotMatch(page, /Today(?:&apos;|’|')s Rating|todaysRatingValue|latest.*TodaysRating/);
-    assert.match(page, /OR \+ Speed/);
+    assert.match(page, /<OrSpeedColumnHelp family=/);
     assert.match(page, /sameOrSpeedEdges\(runners, isTurfRace\)/);
     assert.match(page, /isTurfRace \|\| isAllWeatherRace \? officialRatingRanks\(runners\)/);
     assert.match(page, /orRank=\{orRanks.get\(runner.runnerId\)\}/);
@@ -92,19 +92,19 @@ describe("Today's Racing OR + Speed", () => {
 
   test("same-OR pair awards +12 only to the leader and emphasizes top OR", () => {
     const [leader, lower] = render([runner("a"), runner("b", 86, 24)]);
-    assert.match(leader, /Speed edge \+12/);
+    assert.match(leader, /Speed vs same OR <span[^>]*>\+12/);
     assert.match(leader, /bg-emerald-50/);
-    assert.match(leader, /next-highest Speed runner in this race/);
+    assert.match(leader, /Next-fastest at OR 86/);
     assert.match(leader, /top three by Official Rating/);
-    assert.doesNotMatch(lower, /Speed edge/);
+    assert.doesNotMatch(lower, /Speed vs same OR/);
   });
 
   test("three same-OR runners compare with next-highest, retaining top-OR context", () => {
     const [leader, second, third] = render([runner("a"), runner("b", 86, 31), runner("c", 86, 24)]);
-    assert.match(leader, /Speed edge \+5/);
+    assert.match(leader, /Speed vs same OR <span[^>]*>\+5/);
     assert.match(leader, /bg-emerald-50/);
-    assert.doesNotMatch(leader, /Speed edge \+12/);
-    assert.doesNotMatch(second + third, /Speed edge/);
+    assert.doesNotMatch(leader, /Speed vs same OR <span[^>]*>\+12/);
+    assert.doesNotMatch(second + third, /Speed vs same OR/);
   });
 
   test("gap size does not control prominence for top-OR horses", () => {
@@ -127,7 +127,7 @@ describe("Today's Racing OR + Speed", () => {
     ];
     for (const runners of cases) {
       assert.equal(sameOrSpeedEdges(runners, true).size, 0);
-      assert.doesNotMatch(render(runners).join(""), /Speed edge/);
+      assert.doesNotMatch(render(runners).join(""), /Speed vs same OR/);
     }
   });
 
@@ -137,7 +137,7 @@ describe("Today's Racing OR + Speed", () => {
       [86, null, "OR 86 · Best L3 —"],
       [null, null, "OR — · Best L3 —"],
     ] as const) assert.ok(render([runner("a", or, speed)])[0].includes(text));
-    assert.match(render([runner("a", 86, 0), runner("b", 86, -12)])[0], /Speed edge \+12/);
+    assert.match(render([runner("a", 86, 0), runner("b", 86, -12)])[0], /Speed vs same OR <span[^>]*>\+12/);
     const missingMetrics = { runnerId: "missing", officialRating: 86, metrics: null };
     assert.equal(sameOrSpeedEdges([runner("a"), missingMetrics], true).size, 0);
     assert.match(renderToStaticMarkup(<OrSpeedCell runner={missingMetrics} />), /OR 86 · Best L3 —/);
@@ -146,8 +146,8 @@ describe("Today's Racing OR + Speed", () => {
   test("fractional figures stay compact without changing the comparison", () => {
     const runners = [runner("a", 86, 36.12345), runner("b", 86, 24.12345)];
     assert.match(render(runners)[0], /OR 86 · Best L3 36.12/);
-    assert.match(render(runners)[0], /Speed edge \+12/);
-    assert.match(render([runner("a", 86, 0.001), runner("b", 86, 0)])[0], /Speed edge \+0.00/);
+    assert.match(render(runners)[0], /Speed vs same OR <span[^>]*>\+12/);
+    assert.match(render([runner("a", 86, 0.001), runner("b", 86, 0)])[0], /Speed vs same OR <span[^>]*>\+0.00/);
   });
 
   test("comparison is race-local, input order independent, and does not mutate runners", () => {
@@ -171,11 +171,11 @@ describe("Today's Racing OR + Speed", () => {
 });
 
 for (const family of ["turf", "all_weather"] as const) {
-  test(`${family}: badge and tooltip share exactly two decimal places`, () => {
+  test(`${family}: badge and expanded difference share exactly two decimal places`, () => {
     for (const [edge, expected] of [[5.02536010898659, "5.03"], [5, "5.00"], [0.001, "0.00"]] as const) {
       const html = renderToStaticMarkup(<OrSpeedCell runner={{ officialRating: 80, metrics: { bestTurfSpeedLast3: 90, bestAwSpeedLast3: 90 } as TodayRunner["metrics"] }} family={family} speedEdge={edge} />);
-      assert.ok(html.includes(`Speed edge +${expected}`));
-      assert.ok(html.includes(`same Official Rating: ${expected} points.`));
+      assert.ok(html.includes(`Speed vs same OR <span class="whitespace-nowrap">+${expected}`));
+      assert.ok(html.includes(`+${expected} points`));
       assert.ok(!html.includes("5.02536010898659"));
     }
   });

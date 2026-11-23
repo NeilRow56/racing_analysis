@@ -87,7 +87,7 @@ import { buildAwProfitabilityReport, profitabilityDate, readAwCollectionStatus, 
 import { TissuePerformance } from "./tissue-performance";
 import { DevelopmentReports, trainerTargetingReportId } from "./development-reports";
 import { loadVerifiedFinalSpResults } from "@/lib/racing/hurdle-final-sp";
-import { ActiveProspectiveSummaries, ActiveRatingSummaries } from "./active-prospective-summaries";
+import { ActiveProspectiveSummaries, JumpG4Summary } from "./active-prospective-summaries";
 import Link from "next/link";
 
 type PageProps = {
@@ -201,7 +201,7 @@ async function prepareForwardValuePage({ searchParams }: PageProps) {
       </>}
       secondaryOpen={secondaryOpen}
       secondary={secondaryOpen ? <>
-        <ActiveRatingSummaries />
+        <JumpG4Summary />
         {legacy?.secondary}
         {profiledServerWork("monitor.OrSpeedMonitoring", () => OrSpeedMonitoring(), <OrSpeedMonitoring />)}
       </> : <Link prefetch={false} className="mt-2 inline-block text-sm text-emerald-800 underline"
@@ -221,7 +221,7 @@ async function prepareForwardValuePage({ searchParams }: PageProps) {
 
 async function prepareLegacyResearch(raceDate: string, params: Awaited<PageProps["searchParams"]>, fileIdentity: string) {
   const files = await researchStage("research files (cached)", () => cachedFiles(fileIdentity, readResearchFiles));
-  const [data, , awTissueData, jumpTissueData, awPairedData, , , , reviewData, hurdlePairData, chasePairData, hurdleRecencyData, rankOneData, valueCohorts] = files;
+  const [data, , awTissueData, jumpTissueData, awPairedData, , weightData, , reviewData, hurdlePairData, chasePairData, hurdleRecencyData, rankOneData, valueCohorts] = files;
   const connection = createDbConnection();
   let currentCardStatuses: ResearchDatabase["currentCardStatuses"];
   let canonicalResultRaceIds: ResearchDatabase["canonicalResultRaceIds"];
@@ -254,7 +254,7 @@ async function prepareLegacyResearch(raceDate: string, params: Awaited<PageProps
     cachedReporting(`${fileIdentity}|${raceDate}|${databaseIdentity}|${filtersKey}`, async () => buildResearchReport(files, { currentCardStatuses, canonicalResultRaceIds, currentPrices }, raceDate, params)));
   const warning = databaseWarning && <p className="mt-3 text-sm text-amber-800">Local race database unavailable. Showing saved report data.</p>;
   return {
-    secondary: <>{warning}<SecondaryResearchMonitoring dashboard={dashboard} /></>,
+    secondary: <>{warning}<SecondaryResearchMonitoring dashboard={dashboard} weight={weightData} /></>,
     historical: <>{warning}
       {profiledServerWork("archive.HurdleRecencyResearchSection", () => HurdleRecencyResearchSection({ data: hurdleRecencyData }), <HurdleRecencyResearchSection data={hurdleRecencyData} />)}
       <TurfModelAgreementCounts summary={summary.turfModelAgreement} />

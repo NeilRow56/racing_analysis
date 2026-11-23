@@ -76,7 +76,7 @@ import { RefreshResultsButton } from "./refresh-results-button";
 import { SpeedDisplayValue, TodaySpeedDisplay } from "./speed-display";
 import { classifyJumpRaceSubtype, type JumpRaceSubtype } from "@/lib/racing/jump-speed-rating";
 import { TurfPerformanceRatingCell } from "./tpr-display";
-import { OrSpeedCell, sameOrSpeedEdges, sameOrAwSpeedEdges, officialRatingRanks, BEST_L3_TURF_HELP, BEST_L3_AW_HELP } from "./or-speed-display";
+import { OrSpeedCell, OrSpeedColumnHelp, sameOrSpeedEdges, sameOrAwSpeedEdges, officialRatingRanks } from "./or-speed-display";
 import { syncAwTissueMeetings } from "@/lib/racing/aw-tissue-sync";
 import { attachAwTissueToMeetings } from "@/lib/racing/aw-tissue-forward";
 import { syncJumpTissueMeetings } from "@/lib/racing/jump-tissue-sync";
@@ -580,8 +580,8 @@ function RunnerTable({
             <th className="w-24 px-1.5 py-1.5 font-medium">Jockey</th>
             <th className="w-28 px-1.5 py-1.5 font-medium">Trainer</th>
             {(isTurfRace || isAllWeatherRace) ? (
-              <th className="w-36 px-1.5 py-1.5 font-semibold text-slate-800" title={isAllWeatherRace ? BEST_L3_AW_HELP : BEST_L3_TURF_HELP}>
-                OR + Speed
+              <th scope="col" className="w-36 px-1.5 py-1.5 font-semibold text-slate-800">
+                <OrSpeedColumnHelp family={isAllWeatherRace ? "all_weather" : "turf"} />
               </th>
             ) : <th className="w-10 px-1.5 py-1.5 font-medium">OR</th>}
             {(isTurfRace || isJumpRace) ? (

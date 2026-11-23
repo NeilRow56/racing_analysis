@@ -5,7 +5,6 @@ import { loadHurdleV3Shadow } from "@/lib/racing/hurdle-v3-shadow";
 import { loadHurdleMarketEdge, matchingMarketEdgeShadow } from "@/lib/racing/hurdle-v3-market-edge";
 import { loadPositiveNeutral, matchingPositiveNeutralCapture } from "@/lib/racing/tissue-positive-neutral";
 import { loadJumpG4Forward } from "@/lib/racing/jump-g4-forward";
-import { loadTodaysRatingWeightForward } from "@/lib/racing/todays-rating-weight-forward";
 import { EPOCHS } from "@/lib/racing/prospective-epoch-config";
 import { assertEpochSources, loadEpochManifest } from "@/lib/racing/prospective-epoch-integrity";
 import { CaptureTime, profitMoney, profitPercent } from "./aw-profitability";
@@ -86,28 +85,19 @@ export async function ActiveProspectiveSummaries({ generation }: { generation: G
   </div>;
 }
 
-export async function ActiveRatingSummaries() {
-  const [jump, weight] = await Promise.all([loadJumpG4Forward(), loadTodaysRatingWeightForward()]);
-  const reports = [
-    { name: "Jump G4", activation: jump.epoch, observations: jump.observations.filter(o => o.recordedPreRace)
-      .map(o => ({ raceId: o.raceId, capturedAt: o.recordedAt, pending: !o.settledAt, won: o.outcome?.won ?? null, profit: o.outcome?.profitLoss ?? null })) },
-    { name: "Today's Rating · Lighter Weight", activation: weight.epoch, observations: weight.observations
-      .map(o => ({ raceId: o.raceId, capturedAt: o.recordedAt, pending: !o.settledAt, won: o.outcome?.won ?? null, profit: o.outcome?.finalSpProfitLoss ?? null })) },
-  ];
-  return <div className="mt-3 grid gap-2 md:grid-cols-2">
-    {reports.map(({ name, activation, observations }) => {
-      const stakes = observations.flatMap(o => o.won !== null && o.profit !== null ? [o.profit] : []);
-      const profit = stakes.length ? stakes.reduce((total, value) => total + value, 0) : null;
-      return <article className="rounded-md border border-slate-200 bg-white p-3 text-sm" key={name}>
-        <h3 className="font-semibold">{name} <span className="text-xs text-slate-600">· SHADOW</span></h3>
-        <p className="mt-1 text-xs text-slate-600">Collection epoch <CaptureTime value={activation} exact />
-          <br />Latest capture <CaptureTime value={observations.map(o => o.capturedAt).sort().at(-1) ?? null} /></p>
-        <p className="mt-2 tabular-nums">{observations.length ? `${new Set(observations.map(o => o.raceId)).size} races · ${observations.length} qualifiers` : "NO DATA"}</p>
-        {observations.length > 0 && <p className="mt-1 text-xs tabular-nums text-slate-600">
-          {observations.filter(o => o.pending).length} pending · {observations.filter(o => o.won !== null).length} settled · {observations.filter(o => o.won).length} winners
-        </p>}
-        <p className="mt-2 text-xs tabular-nums">{stakes.length} recorded SP stakes · {profitMoney(profit)} · {profitPercent(profit !== null ? profit / stakes.length : null)} ROI</p>
-      </article>;
-    })}
-  </div>;
+export async function JumpG4Summary() {
+  const jump = await loadJumpG4Forward();
+  const observations = jump.observations.filter(o => o.recordedPreRace);
+  const stakes = observations.flatMap(({ outcome }) => outcome && outcome.won !== null && outcome.profitLoss !== null ? [outcome.profitLoss] : []);
+  const profit = stakes.length ? stakes.reduce((total, value) => total + value, 0) : null;
+  return <article className="mt-3 rounded-md border border-slate-200 bg-white p-3 text-sm md:w-1/2">
+    <h3 className="font-semibold">Jump G4 <span className="text-xs text-slate-600">· SHADOW</span></h3>
+    <p className="mt-1 text-xs text-slate-600">Collection epoch <CaptureTime value={jump.epoch} exact />
+      <br />Latest capture <CaptureTime value={observations.map(o => o.recordedAt).sort().at(-1) ?? null} /></p>
+    <p className="mt-2 tabular-nums">{observations.length ? `${new Set(observations.map(o => o.raceId)).size} races · ${observations.length} qualifiers` : "NO DATA"}</p>
+    {observations.length > 0 && <p className="mt-1 text-xs tabular-nums text-slate-600">
+      {observations.filter(o => !o.settledAt).length} pending · {observations.filter(o => o.outcome?.won != null).length} settled · {observations.filter(o => o.outcome?.won).length} winners
+    </p>}
+    <p className="mt-2 text-xs tabular-nums">{stakes.length} recorded SP stakes · {profitMoney(profit)} · {profitPercent(profit !== null ? profit / stakes.length : null)} ROI</p>
+  </article>;
 }
