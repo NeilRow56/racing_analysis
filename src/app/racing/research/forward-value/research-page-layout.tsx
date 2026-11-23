@@ -1,54 +1,69 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 
-export function ResearchPageLayout({ date, active, secondary, children, archiveLoaded, secondaryOpen }: {
+const button = "rounded-md border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-700 hover:border-emerald-500 hover:text-emerald-800";
+
+export function ResearchPageLayout({ date, daily, tissue, active, historical, secondary, children, archiveLoaded, historyLoaded, secondaryOpen }: {
   date: string;
+  daily: ReactNode;
+  tissue: ReactNode;
   active: ReactNode;
+  historical?: ReactNode;
   secondary: ReactNode;
   children: ReactNode;
-  archiveLoaded?: boolean;
+  archiveLoaded: boolean;
+  historyLoaded: boolean;
   secondaryOpen?: boolean;
 }) {
   return <main className="min-h-screen bg-gray-50 px-4 py-6 text-slate-950 sm:px-6 lg:px-8">
-    <div className="mx-auto max-w-[1600px]">
-      <header className="flex flex-col gap-4 border-b border-slate-200 pb-5 lg:flex-row lg:items-end lg:justify-between">
-        <div>
-          <Link className="text-sm font-medium text-emerald-800 hover:underline" href="/racing/research">Racing Research</Link>
-          <h1 className="mt-2 text-2xl font-semibold tracking-normal">Racing Research</h1>
-          <p className="mt-2 text-sm text-slate-500">Current prospective research first; previous Tissue and model experiments are retained below for reference.</p>
-          <p className="mt-2 text-xs text-slate-500">New settlements use corrected v3. Recorded returns retain their original versions; totals may combine original and corrected results. Historical figures have not been restated.</p>
-        </div>
-        <nav aria-label="Racing Research" className="flex flex-wrap gap-2 text-sm font-semibold">
-          <Link className="border border-slate-300 bg-white px-3 py-2 text-slate-700 hover:border-emerald-400 hover:text-emerald-800" href="/racing/research/winter-2026">Tissue archive</Link>
-          <time className="self-center px-2 text-xs font-normal tabular-nums text-slate-500" dateTime={date}>{date}</time>
-          <a className="px-3 py-2 text-slate-700 hover:text-emerald-800" href="/racing/research/forward-value">Refresh</a>
-          <Link className="border border-slate-300 bg-white px-3 py-2 text-slate-700 hover:border-emerald-400 hover:text-emerald-800" href="/racing/research">Research Filters</Link>
-          <Link className="border border-slate-300 bg-white px-3 py-2 text-slate-700 hover:border-emerald-400 hover:text-emerald-800" href="/racing/today">Today&apos;s Racing</Link>
+    <div className="mx-auto max-w-6xl">
+      <header className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 pb-4">
+        <h1 className="text-2xl font-semibold">Racing Research</h1>
+        <nav aria-label="Racing Research" className="flex flex-wrap gap-2">
+          <Link className={button} href="/racing/research">Research Filters</Link>
+          <Link className={button} href="/racing/today">Today&apos;s Racing</Link>
         </nav>
       </header>
 
-      <section className="mt-7" aria-labelledby="active-research-heading">
-        <h2 id="active-research-heading" className="text-lg font-semibold">ACTIVE RESEARCH</h2>
-        <p className="mt-1 text-sm text-slate-500">Current prospective research being monitored. Historical model and Tissue experiments are preserved below for reference.</p>
-        {active}
+      <section className="mt-5" aria-labelledby="daily-profitability">
+        <div className="flex flex-wrap items-end justify-between gap-2">
+          <h2 id="daily-profitability" className="text-lg font-semibold">Today&apos;s profitability research</h2>
+          <form method="get" action="/racing/research/forward-value" className="flex flex-wrap items-end gap-2">
+            <label className="text-xs font-medium">Racing date
+              <input aria-label="Racing date" className="ml-2 rounded-md border border-slate-300 bg-white px-2 py-1.5 text-sm" type="date" name="date" defaultValue={date} required />
+            </label>
+            <button className={button} type="submit">Refresh</button>
+          </form>
+        </div>
+        {daily}
       </section>
 
-      <details open={secondaryOpen === true || undefined} id="secondary-monitoring" className="mt-7 border-t border-slate-200 py-4">
-        <summary className="cursor-pointer">
-          <h2 className="inline text-sm font-semibold">SECONDARY MONITORING</h2>
-          <span className="ml-2 text-xs text-slate-500">Today&apos;s Rating - Lighter Weight · OR + Best L3 Speed · Independent rating research</span>
-        </summary>
-        {secondary}
+      <section className="mt-6 border-t border-slate-200 pt-4" aria-labelledby="tissue-performance">
+        <h2 id="tissue-performance" className="text-lg font-semibold">Tissue performance</h2>
+        {tissue}
+      </section>
+
+      <section className="mt-6 border-t border-slate-200 pt-4" aria-labelledby="active-research-heading">
+        <h2 id="active-research-heading" className="text-lg font-semibold">Active prospective research</h2>
+        {active}
+        <details open={secondaryOpen || undefined} id="secondary-monitoring" className="mt-3">
+          <summary className="cursor-pointer text-sm font-medium text-emerald-800">Secondary monitoring · ratings and OR + Best L3 Speed</summary>
+          {secondary}
+        </details>
+      </section>
+
+      <details open={historyLoaded || undefined} id="historical-research" className="mt-6 border-t border-slate-200 py-4">
+        <summary className="cursor-pointer"><h2 className="inline text-lg font-semibold">Historical development research</h2></summary>
+        {historical}
+        {!historyLoaded && <Link prefetch={false} className="mt-3 inline-block text-sm font-semibold text-emerald-800 underline"
+          href={`?date=${date}&history=1#historical-research`}>Load historical diagnostics</Link>}
       </details>
 
-      <details open={archiveLoaded === true || undefined} id="archived-research" className="mt-3 border-t border-slate-200 py-4">
-        <summary className="cursor-pointer">
-          <h2 className="inline text-sm font-semibold">ARCHIVED / LEGACY RESEARCH</h2>
-          <span className="ml-2 text-xs text-slate-500">Tissue VALUE, model monitors, challengers and research history</span>
-        </summary>
-        <p className="mt-2 text-sm text-slate-500">Previous prospective and historical experiments retained for audit and reference. These are not current active research signals.</p>
-        <p className="mt-1 text-xs text-slate-500">Tissue VALUE did not establish a robust betting edge or material incremental predictive value beyond the market. Existing records and calculations are retained below.</p>
-        {archiveLoaded === false ? <Link prefetch={false} className="mt-3 inline-block text-sm font-semibold text-emerald-800 underline" href="?archive=1#archived-research">Load archived research</Link> : children}
+      <details open={archiveLoaded || undefined} id="archived-research" className="border-t border-slate-200 py-4">
+        <summary className="cursor-pointer"><h2 className="inline text-lg font-semibold">Archived and suspended research</h2></summary>
+        <Link className="mt-3 block text-sm font-semibold text-emerald-800 underline" href="/racing/research/winter-2026">Winter Tissue archive</Link>
+        {archiveLoaded ? children : <Link prefetch={false} className="mt-3 inline-block text-sm font-semibold text-emerald-800 underline"
+          href={`?date=${date}&archive=1#archived-research`}>Load archived research</Link>}
       </details>
     </div>
   </main>;

@@ -63,6 +63,49 @@ describe("local scheduling without operational execution", () => {
       assert.equal(calls, failShadow ? 2 : 1);
     }
   });
+  test("same-OR capture and settlement run after existing AW profit work", async () => {
+    const armed = { awProfitArmed: async () => true, awSameOrArmed: async () => true };
+    const collection = await fixture(armed);
+    assert.equal(await runScheduled("collection", collection.deps), 0);
+    assert.deepEqual(collection.calls.map(c => c.slice(2)), [
+      ["research:morning", "2026-11-14"],
+      ["scripts/track-aw-profit-shadow.ts", "capture", "2026-11-14T08:00:00.000Z"],
+      ["scripts/track-aw-same-or-shadow.ts", "capture", "2026-11-14T08:00:00.000Z"],
+    ]);
+    const settlement = await fixture({ ...armed, now: () => new Date("2026-11-14T09:00:00Z") });
+    assert.equal(await runScheduled("settlement", settlement.deps), 0);
+    assert.deepEqual(settlement.calls.map(c => c.slice(2)), [
+      ["research:after", "2026-11-13"], ["scripts/track-aw-profit-shadow.ts", "settle"],
+      ["scripts/track-aw-same-or-shadow.ts", "settle"],
+    ]);
+  });
+  test("same-OR errors preserve the primary success and never replay collection", async () => {
+    for (const failure of ["timeout", "throw", "ledger-check"] as const) {
+      const invoked: string[] = [];
+      const f = await fixture({
+        awProfitArmed: async () => true,
+        awSameOrArmed: async () => { if (failure === "ledger-check") throw new Error("unreadable"); return true; },
+        command: async command => {
+          const target = command.args[2]; invoked.push(target);
+          if (target === "scripts/track-aw-same-or-shadow.ts") {
+            if (failure === "throw") throw new Error("collector failure");
+            assert.equal(command.timeoutMs, 60_000);
+            return { code: 124, timedOut: true, hookWarning: false };
+          }
+          return { code: 0, timedOut: false, hookWarning: false };
+        },
+      });
+      assert.equal(await runScheduled("collection", f.deps), 0);
+      assert.deepEqual(invoked, ["research:morning", "scripts/track-aw-profit-shadow.ts",
+        ...(failure === "ledger-check" ? [] : ["scripts/track-aw-same-or-shadow.ts"])]);
+      assert.equal((await readEvents(f.deps.logRoot)).at(-1)?.status, "success");
+      const warning = JSON.parse(await readFile(join(f.deps.logRoot, "last-aw-same-or-warning.json"), "utf8"));
+      assert.equal(warning.reason, "aw_same_or_shadow_warning_review_logs_no_replay");
+      const calls = invoked.length;
+      assert.equal(await runScheduled("collection", f.deps), 0);
+      assert.equal(invoked.length, calls);
+    }
+  });
   test("bounded readiness retries do not start workflows or claim server outage", async () => {
     let tries = 0; const pauses: number[] = [];
     const f = await fixture({ ready: async () => { tries++; throw new Error("ECONNREFUSED"); }, pause: async ms => { pauses.push(ms); } });

@@ -212,7 +212,7 @@ test("ledger atomically freezes epoch, features, predictions and outcomes; initi
 test("shadow errors fail open and research display is labelled, separate and empty-safe", async () => {
   const { book } = await fixture(), bytes = JSON.stringify(book);
   assert.strictEqual(await contextShadowAfterProduction(book, async () => { throw new Error("shadow failed"); }, () => {}), book); assert.equal(JSON.stringify(book), bytes);
-  const html = renderToStaticMarkup(<HurdleV3ShadowMonitor data={null} />); assert.match(html, /V3 SHADOW/); assert.match(html, /pending first genuine pre-off capture/); assert.match(html, /No historical backfill/);
+  const html = renderToStaticMarkup(<HurdleV3ShadowMonitor data={null} />); assert.match(html, /HURDLE MODEL COMPARISON — V2 Live vs V3 Shadow/); assert.match(html, /T1, T2 and Top 2 are selection ranks within each model/); assert.match(html, /Collection record unavailable · HURDLE_V2_V3_PROSPECTIVE_SHADOW_V1/); assert.match(html, /No historical backfill/);
   assert.equal(summarizeHurdleV3Shadow(null).rows[0].logLoss, null);
   const sync = await readFile(new URL("./tissue-generation-sync.ts", import.meta.url), "utf8"); assert.ok(sync.indexOf("prepareEpochShadow(connection") < sync.indexOf("additions = buildTissueGenerationRaces")); assert.ok(sync.indexOf("collectEpochShadow(accepted") > sync.indexOf("const production = await mutateTissueGeneration"));
 });
@@ -221,4 +221,7 @@ test("head-to-head uses shared winner ranks and exposes LED counterfactual witho
   const race = shadowResult(book); const result = settleHurdleV3Shadows(first, new Map([[book.raceId, race]]), new Date(Date.parse(off) + 1));
   const c = hurdleShadowComparison(result.observations[0]); assert.equal(c.v2WinnerRanks[0], 1); assert.equal(c.winnerIds[0], "a"); assert.equal(c.v3.length, 3); assert.equal(c.led.length, 3);
   const summary = summarizeHurdleV3Shadow(result); assert.equal(summary.headToHead.v2Better + summary.headToHead.v3Better + summary.headToHead.same, 1);
+  const html = renderToStaticMarkup(<HurdleV3ShadowMonitor data={result} />);
+  assert.match(html, /ARCHIVED COLLECTION · HURDLE_V2_V3_PROSPECTIVE_SHADOW_V1/);
+  assert.match(html, /Live model HURDLE_TISSUE_V2 · Shadow model HURDLE_TISSUE_V3_CHALLENGER/);
 }));

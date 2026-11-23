@@ -1,164 +1,78 @@
-import { readFile } from "node:fs/promises";
-import { TissueGenerationMonitor } from "./tissue-generation-monitor";
-import { emptyTissueGeneration } from "@/lib/racing/tissue-generation-forward";
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import { test } from "node:test";
-import { Children, cloneElement, isValidElement, type ReactElement, type ReactNode } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { emptyHurdleRecency } from "@/lib/racing/hurdle-recency-forward";
-import { emptyHurdlePair } from "@/lib/racing/hurdle-tissue-challenger-forward";
-import { emptyChasePair } from "@/lib/racing/chase-tissue-challenger-forward";
-import { emptyAwTissuePairedForward } from "@/lib/racing/aw-tissue-paired-forward";
-import { RESEARCH_SIGNALS, type ResearchDashboard, type ResearchSignalKind } from "@/lib/racing/research-monitor";
+import { emptyTissueGeneration, loadTissueGeneration, summarizeTissueGeneration } from "@/lib/racing/tissue-generation-forward";
+import { ChaseActiveResearch } from "./chase-active-research";
+import { DevelopmentReports } from "./development-reports";
 import { ResearchPageLayout } from "./research-page-layout";
-import { DailyResearchDashboard, ResearchHistory, SecondaryResearchMonitoring } from "./research-dashboard";
-import { HurdleRecencyResearchSection } from "./hurdle-recency-research";
-import { HurdleTissueChallengerSection } from "./hurdle-tissue-challenger";
-import { ChaseTissueChallengerSection } from "./chase-tissue-challenger";
-import { AwTurfChallengerSection } from "./aw-turf-challenger";
+import { TissuePerformance } from "./tissue-performance";
+import { profitMoney, profitPercent } from "./aw-profitability";
+import { GET as getDevelopmentReport } from "./reports/[report]/route";
 
-type NodeProps = { id?: string; open?: boolean; children?: ReactNode };
-function elements(node: ReactNode): ReactElement<NodeProps>[] {
-  return Children.toArray(node).flatMap((child) => isValidElement<NodeProps>(child) ? [child, ...elements(child.props.children)] : []);
-}
-function fixture(): ResearchDashboard {
-  const horse = (id: string, kinds: ResearchSignalKind[]) => ({ raceId: `race-${id}`, runnerId: id, horseId: `horse-${id}`, horseName: id,
-    course: "Teston", time: "14:00", sortTime: "2026-10-17T13:00:00Z", price: 8, priceSource: "stored_snapshot" as const,
-    signals: kinds.map((kind) => ({ kind, reason: `${kind} saved reason`, context: `${kind} saved context`, movement: null })) });
-  const monitor = (name: string) => ({ name, status: "SHADOW" as const, tracked: 24, settled: 20, winners: 4, strike: .2, ae: .9, roi: .15,
-    roiBasis: "qualifying_median" as const, pricedSettled: 20, profitLoss: 3, cohort: "Saved prospective cohort" });
-  return { date: "2026-10-17", emptyMessage: null, horses: [horse("Tissue Horse", ["turf_tissue"]), horse("Weight Horse", ["todays_rating_weight"]),
-    horse("Overlap Horse", ["todays_rating_weight", "jump_g4"]), horse("Disagreement Horse", ["model_disagreement"])],
-    monitors: [monitor("Turf Tissue"), monitor("Jump Tissue"), monitor("AW Tissue"), monitor("Jump G4"), monitor(RESEARCH_SIGNALS.todays_rating_weight.name)],
-    historicalTissueMonitors: [monitor("Saved Turf History")], hurdleValueMonitor: monitor("Hurdle Tissue"), hurdleValues: [], longPriceShadows: [] };
-}
-function view(dashboard = fixture()) {
-  return ResearchPageLayout({ date: dashboard.date, active: <HurdleRecencyResearchSection data={emptyHurdleRecency()} />,
-    secondary: <SecondaryResearchMonitoring dashboard={dashboard} />,
-    children: <>
-      <DailyResearchDashboard dashboard={dashboard} excludeSecondaryMonitoring>
-        <AwTurfChallengerSection data={emptyAwTissuePairedForward()} date={dashboard.date} />
-      </DailyResearchDashboard>
-      <HurdleTissueChallengerSection data={emptyHurdlePair()} date={dashboard.date} />
-      <ChaseTissueChallengerSection data={emptyChasePair()} date={dashboard.date} />
-      <details><summary>Performance</summary>Saved Tissue aggregate performance</details>
-      <details><summary>Details · model comparisons and value records</summary><ResearchHistory /></details>
-    </> });
-}
-function openArchive(node: ReactNode): ReactNode {
-  return Children.map(node, (child) => isValidElement<NodeProps>(child)
-    ? cloneElement(child, { ...(child.props.id === "archived-research" ? { open: true } : {}), children: openArchive(child.props.children) }) : child);
+const date = "2026-11-22";
+function view(archiveLoaded = false, historyLoaded = false) {
+  return renderToStaticMarkup(<ResearchPageLayout date={date} archiveLoaded={archiveLoaded} historyLoaded={historyLoaded}
+    daily={<p>Daily AW totals</p>} tissue={<TissuePerformance generation={emptyTissueGeneration()} />}
+    active={<ChaseActiveResearch generation={emptyTissueGeneration()} />}
+    historical={<><DevelopmentReports />{historyLoaded && <ChaseActiveResearch generation={emptyTissueGeneration()} historicalOnly />}</>}
+    secondary={<p>Secondary figures</p>}>
+    <p>Archived records</p>
+  </ResearchPageLayout>);
 }
 
-test("active research stays outside disclosures and is the first research section", () => {
-  const tree = view(), nodes = elements(tree), active = nodes.find((n) => n.props.id === "active-research-heading");
-  assert.ok(active);
-  const activeSection = nodes.find((n) => n.type === "section" && elements(n.props.children).some((child) => child.props.id === "active-research-heading"));
-  assert.ok(activeSection);
-  assert.equal(elements(activeSection).some((n) => n.type === HurdleRecencyResearchSection), true);
-  for (const details of nodes.filter((n) => n.type === "details")) {
-    assert.equal(elements(details).some((n) => n.type === HurdleRecencyResearchSection), false);
+test("daily profitability and date controls lead the five research areas", () => {
+  const html = view();
+  const areas = ["daily-profitability", "tissue-performance", "active-research-heading", "historical-research", "archived-research"];
+  assert.deepEqual(areas.map(id => html.indexOf(`id="${id}"`)).sort((a, b) => a - b), areas.map(id => html.indexOf(`id="${id}"`)));
+  for (const id of areas) assert.ok(html.includes(`id="${id}"`));
+  assert.match(html, /type="date"[^>]*name="date"[^>]*value="2026-11-22"/);
+  assert.match(html, /type="submit">Refresh/);
+  assert.match(html, /href="\/racing\/today"/);
+  assert.match(html, /href="\/racing\/research"/);
+});
+
+test("historical and archived research are collapsed and independently accessible", async () => {
+  const normal = view();
+  for (const id of ["secondary-monitoring", "historical-research", "archived-research"]) {
+    assert.doesNotMatch(normal.match(new RegExp(`<details[^>]*id="${id}"[^>]*>`))![0], /\bopen\b/);
   }
-  const html = renderToStaticMarkup(tree);
-  assert.match(html, /ACTIVE RESEARCH/);
-  assert.ok(html.indexOf("active-research-heading") < html.indexOf('id="secondary-monitoring"'));
-  assert.ok(html.indexOf("Hurdle Recency / Completion Research") < html.indexOf('id="archived-research"'));
-  assert.match(html, /Not a betting signal/);
-  assert.match(html, /TOO EARLY/);
-  assert.match(html, /Recent frozen observations/);
+  assert.match(normal, /date=2026-11-22&amp;archive=1#archived-research/);
+  assert.match(normal, /date=2026-11-22&amp;history=1#historical-research/);
+  assert.doesNotMatch(normal, /Archived records|Chronological validation/);
+  assert.match(view(true), /<details open="" id="archived-research"/);
+  assert.match(view(true), /Archived records/);
+  assert.match(view(false, true), /<details open="" id="historical-research"/);
+  assert.match(view(false, true), /Chronological validation/);
+  assert.match(normal, /Winter Tissue archive/);
+  assert.match(normal, /No-Hoper and market support register/);
+  const request = new Request("http://localhost");
+  const report = await getDevelopmentReport(request, { params: Promise.resolve({ report: "aw-profitability-development-register" }) });
+  assert.equal(report.status, 200);
+  assert.match(await report.text(), /AW_MARKET_SUPPORT_V1/);
+  assert.equal((await getDevelopmentReport(request, { params: Promise.resolve({ report: "../README" }) })).status, 404);
 });
 
-test("secondary and legacy disclosures are closed by default with clear research-status wording", () => {
-  const tree = view(), nodes = elements(tree), html = renderToStaticMarkup(tree);
-  for (const id of ["secondary-monitoring", "archived-research"]) {
-    const disclosure = nodes.find((n) => n.type === "details" && n.props.id === id);
-    assert.ok(disclosure);
-    assert.equal(disclosure.props.open, undefined);
-    assert.doesNotMatch(html.match(new RegExp(`<details[^>]*id="${id}"[^>]*>`))![0], /\bopen\b/);
+test("Tissue headline uses the same recorded cohort, returns and stakes as the detailed tables", async () => {
+  const generation = await loadTissueGeneration();
+  const html = renderToStaticMarkup(<TissuePerformance generation={generation} />);
+  const headline = html.split("</table>")[0];
+  const tableRows = [...headline.matchAll(/<tr[^>]*><th scope="row"[^>]*>([^<]+)<\/th>(.*?)<\/tr>/g)];
+  const names = { TURF: "Turf", AW: "All Weather", HURDLE: "Hurdle", CHASE: "Chase" };
+  for (const { rank, rows } of summarizeTissueGeneration(generation).filter(r => r.rank !== "TOP_2")) {
+    for (const row of rows) {
+      if (row.family === "ALL") continue;
+      const label = names[row.family];
+      const cells = tableRows.filter(([, name]) => name === label).map(([, , cells]) =>
+        [...cells.matchAll(/<td[^>]*>([^<]+)<\/td>/g)].map(match => match[1])).find(c => c[0] === `T${rank}`);
+      assert.deepEqual(cells, [`T${rank}`, String(row.settled), String(row.winners), String(row.priceN),
+        profitMoney(row.profitLoss), profitPercent(row.roi), row.actualModelExpected?.toFixed(2) ?? "—"]);
+    }
   }
-  assert.match(html, /ARCHIVED \/ LEGACY RESEARCH/);
-  const secondary = nodes.find((n) => n.props.id === "secondary-monitoring")!;
-  const archive = nodes.find((n) => n.props.id === "archived-research")!;
-  const summaryHtml = (node: ReactElement<NodeProps>) => renderToStaticMarkup(elements(node.props.children).find((n) => n.type === "summary")!);
-  assert.match(summaryHtml(secondary), /Today&#x27;s Rating - Lighter Weight/);
-  assert.match(summaryHtml(archive), /Tissue VALUE, model monitors, challengers and research history/);
-  assert.match(html, /These are not current active research signals/);
-  assert.match(html, /did not establish a robust betting edge/);
-  assert.doesNotMatch(html, /Daily Tissue VALUE first|<h1[^>]*>Tissue VALUE Monitor/);
-});
-
-test("date and utility navigation remain above active research and outside archive", () => {
-  const tree = view(), html = renderToStaticMarkup(tree);
-  const nav = elements(tree).find((n) => n.type === "nav");assert.ok(nav);
-  const navigation = renderToStaticMarkup(nav);
-  assert.match(navigation, /2026-10-17/);assert.match(navigation, /Refresh/);assert.match(navigation, /Research Filters/);assert.match(navigation, /Today&#x27;s Racing/);
-  assert.match(navigation, /href="\/racing\/today"/);assert.match(navigation, /href="\/racing\/research"/);
-  assert.ok(html.indexOf("<nav") < html.indexOf("active-research-heading"));
-  const archive = elements(tree).find((n) => n.props.id === "archived-research")!;
-  assert.doesNotMatch(renderToStaticMarkup(archive), /<nav/);
-});
-
-test("opening native archive retains Tissue VALUE, historical monitors, all shadows and challengers", () => {
-  const tree = view(); const archive = elements(tree).find((n) => n.props.id === "archived-research")!;
-  const html = renderToStaticMarkup(openArchive(tree));
-  assert.match(html, /<details(?=[^>]*id="archived-research")(?=[^>]*open="")[^>]*>/);
-  const archiveHtml = renderToStaticMarkup(archive);
-  for (const text of ["Today&#x27;s Tissue VALUE", "Turf VALUE", "Jump VALUE", "AW VALUE", "Hurdle VALUE", "Settled Tissue VALUE Today",
-    "Historical rank-one Tissue evidence", "Saved Turf History", "Prospective monitors", "Turf Tissue", "Jump Tissue", "AW Tissue", "Jump G4",
-    "LONG-PRICE SHADOWS", "HURDLE LONG-PRICE SHADOW", "TURF LONG-PRICE SHADOW", "AW LONG-PRICE SHADOW",
-    "AW LONGSHOT TRAINER/JOCKEY CHALLENGER", "HURDLE TISSUE CHALLENGER", "CHASE TISSUE CHALLENGER", "Model / Market Disagreement",
-    "Performance", "Details · model comparisons and value records", "Saved rule research"]) {
-    assert.ok(archiveHtml.includes(text), `Archived content retained: ${text}`);
-  }
-  assert.ok(archiveHtml.includes("Tissue Horse"));assert.ok(archiveHtml.includes("Disagreement Horse"));
-});
-
-test("lighter-weight monitor and every overlapping weight signal move only to secondary monitoring", () => {
-  const dashboard = fixture(), tree = view(dashboard), nodes = elements(tree);
-  const secondary = nodes.find((n) => n.props.id === "secondary-monitoring")!, archive = nodes.find((n) => n.props.id === "archived-research")!;
-  const secondaryHtml = renderToStaticMarkup(secondary), archiveHtml = renderToStaticMarkup(archive);
-  assert.match(secondaryHtml, /Today&#x27;s Rating - Lighter Weight/);assert.match(secondaryHtml, /Weight Horse/);assert.match(secondaryHtml, /Overlap Horse/);
-  assert.match(secondaryHtml, /24 \/ 20/);assert.match(secondaryHtml, /Market A\/E/);assert.match(secondaryHtml, /Qualifying median ROI/);
-  assert.doesNotMatch(secondaryHtml, /Tissue Horse|jump_g4 saved reason|Disagreement Horse/);
-  assert.doesNotMatch(archiveHtml, /Weight Horse|todays_rating_weight saved reason/);
-  assert.match(archiveHtml, /Overlap Horse/);assert.match(archiveHtml, /jump_g4 saved reason/);
-});
-
-test("presentational separation preserves every supplied observation, monitor and numeric result unchanged", () => {
-  const dashboard = fixture();
-  dashboard.horses.push({ ...dashboard.horses[0]!, runnerId: "both", horseName: "Tissue and Weight", signals: [
-    ...dashboard.horses[0]!.signals, { kind: "todays_rating_weight", reason: "Separate weight context", context: "Frozen context", movement: null },
-  ] });
-  const before = structuredClone(dashboard);
-  renderToStaticMarkup(view(dashboard));
-  assert.deepEqual(dashboard, before);
-  const secondary = renderToStaticMarkup(<SecondaryResearchMonitoring dashboard={dashboard} />);
-  const legacy = renderToStaticMarkup(<DailyResearchDashboard dashboard={dashboard} excludeSecondaryMonitoring />);
-  assert.match(secondary, /Separate weight context/);assert.match(secondary, /Tissue and Weight/);
-  assert.match(legacy, /Tissue and Weight/);assert.doesNotMatch(legacy, /Separate weight context/);
-  assert.match(legacy, /P\/L \+£3\.00/);assert.match(legacy, /ROI \+15\.0%/);
-});
-
-test("removing duplicate Today Tissue tables keeps generation T1/T2/Top2 monitoring and the archive", async () => {
+  assert.match(html, /captured bookmaker prices/);
+  assert.match(html, /TISSUE TOP 2/);
   const source = await readFile("src/app/racing/research/forward-value/forward-value-page.tsx", "utf8");
-  assert.doesNotMatch(source, /ActiveTissueRaceTables|selectActiveResearchCaptures/);
-  assert.match(source, /<TissueGenerationMonitor data=\{generation\}/);
-  assert.match(source, /<TissueProspectiveSummary/);
-  assert.match(source, /<TissueValueMonitoring/);
-  const data = emptyTissueGeneration(), before = JSON.stringify(data);
-  const html = renderToStaticMarkup(<TissueGenerationMonitor data={data} />);
-  for (const title of ["TISSUE RANK 1", "TISSUE RANK 2", "TISSUE TOP 2"]) assert.ok(html.includes(title));
-  assert.equal(JSON.stringify(data), before);
-  const archive = renderToStaticMarkup(openArchive(view()));
-  assert.match(archive, /Saved Turf History/);
-  assert.match(archive, /Historical rank-one Tissue evidence/);
-});
-
-test("normal page defers server archive content until explicitly requested", () => {
-  const props = { date: "2026-11-06", active: <p>Active summary</p>, secondary: <p>Secondary summary</p>, children: <p>Historical records</p> };
-  const active = renderToStaticMarkup(<ResearchPageLayout {...props} archiveLoaded={false} />);
-  assert.match(active, /Load archived research/); assert.doesNotMatch(active, /Historical records/);
-  const archive = renderToStaticMarkup(<ResearchPageLayout {...props} archiveLoaded />);
-  assert.match(archive, /Historical records/);
-  assert.match(archive, /<details[^>]*open=""[^>]*id="archived-research"/);
+  for (const component of ["TissueProspectiveSummary", "TissueValueMonitoring", "TurfTissueValueSection", "AwTissueValueSection", "JumpTissueValueSection"]) {
+    assert.ok(source.includes(`<${component}`));
+  }
 });

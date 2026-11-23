@@ -26,6 +26,59 @@ from sporting_life.importing import (  # noqa: E402
 
 
 class SportingLifeRacecardDayImportTest(unittest.TestCase):
+    def test_targeting_requires_an_armed_same_day_morning_inside_the_period(self) -> None:
+        now = datetime(2026, 9, 9, 8, tzinfo=timezone.utc)
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            period = Path(tmp_dir) / "period.json"
+            with (
+                patch.object(racecard_importer, "TRAINER_TARGETING_PERIOD", period),
+                patch.dict("os.environ", {"RESEARCH_TRAINER_TARGETING_MORNING": "1"}),
+            ):
+                self.assertFalse(racecard_importer.trainer_targeting_due(now.date(), now))
+                period.write_text('{"from":"2026-09-09","until":"2027-09-09"}', encoding="utf-8")
+                self.assertTrue(racecard_importer.trainer_targeting_due(now.date(), now))
+                self.assertFalse(racecard_importer.trainer_targeting_due(now.date(), now.replace(hour=12)))
+                self.assertFalse(racecard_importer.trainer_targeting_due(now.date(), now.replace(day=10)))
+                self.assertFalse(racecard_importer.trainer_targeting_due(date(2027, 9, 9), now.replace(year=2027)))
+                with patch.dict("os.environ", {"RESEARCH_TRAINER_TARGETING_MORNING": ""}):
+                    self.assertFalse(racecard_importer.trainer_targeting_due(now.date(), now))
+
+    def test_targeting_handoff_only_contains_committed_import_payloads(self) -> None:
+        payload = racecard_payload()
+        url = f"{BASE_URL}/racing/racecards/2026-09-09/carlisle/racecard/937435/carlisle-novice"
+        client = FakeSportingLifeClient({
+            f"{BASE_URL}/api/horse-racing/racing/racecards/2026-09-09": json.dumps(index_payload()["props"]["pageProps"]["meetings"]),
+            url: next_data_html(payload),
+        })
+        connection = FakeConnection()
+        observed = datetime(2026, 9, 9, 8, tzinfo=timezone.utc)
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            handoff = Path(tmp_dir) / "handoff"
+            handoff.mkdir()
+            staged = handoff / "937435.json"
+            with (
+                patch.object(racecard_importer, "RAW_OUTPUT_DIR", Path(tmp_dir)),
+                patch.object(racecard_importer.psycopg, "connect", return_value=connection),
+                patch.object(connection, "commit", side_effect=[None, RuntimeError("commit failed")]) as commit,
+            ):
+                with self.assertRaisesRegex(RuntimeError, "commit failed"):
+                    racecard_importer.import_sporting_life_racecards(
+                        race_date=observed.date(), database_url="unused", client=client, request_delay_seconds=0,
+                        trainer_targeting_handoff=handoff, now=lambda: observed,
+                    )
+                self.assertFalse(staged.exists())
+                commit.side_effect = None
+                racecard_importer.import_sporting_life_racecards(
+                    race_date=observed.date(), database_url="unused", client=client, request_delay_seconds=0,
+                    trainer_targeting_handoff=handoff, now=lambda: observed,
+                )
+            snapshot = json.loads(staged.read_text(encoding="utf-8"))
+            self.assertEqual(snapshot["raceId"], "937435")
+            self.assertTrue(snapshot["sourceImportId"].startswith("row-"))
+            self.assertEqual(snapshot["sourceUrl"], url)
+            self.assertEqual(snapshot["importedAt"], observed.isoformat())
+            self.assertEqual(snapshot["payload"], payload)
+
     def test_force_refresh_refetches_existing_future_card_but_preserves_off_card(self) -> None:
         for hour, stage, expected_imports in [(9, "DORMANT", 1), (14, "DORMANT", 0), (9, "OFF", 0)]:
             index = index_payload()

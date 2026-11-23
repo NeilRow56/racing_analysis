@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { profileRequest } from "@/lib/racing/performance-profile";
 import { profiledServerWork, profiledCalculation } from "./profiled-server-work";
 import { ProspectiveEpochDisclosure as ProspectiveEpochResearch } from "./prospective-epoch-disclosure";
@@ -16,7 +17,6 @@ import { TissueSpeedRankWatch } from "./tissue-speed-rank-watch";
 import { TissueInputReliabilityWatch } from "./tissue-input-reliability";
 import { loadAllTissueValue } from "@/lib/racing/tissue-value-readers";
 import { TissueValueMonitoring } from "./tissue-value-monitoring";
-import { TissueGenerationMonitor } from "./tissue-generation-monitor";
 import { HurdleV3ShadowResearch } from "./hurdle-v3-shadow-monitor";
 import { HurdleV3MarketEdgeResearch } from "./hurdle-v3-market-edge-monitor";
 import { TissuePositiveNeutralResearch } from "./tissue-positive-neutral-monitor";
@@ -79,8 +79,16 @@ import { loadChasePair } from "@/lib/racing/chase-tissue-challenger-forward";
 import { ChaseTissueChallengerSection } from "./chase-tissue-challenger";
 import { loadHurdleRecency } from "@/lib/racing/hurdle-recency-forward";
 import { HurdleRecencyResearchSection } from "./hurdle-recency-research";
+import { ChaseActiveResearch } from "./chase-active-research";
 import { ResearchPageLayout } from "./research-page-layout";
 import { OrSpeedMonitoring } from "./or-speed-monitoring";
+import { AwCumulativeProfitability, AwDailyProfitability } from "./aw-profitability";
+import { buildAwProfitabilityReport, profitabilityDate, readAwCollectionStatus, readAwProfitabilityLedgers } from "@/lib/racing/aw-profitability-report";
+import { TissuePerformance } from "./tissue-performance";
+import { DevelopmentReports, trainerTargetingReportId } from "./development-reports";
+import { loadVerifiedFinalSpResults } from "@/lib/racing/hurdle-final-sp";
+import { ActiveProspectiveSummaries, ActiveRatingSummaries } from "./active-prospective-summaries";
+import Link from "next/link";
 
 type PageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
@@ -88,6 +96,8 @@ type PageProps = {
 
 
 const cachedFiles = createResearchCache<Awaited<ReturnType<typeof readResearchFiles>>>();
+const cachedGeneration = createResearchCache<Awaited<ReturnType<typeof loadTissueGeneration>>>();
+const cachedValueCohorts = createResearchCache<Awaited<ReturnType<typeof loadAllTissueValue>>>();
 async function readResearchFiles() {
   return Promise.all([
     researchStage("loadForwardValueData", () => loadForwardValueData()),
@@ -104,7 +114,6 @@ async function readResearchFiles() {
     researchStage("loadHurdleRecency", () => loadHurdleRecency()),
     researchStage("loadRankOne", () => loadRankOne()),
     researchStage("loadAllTissueValue", () => loadAllTissueValue()),
-    researchStage("loadTissueGeneration", () => loadTissueGeneration()),
     researchStage("chase snapshot filesystem", () => loadChaseSpeedSnapshots()),
   ] as const);
 }
@@ -113,10 +122,9 @@ const cachedDatabase = createResearchCache<ResearchDatabase>(30_000);
 
 const cachedReporting = createResearchCache<ReturnType<typeof buildResearchReport>>(30_000);
 function buildResearchReport(files: Awaited<ReturnType<typeof readResearchFiles>>, database: ResearchDatabase, raceDate: string, params: Awaited<PageProps["searchParams"]>) {
-  const [data, tissueData, awTissueData, jumpTissueData, , g4Data, weightData, modelDisagreementData, , , , , , valueCohorts] = files;
+  const [data, tissueData, awTissueData, jumpTissueData, , g4Data, weightData, modelDisagreementData, , , , , , valueCohorts, chaseSpeedSnapshots] = files;
   const { currentCardStatuses, currentPrices } = database;
   const prospectiveTissue = profiledCalculation("report.buildProspectiveTissueSources", () => buildProspectiveTissueSources({ turf: tissueData, aw: awTissueData, jump: jumpTissueData, cohorts: valueCohorts }));
-  const chaseSpeedSnapshots = files[15];
   const chaseSpeed = { observations: attachChaseSpeedState(prospectiveTissue.observations, chaseSpeedSnapshots, "primary"),
     priceObservations: attachChaseSpeedState(prospectiveTissue.priceObservations, chaseSpeedSnapshots, "price") };
   const reportingScope = profiledCalculation("report.buildForwardValueReportingScope", () => buildForwardValueReportingScope(data.races, currentCardStatuses));
@@ -141,15 +149,85 @@ export default async function ForwardValuePage(props: PageProps) {
 }
 
 async function prepareForwardValuePage({ searchParams }: PageProps) {
-  const raceDate = getLocalRacingDate();
+  const params = await searchParams;
+  const raceDate = profitabilityDate(scalar(params?.date), getLocalRacingDate());
+  const archiveLoaded = scalar(params?.archive) === "1";
+  const historyLoaded = scalar(params?.history) === "1";
+  const secondaryOpen = scalar(params?.monitor) === "or-speed" || scalar(params?.monitor) === "secondary";
   const fileIdentity = await researchStage("file modification identity", () => researchFileIdentity());
-  const [params, files] = await Promise.all([searchParams, researchStage("research files (cached)", () => cachedFiles(fileIdentity, readResearchFiles))]);
-  const [data, , awTissueData, jumpTissueData, awPairedData, , , , reviewData, hurdlePairData, chasePairData, hurdleRecencyData, rankOneData, valueCohorts, generation] = files;
+  const [awLedgers, generation, collection, valueCohorts] = await Promise.all([
+    readAwProfitabilityLedgers(),
+    cachedGeneration(fileIdentity, () => researchStage("loadTissueGeneration", () => loadTissueGeneration())),
+    readAwCollectionStatus(raceDate),
+    cachedValueCohorts(fileIdentity, () => researchStage("loadAllTissueValue", () => loadAllTissueValue())),
+  ]);
+  const [verifiedOriginalSp, legacy] = await Promise.all([
+    loadVerifiedFinalSpResults(generation.races.filter(r => r.family === "AW" && r.raceDate === raceDate &&
+      r.runners.some(pick => pick.rank <= 2 && pick.outcome?.status === "settled")).map(r => r.raceId)).catch(() => undefined),
+    archiveLoaded || historyLoaded || secondaryOpen ? prepareLegacyResearch(raceDate, params, fileIdentity) : null,
+  ]);
+  const awReport = buildAwProfitabilityReport(raceDate, generation, awLedgers, new Date(), collection, verifiedOriginalSp);
+  return (
+    <ResearchPageLayout
+      date={raceDate}
+      archiveLoaded={archiveLoaded}
+      historyLoaded={historyLoaded}
+      daily={<AwDailyProfitability report={awReport} />}
+      tissue={<TissuePerformance generation={generation} />}
+      active={<>
+        <AwCumulativeProfitability policies={awReport.policies} />
+        <p className="mt-2 text-xs text-slate-600">Final-SP ROI uses settled £1 stakes. Non-runners and voids have zero stake. Winning dead heats use the official split.</p>
+        <Suspense fallback={<p className="mt-3 text-sm text-slate-600">Loading other prospective monitors…</p>}>
+          <ActiveProspectiveSummaries generation={generation} />
+        </Suspense>
+        <details className="mt-3 text-sm">
+          <summary className="cursor-pointer font-medium text-emerald-800">Chase T3 · prospective breakdowns at captured prices</summary>
+          <ChaseActiveResearch generation={generation} />
+        </details>
+        <details className="mt-3 text-sm">
+          <summary className="cursor-pointer font-medium text-emerald-800">Other prospective monitors · Value 1, 2027 Turf and trainer targeting</summary>
+          <Link prefetch={false} className="mt-3 inline-block text-emerald-800 underline"
+            href={`/racing/research/forward-value/reports/${trainerTargetingReportId}`}>Trainer targeting protocol and reporting</Link>
+          <ActiveValuePerformance date={raceDate} datasets={valueCohorts.map(c => c.data)} generation={generation} />
+          {profiledServerWork("monitor.EarlyTurfResearch", () => EarlyTurfResearch(), <EarlyTurfResearch />)}
+        </details>
+      </>}
+      historical={<>
+        <DevelopmentReports />
+        {historyLoaded && <>
+          <ChaseActiveResearch generation={generation} historicalOnly />
+          {legacy?.historical}
+        </>}
+      </>}
+      secondaryOpen={secondaryOpen}
+      secondary={secondaryOpen ? <>
+        <ActiveRatingSummaries />
+        {legacy?.secondary}
+        {profiledServerWork("monitor.OrSpeedMonitoring", () => OrSpeedMonitoring(), <OrSpeedMonitoring />)}
+      </> : <Link prefetch={false} className="mt-2 inline-block text-sm text-emerald-800 underline"
+        href={`?date=${raceDate}&monitor=secondary#secondary-monitoring`}>Load secondary monitoring</Link>}
+    >
+      {archiveLoaded && <>
+        {profiledServerWork("monitor.ProspectiveEpochResearch", () => ProspectiveEpochResearch({ generation }), <ProspectiveEpochResearch generation={generation} />)}
+        {profiledServerWork("monitor.HurdleV3ShadowResearch", () => HurdleV3ShadowResearch(), <HurdleV3ShadowResearch />)}
+        {profiledServerWork("monitor.HurdleV3MarketEdgeResearch", () => HurdleV3MarketEdgeResearch(), <HurdleV3MarketEdgeResearch />)}
+        {profiledServerWork("monitor.LowFormHurdleResearch", () => LowFormHurdleResearch(), <LowFormHurdleResearch />)}
+        {profiledServerWork("monitor.TissuePositiveNeutralResearch", () => TissuePositiveNeutralResearch(), <TissuePositiveNeutralResearch />)}
+        {legacy?.archive}
+      </>}
+    </ResearchPageLayout>
+  );
+}
+
+async function prepareLegacyResearch(raceDate: string, params: Awaited<PageProps["searchParams"]>, fileIdentity: string) {
+  const files = await researchStage("research files (cached)", () => cachedFiles(fileIdentity, readResearchFiles));
+  const [data, , awTissueData, jumpTissueData, awPairedData, , , , reviewData, hurdlePairData, chasePairData, hurdleRecencyData, rankOneData, valueCohorts] = files;
   const connection = createDbConnection();
-  let currentCardStatuses;
-  let canonicalResultRaceIds;
-  let currentPrices;
-  let databaseIdentity: string;
+  let currentCardStatuses: ResearchDatabase["currentCardStatuses"];
+  let canonicalResultRaceIds: ResearchDatabase["canonicalResultRaceIds"];
+  let currentPrices: ResearchDatabase["currentPrices"];
+  let databaseIdentity = "unavailable";
+  let databaseWarning = false;
   try {
     databaseIdentity = await researchStage("DB modification identity", () => researchDatabaseIdentity(connection.db));
     const database = await researchStage("DB reporting snapshot (cached)", () => cachedDatabase(`${fileIdentity}|${raceDate}|${databaseIdentity}`, async () => {
@@ -162,23 +240,31 @@ async function prepareForwardValuePage({ searchParams }: PageProps) {
       return { currentCardStatuses, canonicalResultRaceIds, currentPrices };
     }));
     ({ currentCardStatuses, canonicalResultRaceIds, currentPrices } = database);
+  } catch {
+    databaseWarning = true;
+    databaseIdentity = "unavailable";
+    currentCardStatuses = await getSportingLifeCurrentCardRaceStatuses(connection.db, []);
+    canonicalResultRaceIds = new Set<string>();
+    currentPrices = [];
   } finally {
     await connection.client.end();
   }
   const filtersKey = JSON.stringify(parseFilters(params));
   const { prospectiveTissue, chaseSpeed, reportingScope, dashboard, filters, summary, disagreementDiagnostics, observations, probabilityGapDiagnostics } = await researchStage("derived reporting (cached)", () =>
     cachedReporting(`${fileIdentity}|${raceDate}|${databaseIdentity}|${filtersKey}`, async () => buildResearchReport(files, { currentCardStatuses, canonicalResultRaceIds, currentPrices }, raceDate, params)));
-  return profiledCalculation("forward_value.final_page_data", () => (
-    <ResearchPageLayout
-      date={raceDate}
-      archiveLoaded={scalar(params?.archive) === "1"}
-      active={<><ActiveValuePerformance datasets={valueCohorts.map(c => c.data)} generation={generation} date={raceDate} /><TissueGenerationMonitor data={generation} />{profiledServerWork("monitor.ProspectiveEpochResearch", () => ProspectiveEpochResearch(), <ProspectiveEpochResearch />)}{profiledServerWork("monitor.TissuePositiveNeutralResearch", () => TissuePositiveNeutralResearch(), <TissuePositiveNeutralResearch />)}{profiledServerWork("monitor.HurdleV3ShadowResearch", () => HurdleV3ShadowResearch(), <HurdleV3ShadowResearch />)}{profiledServerWork("monitor.HurdleV3MarketEdgeResearch", () => HurdleV3MarketEdgeResearch(), <HurdleV3MarketEdgeResearch />)}{profiledServerWork("monitor.LowFormHurdleResearch", () => LowFormHurdleResearch(), <LowFormHurdleResearch />)}{profiledServerWork("monitor.EarlyTurfResearch", () => EarlyTurfResearch(), <EarlyTurfResearch />)}{profiledServerWork("monitor.TissueValueMonitoring", () => TissueValueMonitoring({ cohorts: valueCohorts, date: raceDate, includeArchive: scalar(params?.archive) === "1" }), <TissueValueMonitoring cohorts={valueCohorts} date={raceDate} includeArchive={scalar(params?.archive) === "1"} />)}</>}
-      secondaryOpen={scalar(params?.monitor) === "or-speed"}
-      secondary={<><SecondaryResearchMonitoring dashboard={dashboard} />{profiledServerWork("monitor.OrSpeedMonitoring", () => OrSpeedMonitoring(), <OrSpeedMonitoring />)}</>}
-    >
-      {scalar(params?.archive) === "1" ? <>
-      <p className="mt-3 text-sm font-semibold">Retired Tissue generation and absorbed research · historical reference only</p>
+  const warning = databaseWarning && <p className="mt-3 text-sm text-amber-800">Local race database unavailable. Showing saved report data.</p>;
+  return {
+    secondary: <>{warning}<SecondaryResearchMonitoring dashboard={dashboard} /></>,
+    historical: <>{warning}
       {profiledServerWork("archive.HurdleRecencyResearchSection", () => HurdleRecencyResearchSection({ data: hurdleRecencyData }), <HurdleRecencyResearchSection data={hurdleRecencyData} />)}
+      <TurfModelAgreementCounts summary={summary.turfModelAgreement} />
+      <SameLeaderProbabilityGapDiagnostics diagnostics={probabilityGapDiagnostics} />
+      <TurfModelDisagreementExplainer diagnostics={disagreementDiagnostics} />
+      <ResearchHistory />
+    </>,
+    archive: <>{warning}
+      <TissueValueMonitoring cohorts={valueCohorts} date={raceDate} includeArchive />
+      <p className="mt-3 text-sm font-semibold">Retired Tissue generation and absorbed research · historical reference</p>
       <TissueProspectiveSummary {...prospectiveTissue} />
       <TissueInputReliabilityWatch {...prospectiveTissue} />
       <TissueSpeedRankWatch {...prospectiveTissue} />
@@ -199,25 +285,21 @@ async function prepareForwardValuePage({ searchParams }: PageProps) {
       </details>
       <details className="border-t border-slate-200 py-4">
         <summary className="cursor-pointer text-sm font-semibold">Details · model comparisons and value records</summary>
-        <ResearchHistory />
-        <TurfModelAgreementCounts summary={summary.turfModelAgreement} />
-        <SameLeaderProbabilityGapDiagnostics diagnostics={probabilityGapDiagnostics} />
-        <TurfModelDisagreementExplainer diagnostics={disagreementDiagnostics} />
         <TurfTissueValueSection records={turfValueRecordsForModel(reportingScope.analyticalRecords, ACTIVE_TURF_TISSUE_CONFIG.modelVersion)} reviews={reviewData} />
         <details className="mt-4 border-t border-slate-200 py-3"><summary className="cursor-pointer text-sm font-semibold">Historical Turf Tissue · v1/v2</summary><TurfTissueValueSection records={reportingScope.analyticalRecords.filter(r => r.tissueModelVersion !== ACTIVE_TURF_TISSUE_CONFIG.modelVersion)} reviews={reviewData} /></details>
         {profiledServerWork("archive.AwTissueValueSection", () => AwTissueValueSection({ data: awTissueData, ratings: reportingScope.analyticalRecords, reviews: reviewData }), <AwTissueValueSection data={awTissueData} ratings={reportingScope.analyticalRecords} reviews={reviewData} />)}
         {profiledServerWork("archive.JumpTissueValueSection", () => JumpTissueValueSection({ data: jumpTissueData, ratings: reportingScope.analyticalRecords, reviews: reviewData }), <JumpTissueValueSection data={jumpTissueData} ratings={reportingScope.analyticalRecords} reviews={reviewData} />)}
         <RecentObservations
           filters={filters}
+          raceDate={raceDate}
           observations={observations}
           tissueComparisons={profiledCalculation("report.buildFamilyTissueComparisons", () => buildFamilyTissueComparisons(observations, { aw: awTissueData, jump: jumpTissueData }))}
           reportingStatuses={reportingScope.statusByRaceId}
           canonicalResultRaceIds={canonicalResultRaceIds}
         />
       </details>
-      </> : null}
-    </ResearchPageLayout>
-  ));
+    </>,
+  };
 }
 
 function familyFilteredProbabilityGapDiagnostics(
@@ -865,6 +947,7 @@ function outcomeSummary(value: { observations: number; settledObservations: numb
 }
 
 type RecentProps = {
+  raceDate?: string;
   filters: ForwardValueObservationFilters;
   observations: Awaited<ReturnType<typeof loadForwardValueData>>["races"];
   tissueComparisons?: ReadonlyMap<string, FamilyTissueComparison>;
@@ -972,7 +1055,7 @@ function trackerTissueComparison(record: ForwardValueRecord, race: AwTissueRace 
   };
 }
 
-export function RecentObservations({ filters, observations, tissueComparisons, reportingStatuses, canonicalResultRaceIds = new Set() }: RecentProps) {
+export function RecentObservations({ filters, raceDate, observations, tissueComparisons, reportingStatuses, canonicalResultRaceIds = new Set() }: RecentProps) {
   return (
     <section aria-labelledby="recent-heading" className="mt-8 pb-10">
       <div className="border-b border-slate-300 pb-3">
@@ -981,7 +1064,9 @@ export function RecentObservations({ filters, observations, tissueComparisons, r
       </div>
       <RecentObservationsScroll
         controls={(
-        <form className="flex flex-wrap items-end justify-end gap-2" method="get">
+        <form className="flex flex-wrap items-end justify-end gap-2" method="get" action="/racing/research/forward-value#recent-heading">
+          <input type="hidden" name="archive" value="1" />
+          {raceDate && <input type="hidden" name="date" value={raceDate} />}
           <FilterSelect label="Family" name="family" value={filters.family} options={[["all", "All families"], ["turf", "TPR"], ["jump", "JPR-A"], ["aw", "AW-D"]]} />
           <FilterSelect label="Status" name="state" value={filters.state} options={[["all", "All statuses"], ["settled", "Settled"], ["unsettled", "Unsettled"], ["excluded", "Excluded"], ["superseded", "Superseded"]]} />
           <FilterSelect label="Edge" name="edge" value={filters.edge} options={[["all", "All edges"], ["positive", "Positive"], ["non_positive", "Negative / zero"]]} />

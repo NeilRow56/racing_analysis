@@ -124,7 +124,10 @@ test("monthly summaries, paired coverage, missing-market V4 retained, unavailabl
     assert.equal(s.monthly.length, 25); assert.equal(s.monthly.find(r => r.month === "2027-04" && r.cohort === "VERY LOW")!.races, 1);
     assert.equal(s.rows[4].races, 2); assert.equal(summarizeEarlyTurf(next, emptyTissueGeneration()).unavailable.length, 2);
     const html = renderToStaticMarkup(<EarlyTurfMonitor data={next} generation={generation} />);
-    for (const text of ["2027 EARLY-SEASON TURF", "VERY LOW + LIMITED", "Monthly breakdown", "2027-07", "Difference", "Market coverage"]) assert.ok(html.includes(text));
+    for (const text of ["TURF V4 — 2027 Early-Season Monitoring", "TURF_2027_EARLY_SEASON_V1", "VERY LOW + LIMITED", "Monthly breakdown", "2027-07", "Difference", "Market coverage"]) assert.ok(html.includes(text));
+    assert.doesNotMatch(html, /AWAITING FIRST CAPTURE/);
+    assert.match(renderToStaticMarkup(<EarlyTurfMonitor data={data} generation={generation} />), /AWAITING FIRST CAPTURE/);
+    assert.match(renderToStaticMarkup(<EarlyTurfMonitor data={null} generation={generation} />), /NOT ARMED/);
     for (const classification of ["VERY LOW", "LIMITED", "MIXED", "ESTABLISHED"] as const) assert.ok(renderToStaticMarkup(<EarlyTurfLabel observation={{ ...next.observations[0], classification }} />).includes(`EARLY TURF — ${classification}`));
     assert.equal(await TurfEarlySeasonLabel({ race: { raceDateTime: new Date("2026-11-10"), raceId: "old" } as TodayRace }), null);
   } finally { await rm(dir, { recursive: true }); }

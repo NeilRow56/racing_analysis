@@ -1,12 +1,15 @@
 import { summarizeTissueGeneration, type GenerationData } from "@/lib/racing/tissue-generation-forward";
-import { TISSUE_GENERATION_EPOCH } from "@/lib/racing/tissue-generation-config";
+import { TISSUE_GENERATION } from "@/lib/racing/tissue-generation-config";
+import { TissueFamilyModels } from "./tissue-family-models";
 const pct = (v: number | null) => v === null ? "—" : `${(v * 100).toFixed(2)}%`;
 const num = (v: number | null) => v === null ? "—" : v.toFixed(2);
 
 export function TissueGenerationMonitor({ data }: { data: GenerationData }) {
   return <section className="mt-5 border border-slate-300 bg-white p-4" aria-labelledby="clean-tissue-heading">
-    <h3 id="clean-tissue-heading" className="text-base font-semibold">New Tissue generation · prospective evaluation</h3>
-    <p className="mt-1 text-sm text-slate-600">How is the new Tissue generation performing prospectively? Since {TISSUE_GENERATION_EPOCH}. Models remain frozen; no historical backfill.</p>
+    <h3 id="clean-tissue-heading" className="text-base font-semibold">TISSUE MODEL PERFORMANCE — All Families</h3>
+    <p className="mt-1 text-sm text-slate-600">Current prospective model evaluation from 5 November 2026.</p>
+    <TissueFamilyModels />
+    <p className="mt-1 break-words text-xs text-slate-500">{TISSUE_GENERATION} · Epoch <time dateTime={data.epoch}>{data.epoch}</time>. Models remain frozen. No historical backfill.</p>
     <p className="mt-2 text-xs text-slate-500">The models incorporate findings from the previous research period. Development results are not independent prospective validation. Only new-generation captures enter these headline counts.</p>
     {summarizeTissueGeneration(data).map(group => <div key={group.rank} className="mt-4 overflow-x-auto"><table className="w-full whitespace-nowrap text-left text-xs tabular-nums">
       <caption className="mb-2 text-left font-semibold">{group.rank === "TOP_2" ? "TISSUE TOP 2" : `TISSUE RANK ${group.rank}`}</caption>

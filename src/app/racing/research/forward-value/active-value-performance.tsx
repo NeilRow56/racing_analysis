@@ -2,7 +2,7 @@ import { activeValueDay, activeValuePerformance } from "@/lib/racing/active-valu
 import type { TissueValueData } from "@/lib/racing/tissue-value-forward";
 import { latestPreOffCaptures } from "@/lib/racing/frozen-capture-selection";
 import { validGenerationCapture, type GenerationData } from "@/lib/racing/tissue-generation-forward";
-import { VALUE_RANK_REJECTION_LABELS, VALUE_RANK_EPOCH, VALUE_RANK_PRICE_CAP_EPOCH } from "@/lib/racing/value-rank-v2";
+import { VALUE_RANK_REJECTION_LABELS, VALUE_RANK_EPOCH, VALUE_RANK_PRICE_CAP_EPOCH, VALUE_RANK_VERSION } from "@/lib/racing/value-rank-v2";
 
 const pct = (n: number | null) => n === null ? "—" : `${(n * 100).toFixed(2)}%`;
 const num = (n: number | null) => n === null ? "—" : n.toFixed(2);
@@ -15,7 +15,8 @@ export function ActiveValuePerformance({ datasets, generation, date }: { dataset
     { label: "Legacy V1 shadow · same post-epoch latest books", ...summary.legacyShadow },
     { label: "Rejected V1 shadow · same books", ...summary.rejected }];
   return <section className="mt-6 border-t-2 border-slate-700 pt-5" aria-labelledby="all-active-value-heading">
-    <h3 id="all-active-value-heading" className="text-base font-semibold">All active Value 1 V2 selections</h3>
+    <h3 id="all-active-value-heading" className="text-base font-semibold">VALUE 1 STRATEGY — Active V2 Selections</h3>
+    <p className="mt-1 text-sm text-slate-600">Separate Value 1 strategy performance. V2 identifies the Value 1 selection policy ({VALUE_RANK_VERSION}).</p>
     <p className="mt-1 text-xs text-slate-600">Since {VALUE_RANK_EPOCH}. Uses Today’s latest frozen Value book per race and its retained V2 leaders, with no additional research-cohort filter. £1 stakes at the frozen Value price; settled starters only, canonical dead-heat returns; pending/NR/void excluded from stakes. Shadow overlaps V2. From {VALUE_RANK_PRICE_CAP_EPOCH}, original Value 1 requires price ≤67.00; 21.00–&lt;51.00 still requires 5–9 prior runs. Rejection means no Value 1 and no promotion. Earlier frozen policies remain unchanged.</p>
     <div className="mt-3 overflow-x-auto"><table className="w-full whitespace-nowrap text-left text-xs tabular-nums">
       <thead><tr>{["Family / population", "Selections", "Settled", "Winners", "Strike", "£1 P/L", "ROI"].map(h => <th key={h} className="border-b p-2" scope="col">{h}</th>)}</tr></thead>

@@ -50,4 +50,11 @@ export const AW_PROFIT_RECOVERY_SOURCES = [
   "scripts/local-automation.ts",
 ] as const;
 
-export const BACKUP_TRACKERS = [...BACKUP_TRACKERS_V4, AW_PROFIT_BACKUP_TRACKER] as const;
+export const BACKUP_TRACKERS_V5 = [...BACKUP_TRACKERS_V4, AW_PROFIT_BACKUP_TRACKER] as const;
+export const AW_SAME_OR_BACKUP_TRACKER = ["aw-same-or-shadow-v1.json", "src/lib/racing/aw-same-or-shadow.ts"] as const;
+export const AW_SAME_OR_RECOVERY_SOURCES = [
+  "src/lib/racing/aw-same-or-policy.ts",
+  "scripts/track-aw-same-or-shadow.ts",
+  "scripts/local-automation.ts",
+] as const;
+export const BACKUP_TRACKERS = [...BACKUP_TRACKERS_V5, AW_SAME_OR_BACKUP_TRACKER] as const;

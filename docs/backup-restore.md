@@ -29,7 +29,7 @@ Git commit/branch, runtime/client versions, database name, dump verification,
 file sizes and SHA-256 hashes, tracker version identifiers, count and archive
 name. It contains no database credentials. No `.env` files are archived.
 
-The required inventories are `scripts/backup-tracker-inventory.ts` (37 named
+The required inventories are `scripts/backup-tracker-inventory.ts` (38 named
 ledgers plus the Chase speed snapshot collection) and
 `scripts/backup-artifact-inventory.ts` (23 frozen model, calibration,
 configuration and provenance files). They include historical V1 ledgers,
@@ -41,6 +41,10 @@ Version 5 includes the AW_PROFIT_V3 shadow ledger at
 `research/aw-profit-shadow-v1.json`, plus the implementation, policy, collector
 and scheduler wrapper under `recovery/`. Each run copies the current ledger,
 including observations and settlements appended since the previous archive.
+
+Version 6 adds `research/aw-same-or-shadow-v1.json` and the same-OR candidate's
+policy, implementation and collector under `recovery/`. The archive copies the
+current ledger byte for byte, including appended observations and settlements.
 
 Version 4 archives add `historical/<original-sha256>/<original-source-path>`.
 `scripts/backup-historical-dependencies.ts` records eight reviewed owner/path/
@@ -58,7 +62,7 @@ Existing collection guards and original ledger hashes are never rewritten.
 Older frozen development-artifact references retain their existing informational
 status; these are not current collection permissions or a claim to reproduce
 all historical model development inputs. Full Git and raw training history
-remain separate archival responsibilities. Existing v2/v3/v4 archives retain their
+remain separate archival responsibilities. Existing v2–v5 archives retain their
 original inventories and verification rules.
 
 See [the compatibility repair and ledger audit](backup-compatibility-repair-2026-11-12.md)

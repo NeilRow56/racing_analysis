@@ -19,6 +19,12 @@ if (process.argv[1] && operationalScript(process.argv[1], process.argv.slice(2))
     process.exit(75);
   }
   Object.assign(process.env, lease.environment);
+  if (basename(process.argv[1]) === "run-research-workflow.ts") {
+    const args = process.argv.slice(2);
+    const mode = args.indexOf("--mode");
+    delete process.env.RESEARCH_TRAINER_TARGETING_MORNING;
+    if (mode >= 0 && args[mode + 1] === "morning") process.env.RESEARCH_TRAINER_TARGETING_MORNING = "1";
+  }
   // SIGKILL/abrupt termination intentionally leaves a blocking lock for review.
   process.once("exit", () => {
     try { assertNoLiveDescendants(); lease.release(); } catch (error) { console.error(String(error)); process.exitCode = 74; }

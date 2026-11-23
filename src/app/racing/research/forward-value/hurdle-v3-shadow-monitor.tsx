@@ -1,16 +1,21 @@
 import { profileCall } from "@/lib/racing/performance-profile";
-import { loadHurdleV3Shadow, type HurdleV3ShadowData } from "@/lib/racing/hurdle-v3-shadow";
+import { HURDLE_V3_SHADOW_VERSION, loadHurdleV3Shadow, type HurdleV3ShadowData } from "@/lib/racing/hurdle-v3-shadow";
 import { hurdleShadowComparison, hurdleShadowOutcome, summarizeHurdleV3Shadow } from "@/lib/racing/hurdle-v3-shadow-metrics";
+import { hurdleShadowFinalSp, loadHurdleFinalSpResults, type HurdleFinalSpResults } from "@/lib/racing/hurdle-final-sp";
+import { HurdleFinalSpCells, HurdleFinalSpSensitivity, hurdleFinalSpHeaders } from "./hurdle-final-sp-columns";
 
 const pct = (x: number | null) => x === null ? "—" : `${(x * 100).toFixed(2)}%`;
 const num = (x: number | null) => x === null ? "—" : x.toFixed(4);
 export async function HurdleV3ShadowResearch() {
   const result = await profileCall("loadHurdleV3Shadow", loadHurdleV3Shadow).then(data => ({ data, failed: false })).catch(() => ({ data: null, failed: true }));
   if (result.failed) return <p className="mt-4 text-sm text-amber-800">Hurdle V3 shadow ledger unavailable. Production V2 is unchanged.</p>;
-  return <HurdleV3ShadowMonitor data={result.data} />;
+  const results = await profileCall("loadHurdleShadowFinalSp", () => loadHurdleFinalSpResults(result.data?.observations ?? [])).catch(() => null);
+  return <HurdleV3ShadowMonitor data={result.data} results={results} />;
 }
-export function HurdleV3ShadowMonitor({ data }: { data: HurdleV3ShadowData | null }) {
+export function HurdleV3ShadowMonitor({ data, results }: { data: HurdleV3ShadowData | null; results?: HurdleFinalSpResults | null }) {
   const summary = summarizeHurdleV3Shadow(data);
+  const sp = hurdleShadowFinalSp(data, results ?? new Map());
+  const selectionLabel = (rank: number | string) => rank === "TOP2" ? "Top2" : `T${rank}`;
   const rows = [...(data?.observations ?? [])].reverse();
   const disagreements = rows.filter(o => hurdleShadowComparison(o).orderingDiffers);
   const raceRows = (observations: typeof rows) => observations.map(o => {
@@ -23,14 +28,19 @@ export function HurdleV3ShadowMonitor({ data }: { data: HurdleV3ShadowData | nul
   });
   const headers = ["Race", "V2 T1 / T2", "V3 SHADOW T1 / T2", "Winner / status", "Top2 differs", "V2 winner rank", "V3 winner rank", "Missed LED winners", "LED would change Top2"];
   return <section className="mt-5 border border-slate-300 bg-white p-4" aria-labelledby="hurdle-v3-shadow-heading">
-    <h3 id="hurdle-v3-shadow-heading" className="text-base font-semibold">Hurdle V2 vs V3 · prospective shadow</h3>
-    <p className="mt-1 text-sm text-slate-600">V2 LIVE PRODUCTION. V3 SHADOW. Epoch: {data?.epoch ?? "pending first genuine pre-off capture"}. No historical backfill.</p>
+    <h3 id="hurdle-v3-shadow-heading" className="text-base font-semibold">HURDLE MODEL COMPARISON — V2 Live vs V3 Shadow</h3>
+    <p className="mt-1 text-sm text-slate-600">Direct prospective comparison of the live V2 model and experimental V3 shadow model. T1, T2 and Top 2 are selection ranks within each model.</p>
+    <p className="mt-1 break-words text-xs text-slate-500">{data ? "ARCHIVED COLLECTION" : "Collection record unavailable"} · {data?.version ?? HURDLE_V3_SHADOW_VERSION}{data?.epoch ? <> · First capture <time dateTime={data.epoch}>{data.epoch}</time></> : data && " · No recorded first capture"}. No historical backfill.</p>
+    {data && <p className="mt-1 break-words text-xs text-slate-500">Live model {data.v2Version} · Shadow model {data.v3Version}</p>}
     <p className="mt-1 text-xs text-slate-500">{summary.racesCaptured} races captured; {summary.racesSettled} settled; {summary.pendingRaces} pending; {summary.voidRaces} void. First capture per race is frozen for both models.</p>
     <div className="mt-3 overflow-x-auto"><table className="w-full whitespace-nowrap text-left text-xs tabular-nums">
       <caption className="mb-1 text-left font-semibold">Race winners and model expectation</caption>
-      <thead><tr>{["Model", "Selection", "Eligible settled races", "Winners", "Strike rate", "Expected winners", "Actual / Model"].map(h => <th key={h} className="border-b p-2">{h}</th>)}</tr></thead>
-      <tbody>{summary.rows.flatMap(r => r.selections.map(s => <tr key={`${r.model}-${s.rank}`}><th className="p-2 font-medium">{r.model === "V3" ? "V3 SHADOW" : "V2 LIVE"}</th><td className="p-2">{s.rank === "TOP2" ? "Top2" : `T${s.rank}`}</td><td className="p-2">{s.eligible}</td><td className="p-2">{s.winners}</td><td className="p-2">{pct(s.strikeRate)}</td><td className="p-2">{num(s.expected)}</td><td className="p-2">{num(s.actualModel)}</td></tr>))}</tbody>
+      <thead><tr>{["Model", "Selection", "Eligible settled races", "Winners", "Strike rate", "Expected winners", "Actual / Model", ...hurdleFinalSpHeaders].map(h => <th key={h} className="border-b p-2">{h}</th>)}</tr></thead>
+      <tbody>{summary.rows.flatMap((r, modelIndex) => r.selections.map((s, rankIndex) => <tr key={`${r.model}-${s.rank}`}><th className="p-2 font-medium">{r.model === "V3" ? "V3 SHADOW" : "V2 LIVE"}</th><td className="p-2">{selectionLabel(s.rank)}</td><td className="p-2">{s.eligible}</td><td className="p-2">{s.winners}</td><td className="p-2">{pct(s.strikeRate)}</td><td className="p-2">{num(s.expected)}</td><td className="p-2">{num(s.actualModel)}</td><HurdleFinalSpCells summary={sp[modelIndex].rows[rankIndex]} /></tr>))}</tbody>
     </table></div>
+    <p className="mt-1 text-xs text-slate-500">Top2 combines the individual T1 and T2 stakes. SP ROI uses verified £1 stakes only. Unverified settled picks remain in the prediction metrics.</p>
+    {results === null && <p className="mt-1 text-xs text-amber-800">Final-SP result data unavailable.</p>}
+    <HurdleFinalSpSensitivity rows={sp.flatMap(r => r.rows.map(s => ({ label: `${r.model} ${selectionLabel(s.rank)}`, summary: s })))} />
     <div className="mt-3 overflow-x-auto"><table className="w-full whitespace-nowrap text-left text-xs tabular-nums">
       <caption className="mb-1 text-left font-semibold">Probability quality, shared settled race cohort</caption>
       <thead><tr>{["Model", "Captured", "Settled", "Log loss", "Brier", "Calibration ECE"].map(h => <th key={h} className="border-b p-2">{h}</th>)}</tr></thead>
@@ -38,7 +48,7 @@ export function HurdleV3ShadowMonitor({ data }: { data: HurdleV3ShadowData | nul
     </table></div>
     <p className="mt-2 text-xs">Winner rank comparison: V2 better {summary.headToHead.v2Better}; V3 better {summary.headToHead.v3Better}; same {summary.headToHead.same}. Exclusive Top2 hits: V2 {summary.headToHead.v2Only}; V3 {summary.headToHead.v3Only}.</p>
     <p className="mt-1 text-xs">Frozen LED observation: {summary.led.v3MissedTaggedWinners} V3-missed winners tagged; {summary.led.recoveredWinners} recovered by the counterfactual. Would change T1 in {summary.led.changedT1}, T2 in {summary.led.changedT2}, Top2 in {summary.led.changedTop2} captured races. PU is observation only.</p>
-    <p className="mt-2 text-xs text-slate-500">NR/void selections are excluded, with no replacement of frozen T1/T2. Probability metrics renormalize over actual starters. Dead heats split target credit equally; strike rates count race hits, Actual/Model uses fractional winner credit. ECE uses ten fixed probability bins. No ROI comparison.</p>
+    <p className="mt-2 text-xs text-slate-500">NR/void selections are excluded, with no replacement of frozen T1/T2. Probability metrics renormalize over actual starters. Dead heats split target credit equally; strike rates count race hits, Actual/Model uses fractional winner credit. ECE uses ten fixed probability bins.</p>
     <details className="mt-3"><summary className="cursor-pointer text-sm">Latest 30 pairs</summary><div className="overflow-x-auto"><table className="w-full whitespace-nowrap text-left text-xs"><thead><tr>{headers.map(h => <th key={h} className="border-b p-2">{h}</th>)}</tr></thead><tbody>{raceRows(rows.slice(0, 30))}</tbody></table></div></details>
     <details className="mt-2"><summary className="cursor-pointer text-sm">All ranking disagreements ({disagreements.length})</summary><div className="overflow-x-auto"><table className="w-full whitespace-nowrap text-left text-xs"><thead><tr>{headers.map(h => <th key={h} className="border-b p-2">{h}</th>)}</tr></thead><tbody>{raceRows(disagreements)}</tbody></table></div></details>
   </section>;

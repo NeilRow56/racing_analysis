@@ -16,6 +16,7 @@ import { TissuePositiveNeutralMonitor } from "../../app/racing/research/forward-
 import { BADGE_PRICE_BANDS, POSITIVE_EDGE_BANDS, positiveNeutralCapture, tissueBadgePriceBand, tissueBadgeSelection, tissuePositiveEdgeBand } from "./tissue-positive-neutral-method";
 import { appendPositiveNeutral, initializePositiveNeutral, loadPositiveNeutral, matchingPositiveNeutralCapture, mutatePositiveNeutral, type PositiveNeutralData } from "./tissue-positive-neutral";
 import { summarizePositiveNeutral } from "./tissue-positive-neutral-metrics";
+import { summarizeCurrentPositiveNeutral } from "./current-positive-neutral-summary";
 import { main } from "../../../scripts/track-tissue-positive-neutral";
 
 const now = new Date(), at = now.toISOString(), off = new Date(now.getTime() + 3600000).toISOString(), models = await loadTissueGenerationModels();
@@ -45,6 +46,84 @@ test("T1/T2 Positive and Neutral inclusion uses the exact Today badge function",
   const s = summarizePositiveNeutral(monitor, { ...emptyTissueGeneration(), races: bs });
   assert.equal(s.headline[0].t1.captured, 2); assert.equal(s.headline[0].t2.captured, 2); assert.equal(s.top2[0].captured, 4);
   assert.equal(monitor.observations[0].modelVersion, "HURDLE_TISSUE_V2");
+}));
+
+test("current Positive/Neutral summary splits T1 and T2 by family and measures winners against the market", async () => withLedger(async data => {
+  const turf = book("TURF", [.5, .3, .2]);
+  const aw = book("AW", [.4, .3, .3]);
+  const hurdle = book("HURDLE", [.4, .25, .35]);
+  const chase = book("CHASE", [.4, .4, .2]);
+  const negative = book("AW", [.6, .35, .05], "-negative");
+  const fallback = book("CHASE", [.35, .3, .35], "-fallback");
+  fallback.completeMarket = false;
+  fallback.runners[0].quotes = [];
+  for (const runner of fallback.runners) {
+    runner.capturedPrice = null;
+    runner.marketProbability = null;
+  }
+  const books = [turf, aw, hurdle, chase, negative, fallback];
+  const ledger = appendPositiveNeutral(data, books, now);
+  const [t1, t2] = summarizeCurrentPositiveNeutral(ledger, {
+    ...emptyTissueGeneration(),
+    races: books.flatMap((b, index) => settled(b, index % 2).races),
+  });
+  assert.equal(t1.rank, 1);
+  assert.equal(t2.rank, 2);
+  assert.deepEqual(t1.rows.map(row => row.family), ["ALL", ...TISSUE_VALUE_FAMILIES]);
+  assert.deepEqual(t1.rows.map(({ captured, settled, winners }) => [captured, settled, winners]),
+    [[4, 4, 2], [1, 1, 1], [1, 1, 0], [1, 1, 1], [1, 1, 0]]);
+  assert.deepEqual(t2.rows.map(({ captured, settled, winners }) => [captured, settled, winners]),
+    [[3, 3, 1], [1, 1, 0], [1, 1, 1], [1, 1, 0], [0, 0, 0]]);
+  assert.equal(t1.rows[0].strikeRate, .5);
+  assert.equal(t2.rows[0].strikeRate, 1 / 3);
+  assert.ok(Math.abs(t1.rows[0].expectedWinners! - 1.7) < 1e-12);
+  assert.ok(Math.abs(t1.rows[0].actualExpected! - 2 / 1.7) < 1e-12);
+  assert.ok(Math.abs(t2.rows[0].expectedWinners! - .85) < 1e-12);
+  assert.ok(Math.abs(t2.rows[0].actualExpected! - 1 / .85) < 1e-12);
+  assert.equal(t1.rows[2].actualExpected, 0);
+  assert.equal(t1.rows[2].profitLoss, -1);
+  assert.equal(t1.rows[2].roi, -1);
+  assert.equal(t1.rows[0].priced, 4);
+  assert.equal(t1.rows[0].profitLoss, 5);
+  assert.equal(t1.rows[0].roi, 1.25);
+}));
+
+test("current summary omits pending, NR and void stakes, uses recorded dead-heat returns and requires exact capture matches", async () => withLedger(async data => {
+  const deadHeat = book("TURF", [.5, .3, .2]);
+  const unpriced = book("AW");
+  const nr = book("HURDLE");
+  const voided = book("HURDLE", [.35, .3, .35], "-void");
+  const pending = book("CHASE");
+  const mismatched = book("CHASE", [.35, .3, .35], "-mismatch");
+  const ledger = appendPositiveNeutral(data, [deadHeat, unpriced, nr, voided, pending, mismatched], now);
+  const changed = structuredClone(settled(mismatched).races[0]);
+  changed.capturedAt = new Date(now.getTime() + 1).toISOString();
+  const dhResult = shadowResult(deadHeat);
+  dhResult.runners[0].finishingPosition = 1;
+  dhResult.runners[1].finishingPosition = 1;
+  const [dh] = settleTissueGeneration({ ...emptyTissueGeneration(), races: [deadHeat] }, new Map([[deadHeat.raceId, dhResult]]), new Date(off)).races;
+  const [missingMoney, nonRunner, voidBook] = [unpriced, nr, voided].map(b => settled(b).races[0]);
+  missingMoney.runners[0].outcome!.profitLoss = null;
+  nonRunner.runners[0].outcome!.status = "NR";
+  voidBook.runners[0].outcome!.status = "void";
+  // Defensive reporting when a settled runner lacks a market observation.
+  ledger.observations.find(o => o.raceId === unpriced.raceId)!.selections[0].marketProbability = null;
+  const [t1] = summarizeCurrentPositiveNeutral(ledger, {
+    ...emptyTissueGeneration(),
+    races: [changed, nonRunner, voidBook, dh, missingMoney, pending],
+  });
+  assert.deepEqual(t1.rows[0], {
+    family: "ALL", captured: 6, settled: 2, winners: 2, strikeRate: 1,
+    expectedWinners: .5, actualExpected: 2, priced: 1, profitLoss: 1, roi: 1,
+  });
+  const aw = t1.rows[2];
+  assert.equal(aw.settled, 1);
+  assert.equal(aw.expectedWinners, null);
+  assert.equal(aw.actualExpected, null);
+  assert.equal(aw.priced, 0);
+  assert.equal(aw.profitLoss, null);
+  assert.equal(aw.roi, null);
+  assert.equal(t1.rows[4].strikeRate, null);
 }));
 test("badge half-pp boundaries and fixed price/edge bands are stable", () => {
   for (const [p, q, state] of [[.3, .295, "POSITIVE"], [.3, .305, "NEGATIVE"], [.3, .3001, "NEUTRAL"], [.3, .296, "NEUTRAL"]] as const) assert.equal(tissueBadgeSelection(p, q).badgeState, state);
@@ -88,7 +167,7 @@ test("canonical winner/loss results, £1 P/L and selection proper scores", async
   assert.equal(s.price.filter(r => r.family === "ALL" && r.rank === 1).reduce((s, r) => s + r.captured, 0), 1);
   assert.equal(s.edge.filter(r => r.family === "ALL" && r.rank === 1).reduce((s, r) => s + r.captured, 0), 1);
   const html = renderToStaticMarkup(<TissuePositiveNeutralMonitor data={monitor} generation={generation} />);
-  assert.match(html, /POSITIVE \/ NEUTRAL MARKET BADGES/); assert.match(html, /Negative reference only/); assert.match(html, /Filtered minus all Tissue/); assert.match(html, /TOP2 POSITIVE/);
+  assert.match(html, /ARCHIVE — Original Tissue Positive\/Neutral V1/); assert.match(html, /TISSUE_POSITIVE_NEUTRAL_PROSPECTIVE_V1/); assert.doesNotMatch(html, /TISSUE_POSITIVE_NEUTRAL_COLLECTION_V2/); assert.match(html, /Negative reference only/); assert.match(html, /Filtered minus all Tissue/); assert.match(html, /TOP2 POSITIVE/);
 }));
 test("dead heats split Actual/Model and canonical price returns without counting NR/void as losses", async () => withLedger(async data => {
   const b = book(), monitor = appendPositiveNeutral(data, [b], now), result = shadowResult(b); result.runners[1].finishingPosition = 1;
@@ -129,7 +208,7 @@ test("exclusive arming, immutable captures/epoch/rules and source-pin drift dete
   assert.equal(await readFile(path, "utf8"), original); await mutatePositiveNeutral(d => appendPositiveNeutral(d, [book()], now), path); assert.equal(await readFile(path, "utf8"), original);
   const corrupt = JSON.parse(original) as PositiveNeutralData; corrupt.observations[0].selections[0].badgeState = "NEGATIVE"; await writeFile(path, JSON.stringify(corrupt)); await assert.rejects(loadPositiveNeutral(path), /Invalid frozen/);
   const drift = JSON.parse(original) as PositiveNeutralData; drift.sourceHashes[Object.keys(drift.sourceHashes)[0]] = "0".repeat(64); await writeFile(path, JSON.stringify(drift)); await assert.rejects(mutatePositiveNeutral(d => d, path), /methodology changed/);
-  const empty = renderToStaticMarkup(<TissuePositiveNeutralMonitor data={data} generation={emptyTissueGeneration()} />); assert.match(empty, /pending first genuine capture/);
+  const empty = renderToStaticMarkup(<TissuePositiveNeutralMonitor data={data} generation={emptyTissueGeneration()} />); assert.match(empty, /No recorded first capture/);
 }));
 test("no operational backfill commands and fail-open fresh-capture integration", async () => {
   for (const args of [["sync"], ["backfill"], ["init", "2025-01-01"], ["summary", "--refresh"]]) await assert.rejects(main(args), /no replay, backfill or refresh/);

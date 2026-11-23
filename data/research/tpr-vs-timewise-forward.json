@@ -105046,9 +105046,14 @@
       "raceDate": "2026-10-09",
       "course": "Newmarket",
       "raceTime": "16:20",
-      "winner": null,
-      "winnerSp": null,
-      "winners": [],
+      "winner": "Bintola",
+      "winnerSp": 5.5,
+      "winners": [
+        {
+          "horseName": "Bintola",
+          "decimalOdds": 5.5
+        }
+      ],
       "tprRank1": "Commander Of Life",
       "tprRank2": "Lion of Mali",
       "tprRank1NonRunner": false,
@@ -105495,14 +105500,14 @@
       "awBestL3SpeedRank1": null,
       "awBestL3PerformanceRank1": null,
       "orRank1": "Back To Me",
-      "winnerOrRank": null,
+      "winnerOrRank": 3,
       "recordedAt": "2026-10-09T05:14:36.569Z",
       "recordedPreRace": true,
       "timewiseRecordedAt": "2026-10-09T05:14:36.569Z",
       "timewiseRecordedPreRace": true,
       "timewiseUpdatedAt": null,
-      "winnerWasTprRank1": null,
-      "winnerWasTprTop2": null,
+      "winnerWasTprRank1": false,
+      "winnerWasTprTop2": false,
       "winnerWasTimewiseRank1": null,
       "winnerWasTimewiseTop2": null,
       "rank1Agree": null,
@@ -105513,7 +105518,8 @@
       "tpr1AgreesWithOr1": false,
       "w50AgreesWithOr1": false,
       "timewise1AgreesWithOr1": null,
-      "winnerIsOr1": null
+      "winnerIsOr1": false,
+      "settlementVersion": "canonical_settlement_v3"
     },
     {
       "family": "turf",

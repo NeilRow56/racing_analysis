@@ -142,7 +142,7 @@ test("incomplete market retains V3 metrics and monthly cohort coverage", async (
   assert.equal(summary.monthly.find(r => r.month === capturedAt.slice(0, 7) && r.cohort === "VERY LOW FORM")!.races, 1);
   for (const month of ["2026-10", "2026-11", "2026-12", "2027-01"]) assert.equal(hurdleMonitoringMonth(`${month}-15`), month);
   const html = renderToStaticMarkup(<LowFormHurdleMonitor data={low} shadows={settled} />);
-  assert.match(html, /LOW-FORM HURDLE/); assert.match(html, /VERY LOW \+ LIMITED/); assert.match(html, /Monthly breakdown/);
+  assert.match(html, /HURDLE V3 — Low-Form Races vs Market/); assert.match(html, /Collection suspended · HURDLE_LOW_FORM_PROSPECTIVE_V1/); assert.match(html, /VERY LOW \+ LIMITED/); assert.match(html, /Monthly breakdown/);
   assert.match(html, /market unavailable\/incomplete 1/);
 });
 test("frozen observation fields, epoch and methodology cannot be rewritten", async () => {
@@ -173,7 +173,7 @@ test("empty monitor shows no historic observations; Today does not label old/unm
   assert.equal(await HurdleLowFormLabel({ race: shadowResult(shadow.production) }), null);
   assert.equal(await HurdleLowFormLabel({ race: { ...shadowResult(shadow.production), raceId: "other" }, shadow }), null);
   const html = renderToStaticMarkup(<LowFormHurdleMonitor data={data} shadows={template} />);
-  assert.match(html, /pending first genuine/);
+  assert.match(html, /No recorded first capture/);
 });
 test("monthly summaries keep October, November, December and January separate", async () => {
   const { shadow, data, template } = await fixture();

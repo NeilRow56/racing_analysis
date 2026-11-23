@@ -6,12 +6,18 @@ import { copyFile, mkdtemp, mkdir, readFile, readdir, rm, stat, writeFile } from
 import { dirname, join } from "node:path";
 import { tmpdir } from "node:os";
 import { BACKUP_ARTIFACTS, BACKUP_RECOVERY_SOURCES } from "./backup-artifact-inventory";
-import { AW_PROFIT_BACKUP_TRACKER, AW_PROFIT_RECOVERY_SOURCES, BACKUP_TRACKERS, BACKUP_TRACKERS_V4 } from "./backup-tracker-inventory";
+import { AW_PROFIT_BACKUP_TRACKER, AW_PROFIT_RECOVERY_SOURCES, AW_SAME_OR_BACKUP_TRACKER,
+  AW_SAME_OR_RECOVERY_SOURCES, BACKUP_TRACKERS, BACKUP_TRACKERS_V4, BACKUP_TRACKERS_V5 } from "./backup-tracker-inventory";
 import { backupName, buildManifest, createWeeklyBackup, databaseConfig, destinations, inspectArtifact, inspectRecoverySources, inspectTracker, sha256, verifyExtracted, type VerifiableManifest } from "./backup-weekly";
+import { AW_SAME_OR_POLICY, decideAwSameOr } from "../src/lib/racing/aw-same-or-policy";
 import { GENERATION_MODEL_HASHES } from "../src/lib/racing/tissue-generation-config";
+import { loadTissueGeneration } from "../src/lib/racing/tissue-generation-forward";
+import { loadTissueGenerationModels } from "../src/lib/racing/tissue-generation-model";
 
 const [awProfitFilename, awProfitWriter] = AW_PROFIT_BACKUP_TRACKER;
 const emptyAwProfit = { version: "aw_profit_shadow_v1", armedAt: "2026-11-21T13:12:53.086Z", races: [] };
+const [sameOrFilename, sameOrWriter] = AW_SAME_OR_BACKUP_TRACKER;
+const emptySameOr = { version: "aw_same_or_shadow_v1", policy: AW_SAME_OR_POLICY, armedAt: "2026-11-21T17:00:00.000Z", observations: [] };
 
 const directories: string[] = [];
 afterEach(async () => { await Promise.all(directories.splice(0).map((path) => rm(path, { recursive: true, force: true }))); });
@@ -23,7 +29,9 @@ async function fixture() {
   for (const [filename] of BACKUP_TRACKERS) { await mkdir(dirname(join(root, "data/research", filename)), { recursive: true }); await writeFile(join(root, "data/research", filename), '{"version":"test_v1"}\n'); }
   for (const [filename] of BACKUP_ARTIFACTS) { await mkdir(dirname(join(root, "data/research", filename)), { recursive: true }); await writeFile(join(root, "data/research", filename), '{"version":"frozen_fixture","checksum":"internal_model_hash"}\n'); }
   await writeFile(join(root, "data/research", awProfitFilename), JSON.stringify(emptyAwProfit));
-  for (const filename of new Set([...BACKUP_RECOVERY_SOURCES, ...AW_PROFIT_RECOVERY_SOURCES, ...BACKUP_TRACKERS.map(t => t[1]), ...BACKUP_ARTIFACTS.map(t => t[2])])) {
+  await writeFile(join(root, "data/research", sameOrFilename), JSON.stringify(emptySameOr));
+  for (const filename of new Set([...BACKUP_RECOVERY_SOURCES, ...AW_PROFIT_RECOVERY_SOURCES, ...AW_SAME_OR_RECOVERY_SOURCES,
+    ...BACKUP_TRACKERS.map(t => t[1]), ...BACKUP_ARTIFACTS.map(t => t[2])])) {
     await mkdir(dirname(join(root, filename)), { recursive: true });
     await writeFile(join(root, filename), `fixture source: ${filename}\n`);
   }
@@ -54,11 +62,13 @@ const env = { NODE_ENV: "test" as const, DATABASE_URL: "postgresql://user:secret
 
 test("inventory is unique, exists, and is tied to current writer path definitions", async () => {
   assert.equal(BACKUP_TRACKERS_V4.length, 36);
-  assert.deepEqual(BACKUP_TRACKERS, [...BACKUP_TRACKERS_V4, AW_PROFIT_BACKUP_TRACKER]);
-  assert.equal(new Set(BACKUP_TRACKERS.map(([name]) => name)).size, 37);
+  assert.deepEqual(BACKUP_TRACKERS_V5, [...BACKUP_TRACKERS_V4, AW_PROFIT_BACKUP_TRACKER]);
+  assert.deepEqual(BACKUP_TRACKERS, [...BACKUP_TRACKERS_V5, AW_SAME_OR_BACKUP_TRACKER]);
+  assert.equal(new Set(BACKUP_TRACKERS.map(([name]) => name)).size, 38);
+  const isolated = await fixture();
   for (const [filename, source] of BACKUP_TRACKERS) {
     assert.ok((await readFile(source, "utf8")).includes(filename.replace("prospective-epochs-2026-11-11/", "")), `${filename} moved; update inventory`);
-    await inspectTracker(process.cwd(), filename, source);
+    await inspectTracker(filename === sameOrFilename ? isolated : process.cwd(), filename, source);
   }
   assert.ok(!BACKUP_TRACKERS.some(([name]) => name === ("aw-tissue-paired-forward-v1.json" as string)));
 });
@@ -128,6 +138,16 @@ test("complete archive, extracted checksums, offsite copy, and no overwrite", as
   };
   const populatedLedger = JSON.stringify({ ...emptyAwProfit, races: [observation] });
   await writeFile(awPath, populatedLedger);
+  const book = (await loadTissueGeneration()).races.find(r => r.raceId === "666725d0-2524-4c04-90f5-73d5fe90bf54");
+  assert.ok(book);
+  book.raceDate = "2026-11-22";
+  book.capturedAt = book.featureCutoffAt = "2026-11-22T08:00:00.000Z";
+  book.scheduledOff = "2026-11-22T14:20:00.000Z";
+  for (const runner of book.runners) runner.outcome = null;
+  const { AW } = await loadTissueGenerationModels();
+  const populatedSameOr = JSON.stringify({ ...emptySameOr, observations: [{ book, sourceId: "949648", sourceStage: "DORMANT",
+    decidedAt: "2026-11-22T08:01:00.000Z", decision: decideAwSameOr(AW, book), outcomes: {} }] });
+  await writeFile(join(root, "data/research", sameOrFilename), populatedSameOr);
   const offsite = join(root, "offsite");
   await mkdir(offsite);
   const options = { root, env: { ...env, RACING_BACKUP_OFFSITE_DIR: offsite }, now: new Date("2026-11-22T16:00:00Z"), run: runner };
@@ -142,7 +162,11 @@ test("complete archive, extracted checksums, offsite copy, and no overwrite", as
   await runner("tar", ["-xzf", result.archivePath, "-C", extracted]);
   const directory = join(extracted, backupName(options.now));
   await verifyExtracted(directory, result.manifest);
-  assert.equal(result.manifest.backupVersion, 5);
+  assert.equal(result.manifest.backupVersion, 6);
+  assert.equal(await readFile(join(directory, "research", sameOrFilename), "utf8"), populatedSameOr);
+  for (const filename of [sameOrWriter, ...AW_SAME_OR_RECOVERY_SOURCES]) {
+    assert.ok(result.manifest.recoverySources.some(source => source.filename === filename));
+  }
   const awTracker = result.manifest.trackers.find(t => t.filename === awProfitFilename);
   assert.ok(awTracker);
   assert.notEqual(awTracker.sha256, initialTracker.sha256);
@@ -150,15 +174,25 @@ test("complete archive, extracted checksums, offsite copy, and no overwrite", as
   for (const filename of [awProfitWriter, ...AW_PROFIT_RECOVERY_SOURCES]) {
     assert.ok(result.manifest.recoverySources.some(source => source.filename === filename));
   }
-  const v4 = structuredClone(result.manifest);
+  const v5 = structuredClone(result.manifest);
+  v5.backupVersion = 5;
+  v5.trackers = v5.trackers.filter(t => t.filename !== sameOrFilename);
+  v5.totalTrackerCount--;
+  const sameOrSources: readonly string[] = [sameOrWriter, ...AW_SAME_OR_RECOVERY_SOURCES.filter(s => s !== "scripts/local-automation.ts")];
+  v5.recoverySources = v5.recoverySources.filter(s => !sameOrSources.includes(s.filename));
+  v5.totalRecoverySourceCount = v5.recoverySources.length;
+  const manifestPath = join(directory, "manifest.json");
+  const manifestBytes = await readFile(manifestPath);
+  await writeFile(manifestPath, JSON.stringify(v5));
+  await verifyExtracted(directory, v5);
+  await assert.rejects(verifyExtracted(directory, { ...v5, backupVersion: 6 }), /Manifest missing required tracker: aw-same-or-shadow-v1/);
+  const v4 = structuredClone(v5);
   v4.backupVersion = 4;
   v4.trackers = v4.trackers.filter(t => t.filename !== awProfitFilename);
   v4.totalTrackerCount--;
   const awSources: readonly string[] = [awProfitWriter, ...AW_PROFIT_RECOVERY_SOURCES];
   v4.recoverySources = v4.recoverySources.filter(source => !awSources.includes(source.filename));
   v4.totalRecoverySourceCount = v4.recoverySources.length;
-  const manifestPath = join(directory, "manifest.json");
-  const manifestBytes = await readFile(manifestPath);
   await writeFile(manifestPath, JSON.stringify(v4));
   await verifyExtracted(directory, v4);
   await assert.rejects(verifyExtracted(directory, { ...v4, backupVersion: 5 }), /Manifest missing required tracker: aw-profit-shadow-v1/);
@@ -212,7 +246,7 @@ test("unavailable offsite does not fail local backup", async () => {
 const prospectiveLedgers = [
   "hurdle-v3-prospective-shadow-v1.json", "hurdle-low-form-prospective-v1.json",
   "hurdle-v3-market-edge-prospective-v1.json", "tissue-positive-neutral-prospective-v1.json",
-  "turf-2027-early-season-v1.json", awProfitFilename,
+  "turf-2027-early-season-v1.json", awProfitFilename, sameOrFilename,
 ];
 const frozenModels = [
   "tissue-model-v1.json", "tissue-model-v2.json", "tissue-model-v3.json",
@@ -353,7 +387,7 @@ test("archive membership omission prevents publication", async () => {
 test("isolated full evidence archive preserves historical and active epochs and rejects corruption", { timeout: 60000 }, async () => {
   const root = await fixture();
   await writeFile(join(root, ".git"), `gitdir: ${join(process.cwd(), ".git")}\n`);
-  const research = [...await Promise.all(BACKUP_TRACKERS.map(([f, s]) => inspectTracker(process.cwd(), f, s))),
+  const research = [...await Promise.all(BACKUP_TRACKERS_V5.map(([f, s]) => inspectTracker(process.cwd(), f, s))),
     ...await Promise.all(BACKUP_ARTIFACTS.map(([f, r, s]) => inspectArtifact(process.cwd(), f, r, s)))];
   const preflight = await inspectRecoverySources(process.cwd(), research);
   for (const file of research) await copyFile(join(process.cwd(), "data/research", file.filename), join(root, "data/research", file.filename));
@@ -361,6 +395,7 @@ test("isolated full evidence archive preserves historical and active epochs and 
     await mkdir(dirname(join(root, file.filename)), { recursive: true });
     await copyFile(join(process.cwd(), file.filename), join(root, file.filename));
   }
+  for (const file of [sameOrWriter, ...AW_SAME_OR_RECOVERY_SOURCES]) await copyFile(join(process.cwd(), file), join(root, file));
   const result = (await createWeeklyBackup({ root, env, now, run: runner }))!;
   assert.equal(result.manifest.historicalSources.length, 7);
   assert.equal(new Set(result.manifest.historicalSources.map(s => s.path)).size, 7);

@@ -205,7 +205,7 @@ test("atomic persistence freezes first capture across concurrent writers", async
 });
 test("secondary hierarchy preserved; four compact cards and no VALUE edge", () => {
   const content = <RankOneMonitoring data={captured()} date={date}/>;
-  const html = renderToStaticMarkup(<ResearchPageLayout date={date} active={<p>Active</p>} secondary={content}><p>Legacy</p></ResearchPageLayout>);
+  const html = renderToStaticMarkup(<ResearchPageLayout date={date} daily={null} tissue={null} archiveLoaded={false} historyLoaded={false} active={<p>Active</p>} secondary={content}><p>Legacy</p></ResearchPageLayout>);
   assert.ok(html.indexOf('id="secondary-monitoring"') < html.indexOf('id="rank-one-monitoring-heading"'));
   assert.ok(html.indexOf('id="rank-one-monitoring-heading"') < html.indexOf('id="archived-research"'));
   assert.doesNotMatch(html.match(/<details id="secondary-monitoring"[^>]*>/)![0], /\bopen\b/);

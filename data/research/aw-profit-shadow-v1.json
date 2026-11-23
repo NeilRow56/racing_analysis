@@ -1,5 +1,3187 @@
 {
   "version": "aw_profit_shadow_v1",
   "armedAt": "2026-11-21T13:12:53.086Z",
-  "races": []
+  "races": [
+    {
+      "raceId": "46aaa6cc-7a2b-4da0-a19d-2ec6e4748481",
+      "raceDate": "2026-11-22",
+      "course": "Lingfield",
+      "sourceId": "950390",
+      "scheduledOff": "2026-11-22T11:25:00.000Z",
+      "sourceCapturedAt": "2026-11-22T08:05:16.692Z",
+      "featureCutoffAt": "2026-11-22T08:04:58.373Z",
+      "decidedAt": "2026-11-22T08:05:23.489Z",
+      "sourceStage": "DORMANT",
+      "modelVersion": "AW_TISSUE_V3",
+      "modelHash": "c8f75faa0aeacc88ba76f100e7d154a872bc9b2ee31a5a42d18e611e3e64f9a5",
+      "marketSource": "sporting_life_median_bookmaker_at_capture_v1",
+      "completeMarket": true,
+      "runners": [
+        {
+          "runnerId": "d19a3dfa-50e0-41e5-9d57-77f4e5c5dd5b",
+          "horseId": "906fe803-9c45-4b7e-8105-d3cdfa140d52",
+          "horseName": "Lady Mariko",
+          "rank": 1,
+          "probability": 0.1618257281481169,
+          "latestPerformance": 70.9952464989184,
+          "performanceRank": 3,
+          "bestL3Speed": 100.9952464989184,
+          "medianBookmakerDecimal": 6.5,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "11/2",
+              "decimalOdds": 6.5
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "11/2",
+              "decimalOdds": 6.5
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "11/2",
+              "decimalOdds": 6.5
+            }
+          ]
+        },
+        {
+          "runnerId": "e80b9f1e-d47d-4feb-b50b-7865cc6617f2",
+          "horseId": "8d7f4f57-55e8-466d-a454-dbf68e8feb6d",
+          "horseName": "This Farh",
+          "rank": 2,
+          "probability": 0.11929862025472854,
+          "latestPerformance": 68.14377347342466,
+          "performanceRank": 6,
+          "bestL3Speed": 102.14377347342466,
+          "medianBookmakerDecimal": 12,
+          "quotes": [
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "10/1",
+              "decimalOdds": 11
+            },
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "11/1",
+              "decimalOdds": 12
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "11/1",
+              "decimalOdds": 12
+            }
+          ]
+        },
+        {
+          "runnerId": "a86ebbf9-aeb4-4d17-b6fa-8a5f47d82cd1",
+          "horseId": "f86606f0-95ee-4af4-ade4-c0a3a4fb59ec",
+          "horseName": "Handle With Care",
+          "rank": 3,
+          "probability": 0.11510011879339001,
+          "latestPerformance": 53.071936989498255,
+          "performanceRank": 11,
+          "bestL3Speed": 99.93183024654945,
+          "medianBookmakerDecimal": 6.5,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "11/2",
+              "decimalOdds": 6.5
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "11/2",
+              "decimalOdds": 6.5
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "11/2",
+              "decimalOdds": 6.5
+            }
+          ]
+        },
+        {
+          "runnerId": "791a94b8-3b9b-406e-8f62-375972322575",
+          "horseId": "8d7a7a98-947e-4a15-afdd-41a8b3edc059",
+          "horseName": "Mister Mojito",
+          "rank": 4,
+          "probability": 0.10293329802525907,
+          "latestPerformance": 76.33203079092725,
+          "performanceRank": 1,
+          "bestL3Speed": 109.33203079092725,
+          "medianBookmakerDecimal": 4.33,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "10/3",
+              "decimalOdds": 4.33
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "10/3",
+              "decimalOdds": 4.33
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "10/3",
+              "decimalOdds": 4.33
+            }
+          ]
+        },
+        {
+          "runnerId": "e575cbea-33ec-4548-a0c8-af68cb2bcde8",
+          "horseId": "46b41b24-3e53-459d-bd56-c0828269377c",
+          "horseName": "Viking Glory",
+          "rank": 5,
+          "probability": 0.10202525678340604,
+          "latestPerformance": 63.63803680981596,
+          "performanceRank": 8,
+          "bestL3Speed": 97.63803680981596,
+          "medianBookmakerDecimal": 13,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "12/1",
+              "decimalOdds": 13
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "12/1",
+              "decimalOdds": 13
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "14/1",
+              "decimalOdds": 15
+            }
+          ]
+        },
+        {
+          "runnerId": "201771ce-5614-4514-90f8-542972ef62e1",
+          "horseId": "de8e64a1-00e7-4fc9-8793-bd6c6866c59b",
+          "horseName": "Guilty Verdict",
+          "rank": 6,
+          "probability": 0.08929439957985143,
+          "latestPerformance": null,
+          "performanceRank": null,
+          "bestL3Speed": null,
+          "medianBookmakerDecimal": 10,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "9/1",
+              "decimalOdds": 10
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "9/1",
+              "decimalOdds": 10
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "9/1",
+              "decimalOdds": 10
+            }
+          ]
+        },
+        {
+          "runnerId": "01d706d2-42c8-4afb-8ddc-3b95f66db604",
+          "horseId": "aa1112b5-11d9-4bb3-8169-71932872dcfd",
+          "horseName": "Stenmark",
+          "rank": 7,
+          "probability": 0.08295824277460946,
+          "latestPerformance": 69.86168801463862,
+          "performanceRank": 4,
+          "bestL3Speed": null,
+          "medianBookmakerDecimal": 5.5,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "9/2",
+              "decimalOdds": 5.5
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "9/2",
+              "decimalOdds": 5.5
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "9/2",
+              "decimalOdds": 5.5
+            }
+          ]
+        },
+        {
+          "runnerId": "dfc70ab7-5d9d-4559-8eff-36ad27bb289f",
+          "horseId": "e3d17748-8705-4358-8cfa-c2ec031a6b76",
+          "horseName": "Arantes Nascimento",
+          "rank": 8,
+          "probability": 0.06751832256926572,
+          "latestPerformance": 69.226303234815,
+          "performanceRank": 5,
+          "bestL3Speed": 99.42667846098954,
+          "medianBookmakerDecimal": 7,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "6/1",
+              "decimalOdds": 7
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "6/1",
+              "decimalOdds": 7
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "6/1",
+              "decimalOdds": 7
+            }
+          ]
+        },
+        {
+          "runnerId": "51b3701c-9d6a-45ee-9b74-22cab63f84ff",
+          "horseId": "990b9809-4fea-4593-8dd4-6ede9733112c",
+          "horseName": "H Key Lails",
+          "rank": 9,
+          "probability": 0.05457956296508046,
+          "latestPerformance": 67.41052792187975,
+          "performanceRank": 7,
+          "bestL3Speed": null,
+          "medianBookmakerDecimal": 21,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "18/1",
+              "decimalOdds": 19
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "20/1",
+              "decimalOdds": 21
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "20/1",
+              "decimalOdds": 21
+            }
+          ]
+        },
+        {
+          "runnerId": "40b86482-884e-4a6a-9d67-fe54146a8985",
+          "horseId": "0c5b4212-4e59-46e2-97af-6227413815d1",
+          "horseName": "Mighty Vega",
+          "rank": 10,
+          "probability": 0.04237269474195906,
+          "latestPerformance": 59.47905857316577,
+          "performanceRank": 10,
+          "bestL3Speed": 97.94719368471536,
+          "medianBookmakerDecimal": 21,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "20/1",
+              "decimalOdds": 21
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "20/1",
+              "decimalOdds": 21
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "20/1",
+              "decimalOdds": 21
+            }
+          ]
+        },
+        {
+          "runnerId": "35a4aed8-8f28-4080-b11e-cc40a2ded4ef",
+          "horseId": "d7c31be7-d4f2-40d1-9eb2-37d04929a043",
+          "horseName": "Mr Ubiquitous",
+          "rank": 11,
+          "probability": 0.03329868973716968,
+          "latestPerformance": 60.58920805676357,
+          "performanceRank": 9,
+          "bestL3Speed": null,
+          "medianBookmakerDecimal": 26,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "22/1",
+              "decimalOdds": 23
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "25/1",
+              "decimalOdds": 26
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "25/1",
+              "decimalOdds": 26
+            }
+          ]
+        },
+        {
+          "runnerId": "5248b5e7-30d8-4f91-b04c-f98caa63f46d",
+          "horseId": "1fd49a80-51a8-4625-9a3b-fa5b622fa70f",
+          "horseName": "Thankuappreciate",
+          "rank": 12,
+          "probability": 0.02879506562716368,
+          "latestPerformance": 71.06617044523342,
+          "performanceRank": 2,
+          "bestL3Speed": 104.93497524182406,
+          "medianBookmakerDecimal": 23,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "22/1",
+              "decimalOdds": 23
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "22/1",
+              "decimalOdds": 23
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "22/1",
+              "decimalOdds": 23
+            }
+          ]
+        }
+      ],
+      "picks": {
+        "AW_TISSUE_V3": "d19a3dfa-50e0-41e5-9d57-77f4e5c5dd5b",
+        "AW_PROFIT_V1": "d19a3dfa-50e0-41e5-9d57-77f4e5c5dd5b",
+        "AW_PROFIT_V3": "d19a3dfa-50e0-41e5-9d57-77f4e5c5dd5b"
+      },
+      "outcomes": {
+        "d19a3dfa-50e0-41e5-9d57-77f4e5c5dd5b": {
+          "status": "settled",
+          "settlementVersion": "canonical_settlement_v3",
+          "settledAt": "2026-11-22T13:02:29.289Z",
+          "startingPrice": "6/1",
+          "decimalSP": 7,
+          "won": false,
+          "deadHeatDivisor": 1,
+          "stake": 1,
+          "grossReturn": 0,
+          "profitLoss": -1
+        }
+      }
+    },
+    {
+      "raceId": "9cd1a6d4-e9e5-435c-881d-b2b1762ea65a",
+      "raceDate": "2026-11-22",
+      "course": "Lingfield",
+      "sourceId": "949635",
+      "scheduledOff": "2026-11-22T11:55:00.000Z",
+      "sourceCapturedAt": "2026-11-22T08:05:16.692Z",
+      "featureCutoffAt": "2026-11-22T08:04:58.373Z",
+      "decidedAt": "2026-11-22T08:05:23.491Z",
+      "sourceStage": "DORMANT",
+      "modelVersion": "AW_TISSUE_V3",
+      "modelHash": "c8f75faa0aeacc88ba76f100e7d154a872bc9b2ee31a5a42d18e611e3e64f9a5",
+      "marketSource": "sporting_life_median_bookmaker_at_capture_v1",
+      "completeMarket": true,
+      "runners": [
+        {
+          "runnerId": "1c1090c9-3d3b-4227-815a-916eafa80f5d",
+          "horseId": "fa7c3637-141d-4089-8e7b-7bf6615113ba",
+          "horseName": "Reign Over All",
+          "rank": 1,
+          "probability": 0.17114703373539494,
+          "latestPerformance": null,
+          "performanceRank": null,
+          "bestL3Speed": null,
+          "medianBookmakerDecimal": 3.5,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "9/4",
+              "decimalOdds": 3.25
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "5/2",
+              "decimalOdds": 3.5
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "5/2",
+              "decimalOdds": 3.5
+            }
+          ]
+        },
+        {
+          "runnerId": "a6b23826-bea3-47e1-87ab-f2a3713e0f2d",
+          "horseId": "036ad2f8-1b63-4fa7-9131-bae947444c43",
+          "horseName": "Arkat",
+          "rank": 2,
+          "probability": 0.14322964454624187,
+          "latestPerformance": null,
+          "performanceRank": null,
+          "bestL3Speed": null,
+          "medianBookmakerDecimal": 2.63,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "13/8",
+              "decimalOdds": 2.63
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "13/8",
+              "decimalOdds": 2.63
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "13/8",
+              "decimalOdds": 2.63
+            }
+          ]
+        },
+        {
+          "runnerId": "485f5ab8-65c7-41bf-8c88-60cdb02d3df9",
+          "horseId": "97c3fd18-e37c-4989-96c6-16a57c2c75bd",
+          "horseName": "Ordnance",
+          "rank": 3,
+          "probability": 0.1287468156010517,
+          "latestPerformance": null,
+          "performanceRank": null,
+          "bestL3Speed": null,
+          "medianBookmakerDecimal": 13,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "12/1",
+              "decimalOdds": 13
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "12/1",
+              "decimalOdds": 13
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "14/1",
+              "decimalOdds": 15
+            }
+          ]
+        },
+        {
+          "runnerId": "c3369fe3-9d31-4e71-8e16-8a8c56743926",
+          "horseId": "77f5376a-be7e-4bfd-ad9d-8f4c7f573829",
+          "horseName": "Medvedev",
+          "rank": 4,
+          "probability": 0.10942534480349682,
+          "latestPerformance": null,
+          "performanceRank": null,
+          "bestL3Speed": null,
+          "medianBookmakerDecimal": 10,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "9/1",
+              "decimalOdds": 10
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "9/1",
+              "decimalOdds": 10
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "10/1",
+              "decimalOdds": 11
+            }
+          ]
+        },
+        {
+          "runnerId": "7659abc9-faab-40df-bf08-71a360f9d933",
+          "horseId": "a333310b-5980-4b42-a58e-3d002db564e0",
+          "horseName": "Rey De Vega",
+          "rank": 5,
+          "probability": 0.09892190684728902,
+          "latestPerformance": null,
+          "performanceRank": null,
+          "bestL3Speed": null,
+          "medianBookmakerDecimal": 6.5,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "5/1",
+              "decimalOdds": 6
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "11/2",
+              "decimalOdds": 6.5
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "11/2",
+              "decimalOdds": 6.5
+            }
+          ]
+        },
+        {
+          "runnerId": "59df9f55-fe2f-425c-8ecf-018d2dd088c3",
+          "horseId": "b486a124-b144-48b6-aa44-b146431fc8ff",
+          "horseName": "Basics",
+          "rank": 6,
+          "probability": 0.08816744978664108,
+          "latestPerformance": 36.555131877901886,
+          "performanceRank": 2,
+          "bestL3Speed": 71.55513187790189,
+          "medianBookmakerDecimal": 13,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "12/1",
+              "decimalOdds": 13
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "12/1",
+              "decimalOdds": 13
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "12/1",
+              "decimalOdds": 13
+            }
+          ]
+        },
+        {
+          "runnerId": "4c6f3274-8a24-45b3-85cd-9c6fbf1bdd32",
+          "horseId": "ff6e53db-7c67-494a-a655-b142b979ab07",
+          "horseName": "Toderby",
+          "rank": 7,
+          "probability": 0.07469508456082036,
+          "latestPerformance": null,
+          "performanceRank": null,
+          "bestL3Speed": null,
+          "medianBookmakerDecimal": 13,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "12/1",
+              "decimalOdds": 13
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "12/1",
+              "decimalOdds": 13
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "12/1",
+              "decimalOdds": 13
+            }
+          ]
+        },
+        {
+          "runnerId": "0e24db19-880a-4419-b818-ee8dddd1467f",
+          "horseId": "250ddee9-148b-4818-b42e-6e92dc5b6b04",
+          "horseName": "Dashing Digger",
+          "rank": 8,
+          "probability": 0.06759483570630118,
+          "latestPerformance": null,
+          "performanceRank": null,
+          "bestL3Speed": null,
+          "medianBookmakerDecimal": 81,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "80/1",
+              "decimalOdds": 81
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "80/1",
+              "decimalOdds": 81
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "80/1",
+              "decimalOdds": 81
+            }
+          ]
+        },
+        {
+          "runnerId": "20493744-fca2-4a9f-85a3-7d80ce0c4e05",
+          "horseId": "3b047fbb-ba54-44d7-987a-71f1cc2b31e1",
+          "horseName": "Frankenstyne",
+          "rank": 9,
+          "probability": 0.053781444803389984,
+          "latestPerformance": null,
+          "performanceRank": null,
+          "bestL3Speed": null,
+          "medianBookmakerDecimal": 17,
+          "quotes": [
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "14/1",
+              "decimalOdds": 15
+            },
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "16/1",
+              "decimalOdds": 17
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "16/1",
+              "decimalOdds": 17
+            }
+          ]
+        },
+        {
+          "runnerId": "a376be73-d2fa-4d5d-9e62-f1695cf41f46",
+          "horseId": "e99a0669-4850-4c87-a252-ea1922a1a919",
+          "horseName": "Stellar Max",
+          "rank": 10,
+          "probability": 0.03649166968124449,
+          "latestPerformance": 38.4789860718808,
+          "performanceRank": 1,
+          "bestL3Speed": 73.4789860718808,
+          "medianBookmakerDecimal": 91,
+          "quotes": [
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "80/1",
+              "decimalOdds": 81
+            },
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "90/1",
+              "decimalOdds": 91
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "90/1",
+              "decimalOdds": 91
+            }
+          ]
+        },
+        {
+          "runnerId": "6da5c364-16c7-4c80-a9c5-a782c11d722d",
+          "horseId": "9c77fc36-d47f-4cff-97be-d35fb07be974",
+          "horseName": "Rupertsbeenrumbled",
+          "rank": 11,
+          "probability": 0.027798769928128426,
+          "latestPerformance": null,
+          "performanceRank": null,
+          "bestL3Speed": null,
+          "medianBookmakerDecimal": 51,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "50/1",
+              "decimalOdds": 51
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "50/1",
+              "decimalOdds": 51
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "50/1",
+              "decimalOdds": 51
+            }
+          ]
+        }
+      ],
+      "picks": {
+        "AW_TISSUE_V3": "1c1090c9-3d3b-4227-815a-916eafa80f5d",
+        "AW_PROFIT_V1": null,
+        "AW_PROFIT_V3": null
+      },
+      "outcomes": {
+        "1c1090c9-3d3b-4227-815a-916eafa80f5d": {
+          "status": "settled",
+          "settlementVersion": "canonical_settlement_v3",
+          "settledAt": "2026-11-22T13:02:29.289Z",
+          "startingPrice": "7/2",
+          "decimalSP": 4.5,
+          "won": false,
+          "deadHeatDivisor": 1,
+          "stake": 1,
+          "grossReturn": 0,
+          "profitLoss": -1
+        }
+      }
+    },
+    {
+      "raceId": "b309740e-d7dc-47e1-8bd2-a005d8d8c88a",
+      "raceDate": "2026-11-22",
+      "course": "Lingfield",
+      "sourceId": "949636",
+      "scheduledOff": "2026-11-22T12:25:00.000Z",
+      "sourceCapturedAt": "2026-11-22T08:05:16.692Z",
+      "featureCutoffAt": "2026-11-22T08:04:58.373Z",
+      "decidedAt": "2026-11-22T08:05:23.492Z",
+      "sourceStage": "DORMANT",
+      "modelVersion": "AW_TISSUE_V3",
+      "modelHash": "c8f75faa0aeacc88ba76f100e7d154a872bc9b2ee31a5a42d18e611e3e64f9a5",
+      "marketSource": "sporting_life_median_bookmaker_at_capture_v1",
+      "completeMarket": true,
+      "runners": [
+        {
+          "runnerId": "5556f541-48fa-4de5-80e8-de753e0571ab",
+          "horseId": "a66443ed-98c7-44b4-9393-415dc14d1d3a",
+          "horseName": "Sea Fortress",
+          "rank": 1,
+          "probability": 0.17523785657513524,
+          "latestPerformance": null,
+          "performanceRank": null,
+          "bestL3Speed": null,
+          "medianBookmakerDecimal": 2.88,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "15/8",
+              "decimalOdds": 2.88
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "15/8",
+              "decimalOdds": 2.88
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "15/8",
+              "decimalOdds": 2.88
+            }
+          ]
+        },
+        {
+          "runnerId": "ff6facc0-bed7-40ba-a3b7-a2d46522fe6e",
+          "horseId": "97a5871f-02b1-4681-a177-af19303620d7",
+          "horseName": "Quorum",
+          "rank": 2,
+          "probability": 0.1541544945422902,
+          "latestPerformance": null,
+          "performanceRank": null,
+          "bestL3Speed": null,
+          "medianBookmakerDecimal": 2.5,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "11/8",
+              "decimalOdds": 2.38
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "6/4",
+              "decimalOdds": 2.5
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "6/4",
+              "decimalOdds": 2.5
+            }
+          ]
+        },
+        {
+          "runnerId": "680aace3-60ba-41cd-a487-d0c6003fbf3c",
+          "horseId": "e1369dc6-a75b-4d2c-a1e0-4de039b4d706",
+          "horseName": "Lady's Mantle",
+          "rank": 3,
+          "probability": 0.13512387853267632,
+          "latestPerformance": null,
+          "performanceRank": null,
+          "bestL3Speed": null,
+          "medianBookmakerDecimal": 13,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "11/1",
+              "decimalOdds": 12
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "12/1",
+              "decimalOdds": 13
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "12/1",
+              "decimalOdds": 13
+            }
+          ]
+        },
+        {
+          "runnerId": "0f55b497-3928-42b8-9513-0e9742ba2fa1",
+          "horseId": "b25d8914-aeb4-4ca0-958f-ea31360f9307",
+          "horseName": "Shareek",
+          "rank": 4,
+          "probability": 0.12043506908543324,
+          "latestPerformance": 59.55318615153041,
+          "performanceRank": 1,
+          "bestL3Speed": 94.55318615153041,
+          "medianBookmakerDecimal": 4.5,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "7/2",
+              "decimalOdds": 4.5
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "7/2",
+              "decimalOdds": 4.5
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "7/2",
+              "decimalOdds": 4.5
+            }
+          ]
+        },
+        {
+          "runnerId": "e5a130fa-76e1-4de7-9bad-28631650ac5b",
+          "horseId": "9a6f4d36-e71c-437a-acdb-696845bd3654",
+          "horseName": "Wowaditaka",
+          "rank": 5,
+          "probability": 0.11570462024700091,
+          "latestPerformance": null,
+          "performanceRank": null,
+          "bestL3Speed": null,
+          "medianBookmakerDecimal": 201,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "200/1",
+              "decimalOdds": 201
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "200/1",
+              "decimalOdds": 201
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "200/1",
+              "decimalOdds": 201
+            }
+          ]
+        },
+        {
+          "runnerId": "b5e4d268-7397-470b-b660-9b732eb29e6d",
+          "horseId": "5fbd6bf7-2cd6-4ce5-b7b4-fdb09def9a6a",
+          "horseName": "Two Of A Kind",
+          "rank": 6,
+          "probability": 0.09524211663047216,
+          "latestPerformance": null,
+          "performanceRank": null,
+          "bestL3Speed": null,
+          "medianBookmakerDecimal": 15,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "14/1",
+              "decimalOdds": 15
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "14/1",
+              "decimalOdds": 15
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "16/1",
+              "decimalOdds": 17
+            }
+          ]
+        },
+        {
+          "runnerId": "a1cb9046-a17c-475b-8c3f-3cf17f9b27e3",
+          "horseId": "5e40d2ce-93e1-4aa3-8e98-90fa6cb80268",
+          "horseName": "Magari",
+          "rank": 7,
+          "probability": 0.06267529547315583,
+          "latestPerformance": null,
+          "performanceRank": null,
+          "bestL3Speed": null,
+          "medianBookmakerDecimal": 31,
+          "quotes": [
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "28/1",
+              "decimalOdds": 29
+            },
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "30/1",
+              "decimalOdds": 31
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "33/1",
+              "decimalOdds": 34
+            }
+          ]
+        },
+        {
+          "runnerId": "e1978ccd-f6f4-4cc4-a378-bfe824686f3f",
+          "horseId": "e5705678-4157-46e1-9537-4104d2ae9ccc",
+          "horseName": "Victory Max",
+          "rank": 8,
+          "probability": 0.05563941661708559,
+          "latestPerformance": null,
+          "performanceRank": null,
+          "bestL3Speed": null,
+          "medianBookmakerDecimal": 29,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "25/1",
+              "decimalOdds": 26
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "28/1",
+              "decimalOdds": 29
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "28/1",
+              "decimalOdds": 29
+            }
+          ]
+        },
+        {
+          "runnerId": "3dc6ef51-206e-4fc2-a69f-ec059257a4cb",
+          "horseId": "b67b1465-9dfb-4088-959e-f61efb2045c2",
+          "horseName": "Greenhurst",
+          "rank": 9,
+          "probability": 0.054867225026782956,
+          "latestPerformance": null,
+          "performanceRank": null,
+          "bestL3Speed": null,
+          "medianBookmakerDecimal": 51,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "50/1",
+              "decimalOdds": 51
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "50/1",
+              "decimalOdds": 51
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "50/1",
+              "decimalOdds": 51
+            }
+          ]
+        },
+        {
+          "runnerId": "85a2cc91-843a-406f-a909-a930f4a72843",
+          "horseId": "9c7a3406-7c11-412f-8ee4-214ff7973ee6",
+          "horseName": "Cinq Coins",
+          "rank": 10,
+          "probability": 0.030920027269967548,
+          "latestPerformance": 27.505579773321756,
+          "performanceRank": 2,
+          "bestL3Speed": 65.50557977332176,
+          "medianBookmakerDecimal": 101,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "100/1",
+              "decimalOdds": 101
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "100/1",
+              "decimalOdds": 101
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "100/1",
+              "decimalOdds": 101
+            }
+          ]
+        }
+      ],
+      "picks": {
+        "AW_TISSUE_V3": "5556f541-48fa-4de5-80e8-de753e0571ab",
+        "AW_PROFIT_V1": null,
+        "AW_PROFIT_V3": null
+      },
+      "outcomes": {
+        "5556f541-48fa-4de5-80e8-de753e0571ab": {
+          "status": "settled",
+          "settlementVersion": "canonical_settlement_v3",
+          "settledAt": "2026-11-22T13:02:29.289Z",
+          "startingPrice": "1/1",
+          "decimalSP": 2,
+          "won": false,
+          "deadHeatDivisor": 1,
+          "stake": 1,
+          "grossReturn": 0,
+          "profitLoss": -1
+        }
+      }
+    },
+    {
+      "raceId": "52f520c8-23a2-48e0-9dde-4f9d4f21466b",
+      "raceDate": "2026-11-22",
+      "course": "Lingfield",
+      "sourceId": "949637",
+      "scheduledOff": "2026-11-22T12:55:00.000Z",
+      "sourceCapturedAt": "2026-11-22T08:05:16.692Z",
+      "featureCutoffAt": "2026-11-22T08:04:58.373Z",
+      "decidedAt": "2026-11-22T08:05:23.494Z",
+      "sourceStage": "DORMANT",
+      "modelVersion": "AW_TISSUE_V3",
+      "modelHash": "c8f75faa0aeacc88ba76f100e7d154a872bc9b2ee31a5a42d18e611e3e64f9a5",
+      "marketSource": "sporting_life_median_bookmaker_at_capture_v1",
+      "completeMarket": true,
+      "runners": [
+        {
+          "runnerId": "ab7b3364-fbb7-41ec-ab4c-bd22768e5fc1",
+          "horseId": "26204736-38a9-4d52-80af-04b2f9e04a9b",
+          "horseName": "Olympic Charter",
+          "rank": 1,
+          "probability": 0.4134922016018387,
+          "latestPerformance": null,
+          "performanceRank": null,
+          "bestL3Speed": null,
+          "medianBookmakerDecimal": 1.91,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "10/11",
+              "decimalOdds": 1.91
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "10/11",
+              "decimalOdds": 1.91
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "10/11",
+              "decimalOdds": 1.91
+            }
+          ]
+        },
+        {
+          "runnerId": "4e71f0b7-6760-4483-a74e-07e227678fc2",
+          "horseId": "1ace63b4-d7a3-4c23-85f9-bdf958369eda",
+          "horseName": "Nada Two",
+          "rank": 2,
+          "probability": 0.12296941951693402,
+          "latestPerformance": null,
+          "performanceRank": null,
+          "bestL3Speed": null,
+          "medianBookmakerDecimal": 9,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "8/1",
+              "decimalOdds": 9
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "8/1",
+              "decimalOdds": 9
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "8/1",
+              "decimalOdds": 9
+            }
+          ]
+        },
+        {
+          "runnerId": "31573d41-ef57-4dae-b490-25f192c0f356",
+          "horseId": "f945de35-8af5-4259-8bf7-74a4a65611f8",
+          "horseName": "Aqeeq",
+          "rank": 3,
+          "probability": 0.1101450127888704,
+          "latestPerformance": null,
+          "performanceRank": null,
+          "bestL3Speed": null,
+          "medianBookmakerDecimal": 5,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "4/1",
+              "decimalOdds": 5
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "4/1",
+              "decimalOdds": 5
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "9/2",
+              "decimalOdds": 5.5
+            }
+          ]
+        },
+        {
+          "runnerId": "2cfa856e-6465-4ab9-8688-442991177232",
+          "horseId": "e38c8146-5a1c-4fa9-b7e6-1f0f6bfae21b",
+          "horseName": "Al Kairouan",
+          "rank": 4,
+          "probability": 0.0759682042476281,
+          "latestPerformance": null,
+          "performanceRank": null,
+          "bestL3Speed": null,
+          "medianBookmakerDecimal": 13,
+          "quotes": [
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "11/1",
+              "decimalOdds": 12
+            },
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "12/1",
+              "decimalOdds": 13
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "12/1",
+              "decimalOdds": 13
+            }
+          ]
+        },
+        {
+          "runnerId": "300071bc-f33d-415d-9772-3ba5d055d71c",
+          "horseId": "d21b5f07-b14c-488a-8fb7-38e993440416",
+          "horseName": "Light Snowfall",
+          "rank": 5,
+          "probability": 0.066421815944468,
+          "latestPerformance": 45.47949517867265,
+          "performanceRank": 4,
+          "bestL3Speed": 85.47949517867265,
+          "medianBookmakerDecimal": 26,
+          "quotes": [
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "22/1",
+              "decimalOdds": 23
+            },
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "25/1",
+              "decimalOdds": 26
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "25/1",
+              "decimalOdds": 26
+            }
+          ]
+        },
+        {
+          "runnerId": "9f5ebe52-9165-44ac-b891-d97b03a85362",
+          "horseId": "86174dca-49c1-4eab-96b8-ca1f03ba45f5",
+          "horseName": "Maneuver",
+          "rank": 6,
+          "probability": 0.061965600132634566,
+          "latestPerformance": 46.423220973782776,
+          "performanceRank": 3,
+          "bestL3Speed": 86.42322097378278,
+          "medianBookmakerDecimal": 9,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "8/1",
+              "decimalOdds": 9
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "8/1",
+              "decimalOdds": 9
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "8/1",
+              "decimalOdds": 9
+            }
+          ]
+        },
+        {
+          "runnerId": "f6db2198-ce74-43de-840b-8715f5d57dd6",
+          "horseId": "5fb0ec05-5a0f-457c-8b72-9707ca88a90c",
+          "horseName": "Medaali",
+          "rank": 7,
+          "probability": 0.05612828891346881,
+          "latestPerformance": 59.111934122320605,
+          "performanceRank": 1,
+          "bestL3Speed": 97.1119341223206,
+          "medianBookmakerDecimal": 8,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "13/2",
+              "decimalOdds": 7.5
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "7/1",
+              "decimalOdds": 8
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "7/1",
+              "decimalOdds": 8
+            }
+          ]
+        },
+        {
+          "runnerId": "5130ae15-3dff-4c21-9a60-3dcbd837c16d",
+          "horseId": "c9027c1e-e3f5-4ac0-ae02-e1cdb7948a40",
+          "horseName": "A'ellie",
+          "rank": 8,
+          "probability": 0.04286043003307238,
+          "latestPerformance": null,
+          "performanceRank": null,
+          "bestL3Speed": null,
+          "medianBookmakerDecimal": 81,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "80/1",
+              "decimalOdds": 81
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "80/1",
+              "decimalOdds": 81
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "80/1",
+              "decimalOdds": 81
+            }
+          ]
+        },
+        {
+          "runnerId": "64d00bda-d55f-4b45-a90c-d9ce8bd8323a",
+          "horseId": "69331fba-f1e1-46da-ac6f-c53ab8ba7dc7",
+          "horseName": "Jackabean",
+          "rank": 9,
+          "probability": 0.03409332480643807,
+          "latestPerformance": null,
+          "performanceRank": null,
+          "bestL3Speed": null,
+          "medianBookmakerDecimal": 101,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "100/1",
+              "decimalOdds": 101
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "100/1",
+              "decimalOdds": 101
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "100/1",
+              "decimalOdds": 101
+            }
+          ]
+        },
+        {
+          "runnerId": "21de57a2-18b0-4ffd-acbd-9cce61f52053",
+          "horseId": "6f727bef-5ab5-4625-ba9b-b4863a46a393",
+          "horseName": "Anchor",
+          "rank": 10,
+          "probability": 0.015955702014646873,
+          "latestPerformance": 54.53224676724159,
+          "performanceRank": 2,
+          "bestL3Speed": 85.53224676724159,
+          "medianBookmakerDecimal": 201,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "200/1",
+              "decimalOdds": 201
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "200/1",
+              "decimalOdds": 201
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "200/1",
+              "decimalOdds": 201
+            }
+          ]
+        }
+      ],
+      "picks": {
+        "AW_TISSUE_V3": "ab7b3364-fbb7-41ec-ab4c-bd22768e5fc1",
+        "AW_PROFIT_V1": null,
+        "AW_PROFIT_V3": null
+      },
+      "outcomes": {
+        "ab7b3364-fbb7-41ec-ab4c-bd22768e5fc1": {
+          "status": "settled",
+          "settlementVersion": "canonical_settlement_v3",
+          "settledAt": "2026-11-22T16:01:40.675Z",
+          "startingPrice": "4/6",
+          "decimalSP": 1.6666666666666665,
+          "won": true,
+          "deadHeatDivisor": 1,
+          "stake": 1,
+          "grossReturn": 1.6666666666666665,
+          "profitLoss": 0.6666666666666665
+        }
+      }
+    },
+    {
+      "raceId": "02fe932d-dc89-4dbc-ace6-d9d6ae8093b5",
+      "raceDate": "2026-11-22",
+      "course": "Lingfield",
+      "sourceId": "949638",
+      "scheduledOff": "2026-11-22T13:25:00.000Z",
+      "sourceCapturedAt": "2026-11-22T08:05:16.692Z",
+      "featureCutoffAt": "2026-11-22T08:04:58.373Z",
+      "decidedAt": "2026-11-22T08:05:23.495Z",
+      "sourceStage": "DORMANT",
+      "modelVersion": "AW_TISSUE_V3",
+      "modelHash": "c8f75faa0aeacc88ba76f100e7d154a872bc9b2ee31a5a42d18e611e3e64f9a5",
+      "marketSource": "sporting_life_median_bookmaker_at_capture_v1",
+      "completeMarket": true,
+      "runners": [
+        {
+          "runnerId": "56f6f377-650b-4be7-a924-97b1ae01d168",
+          "horseId": "4b151372-8bac-494d-bcea-5a93db61c654",
+          "horseName": "Merci Monsieur",
+          "rank": 1,
+          "probability": 0.25040948509584177,
+          "latestPerformance": 58.79931210094249,
+          "performanceRank": 8,
+          "bestL3Speed": 93.79931210094249,
+          "medianBookmakerDecimal": 2.5,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "6/4",
+              "decimalOdds": 2.5
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "6/4",
+              "decimalOdds": 2.5
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "13/8",
+              "decimalOdds": 2.63
+            }
+          ]
+        },
+        {
+          "runnerId": "bf92c549-8e90-45a6-b162-956008989890",
+          "horseId": "872e048d-4db1-41f5-97f1-1b33611148d1",
+          "horseName": "Politely",
+          "rank": 2,
+          "probability": 0.1987985171314801,
+          "latestPerformance": 65.74134486589095,
+          "performanceRank": 7,
+          "bestL3Speed": 105.60014664594411,
+          "medianBookmakerDecimal": 5,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "4/1",
+              "decimalOdds": 5
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "4/1",
+              "decimalOdds": 5
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "4/1",
+              "decimalOdds": 5
+            }
+          ]
+        },
+        {
+          "runnerId": "ba4488c2-6efa-414b-bfb7-c426ec3bf48c",
+          "horseId": "312ece45-c80d-45cc-9b07-9c83c35280c0",
+          "horseName": "Duke's Command",
+          "rank": 3,
+          "probability": 0.15833850484537135,
+          "latestPerformance": 73.9327863961813,
+          "performanceRank": 2,
+          "bestL3Speed": 104.4833582089552,
+          "medianBookmakerDecimal": 5,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "4/1",
+              "decimalOdds": 5
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "4/1",
+              "decimalOdds": 5
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "4/1",
+              "decimalOdds": 5
+            }
+          ]
+        },
+        {
+          "runnerId": "867d05a4-b5d3-4252-86d5-17e9e4267c5d",
+          "horseId": "a31a2293-40ae-4dde-bb2b-4bc93dd89cfd",
+          "horseName": "Gilet",
+          "rank": 4,
+          "probability": 0.1452467566022798,
+          "latestPerformance": 69.74878812361132,
+          "performanceRank": 5,
+          "bestL3Speed": 108.4666379335859,
+          "medianBookmakerDecimal": 8,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "7/1",
+              "decimalOdds": 8
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "7/1",
+              "decimalOdds": 8
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "7/1",
+              "decimalOdds": 8
+            }
+          ]
+        },
+        {
+          "runnerId": "de03eb32-fafc-46b8-9b4b-725bd23f3e13",
+          "horseId": "d54536aa-c160-4b65-bc88-719a68808d47",
+          "horseName": "Caledonian",
+          "rank": 5,
+          "probability": 0.08392195414665296,
+          "latestPerformance": 72.16348955298427,
+          "performanceRank": 3,
+          "bestL3Speed": 104.16348955298427,
+          "medianBookmakerDecimal": 26,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "25/1",
+              "decimalOdds": 26
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "25/1",
+              "decimalOdds": 26
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "25/1",
+              "decimalOdds": 26
+            }
+          ]
+        },
+        {
+          "runnerId": "f1f016ea-faf8-4220-9ba4-24e47c407d77",
+          "horseId": "d0119cd8-ecdd-48d4-8566-d115a78855da",
+          "horseName": "Francesi",
+          "rank": 6,
+          "probability": 0.06169855699387298,
+          "latestPerformance": 80.6125275532696,
+          "performanceRank": 1,
+          "bestL3Speed": 116.6125275532696,
+          "medianBookmakerDecimal": 41,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "40/1",
+              "decimalOdds": 41
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "40/1",
+              "decimalOdds": 41
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "40/1",
+              "decimalOdds": 41
+            }
+          ]
+        },
+        {
+          "runnerId": "f6d166a5-f432-4f37-9767-d0a680afa916",
+          "horseId": "d9f94207-a822-4722-9285-5dd14a4bb6bf",
+          "horseName": "Wyld Bill",
+          "rank": 7,
+          "probability": 0.053823370902254614,
+          "latestPerformance": 71.89558133990303,
+          "performanceRank": 4,
+          "bestL3Speed": 104.89558133990303,
+          "medianBookmakerDecimal": 12,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "11/1",
+              "decimalOdds": 12
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "11/1",
+              "decimalOdds": 12
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "11/1",
+              "decimalOdds": 12
+            }
+          ]
+        },
+        {
+          "runnerId": "f90d4d67-a049-445f-9eea-febc5d6dcd2b",
+          "horseId": "806f013e-0884-459b-a5d5-ed19db899c95",
+          "horseName": "Crack On Boys",
+          "rank": 8,
+          "probability": 0.047762854282246386,
+          "latestPerformance": 66.8968950160129,
+          "performanceRank": 6,
+          "bestL3Speed": 115.41056652859173,
+          "medianBookmakerDecimal": 8,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "7/1",
+              "decimalOdds": 8
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "7/1",
+              "decimalOdds": 8
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "7/1",
+              "decimalOdds": 8
+            }
+          ]
+        }
+      ],
+      "picks": {
+        "AW_TISSUE_V3": "56f6f377-650b-4be7-a924-97b1ae01d168",
+        "AW_PROFIT_V1": "ba4488c2-6efa-414b-bfb7-c426ec3bf48c",
+        "AW_PROFIT_V3": "56f6f377-650b-4be7-a924-97b1ae01d168"
+      },
+      "outcomes": {
+        "56f6f377-650b-4be7-a924-97b1ae01d168": {
+          "status": "settled",
+          "settlementVersion": "canonical_settlement_v3",
+          "settledAt": "2026-11-22T16:01:40.675Z",
+          "startingPrice": "5/2",
+          "decimalSP": 3.5,
+          "won": false,
+          "deadHeatDivisor": 1,
+          "stake": 1,
+          "grossReturn": 0,
+          "profitLoss": -1
+        },
+        "ba4488c2-6efa-414b-bfb7-c426ec3bf48c": {
+          "status": "settled",
+          "settlementVersion": "canonical_settlement_v3",
+          "settledAt": "2026-11-22T16:01:40.675Z",
+          "startingPrice": "10/3",
+          "decimalSP": 4.333333333333334,
+          "won": false,
+          "deadHeatDivisor": 1,
+          "stake": 1,
+          "grossReturn": 0,
+          "profitLoss": -1
+        }
+      }
+    },
+    {
+      "raceId": "c6c91c6a-af6b-4f9a-98ff-6760bccbb1f0",
+      "raceDate": "2026-11-22",
+      "course": "Lingfield",
+      "sourceId": "949639",
+      "scheduledOff": "2026-11-22T13:55:00.000Z",
+      "sourceCapturedAt": "2026-11-22T08:05:16.692Z",
+      "featureCutoffAt": "2026-11-22T08:04:58.373Z",
+      "decidedAt": "2026-11-22T08:05:23.496Z",
+      "sourceStage": "DORMANT",
+      "modelVersion": "AW_TISSUE_V3",
+      "modelHash": "c8f75faa0aeacc88ba76f100e7d154a872bc9b2ee31a5a42d18e611e3e64f9a5",
+      "marketSource": "sporting_life_median_bookmaker_at_capture_v1",
+      "completeMarket": true,
+      "runners": [
+        {
+          "runnerId": "b99378cf-cc94-4698-a6a4-0d639e22791f",
+          "horseId": "8462b9e8-6536-473a-8a09-cb7e17ae8165",
+          "horseName": "Maria Da Silva",
+          "rank": 1,
+          "probability": 0.35572816648729844,
+          "latestPerformance": 73.1873111782478,
+          "performanceRank": 2,
+          "bestL3Speed": 104.1873111782478,
+          "medianBookmakerDecimal": 2.1,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "11/10",
+              "decimalOdds": 2.1
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "11/10",
+              "decimalOdds": 2.1
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "11/10",
+              "decimalOdds": 2.1
+            }
+          ]
+        },
+        {
+          "runnerId": "b8c2a6b4-8ece-4681-8b29-94f65018a4fa",
+          "horseId": "3c206714-444f-4634-b479-5ddc708c84c7",
+          "horseName": "Cixi",
+          "rank": 2,
+          "probability": 0.11735973908817185,
+          "latestPerformance": 73.68648648648636,
+          "performanceRank": 1,
+          "bestL3Speed": 106.68648648648636,
+          "medianBookmakerDecimal": 15,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "14/1",
+              "decimalOdds": 15
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "14/1",
+              "decimalOdds": 15
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "14/1",
+              "decimalOdds": 15
+            }
+          ]
+        },
+        {
+          "runnerId": "86d58ddb-5dae-4fda-926e-faf1abad9f7b",
+          "horseId": "f7acd8d7-8083-4ca2-b632-ff5a18361e18",
+          "horseName": "Lahan Kingman",
+          "rank": 3,
+          "probability": 0.098133408615847,
+          "latestPerformance": 70.8051684356254,
+          "performanceRank": 4,
+          "bestL3Speed": 106.8051684356254,
+          "medianBookmakerDecimal": 10,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "17/2",
+              "decimalOdds": 9.5
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "9/1",
+              "decimalOdds": 10
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "9/1",
+              "decimalOdds": 10
+            }
+          ]
+        },
+        {
+          "runnerId": "96baeb27-fd90-4ae0-b479-8d28a1bf1538",
+          "horseId": "2cd8e10c-75b3-431f-98cb-51c8875ac44f",
+          "horseName": "Aura Champagne",
+          "rank": 4,
+          "probability": 0.09218516022933616,
+          "latestPerformance": null,
+          "performanceRank": null,
+          "bestL3Speed": null,
+          "medianBookmakerDecimal": 21,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "18/1",
+              "decimalOdds": 19
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "20/1",
+              "decimalOdds": 21
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "20/1",
+              "decimalOdds": 21
+            }
+          ]
+        },
+        {
+          "runnerId": "02dd7617-2362-4de3-b94a-fbfcdfe0e705",
+          "horseId": "316e4af6-7567-4dfe-85c1-253a4f7f49d1",
+          "horseName": "Eazy On The Eye",
+          "rank": 5,
+          "probability": 0.08119643709799773,
+          "latestPerformance": 71.48391383014811,
+          "performanceRank": 3,
+          "bestL3Speed": null,
+          "medianBookmakerDecimal": 9,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "8/1",
+              "decimalOdds": 9
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "8/1",
+              "decimalOdds": 9
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "8/1",
+              "decimalOdds": 9
+            }
+          ]
+        },
+        {
+          "runnerId": "c8c8bf06-192b-4bbd-bf81-ed9fa46bd2e2",
+          "horseId": "62cb3301-c93b-4139-bd66-8460d1000970",
+          "horseName": "Lady Milton",
+          "rank": 6,
+          "probability": 0.08058044267376088,
+          "latestPerformance": 66.65910861594875,
+          "performanceRank": 5,
+          "bestL3Speed": null,
+          "medianBookmakerDecimal": 8.5,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "7/1",
+              "decimalOdds": 8
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "15/2",
+              "decimalOdds": 8.5
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "15/2",
+              "decimalOdds": 8.5
+            }
+          ]
+        },
+        {
+          "runnerId": "87a0f8c4-c5ae-4252-9898-d6a9169a3ae7",
+          "horseId": "ec6df5e8-c437-417e-b607-6b24055515d4",
+          "horseName": "Nakaaha",
+          "rank": 7,
+          "probability": 0.0641508884589994,
+          "latestPerformance": 61.4723452625404,
+          "performanceRank": 6,
+          "bestL3Speed": 108.40837124658779,
+          "medianBookmakerDecimal": 13,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "12/1",
+              "decimalOdds": 13
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "12/1",
+              "decimalOdds": 13
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "12/1",
+              "decimalOdds": 13
+            }
+          ]
+        },
+        {
+          "runnerId": "08af04bd-3076-4bc8-9b27-51262da4b1b8",
+          "horseId": "68475385-2fb2-449e-a957-9b58966b99c2",
+          "horseName": "Hamdania",
+          "rank": 8,
+          "probability": 0.062087209804568125,
+          "latestPerformance": 44.54664861205134,
+          "performanceRank": 8,
+          "bestL3Speed": 95.0249650281251,
+          "medianBookmakerDecimal": 12,
+          "quotes": [
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "10/1",
+              "decimalOdds": 11
+            },
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "11/1",
+              "decimalOdds": 12
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "11/1",
+              "decimalOdds": 12
+            }
+          ]
+        },
+        {
+          "runnerId": "50665877-c12f-4fb2-a9d5-d667036d8f23",
+          "horseId": "3e64d1bf-5a9f-41fe-86a6-c1ee210f3fd3",
+          "horseName": "Madame De Sevigne",
+          "rank": 9,
+          "probability": 0.048578547544020266,
+          "latestPerformance": 47.837894946676016,
+          "performanceRank": 7,
+          "bestL3Speed": 82.83789494667602,
+          "medianBookmakerDecimal": 9.5,
+          "quotes": [
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "8/1",
+              "decimalOdds": 9
+            },
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "17/2",
+              "decimalOdds": 9.5
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "9/1",
+              "decimalOdds": 10
+            }
+          ]
+        }
+      ],
+      "picks": {
+        "AW_TISSUE_V3": "b99378cf-cc94-4698-a6a4-0d639e22791f",
+        "AW_PROFIT_V1": "b99378cf-cc94-4698-a6a4-0d639e22791f",
+        "AW_PROFIT_V3": "b99378cf-cc94-4698-a6a4-0d639e22791f"
+      },
+      "outcomes": {
+        "b99378cf-cc94-4698-a6a4-0d639e22791f": {
+          "status": "settled",
+          "settlementVersion": "canonical_settlement_v3",
+          "settledAt": "2026-11-22T16:01:40.675Z",
+          "startingPrice": "13/8",
+          "decimalSP": 2.625,
+          "won": false,
+          "deadHeatDivisor": 1,
+          "stake": 1,
+          "grossReturn": 0,
+          "profitLoss": -1
+        }
+      }
+    },
+    {
+      "raceId": "d858764a-9b60-4066-a26d-10c326f703c9",
+      "raceDate": "2026-11-22",
+      "course": "Lingfield",
+      "sourceId": "949640",
+      "scheduledOff": "2026-11-22T14:25:00.000Z",
+      "sourceCapturedAt": "2026-11-22T08:05:16.692Z",
+      "featureCutoffAt": "2026-11-22T08:04:58.373Z",
+      "decidedAt": "2026-11-22T08:05:23.497Z",
+      "sourceStage": "DORMANT",
+      "modelVersion": "AW_TISSUE_V3",
+      "modelHash": "c8f75faa0aeacc88ba76f100e7d154a872bc9b2ee31a5a42d18e611e3e64f9a5",
+      "marketSource": "sporting_life_median_bookmaker_at_capture_v1",
+      "completeMarket": true,
+      "runners": [
+        {
+          "runnerId": "45cc2d69-2bf6-49ea-8a59-642a513826b5",
+          "horseId": "18e9c518-009f-4176-afbf-ca30ef0dc244",
+          "horseName": "La Belle Forest",
+          "rank": 1,
+          "probability": 0.16508955262959812,
+          "latestPerformance": 64.50124912233714,
+          "performanceRank": 1,
+          "bestL3Speed": 100.50124912233714,
+          "medianBookmakerDecimal": 11,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "10/1",
+              "decimalOdds": 11
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "10/1",
+              "decimalOdds": 11
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "11/1",
+              "decimalOdds": 12
+            }
+          ]
+        },
+        {
+          "runnerId": "8c166100-9e3e-4ca0-866b-b4bf2664fd81",
+          "horseId": "102c89cb-1368-4abc-a685-e0df7fc3bfca",
+          "horseName": "Davorge Nation",
+          "rank": 2,
+          "probability": 0.15854798256636754,
+          "latestPerformance": 54.74935387025188,
+          "performanceRank": 9,
+          "bestL3Speed": null,
+          "medianBookmakerDecimal": 10,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "9/1",
+              "decimalOdds": 10
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "9/1",
+              "decimalOdds": 10
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "9/1",
+              "decimalOdds": 10
+            }
+          ]
+        },
+        {
+          "runnerId": "3794ea4d-aa88-48e1-9190-91b6b0df8c9c",
+          "horseId": "74863a58-498b-40e0-bb1b-b4afa4e444c3",
+          "horseName": "Little Jaybee",
+          "rank": 3,
+          "probability": 0.1429803790110771,
+          "latestPerformance": 54.986567796610146,
+          "performanceRank": 8,
+          "bestL3Speed": 103.80078516538592,
+          "medianBookmakerDecimal": 6.5,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "11/2",
+              "decimalOdds": 6.5
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "11/2",
+              "decimalOdds": 6.5
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "11/2",
+              "decimalOdds": 6.5
+            }
+          ]
+        },
+        {
+          "runnerId": "43434450-b2b6-40af-b659-72bf8833ffc6",
+          "horseId": "9f2f446b-d609-4d40-9729-759b7ff35f17",
+          "horseName": "Diamond Dreamer",
+          "rank": 4,
+          "probability": 0.09380319882023035,
+          "latestPerformance": 60.79234777838727,
+          "performanceRank": 4,
+          "bestL3Speed": 101.7018368218709,
+          "medianBookmakerDecimal": 6,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "5/1",
+              "decimalOdds": 6
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "5/1",
+              "decimalOdds": 6
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "5/1",
+              "decimalOdds": 6
+            }
+          ]
+        },
+        {
+          "runnerId": "d218f6a3-453f-4307-90e7-5616abef0fd0",
+          "horseId": "c9d0971f-9ed6-449f-91fb-fa6933d61b01",
+          "horseName": "Express Train",
+          "rank": 5,
+          "probability": 0.0916795038573076,
+          "latestPerformance": 59.042347778387224,
+          "performanceRank": 5,
+          "bestL3Speed": 104.70183682187093,
+          "medianBookmakerDecimal": 11,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "10/1",
+              "decimalOdds": 11
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "10/1",
+              "decimalOdds": 11
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "10/1",
+              "decimalOdds": 11
+            }
+          ]
+        },
+        {
+          "runnerId": "1265b5af-0449-4ce7-b0db-13fe8f36f083",
+          "horseId": "36dff7c4-83d6-43f8-862a-eca3e2cebe90",
+          "horseName": "One For Harvey",
+          "rank": 6,
+          "probability": 0.08989508150476769,
+          "latestPerformance": 56.25174516400334,
+          "performanceRank": 6,
+          "bestL3Speed": 105.15210895548243,
+          "medianBookmakerDecimal": 6,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "5/1",
+              "decimalOdds": 6
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "5/1",
+              "decimalOdds": 6
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "5/1",
+              "decimalOdds": 6
+            }
+          ]
+        },
+        {
+          "runnerId": "3064860b-2246-4504-a32f-9f77caf39aff",
+          "horseId": "3fc9facb-1819-47a8-bbdc-bc2d00a6584a",
+          "horseName": "Sheik Yerbouti",
+          "rank": 7,
+          "probability": 0.06817399441156681,
+          "latestPerformance": 56.15078516538591,
+          "performanceRank": 7,
+          "bestL3Speed": 102.35086633663366,
+          "medianBookmakerDecimal": 26,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "25/1",
+              "decimalOdds": 26
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "25/1",
+              "decimalOdds": 26
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "25/1",
+              "decimalOdds": 26
+            }
+          ]
+        },
+        {
+          "runnerId": "01ac11fb-3106-439f-8a6d-083ab098bf02",
+          "horseId": "914f102c-5d73-4604-80c6-8059be44c3b5",
+          "horseName": "Lazzar",
+          "rank": 8,
+          "probability": 0.06615806321335853,
+          "latestPerformance": 61.65945835043084,
+          "performanceRank": 3,
+          "bestL3Speed": 105.9227272727272,
+          "medianBookmakerDecimal": 3.25,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "9/4",
+              "decimalOdds": 3.25
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "9/4",
+              "decimalOdds": 3.25
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "5/2",
+              "decimalOdds": 3.5
+            }
+          ]
+        },
+        {
+          "runnerId": "7f5bf4a1-0aa9-4d5b-9df6-c8ac3bae27df",
+          "horseId": "548d9cb1-201c-4c8d-92df-4c0407fd986a",
+          "horseName": "Nuevo Slovo",
+          "rank": 9,
+          "probability": 0.06336490464930844,
+          "latestPerformance": 45.078268109908464,
+          "performanceRank": 10,
+          "bestL3Speed": null,
+          "medianBookmakerDecimal": 17,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "16/1",
+              "decimalOdds": 17
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "16/1",
+              "decimalOdds": 17
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "16/1",
+              "decimalOdds": 17
+            }
+          ]
+        },
+        {
+          "runnerId": "190919cb-97a1-4f80-9425-6d9483f250e4",
+          "horseId": "e824f4ab-2cac-4263-9338-74c99f53c6fc",
+          "horseName": "Jane Of The Jungle",
+          "rank": 10,
+          "probability": 0.06030733933641775,
+          "latestPerformance": 63.01474576271194,
+          "performanceRank": 2,
+          "bestL3Speed": 104.01474576271194,
+          "medianBookmakerDecimal": 34,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "33/1",
+              "decimalOdds": 34
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "33/1",
+              "decimalOdds": 34
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "33/1",
+              "decimalOdds": 34
+            }
+          ]
+        }
+      ],
+      "picks": {
+        "AW_TISSUE_V3": "45cc2d69-2bf6-49ea-8a59-642a513826b5",
+        "AW_PROFIT_V1": "45cc2d69-2bf6-49ea-8a59-642a513826b5",
+        "AW_PROFIT_V3": "45cc2d69-2bf6-49ea-8a59-642a513826b5"
+      },
+      "outcomes": {
+        "45cc2d69-2bf6-49ea-8a59-642a513826b5": {
+          "status": "settled",
+          "settlementVersion": "canonical_settlement_v3",
+          "settledAt": "2026-11-22T16:01:40.675Z",
+          "startingPrice": "11/1",
+          "decimalSP": 12,
+          "won": false,
+          "deadHeatDivisor": 1,
+          "stake": 1,
+          "grossReturn": 0,
+          "profitLoss": -1
+        }
+      }
+    },
+    {
+      "raceId": "4fe01f2e-820f-4145-a312-5b93e3cc828b",
+      "raceDate": "2026-11-22",
+      "course": "Lingfield",
+      "sourceId": "949641",
+      "scheduledOff": "2026-11-22T14:55:00.000Z",
+      "sourceCapturedAt": "2026-11-22T08:05:16.692Z",
+      "featureCutoffAt": "2026-11-22T08:04:58.373Z",
+      "decidedAt": "2026-11-22T08:05:23.499Z",
+      "sourceStage": "DORMANT",
+      "modelVersion": "AW_TISSUE_V3",
+      "modelHash": "c8f75faa0aeacc88ba76f100e7d154a872bc9b2ee31a5a42d18e611e3e64f9a5",
+      "marketSource": "sporting_life_median_bookmaker_at_capture_v1",
+      "completeMarket": true,
+      "runners": [
+        {
+          "runnerId": "089f7148-25fd-4843-a044-711a38d0aca8",
+          "horseId": "a9b4ef52-f5ae-42b4-8bd3-bfb57de72823",
+          "horseName": "Wellwhatshappenin",
+          "rank": 1,
+          "probability": 0.18769433800685617,
+          "latestPerformance": 52.089898595943936,
+          "performanceRank": 8,
+          "bestL3Speed": 85.08989859594394,
+          "medianBookmakerDecimal": 3.5,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "5/2",
+              "decimalOdds": 3.5
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "5/2",
+              "decimalOdds": 3.5
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "5/2",
+              "decimalOdds": 3.5
+            }
+          ]
+        },
+        {
+          "runnerId": "518fe570-0959-4c52-851a-b5f04b12c0bb",
+          "horseId": "108340f5-1b0e-4661-8264-6c8f440a6ba7",
+          "horseName": "Little Tiger",
+          "rank": 2,
+          "probability": 0.1383816509306964,
+          "latestPerformance": 76.05506092219483,
+          "performanceRank": 1,
+          "bestL3Speed": null,
+          "medianBookmakerDecimal": 8.5,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "15/2",
+              "decimalOdds": 8.5
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "15/2",
+              "decimalOdds": 8.5
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "15/2",
+              "decimalOdds": 8.5
+            }
+          ]
+        },
+        {
+          "runnerId": "df7756ad-8850-43bf-8afe-e6693916732b",
+          "horseId": "0ba06748-a643-4dc0-a796-a1b3d1dc23e1",
+          "horseName": "Merapi",
+          "rank": 3,
+          "probability": 0.12120100838810076,
+          "latestPerformance": 54.80983934105359,
+          "performanceRank": 7,
+          "bestL3Speed": null,
+          "medianBookmakerDecimal": 9,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "8/1",
+              "decimalOdds": 9
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "8/1",
+              "decimalOdds": 9
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "8/1",
+              "decimalOdds": 9
+            }
+          ]
+        },
+        {
+          "runnerId": "fdb6b1b8-bc54-4ac0-8432-1424703a59da",
+          "horseId": "faf18c3f-6c45-4b58-9d1e-9c383d541c85",
+          "horseName": "Charencey",
+          "rank": 4,
+          "probability": 0.10588820003393071,
+          "latestPerformance": 61.82066245028368,
+          "performanceRank": 4,
+          "bestL3Speed": 94.82066245028368,
+          "medianBookmakerDecimal": 13,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "11/1",
+              "decimalOdds": 12
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "12/1",
+              "decimalOdds": 13
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "12/1",
+              "decimalOdds": 13
+            }
+          ]
+        },
+        {
+          "runnerId": "2292e66d-30e3-4757-8fe6-d4e95cfd10bb",
+          "horseId": "ecc20db8-f8fd-4e57-9fda-5944c9921849",
+          "horseName": "Electric Bass",
+          "rank": 5,
+          "probability": 0.08334826206601562,
+          "latestPerformance": 61.15418041106331,
+          "performanceRank": 5,
+          "bestL3Speed": null,
+          "medianBookmakerDecimal": 8.5,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "15/2",
+              "decimalOdds": 8.5
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "15/2",
+              "decimalOdds": 8.5
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "15/2",
+              "decimalOdds": 8.5
+            }
+          ]
+        },
+        {
+          "runnerId": "370dfe05-a917-44c6-b42d-0ae809733800",
+          "horseId": "7c18052b-cde0-4030-9a15-b524b98610e2",
+          "horseName": "Shielas Well",
+          "rank": 6,
+          "probability": 0.06719959903292333,
+          "latestPerformance": 62.84445325240088,
+          "performanceRank": 3,
+          "bestL3Speed": 95.36373463814301,
+          "medianBookmakerDecimal": 26,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "25/1",
+              "decimalOdds": 26
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "25/1",
+              "decimalOdds": 26
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "25/1",
+              "decimalOdds": 26
+            }
+          ]
+        },
+        {
+          "runnerId": "45b99ef1-59fb-4b38-96f7-3c11797e0d56",
+          "horseId": "2fea5a9a-0209-42c3-bf73-241cec3d2e89",
+          "horseName": "Kondratiev Wave",
+          "rank": 7,
+          "probability": 0.06688734669342122,
+          "latestPerformance": 57.4000733976911,
+          "performanceRank": 6,
+          "bestL3Speed": 94.51047591410325,
+          "medianBookmakerDecimal": 41,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "40/1",
+              "decimalOdds": 41
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "40/1",
+              "decimalOdds": 41
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "40/1",
+              "decimalOdds": 41
+            }
+          ]
+        },
+        {
+          "runnerId": "942323a7-4fc5-4d45-8aca-59319bed9204",
+          "horseId": "281a8553-ee0d-4594-9751-8f2d4c71d67b",
+          "horseName": "Poke The Bear",
+          "rank": 8,
+          "probability": 0.06254189305957775,
+          "latestPerformance": 40.35296159185569,
+          "performanceRank": 10,
+          "bestL3Speed": 100.14275578790131,
+          "medianBookmakerDecimal": 8.5,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "15/2",
+              "decimalOdds": 8.5
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "15/2",
+              "decimalOdds": 8.5
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "15/2",
+              "decimalOdds": 8.5
+            }
+          ]
+        },
+        {
+          "runnerId": "764447bb-501a-4110-8390-e7eb0df48b10",
+          "horseId": "7c3a9619-c27b-42b8-91f5-da417f8838ba",
+          "horseName": "Muy Muy Loco",
+          "rank": 9,
+          "probability": 0.05951048122039256,
+          "latestPerformance": 33.25296159185561,
+          "performanceRank": 12,
+          "bestL3Speed": 97.87627590078594,
+          "medianBookmakerDecimal": 10,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "9/1",
+              "decimalOdds": 10
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "9/1",
+              "decimalOdds": 10
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "10/1",
+              "decimalOdds": 11
+            }
+          ]
+        },
+        {
+          "runnerId": "5b17a6d9-5382-4faf-ad00-81a31d39caef",
+          "horseId": "eff1a512-837d-44f9-9b3e-996fb98f3134",
+          "horseName": "Manton Road",
+          "rank": 10,
+          "probability": 0.04000234842269418,
+          "latestPerformance": 70.27569741140981,
+          "performanceRank": 2,
+          "bestL3Speed": 104.27569741140981,
+          "medianBookmakerDecimal": 8,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "7/1",
+              "decimalOdds": 8
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "7/1",
+              "decimalOdds": 8
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "7/1",
+              "decimalOdds": 8
+            }
+          ]
+        },
+        {
+          "runnerId": "d7b91fc6-79b7-4f1e-919e-4633b17be8ea",
+          "horseId": "a19dda5d-62d3-4276-9716-4e5fb61758d4",
+          "horseName": "Far Ahead",
+          "rank": 11,
+          "probability": 0.03432532950854297,
+          "latestPerformance": 44.71108037274301,
+          "performanceRank": 9,
+          "bestL3Speed": 84.71108037274301,
+          "medianBookmakerDecimal": 9.5,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "17/2",
+              "decimalOdds": 9.5
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "17/2",
+              "decimalOdds": 9.5
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "9/1",
+              "decimalOdds": 10
+            }
+          ]
+        },
+        {
+          "runnerId": "8469d5b2-1f29-4b8b-b51c-8f42e55eb24b",
+          "horseId": "5c17c1df-c2f4-459f-8458-ced50526e980",
+          "horseName": "Uzincso",
+          "rank": 12,
+          "probability": 0.03301954263684828,
+          "latestPerformance": 37.05380198851708,
+          "performanceRank": 11,
+          "bestL3Speed": 89.90028411850334,
+          "medianBookmakerDecimal": 15,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "14/1",
+              "decimalOdds": 15
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "14/1",
+              "decimalOdds": 15
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "14/1",
+              "decimalOdds": 15
+            }
+          ]
+        }
+      ],
+      "picks": {
+        "AW_TISSUE_V3": "089f7148-25fd-4843-a044-711a38d0aca8",
+        "AW_PROFIT_V1": "518fe570-0959-4c52-851a-b5f04b12c0bb",
+        "AW_PROFIT_V3": "089f7148-25fd-4843-a044-711a38d0aca8"
+      },
+      "outcomes": {
+        "089f7148-25fd-4843-a044-711a38d0aca8": {
+          "status": "settled",
+          "settlementVersion": "canonical_settlement_v3",
+          "settledAt": "2026-11-22T16:01:40.675Z",
+          "startingPrice": "9/2",
+          "decimalSP": 5.5,
+          "won": false,
+          "deadHeatDivisor": 1,
+          "stake": 1,
+          "grossReturn": 0,
+          "profitLoss": -1
+        },
+        "518fe570-0959-4c52-851a-b5f04b12c0bb": {
+          "status": "settled",
+          "settlementVersion": "canonical_settlement_v3",
+          "settledAt": "2026-11-22T16:01:40.675Z",
+          "startingPrice": "8/1",
+          "decimalSP": 9,
+          "won": false,
+          "deadHeatDivisor": 1,
+          "stake": 1,
+          "grossReturn": 0,
+          "profitLoss": -1
+        }
+      }
+    },
+    {
+      "raceId": "e6a0587a-93ed-4d61-88b0-e7b87b9f284a",
+      "raceDate": "2026-11-22",
+      "course": "Lingfield",
+      "sourceId": "949642",
+      "scheduledOff": "2026-11-22T15:25:00.000Z",
+      "sourceCapturedAt": "2026-11-22T08:05:16.692Z",
+      "featureCutoffAt": "2026-11-22T08:04:58.373Z",
+      "decidedAt": "2026-11-22T08:05:23.500Z",
+      "sourceStage": "DORMANT",
+      "modelVersion": "AW_TISSUE_V3",
+      "modelHash": "c8f75faa0aeacc88ba76f100e7d154a872bc9b2ee31a5a42d18e611e3e64f9a5",
+      "marketSource": "sporting_life_median_bookmaker_at_capture_v1",
+      "completeMarket": true,
+      "runners": [
+        {
+          "runnerId": "da6ca3ae-a98b-467b-ad2a-187aedfb8e3d",
+          "horseId": "9b3b44ec-5a31-4d7c-a869-ea1be1d02c53",
+          "horseName": "Little Peter",
+          "rank": 1,
+          "probability": 0.294429877165369,
+          "latestPerformance": 21.828076022338344,
+          "performanceRank": 9,
+          "bestL3Speed": 55.828076022338344,
+          "medianBookmakerDecimal": 41,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "35/1",
+              "decimalOdds": 36
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "40/1",
+              "decimalOdds": 41
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "40/1",
+              "decimalOdds": 41
+            }
+          ]
+        },
+        {
+          "runnerId": "ee99302f-d672-4297-9983-ff0e615da89f",
+          "horseId": "2eff4f7d-ece6-43ca-9320-ef095ca8625f",
+          "horseName": "Noble Grace",
+          "rank": 2,
+          "probability": 0.16771221721298307,
+          "latestPerformance": 65.4108679263065,
+          "performanceRank": 3,
+          "bestL3Speed": 94.4108679263065,
+          "medianBookmakerDecimal": 7,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "6/1",
+              "decimalOdds": 7
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "6/1",
+              "decimalOdds": 7
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "6/1",
+              "decimalOdds": 7
+            }
+          ]
+        },
+        {
+          "runnerId": "a43bd71d-2986-4e0b-b4a7-4c989c5142df",
+          "horseId": "3e1db3f7-3eec-40bf-a8e2-beaf4de71076",
+          "horseName": "In The Post",
+          "rank": 3,
+          "probability": 0.13785007630273208,
+          "latestPerformance": 70.99342750637634,
+          "performanceRank": 2,
+          "bestL3Speed": 105.99342750637634,
+          "medianBookmakerDecimal": 3.75,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "11/4",
+              "decimalOdds": 3.75
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "11/4",
+              "decimalOdds": 3.75
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "11/4",
+              "decimalOdds": 3.75
+            }
+          ]
+        },
+        {
+          "runnerId": "67b12d8e-4114-4854-a6b3-7f04f9d4fedc",
+          "horseId": "81935b0c-80dd-4451-9df6-79181e035e1f",
+          "horseName": "Snapius",
+          "rank": 4,
+          "probability": 0.12697045043132213,
+          "latestPerformance": 57.70301791889335,
+          "performanceRank": 4,
+          "bestL3Speed": null,
+          "medianBookmakerDecimal": 8.5,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "7/1",
+              "decimalOdds": 8
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "15/2",
+              "decimalOdds": 8.5
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "15/2",
+              "decimalOdds": 8.5
+            }
+          ]
+        },
+        {
+          "runnerId": "4d58cddb-67b8-4cf8-a130-6fbf87525165",
+          "horseId": "cc7e3650-aba2-4042-b2f3-8231c1f0a018",
+          "horseName": "State Express",
+          "rank": 5,
+          "probability": 0.09025375947529342,
+          "latestPerformance": 45.11086792630664,
+          "performanceRank": 6,
+          "bestL3Speed": 98.90745307031497,
+          "medianBookmakerDecimal": 17,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "14/1",
+              "decimalOdds": 15
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "16/1",
+              "decimalOdds": 17
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "16/1",
+              "decimalOdds": 17
+            }
+          ]
+        },
+        {
+          "runnerId": "7b4b5e78-d7be-494c-b66c-6f763a0c460a",
+          "horseId": "72f104bc-2fce-49ad-8ffd-97ba7e4c78b2",
+          "horseName": "Chilli King",
+          "rank": 6,
+          "probability": 0.06847260440779719,
+          "latestPerformance": 38.46680592779464,
+          "performanceRank": 8,
+          "bestL3Speed": 95.79161532604182,
+          "medianBookmakerDecimal": 5,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "4/1",
+              "decimalOdds": 5
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "4/1",
+              "decimalOdds": 5
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "4/1",
+              "decimalOdds": 5
+            }
+          ]
+        },
+        {
+          "runnerId": "ecddf09e-1e85-471e-b934-7863357a1a1f",
+          "horseId": "1ca28d1a-6e8e-4185-8b82-d2f63e077247",
+          "horseName": "Calshot Spit",
+          "rank": 7,
+          "probability": 0.05581419427643762,
+          "latestPerformance": 39.75687250996019,
+          "performanceRank": 7,
+          "bestL3Speed": null,
+          "medianBookmakerDecimal": 13,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "12/1",
+              "decimalOdds": 13
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "12/1",
+              "decimalOdds": 13
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "14/1",
+              "decimalOdds": 15
+            }
+          ]
+        },
+        {
+          "runnerId": "ab218a74-b26b-4242-85f9-8dd78263f8f6",
+          "horseId": "4612f204-5ee5-4e34-b4cb-a3093c846e3f",
+          "horseName": "Notable Charm",
+          "rank": 8,
+          "probability": 0.047581783043557674,
+          "latestPerformance": 49.20135440180586,
+          "performanceRank": 5,
+          "bestL3Speed": 94.20135440180586,
+          "medianBookmakerDecimal": 6,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "5/1",
+              "decimalOdds": 6
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "5/1",
+              "decimalOdds": 6
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "5/1",
+              "decimalOdds": 6
+            }
+          ]
+        },
+        {
+          "runnerId": "bc265cb9-c1e6-49b6-a35a-b14bda9d68c5",
+          "horseId": "432352eb-f9a6-4298-893b-94d6a16a44de",
+          "horseName": "Autumn's Breeze",
+          "rank": 9,
+          "probability": 0.010915037684507814,
+          "latestPerformance": 88.11823767546599,
+          "performanceRank": 1,
+          "bestL3Speed": 116.11823767546599,
+          "medianBookmakerDecimal": 7.5,
+          "quotes": [
+            {
+              "bookmakerId": 4,
+              "bookmakerName": "Betfair Sportsbook",
+              "fractionalOdds": "13/2",
+              "decimalOdds": 7.5
+            },
+            {
+              "bookmakerId": 6,
+              "bookmakerName": "Paddy Power",
+              "fractionalOdds": "13/2",
+              "decimalOdds": 7.5
+            },
+            {
+              "bookmakerId": 17,
+              "bookmakerName": "Sky Bet v2",
+              "fractionalOdds": "13/2",
+              "decimalOdds": 7.5
+            }
+          ]
+        }
+      ],
+      "picks": {
+        "AW_TISSUE_V3": "da6ca3ae-a98b-467b-ad2a-187aedfb8e3d",
+        "AW_PROFIT_V1": "ee99302f-d672-4297-9983-ff0e615da89f",
+        "AW_PROFIT_V3": "da6ca3ae-a98b-467b-ad2a-187aedfb8e3d"
+      },
+      "outcomes": {
+        "da6ca3ae-a98b-467b-ad2a-187aedfb8e3d": {
+          "status": "settled",
+          "settlementVersion": "canonical_settlement_v3",
+          "settledAt": "2026-11-22T16:01:40.675Z",
+          "startingPrice": "18/1",
+          "decimalSP": 19,
+          "won": false,
+          "deadHeatDivisor": 1,
+          "stake": 1,
+          "grossReturn": 0,
+          "profitLoss": -1
+        },
+        "ee99302f-d672-4297-9983-ff0e615da89f": {
+          "status": "settled",
+          "settlementVersion": "canonical_settlement_v3",
+          "settledAt": "2026-11-22T16:01:40.675Z",
+          "startingPrice": "9/2",
+          "decimalSP": 5.5,
+          "won": false,
+          "deadHeatDivisor": 1,
+          "stake": 1,
+          "grossReturn": 0,
+          "profitLoss": -1
+        }
+      }
+    }
+  ]
 }

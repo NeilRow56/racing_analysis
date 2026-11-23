@@ -11,7 +11,7 @@ test("Forward Research displays all ten original cohort summaries exactly withou
   const data = await loadOrSpeed(), before = structuredClone(data);
   const summary = summarizeOrSpeed(data);
   const monitor = await OrSpeedMonitoring();
-  const html = renderToStaticMarkup(<ResearchPageLayout date="2026-11-11" archiveLoaded={false}
+  const html = renderToStaticMarkup(<ResearchPageLayout date="2026-11-11" daily={null} tissue={null} historyLoaded={false} archiveLoaded={false}
     active={<p>Existing active totals</p>} secondary={monitor}><p>Existing archive</p></ResearchPageLayout>);
   const tables = [...html.matchAll(/<tbody>(.*?)<\/tbody>/g)];
   assert.equal(tables.length, 2);
@@ -32,7 +32,7 @@ test("Forward Research displays all ten original cohort summaries exactly withou
   assert.match(html, /Fewer than 50 settled: TOO EARLY · 50–149: EARLY · 150–299: DEVELOPING · 300\+: MEANINGFUL/);
   assert.ok(html.indexOf('id="secondary-monitoring"') < html.indexOf('id="or-speed-monitoring"'));
   assert.ok(html.indexOf('id="or-speed-monitoring"') < html.indexOf('id="archived-research"'));
-  assert.doesNotMatch(html, /<form/);
+  assert.doesNotMatch(renderToStaticMarkup(monitor), /<form/);
   assert.deepEqual(data, before);
   assert.deepEqual(monitor.props.data, data);
   assert.equal(await readFile(OR_SPEED_PATH, "utf8"), ledgerBefore);
@@ -41,7 +41,7 @@ test("Forward Research displays all ten original cohort summaries exactly withou
 test("monitor is independent of Value inputs and leaves other layout sections unchanged", async () => {
   const monitor = await OrSpeedMonitoring();
   const view = (secondary: React.ReactNode, secondaryOpen = false) => renderToStaticMarkup(
-    <ResearchPageLayout date="2026-11-11" archiveLoaded secondaryOpen={secondaryOpen}
+    <ResearchPageLayout date="2026-11-11" daily={null} tissue={null} historyLoaded={false} archiveLoaded secondaryOpen={secondaryOpen}
       active={<p>Original active figures: 123</p>} secondary={secondary}><p>Original archive figures: 456</p></ResearchPageLayout>);
   const original = view(<p>Existing secondary figures: 789</p>);
   const consolidated = view(<><p>Existing secondary figures: 789</p>{monitor}</>);
@@ -50,7 +50,7 @@ test("monitor is independent of Value inputs and leaves other layout sections un
   assert.match(consolidated, /Existing secondary figures: 789/);
   assert.match(view(monitor, true), /<details open="" id="secondary-monitoring"/);
   const source = await readFile("src/app/racing/research/forward-value/forward-value-page.tsx", "utf8");
-  assert.match(source, /secondary=\{<><SecondaryResearchMonitoring dashboard=\{dashboard\} \/>\{profiledServerWork\("monitor.OrSpeedMonitoring", \(\) => OrSpeedMonitoring\(\), <OrSpeedMonitoring \/>\)\}<\/>\}/);
-  assert.match(source, /secondaryOpen=\{scalar\(params\?\.monitor\) === "or-speed"\}/);
+  assert.match(source, /secondary=\{secondaryOpen \? <>/);
+  assert.match(source, /const secondaryOpen = scalar\(params\?\.monitor\) === "or-speed"/);
   assert.doesNotMatch(source, /summarizeOrSpeed|loadOrSpeed/);
 });

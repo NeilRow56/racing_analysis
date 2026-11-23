@@ -2,13 +2,17 @@
 from __future__ import annotations
 
 import argparse
+import json
 import os
+import subprocess
 import sys
 import time
 from collections import Counter
+from contextlib import nullcontext
 from dataclasses import dataclass
 from datetime import date, datetime, timezone
 from pathlib import Path
+from tempfile import TemporaryDirectory
 from zoneinfo import ZoneInfo
 from typing import Any, Callable, TypeVar
 
@@ -45,6 +49,7 @@ T = TypeVar("T")
 ACCESS_CONTROL_STATUS_CODES = {403, 406, 429}
 TRANSIENT_RETRY_ATTEMPTS = 3
 PRE_RACE_STAGES = {"DORMANT", "PRE_RACE", "GOINGDOWN", "GOINGBEHIND", "ATTHEPOST"}
+TRAINER_TARGETING_PERIOD = REPO_ROOT / "data/research/trainer-targeting-prospective-v1/period.json"
 
 
 @dataclass
@@ -58,6 +63,23 @@ class RacecardImportResult:
     totals: Counter[str]
     elapsed_seconds: float
     preserved_off: int = 0
+
+
+def trainer_targeting_due(race_date: date, london_now: datetime) -> bool:
+    if (
+        os.getenv("RESEARCH_TRAINER_TARGETING_MORNING") != "1"
+        or race_date != london_now.date()
+        or london_now.hour >= 12
+    ):
+        return False
+    try:
+        period = json.loads(TRAINER_TARGETING_PERIOD.read_text(encoding="utf-8"))
+        return date.fromisoformat(period["from"]) <= race_date < date.fromisoformat(period["until"])
+    except FileNotFoundError:
+        return False
+    except (OSError, ValueError, KeyError, TypeError):
+        print("TRAINER_TARGETING_CAPTURE_UNAVAILABLE: invalid period file.", file=sys.stderr, flush=True)
+        return False
 
 
 def main() -> None:
@@ -93,15 +115,28 @@ def main() -> None:
     if not database_url:
         raise SystemExit("DATABASE_URL is required.")
 
-    result = import_sporting_life_racecards(
-        race_date=args.race_date,
-        database_url=database_url,
-        request_delay_seconds=args.request_delay_seconds,
-        force_refresh=args.force_refresh,
-        skip_existing_racecards=args.skip_existing_racecards
-        and not args.refresh_existing_racecards,
-    )
-    print_import_result(result)
+    london_now = datetime.now(ZoneInfo("Europe/London"))
+    targeting = not args.force_refresh and trainer_targeting_due(args.race_date, london_now)
+    with TemporaryDirectory(prefix="trainer-targeting-") if targeting else nullcontext() as handoff:
+        result = import_sporting_life_racecards(
+            race_date=args.race_date,
+            database_url=database_url,
+            request_delay_seconds=args.request_delay_seconds,
+            force_refresh=args.force_refresh,
+            skip_existing_racecards=args.skip_existing_racecards
+            and not args.refresh_existing_racecards,
+            trainer_targeting_handoff=Path(handoff) if handoff else None,
+        )
+        print_import_result(result)
+        if handoff:
+            try:
+                subprocess.run(
+                    ["bun", "run", "scripts/trainer-targeting.ts", "capture-import", args.race_date.isoformat(), handoff],
+                    cwd=REPO_ROOT,
+                    check=True,
+                )
+            except (OSError, subprocess.CalledProcessError):
+                print("TRAINER_TARGETING_CAPTURE_UNAVAILABLE: review the import log.", file=sys.stderr, flush=True)
 
 
 def import_sporting_life_racecards(
@@ -115,6 +150,7 @@ def import_sporting_life_racecards(
     client: TextClient | None = None,
     force_refresh: bool = False,
     now: Callable[[], datetime] = lambda: datetime.now(timezone.utc),
+    trainer_targeting_handoff: Path | None = None,
 ) -> RacecardImportResult:
     started_at = time.monotonic()
     if force_refresh and race_date != now().astimezone(ZoneInfo("Europe/London")).date():
@@ -286,6 +322,25 @@ def import_sporting_life_racecards(
                     payload=racecard.payload,
                 )
             connection.commit()
+            if trainer_targeting_handoff is not None:
+                handoff_path = trainer_targeting_handoff / f"{detail_race_id}.json"
+                try:
+                    with handoff_path.open("x", encoding="utf-8") as handoff:
+                        json.dump({
+                            "raceId": detail_race_id,
+                            "sourceImportId": counts["source_import_id"],
+                            "sourceUrl": link.url,
+                            "importedAt": now().isoformat(),
+                            "payload": racecard.payload,
+                        }, handoff)
+                except FileExistsError:
+                    pass
+                except OSError:
+                    print(
+                        f"TRAINER_TARGETING_CAPTURE_UNAVAILABLE race_id={detail_race_id}: handoff write failed.",
+                        file=sys.stderr,
+                        flush=True,
+                    )
             imported_links.append(link)
             for key in ("courses", "races", "horses", "trainers", "jockeys", "runners"):
                 totals[key] += int(counts[key])

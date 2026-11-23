@@ -3,15 +3,33 @@ import { readFile } from "node:fs/promises";
 import { test } from "node:test";
 import { renderToStaticMarkup } from "react-dom/server";
 import { collectionEpochReport } from "@/lib/racing/prospective-epoch-report";
+import { EPOCHS } from "@/lib/racing/prospective-epoch-config";
+import { POSITIVE_NEUTRAL_VERSION } from "@/lib/racing/tissue-positive-neutral-method";
+import { CurrentPositiveNeutralSummary } from "./current-positive-neutral-summary";
 import { ProspectiveEpochDisclosure } from "./prospective-epoch-disclosure";
 import { ProspectiveEpochResearch } from "./prospective-epoch-monitor";
 
-test("epoch disclosure defaults closed, shows live counts and preserves every original detail", async () => {
+test("epoch disclosure defaults closed, shows live counts and preserves every original detail", { timeout: 15000 }, async () => {
   const report = await collectionEpochReport();
   const original = renderToStaticMarkup(await ProspectiveEpochResearch());
   const html = renderToStaticMarkup(await ProspectiveEpochDisclosure());
   const summary = html.match(/<summary\b[^>]*>([\s\S]*?)<\/summary>/)?.[1];
   assert.ok(summary);
+  const headline = html.slice(0, html.indexOf('<details class="group">'));
+  assert.match(headline, /CURRENT — Tissue Positive\/Neutral Collection V2/);
+  assert.match(headline, /activated 11 November 2026/);
+  assert.match(headline, /first- and second-ranked selections/);
+  assert.ok(headline.includes(EPOCHS.positiveNeutral.id));
+  assert.ok(!headline.includes(POSITIVE_NEUTRAL_VERSION));
+  for (const model of ["Turf V4", "All Weather V3", "Hurdle V2", "Chase V2"]) {
+    assert.ok(headline.includes(model));
+  }
+  assert.match(headline, />T1<\/caption>/);
+  assert.match(headline, />T2<\/caption>/);
+  for (const family of ["All Families", "Turf", "All Weather", "Hurdle", "Chase"]) {
+    assert.ok(headline.includes(`>${family}</th>`));
+  }
+  assert.doesNotMatch(headline, /ORIGINAL_V1/);
   assert.match(html, /<details class="group"><summary/);
   assert.doesNotMatch(html, /<details[^>]*\bopen(?:=|\s|>)/);
   assert.ok(summary.includes("Prospective collection epochs"));
@@ -39,6 +57,14 @@ test("page uses the disclosure without changing the pinned monitor or adding cli
   const page = await readFile("src/app/racing/research/forward-value/forward-value-page.tsx", "utf8");
   const source = await readFile("src/app/racing/research/forward-value/prospective-epoch-disclosure.tsx", "utf8");
   assert.match(page, /ProspectiveEpochDisclosure as ProspectiveEpochResearch.*from "\.\/prospective-epoch-disclosure"/);
-  assert.equal(source.match(/await collectionEpochReport\(\)/g)?.length, 1);
+  assert.equal(source.match(/collectionEpochReport\(\)/g)?.length, 1);
   assert.doesNotMatch(source, /use client|useState|useEffect|onClick|onKeyDown/);
+  assert.match(page, /archiveLoaded && <>[\s\S]*?<ProspectiveEpochResearch[\s\S]*?<HurdleV3ShadowResearch[\s\S]*?<HurdleV3MarketEdgeResearch[\s\S]*?<LowFormHurdleResearch[\s\S]*?<TissuePositiveNeutralResearch/);
+  assert.match(page, /<ActiveProspectiveSummaries generation=\{generation\}/);
+});
+
+test("an unavailable V2 summary is explicit", () => {
+  const html = renderToStaticMarkup(<CurrentPositiveNeutralSummary summary={null} />);
+  assert.match(html, /V2 collection summary is unavailable/);
+  assert.doesNotMatch(html, /<table/);
 });

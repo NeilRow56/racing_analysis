@@ -1,0 +1,2310 @@
+{
+  "asOf": "2026-11-18T16:05:44.000Z",
+  "sources": {
+    "developmentSha256": "0dc2c37ce5ce14426e8399a1bfb68254ea8f714e12184bcce430c124064fd4b1",
+    "chaseModelChecksum": "be65702490403f6a287d11ecb19307a67b58ca975ee7bd9ece71b4e0d759aa81"
+  },
+  "predictors": [
+    "official_rating",
+    "best_l3_jump_speed"
+  ],
+  "penalty": 0.05,
+  "trainingCutoff": "2026-11-05T00:00:00.000Z",
+  "family": "CHASE",
+  "year": 2026,
+  "training": {
+    "rawRaces": 61,
+    "from": "2026-10-20",
+    "to": "2026-11-04",
+    "races": 61,
+    "dates": 16,
+    "featureCutoffRange": [
+      "2026-10-20T05:22:48.561Z",
+      "2026-11-04T03:31:24.476Z"
+    ],
+    "captureRange": [
+      "2026-10-20T05:23:19.580Z",
+      "2026-11-04T03:32:00.881Z"
+    ]
+  },
+  "validation": {
+    "rawRaces": 92,
+    "from": "2026-11-05",
+    "to": "2026-11-18",
+    "races": 57,
+    "dates": 12,
+    "featureCutoffRange": [
+      "2026-11-05T09:17:29.339Z",
+      "2026-11-18T08:04:11.929Z"
+    ],
+    "captureRange": [
+      "2026-11-05T09:17:52.251Z",
+      "2026-11-18T08:04:29.864Z"
+    ]
+  },
+  "coefficients": {
+    "standalone": [
+      -0.1199536370249939,
+      0.0038796772967967857
+    ],
+    "marketOffset": [
+      -0.4303541700563077,
+      -0.014483572275080287
+    ]
+  },
+  "models": [
+    {
+      "label": "Captured market",
+      "races": 57,
+      "dates": 12,
+      "winners": 18,
+      "credited": 18,
+      "expected": 18.623626678618642,
+      "marketAE": 0.9665142193096786,
+      "logLoss": 1.5471754860854294,
+      "brier": 0.7494583838520401,
+      "pairedLogLoss": 0,
+      "pairedLogLossInterval": [
+        0,
+        0
+      ],
+      "pairedBrier": 0,
+      "pairedBrierInterval": [
+        0,
+        0
+      ],
+      "calibration": [
+        {
+          "lower": 0,
+          "upper": 0.05,
+          "n": 69,
+          "forecast": 0.029845079074655424,
+          "actual": 0
+        },
+        {
+          "lower": 0.05,
+          "upper": 0.1,
+          "n": 84,
+          "forecast": 0.07767650364179232,
+          "actual": 0.05952380952380952
+        },
+        {
+          "lower": 0.1,
+          "upper": 0.2,
+          "n": 112,
+          "forecast": 0.14645886105493883,
+          "actual": 0.19642857142857142
+        },
+        {
+          "lower": 0.2,
+          "upper": 0.4,
+          "n": 87,
+          "forecast": 0.2705274627219754,
+          "actual": 0.26436781609195403
+        },
+        {
+          "lower": 0.4,
+          "upper": 0.6,
+          "n": 18,
+          "forecast": 0.47092119683184513,
+          "actual": 0.3888888888888889
+        },
+        {
+          "lower": 0.6,
+          "upper": 1,
+          "n": 0,
+          "forecast": null,
+          "actual": null
+        }
+      ],
+      "priced": 57,
+      "canonicalPriced": 20,
+      "stakeDates": 6,
+      "stakedWinners": 5,
+      "n": 20,
+      "profit": -8.06,
+      "roi": -0.403,
+      "afterOne": {
+        "n": 19,
+        "profit": -10.56,
+        "roi": -0.5557894736842105
+      },
+      "afterTwo": {
+        "n": 18,
+        "profit": -12.440000000000001,
+        "roi": -0.6911111111111112
+      },
+      "roiInterval": [
+        -0.8842105263157896,
+        0.15333333333333338
+      ],
+      "priceBands": [
+        {
+          "band": "<3",
+          "races": 33,
+          "dates": 12,
+          "actual": 13,
+          "marketExpected": 13.101317589591671,
+          "marketAE": 0.9922666106749322
+        },
+        {
+          "band": "3-<5",
+          "races": 22,
+          "dates": 10,
+          "actual": 5,
+          "marketExpected": 5.263229719131802,
+          "marketAE": 0.9499870358736264
+        },
+        {
+          "band": "5-<11",
+          "races": 2,
+          "dates": 2,
+          "actual": 0,
+          "marketExpected": 0.25907936989516844,
+          "marketAE": 0
+        },
+        {
+          "band": "11+",
+          "races": 0,
+          "dates": 0,
+          "actual": 0,
+          "marketExpected": 0,
+          "marketAE": null
+        }
+      ]
+    },
+    {
+      "label": "Chase V2 Tissue",
+      "races": 57,
+      "dates": 12,
+      "winners": 14,
+      "credited": 14,
+      "expected": 15.332513617069628,
+      "marketAE": 0.9130922919523029,
+      "logLoss": 1.6817873871628288,
+      "brier": 0.7894941340132333,
+      "pairedLogLoss": 0.1346119010774,
+      "pairedLogLossInterval": [
+        0.039984843568279194,
+        0.2518403530968655
+      ],
+      "pairedBrier": 0.04003575016119327,
+      "pairedBrierInterval": [
+        0.010162237222740341,
+        0.08496999424514012
+      ],
+      "calibration": [
+        {
+          "lower": 0,
+          "upper": 0.05,
+          "n": 20,
+          "forecast": 0.03740789910874116,
+          "actual": 0
+        },
+        {
+          "lower": 0.05,
+          "upper": 0.1,
+          "n": 107,
+          "forecast": 0.07560214394797324,
+          "actual": 0.056074766355140186
+        },
+        {
+          "lower": 0.1,
+          "upper": 0.2,
+          "n": 151,
+          "forecast": 0.14526450048073725,
+          "actual": 0.17218543046357615
+        },
+        {
+          "lower": 0.2,
+          "upper": 0.4,
+          "n": 81,
+          "forecast": 0.2591013777920983,
+          "actual": 0.24691358024691357
+        },
+        {
+          "lower": 0.4,
+          "upper": 0.6,
+          "n": 10,
+          "forecast": 0.461817222245006,
+          "actual": 0.4
+        },
+        {
+          "lower": 0.6,
+          "upper": 1,
+          "n": 1,
+          "forecast": 0.6220892191906925,
+          "actual": 1
+        }
+      ],
+      "priced": 57,
+      "canonicalPriced": 20,
+      "stakeDates": 6,
+      "stakedWinners": 5,
+      "n": 20,
+      "profit": -7.640000000000001,
+      "roi": -0.382,
+      "afterOne": {
+        "n": 19,
+        "profit": -10.14,
+        "roi": -0.5336842105263159
+      },
+      "afterTwo": {
+        "n": 18,
+        "profit": -12.02,
+        "roi": -0.6677777777777778
+      },
+      "roiInterval": [
+        -0.7805882352941176,
+        -0.05826086956521739
+      ],
+      "priceBands": [
+        {
+          "band": "<3",
+          "races": 17,
+          "dates": 10,
+          "actual": 8,
+          "marketExpected": 7.112716167701943,
+          "marketAE": 1.1247461323322747
+        },
+        {
+          "band": "3-<5",
+          "races": 28,
+          "dates": 12,
+          "actual": 5,
+          "marketExpected": 6.870516772701366,
+          "marketAE": 0.7277472954969715
+        },
+        {
+          "band": "5-<11",
+          "races": 9,
+          "dates": 5,
+          "actual": 1,
+          "marketExpected": 1.1630181880136916,
+          "marketAE": 0.8598317810557126
+        },
+        {
+          "band": "11+",
+          "races": 3,
+          "dates": 2,
+          "actual": 0,
+          "marketExpected": 0.18626248865262582,
+          "marketAE": 0
+        }
+      ]
+    },
+    {
+      "label": "Form ranks",
+      "races": 57,
+      "dates": 12,
+      "winners": 8,
+      "credited": 8,
+      "expected": 8.75069611141293,
+      "marketAE": 0.9142129835323788,
+      "logLoss": 1.7766906173219636,
+      "brier": 0.8154282433697777,
+      "pairedLogLoss": 0.22951513123653478,
+      "pairedLogLossInterval": [
+        0.1005334712104628,
+        0.39826808234256394
+      ],
+      "pairedBrier": 0.06596985951773737,
+      "pairedBrierInterval": [
+        0.022312415613267994,
+        0.1304288966113772
+      ],
+      "calibration": [
+        {
+          "lower": 0,
+          "upper": 0.05,
+          "n": 0,
+          "forecast": null,
+          "actual": null
+        },
+        {
+          "lower": 0.05,
+          "upper": 0.1,
+          "n": 100,
+          "forecast": 0.07499461156139607,
+          "actual": 0.08
+        },
+        {
+          "lower": 0.1,
+          "upper": 0.2,
+          "n": 187,
+          "forecast": 0.1494975042016437,
+          "actual": 0.1497326203208556
+        },
+        {
+          "lower": 0.2,
+          "upper": 0.4,
+          "n": 81,
+          "forecast": 0.2536358710883092,
+          "actual": 0.24691358024691357
+        },
+        {
+          "lower": 0.4,
+          "upper": 0.6,
+          "n": 2,
+          "forecast": 0.5,
+          "actual": 0.5
+        },
+        {
+          "lower": 0.6,
+          "upper": 1,
+          "n": 0,
+          "forecast": null,
+          "actual": null
+        }
+      ],
+      "priced": 57,
+      "canonicalPriced": 20,
+      "stakeDates": 6,
+      "stakedWinners": 3,
+      "n": 20,
+      "profit": -1.5,
+      "roi": -0.075,
+      "afterOne": {
+        "n": 19,
+        "profit": -9,
+        "roi": -0.47368421052631576
+      },
+      "afterTwo": {
+        "n": 18,
+        "profit": -14.5,
+        "roi": -0.8055555555555556
+      },
+      "roiInterval": [
+        -1,
+        1.2045454545454546
+      ],
+      "priceBands": [
+        {
+          "band": "<3",
+          "races": 8,
+          "dates": 5,
+          "actual": 1,
+          "marketExpected": 3.102891947715049,
+          "marketAE": 0.32227999455037226
+        },
+        {
+          "band": "3-<5",
+          "races": 13,
+          "dates": 8,
+          "actual": 3,
+          "marketExpected": 2.952768023581772,
+          "marketAE": 1.0159958303669703
+        },
+        {
+          "band": "5-<11",
+          "races": 15,
+          "dates": 9,
+          "actual": 4,
+          "marketExpected": 1.7937756236513103,
+          "marketAE": 2.229933302281041
+        },
+        {
+          "band": "11+",
+          "races": 21,
+          "dates": 9,
+          "actual": 0,
+          "marketExpected": 0.9012605164647974,
+          "marketAE": 0
+        }
+      ]
+    },
+    {
+      "label": "Market + form ranks",
+      "races": 57,
+      "dates": 12,
+      "winners": 15,
+      "credited": 15,
+      "expected": 18.021832074088742,
+      "marketAE": 0.8323238136019787,
+      "logLoss": 1.57256989794633,
+      "brier": 0.7582254183075424,
+      "pairedLogLoss": 0.02539441186090155,
+      "pairedLogLossInterval": [
+        -0.008537636432953936,
+        0.06016067763676586
+      ],
+      "pairedBrier": 0.008767034455502365,
+      "pairedBrierInterval": [
+        -0.011067682699956104,
+        0.029419117711612913
+      ],
+      "calibration": [
+        {
+          "lower": 0,
+          "upper": 0.05,
+          "n": 69,
+          "forecast": 0.03090063647699533,
+          "actual": 0
+        },
+        {
+          "lower": 0.05,
+          "upper": 0.1,
+          "n": 81,
+          "forecast": 0.07849170176924564,
+          "actual": 0.08641975308641975
+        },
+        {
+          "lower": 0.1,
+          "upper": 0.2,
+          "n": 115,
+          "forecast": 0.1471592805368067,
+          "actual": 0.16521739130434782
+        },
+        {
+          "lower": 0.2,
+          "upper": 0.4,
+          "n": 91,
+          "forecast": 0.2710518304063902,
+          "actual": 0.25274725274725274
+        },
+        {
+          "lower": 0.4,
+          "upper": 0.6,
+          "n": 13,
+          "forecast": 0.48193193151798186,
+          "actual": 0.5384615384615384
+        },
+        {
+          "lower": 0.6,
+          "upper": 1,
+          "n": 1,
+          "forecast": 0.6558793013303869,
+          "actual": 1
+        }
+      ],
+      "priced": 57,
+      "canonicalPriced": 20,
+      "stakeDates": 6,
+      "stakedWinners": 5,
+      "n": 20,
+      "profit": -8.06,
+      "roi": -0.403,
+      "afterOne": {
+        "n": 19,
+        "profit": -10.56,
+        "roi": -0.5557894736842105
+      },
+      "afterTwo": {
+        "n": 18,
+        "profit": -12.440000000000001,
+        "roi": -0.6911111111111112
+      },
+      "roiInterval": [
+        -0.7805882352941176,
+        -0.09599999999999997
+      ],
+      "priceBands": [
+        {
+          "band": "<3",
+          "races": 30,
+          "dates": 12,
+          "actual": 13,
+          "marketExpected": 12.159269014661534,
+          "marketAE": 1.0691432177645481
+        },
+        {
+          "band": "3-<5",
+          "races": 23,
+          "dates": 12,
+          "actual": 2,
+          "marketExpected": 5.2993242700634475,
+          "marketAE": 0.377406608479925
+        },
+        {
+          "band": "5-<11",
+          "races": 4,
+          "dates": 2,
+          "actual": 0,
+          "marketExpected": 0.5632387893637536,
+          "marketAE": 0
+        },
+        {
+          "band": "11+",
+          "races": 0,
+          "dates": 0,
+          "actual": 0,
+          "marketExpected": 0,
+          "marketAE": null
+        }
+      ]
+    }
+  ],
+  "periods": [
+    {
+      "name": "2026-11-05 to 2026-11-11",
+      "models": [
+        {
+          "label": "Captured market",
+          "races": 40,
+          "dates": 7,
+          "winners": 13,
+          "credited": 13,
+          "expected": 13.445389823214875,
+          "marketAE": 0.9668741606549881,
+          "logLoss": 1.5604322040505376,
+          "brier": 0.7647358242309881,
+          "pairedLogLoss": 0,
+          "pairedLogLossInterval": [
+            0,
+            0
+          ],
+          "pairedBrier": 0,
+          "pairedBrierInterval": [
+            0,
+            0
+          ],
+          "calibration": [
+            {
+              "lower": 0,
+              "upper": 0.05,
+              "n": 29,
+              "forecast": 0.029711491373829866,
+              "actual": 0
+            },
+            {
+              "lower": 0.05,
+              "upper": 0.1,
+              "n": 57,
+              "forecast": 0.07790289284600588,
+              "actual": 0.07017543859649122
+            },
+            {
+              "lower": 0.1,
+              "upper": 0.2,
+              "n": 74,
+              "forecast": 0.14808660453968783,
+              "actual": 0.21621621621621623
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.4,
+              "n": 63,
+              "forecast": 0.26736066347058113,
+              "actual": 0.23809523809523808
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.6,
+              "n": 15,
+              "forecast": 0.45971808822353954,
+              "actual": 0.3333333333333333
+            },
+            {
+              "lower": 0.6,
+              "upper": 1,
+              "n": 0,
+              "forecast": null,
+              "actual": null
+            }
+          ],
+          "priced": 40,
+          "canonicalPriced": 3,
+          "stakeDates": 1,
+          "stakedWinners": 0,
+          "n": 3,
+          "profit": -3,
+          "roi": -1,
+          "afterOne": null,
+          "afterTwo": null,
+          "roiInterval": null,
+          "priceBands": [
+            {
+              "band": "<3",
+              "races": 25,
+              "dates": 7,
+              "actual": 9,
+              "marketExpected": 9.870001478129424,
+              "marketAE": 0.911853966784379
+            },
+            {
+              "band": "3-<5",
+              "races": 14,
+              "dates": 6,
+              "actual": 4,
+              "marketExpected": 3.4394756824241166,
+              "marketAE": 1.1629679548078182
+            },
+            {
+              "band": "5-<11",
+              "races": 1,
+              "dates": 1,
+              "actual": 0,
+              "marketExpected": 0.1359126626613354,
+              "marketAE": 0
+            },
+            {
+              "band": "11+",
+              "races": 0,
+              "dates": 0,
+              "actual": 0,
+              "marketExpected": 0,
+              "marketAE": null
+            }
+          ]
+        },
+        {
+          "label": "Chase V2 Tissue",
+          "races": 40,
+          "dates": 7,
+          "winners": 9,
+          "credited": 9,
+          "expected": 11.19902380567598,
+          "marketAE": 0.8036414741290707,
+          "logLoss": 1.6451576741602718,
+          "brier": 0.7851558743408193,
+          "pairedLogLoss": 0.08472547010973397,
+          "pairedLogLossInterval": [
+            -0.027104822362360732,
+            0.24210482624468327
+          ],
+          "pairedBrier": 0.020420050109831174,
+          "pairedBrierInterval": [
+            -0.012702172764902262,
+            0.07629951893241185
+          ],
+          "calibration": [
+            {
+              "lower": 0,
+              "upper": 0.05,
+              "n": 8,
+              "forecast": 0.03939058535852589,
+              "actual": 0
+            },
+            {
+              "lower": 0.05,
+              "upper": 0.1,
+              "n": 56,
+              "forecast": 0.07811803134840752,
+              "actual": 0.05357142857142857
+            },
+            {
+              "lower": 0.1,
+              "upper": 0.2,
+              "n": 108,
+              "forecast": 0.14571482849630102,
+              "actual": 0.18518518518518517
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.4,
+              "n": 57,
+              "forecast": 0.26751457642734106,
+              "actual": 0.22807017543859648
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.6,
+              "n": 8,
+              "forecast": 0.46283050105891593,
+              "actual": 0.375
+            },
+            {
+              "lower": 0.6,
+              "upper": 1,
+              "n": 1,
+              "forecast": 0.6220892191906925,
+              "actual": 1
+            }
+          ],
+          "priced": 40,
+          "canonicalPriced": 3,
+          "stakeDates": 1,
+          "stakedWinners": 0,
+          "n": 3,
+          "profit": -3,
+          "roi": -1,
+          "afterOne": null,
+          "afterTwo": null,
+          "roiInterval": null,
+          "priceBands": [
+            {
+              "band": "<3",
+              "races": 12,
+              "dates": 6,
+              "actual": 4,
+              "marketExpected": 5.184403825467698,
+              "marketAE": 0.771544836139216
+            },
+            {
+              "band": "3-<5",
+              "races": 21,
+              "dates": 7,
+              "actual": 4,
+              "marketExpected": 5.231761746755207,
+              "marketAE": 0.7645608102243651
+            },
+            {
+              "band": "5-<11",
+              "races": 5,
+              "dates": 3,
+              "actual": 1,
+              "marketExpected": 0.6421946178636776,
+              "marketAE": 1.5571603563520924
+            },
+            {
+              "band": "11+",
+              "races": 2,
+              "dates": 1,
+              "actual": 0,
+              "marketExpected": 0.14066361558939613,
+              "marketAE": 0
+            }
+          ]
+        },
+        {
+          "label": "Form ranks",
+          "races": 40,
+          "dates": 7,
+          "winners": 5,
+          "credited": 5,
+          "expected": 7.011402768380618,
+          "marketAE": 0.7131240587901385,
+          "logLoss": 1.7040444102127492,
+          "brier": 0.8030216885698783,
+          "pairedLogLoss": 0.1436122061622114,
+          "pairedLogLossInterval": [
+            0.004857105963280104,
+            0.3264886111523677
+          ],
+          "pairedBrier": 0.03828586433889005,
+          "pairedBrierInterval": [
+            -0.010027325791817473,
+            0.10569469188100936
+          ],
+          "calibration": [
+            {
+              "lower": 0,
+              "upper": 0.05,
+              "n": 0,
+              "forecast": null,
+              "actual": null
+            },
+            {
+              "lower": 0.05,
+              "upper": 0.1,
+              "n": 44,
+              "forecast": 0.07953320809408196,
+              "actual": 0.09090909090909091
+            },
+            {
+              "lower": 0.1,
+              "upper": 0.2,
+              "n": 131,
+              "forecast": 0.15108589622813182,
+              "actual": 0.16030534351145037
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.4,
+              "n": 61,
+              "forecast": 0.25751289242582187,
+              "actual": 0.22950819672131148
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.6,
+              "n": 2,
+              "forecast": 0.5,
+              "actual": 0.5
+            },
+            {
+              "lower": 0.6,
+              "upper": 1,
+              "n": 0,
+              "forecast": null,
+              "actual": null
+            }
+          ],
+          "priced": 40,
+          "canonicalPriced": 3,
+          "stakeDates": 1,
+          "stakedWinners": 0,
+          "n": 3,
+          "profit": -3,
+          "roi": -1,
+          "afterOne": null,
+          "afterTwo": null,
+          "roiInterval": null,
+          "priceBands": [
+            {
+              "band": "<3",
+              "races": 7,
+              "dates": 4,
+              "actual": 1,
+              "marketExpected": 2.789166457518971,
+              "marketAE": 0.35853005377438946
+            },
+            {
+              "band": "3-<5",
+              "races": 11,
+              "dates": 6,
+              "actual": 2,
+              "marketExpected": 2.4164942398328013,
+              "marketAE": 0.8276452585868284
+            },
+            {
+              "band": "5-<11",
+              "races": 9,
+              "dates": 4,
+              "actual": 2,
+              "marketExpected": 1.148004129697745,
+              "marketAE": 1.7421540116990475
+            },
+            {
+              "band": "11+",
+              "races": 13,
+              "dates": 6,
+              "actual": 0,
+              "marketExpected": 0.6577379413310984,
+              "marketAE": 0
+            }
+          ]
+        },
+        {
+          "label": "Market + form ranks",
+          "races": 40,
+          "dates": 7,
+          "winners": 10,
+          "credited": 10,
+          "expected": 12.967396677994653,
+          "marketAE": 0.771164810356249,
+          "logLoss": 1.5877055432530638,
+          "brier": 0.7752295994196687,
+          "pairedLogLoss": 0.027273339202526115,
+          "pairedLogLossInterval": [
+            -0.01982794237795145,
+            0.0797929060035642
+          ],
+          "pairedBrier": 0.010493775188680747,
+          "pairedBrierInterval": [
+            -0.016958186698177568,
+            0.04048632121792495
+          ],
+          "calibration": [
+            {
+              "lower": 0,
+              "upper": 0.05,
+              "n": 31,
+              "forecast": 0.03248508368162664,
+              "actual": 0
+            },
+            {
+              "lower": 0.05,
+              "upper": 0.1,
+              "n": 55,
+              "forecast": 0.08028635571372174,
+              "actual": 0.09090909090909091
+            },
+            {
+              "lower": 0.1,
+              "upper": 0.2,
+              "n": 72,
+              "forecast": 0.14877522314327637,
+              "actual": 0.19444444444444445
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.4,
+              "n": 70,
+              "forecast": 0.2684415817990771,
+              "actual": 0.22857142857142856
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.6,
+              "n": 9,
+              "forecast": 0.49095630533702167,
+              "actual": 0.4444444444444444
+            },
+            {
+              "lower": 0.6,
+              "upper": 1,
+              "n": 1,
+              "forecast": 0.6558793013303869,
+              "actual": 1
+            }
+          ],
+          "priced": 40,
+          "canonicalPriced": 3,
+          "stakeDates": 1,
+          "stakedWinners": 0,
+          "n": 3,
+          "profit": -3,
+          "roi": -1,
+          "afterOne": null,
+          "afterTwo": null,
+          "roiInterval": null,
+          "priceBands": [
+            {
+              "band": "<3",
+              "races": 23,
+              "dates": 7,
+              "actual": 9,
+              "marketExpected": 9.252107616292786,
+              "marketAE": 0.9727513311833047
+            },
+            {
+              "band": "3-<5",
+              "races": 16,
+              "dates": 7,
+              "actual": 1,
+              "marketExpected": 3.5907024542623076,
+              "marketAE": 0.27849703859838343
+            },
+            {
+              "band": "5-<11",
+              "races": 1,
+              "dates": 1,
+              "actual": 0,
+              "marketExpected": 0.12458660743955743,
+              "marketAE": 0
+            },
+            {
+              "band": "11+",
+              "races": 0,
+              "dates": 0,
+              "actual": 0,
+              "marketExpected": 0,
+              "marketAE": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "2026-11-12 to 2026-11-18",
+      "models": [
+        {
+          "label": "Captured market",
+          "races": 17,
+          "dates": 5,
+          "winners": 5,
+          "credited": 5,
+          "expected": 5.178236855403763,
+          "marketAE": 0.9655796248065085,
+          "logLoss": 1.5159832085204674,
+          "brier": 0.7135114653133385,
+          "pairedLogLoss": 0,
+          "pairedLogLossInterval": [
+            0,
+            0
+          ],
+          "pairedBrier": 0,
+          "pairedBrierInterval": [
+            0,
+            0
+          ],
+          "calibration": [
+            {
+              "lower": 0,
+              "upper": 0.05,
+              "n": 40,
+              "forecast": 0.02994193015775397,
+              "actual": 0
+            },
+            {
+              "lower": 0.05,
+              "upper": 0.1,
+              "n": 27,
+              "forecast": 0.0771985708773415,
+              "actual": 0.037037037037037035
+            },
+            {
+              "lower": 0.1,
+              "upper": 0.2,
+              "n": 38,
+              "forecast": 0.14328904479516447,
+              "actual": 0.15789473684210525
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.4,
+              "n": 24,
+              "forecast": 0.2788403107568855,
+              "actual": 0.3333333333333333
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.6,
+              "n": 3,
+              "forecast": 0.5269367398733728,
+              "actual": 0.6666666666666666
+            },
+            {
+              "lower": 0.6,
+              "upper": 1,
+              "n": 0,
+              "forecast": null,
+              "actual": null
+            }
+          ],
+          "priced": 17,
+          "canonicalPriced": 17,
+          "stakeDates": 5,
+          "stakedWinners": 5,
+          "n": 17,
+          "profit": -5.06,
+          "roi": -0.2976470588235294,
+          "afterOne": {
+            "n": 16,
+            "profit": -7.56,
+            "roi": -0.4725
+          },
+          "afterTwo": {
+            "n": 15,
+            "profit": -9.44,
+            "roi": -0.6293333333333333
+          },
+          "roiInterval": [
+            -0.8428571428571429,
+            0.30578947368421056
+          ],
+          "priceBands": [
+            {
+              "band": "<3",
+              "races": 8,
+              "dates": 5,
+              "actual": 4,
+              "marketExpected": 3.231316111462245,
+              "marketAE": 1.237885697970264
+            },
+            {
+              "band": "3-<5",
+              "races": 8,
+              "dates": 4,
+              "actual": 1,
+              "marketExpected": 1.823754036707685,
+              "marketAE": 0.5483195539927307
+            },
+            {
+              "band": "5-<11",
+              "races": 1,
+              "dates": 1,
+              "actual": 0,
+              "marketExpected": 0.12316670723383308,
+              "marketAE": 0
+            },
+            {
+              "band": "11+",
+              "races": 0,
+              "dates": 0,
+              "actual": 0,
+              "marketExpected": 0,
+              "marketAE": null
+            }
+          ]
+        },
+        {
+          "label": "Chase V2 Tissue",
+          "races": 17,
+          "dates": 5,
+          "winners": 5,
+          "credited": 5,
+          "expected": 4.133489811393648,
+          "marketAE": 1.2096316256103699,
+          "logLoss": 1.7679749471688464,
+          "brier": 0.7997018038306779,
+          "pairedLogLoss": 0.25199173864837887,
+          "pairedLogLossInterval": [
+            0.18061823638016422,
+            0.34986900634315277
+          ],
+          "pairedBrier": 0.08619033851733937,
+          "pairedBrierInterval": [
+            0.05363787643891263,
+            0.1536901834589794
+          ],
+          "calibration": [
+            {
+              "lower": 0,
+              "upper": 0.05,
+              "n": 12,
+              "forecast": 0.03608610827555135,
+              "actual": 0
+            },
+            {
+              "lower": 0.05,
+              "upper": 0.1,
+              "n": 51,
+              "forecast": 0.07283960092004539,
+              "actual": 0.058823529411764705
+            },
+            {
+              "lower": 0.1,
+              "upper": 0.2,
+              "n": 43,
+              "forecast": 0.14413344406955378,
+              "actual": 0.13953488372093023
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.4,
+              "n": 24,
+              "forecast": 0.23912003103339682,
+              "actual": 0.2916666666666667
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.6,
+              "n": 2,
+              "forecast": 0.45776410698936576,
+              "actual": 0.5
+            },
+            {
+              "lower": 0.6,
+              "upper": 1,
+              "n": 0,
+              "forecast": null,
+              "actual": null
+            }
+          ],
+          "priced": 17,
+          "canonicalPriced": 17,
+          "stakeDates": 5,
+          "stakedWinners": 5,
+          "n": 17,
+          "profit": -4.64,
+          "roi": -0.27294117647058824,
+          "afterOne": {
+            "n": 16,
+            "profit": -7.14,
+            "roi": -0.44625
+          },
+          "afterTwo": {
+            "n": 15,
+            "profit": -9.02,
+            "roi": -0.6013333333333333
+          },
+          "roiInterval": [
+            -0.6371428571428571,
+            0.04388888888888888
+          ],
+          "priceBands": [
+            {
+              "band": "<3",
+              "races": 5,
+              "dates": 4,
+              "actual": 4,
+              "marketExpected": 1.928312342234244,
+              "marketAE": 2.0743527448283556
+            },
+            {
+              "band": "3-<5",
+              "races": 7,
+              "dates": 5,
+              "actual": 1,
+              "marketExpected": 1.63875502594616,
+              "marketAE": 0.6102193336814542
+            },
+            {
+              "band": "5-<11",
+              "races": 4,
+              "dates": 2,
+              "actual": 0,
+              "marketExpected": 0.520823570150014,
+              "marketAE": 0
+            },
+            {
+              "band": "11+",
+              "races": 1,
+              "dates": 1,
+              "actual": 0,
+              "marketExpected": 0.045598873063229683,
+              "marketAE": 0
+            }
+          ]
+        },
+        {
+          "label": "Form ranks",
+          "races": 17,
+          "dates": 5,
+          "winners": 3,
+          "credited": 3,
+          "expected": 1.7392933430323134,
+          "marketAE": 1.7248384305144004,
+          "logLoss": 1.9476228693436448,
+          "brier": 0.844620137016599,
+          "pairedLogLoss": 0.43163966082317784,
+          "pairedLogLossInterval": [
+            0.25607998542716676,
+            0.6444749849679992
+          ],
+          "pairedBrier": 0.1311086717032605,
+          "pairedBrierInterval": [
+            0.0633422661709761,
+            0.25167827247650326
+          ],
+          "calibration": [
+            {
+              "lower": 0,
+              "upper": 0.05,
+              "n": 0,
+              "forecast": null,
+              "actual": null
+            },
+            {
+              "lower": 0.05,
+              "upper": 0.1,
+              "n": 56,
+              "forecast": 0.07142857142857144,
+              "actual": 0.07142857142857142
+            },
+            {
+              "lower": 0.1,
+              "upper": 0.2,
+              "n": 56,
+              "forecast": 0.1457818014253945,
+              "actual": 0.125
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.4,
+              "n": 20,
+              "forecast": 0.24181095600889524,
+              "actual": 0.3
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.6,
+              "n": 0,
+              "forecast": null,
+              "actual": null
+            },
+            {
+              "lower": 0.6,
+              "upper": 1,
+              "n": 0,
+              "forecast": null,
+              "actual": null
+            }
+          ],
+          "priced": 17,
+          "canonicalPriced": 17,
+          "stakeDates": 5,
+          "stakedWinners": 3,
+          "n": 17,
+          "profit": 1.5,
+          "roi": 0.08823529411764706,
+          "afterOne": {
+            "n": 16,
+            "profit": -6,
+            "roi": -0.375
+          },
+          "afterTwo": {
+            "n": 15,
+            "profit": -11.5,
+            "roi": -0.7666666666666667
+          },
+          "roiInterval": [
+            -1,
+            1.425
+          ],
+          "priceBands": [
+            {
+              "band": "<3",
+              "races": 1,
+              "dates": 1,
+              "actual": 0,
+              "marketExpected": 0.3137254901960784,
+              "marketAE": 0
+            },
+            {
+              "band": "3-<5",
+              "races": 2,
+              "dates": 2,
+              "actual": 1,
+              "marketExpected": 0.5362737837489708,
+              "marketAE": 1.8647191608159963
+            },
+            {
+              "band": "5-<11",
+              "races": 6,
+              "dates": 5,
+              "actual": 2,
+              "marketExpected": 0.6457714939535653,
+              "marketAE": 3.0970707420910277
+            },
+            {
+              "band": "11+",
+              "races": 8,
+              "dates": 3,
+              "actual": 0,
+              "marketExpected": 0.24352257513369902,
+              "marketAE": 0
+            }
+          ]
+        },
+        {
+          "label": "Market + form ranks",
+          "races": 17,
+          "dates": 5,
+          "winners": 5,
+          "credited": 5,
+          "expected": 5.054435396094083,
+          "marketAE": 0.9892301727436958,
+          "logLoss": 1.5369566148716642,
+          "brier": 0.7182155803966565,
+          "pairedLogLoss": 0.020973406351196683,
+          "pairedLogLossInterval": [
+            -0.012633236889167251,
+            0.07346145598400541
+          ],
+          "pairedBrier": 0.004704115083317937,
+          "pairedBrierInterval": [
+            -0.008034827886532783,
+            0.03428722994885391
+          ],
+          "calibration": [
+            {
+              "lower": 0,
+              "upper": 0.05,
+              "n": 38,
+              "forecast": 0.029608061125848725,
+              "actual": 0
+            },
+            {
+              "lower": 0.05,
+              "upper": 0.1,
+              "n": 26,
+              "forecast": 0.07469531842516162,
+              "actual": 0.07692307692307693
+            },
+            {
+              "lower": 0.1,
+              "upper": 0.2,
+              "n": 43,
+              "forecast": 0.14445351617248514,
+              "actual": 0.11627906976744186
+            },
+            {
+              "lower": 0.2,
+              "upper": 0.4,
+              "n": 21,
+              "forecast": 0.279752659097434,
+              "actual": 0.3333333333333333
+            },
+            {
+              "lower": 0.4,
+              "upper": 0.6,
+              "n": 4,
+              "forecast": 0.46162709042514216,
+              "actual": 0.75
+            },
+            {
+              "lower": 0.6,
+              "upper": 1,
+              "n": 0,
+              "forecast": null,
+              "actual": null
+            }
+          ],
+          "priced": 17,
+          "canonicalPriced": 17,
+          "stakeDates": 5,
+          "stakedWinners": 5,
+          "n": 17,
+          "profit": -5.06,
+          "roi": -0.2976470588235294,
+          "afterOne": {
+            "n": 16,
+            "profit": -7.56,
+            "roi": -0.4725
+          },
+          "afterTwo": {
+            "n": 15,
+            "profit": -9.44,
+            "roi": -0.6293333333333333
+          },
+          "roiInterval": [
+            -0.6371428571428571,
+            -0.00277777777777778
+          ],
+          "priceBands": [
+            {
+              "band": "<3",
+              "races": 7,
+              "dates": 5,
+              "actual": 4,
+              "marketExpected": 2.9071613983687468,
+              "marketAE": 1.3759126006022444
+            },
+            {
+              "band": "3-<5",
+              "races": 7,
+              "dates": 5,
+              "actual": 1,
+              "marketExpected": 1.70862181580114,
+              "marketAE": 0.5852670209124768
+            },
+            {
+              "band": "5-<11",
+              "races": 3,
+              "dates": 1,
+              "actual": 0,
+              "marketExpected": 0.4386521819241962,
+              "marketAE": 0
+            },
+            {
+              "band": "11+",
+              "races": 0,
+              "dates": 0,
+              "actual": 0,
+              "marketExpected": 0,
+              "marketAE": null
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "matchedRanks": [
+    {
+      "label": "T1",
+      "captured": 56,
+      "settled": 56,
+      "winners": 13,
+      "strike": 0.23214285714285715,
+      "dates": 12,
+      "modelExpected": 15.858801174671976,
+      "marketN": 56,
+      "marketExpected": 14.775484439350796,
+      "marketWins": 13,
+      "ae": 0.8798357883534269,
+      "priced": 56,
+      "settledPriced": 56,
+      "n": 20,
+      "profit": -7.640000000000001,
+      "roi": -0.382,
+      "afterOne": {
+        "n": 19,
+        "profit": -10.14,
+        "roi": -0.5336842105263159
+      },
+      "afterTwo": {
+        "n": 18,
+        "profit": -12.02,
+        "roi": -0.6677777777777778
+      },
+      "stakeDates": 6,
+      "aeInterval": [
+        0.5132502677546774,
+        1.243976683449898
+      ],
+      "roiInterval": [
+        -0.7805882352941176,
+        -0.05826086956521739
+      ],
+      "marketRank": {
+        "mean": 2.125,
+        "n": 56
+      },
+      "decimalOdds": {
+        "mean": 4.13875,
+        "n": 56
+      },
+      "officialRatingRank": {
+        "mean": 2.8076923076923075,
+        "n": 52
+      },
+      "speedRank": {
+        "mean": 3.517857142857143,
+        "n": 56
+      },
+      "ratingMarketGap": {
+        "mean": -0.6730769230769231,
+        "n": 52
+      },
+      "speedMarketGap": {
+        "mean": -1.3928571428571428,
+        "n": 56
+      },
+      "bestRecentSpeed": {
+        "mean": 114.33334683497131,
+        "n": 56
+      },
+      "priorJumpStarts": {
+        "mean": 11.267857142857142,
+        "n": 56
+      },
+      "weight": {
+        "mean": 160.46428571428572,
+        "n": 56
+      },
+      "fieldSize": {
+        "mean": 6.571428571428571,
+        "n": 56
+      },
+      "handicap": {
+        "mean": 0.8,
+        "n": 55
+      },
+      "class": {
+        "mean": 3.3541666666666665,
+        "n": 48
+      },
+      "distance": {
+        "mean": 20.50560064935065,
+        "n": 56
+      },
+      "fieldRating": {
+        "mean": 114.52309414903755,
+        "n": 53
+      }
+    },
+    {
+      "label": "T2",
+      "captured": 56,
+      "settled": 56,
+      "winners": 11,
+      "strike": 0.19642857142857142,
+      "dates": 12,
+      "modelExpected": 11.672976632885936,
+      "marketN": 56,
+      "marketExpected": 11.76668059401976,
+      "marketWins": 11,
+      "ae": 0.93484308612835,
+      "priced": 56,
+      "settledPriced": 56,
+      "n": 20,
+      "profit": -11.75,
+      "roi": -0.5875,
+      "afterOne": {
+        "n": 19,
+        "profit": -16.25,
+        "roi": -0.8552631578947368
+      },
+      "afterTwo": {
+        "n": 18,
+        "profit": -18,
+        "roi": -1
+      },
+      "stakeDates": 6,
+      "aeInterval": [
+        0.3935702185843213,
+        1.3715048895708961
+      ],
+      "roiInterval": [
+        -1,
+        -0.16304347826086957
+      ],
+      "marketRank": {
+        "mean": 2.8214285714285716,
+        "n": 56
+      },
+      "decimalOdds": {
+        "mean": 5.6762500000000005,
+        "n": 56
+      },
+      "officialRatingRank": {
+        "mean": 3.826923076923077,
+        "n": 52
+      },
+      "speedRank": {
+        "mean": 3.5,
+        "n": 54
+      },
+      "ratingMarketGap": {
+        "mean": -1.0192307692307692,
+        "n": 52
+      },
+      "speedMarketGap": {
+        "mean": -0.6666666666666666,
+        "n": 54
+      },
+      "bestRecentSpeed": {
+        "mean": 116.21050413004279,
+        "n": 54
+      },
+      "priorJumpStarts": {
+        "mean": 12.625,
+        "n": 56
+      },
+      "weight": {
+        "mean": 158.28571428571428,
+        "n": 56
+      },
+      "fieldSize": {
+        "mean": 6.571428571428571,
+        "n": 56
+      },
+      "handicap": {
+        "mean": 0.8,
+        "n": 55
+      },
+      "class": {
+        "mean": 3.3541666666666665,
+        "n": 48
+      },
+      "distance": {
+        "mean": 20.50560064935065,
+        "n": 56
+      },
+      "fieldRating": {
+        "mean": 114.52309414903755,
+        "n": 53
+      }
+    },
+    {
+      "label": "T3",
+      "captured": 56,
+      "settled": 56,
+      "winners": 17,
+      "strike": 0.30357142857142855,
+      "dates": 12,
+      "modelExpected": 9.665073964458287,
+      "marketN": 56,
+      "marketExpected": 10.461067281378487,
+      "marketWins": 17,
+      "ae": 1.6250731921265167,
+      "priced": 56,
+      "settledPriced": 56,
+      "n": 20,
+      "profit": 12.209999999999999,
+      "roi": 0.6104999999999999,
+      "afterOne": {
+        "n": 19,
+        "profit": 5.209999999999999,
+        "roi": 0.2742105263157894
+      },
+      "afterTwo": {
+        "n": 18,
+        "profit": -0.2900000000000009,
+        "roi": -0.016111111111111163
+      },
+      "stakeDates": 6,
+      "aeInterval": [
+        1.1689380774616593,
+        2.290610409444421
+      ],
+      "roiInterval": [
+        -0.4085,
+        1.7045454545454546
+      ],
+      "marketRank": {
+        "mean": 3.517857142857143,
+        "n": 56
+      },
+      "decimalOdds": {
+        "mean": 7.66375,
+        "n": 56
+      },
+      "officialRatingRank": {
+        "mean": 3.3846153846153846,
+        "n": 52
+      },
+      "speedRank": {
+        "mean": 3.5357142857142856,
+        "n": 56
+      },
+      "ratingMarketGap": {
+        "mean": 0.11538461538461539,
+        "n": 52
+      },
+      "speedMarketGap": {
+        "mean": -0.017857142857142856,
+        "n": 56
+      },
+      "bestRecentSpeed": {
+        "mean": 115.39037166417816,
+        "n": 56
+      },
+      "priorJumpStarts": {
+        "mean": 12.017857142857142,
+        "n": 56
+      },
+      "weight": {
+        "mean": 158.03571428571428,
+        "n": 56
+      },
+      "fieldSize": {
+        "mean": 6.571428571428571,
+        "n": 56
+      },
+      "handicap": {
+        "mean": 0.8,
+        "n": 55
+      },
+      "class": {
+        "mean": 3.3541666666666665,
+        "n": 48
+      },
+      "distance": {
+        "mean": 20.50560064935065,
+        "n": 56
+      },
+      "fieldRating": {
+        "mean": 114.52309414903755,
+        "n": 53
+      }
+    },
+    {
+      "label": "Market favourite",
+      "captured": 56,
+      "settled": 56,
+      "winners": 17,
+      "strike": 0.30357142857142855,
+      "dates": 12,
+      "modelExpected": 13.179864207455262,
+      "marketN": 56,
+      "marketExpected": 18.06659750089981,
+      "marketWins": 17,
+      "ae": 0.9409630119425261,
+      "priced": 56,
+      "settledPriced": 56,
+      "n": 20,
+      "profit": -8.06,
+      "roi": -0.403,
+      "afterOne": {
+        "n": 19,
+        "profit": -10.56,
+        "roi": -0.5557894736842105
+      },
+      "afterTwo": {
+        "n": 18,
+        "profit": -12.440000000000001,
+        "roi": -0.6911111111111112
+      },
+      "stakeDates": 6,
+      "aeInterval": [
+        0.6833781338740708,
+        1.2162058334638979
+      ],
+      "roiInterval": [
+        -0.8842105263157896,
+        0.15333333333333338
+      ],
+      "marketRank": {
+        "mean": 1,
+        "n": 56
+      },
+      "decimalOdds": {
+        "mean": 2.870357142857143,
+        "n": 56
+      },
+      "officialRatingRank": {
+        "mean": 2.9038461538461537,
+        "n": 52
+      },
+      "speedRank": {
+        "mean": 3.5,
+        "n": 56
+      },
+      "ratingMarketGap": {
+        "mean": -1.9038461538461537,
+        "n": 52
+      },
+      "speedMarketGap": {
+        "mean": -2.5,
+        "n": 56
+      },
+      "bestRecentSpeed": {
+        "mean": 113.80961551586371,
+        "n": 56
+      },
+      "priorJumpStarts": {
+        "mean": 11.232142857142858,
+        "n": 56
+      },
+      "weight": {
+        "mean": 160.39285714285714,
+        "n": 56
+      },
+      "fieldSize": {
+        "mean": 6.571428571428571,
+        "n": 56
+      },
+      "handicap": {
+        "mean": 0.8,
+        "n": 55
+      },
+      "class": {
+        "mean": 3.3541666666666665,
+        "n": 48
+      },
+      "distance": {
+        "mean": 20.50560064935065,
+        "n": 56
+      },
+      "fieldRating": {
+        "mean": 114.52309414903755,
+        "n": 53
+      }
+    }
+  ],
+  "contextBands": [
+    {
+      "label": "Field size",
+      "bands": [
+        {
+          "band": "2–7",
+          "captured": 57,
+          "settled": 54,
+          "winners": 16,
+          "strike": 0.2962962962962963,
+          "dates": 12,
+          "modelExpected": 10.089171093703294,
+          "marketN": 50,
+          "marketExpected": 9.759033318077506,
+          "marketWins": 15,
+          "ae": 1.5370374822078121,
+          "priced": 51,
+          "settledPriced": 50,
+          "n": 16,
+          "profit": 7.209999999999999,
+          "roi": 0.45062499999999994,
+          "afterOne": {
+            "n": 15,
+            "profit": 2.709999999999999,
+            "roi": 0.18066666666666661
+          },
+          "afterTwo": {
+            "n": 14,
+            "profit": -1.290000000000001,
+            "roi": -0.0921428571428572
+          },
+          "stakeDates": 5,
+          "aeInterval": [
+            1.1444761325889587,
+            2.055271192993743
+          ],
+          "roiInterval": [
+            -0.123,
+            1.61
+          ]
+        },
+        {
+          "band": "8+",
+          "captured": 34,
+          "settled": 30,
+          "winners": 6,
+          "strike": 0.2,
+          "dates": 11,
+          "modelExpected": 3.497823429936665,
+          "marketN": 23,
+          "marketExpected": 2.702422388041513,
+          "marketWins": 5,
+          "ae": 1.8501918952882774,
+          "priced": 26,
+          "settledPriced": 23,
+          "n": 11,
+          "profit": 3.5,
+          "roi": 0.3181818181818182,
+          "afterOne": {
+            "n": 10,
+            "profit": -3.5,
+            "roi": -0.35
+          },
+          "afterTwo": {
+            "n": 9,
+            "profit": -9,
+            "roi": -1
+          },
+          "stakeDates": 3,
+          "aeInterval": [
+            0,
+            2.7941550715702217
+          ],
+          "roiInterval": [
+            -1,
+            1.4166666666666667
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Handicap",
+      "bands": [
+        {
+          "band": "Handicap",
+          "captured": 69,
+          "settled": 63,
+          "winners": 18,
+          "strike": 0.2857142857142857,
+          "dates": 13,
+          "modelExpected": 10.169180675077136,
+          "marketN": 55,
+          "marketExpected": 9.274755851904342,
+          "marketWins": 16,
+          "ae": 1.7251127960112067,
+          "priced": 58,
+          "settledPriced": 55,
+          "n": 21,
+          "profit": 14.879999999999999,
+          "roi": 0.7085714285714285,
+          "afterOne": {
+            "n": 20,
+            "profit": 7.879999999999999,
+            "roi": 0.39399999999999996
+          },
+          "afterTwo": {
+            "n": 19,
+            "profit": 2.379999999999999,
+            "roi": 0.1252631578947368
+          },
+          "stakeDates": 6,
+          "aeInterval": [
+            1.2084239177723521,
+            2.3930688336785075
+          ],
+          "roiInterval": [
+            -0.14384615384615385,
+            1.947142857142857
+          ]
+        },
+        {
+          "band": "Non-handicap",
+          "captured": 21,
+          "settled": 20,
+          "winners": 4,
+          "strike": 0.2,
+          "dates": 12,
+          "modelExpected": 3.226450281663916,
+          "marketN": 17,
+          "marketExpected": 3.1294982786024153,
+          "marketWins": 4,
+          "ae": 1.2781601534500084,
+          "priced": 18,
+          "settledPriced": 17,
+          "n": 6,
+          "profit": -4.17,
+          "roi": -0.695,
+          "afterOne": {
+            "n": 5,
+            "profit": -5,
+            "roi": -1
+          },
+          "afterTwo": null,
+          "stakeDates": 4,
+          "aeInterval": [
+            0.4055219418946921,
+            2.324942885827661
+          ],
+          "roiInterval": [
+            -1,
+            -0.2157142857142857
+          ]
+        },
+        {
+          "band": "Missing",
+          "captured": 1,
+          "settled": 1,
+          "winners": 0,
+          "strike": 0,
+          "dates": 1,
+          "modelExpected": 0.19136356689890696,
+          "marketN": 1,
+          "marketExpected": 0.05720157561226237,
+          "marketWins": 0,
+          "ae": 0,
+          "priced": 1,
+          "settledPriced": 1,
+          "n": 0,
+          "profit": null,
+          "roi": null,
+          "afterOne": null,
+          "afterTwo": null,
+          "stakeDates": 0,
+          "aeInterval": null,
+          "roiInterval": null
+        }
+      ]
+    },
+    {
+      "label": "Distance",
+      "bands": [
+        {
+          "band": "20+ furlongs",
+          "captured": 52,
+          "settled": 48,
+          "winners": 13,
+          "strike": 0.2708333333333333,
+          "dates": 12,
+          "modelExpected": 7.502106696490524,
+          "marketN": 41,
+          "marketExpected": 6.529520884277737,
+          "marketWins": 11,
+          "ae": 1.684656530693793,
+          "priced": 43,
+          "settledPriced": 41,
+          "n": 16,
+          "profit": 7.83,
+          "roi": 0.489375,
+          "afterOne": {
+            "n": 15,
+            "profit": 0.8300000000000001,
+            "roi": 0.05533333333333334
+          },
+          "afterTwo": {
+            "n": 14,
+            "profit": -3.67,
+            "roi": -0.2621428571428571
+          },
+          "stakeDates": 5,
+          "aeInterval": [
+            1.189254583621124,
+            2.2873973635726386
+          ],
+          "roiInterval": [
+            -0.09571428571428571,
+            1.35
+          ]
+        },
+        {
+          "band": "<20 furlongs",
+          "captured": 39,
+          "settled": 36,
+          "winners": 9,
+          "strike": 0.25,
+          "dates": 13,
+          "modelExpected": 6.084887827149436,
+          "marketN": 32,
+          "marketExpected": 5.9319348218412795,
+          "marketWins": 9,
+          "ae": 1.5172115456936848,
+          "priced": 34,
+          "settledPriced": 32,
+          "n": 11,
+          "profit": 2.88,
+          "roi": 0.2618181818181818,
+          "afterOne": {
+            "n": 10,
+            "profit": -2.62,
+            "roi": -0.262
+          },
+          "afterTwo": {
+            "n": 9,
+            "profit": -6.12,
+            "roi": -0.68
+          },
+          "stakeDates": 6,
+          "aeInterval": [
+            0.783194327952807,
+            2.4453057980482518
+          ],
+          "roiInterval": [
+            -0.808,
+            2.84
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Class",
+      "bands": [
+        {
+          "band": "Class 4 or higher number",
+          "captured": 38,
+          "settled": 35,
+          "winners": 13,
+          "strike": 0.37142857142857144,
+          "dates": 12,
+          "modelExpected": 6.1008026304567675,
+          "marketN": 31,
+          "marketExpected": 5.904543664836172,
+          "marketWins": 11,
+          "ae": 1.8629720812311423,
+          "priced": 33,
+          "settledPriced": 31,
+          "n": 14,
+          "profit": 7.379999999999999,
+          "roi": 0.527142857142857,
+          "afterOne": {
+            "n": 13,
+            "profit": 2.879999999999999,
+            "roi": 0.22153846153846146
+          },
+          "afterTwo": {
+            "n": 12,
+            "profit": -1.120000000000001,
+            "roi": -0.09333333333333342
+          },
+          "stakeDates": 5,
+          "aeInterval": [
+            1.2123570056122857,
+            2.677488501431097
+          ],
+          "roiInterval": [
+            -0.38235294117647056,
+            1.9090909090909092
+          ]
+        },
+        {
+          "band": "Class 1–3",
+          "captured": 37,
+          "settled": 34,
+          "winners": 6,
+          "strike": 0.17647058823529413,
+          "dates": 10,
+          "modelExpected": 5.496031968204175,
+          "marketN": 30,
+          "marketExpected": 4.8176531429890215,
+          "marketWins": 6,
+          "ae": 1.2454196725913342,
+          "priced": 31,
+          "settledPriced": 30,
+          "n": 11,
+          "profit": 5.33,
+          "roi": 0.48454545454545456,
+          "afterOne": {
+            "n": 10,
+            "profit": -1.67,
+            "roi": -0.16699999999999998
+          },
+          "afterTwo": {
+            "n": 9,
+            "profit": -7.17,
+            "roi": -0.7966666666666666
+          },
+          "stakeDates": 4,
+          "aeInterval": [
+            0.6099983314905503,
+            2.145438394113042
+          ],
+          "roiInterval": [
+            -1,
+            1.666470588235294
+          ]
+        },
+        {
+          "band": "Missing",
+          "captured": 16,
+          "settled": 15,
+          "winners": 3,
+          "strike": 0.2,
+          "dates": 8,
+          "modelExpected": 1.9901599249790176,
+          "marketN": 12,
+          "marketExpected": 1.7392588982938213,
+          "marketWins": 3,
+          "ae": 1.7248725896661738,
+          "priced": 13,
+          "settledPriced": 12,
+          "n": 2,
+          "profit": -2,
+          "roi": -1,
+          "afterOne": null,
+          "afterTwo": null,
+          "stakeDates": 2,
+          "aeInterval": [
+            0,
+            2.653800114592082
+          ],
+          "roiInterval": [
+            -1,
+            -1
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Mean observed field rating",
+      "bands": [
+        {
+          "band": "<120",
+          "captured": 52,
+          "settled": 48,
+          "winners": 16,
+          "strike": 0.3333333333333333,
+          "dates": 13,
+          "modelExpected": 7.795453037453903,
+          "marketN": 41,
+          "marketExpected": 7.1702500285462065,
+          "marketWins": 14,
+          "ae": 1.9525121082616625,
+          "priced": 44,
+          "settledPriced": 41,
+          "n": 15,
+          "profit": 14.379999999999999,
+          "roi": 0.9586666666666666,
+          "afterOne": {
+            "n": 14,
+            "profit": 7.379999999999999,
+            "roi": 0.527142857142857
+          },
+          "afterTwo": {
+            "n": 13,
+            "profit": 2.879999999999999,
+            "roi": 0.22153846153846146
+          },
+          "stakeDates": 6,
+          "aeInterval": [
+            1.3778089631156436,
+            2.6589079100085495
+          ],
+          "roiInterval": [
+            -0.045454545454545456,
+            3.2880000000000003
+          ]
+        },
+        {
+          "band": "120+",
+          "captured": 36,
+          "settled": 33,
+          "winners": 5,
+          "strike": 0.15151515151515152,
+          "dates": 10,
+          "modelExpected": 5.3780385698873685,
+          "marketN": 29,
+          "marketExpected": 4.691743620266932,
+          "marketWins": 5,
+          "ae": 1.0657018807254286,
+          "priced": 30,
+          "settledPriced": 29,
+          "n": 11,
+          "profit": -2.67,
+          "roi": -0.2427272727272727,
+          "afterOne": {
+            "n": 10,
+            "profit": -8.17,
+            "roi": -0.817
+          },
+          "afterTwo": {
+            "n": 9,
+            "profit": -9,
+            "roi": -1
+          },
+          "stakeDates": 4,
+          "aeInterval": [
+            0.5752903758802181,
+            1.5469464261854764
+          ],
+          "roiInterval": [
+            -1,
+            0.5
+          ]
+        },
+        {
+          "band": "Missing",
+          "captured": 3,
+          "settled": 3,
+          "winners": 1,
+          "strike": 0.3333333333333333,
+          "dates": 3,
+          "modelExpected": 0.4135029162986879,
+          "marketN": 3,
+          "marketExpected": 0.5994620573058799,
+          "marketWins": 1,
+          "ae": 1.668162292863421,
+          "priced": 3,
+          "settledPriced": 3,
+          "n": 1,
+          "profit": -1,
+          "roi": -1,
+          "afterOne": null,
+          "afterTwo": null,
+          "stakeDates": 1,
+          "aeInterval": [
+            0,
+            2.2616874206831716
+          ],
+          "roiInterval": null
+        }
+      ]
+    }
+  ]
+}

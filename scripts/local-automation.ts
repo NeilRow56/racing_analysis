@@ -32,6 +32,7 @@ export type Dependencies = {
   pause: (ms: number) => Promise<void>;
   audit?: () => Promise<string[]>;
   awProfitArmed?: () => Promise<boolean>;
+  awSameOrArmed?: () => Promise<boolean>;
   logRoot: string;
 };
 
@@ -227,6 +228,22 @@ export async function runScheduled(role: Role, deps: Dependencies): Promise<numb
       const code = status === "success" ? 0 : result.code || 70;
       await record({ date: selected.date, mode: selected.mode, status, code, reason: result.timedOut ? "timeout_process_group_terminated_no_workflow_retry" : monitorWarning ? "new_capture_gap_or_monitor_failure_no_replay" : shadowWarning ? "aw_profit_shadow_warning_review_logs_no_replay" : result.hookWarning ? "research_warning_review_logs_no_replay" : undefined });
       await maintainLogs(deps.logRoot, deps.now(), id);
+      // The existing workflow and its journal result are complete before the independent shadow runs.
+      if (result.code === 0 && !result.timedOut) {
+        try {
+          if (await deps.awSameOrArmed?.()) {
+            const args = role === "collection" ? ["capture", startedAt] : ["settle"];
+            const shadow = await deps.command({ executable: BUN,
+              args: ["--env-file=.env.local", "run", "scripts/track-aw-same-or-shadow.ts", ...args],
+              cwd: ROOT, env, timeoutMs: 60_000, logPrefix: join(deps.logRoot, id), streamBytes: 128 * 1024 });
+            if (shadow.code !== 0 || shadow.timedOut || shadow.hookWarning) throw new Error("aw_same_or_shadow_warning");
+          }
+        } catch {
+          await atomicOperationalJson(deps.logRoot, "last-aw-same-or-warning.json", {
+            id, at: deps.now().toISOString(), role, date: selected.date, reason: "aw_same_or_shadow_warning_review_logs_no_replay",
+          }).catch(() => {});
+        }
+      }
       return code;
     } catch {
       await record({ date: selected.date, mode: selected.mode, status: "failed", code: 71, reason: "command_or_logging_failure_review_before_retry" }); return 71;
@@ -331,9 +348,10 @@ export async function statusReport(logRoot = LOG_ROOT, root = ROOT, now = new Da
   };
   const retention = await metadata<RetentionReport>("retention.json");
   const lastLocalError = await metadata<{ at: string; role?: Role; code: number; reason: string }>("last-error.json");
+  const lastAwSameOrWarning = await metadata<{ at: string; role: Role; reason: string }>("last-aw-same-or-warning.json");
   return { asOf: now.toISOString(), schedulerActivation: `collection=${activation.collection.state};settlement=${activation.settlement.state}`, activation, logRoot,
     activationReadiness: "NO_GO_stage_B_ledger_drift_and_runtime_review_pending",
-    historyUnverifiable, retention, retentionPolicy: RETENTION, lastLocalError,
+    historyUnverifiable, retention, retentionPolicy: RETENTION, lastLocalError, lastAwSameOrWarning,
     timedOutExecutions: events.filter(e => e.code === 124),
     overlapIndicators: events.filter(e => e.status === "locked"),
     executionCount: new Set(events.map(e => e.id)).size,
@@ -367,6 +385,10 @@ export function formatStatus(report: Awaited<ReturnType<typeof statusReport>>) {
     const laterSuccess = !("unreadable" in error) && error.role && (error.role === "collection" ? report.lastSuccessfulCollection : report.lastSuccessfulSettlement);
     const resolved = laterSuccess && !("unreadable" in error) && laterSuccess.at > error.at;
     lines.push(`  ${resolved ? "Historical" : "WARNING:"} Last local infrastructure error: ${"unreadable" in error ? "unreadable" : `${error.at} — ${error.reason}`}${resolved ? " (later role success recorded)" : " (inspect JSON)"}`);
+  }
+  if (report.lastAwSameOrWarning) {
+    const warning = report.lastAwSameOrWarning;
+    lines.push(`  Last AW same-OR warning: ${"unreadable" in warning ? "unreadable" : `${warning.at} — ${warning.role}, inspect logs`}`);
   }
   if (report.retention && "budgetExceeded" in report.retention && report.retention.budgetExceeded) lines.push("  WARNING: Protected automation logs exceed budget; new workflows blocked");
   if (report.retention && "unreadable" in report.retention) lines.push("  WARNING: Retention metadata unreadable");
@@ -419,6 +441,11 @@ export async function main(args: string[]) {
     awProfitArmed: async () => {
       const { AW_PROFIT_SHADOW_PATH } = await import("../src/lib/racing/aw-profit-shadow");
       try { return (await stat(AW_PROFIT_SHADOW_PATH)).isFile(); }
+      catch (error) { if ((error as NodeJS.ErrnoException).code === "ENOENT") return false; throw error; }
+    },
+    awSameOrArmed: async () => {
+      const { AW_SAME_OR_SHADOW_PATH } = await import("../src/lib/racing/aw-same-or-shadow");
+      try { return (await stat(AW_SAME_OR_SHADOW_PATH)).isFile(); }
       catch (error) { if ((error as NodeJS.ErrnoException).code === "ENOENT") return false; throw error; }
     },
     pause: ms => new Promise(done => setTimeout(done, ms)), logRoot: LOG_ROOT,

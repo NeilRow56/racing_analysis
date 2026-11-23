@@ -129,7 +129,7 @@ test("clean tracker starts at zero and keeps monetary subset separate with no SP
   const overall = summarizeTissueGeneration(data).find(g => g.rank === "TOP_2")!.rows.find(r => r.family === "ALL")!;
   assert.equal(overall.settled, 2); assert.equal(overall.winners, 1); assert.equal(overall.priceN, 0); assert.equal(overall.profitLoss, null);
   const html = renderToStaticMarkup(<TissueGenerationMonitor data={emptyTissueGeneration()} />);
-  for (const label of ["TISSUE RANK 1", "TISSUE RANK 2", "TISSUE TOP 2", "Actual/model", "Price n", "not independent prospective validation", TISSUE_GENERATION_EPOCH]) assert.ok(html.includes(label), label);
+  for (const label of ["TISSUE MODEL PERFORMANCE — All Families", "5 November 2026", "Turf V4", "All Weather V3", "Hurdle V2", "Chase V2", "TISSUE RANK 1", "TISSUE RANK 2", "TISSUE TOP 2", "Actual/model", "Price n", "not independent prospective validation", TISSUE_GENERATION_EPOCH]) assert.ok(html.includes(label), label);
 });
 
 test("canonical captured-price settlement is idempotent, handles dead heats/NR/void and ignores later odds", () => {

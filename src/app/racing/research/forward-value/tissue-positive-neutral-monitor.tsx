@@ -2,6 +2,8 @@ import type { PositiveNeutralData } from "@/lib/racing/tissue-positive-neutral";
 import { loadPositiveNeutralContext } from "@/lib/racing/profiled-monitor-readers";
 import { summarizePositiveNeutral } from "@/lib/racing/tissue-positive-neutral-metrics";
 import type { GenerationData } from "@/lib/racing/tissue-generation-forward";
+import { POSITIVE_NEUTRAL_VERSION } from "@/lib/racing/tissue-positive-neutral-method";
+import { TissueFamilyModels } from "./tissue-family-models";
 
 const pct = (x: number | null) => x === null ? "—" : `${(100 * x).toFixed(2)}%`;
 const num = (x: number | null) => x === null ? "—" : x.toFixed(4);
@@ -22,8 +24,10 @@ export async function TissuePositiveNeutralResearch() {
 export function TissuePositiveNeutralMonitor({ data, generation }: { data: PositiveNeutralData | null; generation: GenerationData | null }) {
   const s = summarizePositiveNeutral(data, generation);
   return <section className="mt-5 border border-slate-300 bg-white p-4" aria-labelledby="tissue-positive-neutral-heading">
-    <h3 id="tissue-positive-neutral-heading" className="text-base font-semibold">TISSUE — POSITIVE / NEUTRAL MARKET BADGES</h3>
-    <p className="mt-1 text-sm text-slate-600">{data ? "ARMED" : "NOT ARMED"}. Epoch: {data?.epoch ?? "pending first genuine capture"}. No historical backfill. Production Tissue only; Hurdle V2, with V3 shadow kept separate.</p>
+    <h3 id="tissue-positive-neutral-heading" className="text-base font-semibold">ARCHIVE — Original Tissue Positive/Neutral V1</h3>
+    <p className="mt-1 text-sm text-slate-600">Original frozen Positive/Neutral market-badge collection. T1 and T2 are the first- and second-ranked selections.</p>
+    <p className="mt-1 break-words text-xs text-slate-500">{data?.version ?? POSITIVE_NEUTRAL_VERSION} · {data?.epoch ? <>First capture <time dateTime={data.epoch}>{new Intl.DateTimeFormat("en-GB", { dateStyle: "long", timeZone: "Europe/London" }).format(new Date(data.epoch))}</time>. No historical backfill.</> : "No recorded first capture."}</p>
+    {data && <TissueFamilyModels versions={data.modelVersions} />}
     <p className="mt-1 text-xs text-slate-500">{s.capturedRaces} captured races; {s.includedSelections} frozen positive/neutral selections; {s.fallbackSelections} fallback selections excluded; {s.unavailableRaces.length} exact sources unavailable. Negative badges are reference only.</p>
     <div className="mt-3 overflow-x-auto"><table className="w-full whitespace-nowrap text-left text-xs tabular-nums"><caption className="mb-1 text-left font-semibold">Positive + Neutral, T1 and T2 separately</caption>
       <thead><tr>{["Family", "T1 settled", "T1 winners", "T1 Actual/Model", "T1 ROI", "T2 settled", "T2 winners", "T2 Actual/Model", "T2 ROI"].map(h => <th key={h} className="border-b p-2">{h}</th>)}</tr></thead>

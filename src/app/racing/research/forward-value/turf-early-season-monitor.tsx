@@ -2,6 +2,8 @@ import type { EarlyTurfData } from "@/lib/racing/turf-early-season";
 import { loadEarlyTurfContext } from "@/lib/racing/profiled-monitor-readers";
 import { summarizeEarlyTurf } from "@/lib/racing/turf-early-season-metrics";
 import type { GenerationData } from "@/lib/racing/tissue-generation-forward";
+import { CaptureTime } from "./aw-profitability";
+import { EARLY_TURF_VERSION } from "@/lib/racing/turf-early-season-method";
 const num = (n: number | null) => n === null ? "—" : n.toFixed(4);
 export async function EarlyTurfResearch() {
   const context = await loadEarlyTurfContext().catch(() => null);
@@ -18,8 +20,13 @@ export function EarlyTurfMonitor({ data, generation }: { data: EarlyTurfData | n
       <td className="p-2">{hits(r.pairedV4, 1)}</td><td className="p-2">{hits(r.market, 1)}</td><td className="p-2">{hits(r.pairedV4, "TOP2")}</td><td className="p-2">{hits(r.market, "TOP2")}</td><td className="p-2">{r.races - r.marketUnavailable}/{r.races}</td></tr>)}</tbody>
   </table></div>;
   return <section className="mt-5 border border-slate-300 bg-white p-4" aria-labelledby="early-turf-heading">
-    <h3 id="early-turf-heading" className="text-sm font-semibold">2027 EARLY-SEASON TURF — V4 VS MARKET</h3>
-    <p className="mt-1 text-xs text-slate-600">{data ? "ARMED" : "NOT ARMED"} · 1 March–31 July 2027 · Epoch: {data?.epoch ?? "PENDING FIRST GENUINE CAPTURE"}. Primary cohort: VERY LOW + LIMITED. No historical backfill.</p>
+    <h3 id="early-turf-heading" className="text-sm font-semibold">TURF V4 — 2027 Early-Season Monitoring</h3>
+    <p className="mt-1 text-sm text-slate-600">Prospective Turf V4 versus market evaluation for 1 March–31 July 2027.</p>
+    <p className="mt-1 break-words text-xs text-slate-500">
+      {data ? data.epoch ? "ARMED" : "ARMED · AWAITING FIRST CAPTURE" : "NOT ARMED"} · {data?.version ?? EARLY_TURF_VERSION}
+      {data?.epoch && <> · First capture <time dateTime={data.epoch}>{data.epoch}</time></>}. Primary cohort: VERY LOW + LIMITED. No historical backfill.
+    </p>
+    {data && <p className="mt-1 text-xs text-slate-600">Activated <CaptureTime value={data.armedAt} exact /> · Latest capture <CaptureTime value={data.observations.at(-1)?.frozenAt ?? null} exact /></p>}
     {table(summary.rows)}
     <p className="mt-2 text-xs text-slate-500">Comparisons use identical complete pre-off books. Difference = V4 minus market log loss. Hits = winners / eligible races. NR/void picks excluded without replacement. Native V4 competition ranks retained, including ties.</p>
     <details className="mt-3 text-xs"><summary>Monthly breakdown · March–July 2027</summary>{table(summary.monthly, true)}</details>

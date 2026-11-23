@@ -107,7 +107,7 @@ test("canonical settlement, dead heats, proper scores, V2 reference and T2 separ
   assert.equal(s.references[0].v2Top2Winner, true); assert.equal(s.references[0].v3Top2Winner, true); assert.equal(s.references[0].v2RankOfV3T1, 1);
   assert.ok(matchingMarketEdgeShadow(monitor.observations[0], settled.observations));
   const html = renderToStaticMarkup(<HurdleV3MarketEdgeMonitor data={monitor} shadows={settled} />);
-  assert.match(html, /PROSPECTIVE MARKET-EDGE MONITOR/); assert.match(html, /V3 T1 EDGE &gt;=10 PP/); assert.match(html, /V3 T2 only/); assert.match(html, /0.2500/);
+  assert.match(html, /HURDLE V3 — Market Edge Monitor/); assert.match(html, /DIAGNOSTIC · ARCHIVED COLLECTION · HURDLE_V3_MARKET_EDGE_PROSPECTIVE_V1/); assert.match(html, /V3 T1 EDGE &gt;=10 PP/); assert.match(html, /V3 T2 only/); assert.match(html, /0.2500/);
 }));
 test("NR selected horses are never losses or replaced; other-book probabilities renormalize", async () => withFixture(async ({ shadow, data, template }) => {
   const monitor = appendHurdleMarketEdges(data, [shadow], model, now), result = shadowResult(shadow.production);
@@ -135,7 +135,7 @@ test("established depth split and pending empty Research summary remain distinct
   const monitor = appendHurdleMarketEdges(data, [shadow], model, now), s = summarizeHurdleMarketEdge(monitor, { ...template, observations: [shadow] });
   assert.equal(s.speed[0].captured, 0); assert.equal(s.speed[1].captured, 1); assert.equal(s.headline.pending, 1);
   const html = renderToStaticMarkup(<HurdleV3MarketEdgeMonitor data={data} shadows={template} />);
-  assert.match(html, /pending first genuine capture/); assert.equal(data.epoch, null); assert.equal(data.observations.length, 0);
+  assert.match(html, /No recorded first capture/); assert.equal(data.epoch, null); assert.equal(data.observations.length, 0);
 }, 3));
 test("exclusive initialization, metadata/epoch/observation immutability and persisted corruption rejection", async () => withFixture(async ({ shadow, path }) => {
   assert.equal((await loadHurdleMarketEdge(path))!.epoch, null); await assert.rejects(initializeHurdleMarketEdge(path), /EEXIST/);

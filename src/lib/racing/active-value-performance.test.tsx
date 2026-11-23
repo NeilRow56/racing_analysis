@@ -22,7 +22,8 @@ test("every latest-book Today marker reconciles, without promoting pre-epoch win
     assert.equal(row.runner.outcome?.winner, true);
   }
   const html = renderToStaticMarkup(<ActiveValuePerformance datasets={datasets} generation={await loadTissueGeneration()} date="2026-11-05" />);
-  assert.ok(html.includes("All active Value 1 V2 selections"));
+  assert.ok(html.includes("VALUE 1 STRATEGY — Active V2 Selections"));
+  assert.match(html, /V2 identifies the Value 1 selection policy \(VALUE_RANK_V2\)/);
   assert.ok(html.includes("Without Compromise"));
   assert.ok(html.includes("Excluded: pre-epoch capture"));
   assert.equal(JSON.stringify(datasets), before);

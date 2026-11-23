@@ -2,6 +2,7 @@ import type { LowFormData } from "@/lib/racing/hurdle-low-form";
 import { loadLowFormContext } from "@/lib/racing/profiled-monitor-readers";
 import { summarizeLowForm } from "@/lib/racing/hurdle-low-form-metrics";
 import type { HurdleV3ShadowData } from "@/lib/racing/hurdle-v3-shadow";
+import { LOW_FORM_VERSION } from "@/lib/racing/hurdle-low-form-method";
 const num = (n: number | null) => n === null ? "—" : n.toFixed(4);
 export async function LowFormHurdleResearch() {
   const result = await loadLowFormContext().catch(() => null);
@@ -27,8 +28,10 @@ export function LowFormHurdleMonitor({ data, shadows }: { data: LowFormData | nu
     <p>Head-to-head: MARKET BETTER {r.headToHead.filter(h => h.verdict === "MARKET BETTER").length}; V3 BETTER {r.headToHead.filter(h => h.verdict === "V3 BETTER").length}; SAME {r.headToHead.filter(h => h.verdict === "SAME").length}. Exclusive Top2: market {r.headToHead.filter(h => h.marketOnlyTop2).length}; V3 {r.headToHead.filter(h => h.v3OnlyTop2).length}.</p>
   </div>);
   return <section className="mt-5 border border-slate-300 bg-white p-4" aria-labelledby="low-form-heading">
-    <h3 id="low-form-heading" className="text-sm font-semibold">LOW-FORM HURDLE — PROSPECTIVE V3 VS MARKET</h3>
-    <p className="mt-1 text-xs text-slate-600">Epoch: {data?.epoch ?? "pending first genuine low-form pre-off capture"}. Primary cohort: VERY LOW + LIMITED. MIXED is separate. V2 is secondary. No historical backfill.</p>
+    <h3 id="low-form-heading" className="text-sm font-semibold">HURDLE V3 — Low-Form Races vs Market</h3>
+    <p className="mt-1 text-sm text-slate-600">Prospective V3 versus market comparison for races with limited previous form.</p>
+    <p className="mt-1 break-words text-xs text-slate-500">{data ? "Collection suspended" : "Collection record unavailable"} · {data?.version ?? LOW_FORM_VERSION}{data?.epoch ? <> · First capture <time dateTime={data.epoch}>{data.epoch}</time></> : data && " · No recorded first capture"}.</p>
+    <p className="mt-1 text-xs text-slate-600">Primary cohort: VERY LOW + LIMITED. MIXED is separate. V2 is secondary. No historical backfill.</p>
     {table(summary.rows)}
     <p className="mt-2 text-xs text-slate-500">Headline comparisons use identical complete-market races. Hits show winners / eligible settled selections. NR/void picks are excluded without replacement. Dead heats split probability target credit equally; probabilities renormalize over starters. Established fields are outside these totals ({summary.established} captured).</p>
     <details className="mt-3 text-xs"><summary>Monthly breakdown · October–January and other captured months</summary>{table(summary.monthly, true)}{details(summary.monthly)}</details>

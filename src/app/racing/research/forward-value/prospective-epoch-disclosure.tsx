@@ -1,10 +1,17 @@
 import { collectionEpochReport } from "@/lib/racing/prospective-epoch-report";
+import { loadCurrentPositiveNeutralSummary } from "@/lib/racing/current-positive-neutral-summary";
+import type { GenerationData } from "@/lib/racing/tissue-generation-forward";
+import { CurrentPositiveNeutralSummary } from "./current-positive-neutral-summary";
 
 // The original monitor is source-pinned. Keep this presentation outside that provenance graph.
-export async function ProspectiveEpochDisclosure() {
-  const report = await collectionEpochReport().catch(() => null);
-  if (!report) return <p className="mt-4 text-sm text-amber-800">Collection epoch report unavailable; collection fails closed on invalid provenance.</p>;
-    return <section className="mt-5 border border-slate-300 bg-white p-4" aria-labelledby="collection-epochs-heading">
+export async function ProspectiveEpochDisclosure({ generation }: { generation?: GenerationData } = {}) {
+  const [report, summary] = await Promise.all([
+    collectionEpochReport().catch(() => null),
+    loadCurrentPositiveNeutralSummary(generation).catch(() => null),
+  ]);
+  return <>
+    <CurrentPositiveNeutralSummary summary={summary} />
+    {report ? <section className="mt-5 border border-slate-300 bg-white p-4" aria-labelledby="collection-epochs-heading">
       <details className="group">
       <summary className="cursor-pointer list-none rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate-600 [&::-webkit-details-marker]:hidden">
         <h3 id="collection-epochs-heading" className="text-base font-semibold">
@@ -25,5 +32,6 @@ export async function ProspectiveEpochDisclosure() {
         <tbody>{report.rows.map((r, i) => <tr key={i}>{[r.epoch, r.programme, r.family, r.model, r.cohort, r.settlement, r.captured, r.settled, r.priced, r.profitLoss === null ? "—" : `£${r.profitLoss.toFixed(2)}`, r.roi === null ? "—" : `${(100 * r.roi).toFixed(2)}%`].map((v, j) => <td key={j} className="p-2">{v}</td>)}</tr>)}</tbody>
       </table></div>
       </details>
-    </section>;
+    </section> : <p className="mt-4 text-sm text-amber-800">Collection epoch report unavailable; collection fails closed on invalid provenance.</p>}
+  </>;
 }

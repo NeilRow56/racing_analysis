@@ -69,6 +69,7 @@ test("isolated activation, concurrent new-epoch collection, pairing, stale rejec
       import { getLocalRacingDate } from "./src/lib/racing/todays-racing";
       import { shadowResult } from "./src/lib/racing/context-weight-shadow.fixtures";
       import { summarizeCollectionEpoch } from "./src/lib/racing/prospective-epoch-report";
+      import { loadCurrentPositiveNeutralSummary } from "./src/lib/racing/current-positive-neutral-summary";
       import { emptyTissueGeneration, generationRaceSchema } from "./src/lib/racing/tissue-generation-forward";
       const oldPaths = ["data/research/tissue-positive-neutral-prospective-v1.json", "data/research/hurdle-v3-prospective-shadow-v1.json", "data/research/hurdle-v3-market-edge-prospective-v1.json", "data/research/hurdle-low-form-prospective-v1.json"];
       const before = await Promise.all(oldPaths.map(p => readFile(p,"utf8")));
@@ -108,6 +109,12 @@ test("isolated activation, concurrent new-epoch collection, pairing, stale rejec
       assert.equal(shadow.observations[0].production.runners[0].outcome.grossReturn,2.5);
       const generation={...emptyTissueGeneration(),races:[shadow.observations[0].production]};
       const positive=await loadPositiveNeutral(EPOCHS.positiveNeutral.ledger);
+      assert.ok((await loadPositiveNeutral()).observations.length > 0);
+      const newerBook = structuredClone(generation.races[0]);
+      newerBook.capturedAt = new Date(Date.parse(capturedAt) + 1).toISOString();
+      newerBook.runners[0].outcome = null;
+      const current = await loadCurrentPositiveNeutralSummary({ ...generation, races: [newerBook, ...generation.races] });
+      assert.deepEqual(current.map(({ rows: [all] }) => [all.captured, all.settled, all.winners]), [[1, 1, 1], [0, 0, 0]]);
       const rows=summarizeCollectionEpoch("new",positive,shadow,edge,generation);
       assert.ok(rows.some(r=>r.programme==="Market Edge"&&r.settlement==="canonical_settlement_v3"));
       assert.ok(rows.every(r=>r.epoch==="new"));
