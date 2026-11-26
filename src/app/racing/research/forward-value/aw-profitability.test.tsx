@@ -4,6 +4,8 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { buildAwProfitabilityReport, matchedAwDecisions, profitabilityDate, readAwProfitabilityLedgers, summarizeAwDecisions } from "@/lib/racing/aw-profitability-report";
 import { emptyTissueGeneration, loadTissueGeneration } from "@/lib/racing/tissue-generation-forward";
 import { AwCumulativeProfitability, AwDailyProfitability } from "./aw-profitability";
+import { buildDailyProfitability, DailyProfitability, readDailyShadows } from "./daily-profitability";
+const shadows = await readDailyShadows();
 
 const date = "2026-11-22";
 const now = new Date("2026-11-23T07:00:00Z");
@@ -36,8 +38,8 @@ test("Sunday shows the unchanged frozen Lingfield decisions and matched final-SP
   assert.ok(Math.abs(sameOrSummary.profit! + 22 / 3) < 1e-12);
   assert.equal(sameOr.day.filter(d => d.pick?.runnerId !== d.reference.runnerId).length, 1);
   assert.equal(marketSupport.armedAt, null);
-  const html = renderToStaticMarkup(<AwDailyProfitability report={report} />);
-  for (const value of ["Lingfield", "UNARMED", "CAPTURED", "SETTLED", "NO BET", "Substituted the leader", "Captured market rank", "Bookmaker median", "Final SP 4/6", "−£7.33"]) {
+  const html = renderToStaticMarkup(<DailyProfitability date={date} report={buildDailyProfitability(date, generation, report, shadows)} />);
+  for (const value of ["Lingfield", "CAPTURED", "SETTLED", "NO BET", "Substituted the leader", "Bookmaker", "Verified final SP 4/6"]) {
     assert.ok(html.includes(value), value);
   }
   assert.deepEqual(loaded, before);
@@ -48,14 +50,16 @@ test("no-capture dates and an armed empty ledger show NO DATA with no monetary r
   const [profit, sameOr, support] = loaded;
   assert.ok(profit.status === "fulfilled" && profit.value);
   const empty = { ...profit, value: { ...profit.value, races: [] } };
-  const report = buildAwProfitabilityReport("2026-11-23", emptyTissueGeneration(), [empty, sameOr, support], now);
+  assert.ok(sameOr.status === "fulfilled" && sameOr.value);
+  const emptySameOr = { ...sameOr, value: { ...sameOr.value, observations: [] } };
+  const report = buildAwProfitabilityReport("2026-11-23", emptyTissueGeneration(), [empty, emptySameOr, support], now);
   assert.equal(report.races.length, 0);
   assert.equal(report.policies[0].eligible, 0);
   assert.equal(report.policies[0].latest, null);
   const html = renderToStaticMarkup(<><AwDailyProfitability report={report} /><AwCumulativeProfitability policies={report.policies.slice(0, 2)} /></>);
   assert.match(html, /ARMED/);
   assert.match(html, /UNARMED/);
-  assert.match(html, /NO CAPTURE/);
+  assert.doesNotMatch(html, /Frozen race decisions/);
   assert.match(html, /NO DATA/);
   assert.match(html, /Awaiting an eligible AW source book/);
   assert.doesNotMatch(html, /£0\.00|>0\.0%</);
@@ -91,8 +95,8 @@ test("pending, NR, void and incomplete markets preserve decisions and keep stake
   assert.deepEqual(summarizeAwDecisions(report.policies[1].day.map(d => d.pick)),
     { recorded: 3, bets: 3, abstentions: 0, pending: 1, settled: 0, winners: 0, voids: 2, profit: null, roi: null });
   assert.equal(matchedAwDecisions(report.policies[2]).races, 0);
-  const html = renderToStaticMarkup(<AwDailyProfitability report={report} />);
-  for (const value of ["PENDING", "NON-RUNNER", "VOID", "Captured market rank unverified", "Bookmaker median unavailable", "Incomplete bookmaker market"]) {
+  const html = renderToStaticMarkup(<DailyProfitability date={date} report={buildDailyProfitability(date, emptyTissueGeneration(), report, shadows)} />);
+  for (const value of ["PENDING", "NON-RUNNER", "VOID", "quote unavailable", "Incomplete bookmaker market"]) {
     assert.ok(html.includes(value), value);
   }
 });

@@ -106,6 +106,117 @@ describe("local scheduling without operational execution", () => {
       assert.equal(invoked.length, calls);
     }
   });
+  test("Hurdle T2 capture and settlement follow existing collectors and isolate failures", async () => {
+    const shadow = "scripts/track-hurdle-t2-nonhandicap-filter.ts";
+    for (const role of ["collection", "settlement"] as const) {
+      const invoked: string[][] = [];
+      const f = await fixture({
+        now: () => new Date(role === "collection" ? "2026-11-14T08:00:00Z" : "2026-11-14T09:00:00Z"),
+        awProfitArmed: async () => true, awSameOrArmed: async () => true, hurdleT2FilterArmed: async () => true,
+        command: async command => {
+          invoked.push(command.args.slice(2));
+          return { code: command.args[2] === shadow ? 1 : 0, timedOut: false, hookWarning: false };
+        },
+      });
+      assert.equal(await runScheduled(role, f.deps), 0);
+      assert.deepEqual(invoked.map(args => args[0]), [
+        role === "collection" ? "research:morning" : "research:after",
+        "scripts/track-aw-profit-shadow.ts", "scripts/track-aw-same-or-shadow.ts", shadow,
+      ]);
+      assert.deepEqual(invoked.at(-1), role === "collection" ? [shadow, "capture", "2026-11-14T08:00:00.000Z"] : [shadow, "settle"]);
+      assert.equal((await readEvents(f.deps.logRoot)).at(-1)?.status, "success");
+      const warning = JSON.parse(await readFile(join(f.deps.logRoot, "last-hurdle-t2-filter-warning.json"), "utf8"));
+      assert.equal(warning.reason, "hurdle_t2_filter_warning_review_logs_no_replay");
+      if (role === "collection") {
+        assert.equal(await runScheduled(role, f.deps), 0);
+        assert.equal(invoked.length, 4);
+      }
+    }
+  });
+  test("Chase shadow runs after Hurdle and AW and logs its failure separately", async () => {
+    const chase = "scripts/track-chase-t3-class46-handicap.ts";
+    for (const role of ["collection", "settlement"] as const) {
+      const invoked: string[][] = [];
+      const f = await fixture({
+        now: () => new Date(role === "collection" ? "2026-11-14T08:00:00Z" : "2026-11-14T09:00:00Z"),
+        awProfitArmed: async () => true, awSameOrArmed: async () => true, hurdleT2FilterArmed: async () => true,
+        chaseClass46Armed: async () => true,
+        command: async command => {
+          invoked.push(command.args.slice(2));
+          return { code: command.args[2] === chase ? 124 : 0, timedOut: command.args[2] === chase, hookWarning: false };
+        },
+      });
+      assert.equal(await runScheduled(role, f.deps), 0);
+      assert.deepEqual(invoked.map(args => args[0]), [
+        role === "collection" ? "research:morning" : "research:after",
+        "scripts/track-aw-profit-shadow.ts", "scripts/track-aw-same-or-shadow.ts",
+        "scripts/track-hurdle-t2-nonhandicap-filter.ts", chase,
+      ]);
+      assert.deepEqual(invoked.at(-1), role === "collection" ? [chase, "capture", "2026-11-14T08:00:00.000Z"] : [chase, "settle"]);
+      assert.equal((await readEvents(f.deps.logRoot)).at(-1)?.status, "success");
+      const warning = JSON.parse(await readFile(join(f.deps.logRoot, "last-chase-class46-warning.json"), "utf8"));
+      assert.equal(warning.reason, "chase_class46_warning_review_logs_no_replay");
+      if (role === "collection") {
+        assert.equal(await runScheduled(role, f.deps), 0);
+        assert.equal(invoked.length, 5);
+      }
+    }
+  });
+  test("Hurdle Class 4 follows the existing collectors, with a separate failure record", async () => {
+    const shadow = "scripts/track-hurdle-t2-class4-filter.ts";
+    for (const role of ["collection", "settlement"] as const) {
+      const invoked: string[][] = [];
+      const start = role === "collection" ? "2026-11-14T08:00:00.000Z" : "2026-11-14T09:00:00.000Z";
+      const f = await fixture({
+        now: () => new Date(start),
+        awProfitArmed: async () => true, awSameOrArmed: async () => true, hurdleT2FilterArmed: async () => true,
+        chaseClass46Armed: async () => true, hurdleClass4Armed: async () => true,
+        command: async command => {
+          invoked.push(command.args.slice(2));
+          return { code: command.args[2] === shadow ? 1 : 0, timedOut: false, hookWarning: false };
+        },
+      });
+      assert.equal(await runScheduled(role, f.deps), 0);
+      assert.deepEqual(invoked.map(args => args[0]), [
+        role === "collection" ? "research:morning" : "research:after",
+        "scripts/track-aw-profit-shadow.ts", "scripts/track-aw-same-or-shadow.ts",
+        "scripts/track-hurdle-t2-nonhandicap-filter.ts", "scripts/track-chase-t3-class46-handicap.ts", shadow,
+      ]);
+      assert.deepEqual(invoked.at(-1), role === "collection" ? [shadow, "capture", start] : [shadow, "settle"]);
+      assert.equal((await readEvents(f.deps.logRoot)).at(-1)?.status, "success");
+      const warning = JSON.parse(await readFile(join(f.deps.logRoot, "last-hurdle-class4-warning.json"), "utf8"));
+      assert.equal(warning.reason, "hurdle_class4_warning_review_logs_no_replay");
+      if (role === "collection") {
+        assert.equal(await runScheduled(role, f.deps), 0);
+        assert.equal(invoked.length, 6);
+      }
+    }
+  });
+  test("AW sprint shadow runs after all collectors and isolates failures", async () => {
+    const sprint = "scripts/track-aw-profit-sprint-filter.ts";
+    for (const role of ["collection", "settlement"] as const) {
+      const invoked: string[][] = [];
+      const start = role === "collection" ? "2026-11-14T08:00:00.000Z" : "2026-11-14T09:00:00.000Z";
+      const f = await fixture({
+        now: () => new Date(start),
+        awProfitArmed: async () => true, awSameOrArmed: async () => true, hurdleT2FilterArmed: async () => true,
+        chaseClass46Armed: async () => true, hurdleClass4Armed: async () => true, awSprintArmed: async () => true,
+        command: async c => {
+          invoked.push(c.args.slice(2));
+          return { code: c.args[2] === sprint ? 1 : 0, timedOut: false, hookWarning: false };
+        },
+      });
+      assert.equal(await runScheduled(role, f.deps), 0);
+      assert.deepEqual(invoked.map(args => args[0]), [
+        role === "collection" ? "research:morning" : "research:after",
+        "scripts/track-aw-profit-shadow.ts", "scripts/track-aw-same-or-shadow.ts", "scripts/track-hurdle-t2-nonhandicap-filter.ts",
+        "scripts/track-chase-t3-class46-handicap.ts", "scripts/track-hurdle-t2-class4-filter.ts", sprint,
+      ]);
+      assert.deepEqual(invoked.at(-1), role === "collection" ? [sprint, "capture", start] : [sprint, "settle"]);
+      assert.equal((await readEvents(f.deps.logRoot)).at(-1)?.status, "success");
+      assert.match(await readFile(join(f.deps.logRoot, "last-aw-sprint-warning.json"), "utf8"), /aw_sprint_warning_review_logs_no_replay/);
+    }
+  });
   test("bounded readiness retries do not start workflows or claim server outage", async () => {
     let tries = 0; const pauses: number[] = [];
     const f = await fixture({ ready: async () => { tries++; throw new Error("ECONNREFUSED"); }, pause: async ms => { pauses.push(ms); } });

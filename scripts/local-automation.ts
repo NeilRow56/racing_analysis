@@ -31,7 +31,11 @@ export type Dependencies = {
   command: (command: Command) => Promise<CommandResult>;
   pause: (ms: number) => Promise<void>;
   audit?: () => Promise<string[]>;
+  awSprintArmed?: () => Promise<boolean>;
   awProfitArmed?: () => Promise<boolean>;
+  chaseClass46Armed?: () => Promise<boolean>;
+  hurdleClass4Armed?: () => Promise<boolean>;
+  hurdleT2FilterArmed?: () => Promise<boolean>;
   awSameOrArmed?: () => Promise<boolean>;
   logRoot: string;
 };
@@ -244,6 +248,66 @@ export async function runScheduled(role: Role, deps: Dependencies): Promise<numb
           }).catch(() => {});
         }
       }
+      if (result.code === 0 && !result.timedOut) {
+        try {
+          if (await deps.hurdleT2FilterArmed?.()) {
+            const args = role === "collection" ? ["capture", startedAt] : ["settle"];
+            const shadow = await deps.command({ executable: BUN,
+              args: ["--env-file=.env.local", "run", "scripts/track-hurdle-t2-nonhandicap-filter.ts", ...args],
+              cwd: ROOT, env, timeoutMs: 60_000, logPrefix: join(deps.logRoot, id), streamBytes: 128 * 1024 });
+            if (shadow.code !== 0 || shadow.timedOut || shadow.hookWarning) throw new Error("hurdle_t2_filter_warning");
+          }
+        } catch {
+          await atomicOperationalJson(deps.logRoot, "last-hurdle-t2-filter-warning.json", {
+            id, at: deps.now().toISOString(), role, date: selected.date, reason: "hurdle_t2_filter_warning_review_logs_no_replay",
+          }).catch(() => {});
+        }
+      }
+      if (result.code === 0 && !result.timedOut) {
+        try {
+          if (await deps.chaseClass46Armed?.()) {
+            const args = role === "collection" ? ["capture", startedAt] : ["settle"];
+            const shadow = await deps.command({ executable: BUN,
+              args: ["--env-file=.env.local", "run", "scripts/track-chase-t3-class46-handicap.ts", ...args],
+              cwd: ROOT, env, timeoutMs: 60_000, logPrefix: join(deps.logRoot, id), streamBytes: 128 * 1024 });
+            if (shadow.code !== 0 || shadow.timedOut || shadow.hookWarning) throw new Error("chase_class46_warning");
+          }
+        } catch {
+          await atomicOperationalJson(deps.logRoot, "last-chase-class46-warning.json", {
+            id, at: deps.now().toISOString(), role, date: selected.date, reason: "chase_class46_warning_review_logs_no_replay",
+          }).catch(() => {});
+        }
+      }
+      if (result.code === 0 && !result.timedOut) {
+        try {
+          if (await deps.hurdleClass4Armed?.()) {
+            const args = role === "collection" ? ["capture", startedAt] : ["settle"];
+            const shadow = await deps.command({ executable: BUN,
+              args: ["--env-file=.env.local", "run", "scripts/track-hurdle-t2-class4-filter.ts", ...args],
+              cwd: ROOT, env, timeoutMs: 60_000, logPrefix: join(deps.logRoot, id), streamBytes: 128 * 1024 });
+            if (shadow.code !== 0 || shadow.timedOut || shadow.hookWarning) throw new Error("hurdle_class4_warning");
+          }
+        } catch {
+          await atomicOperationalJson(deps.logRoot, "last-hurdle-class4-warning.json", {
+            id, at: deps.now().toISOString(), role, date: selected.date, reason: "hurdle_class4_warning_review_logs_no_replay",
+          }).catch(() => {});
+        }
+      }
+      if (result.code === 0 && !result.timedOut) {
+        try {
+          if (await deps.awSprintArmed?.()) {
+            const args = role === "collection" ? ["capture", startedAt] : ["settle"];
+            const shadow = await deps.command({ executable: BUN,
+              args: ["--env-file=.env.local", "run", "scripts/track-aw-profit-sprint-filter.ts", ...args],
+              cwd: ROOT, env, timeoutMs: 60_000, logPrefix: join(deps.logRoot, id), streamBytes: 128 * 1024 });
+            if (shadow.code !== 0 || shadow.timedOut || shadow.hookWarning) throw new Error("aw_sprint_warning");
+          }
+        } catch {
+          await atomicOperationalJson(deps.logRoot, "last-aw-sprint-warning.json", {
+            id, at: deps.now().toISOString(), role, date: selected.date, reason: "aw_sprint_warning_review_logs_no_replay",
+          }).catch(() => {});
+        }
+      }
       return code;
     } catch {
       await record({ date: selected.date, mode: selected.mode, status: "failed", code: 71, reason: "command_or_logging_failure_review_before_retry" }); return 71;
@@ -349,9 +413,13 @@ export async function statusReport(logRoot = LOG_ROOT, root = ROOT, now = new Da
   const retention = await metadata<RetentionReport>("retention.json");
   const lastLocalError = await metadata<{ at: string; role?: Role; code: number; reason: string }>("last-error.json");
   const lastAwSameOrWarning = await metadata<{ at: string; role: Role; reason: string }>("last-aw-same-or-warning.json");
+  const lastHurdleT2FilterWarning = await metadata<{ at: string; role: Role; reason: string }>("last-hurdle-t2-filter-warning.json");
+  const lastAwSprintWarning = await metadata<{ at: string; role: Role; reason: string }>("last-aw-sprint-warning.json");
+  const lastHurdleClass4Warning = await metadata<{ at: string; role: Role; reason: string }>("last-hurdle-class4-warning.json");
+  const lastChaseClass46Warning = await metadata<{ at: string; role: Role; reason: string }>("last-chase-class46-warning.json");
   return { asOf: now.toISOString(), schedulerActivation: `collection=${activation.collection.state};settlement=${activation.settlement.state}`, activation, logRoot,
     activationReadiness: "NO_GO_stage_B_ledger_drift_and_runtime_review_pending",
-    historyUnverifiable, retention, retentionPolicy: RETENTION, lastLocalError, lastAwSameOrWarning,
+    historyUnverifiable, retention, retentionPolicy: RETENTION, lastLocalError, lastAwSameOrWarning, lastHurdleT2FilterWarning, lastChaseClass46Warning, lastHurdleClass4Warning, lastAwSprintWarning,
     timedOutExecutions: events.filter(e => e.code === 124),
     overlapIndicators: events.filter(e => e.status === "locked"),
     executionCount: new Set(events.map(e => e.id)).size,
@@ -385,6 +453,22 @@ export function formatStatus(report: Awaited<ReturnType<typeof statusReport>>) {
     const laterSuccess = !("unreadable" in error) && error.role && (error.role === "collection" ? report.lastSuccessfulCollection : report.lastSuccessfulSettlement);
     const resolved = laterSuccess && !("unreadable" in error) && laterSuccess.at > error.at;
     lines.push(`  ${resolved ? "Historical" : "WARNING:"} Last local infrastructure error: ${"unreadable" in error ? "unreadable" : `${error.at} — ${error.reason}`}${resolved ? " (later role success recorded)" : " (inspect JSON)"}`);
+  }
+  if (report.lastChaseClass46Warning) {
+    const warning = report.lastChaseClass46Warning;
+    lines.push(`  Last Chase Class 4–6 shadow warning: ${"unreadable" in warning ? "unreadable" : `${warning.at} — ${warning.role}, inspect logs`}`);
+  }
+  if (report.lastHurdleClass4Warning) {
+    const warning = report.lastHurdleClass4Warning;
+    lines.push(`  Last Hurdle Class 4 shadow warning: ${"unreadable" in warning ? "unreadable" : `${warning.at} — ${warning.role}, inspect logs`}`);
+  }
+  if (report.lastAwSprintWarning) {
+    const warning = report.lastAwSprintWarning;
+    lines.push(`  Last AW sprint filter shadow warning: ${"unreadable" in warning ? "unreadable" : `${warning.at} — ${warning.role}, inspect logs`}`);
+  }
+  if (report.lastHurdleT2FilterWarning) {
+    const warning = report.lastHurdleT2FilterWarning;
+    lines.push(`  Last Hurdle T2 filter warning: ${"unreadable" in warning ? "unreadable" : `${warning.at} — ${warning.role}, inspect logs`}`);
   }
   if (report.lastAwSameOrWarning) {
     const warning = report.lastAwSameOrWarning;
@@ -446,6 +530,26 @@ export async function main(args: string[]) {
     awSameOrArmed: async () => {
       const { AW_SAME_OR_SHADOW_PATH } = await import("../src/lib/racing/aw-same-or-shadow");
       try { return (await stat(AW_SAME_OR_SHADOW_PATH)).isFile(); }
+      catch (error) { if ((error as NodeJS.ErrnoException).code === "ENOENT") return false; throw error; }
+    },
+    hurdleT2FilterArmed: async () => {
+      const { HURDLE_T2_FILTER_PATH } = await import("../src/lib/racing/hurdle-t2-nonhandicap-filter");
+      try { return (await stat(HURDLE_T2_FILTER_PATH)).isFile(); }
+      catch (error) { if ((error as NodeJS.ErrnoException).code === "ENOENT") return false; throw error; }
+    },
+    chaseClass46Armed: async () => {
+      const { CHASE_CLASS46_PATH } = await import("../src/lib/racing/chase-t3-class46-handicap");
+      try { return (await stat(CHASE_CLASS46_PATH)).isFile(); }
+      catch (error) { if ((error as NodeJS.ErrnoException).code === "ENOENT") return false; throw error; }
+    },
+    hurdleClass4Armed: async () => {
+      const { HURDLE_CLASS4_PATH } = await import("../src/lib/racing/hurdle-t2-class4-filter");
+      try { return (await stat(HURDLE_CLASS4_PATH)).isFile(); }
+      catch (error) { if ((error as NodeJS.ErrnoException).code === "ENOENT") return false; throw error; }
+    },
+    awSprintArmed: async () => {
+      const { AW_SPRINT_PATH } = await import("../src/lib/racing/aw-profit-sprint-filter");
+      try { return (await stat(AW_SPRINT_PATH)).isFile(); }
       catch (error) { if ((error as NodeJS.ErrnoException).code === "ENOENT") return false; throw error; }
     },
     pause: ms => new Promise(done => setTimeout(done, ms)), logRoot: LOG_ROOT,

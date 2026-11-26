@@ -27,7 +27,7 @@ export function ResearchPageLayout({ date, daily, tissue, active, historical, se
 
       <section className="mt-5" aria-labelledby="daily-profitability">
         <div className="flex flex-wrap items-end justify-between gap-2">
-          <h2 id="daily-profitability" className="text-lg font-semibold">Today&apos;s profitability research</h2>
+          <h2 id="daily-profitability" className="text-lg font-semibold">Today&apos;s profitability selections</h2>
           <form method="get" action="/racing/research/forward-value" className="flex flex-wrap items-end gap-2">
             <label className="text-xs font-medium">Racing date
               <input aria-label="Racing date" className="ml-2 rounded-md border border-slate-300 bg-white px-2 py-1.5 text-sm" type="date" name="date" defaultValue={date} required />
@@ -39,7 +39,7 @@ export function ResearchPageLayout({ date, daily, tissue, active, historical, se
       </section>
 
       <section className="mt-6 border-t border-slate-200 pt-4" aria-labelledby="tissue-performance">
-        <h2 id="tissue-performance" className="text-lg font-semibold">Tissue performance</h2>
+        <h2 id="tissue-performance" className="text-lg font-semibold">Tissue Model Performance</h2>
         {tissue}
       </section>
 

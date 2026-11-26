@@ -14,7 +14,7 @@ const day = 86_400_000;
 export async function atomicOperationalJson(root: string, name: string, value: unknown) {
   const directory = await lstat(root);
   if (!directory.isDirectory() || directory.isSymbolicLink()) throw new Error("automation_log_directory_must_not_be_a_symlink");
-  if (!["retention.json", "last-error.json", "last-aw-same-or-warning.json", "overlap-collection.json", "overlap-settlement.json"].includes(name)) throw new Error("not_an_operational_metadata_file");
+  if (!["retention.json", "last-error.json", "last-aw-same-or-warning.json", "last-hurdle-t2-filter-warning.json", "last-chase-class46-warning.json", "last-hurdle-class4-warning.json", "last-aw-sprint-warning.json", "overlap-collection.json", "overlap-settlement.json"].includes(name)) throw new Error("not_an_operational_metadata_file");
   const temp = join(root, `${name}.${process.pid}.${randomUUID()}.tmp`);
   await writeFile(temp, JSON.stringify(value) + "\n", { mode: 0o600, flag: "wx" });
   try { await rename(temp, join(root, name)); }
@@ -73,7 +73,7 @@ export async function maintainLogs(root: string, now: Date, currentId: string, p
   }
   const logs: { name: string; size: number; mtime: number; protected: boolean }[] = [];
   for (const name of await readdir(root)) {
-    const temp = /^(?:executions\.jsonl\.(\d+)|(?:retention|last-error|last-aw-same-or-warning|overlap-collection|overlap-settlement)\.json\.(\d+)\.[0-9a-f-]{36})\.tmp$/.exec(name);
+    const temp = /^(?:executions\.jsonl\.(\d+)|(?:retention|last-error|last-aw-same-or-warning|last-hurdle-t2-filter-warning|last-chase-class46-warning|overlap-collection|overlap-settlement)\.json\.(\d+)\.[0-9a-f-]{36})\.tmp$/.exec(name);
     if (temp) {
       const info = await lstat(join(root, name));
       let dead = false;

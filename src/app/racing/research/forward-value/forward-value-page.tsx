@@ -2,6 +2,11 @@ import { Suspense } from "react";
 import { profileRequest } from "@/lib/racing/performance-profile";
 import { profiledServerWork, profiledCalculation } from "./profiled-server-work";
 import { ProspectiveEpochDisclosure as ProspectiveEpochResearch } from "./prospective-epoch-disclosure";
+import { ChaseClass46Research } from "./chase-class46-monitor";
+import { buildDailyProfitability, DailyProfitability, readDailyShadows } from "./daily-profitability";
+import { AwSprintResearch } from "./aw-sprint-monitor";
+import { HurdleClass4Research } from "./hurdle-class4-monitor";
+import { HurdleT2FilterResearch } from "./hurdle-t2-filter-monitor";
 import { EarlyTurfResearch } from "./turf-early-season-monitor";
 import { LowFormHurdleResearch } from "./hurdle-low-form-monitor";
 import { createResearchCache, researchFileIdentity } from "@/lib/racing/research-cache";
@@ -155,15 +160,16 @@ async function prepareForwardValuePage({ searchParams }: PageProps) {
   const historyLoaded = scalar(params?.history) === "1";
   const secondaryOpen = scalar(params?.monitor) === "or-speed" || scalar(params?.monitor) === "secondary";
   const fileIdentity = await researchStage("file modification identity", () => researchFileIdentity());
-  const [awLedgers, generation, collection, valueCohorts] = await Promise.all([
+  const [awLedgers, generation, collection, valueCohorts, dailyShadows] = await Promise.all([
     readAwProfitabilityLedgers(),
     cachedGeneration(fileIdentity, () => researchStage("loadTissueGeneration", () => loadTissueGeneration())),
     readAwCollectionStatus(raceDate),
     cachedValueCohorts(fileIdentity, () => researchStage("loadAllTissueValue", () => loadAllTissueValue())),
+    readDailyShadows(),
   ]);
   const [verifiedOriginalSp, legacy] = await Promise.all([
-    loadVerifiedFinalSpResults(generation.races.filter(r => r.family === "AW" && r.raceDate === raceDate &&
-      r.runners.some(pick => pick.rank <= 2 && pick.outcome?.status === "settled")).map(r => r.raceId)).catch(() => undefined),
+    loadVerifiedFinalSpResults(generation.races.filter(r => ["AW", "HURDLE", "CHASE"].includes(r.family) && r.raceDate === raceDate &&
+      r.runners.some(pick => pick.rank <= (r.family === "CHASE" ? 3 : 2) && pick.outcome?.status === "settled")).map(r => r.raceId)).catch(() => undefined),
     archiveLoaded || historyLoaded || secondaryOpen ? prepareLegacyResearch(raceDate, params, fileIdentity) : null,
   ]);
   const awReport = buildAwProfitabilityReport(raceDate, generation, awLedgers, new Date(), collection, verifiedOriginalSp);
@@ -172,13 +178,21 @@ async function prepareForwardValuePage({ searchParams }: PageProps) {
       date={raceDate}
       archiveLoaded={archiveLoaded}
       historyLoaded={historyLoaded}
-      daily={<AwDailyProfitability report={awReport} />}
+      daily={<DailyProfitability date={raceDate} report={buildDailyProfitability(raceDate, generation, awReport, dailyShadows, verifiedOriginalSp)} />}
       tissue={<TissuePerformance generation={generation} />}
       active={<>
+        <details className="mt-3 text-sm">
+          <summary className="cursor-pointer font-medium text-emerald-800">Daily All Weather results · verified final SP</summary>
+          <AwDailyProfitability report={awReport} />
+        </details>
         <AwCumulativeProfitability policies={awReport.policies} />
         <p className="mt-2 text-xs text-slate-600">Final-SP ROI uses settled £1 stakes. Non-runners and voids have zero stake. Winning dead heats use the official split.</p>
         <Suspense fallback={<p className="mt-3 text-sm text-slate-600">Loading other prospective monitors…</p>}>
           <ActiveProspectiveSummaries generation={generation} />
+          {profiledServerWork("monitor.HurdleT2FilterResearch", () => HurdleT2FilterResearch(), <HurdleT2FilterResearch />)}
+          {profiledServerWork("monitor.AwSprintResearch", () => AwSprintResearch(), <AwSprintResearch />)}
+          {profiledServerWork("monitor.HurdleClass4Research", () => HurdleClass4Research(), <HurdleClass4Research />)}
+          {profiledServerWork("monitor.ChaseClass46Research", () => ChaseClass46Research(), <ChaseClass46Research />)}
         </Suspense>
         <details className="mt-3 text-sm">
           <summary className="cursor-pointer font-medium text-emerald-800">Chase T3 · prospective breakdowns at captured prices</summary>
